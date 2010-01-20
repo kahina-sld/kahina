@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kahinaTree>
+  <node caption="s" label="">
+    <node caption="np" label="">
+      <node caption="d" label="">
+        <node caption="the" label=""/>
+      </node>
+      <node caption="n" label="">
+        <node caption="dog" label=""/>
+      </node>
+    </node>
+    <node caption="vp" label="">
+      <node caption="v" label="">
+        <node caption="chases" label=""/>
+      </node>
+      <node caption="np" label="">
+        <node caption="d" label="">
+          <node caption="the" label=""/>
+        </node>
+        <node caption="n" label="">
+          <node caption="cat" label=""/>
+        </node>
+      </node>
+    </node>
+  </node>
+</kahinaTree>
