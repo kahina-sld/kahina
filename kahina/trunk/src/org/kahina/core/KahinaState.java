@@ -15,12 +15,8 @@ import org.kahina.data.tree.KahinaTree;
  */
 
 public class KahinaState
-{   
-
-    
+{      
     //the data structures that a kahina state always contains
     KahinaLayeredTree stepTree;
-    KahinaTree secondaryStepTree;
-    
-
+    KahinaTree secondaryStepTree; 
 }
