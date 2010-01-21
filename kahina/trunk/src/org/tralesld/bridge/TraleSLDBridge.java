@@ -6,12 +6,12 @@ package org.tralesld.bridge;
  * the bridge can invoke an instance of Kahina via the start() method
  */
 
-import org.kahina.bridge.KahinaBridge;
+import org.kahina.bridge.LogicProgrammingBridge;
 import org.kahina.control.KahinaController;
 import org.kahina.core.KahinaInstance;
 import org.kahina.gui.KahinaGUI;
 
-public class TraleSLDBridge extends KahinaBridge
+public class TraleSLDBridge extends LogicProgrammingBridge
 {
     public void start()
     {
@@ -33,42 +33,12 @@ public class TraleSLDBridge extends KahinaBridge
         
     }
     
-    public void registerStepInformation(int stepID, String command)
-    {
-        
-    }
-    
     public void registerStepSourceCodeLocation(int id, String absolutePath, int lineNumber)
     {
         
     }
     
     public void registerRuleApplication(int id, int left, int right, String ruleName)
-    {
-        
-    }
-    
-    public void registerStepLocation(String callStack)
-    {
-        
-    }
-    
-    public void registerStepRedo(String callStack)
-    {
-        
-    }
-    
-    public void registerStepExit(String callStack, boolean deterministic)
-    {
-        
-    }
-    
-    public void registerStepFinished(String callStack)
-    {
-        
-    }
-    
-    public void registerStepFailure(String callStack)
     {
         
     }

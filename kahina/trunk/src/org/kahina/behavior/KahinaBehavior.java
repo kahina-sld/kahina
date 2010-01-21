@@ -2,7 +2,7 @@ package org.kahina.behavior;
 
 public class KahinaBehavior<KahinaObject>
 {
-    KahinaObject object;
+    protected KahinaObject object;
     
     public KahinaBehavior(KahinaObject object)
     {
