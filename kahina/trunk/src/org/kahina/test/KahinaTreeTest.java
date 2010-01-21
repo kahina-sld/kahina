@@ -27,7 +27,7 @@ public class KahinaTreeTest
     {
         try
         {
-            File file = new File("org/kahina/test/trale-tree.xml");
+            File file = new File("trunk/src/org/kahina/test/trale-tree.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
