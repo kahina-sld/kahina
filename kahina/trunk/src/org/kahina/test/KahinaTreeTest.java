@@ -27,13 +27,13 @@ public class KahinaTreeTest
     {
         try
         {
-            File file = new File("trunk/src/org/kahina/test/trale-tree.xml");
+            File file = new File("src/org/kahina/test/trale-tree.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
             KahinaLayeredTree m1 = KahinaLayeredTree.importXML(dom);
             
-            file = new File("org/kahina/test/trale-tree2.xml");
+            file = new File("src/org/kahina/test/trale-tree2.xml");
             dbf = DocumentBuilderFactory.newInstance();
             db = dbf.newDocumentBuilder();
             dom = db.parse(file);

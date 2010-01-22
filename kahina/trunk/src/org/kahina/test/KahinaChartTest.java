@@ -28,7 +28,7 @@ public class KahinaChartTest
     {
         try
         {
-            File file = new File("trunk/src/org/kahina/test/test-chart.xml");
+            File file = new File("src/org/kahina/test/test-chart.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
