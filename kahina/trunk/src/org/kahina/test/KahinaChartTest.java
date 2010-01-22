@@ -18,6 +18,7 @@ import org.kahina.data.KahinaDataHandlingMethod;
 import org.kahina.data.KahinaTypeException;
 import org.kahina.data.chart.*;
 import org.kahina.io.chart.KahinaChartIO;
+import org.kahina.io.database.KahinaDatabaseHandler;
 import org.kahina.visual.chart.KahinaChartView;
 import org.kahina.visual.chart.KahinaChartViewMarker;
 import org.kahina.visual.chart.KahinaChartViewPanel;
@@ -32,7 +33,9 @@ public class KahinaChartTest
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
-            KahinaChart m = KahinaChartIO.importXML(dom, KahinaDataHandlingMethod.MEMORY);
+            KahinaDatabaseHandler data = new KahinaDatabaseHandler(new File("otoka.dat"));
+            KahinaDbChart m = (KahinaDbChart) KahinaChartIO.importXML(dom, KahinaDataHandlingMethod.DATABASE, data);
+            //KahinaChart m = KahinaChartIO.importXML(dom, KahinaDataHandlingMethod.MEMORY, null);
             KahinaChartView v = new KahinaChartView();
             v.display(m);       
 

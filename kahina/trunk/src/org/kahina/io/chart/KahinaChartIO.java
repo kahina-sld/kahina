@@ -4,6 +4,7 @@ import org.kahina.data.KahinaDataHandlingMethod;
 import org.kahina.data.chart.KahinaChart;
 import org.kahina.data.chart.KahinaDbChart;
 import org.kahina.data.chart.KahinaMemChart;
+import org.kahina.io.database.KahinaDatabaseHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -35,7 +36,7 @@ public class KahinaChartIO
         return b.toString();
     }
     
-    public static KahinaChart importXML(Document dom, int dataHandlingMethod)
+    public static KahinaChart importXML(Document dom, int dataHandlingMethod, KahinaDatabaseHandler db)
     {
         KahinaChart m;
         if (dataHandlingMethod == KahinaDataHandlingMethod.MEMORY)
@@ -44,7 +45,7 @@ public class KahinaChartIO
         }
         else
         {
-            m = new KahinaDbChart();
+            m = new KahinaDbChart(db);
         }
         NodeList segments = dom.getElementsByTagName("segment");
         for (int i = 0; i < segments.getLength(); i++)

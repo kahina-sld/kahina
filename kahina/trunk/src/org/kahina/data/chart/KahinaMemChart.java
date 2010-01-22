@@ -182,11 +182,6 @@ public class KahinaMemChart extends KahinaChart implements KahinaMemObject
         return idList;
     }
     
-    public boolean segmentIsCovered(int id)
-    {
-        return (leftmostCovered <= id && id <= rightmostCovered);
-    }
-    
     public boolean segmentHasCaption(int id)
     {
         String segmentCaption = segmentCaptions.get(id);

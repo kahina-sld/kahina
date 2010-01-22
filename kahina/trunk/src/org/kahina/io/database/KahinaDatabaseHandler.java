@@ -14,11 +14,11 @@ public class KahinaDatabaseHandler
 {
     // database connection
     private Connection connection;
-    private File db;
+    private File file;
     
-    public KahinaDatabaseHandler(File db)
+    public KahinaDatabaseHandler(File file)
     {
-        this.db = db;
+        this.file = file;
         try
         {
             startDatabase();
@@ -98,12 +98,27 @@ public class KahinaDatabaseHandler
         return resultSet;
     }
     
+    public String queryString(String queryString)
+    {
+        try
+        {
+            Statement statement = connection.createStatement();
+            ResultSet res = statement.executeQuery(queryString);
+            return res.getString(0);
+        }
+        catch (SQLException e)
+        {
+            System.err.println("SQL error: " + e.getMessage());
+        }
+        return "?";
+    }
+    
     private void startDatabase() throws ClassNotFoundException, SQLException, IOException
     {
         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-        db = File.createTempFile("kahinadb", null);
-        deleteRecursively(db);
-        connection = DriverManager.getConnection("jdbc:derby:" + db.getPath() + ";create=true");
+        file = File.createTempFile("kahinadb", null);
+        deleteRecursively(file);
+        connection = DriverManager.getConnection("jdbc:derby:" + file.getPath() + ";create=true");
         // db.deleteOnExit(); // should work but doesn't
         Statement statement = connection.createStatement();
         try

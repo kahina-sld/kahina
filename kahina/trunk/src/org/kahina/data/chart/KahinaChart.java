@@ -16,6 +16,10 @@ public abstract class KahinaChart extends KahinaObject
     public KahinaChart()
     {
         super(lastID++);
+    }
+    
+    public void initialize()
+    {
         setLeftBound(0);
         setRightBound(0);
         setLeftmostCovered(Integer.MAX_VALUE);
@@ -52,7 +56,10 @@ public abstract class KahinaChart extends KahinaObject
     public abstract Set<Integer> getSegmentsWithCaption();   
     public abstract Iterable<Integer> getEdgeIDs();
     
-    public abstract boolean segmentIsCovered(int id);
+    public boolean segmentIsCovered(int id)
+    {
+        return (getLeftmostCovered() <= id && id <= getRightmostCovered());
+    }
     
     public abstract boolean segmentHasCaption(int id);
 }
