@@ -2,28 +2,23 @@ package org.kahina.core;
 
 import org.kahina.bridge.KahinaBridge;
 import org.kahina.control.KahinaController;
-import org.kahina.data.KahinaObject;
+import org.kahina.core.data.DataManager;
 import org.kahina.gui.KahinaGUI;
 
 public class KahinaInstance
 {
-    InformationProvider data;
+    DataManager dataManager;
     KahinaState state;
-    KahinaController control;
+    KahinaController controller;
     KahinaGUI gui;
     KahinaBridge bridge;
     
-    public KahinaInstance()
+    public KahinaInstance(DataManager dataManager)
     {
-        data = new InformationProvider();
+    	this.dataManager = dataManager;
         state = new KahinaState();
-        control = new KahinaController();
-        gui = new KahinaGUI(this, control);
+        controller = new KahinaController();
+        gui = new KahinaGUI(this, controller);
         bridge = new KahinaBridge();
-    }
-    
-    public void storeInfo(String type, int infoID, KahinaObject value)
-    {
-        data.storeInfo(type, infoID, value);
     }
 }

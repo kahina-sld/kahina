@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import org.kahina.data.KahinaObject;
+import org.kahina.core.data.KahinaObject;
 import org.kahina.data.chart.KahinaChart;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

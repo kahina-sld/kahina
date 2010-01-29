@@ -1,6 +1,6 @@
 package org.kahina.data.fs;
 
-import org.kahina.data.KahinaObject;
+import org.kahina.core.data.KahinaObject;
 
 public class KahinaFeatureStructure extends KahinaObject
 {

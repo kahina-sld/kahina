@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.kahina.data.KahinaObject;
+import org.kahina.core.data.KahinaObject;
 import org.kahina.data.KahinaTypeException;
 import org.kahina.data.tree.KahinaTree;
 import org.kahina.data.tree.KahinaLayeredTree;

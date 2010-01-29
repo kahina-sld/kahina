@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 
+import org.kahina.core.data.KahinaObject;
 import org.kahina.data.*;
 import org.kahina.data.chart.KahinaChart;
 import org.kahina.visual.KahinaView;

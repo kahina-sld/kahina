@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.kahina.data.KahinaDbObject;
-import org.kahina.io.database.KahinaDatabaseHandler;
+import org.kahina.io.database.DatabaseHandler;
 
 public class KahinaDbChart extends KahinaChart implements KahinaDbObject
 {
-    KahinaDatabaseHandler db;
+    DatabaseHandler db;
     boolean tablesExist = false;
     
     public KahinaDbChart()
@@ -16,13 +16,13 @@ public class KahinaDbChart extends KahinaChart implements KahinaDbObject
         db = null;
     }
     
-    public KahinaDbChart(KahinaDatabaseHandler db)
+    public KahinaDbChart(DatabaseHandler db)
     {
         setDatabase(db); 
         initialize();
     }
     
-    public void setDatabase(KahinaDatabaseHandler db)
+    public void setDatabase(DatabaseHandler db)
     {
         this.db = db;
         if (!tablesExist)

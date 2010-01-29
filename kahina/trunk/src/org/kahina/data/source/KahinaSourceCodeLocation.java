@@ -1,6 +1,6 @@
 package org.kahina.data.source;
 
-import org.kahina.data.KahinaObject;
+import org.kahina.core.data.KahinaObject;
 
 public class KahinaSourceCodeLocation extends KahinaObject
 {

@@ -1,5 +1,6 @@
 package org.kahina.data.chart;
 
+import org.kahina.core.data.KahinaObject;
 import org.kahina.data.*;
 import org.w3c.dom.*;
 

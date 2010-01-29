@@ -4,21 +4,25 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashSet;
 import java.util.Set;
 
-public class KahinaDatabaseHandler
+import org.kahina.core.KahinaException;
+
+public class DatabaseHandler
 {
     // database connection
     private Connection connection;
-    private File file;
     
-    public KahinaDatabaseHandler(File file)
+    // TODO move this to a database table for persistence
+    private Set<String> clientIDs = new HashSet<String>();
+    
+    public DatabaseHandler()
     {
-        this.file = file;
         try
         {
             startDatabase();
@@ -37,7 +41,13 @@ public class KahinaDatabaseHandler
         }
     }
     
-    public void execute(String sqlString)
+    public DatabaseHandler(File file)
+    {
+    	this();
+    	// TODO Use the provided file.
+    }
+
+	public void execute(String sqlString)
     {
         try
         {
@@ -116,7 +126,7 @@ public class KahinaDatabaseHandler
     private void startDatabase() throws ClassNotFoundException, SQLException, IOException
     {
         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-        file = File.createTempFile("kahinadb", null);
+        File file = File.createTempFile("kahinadb", null);
         deleteRecursively(file);
         connection = DriverManager.getConnection("jdbc:derby:" + file.getPath() + ";create=true");
         // db.deleteOnExit(); // should work but doesn't
@@ -132,6 +142,40 @@ public class KahinaDatabaseHandler
     
         statement.executeUpdate("CREATE TABLE data (id BIGINT NOT NULL , value VARCHAR(32) NOT NULL, PRIMARY KEY (id))");
         statement.close();
+    }
+    
+    /**
+     * A client using this {@link DatabaseHandler} should register here with a
+     * unique ID (e.g. a fully qualified class name of a class all of whose
+     * instances will use the same set of database tables) after the required
+     * tables have been created.
+     * @param clientID
+     */
+    public void register(String clientID)
+    {
+    	clientIDs.add(clientID);
+    }
+    
+    /**
+     * Clients using this {@link DatabaseHandler} can use this method to quickly
+     * determine if they already created the tables they need.
+     * @param clientID
+     * @return
+     */
+    public boolean isRegistered(String clientID)
+    {
+    	return clientIDs.contains(clientID);
+    }
+    
+    public PreparedStatement prepareStatement(String sql)
+    {
+    	try
+		{
+			return connection.prepareStatement(sql);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("Failed to prepare statement.", e);
+		}
     }
     
     private static void deleteRecursively(File directory) 

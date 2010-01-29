@@ -1,4 +1,4 @@
-package org.kahina.data;
+package org.kahina.core.data;
 
 public class KahinaObject
 {

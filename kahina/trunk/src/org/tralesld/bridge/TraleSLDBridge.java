@@ -9,7 +9,9 @@ package org.tralesld.bridge;
 import org.kahina.bridge.LogicProgrammingBridge;
 import org.kahina.control.KahinaController;
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.data.DbDataManager;
 import org.kahina.gui.KahinaGUI;
+import org.kahina.io.database.DatabaseHandler;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
@@ -18,7 +20,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
         System.err.print("Trying to build GUI window... ");
         try
         {
-            kahina = new KahinaInstance();
+        	// TODO Softcode choice between DbDataManager and MemDataManager.
+            kahina = new KahinaInstance(new DbDataManager(new DatabaseHandler()));
             control = new KahinaController();
             gui = new KahinaGUI(kahina, control);
             System.err.println("Success.");

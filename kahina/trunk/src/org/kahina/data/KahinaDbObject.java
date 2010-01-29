@@ -1,8 +1,8 @@
 package org.kahina.data;
 
-import org.kahina.io.database.KahinaDatabaseHandler;
+import org.kahina.io.database.DatabaseHandler;
 
 public interface KahinaDbObject
 {   
-    public void setDatabase(KahinaDatabaseHandler db);
+    public void setDatabase(DatabaseHandler db);
 }
