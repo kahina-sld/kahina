@@ -11,7 +11,7 @@ public class KahinaException extends RuntimeException
 		super(message);
 	}
 
-	public KahinaException(String message, SQLException cause)
+	public KahinaException(String message, Exception cause)
 	{
 		super(message, cause);
 	}

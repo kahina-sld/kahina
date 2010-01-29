@@ -10,14 +10,9 @@ public abstract class DataManager
 
 	public abstract void registerDataType(Class<? extends KahinaObject> clazz);
 
-	public void store(KahinaObject object, int id)
+	public void store(KahinaObject object)
 	{
-		getStoreForClass(object.getClass()).store(object, id);
-	}
-
-	public int store(KahinaObject object)
-	{
-		return getStoreForClass(object.getClass()).store(object);
+		getStoreForClass(object.getClass()).store(object);
 	}
 
 	public KahinaObject retrieve(Class<KahinaObject> clazz, int id)

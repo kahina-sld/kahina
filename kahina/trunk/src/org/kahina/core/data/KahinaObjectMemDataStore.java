@@ -6,9 +6,7 @@ import java.util.Map;
 
 
 public class KahinaObjectMemDataStore implements DataStore
-{
-	private int nextFreeID = 0;
-	
+{	
 	private Map<Integer, KahinaObject> objectByID = new HashMap<Integer, KahinaObject>();
 
 	@Override
@@ -18,17 +16,8 @@ public class KahinaObjectMemDataStore implements DataStore
 	}
 
 	@Override
-	public void store(KahinaObject object, int objectID)
+	public void store(KahinaObject object)
 	{
-		objectByID.put(objectID, object);
-		nextFreeID = Math.max(objectID, nextFreeID);
-	}
-
-	@Override
-	public int store(KahinaObject object)
-	{
-		int objectID = nextFreeID++;
-		objectByID.put(objectID, object);
-		return objectID;
+		objectByID.put(object.getID(), object);
 	}
 }

@@ -1,11 +1,14 @@
 package org.kahina.core.data;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kahina.core.KahinaException;
 import org.kahina.io.database.DatabaseHandler;
 
 public class KahinaObjectDbDataStore extends DbDataStore
@@ -41,16 +44,19 @@ public class KahinaObjectDbDataStore extends DbDataStore
 
 	private PreparedStatement selectIntStatement;
 
-	private List<String> fieldNames;
+	private List<Field> fields;
 
 	private List<FieldType> fieldTypes;
+	
+	private Class<? extends KahinaObject> clazz;
 
 	public KahinaObjectDbDataStore(Class<? extends KahinaObject> clazz, DbDataManager manager, DatabaseHandler db)
 	{
 		super(manager, db);
+		this.clazz = clazz;
 		createTablesIfNecessary();
-		prepareStatements(clazz);
-		examineClass(clazz);
+		prepareStatements();
+		examineClass();
 	}
 
 	private void createTablesIfNecessary()
@@ -67,7 +73,7 @@ public class KahinaObjectDbDataStore extends DbDataStore
 		db.register(clientID);
 	}
 
-	private void prepareStatements(Class<? extends KahinaObject> clazz)
+	private void prepareStatements()
 	{
 		int classID = manager.getClassID(clazz);
 		deleteObjectStatement = db.prepareStatement("DELETE FROM " + OBJECT_TABLE_NAME + " WHERE class_id = " + classID + " AND object_id = ?");
@@ -81,9 +87,9 @@ public class KahinaObjectDbDataStore extends DbDataStore
 		selectIntStatement = db.prepareStatement("SELECT value FROM " + INT_TABLE_NAME + " WHERE class_id = " + classID + " AND object_id = ? AND field_id = ?");
 	}
 
-	private void examineClass(Class<? extends KahinaObject> clazz)
+	private void examineClass()
 	{
-		fieldNames = new ArrayList<String>();
+		fields = new ArrayList<Field>();
 		fieldTypes = new ArrayList<FieldType>();
 		for (Field field : clazz.getFields())
 		{
@@ -93,43 +99,144 @@ public class KahinaObjectDbDataStore extends DbDataStore
 				if (KahinaObject.class.isAssignableFrom(type))
 				{
 					fieldTypes.add(FieldType.OBJECT);
+				} else if (KahinaObject[].class.isAssignableFrom(type))
+				{
+					fieldTypes.add(FieldType.OBJECT_LIST);
 				} else if (String.class.isAssignableFrom(type))
 				{
 					fieldTypes.add(FieldType.STRING);
+				} else if (String[].class.isAssignableFrom(type))
+				{
+					fieldTypes.add(FieldType.STRING_LIST);
 				} else if (int.class.isAssignableFrom(type))
 				{
 					fieldTypes.add(FieldType.INT);
-					// TODO also allow Integer?
+				} else if (int[].class.isAssignableFrom(type))
+				{
+					fieldTypes.add(FieldType.INT_LIST);
 				} else
 				{
 					continue;
 				}
 
-				fieldNames.add(field.getName());
+				fields.add(field);
 			}
 		}
 	}
-	
-	// TODO Still need a plan for updating the values of individual fields.
 
 	@Override
 	public KahinaObject retrieve(int id)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		try
+		{
+			KahinaObject result = clazz.getConstructor(int.class).newInstance(id);
+			int numFields = fields.size();
+			for (int i = 0; i < numFields; i++)
+			{
+				// TODO fill fields
+			}
+			return result;
+		} catch (IllegalArgumentException e)
+		{
+			throw new KahinaException("Could not retrieve object.", e);
+		} catch (SecurityException e)
+		{
+			throw new KahinaException("Could not retrieve object.", e);
+		} catch (InstantiationException e)
+		{
+			throw new KahinaException("Could not retrieve object.", e);
+		} catch (IllegalAccessException e)
+		{
+			throw new KahinaException("Could not retrieve object.", e);
+		} catch (InvocationTargetException e)
+		{
+			throw new KahinaException("Could not retrieve object.", e);
+		} catch (NoSuchMethodException e)
+		{
+			throw new KahinaException("Could not retrieve object.", e);
+		}
 	}
 
 	@Override
-	public void store(KahinaObject object, int id)
+	public void store(KahinaObject object)
 	{
-		// TODO Auto-generated method stub
-
+		int id = object.getID();
+		try
+		{
+			deleteObjectStatement.setInt(1, id);
+			deleteObjectStatement.execute();
+			deleteStringStatement.setInt(1, id);
+			deleteStringStatement.execute();
+			deleteIntStatement.setInt(1, id);
+			deleteIntStatement.execute();
+			int numFields = fields.size();
+			for (int i = 0; i < numFields; i++)
+			{
+				FieldType type = fieldTypes.get(i);
+				if (type == FieldType.OBJECT)
+				{
+					insertObjectValue(id, i, (KahinaObject) fields.get(i).get(object));
+				} else if (type == FieldType.OBJECT_LIST)
+				{
+					for (KahinaObject value : (KahinaObject[]) fields.get(i).get(object))
+					{
+						insertObjectValue(id, i, value);
+					}
+				} else if (type == FieldType.STRING)
+				{
+					insertStringValue(id, i, (String) fields.get(i).get(object));
+				} else if (type == FieldType.STRING_LIST)
+				{
+					for (String value : (String[]) fields.get(i).get(object))
+					{
+						insertStringValue(id, i, value);
+					}
+				} else if (type == FieldType.INT)
+				{
+					insertIntValue(id, i, fields.get(i).getInt(object));
+				} else if (type == FieldType.INT_LIST)
+				{
+					for (int value : (int[]) fields.get(i).get(object))
+					{
+						insertIntValue(id, i, value);
+					}
+				}
+			}
+		} catch (SQLException e)
+		{
+			throw new KahinaException("Object could not be stored.", e);
+		} catch (IllegalArgumentException e)
+		{
+			throw new KahinaException("Object could not be stored.", e);
+		} catch (IllegalAccessException e)
+		{
+			throw new KahinaException("Object could not be stored.", e);
+		}
 	}
 
-	@Override
-	public int store(KahinaObject object)
+	private void insertObjectValue(int objectID, int fieldID, KahinaObject value) throws SQLException
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		manager.store(value);
+		insertObjectStatement.setInt(1, objectID);
+		insertObjectStatement.setInt(2, fieldID);
+		insertObjectStatement.setInt(3, manager.getClassID(value.getClass()));
+		insertObjectStatement.setInt(4, value.getID());
+		insertObjectStatement.execute();
+	}
+
+	private void insertStringValue(int objectID, int fieldID, String value) throws SQLException
+	{
+		insertStringStatement.setInt(1, objectID);
+		insertStringStatement.setInt(2, fieldID);
+		insertStringStatement.setString(3, value);
+		insertStringStatement.execute();
+	}
+
+	private void insertIntValue(int objectID, int fieldID, int value) throws SQLException
+	{
+		insertIntStatement.setInt(1, objectID);
+		insertIntStatement.setInt(2, fieldID);
+		insertIntStatement.setInt(3, value);
+		insertIntStatement.execute();
 	}
 }
