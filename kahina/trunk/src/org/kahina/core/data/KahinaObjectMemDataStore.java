@@ -3,8 +3,11 @@ package org.kahina.core.data;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
+/**
+ * The default in-memory data store.
+ * @author ke
+ *
+ */
 public class KahinaObjectMemDataStore implements DataStore
 {	
 	private Map<Integer, KahinaObject> objectByID = new HashMap<Integer, KahinaObject>();

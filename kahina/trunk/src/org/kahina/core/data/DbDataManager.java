@@ -8,13 +8,20 @@ import java.util.Map;
 import org.kahina.core.KahinaException;
 import org.kahina.io.database.DatabaseHandler;
 
+/**
+ * A {@link DataManager} implementation using a database for storage, and
+ * {@link LightweightKahinaObjectDbDataStore}s as default data stores.
+ * 
+ * @author ke
+ * 
+ */
 public class DbDataManager extends DataManager
 {
 	private DatabaseHandler db;
 
-	private Map<Class<? extends KahinaObject>, Integer> classIDByClass = new HashMap<Class<? extends KahinaObject>, Integer>();
+	private Map<Class<? extends KahinaObject>, Integer> typeIDByType = new HashMap<Class<? extends KahinaObject>, Integer>();
 
-	private List<DataStore> storeByClassID = new ArrayList<DataStore>();
+	private List<DataStore> storeByTypeID = new ArrayList<DataStore>();
 
 	public DbDataManager(DatabaseHandler db)
 	{
@@ -22,30 +29,57 @@ public class DbDataManager extends DataManager
 	}
 
 	@Override
-	protected DataStore getStoreForClass(Class<? extends KahinaObject> clazz)
+	protected DataStore getStoreForType(Class<? extends KahinaObject> clazz)
 	{
-		return storeByClassID.get(classIDByClass.get(clazz));
+		return storeByTypeID.get(typeIDByType.get(clazz));
 	}
 
 	@Override
-	public void registerDataType(Class<? extends KahinaObject> clazz, DataStore store)
+	public void registerDataType(Class<? extends KahinaObject> type, DataStore store)
 	{
-		if (classIDByClass.containsKey(clazz))
+		if (typeIDByType.containsKey(type))
 		{
-			throw new KahinaException("A data store for class " + clazz + " is already registered.");
+			throw new KahinaException("A data store for type " + type + " is already registered.");
 		}
-		classIDByClass.put(clazz, storeByClassID.size());
-		storeByClassID.add(store);
+		typeIDByType.put(type, storeByTypeID.size());
+		storeByTypeID.add(store);
 	}
 
+	/**
+	 * Registers a new data type with a
+	 * {@link LightweightKahinaObjectDbDataStore}.
+	 * @param type
+	 *            Must be a subclass of {@link LightweightKahinaObject}.
+	 */
 	@Override
-	public void registerDataType(Class<? extends KahinaObject> clazz)
+	public void registerDataType(Class<? extends KahinaObject> type)
 	{
-		registerDataType(clazz, new KahinaObjectDbDataStore(clazz, this, db));
+		if (!LightweightKahinaObject.class.isAssignableFrom(type))
+		{
+			throw new KahinaException("Cannot auto-create a suitable data store for " + type + ".");
+		}
+		registerDataType(type, new LightweightKahinaObjectDbDataStore(type, this, db));
 	}
 
-	public int getClassID(Class<? extends KahinaObject> clazz)
+	/**
+	 * Returns the internal numeric ID given to a data type by this manager.
+	 * @param type
+	 * @return
+	 */
+	public int getTypeID(Class<? extends KahinaObject> type)
 	{
-		return classIDByClass.get(clazz);
+		return typeIDByType.get(type);
+	}
+
+	/**
+	 * Retrieves an object by the internal numeric ID given to its type by this
+	 * manager, and its object ID. 
+	 * @param typeID
+	 * @param objectID
+	 * @return
+	 */
+	public KahinaObject retrieve(int typeID, int objectID)
+	{
+		return storeByTypeID.get(typeID).retrieve(objectID);
 	}
 }
