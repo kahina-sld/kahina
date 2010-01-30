@@ -18,7 +18,7 @@ package org.kahina.core.data;
  * 
  */
 public abstract class DataManager
-{
+{	
 	/**
 	 * Returns the data store that is registered for a given data type.
 	 * 

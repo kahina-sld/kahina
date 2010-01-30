@@ -1,13 +1,8 @@
 package org.kahina.data.chart;
 
-import org.kahina.core.data.KahinaObject;
-import org.kahina.data.*;
-import org.w3c.dom.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Set;
+
+import org.kahina.core.data.KahinaObject;
 
 public abstract class KahinaChart extends KahinaObject
 { 

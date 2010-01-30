@@ -18,7 +18,7 @@ package org.kahina.core.data;
  */
 public class KahinaObject
 {
-	protected int id;
+	private int id;
 
 	/**
 	 * Creates a new Kahina object.
