@@ -1,6 +1,5 @@
 package org.kahina.core;
 
-import java.sql.SQLException;
 
 public class KahinaException extends RuntimeException
 {

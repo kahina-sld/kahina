@@ -1,6 +1,5 @@
 package org.kahina.core;
 
-import org.kahina.core.data.KahinaObject;
 import org.kahina.data.tree.KahinaLayeredTree;
 import org.kahina.data.tree.KahinaTree;
 
