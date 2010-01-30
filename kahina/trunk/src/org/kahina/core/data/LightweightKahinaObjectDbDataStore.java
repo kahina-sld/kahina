@@ -6,6 +6,7 @@ import java.lang.reflect.Modifier;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,16 +15,17 @@ import org.kahina.io.database.DatabaseHandler;
 
 /**
  * A database data store suitable for {@link LightweightKahinaObject}s.
+ * 
  * @author ke
- *
+ * 
  */
 public class LightweightKahinaObjectDbDataStore extends DbDataStore
 {
 	// TODO allow null values
-	
+
 	private enum FieldType
 	{
-		OBJECT, OBJECT_LIST, STRING, STRING_LIST, INT, INT_LIST;
+		OBJECT, OBJECT_LIST, STRING, STRING_LIST, INTEGER, INTEGER_LIST, INT, INT_LIST;
 	}
 
 	private static final String TABLE_NAME_PREFIX = "KahinaObjectDbDataStore_";
@@ -38,19 +40,19 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 
 	private PreparedStatement deleteStringStatement;
 
-	private PreparedStatement deleteIntStatement;
+	private PreparedStatement deleteIntegerStatement;
 
 	private PreparedStatement insertObjectStatement;
 
 	private PreparedStatement insertStringStatement;
 
-	private PreparedStatement insertIntStatement;
+	private PreparedStatement insertIntegerStatement;
 
 	private PreparedStatement selectObjectStatement;
 
 	private PreparedStatement selectStringStatement;
 
-	private PreparedStatement selectIntStatement;
+	private PreparedStatement selectIntegerStatement;
 
 	private List<Field> fields;
 
@@ -60,7 +62,9 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 
 	/**
 	 * Creates a new {@link LightweightKahinaObjectDbDataStore}.
-	 * @param type Must be a subclass of {@link LightweightKahinaObject}.
+	 * 
+	 * @param type
+	 *            Must be a subclass of {@link LightweightKahinaObject}.
 	 * @param manager
 	 * @param db
 	 */
@@ -100,9 +104,9 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		deleteStringStatement = db.prepareStatement("DELETE FROM " + STRING_TABLE_NAME + " WHERE class_id = " + classID + " AND object_id = ?");
 		insertStringStatement = db.prepareStatement("INSERT INTO " + STRING_TABLE_NAME + " (class_id, object_id, field_id, value) VALUES (" + classID + ", ?, ?, ?");
 		selectStringStatement = db.prepareStatement("SELECT value FROM " + STRING_TABLE_NAME + " WHERE class_id = " + classID + " AND object_id = ? AND field_id = ?");
-		deleteIntStatement = db.prepareStatement("DELETE FROM " + INT_TABLE_NAME + " WHERE class_id = " + classID + " AND object_id = ?");
-		insertIntStatement = db.prepareStatement("INSERT INTO " + INT_TABLE_NAME + " (class_id, object_id, field_id, value) VALUES (" + classID + ", ?, ?, ?");
-		selectIntStatement = db.prepareStatement("SELECT value FROM " + INT_TABLE_NAME + " WHERE class_id = " + classID + " AND object_id = ? AND field_id = ?");
+		deleteIntegerStatement = db.prepareStatement("DELETE FROM " + INT_TABLE_NAME + " WHERE class_id = " + classID + " AND object_id = ?");
+		insertIntegerStatement = db.prepareStatement("INSERT INTO " + INT_TABLE_NAME + " (class_id, object_id, field_id, value) VALUES (" + classID + ", ?, ?, ?");
+		selectIntegerStatement = db.prepareStatement("SELECT value FROM " + INT_TABLE_NAME + " WHERE class_id = " + classID + " AND object_id = ? AND field_id = ?");
 	}
 
 	private void examineClass()
@@ -126,6 +130,12 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 				} else if (String[].class.isAssignableFrom(type))
 				{
 					fieldTypes.add(FieldType.STRING_LIST);
+				} else if (Integer.class.isAssignableFrom(type))
+				{
+					fieldTypes.add(FieldType.INTEGER);
+				} else if (Integer[].class.isAssignableFrom(type))
+				{
+					fieldTypes.add(FieldType.INTEGER_LIST);
 				} else if (int.class.isAssignableFrom(type))
 				{
 					fieldTypes.add(FieldType.INT);
@@ -155,14 +165,28 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 				{
 					ResultSet resultSet = selectObjectValue(id, i);
 					resultSet.next();
-					fields.get(i).set(result, manager.retrieve(resultSet.getInt(1), resultSet.getInt(2)));
+					int typeID = resultSet.getInt(1);
+					if (resultSet.wasNull())
+					{
+						fields.get(i).set(result, null);
+					} else
+					{
+						fields.get(i).set(result, manager.retrieve(typeID, resultSet.getInt(2)));
+					}
 				} else if (type == FieldType.OBJECT_LIST)
 				{
 					ResultSet resultSet = selectObjectValue(id, i);
 					List<KahinaObject> values = new ArrayList<KahinaObject>();
 					while (resultSet.next())
 					{
-						values.add(manager.retrieve(resultSet.getInt(1), resultSet.getInt(2)));
+						int typeID = resultSet.getInt(1);
+						if (resultSet.wasNull())
+						{
+							values.add(null);
+						} else
+						{
+							values.add(manager.retrieve(typeID, resultSet.getInt(2)));
+						}
 					}
 					fields.get(i).set(result, values.toArray(new KahinaObject[values.size()]));
 				} else if (type == FieldType.STRING)
@@ -179,14 +203,38 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 						values.add(resultSet.getString(1));
 					}
 					fields.get(i).set(result, values.toArray(new String[values.size()]));
+				} else if (type == FieldType.INTEGER)
+				{
+					ResultSet resultSet = selectIntegerValue(id, i);
+					resultSet.next();
+					fields.get(i).set(result, resultSet.getInt(1));
+					if (resultSet.wasNull())
+					{
+						fields.get(i).set(result, null);
+					}
+				} else if (type == FieldType.INTEGER_LIST)
+				{
+					ResultSet resultSet = selectIntegerValue(id, i);
+					List<Integer> values = new ArrayList<Integer>();
+					while (resultSet.next())
+					{
+						int value = resultSet.getInt(1);
+						if (resultSet.wasNull())
+						{
+							values.add(null);
+						} else
+						{
+							values.add(value);
+						}
+					}
 				} else if (type == FieldType.INT)
 				{
-					ResultSet resultSet = selectIntValue(id, i);
+					ResultSet resultSet = selectIntegerValue(id, i);
 					resultSet.next();
 					fields.get(i).set(result, resultSet.getInt(1));
 				} else if (type == FieldType.INT_LIST)
 				{
-					ResultSet resultSet = selectIntValue(id, i);
+					ResultSet resultSet = selectIntegerValue(id, i);
 					List<Integer> values = new ArrayList<Integer>();
 					while (resultSet.next())
 					{
@@ -235,8 +283,8 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 			deleteObjectStatement.execute();
 			deleteStringStatement.setInt(1, id);
 			deleteStringStatement.execute();
-			deleteIntStatement.setInt(1, id);
-			deleteIntStatement.execute();
+			deleteIntegerStatement.setInt(1, id);
+			deleteIntegerStatement.execute();
 			int numFields = fields.size();
 			for (int i = 0; i < numFields; i++)
 			{
@@ -246,27 +294,52 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 					insertObjectValue(id, i, (KahinaObject) fields.get(i).get(object));
 				} else if (type == FieldType.OBJECT_LIST)
 				{
-					for (KahinaObject value : (KahinaObject[]) fields.get(i).get(object))
+					Object values = fields.get(i).get(object);
+					if (values != null)
 					{
-						insertObjectValue(id, i, value);
+						for (KahinaObject value : (KahinaObject[]) values)
+						{
+							insertObjectValue(id, i, value);
+						}
 					}
 				} else if (type == FieldType.STRING)
 				{
 					insertStringValue(id, i, (String) fields.get(i).get(object));
 				} else if (type == FieldType.STRING_LIST)
 				{
-					for (String value : (String[]) fields.get(i).get(object))
+					Object values = fields.get(i).get(object);
+					if (values != null)
 					{
-						insertStringValue(id, i, value);
+						for (String value : (String[]) values)
+						{
+							insertStringValue(id, i, value);
+						}
+					}
+				} else if (type == FieldType.INTEGER)
+				{
+					insertIntegerValue(id, i, (Integer) fields.get(i).get(object));
+				} else if (type == FieldType.INTEGER_LIST)
+				{
+					Object values = fields.get(i).get(object);
+					if (values != null)
+					{
+						for (Integer value : (Integer[]) values)
+						{
+							insertIntegerValue(id, i, value);
+						}
 					}
 				} else if (type == FieldType.INT)
 				{
-					insertIntValue(id, i, fields.get(i).getInt(object));
+					insertIntegerValue(id, i, fields.get(i).getInt(object));
 				} else if (type == FieldType.INT_LIST)
 				{
-					for (int value : (int[]) fields.get(i).get(object))
+					Object values = fields.get(i).get(object);
+					if (values != null)
 					{
-						insertIntValue(id, i, value);
+						for (int value : (int[]) values)
+						{
+							insertIntegerValue(id, i, value);
+						}
 					}
 				}
 			}
@@ -296,20 +369,30 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		return selectStringStatement.executeQuery();
 	}
 
-	private ResultSet selectIntValue(int objectID, int fieldID) throws SQLException
+	private ResultSet selectIntegerValue(int objectID, int fieldID) throws SQLException
 	{
-		selectIntStatement.setInt(1, objectID);
-		selectIntStatement.setInt(2, fieldID);
-		return selectIntStatement.executeQuery();
+		selectIntegerStatement.setInt(1, objectID);
+		selectIntegerStatement.setInt(2, fieldID);
+		return selectIntegerStatement.executeQuery();
 	}
 
 	private void insertObjectValue(int objectID, int fieldID, KahinaObject value) throws SQLException
 	{
-		manager.store(value);
+		if (value != null)
+		{
+			manager.store(value);
+		}
 		insertObjectStatement.setInt(1, objectID);
 		insertObjectStatement.setInt(2, fieldID);
-		insertObjectStatement.setInt(3, manager.getTypeID(value.getClass()));
-		insertObjectStatement.setInt(4, value.getID());
+		if (value == null)
+		{
+			insertObjectStatement.setNull(3, Types.INTEGER);
+			insertObjectStatement.setNull(4, Types.INTEGER);
+		} else
+		{
+			insertObjectStatement.setInt(3, manager.getTypeID(value.getClass()));
+			insertObjectStatement.setInt(4, value.getID());
+		}
 		insertObjectStatement.execute();
 	}
 
@@ -317,15 +400,38 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	{
 		insertStringStatement.setInt(1, objectID);
 		insertStringStatement.setInt(2, fieldID);
-		insertStringStatement.setString(3, value);
+		if (value == null)
+		{
+			insertStringStatement.setNull(3, Types.BLOB);
+		} else
+		{
+			insertStringStatement.setString(3, value);
+		}
 		insertStringStatement.execute();
 	}
 
-	private void insertIntValue(int objectID, int fieldID, int value) throws SQLException
+	private void insertIntegerValue(int objectID, int fieldID, Integer value) throws SQLException
 	{
-		insertIntStatement.setInt(1, objectID);
-		insertIntStatement.setInt(2, fieldID);
-		insertIntStatement.setInt(3, value);
-		insertIntStatement.execute();
+		insertIntegerStatement.setInt(1, objectID);
+		insertIntegerStatement.setInt(2, fieldID);
+		if (value == null)
+		{
+			insertIntegerStatement.setNull(3, Types.INTEGER);
+		} else
+		{
+			insertIntegerStatement.setInt(3, value);
+		}
+		insertIntegerStatement.execute();
+	}
+
+	/*
+	 * Alternative version without unboxing and null check. 
+	 */
+	private void insertIntegerValue(int objectID, int fieldID, int value) throws SQLException
+	{
+		insertIntegerStatement.setInt(1, objectID);
+		insertIntegerStatement.setInt(2, fieldID);
+		insertIntegerStatement.setInt(3, value);
+		insertIntegerStatement.execute();
 	}
 }
