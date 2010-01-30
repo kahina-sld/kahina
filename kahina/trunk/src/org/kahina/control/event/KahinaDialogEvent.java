@@ -1,7 +1,5 @@
 package org.kahina.control.event;
 
-import java.io.File;
-
 public class KahinaDialogEvent extends KahinaEvent
 {
     int dialogEventType;
