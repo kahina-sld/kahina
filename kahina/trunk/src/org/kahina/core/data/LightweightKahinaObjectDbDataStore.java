@@ -18,6 +18,8 @@ import java.util.Set;
 import org.kahina.core.KahinaException;
 import org.kahina.io.database.DatabaseHandler;
 
+// TODO use UPSERT
+
 /**
  * A database data store suitable for {@link LightweightKahinaObject}s.
  * 
@@ -30,14 +32,18 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	{
 		OBJECT, OBJECT_LIST, STRING, STRING_LIST, INTEGER, INTEGER_LIST, INT, INT_LIST;
 	}
+	
+	private static final String CLIENT_ID = LightweightKahinaObjectDbDataStore.class.getName();
 
-	private static final String TABLE_NAME_PREFIX = "KahinaObjectDbDataStore_";
+	private static final String TABLE_NAME_PREFIX = CLIENT_ID + "_";
 
 	private static final String OBJECT_TABLE_NAME = TABLE_NAME_PREFIX + "object_values";
 
 	private static final String STRING_TABLE_NAME = TABLE_NAME_PREFIX + "string_values";
 
 	private static final String INT_TABLE_NAME = TABLE_NAME_PREFIX + "int_values";
+	
+	// TODO use UPSERT rather than "DELSERT"?
 
 	private PreparedStatement deleteObjectStatement;
 
@@ -99,16 +105,21 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 
 	private void createTablesIfNecessary()
 	{
-		String clientID = LightweightKahinaObjectDbDataStore.class.getName();
-		if (db.isRegistered(clientID))
+		if (db.isRegistered(CLIENT_ID))
 		{
 			return;
 		}
-		db.execute("CREATE TABLE " + OBJECT_TABLE_NAME + " (" + "class_id INT, " + "object_id INT, " + "field_id INT, " + "value_class_id INT, " + "value_object_id INT, "
-				+ "INDEX id (class_id, object_id, field_id)" + "); " + "CREATE TABLE KahinaObjectDbDataStore_string_values " + "(" + "class_id INT, " + "object_id INT, " + "field_id INT, "
-				+ "value BLOB, " + "INDEX id (class_id, object_id, field_id)" + "); " + "CREATE TABLE KahinaObjectDbDataStore_int_values " + "(" + "class_id INT, " + "object_id INT, "
-				+ "field_id INT, " + "value INT, " + "INDEX id (class_id, object_id, field_id)" + "); ");
-		db.register(clientID);
+		try
+		{
+			db.execute("CREATE TABLE " + OBJECT_TABLE_NAME + " (" + "class_id INT, " + "object_id INT, " + "field_id INT, " + "value_class_id INT, " + "value_object_id INT, "
+					+ "INDEX id (class_id, object_id, field_id)" + "); " + "CREATE TABLE KahinaObjectDbDataStore_string_values " + "(" + "class_id INT, " + "object_id INT, " + "field_id INT, "
+					+ "value BLOB, " + "INDEX id (class_id, object_id, field_id)" + "); " + "CREATE TABLE KahinaObjectDbDataStore_int_values " + "(" + "class_id INT, " + "object_id INT, "
+					+ "field_id INT, " + "value INT, " + "INDEX id (class_id, object_id, field_id)" + "); ");
+		} catch (SQLException e)
+		{
+			throw new KahinaException("Could not create tables. ", e);
+		}
+		db.register(CLIENT_ID);
 	}
 
 	private void prepareStatements()
