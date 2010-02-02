@@ -21,4 +21,14 @@ public class KahinaInstance
         gui = new KahinaGUI(this, controller);
         bridge = new KahinaBridge();
     }
+
+    public KahinaController getController()
+    {
+        return controller;
+    }
+
+    public KahinaGUI getGUI()
+    {
+        return gui;
+    }
 }
