@@ -98,6 +98,47 @@ public class TreeNodePattern
         return type;
     }
     
+    public void setType(int type)
+    {
+        this.type = type;
+        adaptArgumentsToType();
+    }
+    
+    private void adaptArgumentsToType()
+    {
+        //TODO: initialize or set to null leftArg and rightArg according to type
+    }
+    
+    public void setLeftArgument(TreeNodePattern left)
+    {
+        this.leftArg = left;
+    }
+    
+    public void setRightArgument(TreeNodePattern right)
+    {
+        this.rightArg = right;
+    }
+    
+    public void switchArguments()
+    {
+        if (rightArg != null)
+        {
+            TreeNodePattern temp = leftArg;
+            leftArg = rightArg;
+            rightArg = temp;
+        }
+    }
+    
+    public TreeNodePattern getLeftArgument()
+    {
+        return leftArg;
+    }
+    
+    public TreeNodePattern getRightArgument()
+    {
+        return rightArg;
+    }
+    
     public boolean matches(KahinaTree m, int nodeID)
     {
         switch (type)
