@@ -93,6 +93,11 @@ public class TreeNodePattern
         this.rightArg = rightArg;
     }
     
+    public int getType()
+    {
+        return type;
+    }
+    
     public boolean matches(KahinaTree m, int nodeID)
     {
         switch (type)

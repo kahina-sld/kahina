@@ -42,7 +42,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener
     
     JPanel editPanel;
     JTabbedPane editTabs;  
-    JPanel nodeConstraintPanel;
+    NodeConstraintPanel nodeConstraintPanel;
     JPanel treeFragmentPanel;  
     
     JButton signalColor;
@@ -54,15 +54,18 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener
     {       
         this.control = control;
         this.setTitle("Kahina Breakpoint Editor");
-        this.setSize(640,480);
+        this.setSize(800,600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
        
         breakpoints = new ArrayList<KahinaBreakpoint>();
         curID = -1;
         
-        add(buildLeftPanel()); 
-        add(buildRightPanel());
-       
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.LINE_AXIS));    
+        mainPanel.add(buildLeftPanel()); 
+        mainPanel.add(buildRightPanel());
+        
+        add(mainPanel);
         
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(new BreakpointEditorFileMenu(control));
@@ -123,14 +126,15 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener
         editPanel.setBorder(BorderFactory.createTitledBorder("Edit Breakpoint"));    
        
         editTabs = new JTabbedPane();
-        editTabs.add(buildNodeConstraintPanel(), "Node Constraint");
-        editTabs.add(buildTreeFragmentPanel(), "Tree Fragment");
+        editTabs.add(buildNodeConstraintPanel(), "Step Constraint");
+        editTabs.add(buildTreeFragmentPanel(), "Decision Tree Pattern");
         
         editPanel.add(editTabs);
         editPanel.add(Box.createRigidArea(new Dimension(0,5)));
         
         JPanel optionsPanel = new JPanel();
         optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.LINE_AXIS));
+        optionsPanel.setMaximumSize(new Dimension(800, 30));
         
         JLabel nameLabel = new JLabel("Name: ");
         optionsPanel.add(nameLabel);
@@ -173,75 +177,9 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener
         return editPanel;
     }
     
-    private JPanel buildNodeConstraintPanel()
+    private NodeConstraintPanel buildNodeConstraintPanel()
     {
-        JPanel nodeConstraintPanel = new JPanel();
-        nodeConstraintPanel.setLayout(new BoxLayout(nodeConstraintPanel, BoxLayout.PAGE_AXIS));
-        
-        JPanel elConstPanel = new JPanel();
-        elConstPanel.setLayout(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        elConstPanel.setBorder(BorderFactory.createTitledBorder("Elementary Constraints"));
-        
-        String[] constTypeStrings = { "node label", "edge label", "node id", "type"};
-
-        JComboBox constTypeChoice = new JComboBox(constTypeStrings);
-        constTypeChoice.addActionListener(this);
-        
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 0;
-        c.gridy = 0;
-        elConstPanel.add(constTypeChoice, c);
-        
-        String[] compTypeStrings = { "equals", "contains", "starts with", "ends with", "matches", "=", "<=", ">=", "<", ">", "!="};
-
-        JComboBox compTypeChoice = new JComboBox(compTypeStrings);
-        compTypeChoice.addActionListener(this);
-        
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 1;
-        c.gridy = 0;
-        elConstPanel.add(compTypeChoice, c);
-        
-        JTextField valueInput = new JTextField(50);
-
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridx = 2;
-        c.gridy = 0;
-        elConstPanel.add(valueInput, c);   
-    
-        nodeConstraintPanel.add(elConstPanel);
-        
-        JPanel boolOpsPanel = new JPanel();
-        boolOpsPanel.setLayout(new BoxLayout(boolOpsPanel, BoxLayout.LINE_AXIS));
-        boolOpsPanel.setBorder(BorderFactory.createTitledBorder("Boolean Operations"));
-        
-        JButton andOperationButton = new JButton("And");
-        andOperationButton.setActionCommand("andOperation");
-        andOperationButton.addActionListener(this);
-        boolOpsPanel.add(andOperationButton);
-        boolOpsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        JButton orOperationButton = new JButton("Or");
-        orOperationButton.setActionCommand("orOperation");
-        orOperationButton.addActionListener(this);
-        boolOpsPanel.add(orOperationButton);
-        boolOpsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        JButton negOperationButton = new JButton("Not");
-        negOperationButton.setActionCommand("negOperation");
-        negOperationButton.addActionListener(this);
-        boolOpsPanel.add(negOperationButton);
-        boolOpsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        JButton implOperationButton = new JButton("Impl");
-        implOperationButton.setActionCommand("implOperation");
-        implOperationButton.addActionListener(this);
-        boolOpsPanel.add(implOperationButton);
-        boolOpsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        nodeConstraintPanel.add(boolOpsPanel);
-        
+        nodeConstraintPanel = new NodeConstraintPanel();     
         return nodeConstraintPanel;
     }
     
