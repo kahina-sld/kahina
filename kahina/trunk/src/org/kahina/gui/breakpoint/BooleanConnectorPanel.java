@@ -64,7 +64,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
             yCoord.put(pat, i * 24 + 12);     
         }
         //then calculate the other positions based on these
-        calculateCoordinatesFor(nodeConstPanel.rootPattern);
+        calculateCoordinatesFor(nodeConstPanel.getRootPattern());
     }
     
     private void calculateCoordinatesFor(TreeNodePattern p)
@@ -227,7 +227,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
     private TreeNodePattern getPatternByCoords(int x, int y)
     {
         ArrayList<TreeNodePattern> searchAgenda = new ArrayList<TreeNodePattern>();
-        searchAgenda.add(nodeConstPanel.rootPattern);
+        searchAgenda.add(nodeConstPanel.getRootPattern());
         while (searchAgenda.size() > 0)
         {
             TreeNodePattern curPat = searchAgenda.remove(0);
@@ -291,24 +291,50 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
         if (markedPattern != null && selectedPattern == markedPattern)
         {
             switchType(markedPattern);
+            nodeConstPanel.selectionMode = NodeConstraintPanel.NO_PENDING_OPERATION;
+            nodeConstPanel.hint("click on the same connective again to switch its type");
         }
         else
         {
-            markedPattern = selectedPattern;
-            if (markedPattern != null)
+            if (nodeConstPanel.selectionMode == NodeConstraintPanel.NO_PENDING_OPERATION)
             {
-                if (selectedPattern.getRightArgument() != null)
+                markedPattern = selectedPattern;
+                if (markedPattern != null)
                 {
-                    nodeConstPanel.hint("click on the same connective again to switch its type");
+                    if (selectedPattern.getRightArgument() != null)
+                    {
+                        nodeConstPanel.hint("click on the same connective again to switch its type");
+                    }
+                    else
+                    {
+                        nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
+                    }
                 }
                 else
                 {
-                    nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
+                    nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                 }
             }
-            else
+            else if (nodeConstPanel.selectionMode == NodeConstraintPanel.PENDING_AND_OPERATION)
             {
-                nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
+                if (selectedPattern != null)
+                {
+                    System.err.println("AND operation!");
+                    if (nodeConstPanel.introduceConjunction(markedPattern, selectedPattern))
+                    {
+                        nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
+                    }
+                    else
+                    {
+                        nodeConstPanel.hint("Inconsistency check prevented operation! Neither node must dominate the other!", Color.RED);
+                    }
+
+                }
+                else
+                {
+                    nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
+                }
+                nodeConstPanel.selectionMode = NodeConstraintPanel.NO_PENDING_OPERATION;
             }
         }
         repaint();

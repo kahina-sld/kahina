@@ -28,37 +28,41 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.kahina.breakpoint.KahinaBreakpoint;
 import org.kahina.control.KahinaController;
+import org.kahina.control.KahinaListener;
+import org.kahina.control.event.KahinaEvent;
 import org.kahina.control.event.KahinaSystemEvent;
 
-public class BreakpointEditorWindow extends JFrame implements ActionListener
+public class BreakpointEditorWindow extends JFrame implements ActionListener, KahinaListener, ListSelectionListener
 {
     KahinaController control;
     
     JPanel breakpointListPanel;
     JList breakpointList;
     
-    JPanel editPanel;
-    JTabbedPane editTabs;  
-    NodeConstraintPanel nodeConstraintPanel;
-    JPanel treeFragmentPanel;  
-    
-    JButton signalColor;
+    BreakpointEditPanel editPanel;
     
     List<KahinaBreakpoint> breakpoints;
-    int curID; //ID of the breakpoint we are editing
+    int curID; //list ID of the breakpoint we are editing
+    
+    //count produced breakpoints; new breakpoints will be named according to this 
+    int highestID;
     
     public BreakpointEditorWindow(KahinaController control)
     {       
         this.control = control;
+        control.registerListener("breakpoint_editor", this);
         this.setTitle("Kahina Breakpoint Editor");
         this.setSize(800,600);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
        
         breakpoints = new ArrayList<KahinaBreakpoint>();
         curID = -1;
+        highestID = 1;
         
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.LINE_AXIS));    
@@ -77,7 +81,6 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener
         breakpointListPanel = new JPanel();
         breakpointListPanel.setLayout(new BoxLayout(breakpointListPanel, BoxLayout.PAGE_AXIS));
         breakpointListPanel.setBorder(BorderFactory.createTitledBorder("Breakpoints"));
-
         
         JButton newBreakpointButton = new JButton("New");
         newBreakpointButton.setActionCommand("newBreakpoint");
@@ -95,6 +98,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener
         
         breakpointList = new JList();
         breakpointList.setListData(breakpoints.toArray());
+        breakpointList.addListSelectionListener(this);
         JScrollPane listScroller = new JScrollPane(breakpointList);
         listScroller.setPreferredSize(new Dimension(250, 80));
         listScroller.setMaximumSize(new Dimension(300, 1000));
@@ -121,72 +125,9 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener
     
     private JPanel buildRightPanel()
     {
-        editPanel = new JPanel();
-        editPanel.setLayout(new BoxLayout(editPanel, BoxLayout.PAGE_AXIS));
-        editPanel.setBorder(BorderFactory.createTitledBorder("Edit Breakpoint"));    
-       
-        editTabs = new JTabbedPane();
-        editTabs.add(buildNodeConstraintPanel(), "Step Constraint");
-        editTabs.add(buildTreeFragmentPanel(), "Decision Tree Pattern");
-        
-        editPanel.add(editTabs);
-        editPanel.add(Box.createRigidArea(new Dimension(0,5)));
-        
-        JPanel optionsPanel = new JPanel();
-        optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.LINE_AXIS));
-        optionsPanel.setMaximumSize(new Dimension(800, 30));
-        
-        JLabel nameLabel = new JLabel("Name: ");
-        optionsPanel.add(nameLabel);
-        optionsPanel.add(Box.createRigidArea(new Dimension(5,0)));
-        
-        JTextField nameField = new JTextField(30);
-        optionsPanel.add(nameField);
-        optionsPanel.add(Box.createRigidArea(new Dimension(5,0)));
-        
-        JButton suggestNameButton = new JButton("Suggest");
-        suggestNameButton.setActionCommand("suggestName");
-        suggestNameButton.addActionListener(this);
-        optionsPanel.add(suggestNameButton);
-        optionsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        JLabel colorLabel = new JLabel("Signal color: ");
-        optionsPanel.add(colorLabel);
-        optionsPanel.add(Box.createRigidArea(new Dimension(5,0)));
-        
-        signalColor = new JButton("Change");
-        signalColor.setBackground(Color.RED);
-        signalColor.setActionCommand("changeColor");
-        signalColor.addActionListener(this);
-        optionsPanel.add(signalColor);
-        optionsPanel.add(Box.createRigidArea(new Dimension(5,0)));
-        
-        JButton compileBreakpointButton = new JButton("Compile");
-        compileBreakpointButton.setActionCommand("compileBreakpoint");
-        compileBreakpointButton.addActionListener(this);
-        optionsPanel.add(compileBreakpointButton);
-        optionsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        JButton cancelBreakpointButton = new JButton("Cancel");
-        cancelBreakpointButton.setActionCommand("cancelBreakpointEditing");
-        cancelBreakpointButton.addActionListener(this);
-        optionsPanel.add(cancelBreakpointButton);
-        
-        editPanel.add(optionsPanel);
-        
-        return editPanel;
-    }
-    
-    private NodeConstraintPanel buildNodeConstraintPanel()
-    {
-        nodeConstraintPanel = new NodeConstraintPanel();     
-        return nodeConstraintPanel;
-    }
-    
-    private JPanel buildTreeFragmentPanel()
-    {
-        return new JPanel();
-    }
+        editPanel = new BreakpointEditPanel();
+        return editPanel;       
+    }    
     
     public void actionPerformed(ActionEvent e)
     {
@@ -207,10 +148,35 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener
         {
             control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.REMOVE_BREAKPOINT, curID));
         }
-        else if (s.equals("changeColor"))
+    }
+    
+    public void processEvent(KahinaEvent e)
+    {
+        if (e.getType().equals("breakpoint_editor"))
         {
-            Color newColor = JColorChooser.showDialog(this,"Choose Background Color",signalColor.getBackground());
-            signalColor.setBackground(newColor);
+            processBreakpointEvent((BreakpointEditorEvent) e);
         }
+    }
+    
+    private void processBreakpointEvent(BreakpointEditorEvent e)
+    {
+        switch (e.getStateEventType())
+        {
+            case BreakpointEditorEvent.NEW_BREAKPOINT:
+            {
+                KahinaBreakpoint newBreakpoint = new KahinaBreakpoint();
+                newBreakpoint.setName("Breakpoint " + highestID);
+                highestID++;
+                breakpoints.add(newBreakpoint);
+                breakpointList.setListData(breakpoints.toArray());
+                break;
+            }
+        }
+    }
+    
+    public void valueChanged(ListSelectionEvent e)
+    {
+        curID = e.getFirstIndex();
+        editPanel.setBreakpoint(breakpoints.get(curID));
     }
 }

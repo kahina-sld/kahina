@@ -137,4 +137,16 @@ public class TreeAutomaton
         }
     }
     
+    public String toString()
+    {
+        String str = "TreeAutomaton";
+        str += "   states: " + states + "\n";
+        str += "   accepting states: " + acceptingStates + "\n";
+        str += "   rules:\n";
+        for (TreeAutomatonRule rule : rules)
+        {
+            str += "      " + rule.toString();
+        }
+        return str;
+    }  
 }

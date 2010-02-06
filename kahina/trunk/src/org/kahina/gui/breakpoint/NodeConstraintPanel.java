@@ -29,9 +29,9 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
     NodeConstraintOptions constrOptions;
     int elementaryConstraintNumber;
     
+    //data structures for the construction of the node pattern
     List<TreeNodePattern> basePatterns;
-    Set<TreeNodePattern> complexPatterns;
-    TreeNodePattern rootPattern;
+    private TreeNodePattern virtualRootPattern;
     Map<TreeNodePattern,TreeNodePattern> parentPatterns;
     
     JPanel elConstPanel;
@@ -43,7 +43,17 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
     List<JButton> addButtons;
     List<JButton> remButtons;
     
-    JLabel hintLabel;
+    BooleanOperationsPanel boolOpsPanel;
+    NodeOperationsPanel nodeOpsPanel;
+    BreakpointEditorHintPanel hintPanel;
+    
+    //store internally which kind of connective is being built 
+    public int selectionMode;
+    
+    public static final int NO_PENDING_OPERATION = -1;
+    public static final int PENDING_AND_OPERATION = 0;
+    public static final int PENDING_OR_OPERATION = 1;
+    public static final int PENDING_IMPL_OPERATION = 2;
     
     public NodeConstraintPanel()
     {
@@ -53,8 +63,8 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         elementaryConstraintNumber = 0;
         
         basePatterns = new ArrayList<TreeNodePattern>();
-        complexPatterns = new HashSet<TreeNodePattern>();
         parentPatterns = new HashMap<TreeNodePattern,TreeNodePattern>();
+        virtualRootPattern = new TreeNodePattern();
         
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         
@@ -84,44 +94,16 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.LINE_AXIS));
         
-        JPanel boolOpsPanel = new JPanel();
-        boolOpsPanel.setLayout(new BoxLayout(boolOpsPanel, BoxLayout.LINE_AXIS));
-        boolOpsPanel.setBorder(BorderFactory.createTitledBorder("Boolean Operations"));
-        
-        JButton andOperationButton = new JButton("&");
-        andOperationButton.setActionCommand("andOperation");
-        andOperationButton.addActionListener(this);
-        boolOpsPanel.add(andOperationButton);
-        boolOpsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        JButton orOperationButton = new JButton("v");
-        orOperationButton.setActionCommand("orOperation");
-        orOperationButton.addActionListener(this);
-        boolOpsPanel.add(orOperationButton);
-        boolOpsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        JButton negOperationButton = new JButton("~");
-        negOperationButton.setActionCommand("negOperation");
-        negOperationButton.addActionListener(this);
-        boolOpsPanel.add(negOperationButton);
-        boolOpsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        JButton implOperationButton = new JButton("->");
-        implOperationButton.setActionCommand("implOperation");
-        implOperationButton.addActionListener(this);
-        boolOpsPanel.add(implOperationButton);
-        boolOpsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
+        boolOpsPanel = new BooleanOperationsPanel(this);           
         bottomPanel.add(boolOpsPanel);
-        
-        JPanel hintPanel = new JPanel();
-        hintPanel.setBorder(BorderFactory.createTitledBorder("Hint"));  
-        hintLabel = new JLabel("Define a node constraint by selecting a type.");
-        hintPanel.add(hintLabel);
-        
-        bottomPanel.add(hintPanel);
-        
+        nodeOpsPanel = new NodeOperationsPanel(this);           
+        bottomPanel.add(nodeOpsPanel);      
         add(bottomPanel);
+        
+        hintPanel = new BreakpointEditorHintPanel();   
+        add(hintPanel);
+        
+        selectionMode = -1;
     }
     
     public NodeConstraintPanel(NodeConstraintOptions constrOptions)
@@ -180,9 +162,20 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         remButtons.add(rowID, remConstButton);
     }
     
+    public void setRootPattern(TreeNodePattern newRoot)
+    {
+        virtualRootPattern.setLeftArgument(newRoot);
+        parentPatterns.put(newRoot, virtualRootPattern);
+    }
+    
+    public TreeNodePattern getRootPattern()
+    {
+        return virtualRootPattern.getLeftArgument();
+    }
+    
     public TreeNodePattern getNodeConstraint()
     {
-        return new TreeNodePattern();
+        return getRootPattern();
     }
     
     public void setNodeConstraint(TreeNodePattern e)
@@ -225,33 +218,123 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
                 hint("Select first the constraint to be negated.", Color.RED);
             }
         }
-    }
-    
-    private void introduceNegation(TreeNodePattern argument)
-    {
-        TreeNodePattern neg = new TreeNodePattern(TreeNodePattern.NEGATION, argument);     
-        complexPatterns.add(neg);
-        parentPatterns.put(neg, parentPatterns.get(argument));
-        if (argument == rootPattern)
+        else if (s.equals("andOperation"))
         {
-            rootPattern = neg;
-        }
-        else
-        {
-            TreeNodePattern parent = parentPatterns.get(argument);
-            if (argument == parent.getLeftArgument())
+            if (boolPanel.markedPattern != null)
             {
-                parent.setLeftArgument(neg);
+                selectionMode = PENDING_AND_OPERATION;
+                hint("Now select the second conjunct.", Color.BLACK);
             }
             else
             {
-                parent.setRightArgument(neg);
+                hint("First conjunct must be selected before clicking this button.", Color.RED);
             }
         }
-        boolPanel.recalculateCoordinates();
-        boolPanel.adaptSize();     
-        revalidate();
-        repaint();
+    }
+    
+    public void introduceNegation(TreeNodePattern argument)
+    {
+        TreeNodePattern neg = new TreeNodePattern(TreeNodePattern.NEGATION, argument); 
+        TreeNodePattern parent = parentPatterns.get(argument);
+        parentPatterns.put(neg,parent);
+        if (argument == parent.getLeftArgument())
+        {
+            parent.setLeftArgument(neg);
+        }
+        else
+        {
+            parent.setRightArgument(neg);
+        } 
+        
+        boolPanel.markedPattern = neg;
+        displayChangeInConnectiveStructure();
+    }
+    
+    public boolean introduceConjunction(TreeNodePattern arg1, TreeNodePattern arg2)
+    {
+        //consistency check: neither node must dominate the other
+        TreeNodePattern leftAncestor = arg1;
+        if (leftAncestor == arg2) return false;
+        while (leftAncestor != getRootPattern())
+        {
+            leftAncestor = parentPatterns.get(leftAncestor);
+            if (leftAncestor == arg2) return false;
+        }
+        TreeNodePattern rightAncestor = arg2;
+        if (rightAncestor == arg1) return false;
+        while (rightAncestor == null && rightAncestor != getRootPattern())
+        {
+            System.err.println(rightAncestor.toString());
+            rightAncestor = parentPatterns.get(rightAncestor);
+            if (rightAncestor == arg1) return false;
+        }
+        //build the new conjunct node
+        TreeNodePattern conj = new TreeNodePattern(TreeNodePattern.CONJUNCTION, arg1, arg2);     
+        //determine the loose ends and rebalance the structure
+        TreeNodePattern node = arg1;
+        TreeNodePattern parent = parentPatterns.get(arg1);
+        TreeNodePattern grandparent = parentPatterns.get(parent);
+        while (grandparent.getRightArgument() == null && parent != getRootPattern())
+        {
+            node = parent;
+            parent = grandparent;
+            grandparent = parentPatterns.get(grandparent);
+        }
+        if (node == parent.getLeftArgument())
+        {
+            replaceChild(grandparent, parent, parent.getRightArgument());
+        }
+        else
+        {
+            replaceChild(grandparent, parent, parent.getLeftArgument());
+        }
+        System.err.println(getRootPattern().toString());
+        node = arg2;
+        parent = parentPatterns.get(arg2);
+        grandparent = parentPatterns.get(parent);
+        while (grandparent.getRightArgument() == null && parent != getRootPattern())
+        {
+            node = parent;
+            parent = grandparent;
+            grandparent = parentPatterns.get(grandparent);
+        }
+        if (node == parent.getLeftArgument())
+        {
+            replaceChild(grandparent, parent, parent.getRightArgument());
+        }
+        else
+        {
+            replaceChild(grandparent, parent, parent.getLeftArgument());
+        }
+        System.err.println(getRootPattern().toString());
+        //establish new structure, new root is necessary
+        parentPatterns.put(arg1, conj);
+        parentPatterns.put(arg2, conj);
+        
+        TreeNodePattern newRootPattern = new TreeNodePattern(TreeNodePattern.CONJUNCTION, conj, getRootPattern());
+        parentPatterns.put(getRootPattern(), newRootPattern);
+        parentPatterns.put(conj, newRootPattern);
+        setRootPattern(newRootPattern); 
+        
+        boolPanel.markedPattern = conj;
+        displayChangeInConnectiveStructure();
+        return true;
+    }
+    
+    private void replaceChild(TreeNodePattern parent, TreeNodePattern child, TreeNodePattern newChild)
+    {
+        if (child == parent.getLeftArgument())
+        {
+            parent.setLeftArgument(newChild);
+            parentPatterns.put(newChild, parent);
+            parentPatterns.remove(child);
+        }
+        else if (child == parent.getRightArgument())
+        {
+            parent.setRightArgument(newChild);
+            parentPatterns.put(newChild, parent);
+            parentPatterns.remove(child);
+        }
     }
     
     public void addElementaryConstraint(int rowID)
@@ -263,22 +346,19 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         elementaryConstraintNumber++;
         adaptBoolPanel();
         basePatterns.add(rowID, new TreeNodePattern());
-        if (rootPattern == null)
+        if (getRootPattern() == null)
         {
-            rootPattern = basePatterns.get(rowID);
+            setRootPattern(basePatterns.get(rowID));
         }
         else
         {
-            TreeNodePattern newRoot = new TreeNodePattern(TreeNodePattern.CONJUNCTION, rootPattern, basePatterns.get(rowID));
-            complexPatterns.add(newRoot);
-            parentPatterns.put(rootPattern, newRoot);
+            TreeNodePattern newRoot = new TreeNodePattern(TreeNodePattern.CONJUNCTION, getRootPattern(), basePatterns.get(rowID));
+            parentPatterns.put(getRootPattern(), newRoot);
             parentPatterns.put(basePatterns.get(rowID), newRoot);
-            rootPattern = newRoot;
+            setRootPattern(newRoot);
         }
-        boolPanel.recalculateCoordinates();
-        boolPanel.adaptSize();     
-        revalidate();
-        repaint();
+        
+        displayChangeInConnectiveStructure();
     }
     
     public void removeElementaryConstraint(int rowID)
@@ -302,6 +382,15 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
 
         boolPanel.recalculateCoordinates();
         boolPanel.adaptSize();
+        revalidate();
+        repaint();
+    }
+    
+    private void displayChangeInConnectiveStructure()
+    {
+        System.err.println(getRootPattern().toString());
+        boolPanel.recalculateCoordinates();
+        boolPanel.adaptSize();     
         revalidate();
         repaint();
     }
@@ -349,16 +438,43 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         elConstPanel.add(boolPanel, c);
     }
     
-
     public void hint(String hint)
     {
-        hintLabel.setForeground(Color.BLACK);
-        hintLabel.setText(hint);
+        hintPanel.hint(hint);
     }
     
     public void hint(String hint, Color color)
     {
-        hintLabel.setForeground(color);
-        hintLabel.setText(hint);
+        hintPanel.hint(hint,color);
+    }
+    
+    public void setEnabled(boolean enabled)
+    {
+        if (enabled)
+        {
+            activateAllComponents();
+        }
+        else
+        {
+            deactivateAllComponents();
+        }
+    }
+    
+    public void activateAllComponents()
+    {
+        elConstPanel.setEnabled(true);
+        boolPanel.setEnabled(true);
+        hintPanel.setEnabled(true);
+        boolOpsPanel.setEnabled(true);
+        nodeOpsPanel.setEnabled(true);
+    }
+    
+    public void deactivateAllComponents()
+    {
+        elConstPanel.setEnabled(false);
+        boolPanel.setEnabled(false);
+        hintPanel.setEnabled(false);
+        boolOpsPanel.setEnabled(false);
+        nodeOpsPanel.setEnabled(false);
     }
 }

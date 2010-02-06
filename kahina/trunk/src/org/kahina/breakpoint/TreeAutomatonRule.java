@@ -45,4 +45,12 @@ public class TreeAutomatonRule
         }
         return false;
     }
+    
+    public String toString()
+    {
+        String str = assignedLabel + " <- ";
+        str += requiredChildAnnotations + ", ";
+        str += pattern.toString();
+        return str;
+    }
 }
