@@ -286,4 +286,77 @@ public class TreeNodePattern
         }
         return "";
     }
+    
+    public void setType(String typeString)
+    {
+        if (typeString.equals("step label"))
+        {
+            type = CAPTION;
+        }
+        else if (typeString.equals("step origin"))
+        {
+            type = EDGE_LABEL;
+        }
+        else if (typeString.equals("step id"))
+        {
+            type = ID;
+        }
+        else if (typeString.equals("step type"))
+        {
+            type = STATUS;
+        }
+        else
+        {
+            type = 0;
+        }
+    }
+    
+    public void setRelation(String relString)
+    {
+        if (relString.equals("="))
+        {
+            System.err.println("=");
+            rel = IDENTITY;
+        }
+        else if (relString.equals(">"))
+        {
+            rel = GREATER;
+        }
+        else if (relString.equals("<"))
+        {
+            rel = LESS;
+        }
+        else if (relString.equals(">="))
+        {
+            rel = GREATER_OR_EQUAL;
+        }
+        else if (relString.equals("<="))
+        {
+            rel = LESS_OR_EQUAL;
+        }
+        else if (relString.equals("equals"))
+        {
+            rel = EQUALITY;
+        }
+        else if (relString.equals("matches"))
+        {
+            rel = MATCHING;
+        }
+        else if (relString.equals("starts with"))
+        {
+            rel = STARTS_WITH;
+        }
+        else if (relString.equals("contains"))
+        {
+            rel = CONTAINS;
+        }
+        else if (relString.equals("ends with"))
+        {
+            rel = ENDS_WITH;
+        }
+        else
+        {
+            rel = 0;
+        }
+    }
 }

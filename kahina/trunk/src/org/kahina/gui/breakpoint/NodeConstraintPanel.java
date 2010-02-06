@@ -191,10 +191,14 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
             Integer rowID = Integer.parseInt(s.substring(10));
             String type = typeComboBoxes.get(rowID).getSelectedItem().toString();
             relComboBoxes.get(rowID).setModel(new DefaultComboBoxModel(constrOptions.getRelationsForType(type).toArray()));
+            basePatterns.get(rowID).setType(type);
             hint("Complete the node constraint by selecting a relation and/or a value.");
         }
         else if (s.startsWith("changeRel"))
         {
+            Integer rowID = Integer.parseInt(s.substring(9));
+            String rel = relComboBoxes.get(rowID).getSelectedItem().toString();
+            basePatterns.get(rowID).setRelation(rel);
             hint("Complete the node constraint by specifying a value.");
         }
         else if (s.startsWith("addConst"))
@@ -230,6 +234,30 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
                 hint("First conjunct must be selected before clicking this button.", Color.RED);
             }
         }
+        else if (s.equals("orOperation"))
+        {
+            if (boolPanel.markedPattern != null)
+            {
+                selectionMode = PENDING_OR_OPERATION;
+                hint("Now select the second disjunct.", Color.BLACK);
+            }
+            else
+            {
+                hint("First disjunct must be selected before clicking this button.", Color.RED);
+            }
+        }
+        else if (s.equals("implOperation"))
+        {
+            if (boolPanel.markedPattern != null)
+            {
+                selectionMode = PENDING_IMPL_OPERATION;
+                hint("Now select the consequent.", Color.BLACK);
+            }
+            else
+            {
+                hint("Antecedent must be selected before clicking this button.", Color.RED);
+            }
+        }
     }
     
     public void introduceNegation(TreeNodePattern argument)
@@ -237,6 +265,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         TreeNodePattern neg = new TreeNodePattern(TreeNodePattern.NEGATION, argument); 
         TreeNodePattern parent = parentPatterns.get(argument);
         parentPatterns.put(neg,parent);
+        parentPatterns.put(argument,neg);
         if (argument == parent.getLeftArgument())
         {
             parent.setLeftArgument(neg);
@@ -251,6 +280,85 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
     }
     
     public boolean introduceConjunction(TreeNodePattern arg1, TreeNodePattern arg2)
+    {
+        if (!consistencyCheck(arg1,arg2)) return false;
+        //build the new conjunct node
+        TreeNodePattern conj = new TreeNodePattern(TreeNodePattern.CONJUNCTION, arg1, arg2);     
+        //determine the "loose ends" and rebalance the structure
+        rebalanceStructureForConnective(arg1, arg2);
+        //establish new structure, new root is necessary
+        parentPatterns.put(arg1, conj);
+        parentPatterns.put(arg2, conj);      
+        if (getRootPattern() == null)
+        {
+            setRootPattern(conj); 
+        }
+        else
+        {
+            TreeNodePattern newRootPattern = new TreeNodePattern(TreeNodePattern.CONJUNCTION, conj, getRootPattern());
+            parentPatterns.put(getRootPattern(), newRootPattern);
+            parentPatterns.put(conj, newRootPattern);
+            setRootPattern(newRootPattern); 
+        }
+        
+        boolPanel.markedPattern = conj;
+        displayChangeInConnectiveStructure();
+        return true;
+    }
+    
+    public boolean introduceDisjunction(TreeNodePattern arg1, TreeNodePattern arg2)
+    {
+        if (!consistencyCheck(arg1,arg2)) return false;
+        //build the new conjunct node
+        TreeNodePattern disj = new TreeNodePattern(TreeNodePattern.DISJUNCTION, arg1, arg2);     
+        rebalanceStructureForConnective(arg1, arg2);
+        //establish new structure, new root is necessary
+        parentPatterns.put(arg1, disj);
+        parentPatterns.put(arg2, disj);      
+        if (getRootPattern() == null)
+        {
+            setRootPattern(disj); 
+        }
+        else
+        {
+            TreeNodePattern newRootPattern = new TreeNodePattern(TreeNodePattern.CONJUNCTION, disj, getRootPattern());
+            parentPatterns.put(getRootPattern(), newRootPattern);
+            parentPatterns.put(disj, newRootPattern);
+            setRootPattern(newRootPattern); 
+        }
+        
+        boolPanel.markedPattern = disj;
+        displayChangeInConnectiveStructure();
+        return true;
+    }
+    
+    public boolean introduceImplication(TreeNodePattern arg1, TreeNodePattern arg2)
+    {
+        if (!consistencyCheck(arg1,arg2)) return false;
+        //build the new conjunct node
+        TreeNodePattern impl = new TreeNodePattern(TreeNodePattern.IMPLICATION, arg1, arg2);     
+        rebalanceStructureForConnective(arg1, arg2);
+        //establish new structure, new root is necessary
+        parentPatterns.put(arg1, impl);
+        parentPatterns.put(arg2, impl);      
+        if (getRootPattern() == null)
+        {
+            setRootPattern(impl); 
+        }
+        else
+        {
+            TreeNodePattern newRootPattern = new TreeNodePattern(TreeNodePattern.CONJUNCTION, impl, getRootPattern());
+            parentPatterns.put(getRootPattern(), newRootPattern);
+            parentPatterns.put(impl, newRootPattern);
+            setRootPattern(newRootPattern); 
+        }
+        
+        boolPanel.markedPattern = impl;
+        displayChangeInConnectiveStructure();
+        return true;
+    }
+    
+    private boolean consistencyCheck(TreeNodePattern arg1, TreeNodePattern arg2)
     {
         //consistency check: neither node must dominate the other
         TreeNodePattern leftAncestor = arg1;
@@ -268,13 +376,22 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
             rightAncestor = parentPatterns.get(rightAncestor);
             if (rightAncestor == arg1) return false;
         }
-        //build the new conjunct node
-        TreeNodePattern conj = new TreeNodePattern(TreeNodePattern.CONJUNCTION, arg1, arg2);     
-        //determine the loose ends and rebalance the structure
+        return true;
+    }
+    
+    private void rebalanceStructureForConnective(TreeNodePattern arg1, TreeNodePattern arg2)
+    {
+        //determine the "loose ends" and rebalance the structure
+        removeFromStructureWithoutBreakingIt(arg1);
+        removeFromStructureWithoutBreakingIt(arg2);
+    }
+    
+    private void removeFromStructureWithoutBreakingIt(TreeNodePattern arg1)
+    {
         TreeNodePattern node = arg1;
         TreeNodePattern parent = parentPatterns.get(arg1);
         TreeNodePattern grandparent = parentPatterns.get(parent);
-        while (grandparent.getRightArgument() == null && parent != getRootPattern())
+        while (parent.getRightArgument() == null && parent != getRootPattern())
         {
             node = parent;
             parent = grandparent;
@@ -288,37 +405,6 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         {
             replaceChild(grandparent, parent, parent.getLeftArgument());
         }
-        System.err.println(getRootPattern().toString());
-        node = arg2;
-        parent = parentPatterns.get(arg2);
-        grandparent = parentPatterns.get(parent);
-        while (grandparent.getRightArgument() == null && parent != getRootPattern())
-        {
-            node = parent;
-            parent = grandparent;
-            grandparent = parentPatterns.get(grandparent);
-        }
-        if (node == parent.getLeftArgument())
-        {
-            replaceChild(grandparent, parent, parent.getRightArgument());
-        }
-        else
-        {
-            replaceChild(grandparent, parent, parent.getLeftArgument());
-        }
-        System.err.println(getRootPattern().toString());
-        //establish new structure, new root is necessary
-        parentPatterns.put(arg1, conj);
-        parentPatterns.put(arg2, conj);
-        
-        TreeNodePattern newRootPattern = new TreeNodePattern(TreeNodePattern.CONJUNCTION, conj, getRootPattern());
-        parentPatterns.put(getRootPattern(), newRootPattern);
-        parentPatterns.put(conj, newRootPattern);
-        setRootPattern(newRootPattern); 
-        
-        boolPanel.markedPattern = conj;
-        displayChangeInConnectiveStructure();
-        return true;
     }
     
     private void replaceChild(TreeNodePattern parent, TreeNodePattern child, TreeNodePattern newChild)
@@ -378,7 +464,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         
         elementaryConstraintNumber--;
         adaptBoolPanel();
-        basePatterns.remove(rowID);
+        removeFromStructureWithoutBreakingIt(basePatterns.remove(rowID));
 
         boolPanel.recalculateCoordinates();
         boolPanel.adaptSize();

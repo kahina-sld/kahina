@@ -319,8 +319,47 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
             {
                 if (selectedPattern != null)
                 {
-                    System.err.println("AND operation!");
                     if (nodeConstPanel.introduceConjunction(markedPattern, selectedPattern))
+                    {
+                        nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
+                    }
+                    else
+                    {
+                        nodeConstPanel.hint("Inconsistency check prevented operation! Neither node must dominate the other!", Color.RED);
+                    }
+
+                }
+                else
+                {
+                    nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
+                }
+                nodeConstPanel.selectionMode = NodeConstraintPanel.NO_PENDING_OPERATION;
+            }
+            else if (nodeConstPanel.selectionMode == NodeConstraintPanel.PENDING_OR_OPERATION)
+            {
+                if (selectedPattern != null)
+                {
+                    if (nodeConstPanel.introduceDisjunction(markedPattern, selectedPattern))
+                    {
+                        nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
+                    }
+                    else
+                    {
+                        nodeConstPanel.hint("Inconsistency check prevented operation! Neither node must dominate the other!", Color.RED);
+                    }
+
+                }
+                else
+                {
+                    nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
+                }
+                nodeConstPanel.selectionMode = NodeConstraintPanel.NO_PENDING_OPERATION;
+            }
+            else if (nodeConstPanel.selectionMode == NodeConstraintPanel.PENDING_IMPL_OPERATION)
+            {
+                if (selectedPattern != null)
+                {
+                    if (nodeConstPanel.introduceImplication(markedPattern, selectedPattern))
                     {
                         nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
                     }
