@@ -6,6 +6,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,7 +23,9 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.text.JTextComponent;
 
+import org.kahina.breakpoint.PatternFormatException;
 import org.kahina.breakpoint.TreeNodePattern;
 
 public class NodeConstraintPanel extends JPanel implements ActionListener
@@ -38,8 +42,8 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
     BooleanConnectorPanel boolPanel;
     List<JComboBox> typeComboBoxes;
     List<JComboBox> relComboBoxes;
-    //can be text fields or combo boxes
     List<JComboBox> valComboBoxes;
+    List<ValueBoxKeyListener> valKeyListeners;
     List<JButton> addButtons;
     List<JButton> remButtons;
     
@@ -75,6 +79,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         typeComboBoxes = new ArrayList<JComboBox>();
         relComboBoxes = new ArrayList<JComboBox>();
         valComboBoxes = new ArrayList<JComboBox>();
+        valKeyListeners = new ArrayList<ValueBoxKeyListener>();
         
         addButtons = new ArrayList<JButton>();
         remButtons = new ArrayList<JButton>();
@@ -139,7 +144,10 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
             valueChoice.setEditable(true);
         }
         valueChoice.setActionCommand("changeVal" + rowID);    
-        valueChoice.addActionListener(this);  
+        valueChoice.addActionListener(this); 
+        ValueBoxKeyListener lst = new ValueBoxKeyListener(rowID);
+        valueChoice.getEditor().getEditorComponent().addKeyListener(lst);
+        valKeyListeners.add(lst);
         c.gridx = 3;
         elConstPanel.add(valueChoice, c);
         valComboBoxes.add(rowID, valueChoice);
@@ -200,6 +208,21 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
             String rel = relComboBoxes.get(rowID).getSelectedItem().toString();
             basePatterns.get(rowID).setRelation(rel);
             hint("Complete the node constraint by specifying a value.");
+        }
+        else if (s.startsWith("changeVal"))
+        {
+            Integer rowID = Integer.parseInt(s.substring(9));
+            String val = valComboBoxes.get(rowID).getSelectedItem().toString();
+            try
+            {
+                basePatterns.get(rowID).parseValue(val);
+            }
+            catch (PatternFormatException formatError)
+            {
+                hint(formatError.getMessage(), Color.RED);
+                return;
+            }
+            hint("Add a new atomic condition or create a new connective.");
         }
         else if (s.startsWith("addConst"))
         {
@@ -452,6 +475,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         JComboBox typeComboBox = typeComboBoxes.remove(rowID);
         JComboBox relComboBox = relComboBoxes.remove(rowID);
         JComboBox valComboBox = valComboBoxes.remove(rowID);
+        valKeyListeners.remove(rowID);
         JButton addButton = addButtons.remove(rowID);
         JButton remButton = remButtons.remove(rowID);
         elConstPanel.remove(typeComboBox);
@@ -490,6 +514,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
             typeComboBoxes.get(i).setActionCommand("changeType" + i);
             relComboBoxes.get(i).setActionCommand("changeRel" + i);
             valComboBoxes.get(i).setActionCommand("changeVal" + i);
+            valKeyListeners.get(i).setRowID(i);
             addButtons.get(i).setActionCommand("addConst" + i);
             remButtons.get(i).setActionCommand("remConst" + i);
             
@@ -562,5 +587,45 @@ public class NodeConstraintPanel extends JPanel implements ActionListener
         hintPanel.setEnabled(false);
         boolOpsPanel.setEnabled(false);
         nodeOpsPanel.setEnabled(false);
+    }
+    
+    private class ValueBoxKeyListener implements KeyListener
+    {
+        int rowID;
+        
+        public ValueBoxKeyListener(int rowID)
+        {
+            this.rowID = rowID;
+        }
+        
+        public void setRowID(int rowID)
+        {
+            this.rowID = rowID;
+        }
+        
+        public void keyPressed(KeyEvent e) 
+        {
+        }
+
+        public void keyReleased(KeyEvent e) 
+        {
+        }
+
+        public void keyTyped(KeyEvent e) 
+        {
+            //need to access the embedded text field to read in current combo box content at any time
+            String val = ((JTextComponent) valComboBoxes.get(rowID).getEditor().getEditorComponent()).getText();
+            try
+            {
+                basePatterns.get(rowID).parseValue(val);
+            }
+            catch (PatternFormatException formatError)
+            {
+                hint(formatError.getMessage(), Color.RED);
+                return;
+            }
+            hint("Add a new atomic condition or create a new connective.");
+            System.err.println(getRootPattern());
+        }
     }
 }

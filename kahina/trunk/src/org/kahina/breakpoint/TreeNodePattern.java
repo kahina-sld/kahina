@@ -123,6 +123,34 @@ public class TreeNodePattern
         this.rightArg = rightArg;
     }
     
+    public void parseValue(String value) throws PatternFormatException
+    {
+        if (type == ID)
+        {
+            try
+            {
+                this.intValue = Integer.parseInt(value);
+            }
+            catch (NumberFormatException e)
+            {
+                throw new PatternFormatException("Integer", value);
+            }
+        }
+        else
+        {
+            if (rel == MATCHING)
+            {
+                this.regexValue = Pattern.compile(value);
+                this.stringValue = value;
+            }
+            else
+            {
+                this.stringValue = value;
+                System.err.println("Changed string value to " + value);
+            }
+        }
+    }
+    
     public int getType()
     {
         return type;
