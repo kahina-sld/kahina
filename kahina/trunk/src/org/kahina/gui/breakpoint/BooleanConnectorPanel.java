@@ -17,10 +17,15 @@ import java.util.Set;
 import javax.swing.JPanel;
 
 import org.kahina.breakpoint.TreeNodePattern;
+import org.kahina.control.KahinaController;
+import org.kahina.control.KahinaListener;
+import org.kahina.control.event.KahinaEvent;
 
-public class BooleanConnectorPanel extends JPanel implements MouseListener
+public class BooleanConnectorPanel extends JPanel implements MouseListener, KahinaListener
 {
-    NodeConstraintPanel nodeConstPanel;
+    KahinaController control;
+    
+    SingleNodeConstraintPanel nodeConstPanel;
     
     Map<TreeNodePattern, Integer> xCoord;
     Map<TreeNodePattern, Integer> yCoord; 
@@ -30,8 +35,14 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
     
     TreeNodePattern markedPattern;
     
-    public BooleanConnectorPanel(NodeConstraintPanel nodeConstPanel)
+    //event system is responsible for synchronization with NodeConstraintPanel and TreeFragmentPanel
+    private int nodeSelectionMode;
+    
+    public BooleanConnectorPanel(SingleNodeConstraintPanel nodeConstPanel, KahinaController control)
     {   
+        this.control = control;
+        control.registerListener("breakpoint_editor", this);
+        
         this.nodeConstPanel = nodeConstPanel;
         this.addMouseListener(this);
         
@@ -39,11 +50,13 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
         yCoord = new HashMap<TreeNodePattern, Integer>();  
         
         markedPattern = null;
+        
+        nodeSelectionMode = -1;
     }
     
     public void adaptSize()
     {
-        yDim = nodeConstPanel.basePatterns.size() * 24;
+        yDim = nodeConstPanel.getBasePatterns().size() * 24;
         
         setMinimumSize(new Dimension(xDim,yDim));
         setPreferredSize(new Dimension(xDim,yDim));
@@ -56,7 +69,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
         yCoord = new HashMap<TreeNodePattern, Integer>();  
         xDim = 30;
         //first define the base nodes
-        List<TreeNodePattern> basePattern = nodeConstPanel.basePatterns;
+        List<TreeNodePattern> basePattern = nodeConstPanel.getBasePatterns();
         for (int i = 0; i < basePattern.size(); i++)
         {
             TreeNodePattern pat = basePattern.get(i);
@@ -291,12 +304,12 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
         if (markedPattern != null && selectedPattern == markedPattern)
         {
             switchType(markedPattern);
-            nodeConstPanel.selectionMode = NodeConstraintPanel.NO_PENDING_OPERATION;
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
             nodeConstPanel.hint("click on the same connective again to switch its type");
         }
         else
         {
-            if (nodeConstPanel.selectionMode == NodeConstraintPanel.NO_PENDING_OPERATION)
+            if (nodeSelectionMode == BreakpointEditPanel.NO_PENDING_OPERATION)
             {
                 markedPattern = selectedPattern;
                 if (markedPattern != null)
@@ -315,7 +328,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
                     nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                 }
             }
-            else if (nodeConstPanel.selectionMode == NodeConstraintPanel.PENDING_AND_OPERATION)
+            else if (nodeSelectionMode  == BreakpointEditPanel.PENDING_AND_OPERATION)
             {
                 if (selectedPattern != null)
                 {
@@ -333,9 +346,9 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
                 {
                     nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                 }
-                nodeConstPanel.selectionMode = NodeConstraintPanel.NO_PENDING_OPERATION;
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
             }
-            else if (nodeConstPanel.selectionMode == NodeConstraintPanel.PENDING_OR_OPERATION)
+            else if (nodeSelectionMode == BreakpointEditPanel.PENDING_OR_OPERATION)
             {
                 if (selectedPattern != null)
                 {
@@ -353,9 +366,9 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
                 {
                     nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                 }
-                nodeConstPanel.selectionMode = NodeConstraintPanel.NO_PENDING_OPERATION;
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
             }
-            else if (nodeConstPanel.selectionMode == NodeConstraintPanel.PENDING_IMPL_OPERATION)
+            else if (nodeSelectionMode == BreakpointEditPanel.PENDING_IMPL_OPERATION)
             {
                 if (selectedPattern != null)
                 {
@@ -373,7 +386,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
                 {
                     nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                 }
-                nodeConstPanel.selectionMode = NodeConstraintPanel.NO_PENDING_OPERATION;
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
             }
         }
         repaint();
@@ -393,5 +406,21 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener
 
     public void mouseReleased(MouseEvent arg0)
     {
+    }
+    
+    public void processEvent(KahinaEvent event)
+    {
+        if (event.getType().equals("breakpoint_editor"))
+        {
+            processEvent((BreakpointEditorEvent) event);
+        }
+    }
+    
+    public void processEvent(BreakpointEditorEvent event)
+    {
+        if (event.getEditorEventType() == BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE)
+        {
+            nodeSelectionMode = event.getGoalID();
+        }
     }
 }

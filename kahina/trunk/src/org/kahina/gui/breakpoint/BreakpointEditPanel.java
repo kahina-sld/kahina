@@ -16,12 +16,13 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
 import org.kahina.breakpoint.KahinaBreakpoint;
+import org.kahina.control.KahinaController;
 
 public class BreakpointEditPanel extends JPanel implements ActionListener
 {
     private JTabbedPane editTabs;  
     private NodeConstraintPanel nodeConstraintPanel;
-    private JPanel treeFragmentPanel; 
+    private TreeFragmentPanel treeFragmentPanel; 
     private JLabel nameLabel;
     private JTextField nameField;
     private JButton suggestNameButton;
@@ -33,14 +34,20 @@ public class BreakpointEditPanel extends JPanel implements ActionListener
     //the breakpoint this edit panel is operating on
     private KahinaBreakpoint breakpoint;
     
-    public BreakpointEditPanel()
+    //selection mode constants; used by BooleanConnectorPanels and NodeConstraintPanels to coordinate their states
+    public static final int NO_PENDING_OPERATION = -1;
+    public static final int PENDING_AND_OPERATION = 0;
+    public static final int PENDING_OR_OPERATION = 1;
+    public static final int PENDING_IMPL_OPERATION = 2;
+    
+    public BreakpointEditPanel(KahinaController control)
     {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBorder(BorderFactory.createTitledBorder("Edit Breakpoint"));    
        
         editTabs = new JTabbedPane();
-        editTabs.add(buildNodeConstraintPanel(), "Step Constraint");
-        editTabs.add(buildTreeFragmentPanel(), "Decision Tree Pattern");
+        editTabs.add("Step Constraint", buildNodeConstraintPanel(control));
+        editTabs.add("Decision Tree Pattern", buildTreeFragmentPanel(control));
         
         add(editTabs);
         add(Box.createRigidArea(new Dimension(0,5)));
@@ -108,15 +115,15 @@ public class BreakpointEditPanel extends JPanel implements ActionListener
         }
     }
     
-    private NodeConstraintPanel buildNodeConstraintPanel()
+    private NodeConstraintPanel buildNodeConstraintPanel(KahinaController control)
     {
-        nodeConstraintPanel = new NodeConstraintPanel();     
+        nodeConstraintPanel = new NodeConstraintPanel(control);     
         return nodeConstraintPanel;
     }
     
-    private JPanel buildTreeFragmentPanel()
+    private TreeFragmentPanel buildTreeFragmentPanel(KahinaController control)
     {
-        treeFragmentPanel = new JPanel();
+        treeFragmentPanel = new TreeFragmentPanel(control);
         return treeFragmentPanel;
     }
     

@@ -125,7 +125,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
     
     private JPanel buildRightPanel()
     {
-        editPanel = new BreakpointEditPanel();
+        editPanel = new BreakpointEditPanel(control);
         return editPanel;       
     }    
     
@@ -160,7 +160,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
     
     private void processBreakpointEvent(BreakpointEditorEvent e)
     {
-        switch (e.getStateEventType())
+        switch (e.getEditorEventType())
         {
             case BreakpointEditorEvent.NEW_BREAKPOINT:
             {

@@ -1,6 +1,7 @@
 package org.kahina.gui.breakpoint;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -13,6 +14,7 @@ public class BreakpointEditorHintPanel extends JPanel
     public BreakpointEditorHintPanel()
     {
         setBorder(BorderFactory.createTitledBorder("Hint"));  
+        setMaximumSize(new Dimension(2000, 60));
         hintLabel = new JLabel("Define a node constraint by selecting a type.");
         add(hintLabel);
     }

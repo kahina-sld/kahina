@@ -7,7 +7,7 @@ import org.kahina.control.event.KahinaEvent;
 public class BreakpointEditorEvent extends KahinaEvent
 {    
     File file;
-    int stateEventType;
+    int editorEventType;
     
     int goalID;
     
@@ -17,24 +17,25 @@ public class BreakpointEditorEvent extends KahinaEvent
     public static final int ACTIVATE_BREAKPOINT = 3;
     public static final int DEACTIVATE_BREAKPOINT = 4;
     public static final int REMOVE_BREAKPOINT = 5;
+    public static final int CHANGE_NODE_SELECTION_MODE = 6;
     
-    public BreakpointEditorEvent(int stateEventType)
+    public BreakpointEditorEvent(int editorEventType)
     {
         super("breakpoint_editor");
-        this.stateEventType = stateEventType;
+        this.editorEventType = editorEventType;
     }
     
-    public BreakpointEditorEvent(int stateEventType, File file)
+    public BreakpointEditorEvent(int editorEventType, File file)
     {
         super("breakpoint_editor");
-        this.stateEventType = stateEventType;
+        this.editorEventType = editorEventType;
         this.file = file;
     }
     
-    public BreakpointEditorEvent(int stateEventType, int goalID)
+    public BreakpointEditorEvent(int editorEventType, int goalID)
     {
         super("breakpoint_editor");
-        this.stateEventType = stateEventType;
+        this.editorEventType = editorEventType;
         this.goalID = goalID;
     }
     
@@ -43,9 +44,9 @@ public class BreakpointEditorEvent extends KahinaEvent
         return file;
     }
     
-    public int getStateEventType()
+    public int getEditorEventType()
     {
-        return stateEventType;
+        return editorEventType;
     }
     
     public int getGoalID()
@@ -56,29 +57,33 @@ public class BreakpointEditorEvent extends KahinaEvent
     public String toString()
     {
         String s = "breakpoint: ";
-        if (stateEventType == NEW_BREAKPOINT)
+        if (editorEventType == NEW_BREAKPOINT)
         {
             s += "new "; 
         }
-        else if (stateEventType == EXPORT_BREAKPOINT)
+        else if (editorEventType == EXPORT_BREAKPOINT)
         {
             s += "export -> "; 
         }
-        else if (stateEventType == IMPORT_BREAKPOINT)
+        else if (editorEventType == IMPORT_BREAKPOINT)
         {
             s += "import <- "; 
         }
-        else if (stateEventType == ACTIVATE_BREAKPOINT)
+        else if (editorEventType == ACTIVATE_BREAKPOINT)
         {
             s += "activate " + goalID; 
         }
-        else if (stateEventType == DEACTIVATE_BREAKPOINT)
+        else if (editorEventType == DEACTIVATE_BREAKPOINT)
         {
             s += "deactivate " + goalID; 
         }
-        else if (stateEventType == REMOVE_BREAKPOINT)
+        else if (editorEventType == REMOVE_BREAKPOINT)
         {
             s += "remove " + goalID; 
+        }
+        else if (editorEventType == CHANGE_NODE_SELECTION_MODE)
+        {
+            s += "selection mode " + goalID; 
         }
         else
         {

@@ -1,51 +1,39 @@
 package org.kahina.gui.breakpoint;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.text.JTextComponent;
+import javax.swing.JScrollPane;
 
-import org.kahina.breakpoint.PatternFormatException;
-import org.kahina.breakpoint.TreeNodePattern;
 import org.kahina.control.KahinaController;
 import org.kahina.control.KahinaListener;
 import org.kahina.control.event.KahinaEvent;
 
-public class NodeConstraintPanel extends JPanel implements ActionListener, KahinaListener
+public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaListener
 {
     KahinaController control;
     
     NodeConstraintOptions constrOptions;  
     
-    SingleNodeConstraintPanel constPanel;
+    //store the tree structure of node constraints
+    SingleNodeConstraintPanel rootConstPanel;
+    List<SingleNodeConstraintPanel> nodeConstPanels;
+    
+    TreeEditorPanel treePanel;
     BooleanOperationsPanel boolOpsPanel;
+    NodeOperationsPanel nodeOpsPanel;
     BreakpointEditorHintPanel hintPanel;
     
     //store internally which kind of connective is being built; 
     //changes coordinated with boolean connector panels via event system 
     private int selectionMode;
     
-    public NodeConstraintPanel(KahinaController control)
+    public TreeFragmentPanel(KahinaController control)
     {
         this.control = control;
         control.registerListener("breakpoint_editor", this);
@@ -60,23 +48,32 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         
         boolOpsPanel = new BooleanOperationsPanel(this);           
         bottomPanel.add(boolOpsPanel);
+        nodeOpsPanel = new NodeOperationsPanel(this);           
+        bottomPanel.add(nodeOpsPanel);      
         add(bottomPanel);
         
         hintPanel = new BreakpointEditorHintPanel();   
         add(hintPanel);
         
-        constPanel = new SingleNodeConstraintPanel(constrOptions, control);
-        constPanel.setHintPanel(hintPanel);
-        add(constPanel);  
+
+        treePanel = new TreeEditorPanel(this);
+        rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control);
+        rootConstPanel.setHintPanel(hintPanel);   
+        treePanel.add(rootConstPanel);
+        
+        JScrollPane treeScroll = new JScrollPane(treePanel);
+        add(treeScroll);  
+        
+        nodeConstPanels = new ArrayList<SingleNodeConstraintPanel>();
         
         selectionMode = -1;
     }
     
-    public NodeConstraintPanel(KahinaController control, NodeConstraintOptions constrOptions)
+    public TreeFragmentPanel(KahinaController control, NodeConstraintOptions constrOptions)
     {
         this(control);
         this.constrOptions = constrOptions;
-        constPanel.setConstrOptions(constrOptions);
+        rootConstPanel.setConstrOptions(constrOptions);
     }
     
     public void actionPerformed(ActionEvent e)
@@ -84,9 +81,9 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         String s = e.getActionCommand();
         if (s.equals("negOperation"))
         {
-            if (constPanel.getMarkedPattern() != null)
+            if (rootConstPanel.getMarkedPattern() != null)
             {
-                constPanel.introduceNegation(constPanel.getMarkedPattern());
+                rootConstPanel.introduceNegation(rootConstPanel.getMarkedPattern());
             }
             else
             {
@@ -95,7 +92,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         }
         else if (s.equals("andOperation"))
         {
-            if (constPanel.getMarkedPattern() != null)
+            if (rootConstPanel.getMarkedPattern() != null)
             {
                 control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_AND_OPERATION));
                 hint("Now select the second conjunct.", Color.BLACK);
@@ -107,7 +104,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         }
         else if (s.equals("orOperation"))
         {
-            if (constPanel.getMarkedPattern() != null)
+            if (rootConstPanel.getMarkedPattern() != null)
             {
                 control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_OR_OPERATION));
                 hint("Now select the second disjunct.", Color.BLACK);
@@ -119,7 +116,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         }
         else if (s.equals("implOperation"))
         {
-            if (constPanel.getMarkedPattern() != null)
+            if (rootConstPanel.getMarkedPattern() != null)
             {
                 control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_IMPL_OPERATION));
                 hint("Now select the consequent.", Color.BLACK);
@@ -155,27 +152,28 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
     
     public void activateAllComponents()
     {
-        if (constPanel == null)
+        if (rootConstPanel == null)
         {
-            constPanel = new SingleNodeConstraintPanel(constrOptions, control);   
-            constPanel.setHintPanel(hintPanel);
-            this.add(constPanel);
-            System.err.println("constraint panel added!");
+            rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control);   
+            rootConstPanel.setHintPanel(hintPanel);
+            treePanel.add(rootConstPanel);
         }
         hintPanel.setEnabled(true);
         boolOpsPanel.setEnabled(true);
+        nodeOpsPanel.setEnabled(true);
         validate();
     }
     
     public void deactivateAllComponents()
     {
-        if (constPanel != null)
+        if (rootConstPanel != null)
         {
-            remove(constPanel);
-            constPanel = null;
+            treePanel.remove(rootConstPanel);
+            rootConstPanel = null;
         }
         hintPanel.setEnabled(false);
         boolOpsPanel.setEnabled(false);
+        nodeOpsPanel.setEnabled(false);
         validate();
     } 
     
