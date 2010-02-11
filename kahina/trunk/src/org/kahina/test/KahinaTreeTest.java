@@ -95,6 +95,7 @@ public class KahinaTreeTest
             vp2pane.setBounds(0, 490, 500, 200);
             JLabel vp2label = new JLabel("Layer 2 (Detail View)");
             vp2label.setBounds(0, 470, 500, 15);
+            
             JFrame w = new JFrame("Kahina TreeView Demo");
             w.setSize(510, 720);
             w.setLayout(null);

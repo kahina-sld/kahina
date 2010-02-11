@@ -41,6 +41,21 @@ public class TreeAutomaton
     KahinaController ctrl;
     
     /**
+     * set or change the tree this breakpoint is monitoring
+     * the automaton will recompute its annotations in bottom-up manner
+     * @param tree - the tree model this breakpoint is monitoring
+     */
+    public void setTree(KahinaTree tree)
+    {
+        annotations =  new HashMap<Integer,Set<Integer>>();
+        this.tree = tree;
+        for (int leafID : tree.getLeaves())
+        {
+            process(leafID);
+        }
+    }
+    
+    /**
      * annotates a tree node with all possible labels according to the rules
      * recursively reannotates parents if it triggers a change in annotation, 
      * @param nodeID - the node to be (re)annotated by the automaton

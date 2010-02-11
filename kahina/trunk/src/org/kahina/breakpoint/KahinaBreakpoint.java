@@ -7,10 +7,28 @@ public class KahinaBreakpoint
     private String name;
     private boolean active;
     private Color signalColor;
+    private TreePattern pattern;
     
     public TreeAutomaton compile()
     {
-        return new TreeAutomaton();
+        TreeAutomaton a = new TreeAutomaton();
+        int rootState = compileNode(a, pattern.getRoot());
+        a.acceptingStates.add(rootState);
+        return a;
+    }
+    
+    private int compileNode(TreeAutomaton a, TreePatternNode node)
+    {
+        int state = a.states.size();
+        a.states.add(state);
+        TreeAutomatonRule rule = new TreeAutomatonRule();
+        rule.assignedLabel = state;
+        rule.pattern = node.getPattern();
+        for (TreePatternNode child : node.getChildren())
+        {
+            rule.requiredChildAnnotations.add(compileNode(a, child));
+        }
+        return state;
     }
     
     public String getName()
@@ -46,5 +64,15 @@ public class KahinaBreakpoint
     public String toString()
     {
         return name;
+    }
+
+    public TreePattern getPattern()
+    {
+        return pattern;
+    }
+
+    public void setPattern(TreePattern pattern)
+    {
+        this.pattern = pattern;
     }
 }

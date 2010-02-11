@@ -18,7 +18,7 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
     
     public BreakpointEditorFileMenu(KahinaController control)
     {
-        super("Breakpoint");
+        super("Breakpoints");
         this.control = control;
         
         JMenuItem newBreakpointItem = new JMenuItem("New...");
@@ -37,6 +37,13 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
         importBreakpointItem.setActionCommand("importBreakpoint");
         importBreakpointItem.addActionListener(this);
         this.add(importBreakpointItem);
+        
+        this.addSeparator();
+        
+        JMenuItem testBreakpointsItem = new JMenuItem("Test");
+        testBreakpointsItem.setActionCommand("testBreakpoints");
+        testBreakpointsItem.addActionListener(this);
+        this.add(testBreakpointsItem);
         
         this.addSeparator();
         
@@ -68,6 +75,10 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
             if (dataFile != null) control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.IMPORT_BREAKPOINT, dataFile));
+        }
+        else if (s.equals("testBreakpoints"))
+        {
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TEST_BREAKPOINTS));
         }
         else if (s.equals("quit"))
         {

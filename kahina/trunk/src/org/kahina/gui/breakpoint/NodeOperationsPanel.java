@@ -21,19 +21,19 @@ public class NodeOperationsPanel extends JPanel
         setBorder(BorderFactory.createTitledBorder("Node Operations"));
         
         addChildOperationButton = new JButton("Add Child");
-        addChildOperationButton.setActionCommand("addChildOperation");
+        addChildOperationButton.setActionCommand("addChild");
         addChildOperationButton.addActionListener(listener);
         add(addChildOperationButton);
         add(Box.createRigidArea(new Dimension(10,0)));
         
         setParentOperationButton = new JButton("Set Parent");
-        setParentOperationButton.setActionCommand("setParentOperation");
+        setParentOperationButton.setActionCommand("setParent");
         setParentOperationButton.addActionListener(listener);
         add(setParentOperationButton);
         add(Box.createRigidArea(new Dimension(10,0)));
         
         removeOperationButton = new JButton("Remove Node");
-        removeOperationButton.setActionCommand("removeNodeOperation");
+        removeOperationButton.setActionCommand("removeNode");
         removeOperationButton.addActionListener(listener);
         add(removeOperationButton);
         add(Box.createRigidArea(new Dimension(10,0)));

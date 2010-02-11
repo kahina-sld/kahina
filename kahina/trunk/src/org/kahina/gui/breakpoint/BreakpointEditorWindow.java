@@ -32,6 +32,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.kahina.breakpoint.KahinaBreakpoint;
+import org.kahina.breakpoint.TreeAutomaton;
 import org.kahina.control.KahinaController;
 import org.kahina.control.KahinaListener;
 import org.kahina.control.event.KahinaEvent;
@@ -47,6 +48,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
     BreakpointEditPanel editPanel;
     
     List<KahinaBreakpoint> breakpoints;
+    List<TreeAutomaton> compiledBreakpoints;
     int curID; //list ID of the breakpoint we are editing
     
     //count produced breakpoints; new breakpoints will be named according to this 
@@ -61,6 +63,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
        
         breakpoints = new ArrayList<KahinaBreakpoint>();
+        compiledBreakpoints = new ArrayList<TreeAutomaton>();
         curID = -1;
         highestID = 1;
         
@@ -168,7 +171,14 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
                 newBreakpoint.setName("Breakpoint " + highestID);
                 highestID++;
                 breakpoints.add(newBreakpoint);
+                compiledBreakpoints.add(new TreeAutomaton());
                 breakpointList.setListData(breakpoints.toArray());
+                break;
+            }
+            case BreakpointEditorEvent.TEST_BREAKPOINTS:
+            {
+                BreakpointTestWindow w = new BreakpointTestWindow(compiledBreakpoints);
+                w.setVisible(true);
                 break;
             }
         }

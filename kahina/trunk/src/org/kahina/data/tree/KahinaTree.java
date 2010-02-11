@@ -3,6 +3,7 @@ package org.kahina.data.tree;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.kahina.core.data.KahinaObject;
@@ -61,6 +62,11 @@ public class KahinaTree extends KahinaObject
     public int getRootID(int layerID)
     {
         return rootID;
+    }
+    
+    public void setRootID(int rootID)
+    {
+        this.rootID = rootID;
     }
     
     public void addChild(int parent, int child)
@@ -134,6 +140,32 @@ public class KahinaTree extends KahinaObject
         else
         {
             return ids;
+        }
+    }
+    
+    public List<Integer> getLeaves()
+    {
+        List<Integer> leaves = new LinkedList<Integer>();
+        collectLeaves(rootID, leaves);
+        return leaves;
+    }
+    
+    private void collectLeaves(int nodeID, List<Integer> leaves)
+    {
+        if (nodeID != -1)
+        {
+            List<Integer> nodeChildren = children.get(nodeID);
+            if (nodeChildren == null)
+            {
+                leaves.add(nodeID);
+            }
+            else
+            {
+                for (int child : nodeChildren)
+                {
+                    collectLeaves(child, leaves);
+                }
+            }
         }
     }
     
@@ -214,6 +246,15 @@ public class KahinaTree extends KahinaObject
             parent = parents.get(parent);
         }
         return false;
+    }
+    
+    public int addNode(String caption, String label, int nodeStatus)
+    {
+        int nodeID = getNextFreeID();
+        nodeCaptions.put(nodeID, caption);
+        edgeLabels.put(nodeID, label);
+        status.put(nodeID,nodeStatus);
+        return nodeID;
     }
 
     protected int getNextFreeID()

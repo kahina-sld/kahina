@@ -4,12 +4,15 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.kahina.breakpoint.TreePattern;
+import org.kahina.breakpoint.TreePatternNode;
 import org.kahina.control.KahinaController;
 import org.kahina.control.KahinaListener;
 import org.kahina.control.event.KahinaEvent;
@@ -21,8 +24,10 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
     NodeConstraintOptions constrOptions;  
     
     //store the tree structure of node constraints
-    SingleNodeConstraintPanel rootConstPanel;
-    List<SingleNodeConstraintPanel> nodeConstPanels;
+    private SingleNodeConstraintPanel rootConstPanel;
+    //List<SingleNodeConstraintPanel> nodeConstPanels;
+    private HashMap<SingleNodeConstraintPanel, List<SingleNodeConstraintPanel>> children;
+    private HashMap<SingleNodeConstraintPanel, SingleNodeConstraintPanel> parents;  
     
     TreeEditorPanel treePanel;
     BooleanOperationsPanel boolOpsPanel;
@@ -32,6 +37,8 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
     //store internally which kind of connective is being built; 
     //changes coordinated with boolean connector panels via event system 
     private int selectionMode;
+    
+    private SingleNodeConstraintPanel markedTreeNode;
     
     public TreeFragmentPanel(KahinaController control)
     {
@@ -64,9 +71,13 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         JScrollPane treeScroll = new JScrollPane(treePanel);
         add(treeScroll);  
         
-        nodeConstPanels = new ArrayList<SingleNodeConstraintPanel>();
+        //nodeConstPanels = new ArrayList<SingleNodeConstraintPanel>();
+        children = new HashMap<SingleNodeConstraintPanel, List<SingleNodeConstraintPanel>>();
+        parents = new HashMap<SingleNodeConstraintPanel, SingleNodeConstraintPanel> ();
         
         selectionMode = -1;
+        
+        markedTreeNode = null;
     }
     
     public TreeFragmentPanel(KahinaController control, NodeConstraintOptions constrOptions)
@@ -126,7 +137,82 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
                 hint("Antecedent must be selected before clicking this button.", Color.RED);
             }
         }
-    }  
+        else if (s.equals("addChild"))
+        {
+            if (markedTreeNode != null)
+            {
+                addNewChildNode(markedTreeNode);
+                hint("Manipulate the tree structure or define complex node constraints.", Color.BLACK);
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_PATTERN_CHANGE));
+            }
+            else
+            {
+                hint("First select the tree node to which you want to add a new child.", Color.RED);
+            }
+        }
+        else if (s.equals("removeNode"))
+        {
+            if (markedTreeNode == null)
+            {
+                hint("First select the tree node you want to remove.", Color.RED);
+            }
+            else if (markedTreeNode == rootConstPanel)
+            {
+                hint("Cannot remove the root node.", Color.RED);
+            }
+            else
+            {
+                removeMarkedNode();
+                hint("Manipulate the tree structure or define complex node constraints.", Color.BLACK);
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_PATTERN_CHANGE));
+            }
+        }
+    }
+    
+    private void addNewChildNode(SingleNodeConstraintPanel parent)
+    {
+        SingleNodeConstraintPanel child = new SingleNodeConstraintPanel(constrOptions, control);
+        child.setHintPanel(hintPanel);
+        List<SingleNodeConstraintPanel> nodeChildren = children.get(parent);
+        if (nodeChildren == null)
+        {
+            nodeChildren = new ArrayList<SingleNodeConstraintPanel>();
+            children.put(parent, nodeChildren);
+        }
+        nodeChildren.add(child);
+        parents.put(child, parent);
+        treePanel.add(child);
+        treePanel.recalculateCoordinates();
+    }
+    
+    private void removeMarkedNode()
+    {
+        children.get(parents.get(markedTreeNode)).remove(markedTreeNode);
+        parents.remove(markedTreeNode);
+        treePanel.remove(markedTreeNode);
+        markedTreeNode = null;
+        treePanel.recalculateCoordinates();
+    }
+    
+    public SingleNodeConstraintPanel getRoot()
+    {
+        return rootConstPanel;
+    }
+   
+    public SingleNodeConstraintPanel getParent(JPanel node)
+    {
+        return parents.get(node);
+    }
+    
+    public List<SingleNodeConstraintPanel> getChildren(JPanel node)
+    {
+        List<SingleNodeConstraintPanel> nodeChildren = children.get(node);
+        if (nodeChildren == null)
+        {
+            nodeChildren = new ArrayList<SingleNodeConstraintPanel>();
+        }
+        return nodeChildren;
+    } 
     
     public void hint(String hint)
     {
@@ -191,5 +277,39 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         {
             selectionMode = event.getGoalID();
         }
+        else if (event.getEditorEventType() == BreakpointEditorEvent.TREE_NODE_UPDATE)
+        {
+            treePanel.recalculateCoordinates();
+            if (markedTreeNode != null)
+            {
+                markedTreeNode.setMarked(false);
+            }
+            markedTreeNode = event.getPanel();
+            if (markedTreeNode != null)
+            {
+                markedTreeNode.setMarked(true);
+            }
+        }
+    }
+    
+    public TreePattern getTreePattern()
+    {
+        TreePattern treePattern = new TreePattern();
+        treePattern.setRoot(buildTreePatternNode(rootConstPanel));
+        return treePattern;
+    }
+    
+    private TreePatternNode buildTreePatternNode(SingleNodeConstraintPanel panel)
+    {
+        TreePatternNode node = new TreePatternNode(panel.getNodeConstraint());
+        List<SingleNodeConstraintPanel> childNodes = children.get(panel);
+        if (childNodes != null)
+        {
+            for (SingleNodeConstraintPanel child : childNodes)
+            {
+                node.getChildren().add(buildTreePatternNode(child));
+            }
+        }
+        return node;
     }
 }

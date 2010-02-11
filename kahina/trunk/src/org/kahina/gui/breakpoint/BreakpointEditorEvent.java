@@ -8,6 +8,7 @@ public class BreakpointEditorEvent extends KahinaEvent
 {    
     File file;
     int editorEventType;
+    SingleNodeConstraintPanel panel;
     
     int goalID;
     
@@ -18,6 +19,9 @@ public class BreakpointEditorEvent extends KahinaEvent
     public static final int DEACTIVATE_BREAKPOINT = 4;
     public static final int REMOVE_BREAKPOINT = 5;
     public static final int CHANGE_NODE_SELECTION_MODE = 6;
+    public static final int TREE_NODE_UPDATE = 7;  
+    public static final int TREE_PATTERN_CHANGE = 7;  
+    public static final int TEST_BREAKPOINTS = 8;  
     
     public BreakpointEditorEvent(int editorEventType)
     {
@@ -30,6 +34,13 @@ public class BreakpointEditorEvent extends KahinaEvent
         super("breakpoint_editor");
         this.editorEventType = editorEventType;
         this.file = file;
+    }
+    
+    public BreakpointEditorEvent(int editorEventType, SingleNodeConstraintPanel panel)
+    {
+        super("breakpoint_editor");
+        this.editorEventType = editorEventType;
+        this.panel = panel;
     }
     
     public BreakpointEditorEvent(int editorEventType, int goalID)
@@ -63,11 +74,11 @@ public class BreakpointEditorEvent extends KahinaEvent
         }
         else if (editorEventType == EXPORT_BREAKPOINT)
         {
-            s += "export -> "; 
+            s += "export -> " + file; 
         }
         else if (editorEventType == IMPORT_BREAKPOINT)
         {
-            s += "import <- "; 
+            s += "import <- " + file; 
         }
         else if (editorEventType == ACTIVATE_BREAKPOINT)
         {
@@ -85,10 +96,27 @@ public class BreakpointEditorEvent extends KahinaEvent
         {
             s += "selection mode " + goalID; 
         }
+        else if (editorEventType == TREE_NODE_UPDATE)
+        {
+            s += "tree node update " + panel; 
+        }
+        else if (editorEventType == TREE_PATTERN_CHANGE)
+        {
+            s += "tree pattern change"; 
+        }
+        else if (editorEventType == TEST_BREAKPOINTS)
+        {
+            s += "test breakpoints"; 
+        }
         else
         {
-            s += "unknown operation <-> ";
+            s += "unknown operation";
         }
-        return s += file;
+        return s;
+    }
+
+    public SingleNodeConstraintPanel getPanel()
+    {
+        return panel;
     }
 }

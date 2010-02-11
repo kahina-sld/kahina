@@ -467,7 +467,7 @@ public class KahinaTreeView extends KahinaView
             {
                 return new Font(Font.SANS_SERIF,Font.BOLD, fontSize);
             }
-            if (secondaryTreeModel.isCollapsed(nodeID) && collapsePolicy == COLLAPSE_SECONDARY)
+            if (secondaryTreeModel != null && secondaryTreeModel.isCollapsed(nodeID) && collapsePolicy == COLLAPSE_SECONDARY)
             {
                 return new Font(Font.SANS_SERIF,Font.BOLD, fontSize);
             }
@@ -601,7 +601,7 @@ public class KahinaTreeView extends KahinaView
         nodeHeight = fm.getHeight();
         
         createNodeLayers();
-        //System.err.println(showLevels());
+        System.err.println(showLevels());
         //System.err.println(terminalLayer);
         
         totalTreeWidth = 50;
@@ -739,6 +739,7 @@ public class KahinaTreeView extends KahinaView
           List<Integer> children = getVisibleVirtualChildren(treeModel, treeModel.getRootID(treeLayer));
           while(true)
           {
+            System.err.println("children:" + children);
             ArrayList<Integer> grandchildren = new ArrayList<Integer>();
             for (int i = 0; i < children.size(); i++)
             {
@@ -799,6 +800,7 @@ public class KahinaTreeView extends KahinaView
     private ArrayList<Integer> getVisibleVirtualChildren(KahinaTree treeModel, int nodeID)
     {
         ArrayList<Integer> descendants = new ArrayList<Integer>();
+        //System.err.println("Actual children for node " + nodeID + ": " + treeModel.getChildren(nodeID,treeLayer));
         if (treeModel.isCollapsed(nodeID) && collapsePolicy == COLLAPSE_PRIMARY) return descendants;
         descendants.addAll(treeModel.getChildren(nodeID,treeLayer));
         for (int i = 0; i < descendants.size(); i++)

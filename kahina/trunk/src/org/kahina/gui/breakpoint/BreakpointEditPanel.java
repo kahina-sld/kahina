@@ -17,8 +17,10 @@ import javax.swing.JTextField;
 
 import org.kahina.breakpoint.KahinaBreakpoint;
 import org.kahina.control.KahinaController;
+import org.kahina.control.KahinaListener;
+import org.kahina.control.event.KahinaEvent;
 
-public class BreakpointEditPanel extends JPanel implements ActionListener
+public class BreakpointEditPanel extends JPanel implements ActionListener, KahinaListener
 {
     private JTabbedPane editTabs;  
     private NodeConstraintPanel nodeConstraintPanel;
@@ -42,6 +44,8 @@ public class BreakpointEditPanel extends JPanel implements ActionListener
     
     public BreakpointEditPanel(KahinaController control)
     {
+        control.registerListener("breakpoint_editor", this);
+        
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBorder(BorderFactory.createTitledBorder("Edit Breakpoint"));    
        
@@ -176,6 +180,22 @@ public class BreakpointEditPanel extends JPanel implements ActionListener
         signalColor.setEnabled(false);
         compileBreakpointButton.setEnabled(false);
         cancelBreakpointButton.setEnabled(false);
+    }
+    
+    public void processEvent(KahinaEvent event)
+    {
+        if (event.getType().equals("breakpoint_editor"))
+        {
+            processEvent((BreakpointEditorEvent) event);
+        }
+    }
+    
+    public void processEvent(BreakpointEditorEvent event)
+    {
+        if (event.getEditorEventType() == BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE)
+        {
+            breakpoint.setPattern(treeFragmentPanel.getTreePattern());
+        }
     }
     
     public void showBreakpoint()

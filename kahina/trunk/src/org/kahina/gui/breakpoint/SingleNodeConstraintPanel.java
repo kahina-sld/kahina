@@ -17,6 +17,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import javax.swing.text.JTextComponent;
 
 import org.kahina.breakpoint.PatternFormatException;
@@ -220,6 +221,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener
             Integer rowID = Integer.parseInt(s.substring(8));
             removeElementaryConstraint(rowID);
         }
+        boolPanel.informControl(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE, this));
     }
     
     public void introduceNegation(TreeNodePattern argument)
@@ -439,7 +441,8 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener
     {
         System.err.println(getRootPattern().toString());
         boolPanel.recalculateCoordinates();
-        boolPanel.adaptSize();     
+        boolPanel.adaptSize(); 
+        boolPanel.informControl(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE));
         revalidate();
         repaint();
     }
@@ -496,6 +499,22 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener
     public void hint(String hint, Color color)
     {
         hintPanel.hint(hint,color);
+    }
+    
+    public void setMarked(boolean mark)
+    {
+        if (mark)
+        {
+            Border compound;
+            Border redline = BorderFactory.createLineBorder(Color.RED);
+            Border titleBorder = BorderFactory.createTitledBorder("Node Constraint");
+            compound = BorderFactory.createCompoundBorder(redline, titleBorder);
+            elConstPanel.setBorder(compound); 
+        }
+        else
+        {
+            elConstPanel.setBorder(BorderFactory.createTitledBorder("Node Constraint")); 
+        }
     }
     
     private class ValueBoxKeyListener implements KeyListener

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public class WidthVector
 {
-    ArrayList<Integer> start;
-    ArrayList<Integer> end;
+    public ArrayList<Integer> start;
+    public ArrayList<Integer> end;
     
     public WidthVector()
     {

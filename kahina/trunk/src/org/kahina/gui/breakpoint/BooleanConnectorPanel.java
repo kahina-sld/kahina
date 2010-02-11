@@ -423,4 +423,9 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
             nodeSelectionMode = event.getGoalID();
         }
     }
+    
+    public void informControl(BreakpointEditorEvent e)
+    {
+        control.processEvent(e);
+    }
 }
