@@ -8,7 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.kahina.core.KahinaException;
@@ -28,7 +30,8 @@ public class DatabaseHandler
 			startDatabase();
 		} catch (ClassNotFoundException e)
 		{
-			System.err.println("Problem loading Apache Derby: " + e.getMessage());
+			System.err.println("Problem loading Apache Derby: "
+					+ e.getMessage());
 		} catch (SQLException e)
 		{
 			System.err.println("A database error occured: " + e.getMessage());
@@ -50,37 +53,80 @@ public class DatabaseHandler
 		statement.execute(sqlString);
 	}
 
-	public int queryInteger(PreparedStatement statement) throws SQLException
+	public int queryInteger(PreparedStatement statement)
 	{
-		ResultSet resultSet = statement.executeQuery();
-		resultSet.next();
-		return resultSet.getInt(1);
-	}
-
-	public Set<Integer> queryIntSet(PreparedStatement statement) throws SQLException
-	{
-		HashSet<Integer> result = new HashSet<Integer>();
-		ResultSet resultSet = statement.executeQuery();
-		while (resultSet.next())
+		try
 		{
-			result.add(resultSet.getInt(1));
+			ResultSet resultSet = statement.executeQuery();
+			if (!resultSet.next())
+			{
+				throw new KahinaException("No results.");
+			}
+			return resultSet.getInt(1);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
 		}
-		return result;
 	}
 
-	public String queryString(PreparedStatement statement) throws SQLException
+	public List<Integer> queryIntList(PreparedStatement statement)
 	{
-		ResultSet resultSet = statement.executeQuery();
-		resultSet.next();
-		return resultSet.getString(1);
+		List<Integer> result = new ArrayList<Integer>();
+		try
+		{
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next())
+			{
+				result.add(resultSet.getInt(1));
+			}
+			return result;
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
 	}
 
-	private void startDatabase() throws ClassNotFoundException, SQLException, IOException
+	public Set<Integer> queryIntSet(PreparedStatement statement)
+	{
+		Set<Integer> result = new HashSet<Integer>();
+		try
+		{
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next())
+			{
+				result.add(resultSet.getInt(1));
+			}
+			return result;
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	public String queryString(PreparedStatement statement)
+	{
+		try
+		{
+			ResultSet resultSet = statement.executeQuery();
+			if (!resultSet.next())
+			{
+				throw new KahinaException("No results.");
+			}
+			return resultSet.getString(1);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	private void startDatabase() throws ClassNotFoundException, SQLException,
+			IOException
 	{
 		Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
 		File file = File.createTempFile("kahinadb", null);
 		deleteRecursively(file);
-		connection = DriverManager.getConnection("jdbc:derby:" + file.getPath() + ";create=true");
+		connection = DriverManager.getConnection("jdbc:derby:" + file.getPath()
+				+ ";create=true");
 		// db.deleteOnExit(); // should work but doesn't
 		Statement statement = connection.createStatement();
 		try
@@ -91,7 +137,8 @@ public class DatabaseHandler
 			// ignore - gotta hate Derby for not supporting DROP TABLE IF EXISTS
 		}
 
-		statement.executeUpdate("CREATE TABLE data (id BIGINT NOT NULL , value VARCHAR(32) NOT NULL, PRIMARY KEY (id))");
+		statement
+				.executeUpdate("CREATE TABLE data (id BIGINT NOT NULL , value VARCHAR(32) NOT NULL, PRIMARY KEY (id))");
 		statement.close();
 	}
 

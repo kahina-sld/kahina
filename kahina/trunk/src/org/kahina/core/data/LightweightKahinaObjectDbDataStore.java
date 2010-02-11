@@ -32,17 +32,21 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	{
 		OBJECT, OBJECT_LIST, STRING, STRING_LIST, INTEGER, INTEGER_LIST, INT, INT_LIST;
 	}
-	
-	private static final String CLIENT_ID = LightweightKahinaObjectDbDataStore.class.getName();
+
+	private static final String CLIENT_ID = LightweightKahinaObjectDbDataStore.class
+			.getName();
 
 	private static final String TABLE_NAME_PREFIX = CLIENT_ID + "_";
 
-	private static final String OBJECT_TABLE_NAME = TABLE_NAME_PREFIX + "object_values";
+	private static final String OBJECT_TABLE_NAME = TABLE_NAME_PREFIX
+			+ "object_values";
 
-	private static final String STRING_TABLE_NAME = TABLE_NAME_PREFIX + "string_values";
+	private static final String STRING_TABLE_NAME = TABLE_NAME_PREFIX
+			+ "string_values";
 
-	private static final String INT_TABLE_NAME = TABLE_NAME_PREFIX + "int_values";
-	
+	private static final String INT_TABLE_NAME = TABLE_NAME_PREFIX
+			+ "int_values";
+
 	// TODO use UPSERT rather than "DELSERT"?
 
 	private PreparedStatement deleteObjectStatement;
@@ -66,13 +70,13 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	private List<Field> fields;
 
 	private List<FieldType> fieldTypes;
-	
+
 	private int storeTypeID;
 
 	private Constructor<? extends KahinaObject> constructor;
-	
+
 	private Set<Integer> currentlyBeingStored = new HashSet<Integer>();
-	
+
 	private Map<Integer, KahinaObject> currentlyBeingRetrieved = new HashMap<Integer, KahinaObject>();
 
 	/**
@@ -83,12 +87,15 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	 * @param manager
 	 * @param db
 	 */
-	public LightweightKahinaObjectDbDataStore(Class<? extends KahinaObject> type, DbDataManager manager, DatabaseHandler db)
+	public LightweightKahinaObjectDbDataStore(
+			Class<? extends KahinaObject> type, DbDataManager manager,
+			DatabaseHandler db)
 	{
 		super(manager, db);
 		if (!LightweightKahinaObject.class.isAssignableFrom(type))
 		{
-			throw new KahinaException("Cannot deal with non-lightweight data type " + type + ".");
+			throw new KahinaException(
+					"Cannot deal with non-lightweight data type " + type + ".");
 		}
 		storeTypeID = manager.getTypeID(type);
 		try
@@ -96,7 +103,8 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 			constructor = type.getConstructor(int.class);
 		} catch (NoSuchMethodException e)
 		{
-			throw new KahinaException("Lightweight data type " + type + "is missing (int) constructor.", e);
+			throw new KahinaException("Lightweight data type " + type
+					+ "is missing (int) constructor.", e);
 		}
 		createTablesIfNecessary();
 		prepareStatements();
@@ -111,10 +119,18 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		}
 		try
 		{
-			db.execute("CREATE TABLE " + OBJECT_TABLE_NAME + " (" + "class_id INT, " + "object_id INT, " + "field_id INT, " + "value_class_id INT, " + "value_object_id INT, "
-					+ "INDEX id (class_id, object_id, field_id)" + "); " + "CREATE TABLE KahinaObjectDbDataStore_string_values " + "(" + "class_id INT, " + "object_id INT, " + "field_id INT, "
-					+ "value BLOB, " + "INDEX id (class_id, object_id, field_id)" + "); " + "CREATE TABLE KahinaObjectDbDataStore_int_values " + "(" + "class_id INT, " + "object_id INT, "
-					+ "field_id INT, " + "value INT, " + "INDEX id (class_id, object_id, field_id)" + "); ");
+			db.execute("CREATE TABLE " + OBJECT_TABLE_NAME + " ("
+					+ "class_id INT, " + "object_id INT, " + "field_id INT, "
+					+ "value_class_id INT, " + "value_object_id INT, "
+					+ "INDEX id (class_id, object_id, field_id)" + "); "
+					+ "CREATE TABLE KahinaObjectDbDataStore_string_values "
+					+ "(" + "class_id INT, " + "object_id INT, "
+					+ "field_id INT, " + "value LONG VARCHAR, "
+					+ "INDEX id (class_id, object_id, field_id)" + "); "
+					+ "CREATE TABLE KahinaObjectDbDataStore_int_values " + "("
+					+ "class_id INT, " + "object_id INT, " + "field_id INT, "
+					+ "value INT, "
+					+ "INDEX id (class_id, object_id, field_id)" + "); ");
 		} catch (SQLException e)
 		{
 			throw new KahinaException("Could not create tables. ", e);
@@ -124,15 +140,39 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 
 	private void prepareStatements()
 	{
-		deleteObjectStatement = db.prepareStatement("DELETE FROM " + OBJECT_TABLE_NAME + " WHERE class_id = " + storeTypeID + " AND object_id = ?");
-		insertObjectStatement = db.prepareStatement("INSERT INTO " + OBJECT_TABLE_NAME + " (class_id, object_id, field_id, value_class_id, value_object_id) VALUES (" + storeTypeID + ", ?, ?, ?, ?");
-		selectObjectStatement = db.prepareStatement("SELECT value_class_id, value_object_id FROM " + OBJECT_TABLE_NAME + " WHERE class_id = " + storeTypeID + " AND object_id = ? AND field_id = ?");
-		deleteStringStatement = db.prepareStatement("DELETE FROM " + STRING_TABLE_NAME + " WHERE class_id = " + storeTypeID + " AND object_id = ?");
-		insertStringStatement = db.prepareStatement("INSERT INTO " + STRING_TABLE_NAME + " (class_id, object_id, field_id, value) VALUES (" + storeTypeID + ", ?, ?, ?");
-		selectStringStatement = db.prepareStatement("SELECT value FROM " + STRING_TABLE_NAME + " WHERE class_id = " + storeTypeID + " AND object_id = ? AND field_id = ?");
-		deleteIntegerStatement = db.prepareStatement("DELETE FROM " + INT_TABLE_NAME + " WHERE class_id = " + storeTypeID + " AND object_id = ?");
-		insertIntegerStatement = db.prepareStatement("INSERT INTO " + INT_TABLE_NAME + " (class_id, object_id, field_id, value) VALUES (" + storeTypeID + ", ?, ?, ?");
-		selectIntegerStatement = db.prepareStatement("SELECT value FROM " + INT_TABLE_NAME + " WHERE class_id = " + storeTypeID + " AND object_id = ? AND field_id = ?");
+		deleteObjectStatement = db.prepareStatement("DELETE FROM "
+				+ OBJECT_TABLE_NAME + " WHERE class_id = " + storeTypeID
+				+ " AND object_id = ?");
+		insertObjectStatement = db
+				.prepareStatement("INSERT INTO "
+						+ OBJECT_TABLE_NAME
+						+ " (class_id, object_id, field_id, value_class_id, value_object_id) VALUES ("
+						+ storeTypeID + ", ?, ?, ?, ?");
+		selectObjectStatement = db
+				.prepareStatement("SELECT value_class_id, value_object_id FROM "
+						+ OBJECT_TABLE_NAME
+						+ " WHERE class_id = "
+						+ storeTypeID + " AND object_id = ? AND field_id = ?");
+		deleteStringStatement = db.prepareStatement("DELETE FROM "
+				+ STRING_TABLE_NAME + " WHERE class_id = " + storeTypeID
+				+ " AND object_id = ?");
+		insertStringStatement = db.prepareStatement("INSERT INTO "
+				+ STRING_TABLE_NAME
+				+ " (class_id, object_id, field_id, value) VALUES ("
+				+ storeTypeID + ", ?, ?, ?");
+		selectStringStatement = db.prepareStatement("SELECT value FROM "
+				+ STRING_TABLE_NAME + " WHERE class_id = " + storeTypeID
+				+ " AND object_id = ? AND field_id = ?");
+		deleteIntegerStatement = db.prepareStatement("DELETE FROM "
+				+ INT_TABLE_NAME + " WHERE class_id = " + storeTypeID
+				+ " AND object_id = ?");
+		insertIntegerStatement = db.prepareStatement("INSERT INTO "
+				+ INT_TABLE_NAME
+				+ " (class_id, object_id, field_id, value) VALUES ("
+				+ storeTypeID + ", ?, ?, ?");
+		selectIntegerStatement = db.prepareStatement("SELECT value FROM "
+				+ INT_TABLE_NAME + " WHERE class_id = " + storeTypeID
+				+ " AND object_id = ? AND field_id = ?");
 	}
 
 	private void examineType(Class<? extends KahinaObject> type)
@@ -198,7 +238,8 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 						fields.get(i).set(result, null);
 					} else
 					{
-						fields.get(i).set(result, retrieve(typeID, resultSet.getInt(2)));
+						fields.get(i).set(result,
+								retrieve(typeID, resultSet.getInt(2)));
 					}
 				} else if (type == FieldType.OBJECT_LIST)
 				{
@@ -215,7 +256,8 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 							values.add(retrieve(typeID, resultSet.getInt(2)));
 						}
 					}
-					fields.get(i).set(result, values.toArray(new KahinaObject[values.size()]));
+					fields.get(i).set(result,
+							values.toArray(new KahinaObject[values.size()]));
 				} else if (type == FieldType.STRING)
 				{
 					ResultSet resultSet = selectStringValue(id, i);
@@ -229,7 +271,8 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 					{
 						values.add(resultSet.getString(1));
 					}
-					fields.get(i).set(result, values.toArray(new String[values.size()]));
+					fields.get(i).set(result,
+							values.toArray(new String[values.size()]));
 				} else if (type == FieldType.INTEGER)
 				{
 					ResultSet resultSet = selectIntegerValue(id, i);
@@ -319,7 +362,8 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 				FieldType type = fieldTypes.get(i);
 				if (type == FieldType.OBJECT)
 				{
-					insertObjectValue(id, i, (KahinaObject) fields.get(i).get(object));
+					insertObjectValue(id, i, (KahinaObject) fields.get(i).get(
+							object));
 				} else if (type == FieldType.OBJECT_LIST)
 				{
 					Object values = fields.get(i).get(object);
@@ -345,7 +389,8 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 					}
 				} else if (type == FieldType.INTEGER)
 				{
-					insertIntegerValue(id, i, (Integer) fields.get(i).get(object));
+					insertIntegerValue(id, i, (Integer) fields.get(i).get(
+							object));
 				} else if (type == FieldType.INTEGER_LIST)
 				{
 					Object values = fields.get(i).get(object);
@@ -386,30 +431,35 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		}
 	}
 
-	private ResultSet selectObjectValue(int objectID, int fieldID) throws SQLException
+	private ResultSet selectObjectValue(int objectID, int fieldID)
+			throws SQLException
 	{
 		selectObjectStatement.setInt(1, objectID);
 		selectObjectStatement.setInt(2, fieldID);
 		return selectObjectStatement.executeQuery();
 	}
 
-	private ResultSet selectStringValue(int objectID, int fieldID) throws SQLException
+	private ResultSet selectStringValue(int objectID, int fieldID)
+			throws SQLException
 	{
 		selectStringStatement.setInt(1, objectID);
 		selectStringStatement.setInt(2, fieldID);
 		return selectStringStatement.executeQuery();
 	}
 
-	private ResultSet selectIntegerValue(int objectID, int fieldID) throws SQLException
+	private ResultSet selectIntegerValue(int objectID, int fieldID)
+			throws SQLException
 	{
 		selectIntegerStatement.setInt(1, objectID);
 		selectIntegerStatement.setInt(2, fieldID);
 		return selectIntegerStatement.executeQuery();
 	}
 
-	private void insertObjectValue(int objectID, int fieldID, KahinaObject value) throws SQLException
+	private void insertObjectValue(int objectID, int fieldID, KahinaObject value)
+			throws SQLException
 	{
-		if (value != null && !currentlyBeingStored.contains(value));
+		if (value != null && !currentlyBeingStored.contains(value))
+			;
 		{
 			manager.store(value);
 		}
@@ -421,19 +471,21 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 			insertObjectStatement.setNull(4, Types.INTEGER);
 		} else
 		{
-			insertObjectStatement.setInt(3, manager.getTypeID(value.getClass()));
+			insertObjectStatement
+					.setInt(3, manager.getTypeID(value.getClass()));
 			insertObjectStatement.setInt(4, value.getID());
 		}
 		insertObjectStatement.execute();
 	}
 
-	private void insertStringValue(int objectID, int fieldID, String value) throws SQLException
+	private void insertStringValue(int objectID, int fieldID, String value)
+			throws SQLException
 	{
 		insertStringStatement.setInt(1, objectID);
 		insertStringStatement.setInt(2, fieldID);
 		if (value == null)
 		{
-			insertStringStatement.setNull(3, Types.BLOB);
+			insertStringStatement.setNull(3, Types.LONGVARCHAR);
 		} else
 		{
 			insertStringStatement.setString(3, value);
@@ -441,7 +493,8 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		insertStringStatement.execute();
 	}
 
-	private void insertIntegerValue(int objectID, int fieldID, Integer value) throws SQLException
+	private void insertIntegerValue(int objectID, int fieldID, Integer value)
+			throws SQLException
 	{
 		insertIntegerStatement.setInt(1, objectID);
 		insertIntegerStatement.setInt(2, fieldID);
@@ -458,17 +511,19 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	/*
 	 * Alternative version without unboxing and null check.
 	 */
-	private void insertIntegerValue(int objectID, int fieldID, int value) throws SQLException
+	private void insertIntegerValue(int objectID, int fieldID, int value)
+			throws SQLException
 	{
 		insertIntegerStatement.setInt(1, objectID);
 		insertIntegerStatement.setInt(2, fieldID);
 		insertIntegerStatement.setInt(3, value);
 		insertIntegerStatement.execute();
 	}
-	
+
 	private KahinaObject retrieve(int typeID, int objectID)
 	{
-		if (typeID == this.storeTypeID && currentlyBeingRetrieved.containsKey(objectID))
+		if (typeID == this.storeTypeID
+				&& currentlyBeingRetrieved.containsKey(objectID))
 		{
 			return currentlyBeingRetrieved.get(objectID);
 		}
