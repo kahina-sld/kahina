@@ -18,8 +18,6 @@ import java.util.Set;
 import org.kahina.core.KahinaException;
 import org.kahina.io.database.DatabaseHandler;
 
-// TODO use UPSERT
-
 /**
  * A database data store suitable for {@link LightweightKahinaObject}s.
  * 
@@ -36,7 +34,9 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	private static final String CLIENT_ID = LightweightKahinaObjectDbDataStore.class
 			.getName();
 
-	private static final String TABLE_NAME_PREFIX = CLIENT_ID + "_";
+	private static final String TABLE_NAME_PREFIX = LightweightKahinaObjectDbDataStore.class
+			.getSimpleName()
+			+ "_";
 
 	private static final String OBJECT_TABLE_NAME = TABLE_NAME_PREFIX
 			+ "object_values";
@@ -46,8 +46,6 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 
 	private static final String INT_TABLE_NAME = TABLE_NAME_PREFIX
 			+ "int_values";
-
-	// TODO use UPSERT rather than "DELSERT"?
 
 	private PreparedStatement deleteObjectStatement;
 
@@ -347,9 +345,10 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	public void store(KahinaObject object)
 	{
 		int id = object.getID();
-		currentlyBeingStored.add(id);
+		currentlyBeingStored.add(id); // to protect from cycles
 		try
 		{
+			// If the object is already there, delete it.
 			deleteObjectStatement.setInt(1, id);
 			deleteObjectStatement.execute();
 			deleteStringStatement.setInt(1, id);
@@ -459,7 +458,6 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 			throws SQLException
 	{
 		if (value != null && !currentlyBeingStored.contains(value))
-			;
 		{
 			manager.store(value);
 		}

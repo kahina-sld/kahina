@@ -10,6 +10,18 @@ import org.kahina.io.database.DatabaseHandler;
 
 public class KahinaDbChart extends KahinaChart
 {
+	private static final String CLIENT_ID = KahinaDbChart.class.getName();
+
+	private static final String TABLE_NAME_PREFIX = KahinaDbChart.class
+			.getSimpleName() + "_";
+
+	private static final String CHART_TABLE_NAME = TABLE_NAME_PREFIX + "charts";
+
+	private static final String SEGMENT_TABLE_NAME = TABLE_NAME_PREFIX
+			+ "segments";
+
+	private static final String EDGE_TABLE_NAME = TABLE_NAME_PREFIX + "edges";
+
 	private DatabaseHandler db;
 
 	private PreparedStatement getLeftmostCoveredStatement;
@@ -73,22 +85,21 @@ public class KahinaDbChart extends KahinaChart
 
 	public void createTablesIfNecessary()
 	{
-		String clientID = KahinaDbChart.class.getName();
-		if (!db.isRegistered(clientID))
+		if (!db.isRegistered(CLIENT_ID))
 		{
 			try
 			{
 				// create table for KahinaCharts
-				db.execute("CREATE TABLE KahinaCharts " + "(" + "id INT,"
-						+ "leftBound INT," + "rightBound INT,"
+				db.execute("CREATE TABLE " + CHART_TABLE_NAME + " ("
+						+ "id INT," + "leftBound INT," + "rightBound INT,"
 						+ "leftmostCovered INT," + "rightmostCovered INT,"
 						+ "PRIMARY KEY (id)" + ")");
 				// create a table for the chart segments
-				db.execute("CREATE TABLE KahinaChartSegments" + "(" + "id INT,"
-						+ "chart INT," + "caption LONG VARCHAR,"
+				db.execute("CREATE TABLE " + SEGMENT_TABLE_NAME + " ("
+						+ "id INT," + "chart INT," + "caption LONG VARCHAR,"
 						+ "PRIMARY KEY (id, chart)" + ")");
 				// create a table for the chart edges
-				db.execute("CREATE TABLE KahinaChartEdges" + "(" + "id INT,"
+				db.execute("CREATE TABLE " + EDGE_TABLE_NAME + " (" + "id INT,"
 						+ "chart INT," + "leftBound INT," + "rightBound INT,"
 						+ "caption LONG VARCHAR," + "status INT,"
 						+ "PRIMARY KEY (id, chart)" + ")");
@@ -96,7 +107,7 @@ public class KahinaDbChart extends KahinaChart
 			{
 				throw new KahinaException("Failed to create tables. ", e);
 			}
-			db.register(clientID);
+			db.register(CLIENT_ID);
 		}
 	}
 
@@ -105,7 +116,9 @@ public class KahinaDbChart extends KahinaChart
 		try
 		{
 			db
-					.execute("INSERT INTO KahinaCharts (id, leftBound, rightBound, leftmostCovered, rightmostCovered) VALUES ("
+					.execute("INSERT INTO "
+							+ CHART_TABLE_NAME
+							+ " (id, leftBound, rightBound, leftmostCovered, rightmostCovered) VALUES ("
 							+ getID() + ", 0, 0, 0, 0)");
 		} catch (SQLException e)
 		{
@@ -117,80 +130,71 @@ public class KahinaDbChart extends KahinaChart
 	{
 		int chartID = getID();
 		getLeftmostCoveredStatement = db
-				.prepareStatement("SELECT leftmostCovered FROM KahinaCharts WHERE id = "
-						+ chartID);
-		setLeftmostCoveredStatement = db
-				.prepareStatement("UPDATE KahinaCharts SET leftmostCovered = ? WHERE id = "
-						+ chartID);
+				.prepareStatement("SELECT leftmostCovered FROM "
+						+ CHART_TABLE_NAME + " WHERE id = " + chartID);
+		setLeftmostCoveredStatement = db.prepareStatement("UPDATE "
+				+ CHART_TABLE_NAME + " SET leftmostCovered = ? WHERE id = "
+				+ chartID);
 		getRightmostCoveredStatement = db
-				.prepareStatement("SELECT rightmostCovered FROM KahinaCharts WHERE id = "
-						+ chartID);
-		setRightmostCoveredStatement = db
-				.prepareStatement("UPDATE KahinaCharts SET rightmostCovered = ? WHERE id = "
-						+ chartID);
-		getLeftBoundStatement = db
-				.prepareStatement("SELECT leftBound FROM KahinaCharts WHERE id = "
-						+ chartID);
-		setLeftBoundStatement = db
-				.prepareStatement("UPDATE KahinaCharts SET leftBound = ? WHERE id= "
-						+ chartID);
-		getRightBoundStatement = db
-				.prepareStatement("SELECT rightBound FROM KahinaCharts WHERE id = "
-						+ chartID);
-		setRightBoundStatement = db
-				.prepareStatement("UPDATE KahinaCharts SET leftBound= ? WHERE id = "
-						+ chartID);
-		getSegmentsWithCaptionStatement = db
-				.prepareStatement("SELECT id FROM KahinaChartSegments WHERE chart = "
-						+ chartID);
-		getSegmentCaptionStatement = db
-				.prepareStatement("SELECT caption FROM KahinaChartSegments WHERE id = ? AND chart = "
-						+ chartID);
-		updateSegmentCaptionStatement = db
-				.prepareStatement("UPDATE KahinaChartSegments SET caption = ? WHERE id = ? AND chart = "
-						+ chartID);
-		insertSegmentCaptionStatement = db
-				.prepareStatement("INSERT INTO KahinaChartSegments (id, chart, caption) VALUES (?, "
-						+ chartID + ", ?)");
-		getEdgeIDsStatement = db
-				.prepareStatement("SELECT id FROM KahinaChartEdges WHERE chart= "
-						+ chartID);
+				.prepareStatement("SELECT rightmostCovered FROM "
+						+ CHART_TABLE_NAME + " WHERE id = " + chartID);
+		setRightmostCoveredStatement = db.prepareStatement("UPDATE "
+				+ CHART_TABLE_NAME + " SET rightmostCovered = ? WHERE id = "
+				+ chartID);
+		getLeftBoundStatement = db.prepareStatement("SELECT leftBound FROM "
+				+ CHART_TABLE_NAME + " WHERE id = " + chartID);
+		setLeftBoundStatement = db.prepareStatement("UPDATE "
+				+ CHART_TABLE_NAME + " SET leftBound = ? WHERE id= " + chartID);
+		getRightBoundStatement = db.prepareStatement("SELECT rightBound FROM "
+				+ CHART_TABLE_NAME + " WHERE id = " + chartID);
+		setRightBoundStatement = db.prepareStatement("UPDATE "
+				+ CHART_TABLE_NAME + " SET leftBound= ? WHERE id = " + chartID);
+		getSegmentsWithCaptionStatement = db.prepareStatement("SELECT id FROM "
+				+ SEGMENT_TABLE_NAME + " WHERE chart = " + chartID);
+		getSegmentCaptionStatement = db.prepareStatement("SELECT caption FROM "
+				+ SEGMENT_TABLE_NAME + " WHERE id = ? AND chart = " + chartID);
+		updateSegmentCaptionStatement = db.prepareStatement("UPDATE "
+				+ SEGMENT_TABLE_NAME
+				+ " SET caption = ? WHERE id = ? AND chart = " + chartID);
+		insertSegmentCaptionStatement = db.prepareStatement("INSERT INTO "
+				+ SEGMENT_TABLE_NAME + " (id, chart, caption) VALUES (?, "
+				+ chartID + ", ?)");
+		getEdgeIDsStatement = db.prepareStatement("SELECT id FROM "
+				+ EDGE_TABLE_NAME + " WHERE chart= " + chartID);
 		getLeftBoundForEdgeStatement = db
-				.prepareStatement("SELECT leftBound FROM KahinaChartEdges WHERE id = ? AND chart = "
-						+ chartID);
-		updateLeftBoundForEdgeStatement = db
-				.prepareStatement("UPDATE KahinaChartEdges SET leftBound = ? WHERE id = ? AND chart = "
-						+ chartID);
-		insertLeftBoundForEdgeStatement = db
-				.prepareStatement("INSERT INTO KahinaChartEdges (id, chart, leftBound) VALUES (?, "
-						+ chartID + ", ?)");
+				.prepareStatement("SELECT leftBound FROM " + EDGE_TABLE_NAME
+						+ " WHERE id = ? AND chart = " + chartID);
+		updateLeftBoundForEdgeStatement = db.prepareStatement("UPDATE "
+				+ EDGE_TABLE_NAME
+				+ " SET leftBound = ? WHERE id = ? AND chart = " + chartID);
+		insertLeftBoundForEdgeStatement = db.prepareStatement("INSERT INTO "
+				+ EDGE_TABLE_NAME + " (id, chart, leftBound) VALUES (?, "
+				+ chartID + ", ?)");
 		getRightBoundForEdgeStatement = db
-				.prepareStatement("SELECT rightBound FROM KahinaChartEDGES WHERE id = ? AND chart = "
-						+ chartID);
-		updateRightBoundForEdgeStatement = db
-				.prepareStatement("UPDATE KahinaChartEdges SET rightBound = ? WHERE id = ? AND CHART = "
-						+ chartID);
-		insertRightBoundForEdgeStatement = db
-				.prepareStatement("INSERT INTO KahinaChartEdges (id, chart, rightBound) VALUES (?, "
-						+ chartID + ", ?)");
-		getEdgeStatusStatement = db
-				.prepareStatement("SELECT status from KahinaChartEdges WHERE id = ? AND chart = "
-						+ chartID);
-		updateEdgeStatusStatement = db
-				.prepareStatement("UPDATE KahinaChartEdges SET status = ? WHERE id = ? AND chart = "
-						+ chartID);
-		insertEdgeStatusStatement = db
-				.prepareStatement("INSERT INTO KahinaChartEdges (id, chart, status) VALUES (?, "
-						+ chartID + ", ?)");
-		getEdgeCaptionStatement = db
-				.prepareStatement("SELECT caption from KahinaChartEdges WHERE id = ? AND chart = "
-						+ chartID);
-		updateEdgeCaptionStatement = db
-				.prepareStatement("UPDATE KahinaChartEdges SET caption = ? WHERE id = ? AND chart = "
-						+ chartID);
-		insertEdgeCaptionStatement = db
-				.prepareStatement("INSERT INTO KahinaChartEdges (id, chart, caption) VALUES (?, "
-						+ chartID + ", ?)");
+				.prepareStatement("SELECT rightBound FROM " + EDGE_TABLE_NAME
+						+ " WHERE id = ? AND chart = " + chartID);
+		updateRightBoundForEdgeStatement = db.prepareStatement("UPDATE "
+				+ EDGE_TABLE_NAME
+				+ " SET rightBound = ? WHERE id = ? AND CHART = " + chartID);
+		insertRightBoundForEdgeStatement = db.prepareStatement("INSERT INTO "
+				+ EDGE_TABLE_NAME + " (id, chart, rightBound) VALUES (?, "
+				+ chartID + ", ?)");
+		getEdgeStatusStatement = db.prepareStatement("SELECT status from "
+				+ EDGE_TABLE_NAME + " WHERE id = ? AND chart = " + chartID);
+		updateEdgeStatusStatement = db.prepareStatement("UPDATE "
+				+ EDGE_TABLE_NAME + " SET status = ? WHERE id = ? AND chart = "
+				+ chartID);
+		insertEdgeStatusStatement = db.prepareStatement("INSERT INTO "
+				+ EDGE_TABLE_NAME + " (id, chart, status) VALUES (?, "
+				+ chartID + ", ?)");
+		getEdgeCaptionStatement = db.prepareStatement("SELECT caption from "
+				+ EDGE_TABLE_NAME + " WHERE id = ? AND chart = " + chartID);
+		updateEdgeCaptionStatement = db.prepareStatement("UPDATE "
+				+ EDGE_TABLE_NAME
+				+ " SET caption = ? WHERE id = ? AND chart = " + chartID);
+		insertEdgeCaptionStatement = db.prepareStatement("INSERT INTO "
+				+ EDGE_TABLE_NAME + " (id, chart, caption) VALUES (?, "
+				+ chartID + ", ?)");
 	}
 
 	public int getLeftmostCovered()
