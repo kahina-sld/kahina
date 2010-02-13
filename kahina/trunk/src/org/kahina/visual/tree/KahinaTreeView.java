@@ -95,6 +95,9 @@ public class KahinaTreeView extends KahinaView
     private HashMap<Integer, Integer> nodeX;
     private HashMap<Integer, Integer> nodeY;
     
+    //special display properties for certain nodes
+    HashMap<Integer, Color> nodeBorderColor;
+    
     //mapping from status values to display properties
     HashMap<Integer, Color> statusNodeColorEncoding;
     HashMap<Integer, Color> statusEdgeColorEncoding;
@@ -123,6 +126,7 @@ public class KahinaTreeView extends KahinaView
         treeLayer = 0;
         secondaryTreeModel = null;
         resetAllStructures();
+        nodeBorderColor = new HashMap<Integer, Color>();
         statusNodeColorEncoding = new HashMap<Integer, Color>();
         statusEdgeColorEncoding = new HashMap<Integer, Color>();
         statusBorderColorEncoding = new HashMap<Integer, Color>();
@@ -493,6 +497,23 @@ public class KahinaTreeView extends KahinaView
         }
     }
     
+    public void setNodeBorderColor(int nodeID, Color color)
+    {
+        if (color == null)
+        {
+            nodeBorderColor.remove(nodeID);
+        }
+        else
+        {
+            nodeBorderColor.put(nodeID, color);
+        }    
+    }
+    
+    public Color getNodeBorderColor(int nodeID)
+    {
+        return nodeBorderColor.get(nodeID);
+    }
+    
     public int getEdgeStyle(int nodeID)
     {
         return COMPLETE_LINES;
@@ -567,6 +588,7 @@ public class KahinaTreeView extends KahinaView
         }
         treeLayer = 0;
         this.treeModel = (KahinaLayeredTree) treeModel;
+        nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
         calculateCoordinates();
     }
@@ -580,6 +602,7 @@ public class KahinaTreeView extends KahinaView
         this.secondaryTreeModel = (KahinaLayeredTree) treeModel;
         ((KahinaLayeredTree) this.secondaryTreeModel).setReferenceNode(((KahinaLayeredTree) this.treeModel).getReferenceNode());
         this.secondaryTreeModel.setPrimaryModel(this.treeModel);
+        nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
         calculateCoordinates();
     }
@@ -589,6 +612,7 @@ public class KahinaTreeView extends KahinaView
         treeLayer = layerID;
         layerModel.setReferenceNode(referenceNode);
         this.treeModel = layerModel;
+        nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
         calculateCoordinates();
     }

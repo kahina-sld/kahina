@@ -160,6 +160,12 @@ public class KahinaTreeViewPanel extends KahinaViewPanel
                 canvas.setStroke(new BasicStroke(2));
                 canvas.drawRect(x - 3, y - 1, width + 6, v.getNodeHeight(nodeID) + 4);
             }
+            if (v.getNodeBorderColor(nodeID) != null)
+            {
+                canvas.setColor(v.getNodeBorderColor(nodeID));
+                canvas.setStroke(new BasicStroke(2));
+                canvas.drawRect(x - 3, y - 1, width + 6, v.getNodeHeight(nodeID) + 4);
+            }
         }
     }
     

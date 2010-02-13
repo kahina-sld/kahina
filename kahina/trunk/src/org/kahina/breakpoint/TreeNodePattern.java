@@ -220,13 +220,35 @@ public class TreeNodePattern
             }
             case CAPTION:
             {
-                Matcher matcher = regexValue.matcher(m.getNodeCaption(nodeID));
-                return matcher.matches();
+                switch (rel)
+                {
+                    case EQUALITY: return m.getNodeCaption(nodeID).equals(stringValue);
+                    case MATCHING:
+                    {
+                        Matcher matcher = regexValue.matcher(m.getNodeCaption(nodeID));
+                        return matcher.matches();
+                    }
+                    case STARTS_WITH: return m.getNodeCaption(nodeID).startsWith(stringValue);
+                    case CONTAINS: return m.getNodeCaption(nodeID).contains(stringValue);
+                    case ENDS_WITH: return m.getNodeCaption(nodeID).endsWith(stringValue);
+                    default: return false;
+                }
             }
             case EDGE_LABEL:
             {
-                Matcher matcher = regexValue.matcher(m.getNodeCaption(nodeID));
-                return matcher.matches();
+                switch (rel)
+                {
+                    case EQUALITY: return m.getEdgeLabel(nodeID).equals(stringValue);
+                    case MATCHING:
+                    {
+                        Matcher matcher = regexValue.matcher(m.getEdgeLabel(nodeID));
+                        return matcher.matches();
+                    }
+                    case STARTS_WITH: return m.getEdgeLabel(nodeID).startsWith(stringValue);
+                    case CONTAINS: return m.getEdgeLabel(nodeID).contains(stringValue);
+                    case ENDS_WITH: return m.getEdgeLabel(nodeID).endsWith(stringValue);
+                    default: return false;
+                }
             }
             case STATUS:
             {
@@ -234,7 +256,15 @@ public class TreeNodePattern
             }
             case ID:
             {
-                return nodeID == intValue;
+                switch (rel)
+                {
+                    case IDENTITY: return nodeID == intValue;
+                    case LESS: return nodeID < intValue;
+                    case GREATER: return nodeID > intValue;
+                    case LESS_OR_EQUAL: return nodeID <= intValue;
+                    case GREATER_OR_EQUAL: return nodeID >= intValue;
+                    default: return false;
+                }
             }
         }
         return true;

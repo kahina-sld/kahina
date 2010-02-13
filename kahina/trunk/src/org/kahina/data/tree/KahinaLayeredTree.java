@@ -54,7 +54,7 @@ public class KahinaLayeredTree extends KahinaTree
     
     public List<Integer> getChildren(int nodeID, int layerID)
     {
-        //System.err.println("node: " + nodeID);
+        //System.err.print("KahinaLayeredTree.getChildren(" + nodeID + "," + layerID + ") = ");
         List<Integer> chi = new ArrayList<Integer>();
         List<Integer> frontLine = new ArrayList<Integer>();
         if (nodeID == getRootID(layerID) || decideOnLevel(nodeID) >= layerID)
@@ -76,19 +76,16 @@ public class KahinaLayeredTree extends KahinaTree
             }
         }
         //System.err.println(" node: " + nodeID + " layer: " + layerID + " chi: " + chi);
+        //System.err.println(chi);
         return chi;
     }
     
     //this method should be implemented by deriving classes!
     //full access to the tree model, can thus be based on node info, tree structure, status information
-    //TODO: in the case of the secondary tree model, use the captions from the primary model instead!
+    //default version: all the nodes belong to level 0
     public int decideOnLevel(int nodeID)
     {
-        if (nodeID == rootID) return 0;
-        if (nodeID == -1) return -1;
-        if (primaryModel.getNodeCaption(nodeID).indexOf("rule") != -1 || primaryModel.getNodeCaption(nodeID).indexOf("\"") != -1) return 0;
-        else if (primaryModel.getNodeCaption(nodeID).indexOf("goal") != -1) return 1;
-        return 2;
+        return 0;
     }
     
     public static KahinaLayeredTree importXML(Document dom)

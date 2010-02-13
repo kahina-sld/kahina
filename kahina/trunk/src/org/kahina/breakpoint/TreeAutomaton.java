@@ -39,6 +39,19 @@ public class TreeAutomaton
     
     //reports to this controller if the encoded pattern was found in the tree
     KahinaController ctrl;
+    //link to the breakpoint this automaton implements; contains more contextual info
+    KahinaBreakpoint bp;
+    
+    public TreeAutomaton(KahinaBreakpoint bp)
+    {
+        states = new HashSet<Integer>();
+        acceptingStates = new HashSet<Integer>();
+        rules = new HashSet<TreeAutomatonRule>();
+        
+        this.tree = new KahinaTree();
+        this.annotations =  new HashMap<Integer,Set<Integer>>();
+        this.bp = bp;    
+    }
     
     /**
      * set or change the tree this breakpoint is monitoring
@@ -55,6 +68,16 @@ public class TreeAutomaton
         }
     }
     
+    public KahinaController getController()
+    {
+        return ctrl;
+    }
+
+    public void setController(KahinaController ctrl)
+    {
+        this.ctrl = ctrl;
+    }
+
     /**
      * annotates a tree node with all possible labels according to the rules
      * recursively reannotates parents if it triggers a change in annotation, 
@@ -148,19 +171,19 @@ public class TreeAutomaton
         }
         else
         {
-            ctrl.processEvent(new KahinaTreeMatchEvent(this, nodeID));
+            ctrl.processEvent(new KahinaTreeMatchEvent(bp, nodeID));
         }
     }
     
     public String toString()
     {
-        String str = "TreeAutomaton";
+        String str = "TreeAutomaton\n";
         str += "   states: " + states + "\n";
         str += "   accepting states: " + acceptingStates + "\n";
         str += "   rules:\n";
         for (TreeAutomatonRule rule : rules)
         {
-            str += "      " + rule.toString();
+            str += "      " + rule.toString() + "\n";
         }
         return str;
     }  

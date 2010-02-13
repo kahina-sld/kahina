@@ -171,15 +171,21 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
                 newBreakpoint.setName("Breakpoint " + highestID);
                 highestID++;
                 breakpoints.add(newBreakpoint);
-                compiledBreakpoints.add(new TreeAutomaton());
+                compiledBreakpoints.add(new TreeAutomaton(newBreakpoint));
                 breakpointList.setListData(breakpoints.toArray());
                 break;
             }
             case BreakpointEditorEvent.TEST_BREAKPOINTS:
             {
-                BreakpointTestWindow w = new BreakpointTestWindow(compiledBreakpoints);
+                BreakpointTestWindow w = new BreakpointTestWindow(compiledBreakpoints, control);
                 w.setVisible(true);
                 break;
+            }
+            case BreakpointEditorEvent.COMPILE_CURRENT_BREAKPOINT:
+            {
+                TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
+                System.err.println("Compiled Tree Automaton:\n" + compiledBreakpoint.toString());
+                compiledBreakpoints.set(curID, compiledBreakpoint);
             }
         }
     }

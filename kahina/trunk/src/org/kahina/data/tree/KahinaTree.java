@@ -19,15 +19,15 @@ public class KahinaTree extends KahinaObject
     static String type = "KahinaTree";
     
     //empty tree has rootID = -1
-    int rootID = -1;
+    protected int rootID = -1;
     
     //encode properties of individual nodes
-    HashMap<Integer, Integer> parents;
-    HashMap<Integer, List<Integer>> children;
-    HashMap<Integer, String> nodeCaptions; //captions are displayed on the nodes
-    HashMap<Integer, String> edgeLabels; //labels are displayed on the edges to the parent
-    HashMap<Integer, Integer> status; //appearance of nodes can be steered by appearance
-    HashSet<Integer> collapsed; //node collapsing is stored in the model, not in individual views!
+    protected HashMap<Integer, Integer> parents;
+    protected HashMap<Integer, List<Integer>> children;
+    protected HashMap<Integer, String> nodeCaptions; //captions are displayed on the nodes
+    protected HashMap<Integer, String> edgeLabels; //labels are displayed on the edges to the parent
+    protected HashMap<Integer, Integer> status; //appearance of nodes can be steered by appearance
+    protected HashSet<Integer> collapsed; //node collapsing is stored in the model, not in individual views!
     
     HashSet<Integer> terminals; //terminals will be displayed on one level
     
@@ -132,13 +132,16 @@ public class KahinaTree extends KahinaObject
     
     public List<Integer> getChildren(int nodeID, int layerID)
     {
+        //System.err.print("KahinaTree.getChildren(" + nodeID + "," + layerID + ") = ");
         List<Integer> ids = children.get(nodeID);
         if (ids == null)
         {
+            //System.err.println("[]");
             return new ArrayList<Integer>();
         }
         else
         {
+            //System.err.println(ids);
             return ids;
         }
     }
@@ -266,6 +269,24 @@ public class KahinaTree extends KahinaObject
         }
         nextID = nextIDHyp + 1;
         return nextIDHyp;
+    }
+    
+    public void clear()
+    {
+        rootID = -1;
+        
+        parents = new HashMap<Integer, Integer>();
+        children = new HashMap<Integer, List<Integer>>();
+        nodeCaptions = new HashMap<Integer, String>();
+        edgeLabels = new HashMap<Integer, String>();
+        status = new HashMap<Integer, Integer>();
+        collapsed = new HashSet<Integer>();
+        
+        terminals = new HashSet<Integer>();
+        
+        primaryModel = this;
+        
+        nextID = 0;
     }
     
     public String exportXML()

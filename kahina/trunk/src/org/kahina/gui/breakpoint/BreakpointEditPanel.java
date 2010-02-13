@@ -22,6 +22,8 @@ import org.kahina.control.event.KahinaEvent;
 
 public class BreakpointEditPanel extends JPanel implements ActionListener, KahinaListener
 {
+    private KahinaController control;
+    
     private JTabbedPane editTabs;  
     private NodeConstraintPanel nodeConstraintPanel;
     private TreeFragmentPanel treeFragmentPanel; 
@@ -44,6 +46,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
     
     public BreakpointEditPanel(KahinaController control)
     {
+        this.control = control;
         control.registerListener("breakpoint_editor", this);
         
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -138,6 +141,12 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         {
             Color newColor = JColorChooser.showDialog(this,"Choose Background Color",signalColor.getBackground());
             signalColor.setBackground(newColor);
+            breakpoint.setSignalColor(newColor);
+        }
+        else if (s.equals("compileBreakpoint"))
+        {
+            breakpoint.setPattern(treeFragmentPanel.getTreePattern());
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.COMPILE_CURRENT_BREAKPOINT));
         }
     }
     

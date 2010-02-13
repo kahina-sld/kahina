@@ -1,5 +1,6 @@
 package org.kahina.gui.breakpoint;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -10,14 +11,19 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.kahina.breakpoint.KahinaBreakpoint;
 import org.kahina.breakpoint.TreeAutomaton;
+import org.kahina.control.KahinaController;
+import org.kahina.control.KahinaListener;
+import org.kahina.control.event.KahinaEvent;
+import org.kahina.control.event.KahinaTreeMatchEvent;
 import org.kahina.data.KahinaTypeException;
 import org.kahina.data.tree.KahinaLayeredTree;
 import org.kahina.visual.tree.KahinaTreeView;
 import org.kahina.visual.tree.KahinaTreeViewMarker;
 import org.kahina.visual.tree.KahinaTreeViewPanel;
 
-public class BreakpointTestWindow extends JFrame implements ActionListener
+public class BreakpointTestWindow extends JFrame implements ActionListener, KahinaListener
 {
     KahinaLayeredTree model;   
     List<TreeAutomaton> breakpoints;
@@ -25,27 +31,37 @@ public class BreakpointTestWindow extends JFrame implements ActionListener
     KahinaTreeView view;
     
     JPanel mainPanel;
+    TreeGenerationPanel treeGenPanel;
     NodeOperationsPanel nodeOpPanel;
     BreakpointEditorHintPanel hintPanel;
     KahinaTreeViewPanel viewPanel;
     
-    public BreakpointTestWindow(List<TreeAutomaton> breakpoints)
+    Thread growthProcess;
+    boolean growthMode;
+    
+    public BreakpointTestWindow(List<TreeAutomaton> breakpoints, KahinaController control)
     {
         this.setTitle("Kahina Breakpoint Test Environment");
         this.setSize(800,600);
+        
+        control.registerListener("treeMatch", this);
         
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
         
         model = new KahinaLayeredTree();
-        model.addNode("start", "none", 0);
-        model.setRootID(0);
+        int rootID = model.addNode("start", "none", 0);
+        model.setRootID(rootID);
         this.breakpoints = breakpoints;
         
         for (TreeAutomaton breakpoint : breakpoints)
         {
             breakpoint.setTree(model);
+            breakpoint.setController(control);
         }
+        
+        treeGenPanel = new TreeGenerationPanel(this);
+        mainPanel.add(treeGenPanel);
         
         nodeOpPanel = new NodeOperationsPanel(this);
         mainPanel.add(nodeOpPanel);
@@ -54,6 +70,10 @@ public class BreakpointTestWindow extends JFrame implements ActionListener
         mainPanel.add(hintPanel);
         
         view = new KahinaTreeView();
+        view.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
+        view.setVerticalDistance(4);
+        view.setHorizontalDistance(10);
+        view.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
         try
         {
             view.display(model);
@@ -71,7 +91,9 @@ public class BreakpointTestWindow extends JFrame implements ActionListener
         
         add(mainPanel);
         
-        viewPanel.setView(view); 
+        viewPanel.setView(view);
+        
+        growthProcess = null;
     }
     
     public void actionPerformed(ActionEvent e)
@@ -79,18 +101,194 @@ public class BreakpointTestWindow extends JFrame implements ActionListener
         String s = e.getActionCommand();
         if (s.equals("addChild"))
         {
-            int parentNode = model.getReferenceNode();
-            String caption = (String) JOptionPane.showInputDialog(this,"Node caption:", "New node",JOptionPane.PLAIN_MESSAGE);
-            int child = model.addNode(caption, "none", 0);
-            System.err.println("new child ID: " + child);
-            model.addChild(parentNode, child);
-            view.resetAllStructures();
-            view.calculateCoordinates();
-            viewPanel.updateDisplay();
+            Integer parentNode = view.getMarkedNode();
+            if (parentNode == null)
+            {
+                hint("First select the parent node, then click on this button to add a child.", Color.RED);
+            }
+            else
+            {
+                String caption = (String) JOptionPane.showInputDialog(this,"Node caption:", "New node",JOptionPane.PLAIN_MESSAGE);
+                addNode(parentNode, caption);
+                view.resetAllStructures();
+                view.calculateCoordinates();
+                viewPanel.updateDisplay();
+            }
         }
         else if (s.equals("removeNode"))
         {
             
+        }
+        else if (s.equals("addRandomNode"))
+        {
+            int parentNode = (int) (Math.random() * model.getNodeCaptions().size());
+            String caption = generateRandomNodeCaption();
+            view.setMarkedNode(addNode(parentNode, caption));
+            view.resetAllStructures();
+            view.calculateCoordinates();
+            viewPanel.updateDisplay();
+        }
+        else if (s.equals("randomGrowth"))
+        {
+            growthMode = true;
+            growthProcess = new Thread(new GrowthProcess());
+            growthProcess.start();
+        }
+        else if (s.equals("stopGrowth"))
+        {
+            growthMode = false;
+            view.resetAllStructures();
+            view.calculateCoordinates();
+            viewPanel.updateDisplay();
+        }
+        else if (s.equals("discardTree"))
+        {
+            model.clear();
+            int rootID = model.addNode("start", "none", 0);
+            model.setRootID(rootID);
+            for (TreeAutomaton breakpoint : breakpoints)
+            {
+                breakpoint.setTree(model);
+            }
+            try
+            {
+                view.display(model);
+            }
+            catch (KahinaTypeException ex)
+            {
+                System.err.println("KahinaTypeException while displaying tree. This should not happen.");
+            }
+            view.resetAllStructures();
+            view.calculateCoordinates();
+            viewPanel.updateDisplay();
+        }
+    }
+    
+    private int addNode(int parent, String caption)
+    {
+        System.err.println("Adding node to " + parent + ": " + caption);
+        int child = model.addNode(caption, "none", 0);
+        model.addChild(parent, child);
+        updateTreeAutomata(child);
+        return child;
+    }
+    
+    private void updateTreeAutomata(int child)
+    {
+        for (TreeAutomaton breakpoint : breakpoints)
+        {
+            breakpoint.process(child);
+        }
+    }
+    
+    private String generateRandomNodeCaption()
+    {
+        StringBuilder caption = new StringBuilder();
+        int syllNumber = (int) (Math.random() * 5) + 1;
+        for (int i = 0; i < syllNumber; i++)
+        {
+            caption.append(generateRandomOnset());
+            caption.append(generateRandomNucleus());
+            caption.append(generateRandomCoda());
+        }
+        return caption.toString();
+    }
+    
+    private String generateRandomOnset()
+    {
+        int choice = (int) (Math.random() * 10);
+        switch (choice)
+        {
+            case 0: return "p";
+            case 1: return "t";
+            case 2: return "k";
+            case 3: return "b";
+            case 4: return "d";
+            case 5: return "g";
+            case 6: return "l";
+            case 7: return "r";
+            case 8: return "m";
+            case 9: return "s";
+        }
+        return "";
+    }
+    
+    private String generateRandomNucleus()
+    {
+        int choice = (int) (Math.random() * 8);
+        switch (choice)
+        {
+            case 0: return "a";
+            case 1: return "i";
+            case 2: return "u";
+            case 3: return "e";
+            case 4: return "o";
+            case 5: return "aa";
+            case 6: return "ii";
+            case 7: return "uu";
+        }
+        return "";
+    }
+    
+    private String generateRandomCoda()
+    {
+        int choice = (int) (Math.random() * 3);
+        switch (choice)
+        {
+            case 0: return "";
+            case 1: return "n";
+            case 2: return "m";
+        }
+        return "";
+    }
+    
+    public void processEvent(KahinaEvent e)
+    {
+        if (e.getType().equals("treeMatch"))
+        {
+            processBreakpointEvent((KahinaTreeMatchEvent) e);
+        }
+    }
+    
+    private void processBreakpointEvent(KahinaTreeMatchEvent e)
+    {
+        hint("Breakpoint match: " + e.getBreakpoint().getName(), e.getBreakpoint().getSignalColor());
+        view.setNodeBorderColor(e.getNodeID(), e.getBreakpoint().getSignalColor());
+        growthMode = false;
+        view.resetAllStructures();
+        view.calculateCoordinates();
+        viewPanel.updateDisplay();
+        view.setMarkedNode(e.getNodeID());       
+    }
+    
+    public void hint(String hint)
+    {
+        hintPanel.hint(hint);
+    }
+    
+    public void hint(String hint, Color color)
+    {
+        hintPanel.hint(hint,color);
+    }
+    
+    private class GrowthProcess implements Runnable
+    {           
+        public void run()
+        {
+            while (growthMode)
+            {
+                try
+                {
+                    Thread.sleep(10);
+                }
+                catch (InterruptedException e)
+                {
+                    
+                }
+                int parentNode = (int) (Math.random() * model.getNodeCaptions().size());
+                String caption = generateRandomNodeCaption();
+                addNode(parentNode, caption);
+            }
         }
     }
 }

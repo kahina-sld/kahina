@@ -21,7 +21,8 @@ public class BreakpointEditorEvent extends KahinaEvent
     public static final int CHANGE_NODE_SELECTION_MODE = 6;
     public static final int TREE_NODE_UPDATE = 7;  
     public static final int TREE_PATTERN_CHANGE = 7;  
-    public static final int TEST_BREAKPOINTS = 8;  
+    public static final int TEST_BREAKPOINTS = 8; 
+    public static final int COMPILE_CURRENT_BREAKPOINT = 9;    
     
     public BreakpointEditorEvent(int editorEventType)
     {
@@ -107,6 +108,10 @@ public class BreakpointEditorEvent extends KahinaEvent
         else if (editorEventType == TEST_BREAKPOINTS)
         {
             s += "test breakpoints"; 
+        }
+        else if (editorEventType == COMPILE_CURRENT_BREAKPOINT)
+        {
+            s += "compile current breakpoint"; 
         }
         else
         {

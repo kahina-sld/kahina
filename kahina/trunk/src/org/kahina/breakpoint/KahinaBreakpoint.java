@@ -11,7 +11,7 @@ public class KahinaBreakpoint
     
     public TreeAutomaton compile()
     {
-        TreeAutomaton a = new TreeAutomaton();
+        TreeAutomaton a = new TreeAutomaton(this);
         int rootState = compileNode(a, pattern.getRoot());
         a.acceptingStates.add(rootState);
         return a;
@@ -28,6 +28,7 @@ public class KahinaBreakpoint
         {
             rule.requiredChildAnnotations.add(compileNode(a, child));
         }
+        a.rules.add(rule);
         return state;
     }
     
