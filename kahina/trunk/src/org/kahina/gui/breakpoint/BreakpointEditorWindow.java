@@ -51,9 +51,6 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
     List<TreeAutomaton> compiledBreakpoints;
     int curID; //list ID of the breakpoint we are editing
     
-    //count produced breakpoints; new breakpoints will be named according to this 
-    int highestID;
-    
     public BreakpointEditorWindow(KahinaController control)
     {       
         this.control = control;
@@ -65,7 +62,6 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         breakpoints = new ArrayList<KahinaBreakpoint>();
         compiledBreakpoints = new ArrayList<TreeAutomaton>();
         curID = -1;
-        highestID = 1;
         
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.LINE_AXIS));    
@@ -168,8 +164,6 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
             case BreakpointEditorEvent.NEW_BREAKPOINT:
             {
                 KahinaBreakpoint newBreakpoint = new KahinaBreakpoint();
-                newBreakpoint.setName("Breakpoint " + highestID);
-                highestID++;
                 breakpoints.add(newBreakpoint);
                 compiledBreakpoints.add(new TreeAutomaton(newBreakpoint));
                 breakpointList.setListData(breakpoints.toArray());
@@ -192,7 +186,14 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
     
     public void valueChanged(ListSelectionEvent e)
     {
-        curID = e.getFirstIndex();
-        editPanel.setBreakpoint(breakpoints.get(curID));
+        curID = breakpointList.getSelectedIndex();
+        if (curID == -1)
+        {
+            editPanel.setBreakpoint(null);
+        }
+        else
+        {
+            editPanel.setBreakpoint(breakpoints.get(curID));
+        }
     }
 }

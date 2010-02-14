@@ -6,7 +6,7 @@ public class TreePattern
     
     public TreePattern()
     {
-        root = null;
+        root = new TreePatternNode();
     }
     
     public TreePattern(TreeNodePattern rootPattern)

@@ -87,14 +87,26 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         rootConstPanel.setConstrOptions(constrOptions);
     }
     
+    public void setRootConstraint(SingleNodeConstraintPanel root)
+    {
+        if (rootConstPanel != null)
+        {
+            treePanel.remove(rootConstPanel);
+            rootConstPanel = null;
+        }
+        rootConstPanel = root;
+        rootConstPanel.setHintPanel(hintPanel);   
+        treePanel.add(rootConstPanel);
+    }
+    
     public void actionPerformed(ActionEvent e)
     {
         String s = e.getActionCommand();
         if (s.equals("negOperation"))
         {
-            if (rootConstPanel.getMarkedPattern() != null)
+            if (markedTreeNode.getMarkedPattern() != null)
             {
-                rootConstPanel.introduceNegation(rootConstPanel.getMarkedPattern());
+                markedTreeNode.introduceNegation(markedTreeNode.getMarkedPattern());
             }
             else
             {
@@ -103,7 +115,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         }
         else if (s.equals("andOperation"))
         {
-            if (rootConstPanel.getMarkedPattern() != null)
+            if (markedTreeNode.getMarkedPattern() != null)
             {
                 control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_AND_OPERATION));
                 hint("Now select the second conjunct.", Color.BLACK);
@@ -115,7 +127,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         }
         else if (s.equals("orOperation"))
         {
-            if (rootConstPanel.getMarkedPattern() != null)
+            if (markedTreeNode.getMarkedPattern() != null)
             {
                 control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_OR_OPERATION));
                 hint("Now select the second disjunct.", Color.BLACK);
@@ -127,7 +139,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         }
         else if (s.equals("implOperation"))
         {
-            if (rootConstPanel.getMarkedPattern() != null)
+            if (markedTreeNode.getMarkedPattern() != null)
             {
                 control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_IMPL_OPERATION));
                 hint("Now select the consequent.", Color.BLACK);
@@ -247,19 +259,17 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         hintPanel.setEnabled(true);
         boolOpsPanel.setEnabled(true);
         nodeOpsPanel.setEnabled(true);
+        treePanel.recalculateCoordinates();
         validate();
     }
     
     public void deactivateAllComponents()
     {
-        if (rootConstPanel != null)
-        {
-            treePanel.remove(rootConstPanel);
-            rootConstPanel = null;
-        }
+        clear();
         hintPanel.setEnabled(false);
         boolOpsPanel.setEnabled(false);
         nodeOpsPanel.setEnabled(false);
+        treePanel.recalculateCoordinates();
         validate();
     } 
     
@@ -282,8 +292,11 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
             treePanel.recalculateCoordinates();
             if (markedTreeNode != null)
             {
-                markedTreeNode.setMarked(false);
-            }
+                if (markedTreeNode != event.getPanel())
+                {
+                    markedTreeNode.removeAllMarkings();
+                }
+            }        
             markedTreeNode = event.getPanel();
             if (markedTreeNode != null)
             {
@@ -311,5 +324,35 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
             }
         }
         return node;
+    }
+    
+    public void clear()
+    {
+        if (rootConstPanel != null)
+        {
+            clearNode(rootConstPanel);  
+            rootConstPanel = null;
+        }
+        
+        children = new HashMap<SingleNodeConstraintPanel, List<SingleNodeConstraintPanel>>();
+        parents = new HashMap<SingleNodeConstraintPanel, SingleNodeConstraintPanel> ();
+        
+        selectionMode = -1;
+        
+        markedTreeNode = null;
+    }
+    
+    private void clearNode(SingleNodeConstraintPanel panel)
+    {
+        treePanel.remove(panel);
+        for (SingleNodeConstraintPanel child : getChildren(panel))
+        {
+            clearNode(child);
+        }
+    }
+    
+    public void displayTreePattern(TreePattern pat)
+    {
+        
     }
 }

@@ -4,10 +4,20 @@ import java.awt.Color;
 
 public class KahinaBreakpoint
 {
+    static int number = 0;
     private String name;
     private boolean active;
     private Color signalColor;
     private TreePattern pattern;
+    
+    public KahinaBreakpoint()
+    {
+        number++;
+        setName("Breakpoint " + number);
+        signalColor = randomColor();
+        active = true;
+        pattern = new TreePattern();
+    }
     
     public TreeAutomaton compile()
     {
@@ -40,6 +50,11 @@ public class KahinaBreakpoint
     public void setName(String name)
     {
         this.name = name;
+    }
+    
+    public boolean isActive()
+    {
+        return active;
     }
     
     public void activate()
@@ -75,5 +90,13 @@ public class KahinaBreakpoint
     public void setPattern(TreePattern pattern)
     {
         this.pattern = pattern;
+    }
+    
+    public Color randomColor()
+    {
+        int r = (int) (Math.random() * 256);
+        int g = (255 - r) + (int) (Math.random() * r);
+        int b = 510 - r - g;
+        return new Color(r,g,b);
     }
 }

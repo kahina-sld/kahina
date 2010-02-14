@@ -10,6 +10,13 @@ public class TreePatternNode
     private TreePatternNode parent;
     private List<TreePatternNode> children;  
     
+    public TreePatternNode()
+    {
+        this.pattern = new TreeNodePattern();
+        this.parent = null;
+        this.children = new ArrayList<TreePatternNode>();
+    }
+    
     public TreePatternNode(TreeNodePattern pattern)
     {
         this.pattern = pattern;

@@ -27,6 +27,7 @@ import javax.swing.text.JTextComponent;
 
 import org.kahina.breakpoint.PatternFormatException;
 import org.kahina.breakpoint.TreeNodePattern;
+import org.kahina.breakpoint.TreePatternNode;
 import org.kahina.control.KahinaController;
 import org.kahina.control.KahinaListener;
 import org.kahina.control.event.KahinaEvent;
@@ -155,13 +156,6 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
     
     public void activateAllComponents()
     {
-        if (constPanel == null)
-        {
-            constPanel = new SingleNodeConstraintPanel(constrOptions, control);   
-            constPanel.setHintPanel(hintPanel);
-            this.add(constPanel);
-            System.err.println("constraint panel added!");
-        }
         hintPanel.setEnabled(true);
         boolOpsPanel.setEnabled(true);
         validate();
@@ -169,11 +163,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
     
     public void deactivateAllComponents()
     {
-        if (constPanel != null)
-        {
-            remove(constPanel);
-            constPanel = null;
-        }
+        clear();
         hintPanel.setEnabled(false);
         boolOpsPanel.setEnabled(false);
         validate();
@@ -193,5 +183,21 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         {
             selectionMode = event.getGoalID();
         }
+    }
+    
+    public void clear()
+    {
+        if (constPanel != null)
+        {
+            remove(constPanel);  
+            constPanel = null;
+        }
+    }
+    
+    public void displayNodeConstraint(TreePatternNode n)
+    {
+        constPanel = new SingleNodeConstraintPanel(constrOptions, control, n);
+        constPanel.setHintPanel(hintPanel);
+        this.add(constPanel);
     }
 }

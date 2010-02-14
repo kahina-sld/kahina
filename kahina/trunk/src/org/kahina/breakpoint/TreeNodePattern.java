@@ -162,6 +162,16 @@ public class TreeNodePattern
         adaptArgumentsToType();
     }
     
+    public int getRel()
+    {
+        return rel;
+    }
+
+    public void setRel(int rel)
+    {
+        this.rel = rel;
+    }
+
     private void adaptArgumentsToType()
     {
         //TODO: initialize or set to null leftArg and rightArg according to type
@@ -343,6 +353,48 @@ public class TreeNodePattern
             case ENDS_WITH: return ".endsWith(" + stringValue + ")"; 
         }
         return "";
+    }
+    
+    public String getTypeAsString()
+    {
+        switch (type)
+        {
+            case CAPTION: return "step label";
+            case EDGE_LABEL: return "step origin";
+            case STATUS: return "step id";
+            case ID: return "step type";          
+        }
+        return "--";
+    }
+    
+    public String getRelAsString()
+    {
+        switch (rel)
+        {
+            case IDENTITY: return "=";
+            case LESS: return "<";
+            case LESS_OR_EQUAL: return "<=";
+            case GREATER: return ">";
+            case GREATER_OR_EQUAL: return ">="; 
+            case EQUALITY: return "equals"; 
+            case MATCHING: return "matches"; 
+            case STARTS_WITH: return "starts with"; 
+            case CONTAINS: return "contains"; 
+            case ENDS_WITH: return "ends with"; 
+        }    
+        return "";
+    }
+    
+    public String getValueAsString()
+    {
+        switch (type)
+        {
+            case CAPTION: return "step label";
+            case EDGE_LABEL: return "step origin";
+            case STATUS: return "step id";
+            case ID: return "step type";          
+        }
+        return "--";
     }
     
     public void setType(String typeString)

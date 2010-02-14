@@ -111,6 +111,11 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
             setEnabled(true);
             this.breakpoint = breakpoint;
         }
+        else
+        {
+            clearComponents();
+            this.breakpoint = breakpoint;
+        }
         if (breakpoint == null)
         {
             breakpoint = null;           
@@ -147,6 +152,11 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         {
             breakpoint.setPattern(treeFragmentPanel.getTreePattern());
             control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.COMPILE_CURRENT_BREAKPOINT));
+        }
+        else if (s.equals("suggestName"))
+        {
+            breakpoint.setName(breakpoint.getPattern().toString());
+            nameField.setText(breakpoint.getName());
         }
     }
     
@@ -209,6 +219,15 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
     
     public void showBreakpoint()
     {
-        
+        signalColor.setBackground(breakpoint.getSignalColor());
+        nameField.setText(breakpoint.getName());
+        nodeConstraintPanel.displayNodeConstraint(breakpoint.getPattern().getRoot());
+        treeFragmentPanel.displayTreePattern(breakpoint.getPattern());
+    }
+    
+    public void clearComponents()
+    {
+        nodeConstraintPanel.clear();
+        treeFragmentPanel.clear();
     }
 }

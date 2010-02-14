@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,10 +24,13 @@ import javax.swing.text.JTextComponent;
 
 import org.kahina.breakpoint.PatternFormatException;
 import org.kahina.breakpoint.TreeNodePattern;
+import org.kahina.breakpoint.TreePatternNode;
 import org.kahina.control.KahinaController;
 
-public class SingleNodeConstraintPanel extends JPanel implements ActionListener
+public class SingleNodeConstraintPanel extends JPanel implements ActionListener, MouseListener
 {
+    private KahinaController control;
+    
     private NodeConstraintOptions constrOptions;
     private int elementaryConstraintNumber;
     
@@ -48,6 +53,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener
     
     public SingleNodeConstraintPanel(NodeConstraintOptions constrOptions, KahinaController control)
     {
+        this.control = control;
+        this.addMouseListener(this);
+        
         this.constrOptions = constrOptions;     
         elementaryConstraintNumber = 0;
         
@@ -77,6 +85,70 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener
         
         addElementaryConstraint(0); 
         this.add(elConstPanel);
+    }
+    
+    public SingleNodeConstraintPanel(NodeConstraintOptions constrOptions, KahinaController control, TreePatternNode patternNode)
+    {
+        this.control = control;
+        this.addMouseListener(this);
+        
+        this.constrOptions = constrOptions;     
+        elementaryConstraintNumber = 0;
+        
+        basePatterns = new ArrayList<TreeNodePattern>();
+        parentPatterns = new HashMap<TreeNodePattern,TreeNodePattern>();
+        virtualRootPattern = new TreeNodePattern();
+        
+        elConstPanel = new JPanel();
+        elConstPanel.setLayout(new GridBagLayout());
+        elConstPanel.setBorder(BorderFactory.createTitledBorder("Node Constraint")); 
+        
+        typeComboBoxes = new ArrayList<JComboBox>();
+        relComboBoxes = new ArrayList<JComboBox>();
+        valComboBoxes = new ArrayList<JComboBox>();
+        valKeyListeners = new ArrayList<ValueBoxKeyListener>();
+        
+        addButtons = new ArrayList<JButton>();
+        remButtons = new ArrayList<JButton>();
+
+        boolPanel = new BooleanConnectorPanel(this, control);
+        GridBagConstraints c = new GridBagConstraints();
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridx = 0;
+        c.gridy = 0;
+        c.gridheight = 1;
+        elConstPanel.add(boolPanel, c);
+        
+        setRootPattern(patternNode.getPattern());        
+
+        this.add(elConstPanel);
+    }
+    
+    private void addStructure(TreeNodePattern node)
+    {
+        TreeNodePattern left = node.getLeftArgument();
+        TreeNodePattern right = node.getRightArgument();
+        if (left == null)
+        {
+            generateElementaryConstraintRow(elementaryConstraintNumber);        
+            adaptNamingAndLayout(elementaryConstraintNumber);           
+            basePatterns.add(node);
+            typeComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getTypeAsString());
+            relComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getRelAsString());
+            valComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getValueAsString());
+            elementaryConstraintNumber++;
+            adaptBoolPanel();
+        }
+        else
+        {
+            parentPatterns.put(left, node);
+            addStructure(left);
+            if (right != null)
+            {
+                parentPatterns.put(right, node);
+                addStructure(right);
+            }
+        }
     }
     
     public void setHintPanel(BreakpointEditorHintPanel hintPanel)
@@ -515,6 +587,33 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener
         {
             elConstPanel.setBorder(BorderFactory.createTitledBorder("Node Constraint")); 
         }
+    }
+    
+    public void removeAllMarkings()
+    {
+        setMarked(false);
+        boolPanel.markedPattern = null;
+    }
+    
+    public void mouseClicked(MouseEvent arg0)
+    {
+        control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE,this));
+    }
+    
+    public void mouseEntered(MouseEvent arg0)
+    {
+    }
+    
+    public void mouseExited(MouseEvent arg0)
+    {
+    }
+    
+    public void mousePressed(MouseEvent arg0)
+    {
+    }
+    
+    public void mouseReleased(MouseEvent arg0)
+    {
     }
     
     private class ValueBoxKeyListener implements KeyListener

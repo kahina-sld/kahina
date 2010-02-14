@@ -21,25 +21,30 @@ import org.kahina.control.KahinaController;
 import org.kahina.control.KahinaListener;
 import org.kahina.control.event.KahinaEvent;
 
-public class BooleanConnectorPanel extends JPanel implements MouseListener, KahinaListener
+public class BooleanConnectorPanel extends JPanel implements MouseListener,
+        KahinaListener
 {
     KahinaController control;
     
     SingleNodeConstraintPanel nodeConstPanel;
     
     Map<TreeNodePattern, Integer> xCoord;
-    Map<TreeNodePattern, Integer> yCoord; 
+    
+    Map<TreeNodePattern, Integer> yCoord;
     
     int xDim;
+    
     int yDim;
     
     TreeNodePattern markedPattern;
     
-    //event system is responsible for synchronization with NodeConstraintPanel and TreeFragmentPanel
+    // event system is responsible for synchronization with NodeConstraintPanel
+    // and TreeFragmentPanel
     private int nodeSelectionMode;
     
-    public BooleanConnectorPanel(SingleNodeConstraintPanel nodeConstPanel, KahinaController control)
-    {   
+    public BooleanConnectorPanel(SingleNodeConstraintPanel nodeConstPanel,
+            KahinaController control)
+    {
         this.control = control;
         control.registerListener("breakpoint_editor", this);
         
@@ -47,7 +52,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
         this.addMouseListener(this);
         
         xCoord = new HashMap<TreeNodePattern, Integer>();
-        yCoord = new HashMap<TreeNodePattern, Integer>();  
+        yCoord = new HashMap<TreeNodePattern, Integer>();
         
         markedPattern = null;
         
@@ -58,25 +63,25 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
     {
         yDim = nodeConstPanel.getBasePatterns().size() * 24;
         
-        setMinimumSize(new Dimension(xDim,yDim));
-        setPreferredSize(new Dimension(xDim,yDim));
-        setSize(new Dimension(xDim,yDim));
+        setMinimumSize(new Dimension(xDim, yDim));
+        setPreferredSize(new Dimension(xDim, yDim));
+        setSize(new Dimension(xDim, yDim));
     }
     
     public void recalculateCoordinates()
     {
         xCoord = new HashMap<TreeNodePattern, Integer>();
-        yCoord = new HashMap<TreeNodePattern, Integer>();  
+        yCoord = new HashMap<TreeNodePattern, Integer>();
         xDim = 30;
-        //first define the base nodes
+        // first define the base nodes
         List<TreeNodePattern> basePattern = nodeConstPanel.getBasePatterns();
         for (int i = 0; i < basePattern.size(); i++)
         {
             TreeNodePattern pat = basePattern.get(i);
             xCoord.put(pat, 3);
-            yCoord.put(pat, i * 24 + 12);     
+            yCoord.put(pat, i * 24 + 12);
         }
-        //then calculate the other positions based on these
+        // then calculate the other positions based on these
         calculateCoordinatesFor(nodeConstPanel.getRootPattern());
     }
     
@@ -98,12 +103,13 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
                     }
                     break;
                 }
-                //boolean connectives with two arguments
-                //(since atomic pattern should already have received their coordinates)
+                    // boolean connectives with two arguments
+                    // (since atomic pattern should already have received their
+                    // coordinates)
                 default:
                 {
                     TreeNodePattern left = p.getLeftArgument();
-                    TreeNodePattern right = p.getRightArgument();                 
+                    TreeNodePattern right = p.getRightArgument();
                     calculateCoordinatesFor(left);
                     calculateCoordinatesFor(right);
                     yCoord.put(p, (yCoord.get(left) + yCoord.get(right)) / 2);
@@ -145,7 +151,8 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
     public void paintComponent(Graphics canvas)
     {
         Graphics2D cnv = (Graphics2D) canvas;
-        cnv.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        cnv.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
         cnv.setColor(Color.WHITE);
         cnv.fillRect(0, 0, xDim, yDim);
         cnv.setColor(Color.BLACK);
@@ -160,7 +167,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
             int x = xDim - getXfor(pat);
             int y = getYfor(pat);
             switch (pat.getType())
-            {       
+            {
                 case (TreeNodePattern.NEGATION):
                 {
                     cnv.drawLine(x - 4, y, x + 4, y);
@@ -181,8 +188,8 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
                 }
                 case (TreeNodePattern.IMPLICATION):
                 {
-                    int leftY = yCoord.get(pat.getLeftArgument());            
-                    int rightY = yCoord.get(pat.getRightArgument()); 
+                    int leftY = yCoord.get(pat.getLeftArgument());
+                    int rightY = yCoord.get(pat.getRightArgument());
                     if (leftY < rightY)
                     {
                         cnv.drawLine(x - 4, y, x + 4, y);
@@ -199,7 +206,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
                 }
             }
             drawLinesToArguments(pat, cnv);
-            cnv.drawRect(x-8, y-8, 16, 16);
+            cnv.drawRect(x - 8, y - 8, 16, 16);
         }
     }
     
@@ -210,15 +217,15 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
             int x = xDim - xCoord.get(pat);
             int y = yCoord.get(pat);
             int leftX = xDim - xCoord.get(pat.getLeftArgument());
-            int leftY = yCoord.get(pat.getLeftArgument());            
+            int leftY = yCoord.get(pat.getLeftArgument());
             if (pat.getRightArgument() == null)
             {
                 cnv.drawLine(x + 8, y, leftX - 8, leftY);
             }
-            else           
+            else
             {
                 int rightX = xDim - xCoord.get(pat.getRightArgument());
-                int rightY = yCoord.get(pat.getRightArgument()); 
+                int rightY = yCoord.get(pat.getRightArgument());
                 if (rightY < leftY)
                 {
                     cnv.drawLine(x, y - 8, x, rightY);
@@ -248,12 +255,16 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
             {
                 TreeNodePattern left = curPat.getLeftArgument();
                 TreeNodePattern right = curPat.getRightArgument();
-                if (left != null) searchAgenda.add(left);
-                if (right != null) searchAgenda.add(right);
+                if (left != null)
+                    searchAgenda.add(left);
+                if (right != null)
+                    searchAgenda.add(right);
             }
             else
             {
-                if (x > (xDim - xCoord.get(curPat)) - 8 && y < yCoord.get(curPat) + 8 && y > yCoord.get(curPat) - 8)
+                if (x > (xDim - xCoord.get(curPat)) - 8
+                        && y < yCoord.get(curPat) + 8
+                        && y > yCoord.get(curPat) - 8)
                 {
                     return curPat;
                 }
@@ -264,7 +275,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
     
     private void switchType(TreeNodePattern pat)
     {
-        switch(pat.getType())
+        switch (pat.getType())
         {
             case TreeNodePattern.CONJUNCTION:
             {
@@ -280,8 +291,8 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
             }
             case TreeNodePattern.IMPLICATION:
             {
-                int leftY = yCoord.get(pat.getLeftArgument()); 
-                int rightY = yCoord.get(pat.getRightArgument()); 
+                int leftY = yCoord.get(pat.getLeftArgument());
+                int rightY = yCoord.get(pat.getRightArgument());
                 if (rightY > leftY)
                 {
                     pat.switchArguments();
@@ -300,11 +311,11 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
     {
         int x = arg0.getX();
         int y = arg0.getY();
-        TreeNodePattern selectedPattern = getPatternByCoords(x,y);
+        TreeNodePattern selectedPattern = getPatternByCoords(x, y);
         if (markedPattern != null && selectedPattern == markedPattern)
         {
             switchType(markedPattern);
-            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
             nodeConstPanel.hint("click on the same connective again to switch its type");
         }
         else
@@ -327,83 +338,94 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
                 {
                     nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                 }
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE,nodeConstPanel));
+                repaint();
             }
-            else if (nodeSelectionMode  == BreakpointEditPanel.PENDING_AND_OPERATION)
+            else
             {
-                if (selectedPattern != null)
+                if (markedPattern != null)
                 {
-                    if (nodeConstPanel.introduceConjunction(markedPattern, selectedPattern))
+                    if (nodeSelectionMode == BreakpointEditPanel.PENDING_AND_OPERATION)
                     {
-                        nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
+                        if (selectedPattern != null)
+                        {
+                            if (nodeConstPanel.introduceConjunction(markedPattern, selectedPattern))
+                            {
+                                nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
+                            }
+                            else
+                            {
+                                nodeConstPanel.hint("Inconsistency check prevented operation! Neither node must dominate the other!",Color.RED);
+                            }           
+                        }
+                        else
+                        {
+                            nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
+                        }
+                        control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
                     }
-                    else
+                    else if (nodeSelectionMode == BreakpointEditPanel.PENDING_OR_OPERATION)
                     {
-                        nodeConstPanel.hint("Inconsistency check prevented operation! Neither node must dominate the other!", Color.RED);
+                        if (selectedPattern != null)
+                        {
+                            if (nodeConstPanel.introduceDisjunction(markedPattern, selectedPattern))
+                            {
+                                nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
+                            }
+                            else
+                            {
+                                nodeConstPanel.hint("Inconsistency check prevented operation! Neither node must dominate the other!",Color.RED);
+                            }        
+                        }
+                        else
+                        {
+                            nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
+                        }
+                        control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
                     }
-
+                    else if (nodeSelectionMode == BreakpointEditPanel.PENDING_IMPL_OPERATION)
+                    {
+                        if (selectedPattern != null)
+                        {
+                            if (nodeConstPanel.introduceImplication(markedPattern, selectedPattern))
+                            {
+                                nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
+                            }
+                            else
+                            {
+                                nodeConstPanel.hint("Inconsistency check prevented operation! Neither node must dominate the other!",Color.RED);
+                            }                           
+                        }
+                        else
+                        {
+                            nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
+                        }
+                        control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
+                    }
+                    control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE,nodeConstPanel));
+                    repaint();
                 }
                 else
                 {
-                    nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
+                    nodeConstPanel.hint("Cannot establish connectives across nodes!",Color.RED);
+                    control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
                 }
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
-            }
-            else if (nodeSelectionMode == BreakpointEditPanel.PENDING_OR_OPERATION)
-            {
-                if (selectedPattern != null)
-                {
-                    if (nodeConstPanel.introduceDisjunction(markedPattern, selectedPattern))
-                    {
-                        nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
-                    }
-                    else
-                    {
-                        nodeConstPanel.hint("Inconsistency check prevented operation! Neither node must dominate the other!", Color.RED);
-                    }
-
-                }
-                else
-                {
-                    nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
-                }
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
-            }
-            else if (nodeSelectionMode == BreakpointEditPanel.PENDING_IMPL_OPERATION)
-            {
-                if (selectedPattern != null)
-                {
-                    if (nodeConstPanel.introduceImplication(markedPattern, selectedPattern))
-                    {
-                        nodeConstPanel.hint("Select a boolean operation to introduce another connective.");
-                    }
-                    else
-                    {
-                        nodeConstPanel.hint("Inconsistency check prevented operation! Neither node must dominate the other!", Color.RED);
-                    }
-
-                }
-                else
-                {
-                    nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
-                }
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
-            }
-        }
-        repaint();
+            }          
+        }     
     }
-
+    
     public void mouseEntered(MouseEvent arg0)
     {
     }
-
+    
     public void mouseExited(MouseEvent arg0)
     {
     }
-
+    
     public void mousePressed(MouseEvent arg0)
     {
     }
-
+    
     public void mouseReleased(MouseEvent arg0)
     {
     }
