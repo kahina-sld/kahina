@@ -223,6 +223,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         nameField.setText(breakpoint.getName());
         nodeConstraintPanel.displayNodeConstraint(breakpoint.getPattern().getRoot());
         treeFragmentPanel.displayTreePattern(breakpoint.getPattern());
+        validate();
     }
     
     public void clearComponents()

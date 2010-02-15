@@ -23,4 +23,9 @@ public class TreePattern
     {
         this.root = root;
     }
+    
+    public String toString()
+    {
+        return root.toString();
+    }
 }

@@ -60,8 +60,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         add(bottomPanel);
         
         hintPanel = new BreakpointEditorHintPanel();   
-        add(hintPanel);
-        
+        add(hintPanel);   
 
         treePanel = new TreeEditorPanel(this);
         rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control);
@@ -71,7 +70,6 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         JScrollPane treeScroll = new JScrollPane(treePanel);
         add(treeScroll);  
         
-        //nodeConstPanels = new ArrayList<SingleNodeConstraintPanel>();
         children = new HashMap<SingleNodeConstraintPanel, List<SingleNodeConstraintPanel>>();
         parents = new HashMap<SingleNodeConstraintPanel, SingleNodeConstraintPanel> ();
         
@@ -353,6 +351,34 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
     
     public void displayTreePattern(TreePattern pat)
     {
-        
+        rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control, pat.getRoot());
+        displaySubtreePattern(pat.getRoot(), rootConstPanel);
+        rootConstPanel.setHintPanel(hintPanel);
+        treePanel.add(rootConstPanel);
+        treePanel.recalculateCoordinates();
+        validate();
+    }
+    
+    private void displaySubtreePattern(TreePatternNode node, SingleNodeConstraintPanel parent)
+    {    
+        if (node.getChildren() != null)
+        {
+            for (TreePatternNode child : node.getChildren())
+            {
+                SingleNodeConstraintPanel childPanel = new SingleNodeConstraintPanel(constrOptions, control, child);
+                childPanel.setHintPanel(hintPanel);
+                List<SingleNodeConstraintPanel> nodeChildren = children.get(parent);
+                if (nodeChildren == null)
+                {
+                    nodeChildren = new ArrayList<SingleNodeConstraintPanel>();
+                    children.put(parent, nodeChildren);
+                }
+                nodeChildren.add(childPanel);
+                parents.put(childPanel, parent);
+                treePanel.add(childPanel);
+                
+                displaySubtreePattern(child, childPanel);
+            }
+        }
     }
 }

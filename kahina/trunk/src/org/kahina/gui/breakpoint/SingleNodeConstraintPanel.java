@@ -119,9 +119,11 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         c.gridheight = 1;
         elConstPanel.add(boolPanel, c);
         
-        setRootPattern(patternNode.getPattern());        
+        setRootPattern(patternNode.getPattern());  
+        addStructure(patternNode.getPattern());
 
         this.add(elConstPanel);
+        adaptBoolPanel();
     }
     
     private void addStructure(TreeNodePattern node)
@@ -137,7 +139,6 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             relComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getRelAsString());
             valComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getValueAsString());
             elementaryConstraintNumber++;
-            adaptBoolPanel();
         }
         else
         {
@@ -293,7 +294,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             Integer rowID = Integer.parseInt(s.substring(8));
             removeElementaryConstraint(rowID);
         }
-        boolPanel.informControl(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE, this));
+        announceUpdate();
     }
     
     public void introduceNegation(TreeNodePattern argument)
@@ -565,12 +566,18 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     
     public void hint(String hint)
     {
-        hintPanel.hint(hint);
+        if (hintPanel != null)
+        {
+            hintPanel.hint(hint);
+        }
     }
     
     public void hint(String hint, Color color)
     {
-        hintPanel.hint(hint,color);
+        if (hintPanel != null)
+        {
+            hintPanel.hint(hint,color);
+        }
     }
     
     public void setMarked(boolean mark)
@@ -616,6 +623,11 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     {
     }
     
+    private void announceUpdate()
+    {
+        boolPanel.informControl(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE, this));
+    }
+    
     private class ValueBoxKeyListener implements KeyListener
     {
         int rowID;
@@ -652,6 +664,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
                 return;
             }
             hint("Add a new atomic condition or create a new connective.");
+            announceUpdate();
             System.err.println(getRootPattern());
         }
     }

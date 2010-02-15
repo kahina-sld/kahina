@@ -105,7 +105,7 @@ public class TreeEditorPanel extends JPanel
         }
         for (int i = nodeLevels.size() - 1; i >= 0; i--)
         {
-            //System.err.println("Node level: " + i);
+            System.err.println("Adapting node level: " + i);
             for (JPanel node : nodeLevels.get(i))
             {
                 adaptNodeSizeAndPosition(node);

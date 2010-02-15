@@ -53,4 +53,14 @@ public class TreePatternNode
     {
         this.pattern = pattern;
     }
+    
+    public String toString()
+    {
+        StringBuilder str = new StringBuilder(pattern.toString());
+        if (!children.isEmpty())
+        {
+            str.append(children);
+        }
+        return str.toString();   
+    }
 }

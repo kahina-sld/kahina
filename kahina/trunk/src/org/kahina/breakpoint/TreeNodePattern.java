@@ -389,10 +389,10 @@ public class TreeNodePattern
     {
         switch (type)
         {
-            case CAPTION: return "step label";
-            case EDGE_LABEL: return "step origin";
-            case STATUS: return "step id";
-            case ID: return "step type";          
+            case CAPTION: return stringValue;
+            case EDGE_LABEL: return stringValue;
+            case STATUS: return intValue + "";
+            case ID: return "--";          
         }
         return "--";
     }
