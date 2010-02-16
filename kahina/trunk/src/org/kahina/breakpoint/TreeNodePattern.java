@@ -2,6 +2,8 @@ package org.kahina.breakpoint;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
 import org.kahina.data.tree.KahinaTree;
 
 /**
@@ -140,8 +142,15 @@ public class TreeNodePattern
         {
             if (rel == MATCHING)
             {
-                this.regexValue = Pattern.compile(value);
-                this.stringValue = value;
+                try
+                {
+                    this.regexValue = Pattern.compile(value);
+                    this.stringValue = value;
+                }
+                catch (PatternSyntaxException e)
+                {
+                    throw new PatternFormatException("RegEx", value);
+                }
             }
             else
             {

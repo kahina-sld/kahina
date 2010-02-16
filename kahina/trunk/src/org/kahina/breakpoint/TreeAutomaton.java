@@ -171,7 +171,10 @@ public class TreeAutomaton
         }
         else
         {
-            ctrl.processEvent(new KahinaTreeMatchEvent(bp, nodeID));
+            if (bp.isActive())
+            {
+                ctrl.processEvent(new KahinaTreeMatchEvent(bp, nodeID));
+            }
         }
     }
     

@@ -22,7 +22,8 @@ public class BreakpointEditorEvent extends KahinaEvent
     public static final int TREE_NODE_UPDATE = 7;  
     public static final int TREE_PATTERN_CHANGE = 7;  
     public static final int TEST_BREAKPOINTS = 8; 
-    public static final int COMPILE_CURRENT_BREAKPOINT = 9;    
+    public static final int SYNCHRONIZE_EDITOR_VIEWS = 9;  
+    public static final int BREAKPOINT_NAME_UPDATE = 10;  
     
     public BreakpointEditorEvent(int editorEventType)
     {
@@ -109,9 +110,13 @@ public class BreakpointEditorEvent extends KahinaEvent
         {
             s += "test breakpoints"; 
         }
-        else if (editorEventType == COMPILE_CURRENT_BREAKPOINT)
+        else if (editorEventType == SYNCHRONIZE_EDITOR_VIEWS)
         {
-            s += "compile current breakpoint"; 
+            s += "synchronize editor views"; 
+        }
+        else if (editorEventType == BREAKPOINT_NAME_UPDATE)
+        {
+            s += "breakpoint name update"; 
         }
         else
         {

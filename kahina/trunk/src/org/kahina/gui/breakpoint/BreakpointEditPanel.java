@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -11,11 +13,14 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
 import org.kahina.breakpoint.KahinaBreakpoint;
+import org.kahina.breakpoint.PatternFormatException;
 import org.kahina.control.KahinaController;
 import org.kahina.control.KahinaListener;
 import org.kahina.control.event.KahinaEvent;
@@ -32,8 +37,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
     private JButton suggestNameButton;
     private JLabel colorLabel;
     private JButton signalColor;
-    private JButton compileBreakpointButton;
-    private JButton cancelBreakpointButton;
+    private JButton showAutomatonButton;
     
     //the breakpoint this edit panel is operating on
     private KahinaBreakpoint breakpoint;
@@ -68,6 +72,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         optionsPanel.add(Box.createRigidArea(new Dimension(5,0)));
         
         nameField = new JTextField(30);
+        nameField.addKeyListener(new NameFieldKeyListener());
         optionsPanel.add(nameField);
         optionsPanel.add(Box.createRigidArea(new Dimension(5,0)));
         
@@ -88,16 +93,11 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         optionsPanel.add(signalColor);
         optionsPanel.add(Box.createRigidArea(new Dimension(5,0)));
         
-        compileBreakpointButton = new JButton("Compile");
-        compileBreakpointButton.setActionCommand("compileBreakpoint");
-        compileBreakpointButton.addActionListener(this);
-        optionsPanel.add(compileBreakpointButton);
+        showAutomatonButton = new JButton("Show Automaton");
+        showAutomatonButton.setActionCommand("showAutomaton");
+        showAutomatonButton.addActionListener(this);
+        optionsPanel.add(showAutomatonButton);
         optionsPanel.add(Box.createRigidArea(new Dimension(10,0)));
-        
-        cancelBreakpointButton = new JButton("Cancel");
-        cancelBreakpointButton.setActionCommand("cancelBreakpointEditing");
-        cancelBreakpointButton.addActionListener(this);
-        optionsPanel.add(cancelBreakpointButton);
         
         add(optionsPanel);
         
@@ -148,16 +148,22 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
             signalColor.setBackground(newColor);
             breakpoint.setSignalColor(newColor);
         }
-        else if (s.equals("compileBreakpoint"))
+        else if (s.equals("showAutomaton"))
         {
-            breakpoint.setPattern(treeFragmentPanel.getTreePattern());
-            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.COMPILE_CURRENT_BREAKPOINT));
+            updateBreakpointPattern();
+            JOptionPane.showMessageDialog(this,breakpoint.compile(),"Compiled Automaton",JOptionPane.INFORMATION_MESSAGE);
         }
         else if (s.equals("suggestName"))
         {
             breakpoint.setName(breakpoint.getPattern().toString());
             nameField.setText(breakpoint.getName());
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE));
         }
+    }
+    
+    public void updateBreakpointPattern()
+    {
+        breakpoint.setPattern(treeFragmentPanel.getTreePattern());
     }
     
     public void setEnabled(boolean enabled)
@@ -183,8 +189,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         suggestNameButton.setEnabled(true);
         colorLabel.setEnabled(true);
         signalColor.setEnabled(true);
-        compileBreakpointButton.setEnabled(true);
-        cancelBreakpointButton.setEnabled(true);
+        showAutomatonButton.setEnabled(true);
     }
     
     private void deactivateAllComponents()
@@ -197,8 +202,8 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         suggestNameButton.setEnabled(false);
         colorLabel.setEnabled(false);
         signalColor.setEnabled(false);
-        compileBreakpointButton.setEnabled(false);
-        cancelBreakpointButton.setEnabled(false);
+        signalColor.setBackground(Color.GRAY);
+        showAutomatonButton.setEnabled(false);
     }
     
     public void processEvent(KahinaEvent event)
@@ -231,5 +236,29 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
     {
         nodeConstraintPanel.clear();
         treeFragmentPanel.clear();
+    }
+    
+    private class NameFieldKeyListener implements KeyListener
+    {
+        
+        public NameFieldKeyListener()
+        {
+        }
+        
+        public void keyPressed(KeyEvent e) 
+        {
+        }
+
+        public void keyReleased(KeyEvent e) 
+        {
+            String val = nameField.getText();
+            breakpoint.setName(val);
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE));
+        }
+
+        public void keyTyped(KeyEvent e) 
+        {
+
+        }
     }
 }

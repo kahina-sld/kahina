@@ -59,9 +59,9 @@ public class KahinaController
         List<KahinaListener> listenersForType = registry.get(type);
         if (listenersForType != null)
         {
-            for (KahinaListener listener : listenersForType)
+            for (int i = 0; i < listenersForType.size(); i++)
             {
-                listener.processEvent(event);
+                listenersForType.get(i).processEvent(event);
             }
         }
     }

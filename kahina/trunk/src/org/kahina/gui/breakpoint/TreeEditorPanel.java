@@ -29,14 +29,14 @@ public class TreeEditorPanel extends JPanel
     
     public void recalculateCoordinates()
     {
-        System.err.println("Recalculating coordinates!");
+        //System.err.println("Recalculating coordinates!");
         this.subtreeWidths = new HashMap<JPanel, WidthVector>();
         y.put(fragment.getRoot(), 100);
         
         List<List<JPanel>> nodeLevels = createNodeLayers();
         for (List<JPanel> nodeLevel : nodeLevels)
         {
-            System.err.println(nodeLevel);
+            //System.err.println(nodeLevel);
         }
         
         int totalTreeWidth = 50;
@@ -105,7 +105,7 @@ public class TreeEditorPanel extends JPanel
         }
         for (int i = nodeLevels.size() - 1; i >= 0; i--)
         {
-            System.err.println("Adapting node level: " + i);
+            //System.err.println("Adapting node level: " + i);
             for (JPanel node : nodeLevels.get(i))
             {
                 adaptNodeSizeAndPosition(node);
@@ -117,7 +117,7 @@ public class TreeEditorPanel extends JPanel
     {
       List<List<JPanel>> nodeLevels = new ArrayList<List<JPanel>>();
       JPanel root = fragment.getRoot();
-      System.err.println("creating node layer starting form root " + root);
+      //System.err.println("creating node layer starting form root " + root);
       ArrayList<JPanel> rootLevel = new ArrayList<JPanel>();
       if (root != null)
       {

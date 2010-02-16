@@ -38,8 +38,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener,
     
     TreeNodePattern markedPattern;
     
-    // event system is responsible for synchronization with NodeConstraintPanel
-    // and TreeFragmentPanel
+    // event system is responsible for synchronization with NodeConstraintPanel and TreeFragmentPanel
     private int nodeSelectionMode;
     
     public BooleanConnectorPanel(SingleNodeConstraintPanel nodeConstPanel,

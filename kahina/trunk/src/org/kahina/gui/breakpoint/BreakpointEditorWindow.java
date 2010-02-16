@@ -42,6 +42,10 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 {
     KahinaController control;
     
+    JButton newBreakpointButton;
+    JButton activateBreakpointButton;
+    JButton deactivateBreakpointButton;
+    JButton removeBreakpointButton;
     JPanel breakpointListPanel;
     JList breakpointList;
     
@@ -67,12 +71,15 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.LINE_AXIS));    
         mainPanel.add(buildLeftPanel()); 
         mainPanel.add(buildRightPanel());
+
         
         add(mainPanel);
         
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(new BreakpointEditorFileMenu(control));
         this.setJMenuBar(menuBar);
+        
+        adaptActivationStatus();
     }
     
     private JPanel buildLeftPanel()
@@ -81,14 +88,14 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         breakpointListPanel.setLayout(new BoxLayout(breakpointListPanel, BoxLayout.PAGE_AXIS));
         breakpointListPanel.setBorder(BorderFactory.createTitledBorder("Breakpoints"));
         
-        JButton newBreakpointButton = new JButton("New");
+        newBreakpointButton = new JButton("New");
         newBreakpointButton.setActionCommand("newBreakpoint");
         newBreakpointButton.addActionListener(this);
         newBreakpointButton.setAlignmentX(CENTER_ALIGNMENT);
         breakpointListPanel.add(newBreakpointButton);
         breakpointListPanel.add(Box.createRigidArea(new Dimension(0,5)));
         
-        JButton activateBreakpointButton = new JButton("Activate");
+        activateBreakpointButton = new JButton("Activate");
         activateBreakpointButton.setActionCommand("activateBreakpoint");
         activateBreakpointButton.addActionListener(this);
         activateBreakpointButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -106,14 +113,14 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         
         breakpointListPanel.add(Box.createRigidArea(new Dimension(0,5)));
         
-        JButton deactivateBreakpointButton = new JButton("Deactivate");
+        deactivateBreakpointButton = new JButton("Deactivate");
         deactivateBreakpointButton.setActionCommand("deactivateBreakpoint");
         deactivateBreakpointButton.addActionListener(this);
         deactivateBreakpointButton.setAlignmentX(CENTER_ALIGNMENT);
         breakpointListPanel.add(deactivateBreakpointButton);
         breakpointListPanel.add(Box.createRigidArea(new Dimension(0,5)));
         
-        JButton removeBreakpointButton = new JButton("Remove");
+        removeBreakpointButton = new JButton("Remove");
         removeBreakpointButton.setActionCommand("removeBreakpoint");
         removeBreakpointButton.addActionListener(this);
         removeBreakpointButton.setAlignmentX(CENTER_ALIGNMENT);
@@ -147,6 +154,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         {
             control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.REMOVE_BREAKPOINT, curID));
         }
+        adaptActivationStatus();
     }
     
     public void processEvent(KahinaEvent e)
@@ -167,25 +175,59 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
                 breakpoints.add(newBreakpoint);
                 compiledBreakpoints.add(new TreeAutomaton(newBreakpoint));
                 breakpointList.setListData(breakpoints.toArray());
+                breakpointList.setSelectedIndex(breakpoints.size() - 1);
+                break;
+            }
+            case BreakpointEditorEvent.ACTIVATE_BREAKPOINT:
+            {
+                breakpoints.get(curID).activate();
+                breakpointList.repaint();
+                break;
+            }
+            case BreakpointEditorEvent.DEACTIVATE_BREAKPOINT:
+            {
+                breakpoints.get(curID).deactivate();
+                breakpointList.repaint();
+                break;
+            }
+            case BreakpointEditorEvent.REMOVE_BREAKPOINT:
+            {
+                breakpoints.remove(curID);
+                compiledBreakpoints.remove(curID);
+                curID = -1;
+                breakpointList.setListData(breakpoints.toArray());
                 break;
             }
             case BreakpointEditorEvent.TEST_BREAKPOINTS:
             {
+                //compile the currently opened breakpoint once more
+                if (curID != -1)
+                {
+                    editPanel.updateBreakpointPattern();
+                    TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
+                    compiledBreakpoints.set(curID, compiledBreakpoint);
+                }
                 BreakpointTestWindow w = new BreakpointTestWindow(compiledBreakpoints, control);
                 w.setVisible(true);
                 break;
             }
-            case BreakpointEditorEvent.COMPILE_CURRENT_BREAKPOINT:
+            case BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE:
             {
-                TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
-                System.err.println("Compiled Tree Automaton:\n" + compiledBreakpoint.toString());
-                compiledBreakpoints.set(curID, compiledBreakpoint);
+                breakpointList.repaint();
+                breakpointList.validate();
             }
         }
     }
     
     public void valueChanged(ListSelectionEvent e)
     {
+        //compile the most recently edited breakpoint once more
+        if (curID != -1)
+        {
+            editPanel.updateBreakpointPattern();
+            TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
+            compiledBreakpoints.set(curID, compiledBreakpoint);
+        }
         curID = breakpointList.getSelectedIndex();
         if (curID == -1)
         {
@@ -194,6 +236,33 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         else
         {
             editPanel.setBreakpoint(breakpoints.get(curID));
+        }
+        adaptActivationStatus();
+    }
+    
+    private void adaptActivationStatus()
+    {
+        if (curID == -1)
+        {
+            removeBreakpointButton.setEnabled(false);
+            activateBreakpointButton.setEnabled(false);
+            deactivateBreakpointButton.setEnabled(false);
+            editPanel.setEnabled(false);
+        }
+        else
+        {
+            if (breakpoints.get(curID).isActive())
+            {
+                activateBreakpointButton.setEnabled(false);
+                deactivateBreakpointButton.setEnabled(true);
+            }
+            else
+            {
+                activateBreakpointButton.setEnabled(true);
+                deactivateBreakpointButton.setEnabled(false);
+            }
+            removeBreakpointButton.setEnabled(true);
+            editPanel.setEnabled(true);
         }
     }
 }

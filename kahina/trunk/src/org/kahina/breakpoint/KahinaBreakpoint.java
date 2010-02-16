@@ -79,7 +79,14 @@ public class KahinaBreakpoint
     
     public String toString()
     {
-        return name;
+        if (active)
+        {
+            return name;
+        }
+        else
+        {
+            return "#" + name;
+        }
     }
 
     public TreePattern getPattern()

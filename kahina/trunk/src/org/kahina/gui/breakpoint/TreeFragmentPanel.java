@@ -38,6 +38,9 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
     //changes coordinated with boolean connector panels via event system 
     private int selectionMode;
     
+    //needed for synchronization with node constraint panel
+    private boolean synchronizationMode = false;
+    
     private SingleNodeConstraintPanel markedTreeNode;
     
     public TreeFragmentPanel(KahinaController control)
@@ -300,6 +303,19 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
             {
                 markedTreeNode.setMarked(true);
             }
+            if (event.getPanel() == rootConstPanel & !synchronizationMode)
+            {
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.SYNCHRONIZE_EDITOR_VIEWS, rootConstPanel));
+            }
+        }
+        else if (event.getEditorEventType() == BreakpointEditorEvent.SYNCHRONIZE_EDITOR_VIEWS)
+        {
+           if (event.getPanel() != rootConstPanel)
+           {
+               synchronizationMode = true;
+               rootConstPanel.takeOverStructure(event.getPanel());
+               synchronizationMode = false;
+           }
         }
     }
     
