@@ -222,6 +222,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         signalColor.setBackground(breakpoint.getSignalColor());
         nameField.setText(breakpoint.getName());
         nodeConstraintPanel.displayNodeConstraint(breakpoint.getPattern().getRoot());
+        treeFragmentPanel.clear();
         treeFragmentPanel.displayTreePattern(breakpoint.getPattern());
         validate();
     }

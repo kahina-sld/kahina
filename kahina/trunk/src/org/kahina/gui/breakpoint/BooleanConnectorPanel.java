@@ -293,6 +293,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener,
             {
                 int leftY = yCoord.get(pat.getLeftArgument());
                 int rightY = yCoord.get(pat.getRightArgument());
+                System.err.println("LeftY: " + leftY + " RightY: " + rightY);
                 if (rightY > leftY)
                 {
                     pat.switchArguments();
@@ -300,6 +301,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener,
                 else
                 {
                     pat.setType(TreeNodePattern.CONJUNCTION);
+                    pat.switchArguments();
                 }
                 nodeConstPanel.hint("click on the same connective again to switch its type");
                 break;
@@ -317,6 +319,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener,
             switchType(markedPattern);
             control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
             nodeConstPanel.hint("click on the same connective again to switch its type");
+            repaint();
         }
         else
         {

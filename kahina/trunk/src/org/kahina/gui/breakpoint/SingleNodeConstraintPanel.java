@@ -120,10 +120,10 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         elConstPanel.add(boolPanel, c);
         
         setRootPattern(patternNode.getPattern());  
-        addStructure(patternNode.getPattern());
+        addStructure(getRootPattern());
 
         this.add(elConstPanel);
-        adaptBoolPanel();
+        displayChangeInConnectiveStructure();
     }
     
     private void addStructure(TreeNodePattern node)
@@ -139,6 +139,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             relComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getRelAsString());
             valComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getValueAsString());
             elementaryConstraintNumber++;
+            adaptBoolPanel();
         }
         else
         {
@@ -260,6 +261,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             String type = typeComboBoxes.get(rowID).getSelectedItem().toString();
             relComboBoxes.get(rowID).setModel(new DefaultComboBoxModel(constrOptions.getRelationsForType(type).toArray()));
             basePatterns.get(rowID).setType(type);
+            basePatterns.get(rowID).setRelation(relComboBoxes.get(rowID).getSelectedItem().toString());
             hint("Complete the node constraint by selecting a relation and/or a value.");
         }
         else if (s.startsWith("changeRel"))
@@ -280,6 +282,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             catch (PatternFormatException formatError)
             {
                 hint(formatError.getMessage(), Color.RED);
+                valComboBoxes.get(rowID).setSelectedItem(basePatterns.get(rowID).getValueAsString());
                 return;
             }
             hint("Add a new atomic condition or create a new connective.");
@@ -295,6 +298,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             removeElementaryConstraint(rowID);
         }
         announceUpdate();
+        System.err.println(getRootPattern());
     }
     
     public void introduceNegation(TreeNodePattern argument)
@@ -648,10 +652,6 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
 
         public void keyReleased(KeyEvent e) 
         {
-        }
-
-        public void keyTyped(KeyEvent e) 
-        {
             //need to access the embedded text field to read in current combo box content at any time
             String val = ((JTextComponent) valComboBoxes.get(rowID).getEditor().getEditorComponent()).getText();
             try
@@ -666,6 +666,11 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             hint("Add a new atomic condition or create a new connective.");
             announceUpdate();
             System.err.println(getRootPattern());
+        }
+
+        public void keyTyped(KeyEvent e) 
+        {
+
         }
     }
 }
