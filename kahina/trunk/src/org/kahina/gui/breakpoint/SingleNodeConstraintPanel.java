@@ -51,6 +51,10 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     //link to an external hint panel to display hints and error messages
     private BreakpointEditorHintPanel hintPanel;
     
+    //needed for synchronization between node constraint and tree fragment panel
+    private boolean synchronizationMode = false;
+    private boolean isSynchronized = false;
+    
     public SingleNodeConstraintPanel(NodeConstraintOptions constrOptions, KahinaController control)
     {
         this.control = control;
@@ -155,6 +159,8 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     
     public void takeOverStructure(SingleNodeConstraintPanel panel)
     {    
+        synchronizationMode = true;
+        if (panel == null) return;
         elementaryConstraintNumber = 0;
         
         basePatterns = new ArrayList<TreeNodePattern>();
@@ -184,11 +190,17 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
 
         this.add(elConstPanel);
         displayChangeInConnectiveStructure();
+        synchronizationMode = false;
     }
     
     public void setHintPanel(BreakpointEditorHintPanel hintPanel)
     {
         this.hintPanel = hintPanel;
+    }
+    
+    public void setSynchronized(boolean sync)
+    {
+        this.isSynchronized = sync;
     }
     
     public NodeConstraintOptions getConstrOptions()
@@ -331,6 +343,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             removeElementaryConstraint(rowID);
         }
         announceUpdate();
+        synchronizeEditors();
     }
     
     public void introduceNegation(TreeNodePattern argument)
@@ -661,7 +674,18 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     
     private void announceUpdate()
     {
-        boolPanel.informControl(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE, this));
+        if (!synchronizationMode)
+        {
+            boolPanel.informControl(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE, this));
+        }
+    }
+    
+    private void synchronizeEditors()
+    {
+        if (isSynchronized && !synchronizationMode)
+        {
+            boolPanel.informControl(new BreakpointEditorEvent(BreakpointEditorEvent.SYNCHRONIZE_EDITOR_VIEWS, this));
+        }
     }
     
     private class ValueBoxKeyListener implements KeyListener
@@ -697,6 +721,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             }
             hint("Add a new atomic condition or create a new connective.");
             announceUpdate();
+            synchronizeEditors();
         }
 
         public void keyTyped(KeyEvent e) 

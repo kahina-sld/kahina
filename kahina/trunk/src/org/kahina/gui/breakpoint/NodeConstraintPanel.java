@@ -46,9 +46,6 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
     //changes coordinated with boolean connector panels via event system 
     private int selectionMode;
     
-    //needed for synchronization with tree fragment panel
-    private boolean synchronizationMode = false;
-    
     public NodeConstraintPanel(KahinaController control)
     {
         this.control = control;
@@ -71,6 +68,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         
         constPanel = new SingleNodeConstraintPanel(constrOptions, control);
         constPanel.setHintPanel(hintPanel);
+        constPanel.setSynchronized(true);
         add(constPanel);  
         
         selectionMode = -1;
@@ -186,20 +184,11 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         {
             selectionMode = event.getGoalID();
         }
-        else if (event.getEditorEventType() == BreakpointEditorEvent.TREE_NODE_UPDATE)
-        {
-           if (event.getPanel() == constPanel && !synchronizationMode)
-           {
-               control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.SYNCHRONIZE_EDITOR_VIEWS, constPanel));
-           }
-        }
         else if (event.getEditorEventType() == BreakpointEditorEvent.SYNCHRONIZE_EDITOR_VIEWS)
         {
-           if (event.getPanel() != constPanel)
+           if (event.getPanel() != constPanel && constPanel != null)
            {
-               synchronizationMode = true;
                constPanel.takeOverStructure(event.getPanel());
-               synchronizationMode = false;
            }
         }
     }
@@ -217,6 +206,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
     {
         constPanel = new SingleNodeConstraintPanel(constrOptions, control, n);
         constPanel.setHintPanel(hintPanel);
+        constPanel.setSynchronized(true);
         this.add(constPanel);
     }
 }

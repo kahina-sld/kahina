@@ -38,9 +38,6 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
     //changes coordinated with boolean connector panels via event system 
     private int selectionMode;
     
-    //needed for synchronization with node constraint panel
-    private boolean synchronizationMode = false;
-    
     private SingleNodeConstraintPanel markedTreeNode;
     
     public TreeFragmentPanel(KahinaController control)
@@ -67,7 +64,8 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
 
         treePanel = new TreeEditorPanel(this);
         rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control);
-        rootConstPanel.setHintPanel(hintPanel);   
+        rootConstPanel.setHintPanel(hintPanel);  
+        rootConstPanel.setSynchronized(true);
         treePanel.add(rootConstPanel);
         
         JScrollPane treeScroll = new JScrollPane(treePanel);
@@ -93,6 +91,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         if (rootConstPanel != null)
         {
             treePanel.remove(rootConstPanel);
+            rootConstPanel.setSynchronized(false);
             rootConstPanel = null;
         }
         rootConstPanel = root;
@@ -255,6 +254,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         {
             rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control);   
             rootConstPanel.setHintPanel(hintPanel);
+            rootConstPanel.setSynchronized(true);
             treePanel.add(rootConstPanel);
         }
         hintPanel.setEnabled(true);
@@ -303,18 +303,12 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
             {
                 markedTreeNode.setMarked(true);
             }
-            if (event.getPanel() == rootConstPanel & !synchronizationMode)
-            {
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.SYNCHRONIZE_EDITOR_VIEWS, rootConstPanel));
-            }
         }
         else if (event.getEditorEventType() == BreakpointEditorEvent.SYNCHRONIZE_EDITOR_VIEWS)
         {
-           if (event.getPanel() != rootConstPanel)
+           if (event.getPanel() != rootConstPanel && rootConstPanel != null)
            {
-               synchronizationMode = true;
                rootConstPanel.takeOverStructure(event.getPanel());
-               synchronizationMode = false;
            }
         }
     }
@@ -370,6 +364,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control, pat.getRoot());
         displaySubtreePattern(pat.getRoot(), rootConstPanel);
         rootConstPanel.setHintPanel(hintPanel);
+        rootConstPanel.setSynchronized(true);
         treePanel.add(rootConstPanel);
         treePanel.recalculateCoordinates();
         validate();
