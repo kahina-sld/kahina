@@ -140,6 +140,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             adaptNamingAndLayout(elementaryConstraintNumber);           
             basePatterns.add(node);
             typeComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getTypeAsString());
+            relComboBoxes.get(elementaryConstraintNumber).setModel(new DefaultComboBoxModel(constrOptions.getRelationsForType(node.getTypeAsString()).toArray()));
             relComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getRelAsString());
             valComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getValueAsString());
             elementaryConstraintNumber++;
@@ -300,50 +301,54 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     public void actionPerformed(ActionEvent e)
     {
         String s = e.getActionCommand();
-        if (s.startsWith("changeType"))
+        if (!synchronizationMode)
         {
-            Integer rowID = Integer.parseInt(s.substring(10));
-            String type = typeComboBoxes.get(rowID).getSelectedItem().toString();
-            relComboBoxes.get(rowID).setModel(new DefaultComboBoxModel(constrOptions.getRelationsForType(type).toArray()));
-            basePatterns.get(rowID).setType(type);
-            basePatterns.get(rowID).setRelation(relComboBoxes.get(rowID).getSelectedItem().toString());
-            hint("Complete the node constraint by selecting a relation and/or a value.");
-        }
-        else if (s.startsWith("changeRel"))
-        {
-            Integer rowID = Integer.parseInt(s.substring(9));
-            String rel = relComboBoxes.get(rowID).getSelectedItem().toString();
-            basePatterns.get(rowID).setRelation(rel);
-            hint("Complete the node constraint by specifying a value.");
-        }
-        else if (s.startsWith("changeVal"))
-        {
-            Integer rowID = Integer.parseInt(s.substring(9));
-            String val = valComboBoxes.get(rowID).getSelectedItem().toString();
-            try
+            if (s.startsWith("changeType"))
             {
-                basePatterns.get(rowID).parseValue(val);
+    
+                Integer rowID = Integer.parseInt(s.substring(10));
+                String type = typeComboBoxes.get(rowID).getSelectedItem().toString();
+                relComboBoxes.get(rowID).setModel(new DefaultComboBoxModel(constrOptions.getRelationsForType(type).toArray()));
+                basePatterns.get(rowID).setType(type);
+                basePatterns.get(rowID).setRelation(relComboBoxes.get(rowID).getSelectedItem().toString());
+                hint("Complete the node constraint by selecting a relation and/or a value.");
             }
-            catch (PatternFormatException formatError)
+            else if (s.startsWith("changeRel"))
             {
-                hint(formatError.getMessage(), Color.RED);
-                valComboBoxes.get(rowID).setSelectedItem(basePatterns.get(rowID).getValueAsString());
-                return;
+                Integer rowID = Integer.parseInt(s.substring(9));
+                String rel = relComboBoxes.get(rowID).getSelectedItem().toString();
+                basePatterns.get(rowID).setRelation(rel);
+                hint("Complete the node constraint by specifying a value.");
             }
-            hint("Add a new atomic condition or create a new connective.");
+            else if (s.startsWith("changeVal"))
+            {
+                Integer rowID = Integer.parseInt(s.substring(9));
+                String val = valComboBoxes.get(rowID).getSelectedItem().toString();
+                try
+                {
+                    basePatterns.get(rowID).parseValue(val);
+                }
+                catch (PatternFormatException formatError)
+                {
+                    hint(formatError.getMessage(), Color.RED);
+                    valComboBoxes.get(rowID).setSelectedItem(basePatterns.get(rowID).getValueAsString());
+                    return;
+                }
+                hint("Add a new atomic condition or create a new connective.");
+            }
+            else if (s.startsWith("addConst"))
+            {
+                Integer rowID = Integer.parseInt(s.substring(8));
+                addElementaryConstraint(rowID + 1);
+            }
+            else if (s.startsWith("remConst"))
+            {
+                Integer rowID = Integer.parseInt(s.substring(8));
+                removeElementaryConstraint(rowID);
+            }
+            announceUpdate();
+            synchronizeEditors();
         }
-        else if (s.startsWith("addConst"))
-        {
-            Integer rowID = Integer.parseInt(s.substring(8));
-            addElementaryConstraint(rowID + 1);
-        }
-        else if (s.startsWith("remConst"))
-        {
-            Integer rowID = Integer.parseInt(s.substring(8));
-            removeElementaryConstraint(rowID);
-        }
-        announceUpdate();
-        synchronizeEditors();
     }
     
     public void introduceNegation(TreeNodePattern argument)
@@ -458,7 +463,6 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         if (rightAncestor == arg1) return false;
         while (rightAncestor == null && rightAncestor != getRootPattern())
         {
-            System.err.println(rightAncestor.toString());
             rightAncestor = parentPatterns.get(rightAncestor);
             if (rightAncestor == arg1) return false;
         }
@@ -511,7 +515,6 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     
     public void addElementaryConstraint(int rowID)
     {
-        System.err.println("add elementary constraint " + rowID);
         generateElementaryConstraintRow(rowID);
         
         adaptNamingAndLayout(rowID);
@@ -561,7 +564,6 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     
     private void displayChangeInConnectiveStructure()
     {
-        System.err.println(getRootPattern().toString());
         boolPanel.recalculateCoordinates();
         boolPanel.adaptSize(); 
         boolPanel.informControl(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE, this));
@@ -728,5 +730,10 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         {
 
         }
+    }
+    
+    public String toString()
+    {
+        return getRootPattern().toString();
     }
 }

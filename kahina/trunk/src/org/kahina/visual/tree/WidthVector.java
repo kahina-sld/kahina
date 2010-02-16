@@ -15,6 +15,14 @@ public class WidthVector
         end.add(1);
     }
     
+    public WidthVector(int start, int end)
+    {
+        this.start = new ArrayList<Integer>();
+        this.start.add(start);
+        this.end = new ArrayList<Integer>();
+        this.end.add(end);
+    }
+    
     public static WidthVector adjoin(WidthVector w1, WidthVector w2)
     {
         //System.err.println("Adjoining: " + w1 + " and " + w2);

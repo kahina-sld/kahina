@@ -39,9 +39,9 @@ public class NodeConstraintOptions
     public void setStandardOptions()
     {
         addType("step label");
-        addType("step origin");
+        //addType("step origin");
         addType("step id");
-        addType("step type");
+        //addType("step type");
         List<String> nodeLabelRelations = new ArrayList<String>();
         nodeLabelRelations.add("equals");
         nodeLabelRelations.add("matches");

@@ -155,7 +155,6 @@ public class TreeNodePattern
             else
             {
                 this.stringValue = value;
-                System.err.println("Changed string value to " + value);
             }
         }
     }
