@@ -7,10 +7,11 @@ import org.kahina.core.data.KahinaObject;
 
 public abstract class KahinaTree extends KahinaObject
 {
+	private static int nextID = 0;
 
-	public KahinaTree(int id)
+	public KahinaTree()
 	{
-		super(id);
+		super(nextID++);
 	}
 
 	public abstract void clear();

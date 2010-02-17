@@ -14,9 +14,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class KahinaMemTree extends KahinaTree
-{
-    static int lastID = 0;
-    
+{    
     //empty tree has rootID = -1
     protected int rootID = -1;
     
@@ -36,9 +34,7 @@ public class KahinaMemTree extends KahinaTree
     protected KahinaTree primaryModel;
     
     public KahinaMemTree()
-    {
-        super(lastID++);
-        
+    {        
         rootID = -1;
         
         parents = new HashMap<Integer, Integer>();

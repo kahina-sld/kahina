@@ -6,11 +6,11 @@ import org.kahina.core.data.KahinaObject;
 
 public abstract class KahinaChart extends KahinaObject
 {
-	static int lastID = 0;
+	private static int nextID = 0;
 
 	public KahinaChart()
 	{
-		super(lastID++);
+		super(nextID++);
 	}
 
 	public void initialize()
