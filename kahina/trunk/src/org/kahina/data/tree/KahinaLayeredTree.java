@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class KahinaLayeredTree extends KahinaTree
+public class KahinaLayeredTree extends KahinaMemTree
 {   
     //reference node should always be the same across views, so store it here
     int referenceNode;

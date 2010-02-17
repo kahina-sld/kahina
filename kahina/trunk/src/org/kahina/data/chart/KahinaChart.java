@@ -7,7 +7,6 @@ import org.kahina.core.data.KahinaObject;
 public abstract class KahinaChart extends KahinaObject
 {
 	static int lastID = 0;
-	static String type = "KahinaChart";
 
 	public KahinaChart()
 	{

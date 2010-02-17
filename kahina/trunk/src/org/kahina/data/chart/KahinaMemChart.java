@@ -5,9 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
-import org.kahina.data.KahinaMemObject;
-
-public class KahinaMemChart extends KahinaChart implements KahinaMemObject
+public class KahinaMemChart extends KahinaChart
 {
     //the chart is divided up into cells (vertical segments) that the edges can range over
     //leftmost: leftBound, rightmost: rightBound
