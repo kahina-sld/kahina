@@ -39,7 +39,7 @@ public class TreeEditorPanel extends JPanel
         List<List<JPanel>> nodeLevels = createNodeLayers();
         for (List<JPanel> nodeLevel : nodeLevels)
         {
-            System.err.println(nodeLevel);
+            //System.err.println(nodeLevel);
         }
         
         int totalTreeWidth = 50;
@@ -51,7 +51,7 @@ public class TreeEditorPanel extends JPanel
         {
             for (int i = nodeLevels.size() - 1; i >= 0; i--)
             {
-                System.err.println("Node level: " + i);
+                //System.err.println("Node level: " + i);
                 for (JPanel node : nodeLevels.get(i))
                 {
                     subtreeWidths.put(node,constructWidthVector(node));
@@ -64,11 +64,11 @@ public class TreeEditorPanel extends JPanel
             x.put(fragment.getRoot(), subtreeWidths.get(fragment.getRoot()).maximumLeftDistance());
             for (int i = 0; i < nodeLevels.size(); i++)
             {
-                System.err.println("Node level: " + i);
+                //System.err.println("Node level: " + i);
                 List<JPanel> nodes = nodeLevels.get(i);  
                 int xOffset = 0;
                 if (nodes.size() > 0) xOffset = subtreeWidths.get(nodes.get(0)).maximumLeftDistance();
-                System.err.println("Start with x offset " + xOffset);
+                //System.err.println("Start with x offset " + xOffset);
                 JPanel parent = null;
                 WidthVector subtreeWidth  = new WidthVector();
                 WidthVector lastSubtreeWidth;
@@ -77,7 +77,7 @@ public class TreeEditorPanel extends JPanel
                     //System.err.print("  Node:" + node);
                     lastSubtreeWidth = subtreeWidth;
                     subtreeWidth = subtreeWidths.get(node);
-                    System.err.println("Next necessary distance " + WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth));
+                    //System.err.println("Next necessary distance " + WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth));
                     xOffset += WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth);
                     //switch to children of next parent node --> jump in x offset
                     JPanel newParent = fragment.getParent(node);
@@ -86,7 +86,7 @@ public class TreeEditorPanel extends JPanel
                     {
                         parent = newParent;
                         //System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
-                        xOffset = x.get(parent) -  subtreeWidths.get(parent).getStart(1) / 2;
+                        xOffset = x.get(parent) -  subtreeWidths.get(parent).getStart(1)  + node.getPreferredSize().width / 2;
                     }
                     if (i > 0)
                     {
@@ -98,7 +98,7 @@ public class TreeEditorPanel extends JPanel
                 //adapt total tree width to maximum level width (i.e. maximum x position of a node in any level)     
                 if (nodes.size() > 0)
                 {
-                    int nodeLevelWidth =  x.get(nodes.get(nodes.size() - 1));
+                    int nodeLevelWidth =  x.get(nodes.get(nodes.size() - 1)) + nodes.get(nodes.size() - 1).getPreferredSize().width;
                     if (nodeLevelWidth > totalTreeWidth)
                     {
                        totalTreeWidth = nodeLevelWidth;
@@ -115,6 +115,7 @@ public class TreeEditorPanel extends JPanel
                 adaptNodeSizeAndPosition(node);
             }
         }
+        this.setPreferredSize(new Dimension(totalTreeWidth,totalTreeHeight));
     }
         
     private List<List<JPanel>> createNodeLayers()
@@ -162,7 +163,7 @@ public class TreeEditorPanel extends JPanel
             }
             sum.start.add(0,width);
             sum.end.add(0,width);
-            System.err.println(sum);
+            //System.err.println(sum);
             return sum;
         }
         return new WidthVector(width,width);

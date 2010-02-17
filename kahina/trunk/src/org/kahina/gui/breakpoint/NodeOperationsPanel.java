@@ -54,7 +54,7 @@ public class NodeOperationsPanel extends JPanel
     public void activateAllComponents()
     {
         addChildOperationButton.setEnabled(true);
-        setParentOperationButton.setEnabled(true);
+        //setParentOperationButton.setEnabled(true);
         removeOperationButton.setEnabled(true);
     }
     

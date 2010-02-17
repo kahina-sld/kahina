@@ -24,6 +24,7 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
         JMenuItem newBreakpointItem = new JMenuItem("New...");
         newBreakpointItem.setActionCommand("newBreakpoint");
         newBreakpointItem.addActionListener(this);
+        newBreakpointItem.setEnabled(false);
         this.add(newBreakpointItem);
         
         this.addSeparator();
@@ -31,11 +32,13 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
         JMenuItem exportBreakpointItem = new JMenuItem("Export...");
         exportBreakpointItem.setActionCommand("exportBreakpoint");
         exportBreakpointItem.addActionListener(this);
+        exportBreakpointItem.setEnabled(false);
         this.add(exportBreakpointItem);
         
         JMenuItem importBreakpointItem = new JMenuItem("Import...");
         importBreakpointItem.setActionCommand("importBreakpoint");
         importBreakpointItem.addActionListener(this);
+        importBreakpointItem.setEnabled(false);
         this.add(importBreakpointItem);
         
         this.addSeparator();
@@ -83,6 +86,7 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
         else if (s.equals("quit"))
         {
             control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
+            System.exit(0);
         }
     }
 }
