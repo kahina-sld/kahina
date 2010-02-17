@@ -56,9 +56,15 @@ public class KahinaMemTree extends KahinaTree
     }
     
     @Override
+    public int getRootID()
+    {
+    	return rootID;
+    }
+    
+    @Override
 	public int getRootID(int layerID)
     {
-        return rootID;
+        return getRootID();
     }
     
     @Override
@@ -308,38 +314,7 @@ public class KahinaMemTree extends KahinaTree
         nextID = 0;
     }
     
-    public String exportXML()
-    {
-        StringBuilder b = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-        b.append("<kahinaTree>\n");
-        if (rootID != -1)
-        {
-            exportXML(b, rootID, 2);
-        }
-        b.append("</kahinaTree>\n");
-        return b.toString();
-    }
-    
-    private void exportXML(StringBuilder b, int node, int depth)
-    {
-        createSpace(b, depth);
-        b.append("<node id=\"" + node + "\" caption=\"" + getNodeCaption(node) + "\" label=\"" + getEdgeLabel(node) + "\" status=\"" + getNodeStatus(node) + "\">\n");
-        for (int child : getChildren(node, 0))
-        {
-            exportXML(b, child, depth + 2);
-        }
-        createSpace(b, depth);
-        b.append("</node>\n");
-    }
-    
-    private void createSpace(StringBuilder b, int amount)
-    {
-        for (int i = 0; i < amount; i++)
-        {
-            b.append(' ');
-        }
-    }
-    
+    // TODO find a good way to make this implementation-independent
     public static KahinaMemTree importXML(Document dom)
     {
         KahinaMemTree m = new KahinaMemTree();
