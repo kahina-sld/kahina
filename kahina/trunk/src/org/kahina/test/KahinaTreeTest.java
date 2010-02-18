@@ -13,7 +13,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.data.KahinaTypeException;
-import org.kahina.data.tree.KahinaLayeredTree;
 import org.kahina.data.tree.KahinaTree;
 import org.kahina.visual.tree.KahinaTreeView;
 import org.kahina.visual.tree.KahinaTreeViewMarker;
