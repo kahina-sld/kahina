@@ -45,6 +45,10 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
         return rootID;
     }
     
+    /**
+     * Returns the lowest ancestor of nodeID whose layer is lower than or equals
+     * layerID.
+     */
     public int getParent(int nodeID, int layerID)
     {
         if (nodeID == getRootID(layerID)) return -1;
@@ -57,6 +61,12 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
         return parent;
     }
     
+    /**
+     * Returns those descendants of nodeID whose layer is lower than or equals
+     * layerID and which are not dominated by any other such descendant - but
+     * only if the layer of nodeID is greater than or equals layerID (otherwise
+     * returns the empty list).
+     */
     public List<Integer> getChildren(int nodeID, int layerID)
     {
         //System.err.print("KahinaLayeredTree.getChildren(" + nodeID + "," + layerID + ") = ");
@@ -77,6 +87,9 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
             }
             else
             {
+            	// TODO ke: Shouldn't these children be added at the beginning
+            	// of the front line? This seems to risk getting the order
+            	// wrong.
                 frontLine.addAll(super.getChildren(child,0));
             }
         }
