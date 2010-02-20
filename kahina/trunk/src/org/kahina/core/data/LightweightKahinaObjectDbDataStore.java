@@ -115,24 +115,18 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		{
 			return;
 		}
-		try
-		{
-			db.execute("CREATE TABLE " + OBJECT_TABLE_NAME + " ("
-					+ "class_id INT, " + "object_id INT, " + "field_id INT, "
-					+ "value_class_id INT, " + "value_object_id INT, "
-					+ "INDEX id (class_id, object_id, field_id)" + "); "
-					+ "CREATE TABLE KahinaObjectDbDataStore_string_values "
-					+ "(" + "class_id INT, " + "object_id INT, "
-					+ "field_id INT, " + "value LONG VARCHAR, "
-					+ "INDEX id (class_id, object_id, field_id)" + "); "
-					+ "CREATE TABLE KahinaObjectDbDataStore_int_values " + "("
-					+ "class_id INT, " + "object_id INT, " + "field_id INT, "
-					+ "value INT, "
-					+ "INDEX id (class_id, object_id, field_id)" + "); ");
-		} catch (SQLException e)
-		{
-			throw new KahinaException("Could not create tables. ", e);
-		}
+		db.execute("CREATE TABLE " + OBJECT_TABLE_NAME + " ("
+				+ "class_id INT, " + "object_id INT, " + "field_id INT, "
+				+ "value_class_id INT, " + "value_object_id INT, "
+				+ "INDEX id (class_id, object_id, field_id)" + "); "
+				+ "CREATE TABLE KahinaObjectDbDataStore_string_values " + "("
+				+ "class_id INT, " + "object_id INT, " + "field_id INT, "
+				+ "value LONG VARCHAR, "
+				+ "INDEX id (class_id, object_id, field_id)" + "); "
+				+ "CREATE TABLE KahinaObjectDbDataStore_int_values " + "("
+				+ "class_id INT, " + "object_id INT, " + "field_id INT, "
+				+ "value INT, " + "INDEX id (class_id, object_id, field_id)"
+				+ "); ");
 		db.register(CLIENT_ID);
 	}
 

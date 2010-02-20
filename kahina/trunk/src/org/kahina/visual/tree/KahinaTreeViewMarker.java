@@ -3,22 +3,22 @@ package org.kahina.visual.tree;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kahina.data.tree.KahinaLayeredTree;
+import org.kahina.data.tree.KahinaMemTree;
 
 public class KahinaTreeViewMarker
 {
     int markedNode = -1;
-    KahinaLayeredTree model;
-    KahinaLayeredTree secondaryModel;
+    KahinaMemTree model;
+    KahinaMemTree secondaryModel;
     Set<KahinaTreeViewPanel> views;
     
-    public KahinaTreeViewMarker(KahinaLayeredTree m)
+    public KahinaTreeViewMarker(KahinaMemTree m)
     {
         this.model = m;
         views = new HashSet<KahinaTreeViewPanel>();
     }
     
-    public KahinaTreeViewMarker(KahinaLayeredTree m, KahinaLayeredTree m2)
+    public KahinaTreeViewMarker(KahinaMemTree m, KahinaMemTree m2)
     {
         this.model = m;
         this.secondaryModel = m2;

@@ -6,7 +6,7 @@ import java.util.Set;
 
 import org.kahina.control.KahinaController;
 import org.kahina.control.event.KahinaTreeMatchEvent;
-import org.kahina.data.tree.KahinaMemTree;
+import org.kahina.data.tree.KahinaUnlayeredMemTree;
 import org.kahina.data.tree.KahinaTree;
 
 /**
@@ -49,7 +49,7 @@ public class TreeAutomaton
         acceptingStates = new HashSet<Integer>();
         rules = new HashSet<TreeAutomatonRule>();
         
-        this.tree = new KahinaMemTree();
+        this.tree = new KahinaUnlayeredMemTree();
         this.annotations =  new HashMap<Integer,Set<Integer>>();
         this.bp = bp;    
     }

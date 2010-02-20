@@ -3,7 +3,7 @@ package org.tralesld.behavior;
 import java.util.List;
 
 import org.kahina.behavior.KahinaTreeBehavior;
-import org.kahina.data.tree.KahinaLayeredTree;
+import org.kahina.data.tree.KahinaMemTree;
 import org.kahina.data.tree.KahinaTree;
 import org.kahina.util.PrologUtilities;
 
@@ -20,7 +20,7 @@ public class TraleSLDTreeBehavior extends KahinaTreeBehavior
     
     int lastActiveID;
     
-    public TraleSLDTreeBehavior(KahinaLayeredTree tree, KahinaTree secondaryTree)
+    public TraleSLDTreeBehavior(KahinaMemTree tree, KahinaTree secondaryTree)
     {
         super(tree);
         this.secondaryTree = secondaryTree;

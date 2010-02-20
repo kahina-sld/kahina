@@ -13,7 +13,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import org.kahina.data.tree.KahinaLayeredTree;
+import org.kahina.data.tree.KahinaMemTree;
 import org.kahina.visual.chart.KahinaChartView;
 import org.kahina.visual.chart.KahinaChartViewContextMenu;
 import org.kahina.visual.chart.KahinaChartViewMarker;
@@ -28,7 +28,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
     public KahinaTreeViewListener(KahinaTreeViewPanel view)
     {
         this.view = view;
-        this.marker = new KahinaTreeViewMarker((KahinaLayeredTree) view.v.getTreeModel());
+        this.marker = new KahinaTreeViewMarker((KahinaMemTree) view.v.getTreeModel());
         this.lastMouseEvent = null;
     }
     

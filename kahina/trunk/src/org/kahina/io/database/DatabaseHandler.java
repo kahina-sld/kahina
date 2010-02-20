@@ -47,10 +47,16 @@ public class DatabaseHandler
 		// TODO Use the provided file.
 	}
 
-	public void execute(String sqlString) throws SQLException
+	public void execute(String sqlString)
 	{
-		Statement statement = connection.createStatement();
-		statement.execute(sqlString);
+		try
+		{
+			Statement statement = connection.createStatement();
+			statement.execute(sqlString);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
 	}
 
 	public int queryInteger(PreparedStatement statement)

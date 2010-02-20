@@ -1,7 +1,6 @@
 package org.kahina.test;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 
@@ -13,7 +12,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.data.KahinaTypeException;
-import org.kahina.data.tree.KahinaTree;
 import org.kahina.visual.tree.KahinaTreeView;
 import org.kahina.visual.tree.KahinaTreeViewMarker;
 import org.kahina.visual.tree.KahinaTreeViewPanel;

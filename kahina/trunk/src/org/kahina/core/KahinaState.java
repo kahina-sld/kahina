@@ -1,6 +1,6 @@
 package org.kahina.core;
 
-import org.kahina.data.tree.KahinaLayeredTree;
+import org.kahina.data.tree.KahinaMemTree;
 import org.kahina.data.tree.KahinaTree;
 
 /**
@@ -16,6 +16,6 @@ import org.kahina.data.tree.KahinaTree;
 public class KahinaState
 {      
     //the data structures that a kahina state always contains
-    KahinaLayeredTree stepTree;
+    KahinaMemTree stepTree;
     KahinaTree secondaryStepTree; 
 }

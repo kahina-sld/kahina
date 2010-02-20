@@ -13,7 +13,8 @@ public class KahinaDbChart extends KahinaChart
 	private static final String CLIENT_ID = KahinaDbChart.class.getName();
 
 	private static final String TABLE_NAME_PREFIX = KahinaDbChart.class
-			.getSimpleName() + "_";
+			.getSimpleName()
+			+ "_";
 
 	private static final String CHART_TABLE_NAME = TABLE_NAME_PREFIX + "charts";
 
@@ -87,43 +88,31 @@ public class KahinaDbChart extends KahinaChart
 	{
 		if (!db.isRegistered(CLIENT_ID))
 		{
-			try
-			{
-				// create table for KahinaCharts
-				db.execute("CREATE TABLE " + CHART_TABLE_NAME + " ("
-						+ "id INT," + "leftBound INT," + "rightBound INT,"
-						+ "leftmostCovered INT," + "rightmostCovered INT,"
-						+ "PRIMARY KEY (id)" + ")");
-				// create a table for the chart segments
-				db.execute("CREATE TABLE " + SEGMENT_TABLE_NAME + " ("
-						+ "id INT," + "chart INT," + "caption LONG VARCHAR,"
-						+ "PRIMARY KEY (id, chart)" + ")");
-				// create a table for the chart edges
-				db.execute("CREATE TABLE " + EDGE_TABLE_NAME + " (" + "id INT,"
-						+ "chart INT," + "leftBound INT," + "rightBound INT,"
-						+ "caption LONG VARCHAR," + "status INT,"
-						+ "PRIMARY KEY (id, chart)" + ")");
-			} catch (SQLException e)
-			{
-				throw new KahinaException("Failed to create tables. ", e);
-			}
+			// create table for KahinaCharts
+			db.execute("CREATE TABLE " + CHART_TABLE_NAME + " (" + "id INT,"
+					+ "leftBound INT," + "rightBound INT,"
+					+ "leftmostCovered INT," + "rightmostCovered INT,"
+					+ "PRIMARY KEY (id)" + ")");
+			// create a table for the chart segments
+			db.execute("CREATE TABLE " + SEGMENT_TABLE_NAME + " (" + "id INT,"
+					+ "chart INT," + "caption LONG VARCHAR,"
+					+ "PRIMARY KEY (id, chart)" + ")");
+			// create a table for the chart edges
+			db.execute("CREATE TABLE " + EDGE_TABLE_NAME + " (" + "id INT,"
+					+ "chart INT," + "leftBound INT," + "rightBound INT,"
+					+ "caption LONG VARCHAR," + "status INT,"
+					+ "PRIMARY KEY (id, chart)" + ")");
 			db.register(CLIENT_ID);
 		}
 	}
 
 	private void createChart()
 	{
-		try
-		{
-			db
-					.execute("INSERT INTO "
-							+ CHART_TABLE_NAME
-							+ " (id, leftBound, rightBound, leftmostCovered, rightmostCovered) VALUES ("
-							+ getID() + ", 0, 0, 0, 0)");
-		} catch (SQLException e)
-		{
-			throw new KahinaException("Failed to create chart.");
-		}
+		db
+				.execute("INSERT INTO "
+						+ CHART_TABLE_NAME
+						+ " (id, leftBound, rightBound, leftmostCovered, rightmostCovered) VALUES ("
+						+ getID() + ", 0, 0, 0, 0)");
 	}
 
 	private void prepareStatements()

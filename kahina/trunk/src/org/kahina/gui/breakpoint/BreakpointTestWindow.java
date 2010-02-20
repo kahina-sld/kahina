@@ -18,14 +18,14 @@ import org.kahina.control.KahinaListener;
 import org.kahina.control.event.KahinaEvent;
 import org.kahina.control.event.KahinaTreeMatchEvent;
 import org.kahina.data.KahinaTypeException;
-import org.kahina.data.tree.KahinaLayeredTree;
+import org.kahina.data.tree.KahinaMemTree;
 import org.kahina.visual.tree.KahinaTreeView;
 import org.kahina.visual.tree.KahinaTreeViewMarker;
 import org.kahina.visual.tree.KahinaTreeViewPanel;
 
 public class BreakpointTestWindow extends JFrame implements ActionListener, KahinaListener
 {
-    KahinaLayeredTree model;   
+    KahinaMemTree model;   
     List<TreeAutomaton> breakpoints;
     
     KahinaTreeView view;
@@ -49,7 +49,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
         
-        model = new KahinaLayeredTree();
+        model = new KahinaMemTree();
         int rootID = model.addNode("start", "none", 0);
         model.setRootID(rootID);
         this.breakpoints = breakpoints;

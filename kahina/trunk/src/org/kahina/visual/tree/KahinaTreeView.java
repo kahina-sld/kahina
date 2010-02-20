@@ -14,7 +14,7 @@ import java.util.List;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.data.KahinaTypeException;
 import org.kahina.data.tree.KahinaTree;
-import org.kahina.data.tree.KahinaLayeredTree;
+import org.kahina.data.tree.KahinaMemTree;
 import org.kahina.visual.KahinaView;
 
 public class KahinaTreeView extends KahinaView
@@ -122,7 +122,7 @@ public class KahinaTreeView extends KahinaView
     
     public KahinaTreeView()
     {
-        treeModel = new KahinaLayeredTree();
+        treeModel = new KahinaMemTree();
         treeLayer = 0;
         secondaryTreeModel = null;
         resetAllStructures();
@@ -587,7 +587,7 @@ public class KahinaTreeView extends KahinaView
             throw new KahinaTypeException("","");
         }
         treeLayer = 0;
-        this.treeModel = (KahinaLayeredTree) treeModel;
+        this.treeModel = (KahinaMemTree) treeModel;
         nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
         calculateCoordinates();
@@ -599,15 +599,15 @@ public class KahinaTreeView extends KahinaView
         {
             throw new KahinaTypeException("","");
         }
-        this.secondaryTreeModel = (KahinaLayeredTree) treeModel;
-        ((KahinaLayeredTree) this.secondaryTreeModel).setReferenceNode(((KahinaLayeredTree) this.treeModel).getReferenceNode());
+        this.secondaryTreeModel = (KahinaMemTree) treeModel;
+        ((KahinaMemTree) this.secondaryTreeModel).setReferenceNode(((KahinaMemTree) this.treeModel).getReferenceNode());
         this.secondaryTreeModel.setPrimaryModel(this.treeModel);
         nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
         calculateCoordinates();
     }
     
-    public void display(KahinaLayeredTree layerModel, int layerID, int referenceNode) throws KahinaTypeException
+    public void display(KahinaMemTree layerModel, int layerID, int referenceNode) throws KahinaTypeException
     {
         treeLayer = layerID;
         layerModel.setReferenceNode(referenceNode);

@@ -8,13 +8,27 @@ import org.kahina.core.data.KahinaObject;
 public abstract class KahinaTree extends KahinaObject
 {
 	private static int nextID = 0;
+	
+	protected LayerDecider decider;
 
-	public KahinaTree()
+	private KahinaTree primaryModel;
+
+	public KahinaTree(LayerDecider decider)
 	{
 		super(nextID++);
+		this.decider = decider;
+		clear();
 	}
 
-	public abstract void clear();
+	/**
+	 * Clears the tree model. Implementors should override this method to clear
+	 * implementation-specific data, but make sure to call this implementation
+	 * using <code>super.clear()</code>.
+	 */
+	public void clear()
+	{
+		setPrimaryModel(this);
+	}
 
 	public abstract int addNode(String caption, String label, int nodeStatus);
 
@@ -61,8 +75,6 @@ public abstract class KahinaTree extends KahinaObject
 	public abstract int getRootID();
 
 	public abstract int getRootID(int layerID);
-
-	public abstract void setPrimaryModel(KahinaTree primaryModel);
     
     public String exportXML()
     {
@@ -95,5 +107,15 @@ public abstract class KahinaTree extends KahinaObject
             b.append(' ');
         }
     }
+
+	public KahinaTree getPrimaryModel()
+	{
+		return primaryModel;
+	}
+
+	public void setPrimaryModel(KahinaTree primaryModel)
+	{
+	    this.primaryModel = primaryModel;
+	}
 
 }

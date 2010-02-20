@@ -1,24 +1,17 @@
 package org.kahina.test;
 
-import org.kahina.data.tree.KahinaLayeredTree;
+import org.kahina.data.tree.KahinaMemTree;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class TestLayeredTree extends KahinaLayeredTree
+public class TestLayeredTree extends KahinaMemTree
 {
-    //this method should be implemented by deriving classes!
-    //full access to the tree model, can thus be based on node info, tree structure, status information
-    //TODO: in the case of the secondary tree model, use the captions from the primary model instead!
-    public int decideOnLevel(int nodeID)
-    {
-        if (nodeID == getRootID(0)) return 0;
-        if (nodeID == -1) return -1;
-        if (primaryModel.getNodeCaption(nodeID).indexOf("rule") != -1 || primaryModel.getNodeCaption(nodeID).indexOf("\"") != -1) return 0;
-        else if (primaryModel.getNodeCaption(nodeID).indexOf("goal") != -1) return 1;
-        return 2;
-    }
+	public TestLayeredTree()
+	{
+		super(new TestLayerDecider());
+	}
     
     public static TestLayeredTree importXML(Document dom)
     {
