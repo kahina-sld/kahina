@@ -9,8 +9,10 @@ import org.kahina.core.KahinaException;
 import org.kahina.io.database.DatabaseHandler;
 
 /**
- * A {@link DataManager} implementation using a database for storage, and
- * {@link LightweightKahinaObjectDbDataStore}s as default data stores.
+ * A {@link DataManager} implementation using a database for storage,
+ * {@link LightweightKahinaObjectDbDataStore}s as default data stores for
+ * {@link LightweightKahinaObject}s, and {@link KahinaObjectMemDataStore}s as
+ * default data stores for other {@link KahinaObject}s.
  * 
  * @author ke
  * 
@@ -35,11 +37,13 @@ public class DbDataManager extends DataManager
 	}
 
 	@Override
-	public void registerDataType(Class<? extends KahinaObject> type, DataStore store)
+	public void registerDataType(Class<? extends KahinaObject> type,
+			DataStore store)
 	{
 		if (typeIDByType.containsKey(type))
 		{
-			throw new KahinaException("A data store for type " + type + " is already registered.");
+			throw new KahinaException("A data store for type " + type
+					+ " is already registered.");
 		}
 		typeIDByType.put(type, storeByTypeID.size());
 		storeByTypeID.add(store);
@@ -48,21 +52,26 @@ public class DbDataManager extends DataManager
 	/**
 	 * Registers a new data type with a
 	 * {@link LightweightKahinaObjectDbDataStore}.
+	 * 
 	 * @param type
 	 *            Must be a subclass of {@link LightweightKahinaObject}.
 	 */
 	@Override
 	public void registerDataType(Class<? extends KahinaObject> type)
 	{
-		if (!LightweightKahinaObject.class.isAssignableFrom(type))
+		if (LightweightKahinaObject.class.isAssignableFrom(type))
 		{
-			throw new KahinaException("Cannot auto-create a suitable data store for " + type + ".");
+			registerDataType(type, new LightweightKahinaObjectDbDataStore(type,
+					this, db));
+		} else
+		{
+			registerDataType(type, new KahinaObjectMemDataStore());
 		}
-		registerDataType(type, new LightweightKahinaObjectDbDataStore(type, this, db));
 	}
 
 	/**
 	 * Returns the internal numeric ID given to a data type by this manager.
+	 * 
 	 * @param type
 	 * @return
 	 */
@@ -73,7 +82,8 @@ public class DbDataManager extends DataManager
 
 	/**
 	 * Retrieves an object by the internal numeric ID given to its type by this
-	 * manager, and its object ID. 
+	 * manager, and its object ID.
+	 * 
 	 * @param typeID
 	 * @param objectID
 	 * @return
