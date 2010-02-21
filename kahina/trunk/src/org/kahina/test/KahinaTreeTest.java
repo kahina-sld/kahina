@@ -44,7 +44,7 @@ public class KahinaTreeTest
             v0.setHorizontalDistance(18);
             v0.display(m1,0,17);
             v0.displaySecondaryTree(m2);
-            v0.swapSecondDimensionDisplay();
+            v0.toggleSecondDimensionDisplay();
             
             v0.setStatusColorEncoding(0,new Color(0,255,0));
             v0.setStatusColorEncoding(1,new Color(255,0,0));
@@ -59,7 +59,7 @@ public class KahinaTreeTest
             v1.setHorizontalDistance(18);
             v1.display(m1,1,17);
             v1.displaySecondaryTree(m2);
-            v1.swapSecondDimensionDisplay();
+            v1.toggleSecondDimensionDisplay();
             
             v1.setStatusColorEncoding(0,new Color(0,255,0));
             v1.setStatusColorEncoding(1,new Color(255,0,0));

@@ -1,10 +1,15 @@
 package org.kahina.visual.tree;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.List;
-
-import javax.swing.*;
 
 import org.kahina.visual.KahinaViewPanel;
 
@@ -136,7 +141,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel
     {
         canvas.setFont(v.getNodeFont(nodeID));
         FontMetrics fm = canvas.getFontMetrics();
-        int width = fm.stringWidth(v.treeModel.getNodeCaption(nodeID));
+        int width = fm.stringWidth(v.getContentfulTreeModel().getNodeCaption(nodeID));
         int x = v.getNodeX(nodeID) - width / 2;
         int y = v.getNodeY(nodeID) - v.getNodeHeight(nodeID) + 2;
         if (v.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
@@ -173,7 +178,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel
     {
         canvas.setFont(v.getNodeFont(nodeID));
         FontMetrics fm = canvas.getFontMetrics();
-        int width = fm.stringWidth(v.treeModel.getNodeCaption(nodeID));
+        int width = fm.stringWidth(v.getContentfulTreeModel().getNodeCaption(nodeID));
         int x = v.getNodeX(nodeID) - width / 2;
         int y = v.getNodeY(nodeID) - v.getNodeHeight(nodeID) + 2;
         //TODO: correct oval drawing also for non-central alignments
@@ -205,7 +210,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel
     {
         canvas.setFont(v.getNodeFont(nodeID));
         FontMetrics fm = canvas.getFontMetrics();
-        String tag = v.treeModel.getNodeCaption(nodeID);
+        String tag = v.getContentfulTreeModel().getNodeCaption(nodeID);
         int width = fm.stringWidth(tag);
         canvas.setColor(Color.BLACK);
         //print tag name of node
@@ -317,8 +322,8 @@ public class KahinaTreeViewPanel extends KahinaViewPanel
                                 }
                                 else if (v.getNodePositionPolicy() == KahinaTreeView.CENTERED_NODES)
                                 {
-                                    int parentWidth = canvas.getFontMetrics().stringWidth(v.treeModel.getNodeCaption(parent));
-                                    int nodeWidth = canvas.getFontMetrics().stringWidth(v.treeModel.getNodeCaption(node));
+                                    int parentWidth = canvas.getFontMetrics().stringWidth(v.getContentfulTreeModel().getNodeCaption(parent));
+                                    int nodeWidth = canvas.getFontMetrics().stringWidth(v.getContentfulTreeModel().getNodeCaption(node));
                                     x1 -= parentWidth / 2;
                                     x2 -= nodeWidth / 2;
                                     int x3 = x1;

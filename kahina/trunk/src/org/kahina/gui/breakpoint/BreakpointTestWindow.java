@@ -11,7 +11,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.kahina.breakpoint.KahinaBreakpoint;
 import org.kahina.breakpoint.TreeAutomaton;
 import org.kahina.control.KahinaController;
 import org.kahina.control.KahinaListener;
@@ -121,7 +120,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         }
         else if (s.equals("addRandomNode"))
         {
-            int parentNode = (int) (Math.random() * model.getNodeCaptions().size());
+            int parentNode = (int) (Math.random() * model.getSize());
             String caption = generateRandomNodeCaption();
             view.setMarkedNode(addNode(parentNode, caption));
             view.resetAllStructures();
@@ -285,7 +284,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
                 {
                     
                 }
-                int parentNode = (int) (Math.random() * model.getNodeCaptions().size());
+                int parentNode = (int) (Math.random() * model.getSize());
                 String caption = generateRandomNodeCaption();
                 addNode(parentNode, caption);
             }

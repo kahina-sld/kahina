@@ -91,6 +91,8 @@ public class KahinaTreeView extends KahinaView
     //is usually null; add another model here for two-dimensional display
     KahinaTree secondaryTreeModel;
     
+    private boolean dimensionsSwapped = false;
+    
     //display coordinates for nodes
     private HashMap<Integer, Integer> nodeX;
     private HashMap<Integer, Integer> nodeY;
@@ -228,7 +230,7 @@ public class KahinaTreeView extends KahinaView
         return displaySecondDimension && secondaryTreeModel != null;
     }
     
-    public void swapSecondDimensionDisplay()
+    public void toggleSecondDimensionDisplay()
     {
         displaySecondDimension = !displaySecondDimension;
         resetAllStructures();
@@ -463,7 +465,7 @@ public class KahinaTreeView extends KahinaView
     
     public Font getNodeFont(int nodeID)
     {
-        int status = treeModel.getNodeStatus(nodeID);
+        int status = getContentfulTreeModel().getNodeStatus(nodeID);
         Font fnt = statusFontEncoding.get(status);
         if (fnt == null)
         {
@@ -485,7 +487,7 @@ public class KahinaTreeView extends KahinaView
     
     public Color getNodeColor(int nodeID)
     {
-        int status = treeModel.getNodeStatus(nodeID);
+        int status = getContentfulTreeModel().getNodeStatus(nodeID);
         Color col = statusNodeColorEncoding.get(status);
         if (col == null)
         {
@@ -587,7 +589,7 @@ public class KahinaTreeView extends KahinaView
             throw new KahinaTypeException("","");
         }
         treeLayer = 0;
-        this.treeModel = (KahinaMemTree) treeModel;
+        this.treeModel = (KahinaTree) treeModel;
         nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
         calculateCoordinates();
@@ -647,7 +649,7 @@ public class KahinaTreeView extends KahinaView
                 //System.err.println("Node level: " + i);
                 for (int node : nodeLevels.get(i))
                 {
-                    int nodeLabelWidth = fm.stringWidth(treeModel.getNodeCaption(node));
+                    int nodeLabelWidth = fm.stringWidth(getContentfulTreeModel().getNodeCaption(node));
                     if (maxNodeWidth < nodeLabelWidth) maxNodeWidth = nodeLabelWidth;
                     ArrayList<Integer> children = getVisibleVirtualChildren(treeModel, node);           
                     subtreeWidths.put(node,constructWidthVector(children));
@@ -800,7 +802,7 @@ public class KahinaTreeView extends KahinaView
         if (nodeDisplayPolicy == KahinaTreeView.ALWAYS) return true;
         if (nodeDisplayPolicy == KahinaTreeView.NEVER) return false;
         if (secondaryTreeModel != null && collapsePolicy == COLLAPSE_SECONDARY && secondaryTreeModel.hasCollapsedAncestor(nodeID)) return false;
-        int status = treeModel.getNodeStatus(nodeID);
+        int status = getContentfulTreeModel().getNodeStatus(nodeID);
         Boolean decision = statusVisibilityEncoding.get(status);
         if (decision == null)
         {
@@ -893,11 +895,9 @@ public class KahinaTreeView extends KahinaView
     {
         if (secondaryTreeModel != null)
         {
+        	dimensionsSwapped = !dimensionsSwapped;
             KahinaTree firstModel = treeModel;
             treeModel = secondaryTreeModel;
-            treeModel.setNodeCaptions(firstModel.getNodeCaptions());
-            treeModel.setEdgeLabels(firstModel.getEdgeLabels());
-            treeModel.setStatus(firstModel.getStatus());
             secondaryTreeModel = firstModel;
             resetAllStructures();
             calculateCoordinates();
@@ -955,7 +955,7 @@ public class KahinaTreeView extends KahinaView
             upperIndex = selectedLevel.size() - 1;
             middleIndex = (lowerIndex + upperIndex)/2;
             FontMetrics fm = getFontMetrics(new Font(Font.SANS_SERIF,Font.PLAIN, fontSize), new BasicStroke(1), fontSize);
-            int width = fm.stringWidth(treeModel.getNodeCaption(selectedLevel.get(middleIndex)));
+            int width = fm.stringWidth(getContentfulTreeModel().getNodeCaption(selectedLevel.get(middleIndex)));
             middleBound = nodeX.get(selectedLevel.get(middleIndex)) + width / 2 + 2;
             if (nodePositionPolicy == KahinaTreeView.LEFT_ALIGNED_NODES)
             {
@@ -977,7 +977,7 @@ public class KahinaTreeView extends KahinaView
                     lowerIndex = middleIndex;
                 }
                 middleIndex = (lowerIndex + upperIndex)/2;
-                width = fm.stringWidth(treeModel.getNodeCaption(selectedLevel.get(middleIndex)));
+                width = fm.stringWidth(getContentfulTreeModel().getNodeCaption(selectedLevel.get(middleIndex)));
                 middleBound = nodeX.get(selectedLevel.get(middleIndex)) + width / 2 - 2;
                 if (nodePositionPolicy == KahinaTreeView.LEFT_ALIGNED_NODES)
                 {
@@ -996,7 +996,7 @@ public class KahinaTreeView extends KahinaView
             
         //test coordinates against exact boundaries of candidate node
         FontMetrics fm = getFontMetrics(new Font(Font.SANS_SERIF,Font.PLAIN, fontSize), new BasicStroke(1), fontSize);
-        int width = fm.stringWidth(treeModel.getNodeCaption(candidateNode));
+        int width = fm.stringWidth(getContentfulTreeModel().getNodeCaption(candidateNode));
         int xLeft = getNodeX(candidateNode) - width / 2 - 2;
         if (nodePositionPolicy == KahinaTreeView.LEFT_ALIGNED_NODES)
         {
@@ -1035,5 +1035,16 @@ public class KahinaTreeView extends KahinaView
     public KahinaTree getTreeModel()
     {
         return treeModel;
+    }
+    
+    public KahinaTree getContentfulTreeModel()
+    {
+    	if (dimensionsSwapped)
+    	{
+    		return secondaryTreeModel;
+    	} else
+    	{
+    		return treeModel;
+    	}
     }
 }

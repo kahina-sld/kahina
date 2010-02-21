@@ -105,6 +105,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         }
         else
         {
+        	System.err.println("Caption: " + caption); // TODO
             return caption;
         }
     }
@@ -179,42 +180,6 @@ public class KahinaUnlayeredMemTree extends KahinaTree
                 }
             }
         }
-    }
-    
-    @Override
-	public Map<Integer, String> getNodeCaptions()
-    {
-        return nodeCaptions;
-    }
-
-    @Override
-	public void setNodeCaptions(Map<Integer, String> nodeCaptions)
-    {
-        this.nodeCaptions = nodeCaptions;
-    }
-
-    @Override
-	public Map<Integer, String> getEdgeLabels()
-    {
-        return edgeLabels;
-    }
-
-    @Override
-	public void setEdgeLabels(Map<Integer, String> edgeLabels)
-    {
-        this.edgeLabels = edgeLabels;
-    }
-
-    @Override
-	public Map<Integer, Integer> getStatus()
-    {
-        return status;
-    }
-
-    @Override
-	public void setStatus(Map<Integer, Integer> status)
-    {
-        this.status = status;
     }
     
     @Override
@@ -310,6 +275,12 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         
         nextID = 0;
     }
+
+	@Override
+	public int getSize()
+	{
+		return nodeCaptions.size();
+	}
     
     // TODO find a good way to make this implementation-independent
     public static KahinaTree importXML(Document dom)

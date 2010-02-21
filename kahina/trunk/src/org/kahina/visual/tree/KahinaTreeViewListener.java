@@ -251,7 +251,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         }
         else if (command.equals("Display second dimension"))
         {
-            view.v.swapSecondDimensionDisplay();
+            view.v.toggleSecondDimensionDisplay();
         }
         else if (command.equals("Swap dimensions"))
         {

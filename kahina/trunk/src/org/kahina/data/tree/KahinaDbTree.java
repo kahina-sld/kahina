@@ -1,7 +1,6 @@
 package org.kahina.data.tree;
 
 import java.util.List;
-import java.util.Map;
 
 import org.kahina.io.database.DatabaseHandler;
 
@@ -55,8 +54,8 @@ public class KahinaDbTree extends KahinaTree
 	@Override
 	public void addChild(int parent, int child)
 	{
-		// TODO Auto-generated method stub
-
+		// add
+		// nach oben gehen und jedem
 	}
 
 	@Override
@@ -109,13 +108,6 @@ public class KahinaDbTree extends KahinaTree
 	}
 
 	@Override
-	public Map<Integer, String> getEdgeLabels()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<Integer> getLeaves()
 	{
 		// TODO Auto-generated method stub
@@ -124,13 +116,6 @@ public class KahinaDbTree extends KahinaTree
 
 	@Override
 	public String getNodeCaption(int nodeID)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Map<Integer, String> getNodeCaptions()
 	{
 		// TODO Auto-generated method stub
 		return null;
@@ -165,13 +150,6 @@ public class KahinaDbTree extends KahinaTree
 	}
 
 	@Override
-	public Map<Integer, Integer> getStatus()
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean hasCollapsedAncestor(int nodeID)
 	{
 		// TODO Auto-generated method stub
@@ -183,20 +161,6 @@ public class KahinaDbTree extends KahinaTree
 	{
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	@Override
-	public void setEdgeLabels(Map<Integer, String> edgeLabels)
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setNodeCaptions(Map<Integer, String> nodeCaptions)
-	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -214,17 +178,17 @@ public class KahinaDbTree extends KahinaTree
 	}
 
 	@Override
-	public void setStatus(Map<Integer, Integer> status)
+	public void toggleCollapse(int nodeID)
 	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void toggleCollapse(int nodeID)
+	public int getSize()
 	{
 		// TODO Auto-generated method stub
-
+		return 0;
 	}
 
 }

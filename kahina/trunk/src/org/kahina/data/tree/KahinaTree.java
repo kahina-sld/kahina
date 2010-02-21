@@ -44,18 +44,6 @@ public abstract class KahinaTree extends KahinaObject
 
 	public abstract boolean isCollapsed(int nodeID);
 
-	public abstract void setStatus(Map<Integer, Integer> status);
-
-	public abstract Map<Integer, Integer> getStatus();
-
-	public abstract void setEdgeLabels(Map<Integer, String> edgeLabels);
-
-	public abstract Map<Integer, String> getEdgeLabels();
-
-	public abstract void setNodeCaptions(Map<Integer, String> nodeCaptions);
-
-	public abstract Map<Integer, String> getNodeCaptions();
-
 	public abstract List<Integer> getLeaves();
 
 	public abstract List<Integer> getChildren(int nodeID, int layerID);
@@ -75,6 +63,8 @@ public abstract class KahinaTree extends KahinaObject
 	public abstract int getRootID();
 
 	public abstract int getRootID(int layerID);
+	
+	public abstract int getSize();
     
     public String exportXML()
     {
