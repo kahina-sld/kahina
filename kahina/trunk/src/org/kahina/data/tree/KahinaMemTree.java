@@ -10,9 +10,6 @@ import org.w3c.dom.NodeList;
 
 public class KahinaMemTree extends KahinaUnlayeredMemTree
 {   
-    //reference node should always be the same across views, so store it here
-    int referenceNode;
-    
     public KahinaMemTree()
     {
     	this(new DefaultLayerDecider());
@@ -21,23 +18,14 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
     public KahinaMemTree(LayerDecider decider)
     {
         super(decider);
-        referenceNode = super.getRootID(0);
+        setReferenceNode(super.getRootID(0));
     } 
     
-    public int getReferenceNode()
-    {
-        return referenceNode;
-    }
-
-    public void setReferenceNode(int referenceNode)
-    {
-        this.referenceNode = referenceNode;
-    }
-    
-    public int getRootID(int layerID)
+    @Override
+	public int getRootID(int layerID)
     {
         if (layerID == 0) return super.getRootID(0);
-        int rootID = referenceNode;
+        int rootID = getReferenceNode();
         while (decider.decideOnLayer(rootID, this) >= layerID)
         {
             rootID = super.getParent(rootID,0);
@@ -49,7 +37,8 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
      * Returns the lowest ancestor of nodeID whose layer is lower than or equals
      * layerID.
      */
-    public int getParent(int nodeID, int layerID)
+    @Override
+	public int getParent(int nodeID, int layerID)
     {
         if (nodeID == getRootID(layerID)) return -1;
         int parent = super.getParent(nodeID,0);
@@ -64,10 +53,12 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
     /**
      * Returns those descendants of nodeID whose layer is lower than or equals
      * layerID and which are not dominated by any other such descendant - but
-     * only if the layer of nodeID is greater than or equals layerID (otherwise
-     * returns the empty list).
+     * only if the layer of nodeID is greater than or equals layerID OR nodeID
+     * is the root of the tree fragment currently being drawn as indicated by
+     * referenceNode (otherwise returns the empty list).
      */
-    public List<Integer> getChildren(int nodeID, int layerID)
+    @Override
+	public List<Integer> getChildren(int nodeID, int layerID)
     {
         //System.err.print("KahinaLayeredTree.getChildren(" + nodeID + "," + layerID + ") = ");
         List<Integer> chi = new ArrayList<Integer>();
@@ -98,7 +89,7 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
         return chi;
     }
     
-    public static KahinaMemTree importXML(Document dom)
+    public static KahinaTree importXML(Document dom)
     {
         KahinaMemTree m = new KahinaMemTree();
         Element treeElement = dom.getDocumentElement();  
@@ -110,7 +101,7 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
             {
                 importXMLNode(m, (Element) n, -1);
                 //TODO: a little risky, root node could be assigned another ID
-                m.rootID = 0;
+                m.setRootID(0);
                 break;
             }
         }

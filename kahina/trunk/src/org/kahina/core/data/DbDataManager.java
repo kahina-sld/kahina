@@ -50,11 +50,9 @@ public class DbDataManager extends DataManager
 	}
 
 	/**
-	 * Registers a new data type with a
-	 * {@link LightweightKahinaObjectDbDataStore}.
-	 * 
-	 * @param type
-	 *            Must be a subclass of {@link LightweightKahinaObject}.
+	 * Registers a new data type. If the type is a subclass of
+	 * {@link LightweightKahinaObject}, objects of this type will be stored in
+	 * the database, otherwise in memory.
 	 */
 	@Override
 	public void registerDataType(Class<? extends KahinaObject> type)

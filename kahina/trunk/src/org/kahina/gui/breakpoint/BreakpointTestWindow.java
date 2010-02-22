@@ -18,13 +18,14 @@ import org.kahina.control.event.KahinaEvent;
 import org.kahina.control.event.KahinaTreeMatchEvent;
 import org.kahina.data.KahinaTypeException;
 import org.kahina.data.tree.KahinaMemTree;
+import org.kahina.data.tree.KahinaTree;
 import org.kahina.visual.tree.KahinaTreeView;
 import org.kahina.visual.tree.KahinaTreeViewMarker;
 import org.kahina.visual.tree.KahinaTreeViewPanel;
 
 public class BreakpointTestWindow extends JFrame implements ActionListener, KahinaListener
 {
-    KahinaMemTree model;   
+    KahinaTree model;   
     List<TreeAutomaton> breakpoints;
     
     KahinaTreeView view;

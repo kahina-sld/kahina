@@ -25,7 +25,7 @@ public class TestLayeredTree extends KahinaMemTree
             {
                 importXMLNode(m, (Element) n, -1);
                 //TODO: a little risky, root node could be assigned another ID
-                m.rootID = 0;
+                m.setRootID(0);
                 break;
             }
         }

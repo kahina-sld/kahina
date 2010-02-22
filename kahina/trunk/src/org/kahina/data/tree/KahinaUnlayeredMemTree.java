@@ -1,6 +1,7 @@
 package org.kahina.data.tree;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,9 +19,6 @@ import org.w3c.dom.NodeList;
  */
 public class KahinaUnlayeredMemTree extends KahinaTree
 {    
-    //empty tree has rootID = -1
-    protected int rootID = -1;
-    
     //encode properties of individual nodes
     protected Map<Integer, Integer> parents;
     protected Map<Integer, List<Integer>> children;
@@ -28,8 +26,6 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     protected Map<Integer, String> edgeLabels; //labels are displayed on the edges to the parent
     protected Map<Integer, Integer> status; //appearance of nodes can be steered by appearance
     protected Set<Integer> collapsed; //node collapsing is stored in the model, not in individual views!
-    
-    HashSet<Integer> terminals; //terminals will be displayed on one level
     
     //store the ID of the next node that is going to be added
     private int nextID = 0;
@@ -41,7 +37,6 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     public KahinaUnlayeredMemTree(LayerDecider decider)
     {        
     	super(decider);
-        rootID = -1;
         
         parents = new HashMap<Integer, Integer>();
         children = new HashMap<Integer, List<Integer>>();
@@ -49,26 +44,12 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         edgeLabels = new HashMap<Integer, String>();
         status = new HashMap<Integer, Integer>();
         collapsed = new HashSet<Integer>();
-        
-        terminals = new HashSet<Integer>();
-    }
-    
-    @Override
-    public int getRootID()
-    {
-    	return rootID;
     }
     
     @Override
 	public int getRootID(int layerID)
     {
         return getRootID();
-    }
-    
-    @Override
-	public void setRootID(int rootID)
-    {
-        this.rootID = rootID;
     }
     
     @Override
@@ -90,6 +71,12 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     @Override
 	public int getParent(int nodeID, int layerID)
     {
+    	return getParent(nodeID);
+    }
+    
+    @Override
+    public int getParent(int nodeID)
+    {
         Integer parent = parents.get(nodeID);
         if (parent == null) return -1;
         return parent;
@@ -105,7 +92,6 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         }
         else
         {
-        	System.err.println("Caption: " + caption); // TODO
             return caption;
         }
     }
@@ -146,24 +132,24 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         if (ids == null)
         {
             //System.err.println("[]");
-            return new ArrayList<Integer>();
+            return Collections.emptyList();
         }
         else
         {
             //System.err.println(ids);
-            return ids;
+            return Collections.unmodifiableList(ids);
         }
     }
     
-    @Override
-	public List<Integer> getLeaves()
+    public List<Integer> getLeaves()
     {
         List<Integer> leaves = new LinkedList<Integer>();
-        collectLeaves(rootID, leaves);
+        collectLeaves(getRootID(), leaves);
         return leaves;
     }
     
-    private void collectLeaves(int nodeID, List<Integer> leaves)
+    @Override
+    protected void collectLeaves(int nodeID, List<Integer> leaves)
     {
         if (nodeID != -1)
         {
@@ -209,35 +195,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         collapsed = new HashSet<Integer>();
     }
     
-    @Override
-	public void toggleCollapse(int nodeID)
-    {
-        if (!isCollapsed(nodeID))
-        {
-            collapse(nodeID);
-        }
-        else
-        {
-            decollapse(nodeID);
-        }
-    }
-    
-    @Override
-	public boolean hasCollapsedAncestor(int nodeID)
-    {
-        Integer parent = parents.get(nodeID);
-        while (parent != null)
-        {
-            if (isCollapsed(parent))
-            {
-                return true;
-            }
-            parent = parents.get(parent);
-        }
-        return false;
-    }
-    
-    @Override
+	@Override
 	public int addNode(String caption, String label, int nodeStatus)
     {
         int nodeID = getNextFreeID();
@@ -262,7 +220,6 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 	public void clear()
     {
     	super.clear();
-        rootID = -1;
         
         parents = new HashMap<Integer, Integer>();
         children = new HashMap<Integer, List<Integer>>();
@@ -270,8 +227,6 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         edgeLabels = new HashMap<Integer, String>();
         status = new HashMap<Integer, Integer>();
         collapsed = new HashSet<Integer>();
-        
-        terminals = new HashSet<Integer>();
         
         nextID = 0;
     }
@@ -281,8 +236,8 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 	{
 		return nodeCaptions.size();
 	}
-    
-    // TODO find a good way to make this implementation-independent
+
+	// TODO find a good way to make this implementation-independent
     public static KahinaTree importXML(Document dom)
     {
         KahinaUnlayeredMemTree m = new KahinaUnlayeredMemTree();
@@ -295,7 +250,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
             {
                 importXMLNode(m, (Element) n, -1);
                 //TODO: a little risky, root node could be assigned another ID
-                m.rootID = 0;
+                m.setRootID(0);
                 break;
             }
         }

@@ -601,15 +601,15 @@ public class KahinaTreeView extends KahinaView
         {
             throw new KahinaTypeException("","");
         }
-        this.secondaryTreeModel = (KahinaMemTree) treeModel;
-        ((KahinaMemTree) this.secondaryTreeModel).setReferenceNode(((KahinaMemTree) this.treeModel).getReferenceNode());
+        this.secondaryTreeModel = (KahinaTree) treeModel;
+        ((KahinaTree) this.secondaryTreeModel).setReferenceNode(((KahinaTree) this.treeModel).getReferenceNode());
         this.secondaryTreeModel.setPrimaryModel(this.treeModel);
         nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
         calculateCoordinates();
     }
     
-    public void display(KahinaMemTree layerModel, int layerID, int referenceNode) throws KahinaTypeException
+    public void display(KahinaTree layerModel, int layerID, int referenceNode) throws KahinaTypeException
     {
         treeLayer = layerID;
         layerModel.setReferenceNode(referenceNode);

@@ -58,15 +58,20 @@ public class DatabaseHandler
 			throw new KahinaException("SQL error.", e);
 		}
 	}
+	
+	public Integer queryInteger(PreparedStatement statement)
+	{
+		return queryInteger(statement, null);
+	}
 
-	public int queryInteger(PreparedStatement statement)
+	public Integer queryInteger(PreparedStatement statement, Integer defaultValue)
 	{
 		try
 		{
 			ResultSet resultSet = statement.executeQuery();
 			if (!resultSet.next())
 			{
-				throw new KahinaException("No results.");
+				return defaultValue;
 			}
 			return resultSet.getInt(1);
 		} catch (SQLException e)
@@ -108,15 +113,20 @@ public class DatabaseHandler
 			throw new KahinaException("SQL error.", e);
 		}
 	}
-
+	
 	public String queryString(PreparedStatement statement)
+	{
+		return queryString(statement, null);
+	}
+
+	public String queryString(PreparedStatement statement, String defaultValue)
 	{
 		try
 		{
 			ResultSet resultSet = statement.executeQuery();
 			if (!resultSet.next())
 			{
-				throw new KahinaException("No results.");
+				return defaultValue;
 			}
 			return resultSet.getString(1);
 		} catch (SQLException e)
@@ -194,5 +204,16 @@ public class DatabaseHandler
 			}
 		}
 		directory.delete();
+	}
+
+	public void execute(PreparedStatement statement)
+	{
+		try
+		{
+			statement.execute();
+		} catch (SQLException e)
+		{
+			throw new KahinaException("Failed to execute statement.", e);
+		}
 	}
 }
