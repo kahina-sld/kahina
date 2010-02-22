@@ -606,7 +606,6 @@ public class KahinaTreeView extends KahinaView
         this.secondaryTreeModel.setPrimaryModel(this.treeModel);
         nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
-        System.err.println("F");
         calculateCoordinates();
     }
     

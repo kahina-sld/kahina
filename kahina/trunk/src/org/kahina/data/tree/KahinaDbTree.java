@@ -187,17 +187,25 @@ public class KahinaDbTree extends KahinaTree
 
 	private void computeAndStoreLayerInformation(int child)
 	{
-		int layer = decider.decideOnLayer(child, this);
+		int childLayer = decider.decideOnLayer(child, this);
 		int virtualParent = getParent(child);
-		while (getLayer(virtualParent) > layer)
+		int parentLayer = getLayer(virtualParent);
+		while (parentLayer > childLayer)
 		{
-			virtualParent = getVirtualParent(virtualParent);
+			virtualParent = getParent(virtualParent);
+			parentLayer = getLayer(virtualParent);
+		}
+		if (parentLayer < childLayer)
+		{
+			virtualParent = -1;
 		}
 		try
 		{
-			addLayerInformationStatement.setInt(1, layer);
+			addLayerInformationStatement.setInt(1, childLayer);
 			addLayerInformationStatement.setInt(2, virtualParent);
 			addLayerInformationStatement.setInt(3, child);
+			System.err.println("adding " + child + "(" + childLayer + ") as VC of "
+					+ virtualParent + "(" + getLayer(virtualParent) + ")");
 			addLayerInformationStatement.execute();
 		} catch (SQLException e)
 		{
@@ -305,6 +313,8 @@ public class KahinaDbTree extends KahinaTree
 	public List<Integer> getChildren(int nodeID, int layer)
 	{
 		int nodeLayer = getLayer(nodeID);
+		System.err.println(nodeID + "(" + nodeLayer + ","
+				+ getNodeCaption(nodeID) + ") for " + layer);
 		if (layer == nodeLayer)
 		{
 			// the most common case, for which we have precalculated the virtual
@@ -355,7 +365,9 @@ public class KahinaDbTree extends KahinaTree
 		{
 			throw new KahinaException("SQL error.", e);
 		}
-		return db.queryIntList(getVirtualChildrenStatement);
+		List<Integer> result = db.queryIntList(getVirtualChildrenStatement);
+		System.err.println("Länge: " + result.size());
+		return result;
 	}
 
 	@Override
