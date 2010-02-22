@@ -9,7 +9,7 @@ package org.tralesld.bridge;
 import org.kahina.bridge.LogicProgrammingBridge;
 import org.kahina.control.KahinaController;
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.data.DbDataManager;
+import org.kahina.data.DbDataManager;
 import org.kahina.gui.KahinaGUI;
 import org.kahina.io.database.DatabaseHandler;
 

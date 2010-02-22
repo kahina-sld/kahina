@@ -2,7 +2,7 @@ package org.kahina.data.chart;
 
 import java.util.Set;
 
-import org.kahina.core.data.KahinaObject;
+import org.kahina.data.KahinaObject;
 
 public abstract class KahinaChart extends KahinaObject
 {

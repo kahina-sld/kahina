@@ -1,4 +1,4 @@
-package org.kahina.core.data;
+package org.kahina.data;
 
 /**
  * A data store is an object that stores and retrieves {@link KahinaObject}s of

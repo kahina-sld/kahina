@@ -1,4 +1,4 @@
-package org.kahina.core.data;
+package org.kahina.data;
 
 import java.util.HashMap;
 import java.util.Map;

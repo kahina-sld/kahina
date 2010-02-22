@@ -3,7 +3,7 @@ package org.kahina.data.tree;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.kahina.core.data.KahinaObject;
+import org.kahina.data.KahinaObject;
 
 public abstract class KahinaTree extends KahinaObject
 {

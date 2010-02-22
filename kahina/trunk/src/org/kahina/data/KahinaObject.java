@@ -1,4 +1,4 @@
-package org.kahina.core.data;
+package org.kahina.data;
 
 /**
  * The base class of all Kahina objects, i.e. pieces of information that can be

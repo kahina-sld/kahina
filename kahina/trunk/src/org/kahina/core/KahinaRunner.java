@@ -1,6 +1,6 @@
 package org.kahina.core;
 
-import org.kahina.core.data.DbDataManager;
+import org.kahina.data.DbDataManager;
 import org.kahina.io.database.DatabaseHandler;
 
 public class KahinaRunner

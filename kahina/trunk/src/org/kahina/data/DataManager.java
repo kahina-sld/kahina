@@ -1,4 +1,4 @@
-package org.kahina.core.data;
+package org.kahina.data;
 
 /**
  * A data manager allows clients to store and retrieve pieces of data (e.g.

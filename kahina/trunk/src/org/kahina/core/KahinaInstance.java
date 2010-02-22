@@ -2,7 +2,7 @@ package org.kahina.core;
 
 import org.kahina.bridge.KahinaBridge;
 import org.kahina.control.KahinaController;
-import org.kahina.core.data.DataManager;
+import org.kahina.data.DataManager;
 import org.kahina.gui.KahinaGUI;
 
 public class KahinaInstance

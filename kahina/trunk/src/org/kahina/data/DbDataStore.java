@@ -1,4 +1,4 @@
-package org.kahina.core.data;
+package org.kahina.data;
 
 import org.kahina.io.database.DatabaseHandler;
 
