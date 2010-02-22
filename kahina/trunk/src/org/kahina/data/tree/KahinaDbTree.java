@@ -163,8 +163,13 @@ public class KahinaDbTree extends KahinaTree
 		{
 			throw new KahinaException("SQL error.", e);
 		}
+		computeAndStoreLayerInformation(child);
+	}
+	
+	private void computeAndStoreLayerInformation(int child)
+	{
 		int layer = decider.decideOnLayer(child, this);
-		int virtualParent = parent;
+		int virtualParent = getParent(child);
 		while (getLayer(virtualParent) > layer)
 		{
 			virtualParent = getVirtualParent(virtualParent);
@@ -178,6 +183,27 @@ public class KahinaDbTree extends KahinaTree
 		} catch (SQLException e)
 		{
 			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	@Override
+	public void setLayerDecider(LayerDecider decider)
+	{
+		super.setLayerDecider(decider);
+		recomputeLayers();
+	}
+
+	public void recomputeLayers()
+	{
+		recomputeLayers(getRootID());
+	}
+
+	public void recomputeLayers(int nodeID)
+	{
+		computeAndStoreLayerInformation(nodeID);
+		for (int childID : getChildren(nodeID))
+		{
+			recomputeLayers(childID);
 		}
 	}
 
@@ -269,14 +295,14 @@ public class KahinaDbTree extends KahinaTree
 		if (nodeID == getRootID(layer) || nodeLayer >= layer)
 		{
 			// usually only the case for the root of a partial tree
-			List<Integer> frontLine = getRealChildren(nodeID);
+			List<Integer> frontLine = getChildren(nodeID);
 			for (int i = 0; i < frontLine.size();)
 			{
 				int child = frontLine.get(i);
 				if (getLayer(child) > layer)
 				{
 					frontLine.remove(i);
-					frontLine.addAll(i, getRealChildren(child));
+					frontLine.addAll(i, getChildren(child));
 				} else
 				{
 					i++;
@@ -288,7 +314,7 @@ public class KahinaDbTree extends KahinaTree
 		return Collections.emptyList();
 	}
 
-	private List<Integer> getRealChildren(int nodeID)
+	private List<Integer> getChildren(int nodeID)
 	{
 		try
 		{
@@ -328,7 +354,7 @@ public class KahinaDbTree extends KahinaTree
 	@Override
 	protected void collectLeaves(int nodeID, List<Integer> leaves)
 	{
-		List<Integer> children = getRealChildren(nodeID);
+		List<Integer> children = getChildren(nodeID);
 		if (children.isEmpty())
 		{
 			leaves.add(nodeID);

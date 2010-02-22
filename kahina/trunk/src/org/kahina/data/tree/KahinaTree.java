@@ -34,6 +34,16 @@ public abstract class KahinaTree extends KahinaObject
 		primaryModel = this;
 		rootID = -1;
 	}
+	
+	public LayerDecider getLayerDecider()
+	{
+		return decider;
+	}
+	
+	public void setLayerDecider(LayerDecider decider)
+	{
+		this.decider = decider;
+	}
 
 	public abstract int addNode(String caption, String label, int nodeStatus);
 
