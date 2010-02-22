@@ -99,8 +99,8 @@ public class KahinaDbTree extends KahinaTree
 	{
 		int treeID = getID();
 		addNodeStatement = db.prepareStatement("INSERT INTO " + NODE_TABLE_NAME
-				+ " (id, tree, nodeCaption, edgeLabel) VALUES (?, " + treeID
-				+ ", ?, ?)");
+				+ " (id, tree, nodeCaption, edgeLabel, status) VALUES (?, "
+				+ treeID + ", ?, ?, ?)");
 		addEdgeStatement = db.prepareStatement("UPDATE " + NODE_TABLE_NAME
 				+ " SET realParent = ? WHERE id = ? AND tree = " + treeID);
 		addLayerInformationStatement = db.prepareStatement("UPDATE "
@@ -153,6 +153,7 @@ public class KahinaDbTree extends KahinaTree
 			addNodeStatement.setInt(1, id);
 			addNodeStatement.setString(2, caption);
 			addNodeStatement.setString(3, label);
+			addNodeStatement.setInt(4, nodeStatus);
 			addNodeStatement.execute();
 		} catch (SQLException e)
 		{
@@ -308,7 +309,8 @@ public class KahinaDbTree extends KahinaTree
 		{
 			// the most common case, for which we have precalculated the virtual
 			// children
-			return getVirtualChildren(nodeID);
+			List<Integer> result = getVirtualChildren(nodeID);
+			return result;
 		}
 		if (nodeID == getRootID(layer) || nodeLayer >= layer)
 		{

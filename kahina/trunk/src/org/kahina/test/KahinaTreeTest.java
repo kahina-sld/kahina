@@ -23,7 +23,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 public class KahinaTreeTest
-{
+{	
     public static void main(String[] args)
     {
         try

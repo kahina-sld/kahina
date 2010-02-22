@@ -73,13 +73,19 @@ public class DatabaseHandler
 			{
 				return defaultValue;
 			}
-			return resultSet.getInt(1);
+			int result = resultSet.getInt(1);
+			if (resultSet.wasNull())
+			{
+				return defaultValue;
+			}
+			return result;
 		} catch (SQLException e)
 		{
 			throw new KahinaException("SQL error.", e);
 		}
 	}
 
+	// TODO treat NULL values appropriately
 	public List<Integer> queryIntList(PreparedStatement statement)
 	{
 		List<Integer> result = new ArrayList<Integer>();
@@ -97,6 +103,7 @@ public class DatabaseHandler
 		}
 	}
 
+	// TODO treat NULL values appropriately
 	public Set<Integer> queryIntSet(PreparedStatement statement)
 	{
 		Set<Integer> result = new HashSet<Integer>();
@@ -128,7 +135,12 @@ public class DatabaseHandler
 			{
 				return defaultValue;
 			}
-			return resultSet.getString(1);
+			String result = resultSet.getString(1);
+			if (resultSet.wasNull())
+			{
+				return defaultValue;
+			}
+			return result;
 		} catch (SQLException e)
 		{
 			throw new KahinaException("SQL error.", e);

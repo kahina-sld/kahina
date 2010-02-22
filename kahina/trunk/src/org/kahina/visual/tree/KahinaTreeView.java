@@ -606,6 +606,7 @@ public class KahinaTreeView extends KahinaView
         this.secondaryTreeModel.setPrimaryModel(this.treeModel);
         nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
+        System.err.println("F");
         calculateCoordinates();
     }
     
@@ -625,7 +626,7 @@ public class KahinaTreeView extends KahinaView
         //node height determined by font size       
         FontMetrics fm = getFontMetrics(new Font(Font.SANS_SERIF,Font.PLAIN, fontSize), new BasicStroke(1), fontSize);
         nodeHeight = fm.getHeight();
-        
+
         createNodeLayers();
         System.err.println(showLevels());
         //System.err.println(terminalLayer);
@@ -651,7 +652,7 @@ public class KahinaTreeView extends KahinaView
                 {
                     int nodeLabelWidth = fm.stringWidth(getContentfulTreeModel().getNodeCaption(node));
                     if (maxNodeWidth < nodeLabelWidth) maxNodeWidth = nodeLabelWidth;
-                    ArrayList<Integer> children = getVisibleVirtualChildren(treeModel, node);           
+                    ArrayList<Integer> children = getVisibleVirtualChildren(treeModel, node);
                     subtreeWidths.put(node,constructWidthVector(children));
                     //System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
                 }
@@ -831,9 +832,11 @@ public class KahinaTreeView extends KahinaView
         descendants.addAll(treeModel.getChildren(nodeID,treeLayer));
         for (int i = 0; i < descendants.size(); i++)
         {
-            if (!nodeIsVisible(descendants.get(i)))
+        	boolean nodeIsVisible = nodeIsVisible(descendants.get(i));
+            if (!nodeIsVisible)
             {
-                descendants.addAll(treeModel.getChildren(descendants.remove(i),treeLayer));
+            	List<Integer> x = treeModel.getChildren(descendants.remove(i),treeLayer);
+                descendants.addAll(x);
                 i--;
             }
         }
