@@ -21,7 +21,7 @@ public abstract class KahinaTree extends KahinaObject
 	{
 		super(nextID++);
 		this.decider = decider;
-		clear();
+		doClear();
 	}
 
 	/**
@@ -30,6 +30,11 @@ public abstract class KahinaTree extends KahinaObject
 	 * using <code>super.clear()</code>.
 	 */
 	public void clear()
+	{
+		doClear();
+	}
+	
+	private void doClear()
 	{
 		primaryModel = this;
 		rootID = -1;

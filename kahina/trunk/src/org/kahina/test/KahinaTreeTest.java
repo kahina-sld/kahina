@@ -12,6 +12,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.data.KahinaTypeException;
+import org.kahina.data.tree.KahinaDbTree;
+import org.kahina.data.tree.KahinaTree;
+import org.kahina.data.tree.LayerDecider;
+import org.kahina.io.database.DatabaseHandler;
 import org.kahina.visual.tree.KahinaTreeView;
 import org.kahina.visual.tree.KahinaTreeViewMarker;
 import org.kahina.visual.tree.KahinaTreeViewPanel;
@@ -24,17 +28,22 @@ public class KahinaTreeTest
     {
         try
         {
+        	LayerDecider decider = new TestLayerDecider();
+        	DatabaseHandler data = new DatabaseHandler();
+        	
             File file = new File("src/org/kahina/test/trale-tree.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
-            TestLayeredTree m1 = TestLayeredTree.importXML(dom);
+            //TestLayeredTree m1 = TestLayeredTree.importXML(dom);
+            KahinaTree m1 = KahinaDbTree.importXML(dom, decider, data);
             
             file = new File("src/org/kahina/test/trale-tree2.xml");
             dbf = DocumentBuilderFactory.newInstance();
             db = dbf.newDocumentBuilder();
             dom = db.parse(file);
-            TestLayeredTree m2 = TestLayeredTree.importXML(dom);           
+            //TestLayeredTree m2 = TestLayeredTree.importXML(dom);
+            KahinaTree m2 = KahinaDbTree.importXML(dom, decider, data);
             
             KahinaTreeView v0 = new KahinaTreeView();
             v0.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);

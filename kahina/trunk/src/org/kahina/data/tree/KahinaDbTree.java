@@ -7,6 +7,10 @@ import java.util.List;
 
 import org.kahina.core.KahinaException;
 import org.kahina.io.database.DatabaseHandler;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class KahinaDbTree extends KahinaTree
 {
@@ -77,13 +81,17 @@ public class KahinaDbTree extends KahinaTree
 		if (!db.isRegistered(CLIENT_ID))
 		{
 			db.execute("CREATE TABLE " + NODE_TABLE_NAME + " (id INT, "
-					+ "tree INT, " + "nodeCaption LONG VARCHAR,"
-					+ " edgeLabel LONG VARCHAR," + " collapsed TINYINT(1),"
-					+ " realParent INT," + " layer INT,"
-					+ " virtualParent INT," + " PRIMARY KEY (id, tree) "
-					+ "INDEX realParent (realParent), "
-					+ "INDEX layer (layer), "
-					+ "INDEX virtualParent (virtualParent))");
+					+ "tree INT, " + "nodeCaption LONG VARCHAR, "
+					+ "edgeLabel LONG VARCHAR, " + "status INT, "
+					+ "collapsed SMALLINT, " + "realParent INT, "
+					+ "layer INT, " + "virtualParent INT, "
+					+ "PRIMARY KEY (id, tree))");
+			db.execute("CREATE INDEX tree ON " + NODE_TABLE_NAME + " (tree)");
+			db.execute("CREATE INDEX realParent ON " + NODE_TABLE_NAME
+					+ " (realParent)");
+			db.execute("CREATE INDEX virtualParent ON " + NODE_TABLE_NAME
+					+ " (virtualParent)");
+			db.register(CLIENT_ID);
 		}
 	}
 
@@ -105,6 +113,8 @@ public class KahinaDbTree extends KahinaTree
 				.prepareStatement("SELECT virtualParent FROM "
 						+ NODE_TABLE_NAME + " WHERE id = ? AND tree = "
 						+ treeID);
+		getLayerStatement = db.prepareStatement("SELECT layer FROM "
+				+ NODE_TABLE_NAME + " WHERE id = ? AND tree = " + treeID);
 		clearStatement = db.prepareStatement("DELETE FROM " + NODE_TABLE_NAME
 				+ " WHERE tree = " + treeID);
 		collapseStatement = db.prepareStatement("UPDATE " + NODE_TABLE_NAME
@@ -125,6 +135,8 @@ public class KahinaDbTree extends KahinaTree
 		getNodeCaptionStatement = db
 				.prepareStatement("SELECT nodeCaption FROM " + NODE_TABLE_NAME
 						+ " WHERE id = ? AND tree = " + treeID);
+		getNodeStatusStatement = db.prepareStatement("SELECT status FROM "
+				+ NODE_TABLE_NAME + " WHERE id = ? AND tree = " + treeID);
 		getRootStatement = db.prepareStatement("SELECT id FROM "
 				+ NODE_TABLE_NAME + " WHERE realParent IS NULL AND tree = "
 				+ treeID);
@@ -134,10 +146,8 @@ public class KahinaDbTree extends KahinaTree
 				+ NODE_TABLE_NAME + " WHERE tree = " + treeID);
 	}
 
-	@Override
-	public int addNode(String caption, String label, int nodeStatus)
+	public void addNode(int id, String caption, String label, int nodeStatus)
 	{
-		int id = nextID++;
 		try
 		{
 			addNodeStatement.setInt(1, id);
@@ -148,6 +158,14 @@ public class KahinaDbTree extends KahinaTree
 		{
 			throw new KahinaException("SQL error.", e);
 		}
+		nextID = Math.max(id, nextID) + 1;
+	}
+
+	@Override
+	public int addNode(String caption, String label, int nodeStatus)
+	{
+		int id = nextID++;
+		addNode(id, caption, label, nodeStatus);
 		return id;
 	}
 
@@ -165,7 +183,7 @@ public class KahinaDbTree extends KahinaTree
 		}
 		computeAndStoreLayerInformation(child);
 	}
-	
+
 	private void computeAndStoreLayerInformation(int child)
 	{
 		int layer = decider.decideOnLayer(child, this);
@@ -451,6 +469,67 @@ public class KahinaDbTree extends KahinaTree
 	public int getSize()
 	{
 		return db.queryInteger(getSizeStatement, 0);
+	}
+
+	public static KahinaTree importXML(Document dom, LayerDecider decider,
+			DatabaseHandler db)
+	{
+		KahinaDbTree m = new KahinaDbTree(decider, db);
+		Element treeElement = dom.getDocumentElement();
+		NodeList childNodes = treeElement.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++)
+		{
+			Node n = childNodes.item(i);
+			if (n.getNodeName().equals("node"))
+			{
+				importXMLNode(m, (Element) n, -1);
+				// TODO: a little risky, root node could be assigned another ID
+				m.setRootID(0);
+				break;
+			}
+		}
+		return m;
+	}
+
+	private static void importXMLNode(KahinaDbTree m, Element node, int parentID)
+	{
+		String caption = node.getAttribute("caption");
+		String label = node.getAttribute("label");
+		int status = 0;
+		if (node.getAttribute("status").length() > 0)
+		{
+			status = Integer.parseInt(node.getAttribute("status"));
+		}
+		int id;
+		if (node.getAttribute("id").length() > 0)
+		{
+			id = Integer.parseInt(node.getAttribute("id"));
+			m.addNode(id, caption, label, status);
+		} else
+		{
+			id = m.addNode(caption, label, status);
+		}
+		if (parentID != -1)
+		{
+			m.addChild(parentID, id);
+		}
+		// go through children recursively
+		NodeList childNodes = node.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++)
+		{
+			Node n = childNodes.item(i);
+			if (n.getNodeName().equals("node"))
+			{
+				importXMLNode(m, (Element) n, id);
+			}
+		}
+	}
+
+	@Override
+	public void finalize() throws Throwable
+	{
+		clear();
+		super.finalize();
 	}
 
 }
