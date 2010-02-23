@@ -159,7 +159,7 @@ public class KahinaDbTree extends KahinaTree
 		{
 			throw new KahinaException("SQL error.", e);
 		}
-		nextID = Math.max(id, nextID) + 1;
+		nextID = Math.max(id + 1, nextID);
 	}
 
 	@Override
@@ -204,8 +204,6 @@ public class KahinaDbTree extends KahinaTree
 			addLayerInformationStatement.setInt(1, childLayer);
 			addLayerInformationStatement.setInt(2, virtualParent);
 			addLayerInformationStatement.setInt(3, child);
-			System.err.println("adding " + child + "(" + childLayer + ") as VC of "
-					+ virtualParent + "(" + getLayer(virtualParent) + ")");
 			addLayerInformationStatement.execute();
 		} catch (SQLException e)
 		{
@@ -313,8 +311,6 @@ public class KahinaDbTree extends KahinaTree
 	public List<Integer> getChildren(int nodeID, int layer)
 	{
 		int nodeLayer = getLayer(nodeID);
-		System.err.println(nodeID + "(" + nodeLayer + ","
-				+ getNodeCaption(nodeID) + ") for " + layer);
 		if (layer == nodeLayer)
 		{
 			// the most common case, for which we have precalculated the virtual
@@ -366,7 +362,6 @@ public class KahinaDbTree extends KahinaTree
 			throw new KahinaException("SQL error.", e);
 		}
 		List<Integer> result = db.queryIntList(getVirtualChildrenStatement);
-		System.err.println("Länge: " + result.size());
 		return result;
 	}
 
