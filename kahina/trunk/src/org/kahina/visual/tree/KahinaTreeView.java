@@ -584,10 +584,6 @@ public class KahinaTreeView extends KahinaView
     
     public void display(KahinaObject treeModel) throws KahinaTypeException
     {
-        if (treeModel.getClass() != this.treeModel.getClass())
-        {
-            throw new KahinaTypeException("","");
-        }
         treeLayer = 0;
         this.treeModel = (KahinaTree) treeModel;
         nodeBorderColor = new HashMap<Integer, Color>();
@@ -597,10 +593,6 @@ public class KahinaTreeView extends KahinaView
     
     public void displaySecondaryTree(KahinaObject treeModel) throws KahinaTypeException
     {
-        if (treeModel.getClass() != this.treeModel.getClass())
-        {
-            throw new KahinaTypeException("","");
-        }
         this.secondaryTreeModel = (KahinaTree) treeModel;
         ((KahinaTree) this.secondaryTreeModel).setReferenceNode(((KahinaTree) this.treeModel).getReferenceNode());
         this.secondaryTreeModel.setPrimaryModel(this.treeModel);

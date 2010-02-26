@@ -173,6 +173,7 @@ public class KahinaDbTree extends KahinaTree
 	@Override
 	public void addChild(int parent, int child)
 	{
+		System.err.println("adding " + child + " to " + parent + " in " + this);
 		try
 		{
 			addEdgeStatement.setInt(1, parent);
@@ -310,13 +311,14 @@ public class KahinaDbTree extends KahinaTree
 	@Override
 	public List<Integer> getChildren(int nodeID, int layer)
 	{
+		System.err.print("children for " + nodeID + "(" + getNodeCaption(nodeID) + ") on " + layer + ": ");
 		int nodeLayer = getLayer(nodeID);
 		if (layer == nodeLayer)
 		{
 			// the most common case, for which we have precalculated the virtual
 			// children
 			List<Integer> result = getVirtualChildren(nodeID);
-			return result;
+			return ear(result);
 		}
 		if (nodeID == getRootID(layer) || nodeLayer >= layer)
 		{
@@ -334,10 +336,10 @@ public class KahinaDbTree extends KahinaTree
 					i++;
 				}
 			}
-			return frontLine;
+			return ear(frontLine);
 		}
 		// When we have reached a "cornerstone", pretend it's a leaf:
-		return Collections.emptyList();
+		return ear(Collections.emptyList());
 	}
 
 	private List<Integer> getChildren(int nodeID)
@@ -481,9 +483,13 @@ public class KahinaDbTree extends KahinaTree
 	}
 
 	public static KahinaTree importXML(Document dom, LayerDecider decider,
-			DatabaseHandler db)
+			DatabaseHandler db, KahinaTree primaryModel)
 	{
 		KahinaDbTree m = new KahinaDbTree(decider, db);
+		if (primaryModel != null)
+		{
+			m.setPrimaryModel(primaryModel);
+		}
 		Element treeElement = dom.getDocumentElement();
 		NodeList childNodes = treeElement.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); i++)
