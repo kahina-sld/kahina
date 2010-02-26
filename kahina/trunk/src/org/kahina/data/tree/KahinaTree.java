@@ -23,14 +23,6 @@ public abstract class KahinaTree extends KahinaObject
 		this.decider = decider;
 		doClear();
 	}
-	
-
-
-	public List<Integer> ear(List x)
-	{
-		System.err.println(x);
-		return (List<Integer>) x;
-	}
 
 	/**
 	 * Clears the tree model. Implementors should override this method to clear

@@ -60,7 +60,6 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
     @Override
 	public List<Integer> getChildren(int nodeID, int layerID)
     {
-    	System.err.print("children for " + nodeID + "(" + getNodeCaption(nodeID) + ") on " + layerID + ": ");
         //System.err.print("KahinaLayeredTree.getChildren(" + nodeID + "," + layerID + ") = ");
         List<Integer> chi = new ArrayList<Integer>();
         List<Integer> frontLine = new ArrayList<Integer>();
@@ -87,7 +86,7 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
         }
         //System.err.println(" node: " + nodeID + " layer: " + layerID + " chi: " + chi);
         //System.err.println(chi);
-        return ear(chi);
+        return chi;
     }
     
     public static KahinaTree importXML(Document dom)

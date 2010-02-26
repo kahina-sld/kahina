@@ -12,8 +12,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class KahinaDbTree extends KahinaTree
-{
+public class KahinaDbTree extends KahinaTree {
 	private static final String CLIENT_ID = KahinaDbTree.class.getName();
 
 	private static final String TABLE_NAME_PREFIX = KahinaDbTree.class
@@ -62,13 +61,11 @@ public class KahinaDbTree extends KahinaTree
 
 	private int nextID;
 
-	public KahinaDbTree(DatabaseHandler db)
-	{
+	public KahinaDbTree(DatabaseHandler db) {
 		this(new DefaultLayerDecider(), db);
 	}
 
-	public KahinaDbTree(LayerDecider decider, DatabaseHandler db)
-	{
+	public KahinaDbTree(LayerDecider decider, DatabaseHandler db) {
 		super(decider);
 		this.db = db;
 		createTablesIfNecessary();
@@ -76,10 +73,8 @@ public class KahinaDbTree extends KahinaTree
 		nextID = 0;
 	}
 
-	private void createTablesIfNecessary()
-	{
-		if (!db.isRegistered(CLIENT_ID))
-		{
+	private void createTablesIfNecessary() {
+		if (!db.isRegistered(CLIENT_ID)) {
 			db.execute("CREATE TABLE " + NODE_TABLE_NAME + " (id INT, "
 					+ "tree INT, " + "nodeCaption LONG VARCHAR, "
 					+ "edgeLabel LONG VARCHAR, " + "status INT, "
@@ -89,14 +84,14 @@ public class KahinaDbTree extends KahinaTree
 			db.execute("CREATE INDEX tree ON " + NODE_TABLE_NAME + " (tree)");
 			db.execute("CREATE INDEX realParent ON " + NODE_TABLE_NAME
 					+ " (realParent)");
+			db.execute("CREATE INDEX layer ON " + NODE_TABLE_NAME + " (layer)");
 			db.execute("CREATE INDEX virtualParent ON " + NODE_TABLE_NAME
 					+ " (virtualParent)");
 			db.register(CLIENT_ID);
 		}
 	}
 
-	private void prepareStatements()
-	{
+	private void prepareStatements() {
 		int treeID = getID();
 		addNodeStatement = db.prepareStatement("INSERT INTO " + NODE_TABLE_NAME
 				+ " (id, tree, nodeCaption, edgeLabel, status) VALUES (?, "
@@ -128,8 +123,8 @@ public class KahinaDbTree extends KahinaTree
 				+ NODE_TABLE_NAME + " WHERE realParent = ? AND tree = "
 				+ treeID);
 		getVirtualChildrenStatement = db.prepareStatement("SELECT id FROM "
-				+ NODE_TABLE_NAME + " WHERE virtualParent = ? AND tree = "
-				+ treeID);
+				+ NODE_TABLE_NAME + " WHERE tree = " + treeID
+				+ " AND (virtualParent = ? OR (realParent = ? AND layer < ?))");
 		getEdgeLabelStatement = db.prepareStatement("SELECT edgeLabel FROM "
 				+ NODE_TABLE_NAME + " WHERE id = ? AND tree = " + treeID);
 		getNodeCaptionStatement = db
@@ -146,221 +141,176 @@ public class KahinaDbTree extends KahinaTree
 				+ NODE_TABLE_NAME + " WHERE tree = " + treeID);
 	}
 
-	public void addNode(int id, String caption, String label, int nodeStatus)
-	{
-		try
-		{
+	public void addNode(int id, String caption, String label, int nodeStatus) {
+		try {
 			addNodeStatement.setInt(1, id);
 			addNodeStatement.setString(2, caption);
 			addNodeStatement.setString(3, label);
 			addNodeStatement.setInt(4, nodeStatus);
 			addNodeStatement.execute();
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		nextID = Math.max(id + 1, nextID);
 	}
 
 	@Override
-	public int addNode(String caption, String label, int nodeStatus)
-	{
+	public int addNode(String caption, String label, int nodeStatus) {
 		int id = nextID++;
 		addNode(id, caption, label, nodeStatus);
 		return id;
 	}
 
 	@Override
-	public void addChild(int parent, int child)
-	{
-		System.err.println("adding " + child + " to " + parent + " in " + this);
-		try
-		{
+	public void addChild(int parent, int child) {
+		try {
 			addEdgeStatement.setInt(1, parent);
 			addEdgeStatement.setInt(2, child);
 			addEdgeStatement.execute();
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		computeAndStoreLayerInformation(child);
 	}
 
-	private void computeAndStoreLayerInformation(int child)
-	{
+	private void computeAndStoreLayerInformation(int child) {
 		int childLayer = decider.decideOnLayer(child, this);
 		int virtualParent = getParent(child);
 		int parentLayer = getLayer(virtualParent);
-		while (parentLayer > childLayer)
-		{
+		while (parentLayer > childLayer) {
 			virtualParent = getParent(virtualParent);
 			parentLayer = getLayer(virtualParent);
 		}
-		if (parentLayer < childLayer)
-		{
+		if (parentLayer < childLayer) {
 			virtualParent = -1;
 		}
-		try
-		{
+		try {
 			addLayerInformationStatement.setInt(1, childLayer);
 			addLayerInformationStatement.setInt(2, virtualParent);
 			addLayerInformationStatement.setInt(3, child);
 			addLayerInformationStatement.execute();
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 	}
 
 	@Override
-	public void setLayerDecider(LayerDecider decider)
-	{
+	public void setLayerDecider(LayerDecider decider) {
 		super.setLayerDecider(decider);
 		recomputeLayers();
 	}
 
-	public void recomputeLayers()
-	{
+	public void recomputeLayers() {
 		recomputeLayers(getRootID());
 	}
 
-	public void recomputeLayers(int nodeID)
-	{
+	public void recomputeLayers(int nodeID) {
 		computeAndStoreLayerInformation(nodeID);
-		for (int childID : getChildren(nodeID))
-		{
+		for (int childID : getChildren(nodeID)) {
 			recomputeLayers(childID);
 		}
 	}
 
 	@Override
-	public int getParent(int nodeID)
-	{
-		try
-		{
+	public int getParent(int nodeID) {
+		try {
 			getRealParentStatement.setInt(1, nodeID);
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		return db.queryInteger(getRealParentStatement, -1);
 	}
 
-	private int getVirtualParent(int nodeID)
-	{
-		try
-		{
+	private int getVirtualParent(int nodeID) {
+		try {
 			getVirtualParentStatement.setInt(1, nodeID);
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		return db.queryInteger(getVirtualParentStatement, -1);
 	}
 
-	private int getLayer(int nodeID)
-	{
-		try
-		{
+	private int getLayer(int nodeID) {
+		try {
 			getLayerStatement.setInt(1, nodeID);
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		return db.queryInteger(getLayerStatement, 0);
 	}
 
 	@Override
-	public void clear()
-	{
+	public void clear() {
 		db.execute(clearStatement);
 	}
 
 	@Override
-	public void collapse(int nodeID)
-	{
-		try
-		{
+	public void collapse(int nodeID) {
+		try {
 			collapseStatement.setInt(1, nodeID);
 			collapseStatement.execute();
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 	}
 
 	@Override
-	public void decollapse(int nodeID)
-	{
-		try
-		{
+	public void decollapse(int nodeID) {
+		try {
 			decollapseStatement.setInt(1, nodeID);
 			decollapseStatement.execute();
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 	}
 
 	@Override
-	public void decollapseAll()
-	{
+	public void decollapseAll() {
 		db.execute(decollapseAllStatement);
 	}
 
 	@Override
-	public List<Integer> getChildren(int nodeID, int layer)
-	{
-		System.err.print("children for " + nodeID + "(" + getNodeCaption(nodeID) + ") on " + layer + ": ");
+	public List<Integer> getChildren(int nodeID, int layer) {
 		int nodeLayer = getLayer(nodeID);
-		if (layer == nodeLayer)
-		{
+		if (layer == nodeLayer) {
 			// the most common case, for which we have precalculated the virtual
 			// children
-			List<Integer> result = getVirtualChildren(nodeID);
-			return ear(result);
+			List<Integer> result = getVirtualChildren(nodeID, nodeLayer);
+			return result;
 		}
-		if (nodeID == getRootID(layer) || nodeLayer >= layer)
-		{
+		if (nodeID == getRootID(layer) || nodeLayer >= layer) {
 			// usually only the case for the root of a partial tree
 			List<Integer> frontLine = getChildren(nodeID);
-			for (int i = 0; i < frontLine.size();)
-			{
+			for (int i = 0; i < frontLine.size();) {
 				int child = frontLine.get(i);
-				if (getLayer(child) > layer)
-				{
+				if (getLayer(child) > layer) {
 					frontLine.remove(i);
 					frontLine.addAll(i, getChildren(child));
-				} else
-				{
+				} else {
 					i++;
 				}
 			}
-			return ear(frontLine);
+			return frontLine;
 		}
 		// When we have reached a "cornerstone", pretend it's a leaf:
-		return ear(Collections.emptyList());
+		return Collections.emptyList();
 	}
 
-	private List<Integer> getChildren(int nodeID)
-	{
-		try
-		{
+	private List<Integer> getChildren(int nodeID) {
+		try {
 			getRealChildrenStatement.setInt(1, nodeID);
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		return db.queryIntList(getRealChildrenStatement);
 	}
 
-	private List<Integer> getVirtualChildren(int nodeID)
-	{
-		try
-		{
+	private List<Integer> getVirtualChildren(int nodeID, int layer) {
+		try {
 			getVirtualChildrenStatement.setInt(1, nodeID);
-		} catch (SQLException e)
-		{
+			getVirtualChildrenStatement.setInt(2, nodeID);
+			getVirtualChildrenStatement.setInt(3, layer);
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		List<Integer> result = db.queryIntList(getVirtualChildrenStatement);
@@ -368,108 +318,84 @@ public class KahinaDbTree extends KahinaTree
 	}
 
 	@Override
-	public String getEdgeLabel(int nodeID)
-	{
-		try
-		{
+	public String getEdgeLabel(int nodeID) {
+		try {
 			getEdgeLabelStatement.setInt(1, nodeID);
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		return db.queryString(getEdgeLabelStatement, "");
 	}
 
 	@Override
-	protected void collectLeaves(int nodeID, List<Integer> leaves)
-	{
+	protected void collectLeaves(int nodeID, List<Integer> leaves) {
 		List<Integer> children = getChildren(nodeID);
-		if (children.isEmpty())
-		{
+		if (children.isEmpty()) {
 			leaves.add(nodeID);
-		} else
-		{
-			for (int child : children)
-			{
+		} else {
+			for (int child : children) {
 				collectLeaves(child, leaves);
 			}
 		}
 	}
 
 	@Override
-	public String getNodeCaption(int nodeID)
-	{
-		try
-		{
+	public String getNodeCaption(int nodeID) {
+		try {
 			getNodeCaptionStatement.setInt(1, nodeID);
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		return db.queryString(getNodeCaptionStatement, "");
 	}
 
 	@Override
-	public int getNodeStatus(int nodeID)
-	{
-		try
-		{
+	public int getNodeStatus(int nodeID) {
+		try {
 			getNodeStatusStatement.setInt(1, nodeID);
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		return db.queryInteger(getNodeStatusStatement, 0);
 	}
 
 	@Override
-	public int getParent(int nodeID, int layer)
-	{
-		if (nodeID == getRootID(layer))
-		{
+	public int getParent(int nodeID, int layer) {
+		if (nodeID == getRootID(layer)) {
 			return -1;
 		}
-		if (getLayer(nodeID) == layer)
-		{
+		if (getLayer(nodeID) == layer) {
 			return getVirtualParent(nodeID);
 		}
 		int result = getParent(nodeID);
-		while (getLayer(result) > layer)
-		{
+		while (getLayer(result) > layer) {
 			result = getParent(result);
 		}
 		return result;
 	}
 
 	@Override
-	public int getRootID()
-	{
+	public int getRootID() {
 		return db.queryInteger(getRootStatement, -1);
 	}
 
 	@Override
-	public int getRootID(int layer)
-	{
-		if (layer == 0)
-		{
+	public int getRootID(int layer) {
+		if (layer == 0) {
 			return getRootID();
 		}
 		int result = getReferenceNode();
-		while (getLayer(result) >= layer)
-		{
+		while (getLayer(result) >= layer) {
 			result = getParent(result);
 		}
 		return result;
 	}
 
 	@Override
-	public boolean isCollapsed(int nodeID)
-	{
-		try
-		{
+	public boolean isCollapsed(int nodeID) {
+		try {
 			isCollapsedStatement.setInt(1, nodeID);
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			throw new KahinaException("SQL error.", e);
 		}
 		int result = db.queryInteger(isCollapsedStatement, 0);
@@ -477,26 +403,21 @@ public class KahinaDbTree extends KahinaTree
 	}
 
 	@Override
-	public int getSize()
-	{
+	public int getSize() {
 		return db.queryInteger(getSizeStatement, 0);
 	}
 
 	public static KahinaTree importXML(Document dom, LayerDecider decider,
-			DatabaseHandler db, KahinaTree primaryModel)
-	{
+			DatabaseHandler db, KahinaTree primaryModel) {
 		KahinaDbTree m = new KahinaDbTree(decider, db);
-		if (primaryModel != null)
-		{
+		if (primaryModel != null) {
 			m.setPrimaryModel(primaryModel);
 		}
 		Element treeElement = dom.getDocumentElement();
 		NodeList childNodes = treeElement.getChildNodes();
-		for (int i = 0; i < childNodes.getLength(); i++)
-		{
+		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node n = childNodes.item(i);
-			if (n.getNodeName().equals("node"))
-			{
+			if (n.getNodeName().equals("node")) {
 				importXMLNode(m, (Element) n, -1);
 				// TODO: a little risky, root node could be assigned another ID
 				m.setRootID(0);
@@ -506,43 +427,35 @@ public class KahinaDbTree extends KahinaTree
 		return m;
 	}
 
-	private static void importXMLNode(KahinaDbTree m, Element node, int parentID)
-	{
+	private static void importXMLNode(KahinaDbTree m, Element node, int parentID) {
 		String caption = node.getAttribute("caption");
 		String label = node.getAttribute("label");
 		int status = 0;
-		if (node.getAttribute("status").length() > 0)
-		{
+		if (node.getAttribute("status").length() > 0) {
 			status = Integer.parseInt(node.getAttribute("status"));
 		}
 		int id;
-		if (node.getAttribute("id").length() > 0)
-		{
+		if (node.getAttribute("id").length() > 0) {
 			id = Integer.parseInt(node.getAttribute("id"));
 			m.addNode(id, caption, label, status);
-		} else
-		{
+		} else {
 			id = m.addNode(caption, label, status);
 		}
-		if (parentID != -1)
-		{
+		if (parentID != -1) {
 			m.addChild(parentID, id);
 		}
 		// go through children recursively
 		NodeList childNodes = node.getChildNodes();
-		for (int i = 0; i < childNodes.getLength(); i++)
-		{
+		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node n = childNodes.item(i);
-			if (n.getNodeName().equals("node"))
-			{
+			if (n.getNodeName().equals("node")) {
 				importXMLNode(m, (Element) n, id);
 			}
 		}
 	}
 
 	@Override
-	public void finalize() throws Throwable
-	{
+	public void finalize() throws Throwable {
 		clear();
 		super.finalize();
 	}
