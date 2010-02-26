@@ -151,11 +151,29 @@ public class DatabaseHandler
 			IOException
 	{
 		Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-		File file = File.createTempFile("kahinadb", null);
+		final File file = File.createTempFile("kahinadb", null);
 		deleteRecursively(file);
 		connection = DriverManager.getConnection("jdbc:derby:" + file.getPath()
 				+ ";create=true");
-		// db.deleteOnExit(); // should work but doesn't
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+
+			@Override
+			public void run()
+			{
+				try
+				{
+					if (!connection.isClosed())
+					{
+						connection.close();
+					}
+				} catch (SQLException e)
+				{
+					// do nothing
+				}
+				deleteRecursively(file);
+			}
+			
+		});
 		Statement statement = connection.createStatement();
 		try
 		{
@@ -168,6 +186,21 @@ public class DatabaseHandler
 		statement
 				.executeUpdate("CREATE TABLE data (id BIGINT NOT NULL , value VARCHAR(32) NOT NULL, PRIMARY KEY (id))");
 		statement.close();
+	}
+	
+	/**
+	 * Closes the underlying database connection. This method should always be
+	 * invoked as soon as this handler is no longer needed.
+	 */
+	public void close()
+	{
+		try
+		{
+			connection.close();
+		} catch (SQLException e)
+		{
+			throw new KahinaException("Failed to close database handler.", e);
+		}
 	}
 
 	/**
