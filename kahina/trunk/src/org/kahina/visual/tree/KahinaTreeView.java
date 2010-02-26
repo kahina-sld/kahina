@@ -619,7 +619,7 @@ public class KahinaTreeView extends KahinaView
         nodeHeight = fm.getHeight();
 
         createNodeLayers();
-        System.err.println(showLevels());
+        //System.err.println(showLevels());
         //System.err.println(terminalLayer);
         
         totalTreeWidth = 50;
@@ -757,7 +757,7 @@ public class KahinaTreeView extends KahinaView
           List<Integer> children = getVisibleVirtualChildren(treeModel, treeModel.getRootID(treeLayer));
           while(true)
           {
-            System.err.println("children:" + children);
+            //System.err.println("children:" + children);
             ArrayList<Integer> grandchildren = new ArrayList<Integer>();
             for (int i = 0; i < children.size(); i++)
             {
