@@ -21,19 +21,14 @@ import org.kahina.control.KahinaController;
 import org.kahina.control.KahinaListener;
 import org.kahina.control.event.KahinaEvent;
 
-public class BooleanConnectorPanel extends JPanel implements MouseListener,
-        KahinaListener
+public class BooleanConnectorPanel extends JPanel implements MouseListener, KahinaListener
 {
-    KahinaController control;
-    
-    SingleNodeConstraintPanel nodeConstPanel;
-    
-    Map<TreeNodePattern, Integer> xCoord;
-    
+    KahinaController control; 
+    SingleNodeConstraintPanel nodeConstPanel;   
+    Map<TreeNodePattern, Integer> xCoord; 
     Map<TreeNodePattern, Integer> yCoord;
     
-    int xDim;
-    
+    int xDim; 
     int yDim;
     
     TreeNodePattern markedPattern;
@@ -41,8 +36,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener,
     // event system is responsible for synchronization with NodeConstraintPanel and TreeFragmentPanel
     private int nodeSelectionMode;
     
-    public BooleanConnectorPanel(SingleNodeConstraintPanel nodeConstPanel,
-            KahinaController control)
+    public BooleanConnectorPanel(SingleNodeConstraintPanel nodeConstPanel, KahinaController control)
     {
         this.control = control;
         control.registerListener("breakpoint_editor", this);
@@ -102,9 +96,9 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener,
                     }
                     break;
                 }
-                    // boolean connectives with two arguments
-                    // (since atomic pattern should already have received their
-                    // coordinates)
+                // this only concerns boolean connectives with two arguments
+                // (since atomic pattern should already have received their
+                // coordinates)
                 default:
                 {
                     TreeNodePattern left = p.getLeftArgument();
@@ -364,7 +358,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener,
                         {
                             nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                         }
-                        control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
+                        control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
                     }
                     else if (nodeSelectionMode == BreakpointEditPanel.PENDING_OR_OPERATION)
                     {

@@ -368,6 +368,8 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         
         boolPanel.markedPattern = neg;
         displayChangeInConnectiveStructure();
+        announceUpdate();
+        synchronizeEditors();
     }
     
     public boolean introduceConjunction(TreeNodePattern arg1, TreeNodePattern arg2)
@@ -461,7 +463,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         }
         TreeNodePattern rightAncestor = arg2;
         if (rightAncestor == arg1) return false;
-        while (rightAncestor == null && rightAncestor != getRootPattern())
+        while (rightAncestor != null && rightAncestor != getRootPattern())
         {
             rightAncestor = parentPatterns.get(rightAncestor);
             if (rightAncestor == arg1) return false;
@@ -478,6 +480,12 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     
     private void removeFromStructureWithoutBreakingIt(TreeNodePattern arg1)
     {
+        if (getRootPattern() == arg1 && arg1.getLeftArgument() == null)
+        {
+            virtualRootPattern = new TreeNodePattern();
+            parentPatterns.remove(arg1);
+            return;
+        }
         TreeNodePattern node = arg1;
         TreeNodePattern parent = parentPatterns.get(arg1);
         TreeNodePattern grandparent = parentPatterns.get(parent);
