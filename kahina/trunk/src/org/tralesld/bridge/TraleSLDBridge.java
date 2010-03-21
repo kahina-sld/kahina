@@ -76,5 +76,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
        return 'n';
     }
     
+    public void registerStepLocation(int externalStepID, int externalParentID)
+    {
+    	
+    }
+    
     
 }
