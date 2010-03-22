@@ -17,34 +17,47 @@ import org.kahina.core.KahinaException;
 
 public class DatabaseHandler
 {
-	// database connection
+
+	// TODO should support persisting a state by closing the connection and then
+	// copying the temporary directory to a user-specified location
+
+	private static final String TABLE_NAME_PREFIX = DatabaseHandler.class
+			.getSimpleName()
+			+ "_";
+
+	private static final String CLIENTS_TABLE_NAME = TABLE_NAME_PREFIX
+			+ "clients";
+
+	private PreparedStatement isRegisteredStatement;
+
+	private PreparedStatement registerStatement;
+
+	private File dbDirectory;
+
 	private Connection connection;
 
-	// TODO move this to a database table for persistence
-	private Set<String> clientIDs = new HashSet<String>();
-
-	public DatabaseHandler()
+	/**
+	 * Creates a database handler with an empty database.
+	 */
+	public DatabaseHandler() throws KahinaException
 	{
-		try
-		{
-			startDatabase();
-		} catch (ClassNotFoundException e)
-		{
-			System.err.println("Problem loading Apache Derby: "
-					+ e.getMessage());
-		} catch (SQLException e)
-		{
-			System.err.println("A database error occured: " + e.getMessage());
-		} catch (IOException e)
-		{
-			System.err.println("Database file problem: " + e.getMessage());
-		}
+		createTemporaryDatabaseDirectory();
+		startDatabase();
+		createTables();
+		prepareStatements();
 	}
 
+	/**
+	 * Creates a database handler with an existing database (loaded from a
+	 * file).
+	 * 
+	 * @param file
+	 */
 	public DatabaseHandler(File file)
 	{
-		this();
-		// TODO Use the provided file.
+		dbDirectory = file;
+		startDatabase();
+		prepareStatements();
 	}
 
 	public void execute(String sqlString)
@@ -58,13 +71,14 @@ public class DatabaseHandler
 			throw new KahinaException("SQL error.", e);
 		}
 	}
-	
+
 	public Integer queryInteger(PreparedStatement statement)
 	{
 		return queryInteger(statement, null);
 	}
 
-	public Integer queryInteger(PreparedStatement statement, Integer defaultValue)
+	public Integer queryInteger(PreparedStatement statement,
+			Integer defaultValue)
 	{
 		try
 		{
@@ -85,7 +99,13 @@ public class DatabaseHandler
 		}
 	}
 
-	// TODO treat NULL values appropriately
+	/**
+	 * Returns the result of a statement as a list of integers. <tt>NULL</tt>
+	 * values are represented as {@code null} values.
+	 * 
+	 * @param statement
+	 * @return
+	 */
 	public List<Integer> queryIntList(PreparedStatement statement)
 	{
 		List<Integer> result = new ArrayList<Integer>();
@@ -94,7 +114,15 @@ public class DatabaseHandler
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next())
 			{
-				result.add(resultSet.getInt(1));
+				int element = resultSet.getInt(1);
+
+				if (resultSet.wasNull())
+				{
+					result.add(null);
+				} else
+				{
+					result.add(element);
+				}
 			}
 			return result;
 		} catch (SQLException e)
@@ -103,7 +131,13 @@ public class DatabaseHandler
 		}
 	}
 
-	// TODO treat NULL values appropriately
+	/**
+	 * Returns the result of a statement as a set of integers. <tt>NULL</tt>
+	 * values are omitted.
+	 * 
+	 * @param statement
+	 * @return
+	 */
 	public Set<Integer> queryIntSet(PreparedStatement statement)
 	{
 		Set<Integer> result = new HashSet<Integer>();
@@ -112,7 +146,12 @@ public class DatabaseHandler
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next())
 			{
-				result.add(resultSet.getInt(1));
+				int element = resultSet.getInt(1);
+
+				if (!resultSet.wasNull())
+				{
+					result.add(element);
+				}
 			}
 			return result;
 		} catch (SQLException e)
@@ -120,7 +159,7 @@ public class DatabaseHandler
 			throw new KahinaException("SQL error.", e);
 		}
 	}
-	
+
 	public String queryString(PreparedStatement statement)
 	{
 		return queryString(statement, null);
@@ -147,47 +186,53 @@ public class DatabaseHandler
 		}
 	}
 
-	private void startDatabase() throws ClassNotFoundException, SQLException,
-			IOException
+	private void createTemporaryDatabaseDirectory()
 	{
-		Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-		final File file = File.createTempFile("kahinadb", null);
-		deleteRecursively(file);
-		connection = DriverManager.getConnection("jdbc:derby:" + file.getPath()
-				+ ";create=true");
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-
-			@Override
-			public void run()
-			{
-				try
-				{
-					if (!connection.isClosed())
-					{
-						connection.close();
-					}
-				} catch (SQLException e)
-				{
-					// do nothing
-				}
-				deleteRecursively(file);
-			}
-			
-		});
-		Statement statement = connection.createStatement();
 		try
 		{
-			statement.executeUpdate("DROP TABLE data");
-		} catch (SQLException e)
+			dbDirectory = File.createTempFile("kahinadb", null);
+		} catch (IOException e)
 		{
-			// ignore - gotta hate Derby for not supporting DROP TABLE IF EXISTS
+			throw new KahinaException("Could not create database directory.", e);
+		}
+		deleteRecursively(dbDirectory);
+	}
+
+	private void startDatabase()
+	{
+		try
+		{
+			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+		} catch (ClassNotFoundException e)
+		{
+			throw new KahinaException("Derby JDBC driver not available.", e);
 		}
 
-		statement
-				.executeUpdate("CREATE TABLE data (id BIGINT NOT NULL , value VARCHAR(32) NOT NULL, PRIMARY KEY (id))");
-		statement.close();
+		try
+		{
+			connection = DriverManager.getConnection("jdbc:derby:"
+					+ dbDirectory.getPath() + ";create=true");
+		} catch (SQLException e)
+		{
+			throw new KahinaException(
+					"Failed to establish a database connection.", e);
+		}
 	}
-	
+
+	private void createTables()
+	{
+		execute("CREATE TABLE " + CLIENTS_TABLE_NAME
+				+ " (client_id VARCHAR(255) PRIMARY KEY)");
+	}
+
+	private void prepareStatements()
+	{
+		isRegisteredStatement = prepareStatement("SELECT COUNT(*) FROM "
+				+ CLIENTS_TABLE_NAME + " WHERE client_id = ?");
+		registerStatement = prepareStatement("INSERT INTO "
+				+ CLIENTS_TABLE_NAME + " (client_id) VALUES (?)");
+	}
+
 	/**
 	 * Closes the underlying database connection. This method should always be
 	 * invoked as soon as this handler is no longer needed.
@@ -201,6 +246,7 @@ public class DatabaseHandler
 		{
 			throw new KahinaException("Failed to close database handler.", e);
 		}
+		deleteRecursively(dbDirectory);
 	}
 
 	/**
@@ -213,7 +259,14 @@ public class DatabaseHandler
 	 */
 	public void register(String clientID)
 	{
-		clientIDs.add(clientID);
+		try
+		{
+			registerStatement.setString(1, clientID);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+		execute(registerStatement);
 	}
 
 	/**
@@ -225,7 +278,14 @@ public class DatabaseHandler
 	 */
 	public boolean isRegistered(String clientID)
 	{
-		return clientIDs.contains(clientID);
+		try
+		{
+			isRegisteredStatement.setString(1, clientID);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+		return queryInteger(isRegisteredStatement) > 0;
 	}
 
 	public PreparedStatement prepareStatement(String sql)

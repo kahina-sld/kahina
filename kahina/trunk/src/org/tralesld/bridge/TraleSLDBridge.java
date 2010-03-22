@@ -20,7 +20,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		System.err.print("Trying to build GUI window... ");
 		try
 		{
-			// TODO Softcode choice between DbDataManager and MemDataManager.
+			// TODO Softcode choice between DbDataManager and MemDataManager
+			// TODO database handler should be closed
 			kahina = new KahinaInstance(
 					new DbDataManager(new DatabaseHandler()));
 			control = new KahinaController();
