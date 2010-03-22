@@ -1,14 +1,26 @@
 package org.kahina.data.fs;
 
-import org.kahina.data.KahinaObject;
+import org.kahina.data.LightweightKahinaObject;
 
-public class KahinaFeatureStructure extends KahinaObject
+public class KahinaFeatureStructure implements LightweightKahinaObject
 {
-    static int lastID = 0;
-    static String type = "KahinaFeatureStructure";
+    private static int lastID = 0;
+    
+    private final int id;
     
     public KahinaFeatureStructure()
     {
-        super(lastID++);
+    	this(lastID++);
     }
+    
+    public KahinaFeatureStructure(int id)
+    {
+    	this.id = id;
+    }
+
+	@Override
+	public int getID()
+	{
+		return id;
+	}
 }

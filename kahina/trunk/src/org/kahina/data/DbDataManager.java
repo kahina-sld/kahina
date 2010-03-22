@@ -59,12 +59,20 @@ public class DbDataManager extends DataManager
 	{
 		if (LightweightKahinaObject.class.isAssignableFrom(type))
 		{
-			registerDataType(type, new LightweightKahinaObjectDbDataStore(type,
-					this, db));
+			Class<? extends LightweightKahinaObject> castType = castToLightweight(type);
+			registerDataType(type, new LightweightKahinaObjectDbDataStore(
+					castType, this, db));
 		} else
 		{
 			registerDataType(type, new KahinaObjectMemDataStore());
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private Class<? extends LightweightKahinaObject> castToLightweight(
+			Class<? extends KahinaObject> type)
+	{
+		return (Class<? extends LightweightKahinaObject>) type;
 	}
 
 	/**

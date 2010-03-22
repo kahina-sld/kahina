@@ -1,11 +1,11 @@
 package org.kahina.data;
 
 /**
- * The base class of all Kahina objects, i.e. pieces of information that can be
- * stored and retrieved using a {@link DataManager}.
+ * "Kahina objects" are pieces of information that can be stored and retrieved
+ * using a {@link DataManager}. They are instances of {@link KahinaObject}.
  * 
- * Clients can define their own data types by extending this class. The runtime
- * class of a Kahina object is referred to as its data type.
+ * Clients can define their own data types by implementing this interface. The
+ * runtime class of a Kahina object is referred to as its data type.
  * 
  * Kahina objects are uniquely identified by their data type and their ID (
  * {@link #id}, {@link #getID()}). Therefore, clients must ensure that each
@@ -16,24 +16,9 @@ package org.kahina.data;
  * @author ke
  * 
  */
-public class KahinaObject
+public interface KahinaObject
 {
-	private int id;
 
-	/**
-	 * Creates a new Kahina object.
-	 * 
-	 * @param id
-	 *            An ID that is unique within the data type of this Kahina
-	 *            object.
-	 */
-	public KahinaObject(int id)
-	{
-		this.id = id;
-	}
-
-	public int getID()
-	{
-		return id;
-	}
+	public int getID();
+	
 }
