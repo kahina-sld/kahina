@@ -5,11 +5,9 @@ import java.util.List;
 
 import org.kahina.data.KahinaObject;
 
-public abstract class KahinaTree implements KahinaObject
+public abstract class KahinaTree extends KahinaObject
 {
 	private static int nextID = 0;
-	
-	private final int id;
 	
 	protected LayerDecider decider;
 
@@ -21,15 +19,9 @@ public abstract class KahinaTree implements KahinaObject
 
 	public KahinaTree(LayerDecider decider)
 	{
-		id = nextID++;
+		super(nextID++);
 		this.decider = decider;
 		doClear();
-	}
-	
-	@Override
-	public int getID()
-	{
-		return id;
 	}
 
 	/**

@@ -4,26 +4,13 @@ import java.util.Set;
 
 import org.kahina.data.KahinaObject;
 
-public abstract class KahinaChart implements KahinaObject
+public abstract class KahinaChart extends KahinaObject
 {
 	private static int nextID = 0;
-	
-	private final int id;
 
 	public KahinaChart()
 	{
-		this(nextID++);
-	}
-	
-	public KahinaChart(int id)
-	{
-		this.id = id;
-	}
-	
-	@Override
-	public int getID()
-	{
-		return id;
+		super(nextID++);
 	}
 
 	public void initialize()

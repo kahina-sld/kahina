@@ -71,7 +71,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 
 	private int storeTypeID;
 
-	private Constructor<? extends LightweightKahinaObject> constructor;
+	private Constructor<? extends KahinaObject> constructor;
 
 	private Set<Integer> currentlyBeingStored = new HashSet<Integer>();
 
@@ -86,10 +86,15 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	 * @param db
 	 */
 	public LightweightKahinaObjectDbDataStore(
-			Class<? extends LightweightKahinaObject> type, DbDataManager manager,
+			Class<? extends KahinaObject> type, DbDataManager manager,
 			DatabaseHandler db)
 	{
 		super(manager, db);
+		if (!LightweightKahinaObject.class.isAssignableFrom(type))
+		{
+			throw new KahinaException(
+					"Cannot deal with non-lightweight data type " + type + ".");
+		}
 		storeTypeID = manager.getTypeID(type);
 		try
 		{
@@ -209,7 +214,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	{
 		try
 		{
-			LightweightKahinaObject result = constructor.newInstance(id);
+			KahinaObject result = constructor.newInstance(id);
 			currentlyBeingRetrieved.put(id, result);
 			int numFields = fields.size();
 			for (int i = 0; i < numFields; i++)

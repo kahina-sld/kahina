@@ -1,26 +1,14 @@
 package org.kahina.data.source;
 
-import org.kahina.data.LightweightKahinaObject;
+import org.kahina.data.KahinaObject;
 
-public class KahinaSourceCodeLocation implements LightweightKahinaObject
+public class KahinaSourceCodeLocation extends KahinaObject
 {
-    private static int lastID = 0;
-    
-    private final int id;
+    static int lastID = 0;
+    static String type = "KahinaSourceCodeLocation";
     
     public KahinaSourceCodeLocation()
     {
-    	this(lastID++);
+        super(lastID++);
     }
-    
-    public KahinaSourceCodeLocation(int id)
-    {
-    	this.id = id;
-    }
-
-	@Override
-	public int getID()
-	{
-		return id;
-	}
 }
