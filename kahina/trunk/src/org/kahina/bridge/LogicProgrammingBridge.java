@@ -10,12 +10,6 @@ public class LogicProgrammingBridge extends KahinaBridge
     protected KahinaGUI gui;
     protected KahinaController control;
     
-    //spawns a Kahina instance from the bridge
-    public void start()
-    {
-        
-    }
-    
     public void registerStepInformation(int stepID, String command)
     {
         

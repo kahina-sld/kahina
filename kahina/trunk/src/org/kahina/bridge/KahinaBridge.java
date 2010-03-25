@@ -10,9 +10,4 @@ public class KahinaBridge
     protected KahinaGUI gui;
     protected KahinaController control;
     
-    //spawns a Kahina instance from the bridge
-    public void start()
-    {
-        
-    }
 }

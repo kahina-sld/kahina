@@ -31,4 +31,9 @@ public class KahinaInstance
     {
         return gui;
     }
+    
+    public KahinaBridge getBridge()
+    {
+        return bridge;
+    }
 }

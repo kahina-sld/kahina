@@ -38,7 +38,7 @@ public class TraleSLDTreeBehavior extends KahinaTreeBehavior
         int stepID = extStepID;
         lastActiveID = stepID;
         secondaryTree.addChild(lastActiveID, extStepID);
-        //TODO: this is nonsense at the moment
+        //TODO: this is nonsense at the moment (generating a minimal circle)
         ((KahinaTree) object).addChild(extStepID, stepID);
     }
 }

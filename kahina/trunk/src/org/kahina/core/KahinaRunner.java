@@ -1,5 +1,6 @@
 package org.kahina.core;
 
+import org.kahina.bridge.KahinaBridge;
 import org.kahina.data.DbDataManager;
 import org.kahina.io.database.DatabaseHandler;
 
