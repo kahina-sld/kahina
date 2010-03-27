@@ -11,9 +11,9 @@ package org.kahina.data;
  * stored and retrieved by default database stores like
  * {@link LightweightKahinaObjectDbDataStore}. <code>null</code> values of array
  * fields are treated exactly like empty arrays. In addition, subclasses are
- * required to provide a one-argument that takes the ID of the object to be
- * constructed and passes it on (possibly via other constructors) to the
- * constructor of this class.
+ * required to provide a one-argument constructor that takes the ID of the
+ * object to be constructed and passes it on (possibly via other constructors)
+ * to the constructor of this class.
  * 
  * @author ke
  * 

@@ -6,13 +6,14 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kahina.core.KahinaException;
+import org.kahina.data.DatabaseClient;
 import org.kahina.io.database.DatabaseHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class KahinaDbTree extends KahinaTree
+public class KahinaDbTree extends KahinaTree implements DatabaseClient
 {
 
     private static final String CLIENT_ID = KahinaDbTree.class.getName();
@@ -72,6 +73,12 @@ public class KahinaDbTree extends KahinaTree
         super(decider);
         this.db = db;
         createTablesIfNecessary();
+        prepareStatements();
+    }
+
+    public void setDatabaseHandler(DatabaseHandler db)
+    {
+        this.db = db;
         prepareStatements();
     }
 
