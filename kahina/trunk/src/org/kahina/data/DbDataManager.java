@@ -21,7 +21,6 @@ import org.kahina.io.database.DatabaseHandler;
  */
 public class DbDataManager extends DataManager
 {
-
     private DatabaseHandler db;
 
     private Map<Class<? extends KahinaObject>, Integer> typeIDByType = new HashMap<Class<? extends KahinaObject>, Integer>();

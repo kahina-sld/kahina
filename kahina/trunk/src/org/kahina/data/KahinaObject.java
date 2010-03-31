@@ -1,5 +1,8 @@
 package org.kahina.data;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The base class of all Kahina objects, i.e. pieces of information that can be
  * stored and retrieved using a {@link DataManager}.
@@ -8,32 +11,71 @@ package org.kahina.data;
  * class of a Kahina object is referred to as its data type.
  * 
  * Kahina objects are uniquely identified by their data type and their ID (
- * {@link #id}, {@link #getID()}). Therefore, clients must ensure that each
- * Kahina object gets an ID that is unique within its data type. Usually, this
- * is done by having one static variable <code>nextID</code> per data type that
- * is incremented with each object creation.
+ * {@link #id}, {@link #getID()}).
  * 
  * @author ke
  * 
  */
 public class KahinaObject
 {
-	private int id;
 
-	/**
-	 * Creates a new Kahina object.
-	 * 
-	 * @param id
-	 *            An ID that is unique within the data type of this Kahina
-	 *            object.
-	 */
-	public KahinaObject(int id)
-	{
-		this.id = id;
-	}
+    private int id;
 
-	public int getID()
-	{
-		return id;
-	}
+    private final static Map<Class<? extends KahinaObject>, Integer> nextIDByType = new HashMap<Class<? extends KahinaObject>, Integer>();
+
+    /**
+     * Returns the ID of this object. If {@link #setID(int)} has not been called
+     * before, this will set the ID of the object to the next available ID for
+     * its type.
+     * @return
+     */
+    public final int getID()
+    {
+        if (id == 0)
+        {
+            synchronized(this)
+            {
+                setID();
+            }
+        }
+
+        return id;
+    }
+
+    private void setID()
+    {
+        synchronized (nextIDByType)
+        {
+            Class<? extends KahinaObject> type = getClass();
+
+            if (nextIDByType.containsKey(type))
+            {
+                id = nextIDByType.get(type);
+                nextIDByType.put(type, id + 1);
+            } else
+            {
+                id = 1;
+                nextIDByType.put(type, 2);
+            }
+        }
+    }
+
+    /**
+     * Sets the ID of this object. Callers are responsible for ensuring that IDs
+     * are unique for each data type, and that the next available ID for each
+     * type has been set high enough using {@link #setNextID}.
+     * @param id
+     */
+    public final void setID(int id)
+    {
+        this.id = id;
+    }
+
+    public static void setNextID(Class<? extends KahinaObject> type, int id)
+    {
+        synchronized(nextIDByType)
+        {
+            nextIDByType.put(type, id);
+        }
+    }
 }

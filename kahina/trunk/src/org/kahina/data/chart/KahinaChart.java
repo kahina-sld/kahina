@@ -8,11 +8,6 @@ public abstract class KahinaChart extends KahinaObject
 {
 	private static int nextID = 0;
 
-	public KahinaChart()
-	{
-		super(nextID++);
-	}
-
 	public void initialize()
 	{
 		setLeftBound(0);

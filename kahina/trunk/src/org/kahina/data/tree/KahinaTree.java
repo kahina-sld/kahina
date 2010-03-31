@@ -6,9 +6,7 @@ import java.util.List;
 import org.kahina.data.KahinaObject;
 
 public abstract class KahinaTree extends KahinaObject
-{
-	private static int nextID = 0;
-	
+{	
 	protected LayerDecider decider;
 
 	private KahinaTree primaryModel;
@@ -19,7 +17,6 @@ public abstract class KahinaTree extends KahinaObject
 
 	public KahinaTree(LayerDecider decider)
 	{
-		super(nextID++);
 		this.decider = decider;
 		doClear();
 	}
