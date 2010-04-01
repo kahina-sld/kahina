@@ -18,52 +18,64 @@ package org.kahina.data;
  * 
  */
 public abstract class DataManager
-{	
-	/**
-	 * Returns the data store that is registered for a given data type.
-	 * 
-	 * @param type
-	 * @return
-	 */
-	protected abstract DataStore getStoreForType(Class<? extends KahinaObject> type);
+{
 
-	/**
-	 * Registers a given data store for a given data type. Only one data store
-	 * can be registered per data type. The data store should be suitable for
-	 * the data type.
-	 * 
-	 * @param type
-	 * @param store
-	 */
-	public abstract void registerDataType(Class<? extends KahinaObject> type, DataStore store);
+    /**
+     * Returns the data store that is registered for a given data type.
+     *
+     * @param type
+     * @return
+     */
+    protected abstract DataStore getStoreForType(Class<? extends KahinaObject> type);
 
-	/**
-	 * Registers a data type and let the data manager pick a data store. Clients
-	 * should make sure the data manager can pick a suitable store for the data
-	 * type.
-	 * 
-	 * @param type
-	 */
-	public abstract void registerDataType(Class<? extends KahinaObject> type);
+    /**
+     * Registers a given data store for a given data type. Only one data store
+     * can be registered per data type. The data store should be suitable for
+     * the data type.
+     *
+     * @param type
+     * @param store
+     */
+    public abstract void registerDataType(Class<? extends KahinaObject> type, DataStore store);
 
-	/**
-	 * Stores an object. The data type (i.e. runtime class) of the object must
-	 * have been registered with this data manager before.
-	 * @param object
-	 */
-	public void store(KahinaObject object)
-	{
-		getStoreForType(object.getClass()).store(object);
-	}
+    /**
+     * Registers a data type and let the data manager pick a data store. Clients
+     * should make sure the data manager can pick a suitable store for the data
+     * type.
+     *
+     * @param type
+     */
+    public abstract void registerDataType(Class<? extends KahinaObject> type);
 
-	/**
-	 * Retrieves a stored object by its data type and ID.
-	 * @param type
-	 * @param id
-	 * @return
-	 */
-	public KahinaObject retrieve(Class<KahinaObject> type, int id)
-	{
-		return getStoreForType(type).retrieve(id);
-	}
+    /**
+     * Stores an object. The data type (i.e. runtime class) of the object must
+     * have been registered with this data manager before.
+     * @param object
+     */
+    public void store(KahinaObject object)
+    {
+        getStoreForType(object.getClass()).store(object);
+    }
+
+    /**
+     * Retrieves a stored object by its data type and ID.
+     * @param type
+     * @param id
+     * @return
+     */
+    public KahinaObject retrieve(Class<KahinaObject> type, int id)
+    {
+        return getStoreForType(type).retrieve(id);
+    }
+
+    /**
+     * This method must be called to persist the stored objects across
+     * runtimes.
+     * @throws UnsupportedOperationException if this data manager does not
+     * support persistence.
+     */
+    public void persist()
+    {
+        throw new UnsupportedOperationException("This data manager does not support persistence.");
+    }
 }

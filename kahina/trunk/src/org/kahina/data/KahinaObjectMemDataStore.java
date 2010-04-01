@@ -8,7 +8,7 @@ import java.util.Map;
  * @author ke
  *
  */
-public class KahinaObjectMemDataStore implements DataStore
+public class KahinaObjectMemDataStore extends DataStore
 {	
 	private Map<Integer, KahinaObject> objectByID = new HashMap<Integer, KahinaObject>();
 

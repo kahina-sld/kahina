@@ -18,7 +18,6 @@ import java.util.Map;
  */
 public class KahinaObject
 {
-
     private int id;
 
     private final static Map<Class<? extends KahinaObject>, Integer> nextIDByType = new HashMap<Class<? extends KahinaObject>, Integer>();
@@ -69,6 +68,14 @@ public class KahinaObject
     public final void setID(int id)
     {
         this.id = id;
+    }
+
+    public static int getNextID(Class<? extends KahinaObject> type)
+    {
+        synchronized(nextIDByType)
+        {
+            return nextIDByType.get(type);
+        }
     }
 
     public static void setNextID(Class<? extends KahinaObject> type, int id)

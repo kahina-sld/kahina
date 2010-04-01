@@ -8,7 +8,7 @@ import org.kahina.io.database.DatabaseHandler;
  * @author ke
  *
  */
-public abstract class DbDataStore implements DataStore
+public abstract class DbDataStore extends DataStore
 {	
 	protected DbDataManager manager;
 	

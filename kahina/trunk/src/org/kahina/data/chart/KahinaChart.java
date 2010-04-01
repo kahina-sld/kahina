@@ -6,8 +6,6 @@ import org.kahina.data.KahinaObject;
 
 public abstract class KahinaChart extends KahinaObject
 {
-	private static int nextID = 0;
-
 	public void initialize()
 	{
 		setLeftBound(0);
