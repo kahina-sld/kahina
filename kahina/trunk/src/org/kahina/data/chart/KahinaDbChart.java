@@ -85,7 +85,10 @@ public class KahinaDbChart extends KahinaChart implements DatabaseClient
         initialize();
     }
 
-    // TODO add (id) constructor, make lightweight
+    public KahinaDbChart()
+    {
+        // do nothing
+    }
 
     @Override
     public void setDatabaseHandler(DatabaseHandler db)

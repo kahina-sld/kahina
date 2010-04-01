@@ -2,9 +2,9 @@ package org.kahina.data.chart;
 
 import java.util.Set;
 
-import org.kahina.data.KahinaObject;
+import org.kahina.data.LightweightKahinaObject;
 
-public abstract class KahinaChart extends KahinaObject
+public abstract class KahinaChart extends LightweightKahinaObject
 {
 	public void initialize()
 	{

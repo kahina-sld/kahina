@@ -10,8 +10,8 @@ package org.kahina.data;
  * <code>int</code>, and <code>int[]</code>. Only this information will be
  * stored and retrieved by default database stores like
  * {@link LightweightKahinaObjectDbDataStore}. <code>null</code> values of array
- * fields are treated exactly like empty arrays. In addition, subclasses are
- * required to provide a zero argument constructor.
+ * fields are treated exactly like empty arrays. In addition, concrete
+ * subclasses are required to provide a zero argument constructor.
  * 
  * @author ke
  * 
