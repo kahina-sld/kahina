@@ -51,7 +51,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
             }
             else if (view.v.getCollapsePolicy() == KahinaTreeView.COLLAPSE_PRIMARY)
             {
-                view.v.treeModel.toggleCollapse(clickedNode);
+                view.v.getModel().toggleCollapse(clickedNode);
             }
             view.v.resetAllStructures();
             view.v.calculateCoordinates();

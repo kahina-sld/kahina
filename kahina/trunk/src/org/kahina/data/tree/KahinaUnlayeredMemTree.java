@@ -97,6 +97,12 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     }
     
     @Override
+    public void setNodeCaption(int nodeID, String caption)
+    {
+        nodeCaptions.put(nodeID, caption);
+    }
+    
+    @Override
 	public String getEdgeLabel(int nodeID)
     {
         String label = edgeLabels.get(nodeID);
@@ -111,6 +117,12 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     }
     
     @Override
+    public void setEdgeLabel(int nodeID, String label)
+    {
+        edgeLabels.put(nodeID, label);
+    }
+    
+    @Override
 	public int getNodeStatus(int nodeID)
     {
         Integer st = status.get(nodeID);
@@ -122,6 +134,12 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         {
             return st;
         }
+    }
+    
+    @Override
+    public void setNodeStatus(int nodeID, int newStatus)
+    {
+        status.put(nodeID, newStatus);
     }
     
     @Override

@@ -72,9 +72,5 @@ public class KahinaChartTest
         {
             System.err.println(e.getMessage());
         }
-        catch (KahinaTypeException e)
-        {
-            System.err.println(e.getMessage());
-        }
     }
 }

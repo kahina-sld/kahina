@@ -54,7 +54,7 @@ public class KahinaController
     
     public void processEvent(KahinaEvent event)
     {
-        //System.err.println("Controller processing event: " + event);
+        System.err.println("Controller processing event: " + event);
         String type = event.getType();
         List<KahinaListener> listenersForType = registry.get(type);
         if (listenersForType != null)

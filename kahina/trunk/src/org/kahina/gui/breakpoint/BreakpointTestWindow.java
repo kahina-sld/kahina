@@ -74,14 +74,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         view.setVerticalDistance(4);
         view.setHorizontalDistance(10);
         view.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
-        try
-        {
-            view.display(model);
-        }
-        catch (KahinaTypeException e)
-        {
-            System.err.println("KahinaTypeException while displaying tree. This should not happen.");
-        }
+        view.display(model);
         
         KahinaTreeViewMarker treeMarker = new KahinaTreeViewMarker(model);
         viewPanel = new KahinaTreeViewPanel(treeMarker);
@@ -150,14 +143,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
             {
                 breakpoint.setTree(model);
             }
-            try
-            {
-                view.display(model);
-            }
-            catch (KahinaTypeException ex)
-            {
-                System.err.println("KahinaTypeException while displaying tree. This should not happen.");
-            }
+            view.display(model);
             view.resetAllStructures();
             view.calculateCoordinates();
             viewPanel.updateDisplay();

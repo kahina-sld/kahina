@@ -50,10 +50,16 @@ public class KahinaDbTree extends KahinaTree implements DatabaseClient
     private PreparedStatement getChildrenForLayerStatement;
 
     private PreparedStatement getEdgeLabelStatement;
+    
+    private PreparedStatement setEdgeLabelStatement;
 
     private PreparedStatement getNodeCaptionStatement;
+    
+    private PreparedStatement setNodeCaptionStatement;
 
     private PreparedStatement getNodeStatusStatement;
+    
+    private PreparedStatement setNodeStatusStatement;
 
     private PreparedStatement getRootStatement;
 
@@ -137,10 +143,16 @@ public class KahinaDbTree extends KahinaTree implements DatabaseClient
                 + " AND (virtualParent = ? OR (realParent = ? AND layer < ?))");
         getEdgeLabelStatement = db.prepareStatement("SELECT edgeLabel FROM "
                 + NODE_TABLE_NAME + " WHERE id = ? AND tree = " + treeID);
+        setEdgeLabelStatement = db.prepareStatement("UPDATE " + NODE_TABLE_NAME
+                + " SET edgeLabel = ? WHERE tree = " + treeID);
         getNodeCaptionStatement = db.prepareStatement("SELECT nodeCaption FROM " + NODE_TABLE_NAME
                 + " WHERE id = ? AND tree = " + treeID);
+        setNodeCaptionStatement = db.prepareStatement("UPDATE " + NODE_TABLE_NAME
+                + " SET nodeCaption = ? WHERE tree = " + treeID);
         getNodeStatusStatement = db.prepareStatement("SELECT status FROM "
                 + NODE_TABLE_NAME + " WHERE id = ? AND tree = " + treeID);
+        setNodeStatusStatement = db.prepareStatement("UPDATE " + NODE_TABLE_NAME
+                + " SET status = ? WHERE tree = " + treeID);
         getRootStatement = db.prepareStatement("SELECT id FROM "
                 + NODE_TABLE_NAME + " WHERE realParent IS NULL AND tree = "
                 + treeID);
@@ -383,6 +395,20 @@ public class KahinaDbTree extends KahinaTree implements DatabaseClient
         }
         return db.queryString(getEdgeLabelStatement, "");
     }
+    
+    @Override
+    public void setEdgeLabel(int nodeID, String edgeLabel)
+    {
+        try
+        {
+            setEdgeLabelStatement.setInt(1, nodeID);
+            setEdgeLabelStatement.setString(2, edgeLabel);
+            setEdgeLabelStatement.execute();
+        } catch (SQLException e)
+        {
+            throw new KahinaException("SQL error.", e);
+        }
+    }
 
     @Override
     protected void collectLeaves(int nodeID, List<Integer> leaves)
@@ -412,6 +438,20 @@ public class KahinaDbTree extends KahinaTree implements DatabaseClient
         }
         return db.queryString(getNodeCaptionStatement, "");
     }
+    
+    @Override
+    public void setNodeCaption(int nodeID, String nodeCaption)
+    {
+        try
+        {
+            setNodeCaptionStatement.setInt(1, nodeID);
+            setNodeCaptionStatement.setString(2, nodeCaption);
+            setNodeCaptionStatement.execute();
+        } catch (SQLException e)
+        {
+            throw new KahinaException("SQL error.", e);
+        }
+    }
 
     @Override
     public int getNodeStatus(int nodeID)
@@ -424,6 +464,20 @@ public class KahinaDbTree extends KahinaTree implements DatabaseClient
             throw new KahinaException("SQL error.", e);
         }
         return db.queryInteger(getNodeStatusStatement, 0);
+    }
+    
+    @Override
+    public void setNodeStatus(int nodeID, int newStatus)
+    {
+        try
+        {
+            setNodeStatusStatement.setInt(1, nodeID);
+            setNodeStatusStatement.setInt(2, newStatus);
+            setNodeStatusStatement.execute();
+        } catch (SQLException e)
+        {
+            throw new KahinaException("SQL error.", e);
+        }
     }
 
     @Override

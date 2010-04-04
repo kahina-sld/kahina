@@ -11,11 +11,12 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import org.kahina.data.tree.KahinaTree;
 import org.kahina.visual.KahinaViewPanel;
 
-public class KahinaTreeViewPanel extends KahinaViewPanel
+public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTree>
 {
-    public KahinaTreeView v;
+    KahinaTreeView v;
     BufferedImage image;
     
     public KahinaTreeViewPanel()
@@ -30,13 +31,6 @@ public class KahinaTreeViewPanel extends KahinaViewPanel
         v = new KahinaTreeView();
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaTreeViewListener(this, marker));
-    }
-    
-    public void setView(KahinaTreeView v)
-    {
-        this.v = v;
-        updateDisplay();
-        repaint();
     }
     
     public void paintComponent(Graphics cnv)
@@ -58,7 +52,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel
     
     public void updateDisplay()
     {
-        image = new BufferedImage(v.getDisplayWidth(), v.getDisplayHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+        image = new BufferedImage(v.getDisplayWidth() + 1, v.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = image.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;
         if (v.getAntialiasingPolicy() == KahinaTreeView.ANTIALIASING)
@@ -238,12 +232,12 @@ public class KahinaTreeViewPanel extends KahinaViewPanel
             List<Integer> nodes = v.nodeLevels.get(i);
             for (int nodeID : nodes)
             {
-                if (v.treeModel.getParent(nodeID,v.getTreeLayer()) != -1)
+                if (v.getModel().getParent(nodeID,v.getTreeLayer()) != -1)
                 {
-                    int parent = v.treeModel.getParent(nodeID,v.getTreeLayer());
+                    int parent = v.getModel().getParent(nodeID,v.getTreeLayer());
                     while (!v.displaysNode(parent))
                     {
-                        parent = v.treeModel.getParent(parent,v.getTreeLayer());
+                        parent = v.getModel().getParent(parent,v.getTreeLayer());
                     }
                     int x1 = v.getNodeX(parent);
                     int y1 = v.getNodeY(parent);
@@ -251,7 +245,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel
                     int y2 = v.getNodeY(nodeID);
                     if (v.getDisplayOrientation() == KahinaTreeView.TOP_DOWN_DISPLAY)
                     {
-                        y1 += v.getNodeHeight(v.treeModel.getParent(nodeID,v.getTreeLayer())) + 4 - v.getZoomLevel();
+                        y1 += v.getNodeHeight(v.getModel().getParent(nodeID,v.getTreeLayer())) + 4 - v.getZoomLevel();
                         y2 -= v.getZoomLevel() - 2;
                     }
                     switch (v.getLineShapePolicy())

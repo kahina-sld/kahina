@@ -25,7 +25,7 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
     {
         this.view = view;
         //separate empty model: marking clicks will not have any effect
-        this.marker = new KahinaChartViewMarker(view.v.getChartModel());
+        this.marker = new KahinaChartViewMarker(view.v.getModel());
     }
     
     public KahinaChartViewListener(KahinaChartViewPanel view, KahinaChartViewMarker m)

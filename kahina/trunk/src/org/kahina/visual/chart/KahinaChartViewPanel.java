@@ -5,13 +5,14 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.*;
 
+import org.kahina.data.chart.KahinaChart;
 import org.kahina.visual.KahinaViewPanel;
 import org.kahina.visual.tree.KahinaTreeView;
 
-public class KahinaChartViewPanel extends KahinaViewPanel
+public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChart>
 {
-    public KahinaChartView v;
     BufferedImage image;
+    KahinaChartView v;
     
     public KahinaChartViewPanel()
     {
@@ -25,13 +26,6 @@ public class KahinaChartViewPanel extends KahinaViewPanel
         v = new KahinaChartView();
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaChartViewListener(this, marker));
-    }
-    
-    public void setView(KahinaChartView v)
-    {
-        this.v = v;
-        updateDisplay();
-        repaint();
     }
     
     public void paintComponent(Graphics canvas)
@@ -107,7 +101,7 @@ public class KahinaChartViewPanel extends KahinaViewPanel
         cnv.setFont(new Font(Font.MONOSPACED,Font.PLAIN, v.fontSize));
         cnv.setColor(Color.BLACK);
         
-        for (Integer i : v.chartModel.getSegmentsWithCaption())
+        for (Integer i : v.getModel().getSegmentsWithCaption())
         {
             if (v.getSegmentWidth(i) > 0)
             {

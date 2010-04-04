@@ -1,11 +1,19 @@
 package org.kahina.behavior;
 
-public class KahinaBehavior<KahinaObject>
+import org.kahina.control.KahinaController;
+import org.kahina.core.KahinaInstance;
+import org.kahina.data.KahinaObject;
+
+public class KahinaBehavior<T extends KahinaObject>
 {
-    protected KahinaObject object;
+    protected T object;
+    protected KahinaController control;
+    protected KahinaInstance kahina;
     
-    public KahinaBehavior(KahinaObject object)
+    public KahinaBehavior(T object, KahinaController control, KahinaInstance kahina)
     {
         this.object = object;
+        this.control = control;
+        this.kahina = kahina;
     }
 }

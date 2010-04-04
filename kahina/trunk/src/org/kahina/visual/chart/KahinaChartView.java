@@ -7,8 +7,9 @@ import java.util.*;
 import org.kahina.data.*;
 import org.kahina.data.chart.KahinaChart;
 import org.kahina.visual.KahinaView;
+import org.kahina.visual.tree.KahinaTreeViewPanel;
 
-public class KahinaChartView extends KahinaView
+public class KahinaChartView extends KahinaView<KahinaChart>
 {
     //display options
     private int cellWidth = 150; 
@@ -46,7 +47,6 @@ public class KahinaChartView extends KahinaView
     public static final int ANTIALIASING = 0;
     public static final int NO_ANTIALIASING = 1;
     
-    KahinaChart chartModel;
     //keep track of occupied cells; also used for reverse indexing
     ArrayList<HashMap<Integer,Integer>> usedSpace;
     
@@ -83,13 +83,9 @@ public class KahinaChartView extends KahinaView
         cellHeight = 14;
     }
     
-    public void display(KahinaObject chartModel) throws KahinaTypeException
+    public void display(KahinaChart chartModel)
     {
-        if (!(chartModel instanceof KahinaChart))
-        {
-            throw new KahinaTypeException("","");
-        }
-        this.chartModel = (KahinaChart) chartModel;
+        this.model = chartModel;
         resetAllStructures();
         calculateCoordinates();
     }
@@ -227,11 +223,6 @@ public class KahinaChartView extends KahinaView
         }
     }
     
-    public KahinaChart getChartModel()
-    {
-        return chartModel;
-    }
-    
     private void resetAllStructures()
     {
         statusDisplayed = new HashMap<Integer,Boolean>();
@@ -263,23 +254,23 @@ public class KahinaChartView extends KahinaView
         //initialize cell widths with values determined by their captions
         if (cellWidthPolicy != FIXED_WIDTH)
         {
-            for (int id : chartModel.getSegmentsWithCaption())
+            for (int id : model.getSegmentsWithCaption())
             {
                 if (segmentDisplayed(id))
                 {
-                    int width = fm.stringWidth(id + " " + chartModel.getSegmentCaption(id) + " ");
+                    int width = fm.stringWidth(id + " " + model.getSegmentCaption(id) + " ");
                     distributeWidthOverSegments(id, id, width);
                 }
             }
         }
 
-        for (int curEdge : chartModel.getEdgeIDs())
+        for (int curEdge : model.getEdgeIDs())
         {
             if (decideEdgeDisplayByStatus(curEdge))
             {
-                int leftBound = chartModel.getLeftBoundForEdge(curEdge);
-                int rightBound = chartModel.getRightBoundForEdge(curEdge);
-                String edgeCaption = chartModel.getEdgeCaption(curEdge);
+                int leftBound = model.getLeftBoundForEdge(curEdge);
+                int rightBound = model.getRightBoundForEdge(curEdge);
+                String edgeCaption = model.getEdgeCaption(curEdge);
                 
                 if (cellWidthPolicy != FIXED_WIDTH)
                 {
@@ -333,7 +324,7 @@ public class KahinaChartView extends KahinaView
         int currentOffset = 0;
         if (displayRangePolicy == RANGE_COMPLETE)
         {
-            for (int segmentID = 0; segmentID <= chartModel.getRightmostCovered(); segmentID++)
+            for (int segmentID = 0; segmentID <= model.getRightmostCovered(); segmentID++)
             {
                 segmentOffsets.put(segmentID, currentOffset);
                 currentOffset += getSegmentWidth(segmentID);
@@ -345,7 +336,7 @@ public class KahinaChartView extends KahinaView
             segmentIDs.addAll(segmentWidths.keySet());
             if (displayRangePolicy == RANGE_USED_OR_CAPTION_DEFINED)
             {
-                segmentIDs.addAll(chartModel.getSegmentsWithCaption());
+                segmentIDs.addAll(model.getSegmentsWithCaption());
             }
             ArrayList<Integer> sortedSegmentIDs = new ArrayList<Integer>();
             sortedSegmentIDs.addAll(segmentIDs);
@@ -359,7 +350,7 @@ public class KahinaChartView extends KahinaView
         chartWidth = currentOffset;
 
         //second go: adapt all edge coordinates to determined column widths
-        for (int curEdge : chartModel.getEdgeIDs())
+        for (int curEdge : model.getEdgeIDs())
         {
             if (decideEdgeDisplayByStatus(curEdge))
             {
@@ -371,9 +362,9 @@ public class KahinaChartView extends KahinaView
                 }   
                 edgeY.put(curEdge, drawIntoRow * (cellHeight + 3));
                 height.put(curEdge, cellHeight + 3);
-                int leftOffset = segmentOffsets.get(chartModel.getLeftBoundForEdge(curEdge));
-                int rightOffset = segmentOffsets.get(chartModel.getRightBoundForEdge(curEdge));
-                rightOffset += getSegmentWidth(chartModel.getRightBoundForEdge(curEdge));
+                int leftOffset = segmentOffsets.get(model.getLeftBoundForEdge(curEdge));
+                int rightOffset = segmentOffsets.get(model.getRightBoundForEdge(curEdge));
+                rightOffset += getSegmentWidth(model.getRightBoundForEdge(curEdge));
                 edgeX.put(curEdge, leftOffset);
                 width.put(curEdge, rightOffset - leftOffset);
             }
@@ -384,11 +375,11 @@ public class KahinaChartView extends KahinaView
     {
         if (displayRangePolicy == RANGE_USED_OR_CAPTION_DEFINED)
         {
-            return (chartModel.segmentHasCaption(id) || chartModel.segmentIsCovered(id));
+            return (model.segmentHasCaption(id) || model.segmentIsCovered(id));
         }
         else if (displayRangePolicy == RANGE_USED_ONLY)
         {
-            return (chartModel.segmentIsCovered(id));
+            return (model.segmentIsCovered(id));
         }
         return true;
     }
@@ -435,12 +426,12 @@ public class KahinaChartView extends KahinaView
     
     public int getNumberOfSegments()
     {
-        return chartModel.getRightmostCovered() - chartModel.getLeftmostCovered();
+        return model.getRightmostCovered() - model.getLeftmostCovered();
     }
     
     public Color getEdgeColor(int edgeID)
     {
-        int status = chartModel.getEdgeStatus(edgeID);
+        int status = model.getEdgeStatus(edgeID);
         Color col = statusColorEncoding.get(status);
         if (col == null)
         {
@@ -454,7 +445,7 @@ public class KahinaChartView extends KahinaView
     
     public Stroke getEdgeStroke(int edgeID)
     {
-        int status = chartModel.getEdgeStatus(edgeID);
+        int status = model.getEdgeStatus(edgeID);
         Stroke str = statusStrokeEncoding.get(status);
         if (str == null)
         {
@@ -468,7 +459,7 @@ public class KahinaChartView extends KahinaView
     
     public Font getEdgeFont(int edgeID)
     {
-        int status = chartModel.getEdgeStatus(edgeID);
+        int status = model.getEdgeStatus(edgeID);
         Font fnt = statusFontEncoding.get(status);
         if (fnt == null)
         {
@@ -482,7 +473,7 @@ public class KahinaChartView extends KahinaView
     
     public Iterable<Integer> getEdgeIDs()
     {
-        return chartModel.getEdgeIDs();
+        return model.getEdgeIDs();
     }
     
     public int getEdgeX(int edgeID)
@@ -517,12 +508,12 @@ public class KahinaChartView extends KahinaView
     
     public String getEdgeCaption(int edgeID)
     {
-        return chartModel.getEdgeCaption(edgeID);
+        return model.getEdgeCaption(edgeID);
     }
     
     public String getSegmentCaption(int segmentID)
     {
-        return chartModel.getSegmentCaption(segmentID);
+        return model.getSegmentCaption(segmentID);
     }
     
     public int getSegmentOffset(int segmentID)
@@ -574,7 +565,7 @@ public class KahinaChartView extends KahinaView
             {
                 case RANGE_USED_OR_CAPTION_DEFINED:
                 {
-                    if (chartModel.segmentHasCaption(segmentID))
+                    if (model.segmentHasCaption(segmentID))
                     {
                         if (cellWidthPolicy == FIXED_WIDTH) return cellWidth;
                         else if (cellWidthPolicy == MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
@@ -608,7 +599,7 @@ public class KahinaChartView extends KahinaView
                 }
                 case RANGE_USED_ONLY:
                 {
-                    if (chartModel.segmentIsCovered(segmentID))
+                    if (model.segmentIsCovered(segmentID))
                     {
                         if (cellWidthPolicy == FIXED_WIDTH) return cellWidth;
                         else if (cellWidthPolicy == MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
@@ -725,6 +716,13 @@ public class KahinaChartView extends KahinaView
         }
         
         return result;
+    }
+    
+    public KahinaChartViewPanel wrapInPanel()
+    {
+        KahinaChartViewPanel panel = new KahinaChartViewPanel();
+        panel.setView(this);
+        return panel;
     }
 }
 

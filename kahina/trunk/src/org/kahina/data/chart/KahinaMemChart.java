@@ -77,6 +77,14 @@ public class KahinaMemChart extends KahinaChart
         this.rightmostCovered = rightmostCovered;
     }
     
+    public void removeEdge(int edgeID)
+    {
+        leftBounds.remove(edgeID);
+        rightBounds.remove(edgeID);
+        edgeCaptions.remove(edgeID);
+        status.remove(edgeID);
+    }
+    
     public int getLeftBoundForEdge(int edgeID)
     {
         Integer leftBound = leftBounds.get(edgeID);

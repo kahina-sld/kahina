@@ -1,43 +1,149 @@
 package org.kahina.bridge;
 
+import java.util.HashMap;
+
 import org.kahina.control.KahinaController;
+import org.kahina.control.event.KahinaControlEvent;
+import org.kahina.control.event.KahinaTreeEvent;
+import org.kahina.control.event.KahinaTreeEventType;
+import org.kahina.control.event.LogicProgrammingBridgeEvent;
+import org.kahina.control.event.LogicProgrammingBridgeEventType;
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.LogicProgrammingStep;
+import org.kahina.core.LogicProgrammingStepType;
 import org.kahina.gui.KahinaGUI;
 
 public class LogicProgrammingBridge extends KahinaBridge
-{
-    protected KahinaInstance kahina;
-    protected KahinaGUI gui;
-    protected KahinaController control;
+{   
+    //a dynamic map from external step IDs to most recent corresponding tree nodes
+    protected HashMap<Integer,Integer> stepIDConv;
     
-    public void registerStepInformation(int stepID, String command)
+    //store the next result of getPressedButton()
+    char pressedButton;
+    
+    public LogicProgrammingBridge(KahinaInstance kahina, KahinaGUI gui, KahinaController control)
     {
-        
+        super(kahina, gui, control);
+        stepIDConv = new HashMap<Integer,Integer>();
     }
     
-    
-    public void registerStepLocation(String callStack)
+    /**
+     * convert external step IDs to internal IDs corresponding to tree nodes
+     * uses entries in stepIDConv table, extending it together with the tree if no entry was found
+     * @return an internal step ID corresponding to the external ID
+     */
+    public int convertStepID(int extID)
     {
-        
+        Integer intID = stepIDConv.get(extID);
+        if (intID == null)
+        {
+            intID = kahina.getNewStepID();
+            LogicProgrammingStep.setExternalID(intID, extID);
+            stepIDConv.put(extID, intID);
+        }
+        return intID;
     }
     
-    public void registerStepRedo(String callStack)
+    public void registerStepInformation(int extID, String stepInfo)
     {
-        
+        int stepID = convertStepID(extID);
+        LogicProgrammingStep.setGoalDesc(stepID, stepInfo);
+        control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, stepInfo));
     }
     
-    public void registerStepExit(String callStack, boolean deterministic)
+    public void registerStepSourceCodeLocation(int extID, String absolutePath, int lineNumber)
     {
-        
+        int stepID = convertStepID(extID);
+        LogicProgrammingStep.setSourceCodeLocation(stepID, absolutePath, lineNumber - 1);
     }
     
-    public void registerStepFinished(String callStack)
+    public void registerStepLocation(int stepID, int parentID)
     {
-        
+        control.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, convertStepID(stepID), convertStepID(parentID)));
     }
     
-    public void registerStepFailure(String callStack)
+    public void registerStepRedo(int extID)
     {
-        
+        int lastStepID = convertStepID(extID);
+        int newStepID = kahina.getNewStepID();
+        LogicProgrammingStep.copy(newStepID, lastStepID);
+        LogicProgrammingStep.setType(newStepID, LogicProgrammingStepType.REDO);
+        stepIDConv.put(extID, newStepID);
+        control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
+    }
+    
+    public void registerStepExit(int extID, boolean deterministic)
+    {
+        int stepID = convertStepID(extID);
+        if (deterministic)
+        {
+            LogicProgrammingStep.setType(stepID, LogicProgrammingStepType.DET_EXIT);
+            control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_DET_EXIT, stepID));
+        }
+        else
+        {
+            control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_NONDET_EXIT, stepID));
+            LogicProgrammingStep.setType(stepID, LogicProgrammingStepType.EXIT);
+        }
+    }
+    
+    public void registerStepFinished(int extID)
+    {
+        int stepID = convertStepID(extID);
+        control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
+    }
+    
+    public void registerStepFailure(int extID)
+    {
+        int stepID = convertStepID(extID);
+        LogicProgrammingStep.setType(stepID, LogicProgrammingStepType.FAIL);   
+        control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
+    }
+       
+    public char getPressedButton()
+    {
+        switch (pressedButton)
+        {
+            case 'n':
+            {
+                return 'n';
+            }
+            case 'c':
+            {
+                pressedButton = 'n';
+                return 'c';
+            }
+            case 'f':
+            {
+                pressedButton = 'f';
+                return 'f';
+            }
+            default:
+            {
+                pressedButton = 'n';
+                return 'n';
+            }
+        }
+    }
+    
+    public void processEvent(KahinaControlEvent e)
+    {
+        String command = e.getCommand();
+        if (command.equals("creep"))
+        {
+            pressedButton = 'c';
+        }
+        else if (command.equals("fail"))
+        {
+            pressedButton = 'f';
+        }
+        else if (command.equals("skip"))
+        {
+            
+        }
+        else if (command.equals("leap"))
+        {
+            
+        }
     }
 }

@@ -2,10 +2,21 @@ package org.kahina.data.chart;
 
 import java.util.Set;
 
-import org.kahina.data.LightweightKahinaObject;
+import org.kahina.data.KahinaObject;
+import org.tralesld.data.chart.TraleSLDChartEdgeStatus;
 
-public abstract class KahinaChart extends LightweightKahinaObject
+public abstract class KahinaChart extends KahinaObject
 {
+	private static int nextID = 0;
+    
+    //TODO: perpetuate: make compatible with chart storage and restore
+    private int nextEdgeID = 0;
+
+	public KahinaChart()
+	{
+		super(nextID++);
+	}
+
 	public void initialize()
 	{
 		setLeftBound(0);
@@ -23,9 +34,9 @@ public abstract class KahinaChart extends LightweightKahinaObject
 	public abstract int getRightBound();
 
 	public abstract void setRightBound(int rightBound);
-
-	// TODO Should the user of a chart really have to set leftmost covered and
-	// rightmost covered herself?
+    
+    // TODO Should the user of a chart really have to set leftmost covered and
+    // rightmost covered herself?
 
 	public abstract int getLeftmostCovered();
 
@@ -34,6 +45,18 @@ public abstract class KahinaChart extends LightweightKahinaObject
 	public abstract int getRightmostCovered();
 
 	public abstract void setRightmostCovered(int rightBound);
+    
+    public int addEdge(int left, int right, String caption, int status)
+    {
+        int id = getNextEdgeID();
+        setLeftBoundForEdge(id, left);
+        setRightBoundForEdge(id, right);
+        setEdgeStatus(id, status);
+        setEdgeCaption(id, caption);
+        return id;
+    }
+    
+    public abstract void removeEdge(int edgeID);
 
 	public abstract int getLeftBoundForEdge(int edgeID);
 
@@ -65,4 +88,9 @@ public abstract class KahinaChart extends LightweightKahinaObject
 	}
 
 	public abstract boolean segmentHasCaption(int id);
+    
+    private int getNextEdgeID()
+    {
+        return nextEdgeID++;
+    }
 }

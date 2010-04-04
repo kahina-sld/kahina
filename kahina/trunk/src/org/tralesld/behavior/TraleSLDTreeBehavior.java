@@ -1,10 +1,13 @@
 package org.tralesld.behavior;
 
-import java.util.List;
-
-import org.kahina.behavior.KahinaTreeBehavior;
+import org.kahina.behavior.LogicProgrammingTreeBehavior;
+import org.kahina.control.KahinaController;
+import org.kahina.control.event.KahinaEvent;
+import org.kahina.core.KahinaInstance;
 import org.kahina.data.tree.KahinaTree;
-import org.kahina.util.PrologUtilities;
+import org.tralesld.control.event.TraleSLDBridgeEvent;
+import org.tralesld.control.event.TraleSLDBridgeEventType;
+import org.tralesld.core.TraleSLDStepStatus;
 
 /**
  * This is supposed to contain the logic by which TraleSLD handles its step trees.
@@ -13,32 +16,44 @@ import org.kahina.util.PrologUtilities;
  *
  */
 
-public class TraleSLDTreeBehavior extends KahinaTreeBehavior
-{
-    KahinaTree secondaryTree;
-    
-    int lastActiveID;
-    
-    public TraleSLDTreeBehavior(KahinaTree tree, KahinaTree secondaryTree)
+public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
+{   
+    public TraleSLDTreeBehavior(KahinaTree tree, KahinaController control, KahinaInstance kahina, KahinaTree secondaryTree)
     {
-        super(tree);
-        this.secondaryTree = secondaryTree;
-        this.lastActiveID = -1;
+        super(tree, control, kahina, secondaryTree);  
+        control.registerListener("traleSLD bridge", this);
     }
     
-    /**
-     * contains the logic by which the tree is formed out of callstacks
-     * will later be called by an event processing routine for a custom Kahina event "new step"
-     */
-    public void processNewCallstack(String callStack)
+    public void processRuleApplication(int externalID, String ruleName)
     {
-        //TODO: should reimplement most of TraleSld.registerStepLocation()
-        List<Integer> stack = PrologUtilities.parsePrologIntegerList(callStack);
-        int extStepID = stack.get(0);
-        int stepID = extStepID;
-        lastActiveID = stepID;
-        secondaryTree.addChild(lastActiveID, extStepID);
-        //TODO: this is nonsense at the moment (generating a minimal circle)
-        ((KahinaTree) object).addChild(extStepID, stepID);
+        int newID = object.addNode("rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);   
+        object.addChild(lastActiveID, newID);
+        lastActiveID = newID;
+    }
+    
+    public void processStepFail(int externalID)
+    {
+        
+    }
+    
+    public void processEvent(KahinaEvent e)
+    {
+        super.processEvent(e);
+        if (e instanceof TraleSLDBridgeEvent)
+        {
+            processEvent((TraleSLDBridgeEvent) e);
+        }
+    }
+    
+    public void processEvent(TraleSLDBridgeEvent e)
+    {
+        switch (e.getEventType())
+        {
+            case TraleSLDBridgeEventType.RULE_APP:
+            {
+                processRuleApplication(e.getExternalID(), e.getStrContent());
+                break;
+            }
+        }
     }
 }

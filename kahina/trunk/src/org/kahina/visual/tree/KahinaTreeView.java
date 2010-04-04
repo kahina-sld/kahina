@@ -16,8 +16,9 @@ import org.kahina.data.KahinaTypeException;
 import org.kahina.data.tree.KahinaTree;
 import org.kahina.data.tree.KahinaMemTree;
 import org.kahina.visual.KahinaView;
+import org.kahina.visual.KahinaViewPanel;
 
-public class KahinaTreeView extends KahinaView
+public class KahinaTreeView extends KahinaView<KahinaTree>
 {
     // display options
     private int horizontalDistance = 5; 
@@ -83,7 +84,6 @@ public class KahinaTreeView extends KahinaView
     public static final int COMPLETE_LINES = 0;
     public static final int DOTTED_LINES = 1;
     
-    KahinaTree treeModel;
     int treeLayer = 0;
     //layered structure for drawing; also used for reverse indexing
     ArrayList<List<Integer>> nodeLevels;
@@ -124,7 +124,7 @@ public class KahinaTreeView extends KahinaView
     
     public KahinaTreeView()
     {
-        treeModel = new KahinaMemTree();
+        model = new KahinaMemTree();
         treeLayer = 0;
         secondaryTreeModel = null;
         resetAllStructures();
@@ -469,7 +469,7 @@ public class KahinaTreeView extends KahinaView
         Font fnt = statusFontEncoding.get(status);
         if (fnt == null)
         {
-            if (treeModel.isCollapsed(nodeID) && collapsePolicy == COLLAPSE_PRIMARY)
+            if (model.isCollapsed(nodeID) && collapsePolicy == COLLAPSE_PRIMARY)
             {
                 return new Font(Font.SANS_SERIF,Font.BOLD, fontSize);
             }
@@ -582,20 +582,20 @@ public class KahinaTreeView extends KahinaView
         subtreeWidths = new HashMap<Integer,WidthVector>();
     }
     
-    public void display(KahinaObject treeModel) throws KahinaTypeException
+    public void display(KahinaTree treeModel)
     {
         treeLayer = 0;
-        this.treeModel = (KahinaTree) treeModel;
+        model = treeModel;
         nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
         calculateCoordinates();
     }
     
-    public void displaySecondaryTree(KahinaObject treeModel) throws KahinaTypeException
+    public void displaySecondaryTree(KahinaTree treeModel) throws KahinaTypeException
     {
-        this.secondaryTreeModel = (KahinaTree) treeModel;
-        ((KahinaTree) this.secondaryTreeModel).setReferenceNode(((KahinaTree) this.treeModel).getReferenceNode());
-        this.secondaryTreeModel.setPrimaryModel(this.treeModel);
+        this.secondaryTreeModel = treeModel;
+        ((KahinaTree) this.secondaryTreeModel).setReferenceNode(model.getReferenceNode());
+        this.secondaryTreeModel.setPrimaryModel(model);
         nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
         calculateCoordinates();
@@ -605,7 +605,7 @@ public class KahinaTreeView extends KahinaView
     {
         treeLayer = layerID;
         layerModel.setReferenceNode(referenceNode);
-        this.treeModel = layerModel;
+        model = layerModel;
         nodeBorderColor = new HashMap<Integer, Color>();
         resetAllStructures();
         calculateCoordinates();
@@ -623,9 +623,9 @@ public class KahinaTreeView extends KahinaView
         //System.err.println(terminalLayer);
         
         totalTreeWidth = 50;
-        totalTreeHeight = (nodeLevels.size() + 2) * verticalDistance * fontSize;      
+        totalTreeHeight = (nodeLevels.size() + 2) * verticalDistance * fontSize + 10;      
              
-        if (treeModel.getRootID(treeLayer) != -1)
+        if (model.getRootID(treeLayer) != -1)
         {
             //System.err.println("BEGIN: Calculate subtree widths for layer " + treeLayer);
             //calculate (maximum) subtree width for each node bottom-up
@@ -643,14 +643,14 @@ public class KahinaTreeView extends KahinaView
                 {
                     int nodeLabelWidth = fm.stringWidth(getContentfulTreeModel().getNodeCaption(node));
                     if (maxNodeWidth < nodeLabelWidth) maxNodeWidth = nodeLabelWidth;
-                    ArrayList<Integer> children = getVisibleVirtualChildren(treeModel, node);
+                    ArrayList<Integer> children = getVisibleVirtualChildren(model, node);
                     subtreeWidths.put(node,constructWidthVector(children));
                     //System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
                 }
             }
             //System.err.println("COMPLETE: Calculate subtree widths for layer " + treeLayer);
             //System.err.println("maxNodeWidth = " + maxNodeWidth);
-            nodeX.put(treeModel.getRootID(treeLayer), subtreeWidths.get(treeModel.getRootID(treeLayer)).maximumLeftDistance() * horizontalDistance * fontSize / 2);
+            nodeX.put(model.getRootID(treeLayer), subtreeWidths.get(model.getRootID(treeLayer)).maximumLeftDistance() * horizontalDistance * fontSize / 2);
             for (int i = 0; i < nodeLevels.size(); i++)
             {
                 //System.err.println("Node level: " + i);
@@ -705,7 +705,7 @@ public class KahinaTreeView extends KahinaView
             nodeLevels.get(nodeLevels.size() - 1).addAll(terminalLayer);
             for (int i : terminalLayer)
             {
-                nodeX.put(i, nodeX.get(treeModel.getParent(i,treeLayer)));
+                nodeX.put(i, nodeX.get(model.getParent(i,treeLayer)));
                 nodeY.put(i, (nodeLevels.size() + 1) * verticalDistance * fontSize);
             }
             //move nodes around according to secondary tree structure and policy
@@ -748,13 +748,13 @@ public class KahinaTreeView extends KahinaView
     {
       //System.err.println("BEGIN: Create node layers for layer " + treeLayer);
       terminalLayer = new ArrayList<Integer>();
-      int rootID = treeModel.getRootID(treeLayer);
+      int rootID = model.getRootID(treeLayer);
       ArrayList<Integer> rootLevel = new ArrayList<Integer>();
       if (rootID != -1)
       {
           rootLevel.add(rootID);
           nodeLevels.add(rootLevel);
-          List<Integer> children = getVisibleVirtualChildren(treeModel, treeModel.getRootID(treeLayer));
+          List<Integer> children = getVisibleVirtualChildren(model, model.getRootID(treeLayer));
           while(true)
           {
             //System.err.println("children:" + children);
@@ -762,14 +762,14 @@ public class KahinaTreeView extends KahinaView
             for (int i = 0; i < children.size(); i++)
             {
                 //terminal handling here
-                if (terminalsPolicy != NO_SPECIAL_TREATMENT && getVisibleVirtualChildren(treeModel, children.get(i)).isEmpty())
+                if (terminalsPolicy != NO_SPECIAL_TREATMENT && getVisibleVirtualChildren(model, children.get(i)).isEmpty())
                 {         
                     terminalLayer.add(children.remove(i));
                     i--;
                 }
                 else
                 {
-                    grandchildren.addAll(getVisibleVirtualChildren(treeModel, children.get(i)));
+                    grandchildren.addAll(getVisibleVirtualChildren(model, children.get(i)));
                 }
             }
             nodeLevels.add(children);
@@ -807,10 +807,10 @@ public class KahinaTreeView extends KahinaView
     
     private int getVisibleParent(int nodeID)
     {
-        int parent = treeModel.getParent(nodeID, treeLayer);
+        int parent = model.getParent(nodeID, treeLayer);
         while (!nodeIsVisible(parent))
         {
-            parent = treeModel.getParent(parent, treeLayer);
+            parent = model.getParent(parent, treeLayer);
         }
         return parent;
     }
@@ -890,8 +890,8 @@ public class KahinaTreeView extends KahinaView
         if (secondaryTreeModel != null)
         {
         	dimensionsSwapped = !dimensionsSwapped;
-            KahinaTree firstModel = treeModel;
-            treeModel = secondaryTreeModel;
+            KahinaTree firstModel = model;
+            model = secondaryTreeModel;
             secondaryTreeModel = firstModel;
             resetAllStructures();
             calculateCoordinates();
@@ -1028,7 +1028,7 @@ public class KahinaTreeView extends KahinaView
 
     public KahinaTree getTreeModel()
     {
-        return treeModel;
+        return model;
     }
     
     public KahinaTree getContentfulTreeModel()
@@ -1038,7 +1038,14 @@ public class KahinaTreeView extends KahinaView
     		return secondaryTreeModel;
     	} else
     	{
-    		return treeModel;
+    		return model;
     	}
+    }
+    
+    public KahinaTreeViewPanel wrapInPanel()
+    {
+        KahinaTreeViewPanel panel = new KahinaTreeViewPanel();
+        panel.setView(this);
+        return panel;
     }
 }
