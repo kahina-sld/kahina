@@ -1,20 +1,11 @@
 package org.kahina.data.source;
 
-import org.kahina.data.KahinaObject;
 import org.kahina.data.LightweightKahinaObject;
 
 public class KahinaSourceCodeLocation extends LightweightKahinaObject
-{
-    static int lastID = 0;
-    static String type = "KahinaSourceCodeLocation";
-    
+{    
     public String absolutePath;
     public int lineNumber;
-    
-    public KahinaSourceCodeLocation()
-    {
-        super(lastID++);
-    }
     
     public static KahinaSourceCodeLocation get(int id)
     {
