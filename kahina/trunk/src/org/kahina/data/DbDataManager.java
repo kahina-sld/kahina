@@ -155,9 +155,6 @@ public class DbDataManager extends DataManager
     {
         if (LightweightKahinaObject.class.isAssignableFrom(type))
         {
-            //part of a risky attempt to allow derived classes to retrieve instances of themselves
-            // TODO is this necessary?
-            KahinaObject.setDataManager(this);
             registerDataType(type, new LightweightKahinaObjectDbDataStore(type,
                     this, db));
         } else

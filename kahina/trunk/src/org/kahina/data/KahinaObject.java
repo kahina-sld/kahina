@@ -19,9 +19,6 @@ import java.util.Map;
 public class KahinaObject
 {
     private int id;
-    
-    //an attempt to allow derived classes to retrieve instances of themselves
-    protected static DataManager mng;
 
     private final static Map<Class<? extends KahinaObject>, Integer> nextIDByType = new HashMap<Class<? extends KahinaObject>, Integer>();
 
@@ -87,10 +84,5 @@ public class KahinaObject
         {
             nextIDByType.put(type, id);
         }
-    }
-    
-    public static void setDataManager(DataManager mng)
-    {
-        KahinaObject.mng = mng;
     }
 }

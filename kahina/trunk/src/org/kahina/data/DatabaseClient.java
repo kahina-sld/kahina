@@ -13,8 +13,7 @@ import org.kahina.io.database.DatabaseHandler;
  * the public fields {@link LightweightKahinaObjectDbDataStore} takes care of.
  * @author ke
  */
-public interface DatabaseClient {
-
+public interface DatabaseClient
+{
     public void setDatabaseHandler(DatabaseHandler db);
-
 }

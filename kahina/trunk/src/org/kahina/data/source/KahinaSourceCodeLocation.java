@@ -5,19 +5,12 @@ import org.kahina.data.LightweightKahinaObject;
 public class KahinaSourceCodeLocation extends LightweightKahinaObject
 {    
     public String absolutePath;
+    
     public int lineNumber;
-    
-    public static KahinaSourceCodeLocation get(int id)
+
+    public KahinaSourceCodeLocation(String absolutePath, int lineNumber)
     {
-        return (KahinaSourceCodeLocation) mng.retrieve(KahinaSourceCodeLocation.class, id);
-    }
-    
-    public static int generate(String absolutePath, int lineNumber)
-    {
-        KahinaSourceCodeLocation newCodeLoc = new KahinaSourceCodeLocation();
-        newCodeLoc.absolutePath = absolutePath;
-        newCodeLoc.lineNumber = lineNumber;
-        mng.store(newCodeLoc);
-        return newCodeLoc.getID();
+        this.absolutePath = absolutePath;
+        this.lineNumber = lineNumber;
     }
 }
