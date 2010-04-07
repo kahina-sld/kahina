@@ -6,88 +6,108 @@ import java.util.List;
 import org.kahina.data.KahinaObject;
 
 public abstract class KahinaTree extends KahinaObject
-{	
-	protected LayerDecider decider;
+{
+    /**
+     * Public just to be lightweight. Do not be tempted to directly access
+     * this field.
+     */
+    public LayerDecider decider;
 
-	private KahinaTree primaryModel;
+    /**
+     * Public just to be lightweight. Do not be tempted to directly access
+     * this field.
+     */
+    public KahinaTree primaryModel;
 
-	private int referenceNode;
+    /**
+     * Only temporary meaning, does not need to be persisted.
+     */
+    private int referenceNode;
 
-	private int rootID;
+    /**
+     * Public just to be lightweight. Do not be tempted to directly access
+     * this field.
+     */
+    public int rootID;
 
-	public KahinaTree(LayerDecider decider)
-	{
-		this.decider = decider;
-		doClear();
-	}
+    public KahinaTree()
+    {
+        // need no-arg constructor for lightweight subclasses
+    }
 
-	/**
-	 * Clears the tree model. Implementors should override this method to clear
-	 * implementation-specific data, but make sure to call this implementation
-	 * using <code>super.clear()</code>.
-	 */
-	public void clear()
-	{
-		doClear();
-	}
-	
-	private void doClear()
-	{
-		primaryModel = this;
-		rootID = -1;
-	}
-	
-	public LayerDecider getLayerDecider()
-	{
-		return decider;
-	}
-	
-	public void setLayerDecider(LayerDecider decider)
-	{
-		this.decider = decider;
-	}
+    public KahinaTree(LayerDecider decider)
+    {
+        this.decider = decider;
+        doClear();
+    }
 
-	public abstract int addNode(String caption, String label, int nodeStatus);
+    /**
+     * Clears the tree model. Implementors should override this method to clear
+     * implementation-specific data, but make sure to call this implementation
+     * using <code>super.clear()</code>.
+     */
+    public void clear()
+    {
+        doClear();
+    }
 
-	public abstract void decollapseAll();
+    private void doClear()
+    {
+        primaryModel = this;
+        rootID = -1;
+    }
 
-	public abstract void decollapse(int nodeID);
+    public LayerDecider getLayerDecider()
+    {
+        return decider;
+    }
 
-	public abstract void collapse(int nodeID);
+    public void setLayerDecider(LayerDecider decider)
+    {
+        this.decider = decider;
+    }
 
-	public abstract boolean isCollapsed(int nodeID);
-    
-	public List<Integer> getLeaves()
+    public abstract int addNode(String caption, String label, int nodeStatus);
+
+    public abstract void decollapseAll();
+
+    public abstract void decollapse(int nodeID);
+
+    public abstract void collapse(int nodeID);
+
+    public abstract boolean isCollapsed(int nodeID);
+
+    public List<Integer> getLeaves()
     {
         List<Integer> leaves = new LinkedList<Integer>();
         collectLeaves(getRootID(), leaves);
         return leaves;
     }
-	
-	protected abstract void collectLeaves(int nodeID, List<Integer> leaves);
 
-	public abstract List<Integer> getChildren(int nodeID, int layer);
+    protected abstract void collectLeaves(int nodeID, List<Integer> leaves);
 
-	public abstract int getNodeStatus(int nodeID);
-    
+    public abstract List<Integer> getChildren(int nodeID, int layer);
+
+    public abstract int getNodeStatus(int nodeID);
+
     public abstract void setNodeStatus(int nodeID, int status);
 
-	public abstract String getEdgeLabel(int nodeID);
-    
+    public abstract String getEdgeLabel(int nodeID);
+
     public abstract void setEdgeLabel(int nodeID, String label);
 
-	public abstract String getNodeCaption(int nodeID);
-    
+    public abstract String getNodeCaption(int nodeID);
+
     public abstract void setNodeCaption(int nodeID, String caption);
 
-	public abstract int getParent(int nodeID, int layer);
+    public abstract int getParent(int nodeID, int layer);
 
-	public abstract void addChild(int parent, int child);
+    public abstract void addChild(int parent, int child);
 
-	public abstract int getRootID(int layer);
-	
-	public abstract int getSize();
-    
+    public abstract int getRootID(int layer);
+
+    public abstract int getSize();
+
     public String exportXML()
     {
         StringBuilder b = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
@@ -99,7 +119,7 @@ public abstract class KahinaTree extends KahinaObject
         b.append("</kahinaTree>\n");
         return b.toString();
     }
-    
+
     private void exportXML(StringBuilder b, int node, int depth)
     {
         createSpace(b, depth);
@@ -111,7 +131,7 @@ public abstract class KahinaTree extends KahinaObject
         createSpace(b, depth);
         b.append("</node>\n");
     }
-    
+
     private void createSpace(StringBuilder b, int amount)
     {
         for (int i = 0; i < amount; i++)
@@ -120,62 +140,60 @@ public abstract class KahinaTree extends KahinaObject
         }
     }
 
-	public KahinaTree getPrimaryModel()
-	{
-		return primaryModel;
-	}
+    public KahinaTree getPrimaryModel()
+    {
+        return primaryModel;
+    }
 
-	public void setPrimaryModel(KahinaTree primaryModel)
-	{
-	    this.primaryModel = primaryModel;
-	}
+    public void setPrimaryModel(KahinaTree primaryModel)
+    {
+        this.primaryModel = primaryModel;
+    }
 
-	public int getReferenceNode()
-	{
-	    return referenceNode;
-	}
+    public int getReferenceNode()
+    {
+        return referenceNode;
+    }
 
-	public void setReferenceNode(int referenceNode)
-	{
-	    this.referenceNode = referenceNode;
-	}
+    public void setReferenceNode(int referenceNode)
+    {
+        this.referenceNode = referenceNode;
+    }
 
-	public abstract int getParent(int nodeID);
+    public abstract int getParent(int nodeID);
 
-	public boolean hasCollapsedAncestor(int nodeID)
-	{
-	    int parent = getParent(nodeID);
-	    while (parent != -1)
-	    {
-	        if (isCollapsed(parent))
-	        {
-	            return true;
-	        }
-	        parent = getParent(parent);
-	    }
-	    return false;
-	}
+    public boolean hasCollapsedAncestor(int nodeID)
+    {
+        int parent = getParent(nodeID);
+        while (parent != -1)
+        {
+            if (isCollapsed(parent))
+            {
+                return true;
+            }
+            parent = getParent(parent);
+        }
+        return false;
+    }
 
-	public int getRootID()
-	{
-		return rootID;
-	}
+    public int getRootID()
+    {
+        return rootID;
+    }
 
-	public void setRootID(int rootID)
-	{
-	    this.rootID = rootID;
-	}
+    public void setRootID(int rootID)
+    {
+        this.rootID = rootID;
+    }
 
-	public void toggleCollapse(int nodeID)
-	{
-	    if (!isCollapsed(nodeID))
-	    {
-	        collapse(nodeID);
-	    }
-	    else
-	    {
-	        decollapse(nodeID);
-	    }
-	}
-
+    public void toggleCollapse(int nodeID)
+    {
+        if (!isCollapsed(nodeID))
+        {
+            collapse(nodeID);
+        } else
+        {
+            decollapse(nodeID);
+        }
+    }
 }

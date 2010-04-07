@@ -7,13 +7,14 @@ import java.util.List;
 
 import org.kahina.core.KahinaException;
 import org.kahina.data.DatabaseClient;
+import org.kahina.data.LightweightKahinaObject;
 import org.kahina.io.database.DatabaseHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class KahinaDbTree extends KahinaTree implements DatabaseClient
+public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject, DatabaseClient
 {
 
     private static final String CLIENT_ID = KahinaDbTree.class.getName();
@@ -69,6 +70,11 @@ public class KahinaDbTree extends KahinaTree implements DatabaseClient
 
     private PreparedStatement getMaxNodeIDStatement;
 
+    public KahinaDbTree()
+    {
+        // need zero-arg constructor in order to be lightweight
+    }
+
     public KahinaDbTree(DatabaseHandler db)
     {
         this(new DefaultLayerDecider(), db);
@@ -82,6 +88,7 @@ public class KahinaDbTree extends KahinaTree implements DatabaseClient
         prepareStatements();
     }
 
+    @Override
     public void setDatabaseHandler(DatabaseHandler db)
     {
         this.db = db;

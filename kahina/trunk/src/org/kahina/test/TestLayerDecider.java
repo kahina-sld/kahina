@@ -3,7 +3,7 @@ package org.kahina.test;
 import org.kahina.data.tree.KahinaTree;
 import org.kahina.data.tree.LayerDecider;
 
-public class TestLayerDecider implements LayerDecider
+public class TestLayerDecider extends LayerDecider
 {
 	@Override
 	public int decideOnLayer(int nodeID, KahinaTree tree)
