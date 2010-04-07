@@ -6,10 +6,7 @@ import org.kahina.data.KahinaObject;
 
 public abstract class KahinaChart extends KahinaObject
 {
-
-    private static int nextID = 0;
-
-    //TODO: perpetuate: make compatible with chart storage and restore
+    // not used by KahinaDbChart
     private int nextEdgeID = 0;
 
     public void initialize()
@@ -82,7 +79,7 @@ public abstract class KahinaChart extends KahinaObject
 
     public abstract boolean segmentHasCaption(int id);
 
-    private int getNextEdgeID()
+    protected int getNextEdgeID()
     {
         return nextEdgeID++;
     }

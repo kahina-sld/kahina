@@ -1,6 +1,8 @@
 package org.kahina.data.tree;
 
-public interface LayerDecider
+import org.kahina.data.KahinaObject;
+
+public abstract class LayerDecider extends KahinaObject
 {
-	public int decideOnLayer(int nodeID, KahinaTree tree);
+	public abstract int decideOnLayer(int nodeID, KahinaTree tree);
 }
