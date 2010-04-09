@@ -84,7 +84,7 @@ public class LogicProgrammingStep extends KahinaStep
         LogicProgrammingStep.externalID.put(stepID, externalID);
     }
     
-    public KahinaSourceCodeLocation getSourceCodeLocation()
+    /*public KahinaSourceCodeLocation getSourceCodeLocation()
     {
         return KahinaSourceCodeLocation.get(codeLocation.get(getID()));
     }
@@ -102,5 +102,5 @@ public class LogicProgrammingStep extends KahinaStep
     public static void setSourceCodeLocation(int stepID, String absolutePath, int lineNumber)
     {
         codeLocation.put(stepID, KahinaSourceCodeLocation.generate(absolutePath, lineNumber));
-    }
+    }*/
 }

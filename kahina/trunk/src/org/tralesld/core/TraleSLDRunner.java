@@ -14,7 +14,7 @@ public class TraleSLDRunner extends KahinaRunner
         // TODO database handler should be closed
     }
     
-    public TraleSLDBridge runAndGetBridge()
+    public static TraleSLDBridge runAndGetBridge()
     {
         System.err.println("Starting TraleSLD instance...");
         TraleSLDInstance kahina = new TraleSLDInstance(new DbDataManager(new DatabaseHandler()));

@@ -54,7 +54,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     public void registerStepSourceCodeLocation(int extID, String absolutePath, int lineNumber)
     {
         int stepID = convertStepID(extID);
-        LogicProgrammingStep.setSourceCodeLocation(stepID, absolutePath, lineNumber - 1);
+        //LogicProgrammingStep.setSourceCodeLocation(stepID, absolutePath, lineNumber - 1);
     }
     
     public void registerStepLocation(int stepID, int parentID)
