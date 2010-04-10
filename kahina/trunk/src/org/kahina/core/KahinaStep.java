@@ -4,4 +4,7 @@ import org.kahina.data.KahinaObject;
 
 public class KahinaStep extends KahinaObject
 {
+    public KahinaStep()
+    {
+    }
 }

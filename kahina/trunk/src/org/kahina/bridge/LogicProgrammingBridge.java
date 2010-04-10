@@ -38,7 +38,7 @@ public class LogicProgrammingBridge extends KahinaBridge
         if (intID == null)
         {
             intID = kahina.getNewStepID();
-            LogicProgrammingStep.setExternalID(intID, extID);
+            LogicProgrammingStep.get(intID).setExternalID(extID);
             stepIDConv.put(extID, intID);
         }
         return intID;
@@ -47,7 +47,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     public void registerStepInformation(int extID, String stepInfo)
     {
         int stepID = convertStepID(extID);
-        LogicProgrammingStep.setGoalDesc(stepID, stepInfo);
+        LogicProgrammingStep.get(stepID).setGoalDesc(stepInfo);
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, stepInfo));
     }
     
@@ -66,25 +66,26 @@ public class LogicProgrammingBridge extends KahinaBridge
     {
         int lastStepID = convertStepID(extID);
         int newStepID = kahina.getNewStepID();
-        LogicProgrammingStep.copy(newStepID, lastStepID);
-        LogicProgrammingStep.setType(newStepID, LogicProgrammingStepType.REDO);
+        LogicProgrammingStep newStep = LogicProgrammingStep.get(lastStepID).copy();
+        newStep.setType(LogicProgrammingStepType.REDO);
         stepIDConv.put(extID, newStepID);
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
     }
     
     public void registerStepExit(int extID, boolean deterministic)
     {
-        int stepID = convertStepID(extID);
+        LogicProgrammingStep step = LogicProgrammingStep.get(convertStepID(extID));
         if (deterministic)
         {
-            LogicProgrammingStep.setType(stepID, LogicProgrammingStepType.DET_EXIT);
-            control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_DET_EXIT, stepID));
+            step.setType(LogicProgrammingStepType.DET_EXIT);
+            control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_DET_EXIT, step.getID()));
         }
         else
         {
-            control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_NONDET_EXIT, stepID));
-            LogicProgrammingStep.setType(stepID, LogicProgrammingStepType.EXIT);
+            control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_NONDET_EXIT, step.getID()));
+            step.setType(LogicProgrammingStepType.EXIT);
         }
+        step.store();
     }
     
     public void registerStepFinished(int extID)
@@ -96,7 +97,8 @@ public class LogicProgrammingBridge extends KahinaBridge
     public void registerStepFailure(int extID)
     {
         int stepID = convertStepID(extID);
-        LogicProgrammingStep.setType(stepID, LogicProgrammingStepType.FAIL);   
+        LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.FAIL);   
+        LogicProgrammingStep.get(stepID).store();  
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
     }
        

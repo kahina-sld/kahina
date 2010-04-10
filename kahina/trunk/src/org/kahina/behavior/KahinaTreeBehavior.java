@@ -10,14 +10,11 @@ import org.kahina.data.DataManager;
 import org.kahina.data.tree.KahinaTree;
 
 public class KahinaTreeBehavior extends KahinaBehavior<KahinaTree> implements KahinaListener
-{
-    protected DataManager dm;
-    
+{   
     public KahinaTreeBehavior(KahinaTree tree, KahinaController control, KahinaInstance kahina)
     {
         super(tree, control, kahina);
         control.registerListener("tree", this);
-        this.dm = kahina.getDataManager();
     }
     
     public void processEvent(KahinaEvent e)
