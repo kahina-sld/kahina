@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kahina.core.KahinaException;
-import org.kahina.data.DatabaseClient;
+import org.kahina.core.KahinaRunner;
 import org.kahina.data.LightweightKahinaObject;
 import org.kahina.io.database.DatabaseHandler;
 import org.w3c.dom.Document;
@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject, DatabaseClient
+public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
 {
 
     private static final String CLIENT_ID = KahinaDbTree.class.getName();
@@ -72,26 +72,14 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject,
 
     public KahinaDbTree()
     {
-        // need zero-arg constructor in order to be lightweight
+        this(new DefaultLayerDecider());
     }
 
-    public KahinaDbTree(DatabaseHandler db)
-    {
-        this(new DefaultLayerDecider(), db);
-    }
-
-    public KahinaDbTree(LayerDecider decider, DatabaseHandler db)
+    public KahinaDbTree(LayerDecider decider)
     {
         super(decider);
-        this.db = db;
+        db = KahinaRunner.getDatabaseHandler();
         createTablesIfNecessary();
-        prepareStatements();
-    }
-
-    @Override
-    public void setDatabaseHandler(DatabaseHandler db)
-    {
-        this.db = db;
         prepareStatements();
     }
 
@@ -559,7 +547,7 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject,
     public static KahinaTree importXML(Document dom, LayerDecider decider,
             DatabaseHandler db, KahinaTree primaryModel)
     {
-        KahinaDbTree m = new KahinaDbTree(decider, db);
+        KahinaDbTree m = new KahinaDbTree(decider);
         if (primaryModel != null)
         {
             m.setPrimaryModel(primaryModel);

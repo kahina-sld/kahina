@@ -27,8 +27,8 @@ public class KahinaState
         {
             case KahinaDataHandlingMethod.DATABASE:
             {
-                stepTree = new KahinaDbTree(KahinaRunner.getDatabaseHandler());
-                secondaryStepTree = new KahinaDbTree(KahinaRunner.getDatabaseHandler());
+                stepTree = new KahinaDbTree();
+                secondaryStepTree = new KahinaDbTree();
                 break;
             }
             case KahinaDataHandlingMethod.MEMORY:
