@@ -80,7 +80,7 @@ public class DbDataManager extends DataManager
 
     private void createTables()
     {
-        db.execute("CREATE TABLE `" + DATATYPE_TABLE_NAME + "` (type LONG VARCHAR PRIMARY KEY, next_id INT)");
+        db.execute("CREATE TABLE " + DATATYPE_TABLE_NAME + " (type LONG VARCHAR PRIMARY KEY, next_id INT)");
     }
 
     @Override
