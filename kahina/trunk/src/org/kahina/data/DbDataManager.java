@@ -38,7 +38,7 @@ public class DbDataManager extends DataManager
 
     private static final String CLIENT_ID = DataManager.class.getName();
 
-    private static final String TABLE_NAME_PREFIX = CLIENT_ID;
+    private static final String TABLE_NAME_PREFIX = DataManager.class.getSimpleName();
 
     private static final String DATATYPE_TABLE_NAME = TABLE_NAME_PREFIX + "_datatypes";
 
@@ -73,9 +73,9 @@ public class DbDataManager extends DataManager
 
     private void prepareStatements()
     {
-        getNextIDStatement = db.prepareStatement("SELECT next_id FROM `" + DATATYPE_TABLE_NAME + "` WHERE type = ?");
-        insertNextIDStatement = db.prepareStatement("INSERT INTO `" + DATATYPE_TABLE_NAME + "` (type, next_id) VALUES (?, ?)");
-        updateNextIDStatement = db.prepareStatement("UPDATE `" + DATATYPE_TABLE_NAME + "` SET next_id = ? WHERE type = ?");
+        getNextIDStatement = db.prepareStatement("SELECT next_id FROM " + DATATYPE_TABLE_NAME + " WHERE type = ?");
+        insertNextIDStatement = db.prepareStatement("INSERT INTO " + DATATYPE_TABLE_NAME + " (type, next_id) VALUES (?, ?)");
+        updateNextIDStatement = db.prepareStatement("UPDATE " + DATATYPE_TABLE_NAME + " SET next_id = ? WHERE type = ?");
     }
 
     private void createTables()
