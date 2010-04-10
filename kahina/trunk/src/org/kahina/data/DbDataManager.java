@@ -57,12 +57,12 @@ public class DbDataManager extends DataManager
     public DbDataManager(DatabaseHandler db)
     {
         this.db = db;
-        prepareStatements();
         if (!db.isRegistered(CLIENT_ID))
         {
             createTables();
             db.register(CLIENT_ID);
         }
+        prepareStatements();
     }
 
     // TODO is this method necessary?
