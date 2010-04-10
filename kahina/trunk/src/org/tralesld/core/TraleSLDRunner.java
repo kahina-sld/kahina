@@ -10,6 +10,7 @@ public class TraleSLDRunner extends KahinaRunner
 {
     public static void main(String[] args)
     {
+        KahinaRunner.initialize(KahinaDataHandlingMethod.DATABASE);
         TraleSLDInstance kahina = new TraleSLDInstance();
         kahina.getGUI().buildAndShow();
         // TODO database handler should be closed
