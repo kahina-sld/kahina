@@ -187,10 +187,11 @@ public class DbDataManager extends DataManager
         return setDatabaseHandler(storeByTypeID.get(typeID).retrieve(objectID));
     }
 
-    @Override
-    public KahinaObject retrieve(Class<? extends KahinaObject> type, int id)
+    @SuppressWarnings("unchecked")
+	@Override
+    public <T extends KahinaObject> T retrieve(Class<T> type, int id)
     {
-        return setDatabaseHandler(super.retrieve(type, id));
+        return (T) setDatabaseHandler(super.retrieve(type, id));
     }
 
     private KahinaObject setDatabaseHandler(KahinaObject object)

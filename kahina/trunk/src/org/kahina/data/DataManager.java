@@ -63,9 +63,10 @@ public abstract class DataManager
      * @param id - the type-specific ID of the desired object
      * @return the desired object as a KahinaObject which can be cast to the original type
      */
-    public KahinaObject retrieve(Class<? extends KahinaObject> type, int id)
+    @SuppressWarnings("unchecked")
+	public <T extends KahinaObject> T retrieve(Class<T> type, int id)
     {
-        return getStoreForType(type).retrieve(id);
+        return (T) getStoreForType(type).retrieve(id);
     }
 
     /**
