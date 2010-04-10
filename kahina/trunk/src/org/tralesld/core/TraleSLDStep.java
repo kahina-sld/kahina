@@ -6,8 +6,8 @@ import org.kahina.data.source.KahinaSourceCodeLocation;
 
 public class TraleSLDStep extends LogicProgrammingStep
 {
-    private KahinaFeatureStructure startFeatStruct;
-    private KahinaFeatureStructure endFeatStruct;
+    public KahinaFeatureStructure startFeatStruct;
+    public KahinaFeatureStructure endFeatStruct;
     
     public KahinaFeatureStructure getStartFeatureStructure()
     {
