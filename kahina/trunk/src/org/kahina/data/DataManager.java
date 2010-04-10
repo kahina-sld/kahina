@@ -1,5 +1,7 @@
 package org.kahina.data;
 
+import org.kahina.core.LogicProgrammingStep;
+
 /**
  * A data manager allows clients to store and retrieve pieces of data (e.g.
  * information associated with debugger steps) in the form of

@@ -3,6 +3,8 @@ package org.kahina.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kahina.core.KahinaRunner;
+
 /**
  * The base class of all Kahina objects, i.e. pieces of information that can be
  * stored and retrieved using a {@link DataManager}.
@@ -84,5 +86,10 @@ public class KahinaObject
         {
             nextIDByType.put(type, id);
         }
+    }
+    
+    public void store()
+    {
+        KahinaRunner.getDataManager().store(this);
     }
 }

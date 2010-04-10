@@ -57,7 +57,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
      */
     public void processStepInformation(int stepID, String stepInfo)
     {
-        object.setNodeCaption(stepID, LogicProgrammingStep.getExternalID(stepID) + " " + stepInfo);
+        object.setNodeCaption(stepID, LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo);
     }
     
     /**
@@ -69,7 +69,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         nonDetermBecauseOfRedo.add(lastStepID);
 
         //generate a  new node corresponding to the new internal step
-        int newStepID = object.addNode(LogicProgrammingStep.getGoalDesc(lastStepID), "", LogicProgrammingStepType.REDO);
+        int newStepID = object.addNode(LogicProgrammingStep.get(lastStepID).getGoalDesc(), "", LogicProgrammingStepType.REDO);
 
         //adapt call dimension
         int ancestorID = secondaryTree.getParent(lastStepID);

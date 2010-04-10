@@ -1,6 +1,7 @@
 package org.tralesld.core;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.KahinaRunner;
 import org.kahina.data.DataManager;
 import org.kahina.data.DbDataManager;
 import org.kahina.data.KahinaDataHandlingMethod;
@@ -13,18 +14,16 @@ public class TraleSLDInstance extends KahinaInstance
     TraleSLDState state;
     TraleSLDBridge bridge;
     
-    public TraleSLDInstance(DbDataManager dataManager)
+    public TraleSLDInstance()
     {
-        this.dataManager = dataManager;
-        state = new TraleSLDState(this, KahinaDataHandlingMethod.DATABASE);
-        gui = new LogicProgrammingGUI(TraleSLDStep.class, this, controller);
-        bridge = new TraleSLDBridge(this, gui, controller);
-    }
-    
-    public TraleSLDInstance(MemDataManager dataManager)
-    {
-        this.dataManager = dataManager;
-        state = new TraleSLDState(this, KahinaDataHandlingMethod.MEMORY);
+        if (KahinaRunner.getDatabaseHandler() != null)
+        {
+            state = new TraleSLDState(this, KahinaDataHandlingMethod.DATABASE);
+        }
+        else
+        {
+            state = new TraleSLDState(this, KahinaDataHandlingMethod.MEMORY);
+        }
         gui = new LogicProgrammingGUI(TraleSLDStep.class, this, controller);
         bridge = new TraleSLDBridge(this, gui, controller);
     }

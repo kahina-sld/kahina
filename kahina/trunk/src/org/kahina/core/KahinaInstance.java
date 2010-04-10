@@ -2,16 +2,16 @@ package org.kahina.core;
 
 import org.kahina.bridge.KahinaBridge;
 import org.kahina.control.KahinaController;
-import org.kahina.data.DataManager;
-import org.kahina.data.DbDataManager;
 import org.kahina.data.KahinaDataHandlingMethod;
-import org.kahina.data.MemDataManager;
+import org.kahina.data.source.KahinaSourceCodeLocation;
+import org.kahina.data.tree.KahinaTree;
 import org.kahina.gui.KahinaGUI;
-import org.kahina.io.database.DatabaseHandler;
+import org.kahina.gui.KahinaViewRegistry;
+import org.kahina.visual.source.KahinaSourceCodeView;
+import org.kahina.visual.tree.KahinaTreeView;
 
 public class KahinaInstance
 {
-    protected DataManager dataManager;
     protected KahinaState state;
     protected KahinaController controller;
     protected KahinaGUI gui;
@@ -21,28 +21,20 @@ public class KahinaInstance
     
     public KahinaInstance()
     {
-        controller = new KahinaController();
-        nextStepID = 0;
-    }
-    
-    public KahinaInstance(DbDataManager dataManager)
-    {
-    	this.dataManager = dataManager;
-        state = new KahinaState(this, KahinaDataHandlingMethod.DATABASE);
-        controller = new KahinaController();
-        gui = new KahinaGUI(KahinaStep.class, this, controller);
-        bridge = new KahinaBridge(this, gui, controller);
-        nextStepID = 0;
-    }
-    
-    public KahinaInstance(MemDataManager dataManager)
-    {
-        this.dataManager = dataManager;
-        state = new KahinaState(this, KahinaDataHandlingMethod.MEMORY);
+        if (KahinaRunner.getDatabaseHandler() != null)
+        {
+            state = new KahinaState(this, KahinaDataHandlingMethod.DATABASE);
+        }
+        else
+        {
+            state = new KahinaState(this, KahinaDataHandlingMethod.MEMORY);
+        }
         controller = new KahinaController();
         gui = new KahinaGUI(KahinaStep.class, this, controller);
         bridge = new KahinaBridge(this, gui, controller);
         nextStepID = 0;
+        
+        fillViewRegistry();
     }
 
     public KahinaController getController()
@@ -70,15 +62,14 @@ public class KahinaInstance
         return nextStepID++;
     }
     
-    public DatabaseHandler getDatabaseHandler()
+    /**
+     * overwrite this to register views for user-defined datatypes
+     * MUST register views for all data types
+     * use super.fillViewRegistry() in implementations to register most basic views
+     */
+    protected void fillViewRegistry()
     {
-        if (dataManager instanceof DbDataManager)
-        {
-            return ((DbDataManager) dataManager).getDatabaseHandler();
-        }
-        else
-        {
-            return null;
-        }
+        KahinaViewRegistry.registerMapping(KahinaTree.class, KahinaTreeView.class);
+        KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, KahinaSourceCodeView.class);
     }
 }

@@ -64,4 +64,9 @@ public class LogicProgrammingStep extends KahinaStep implements LightweightKahin
     {
         this.codeLocation = codeLocation;
     }
+    
+    public static LogicProgrammingStep get(int id)
+    {
+        return KahinaRunner.getDataManager().retrieve(LogicProgrammingStep.class, id);
+    }
 }
