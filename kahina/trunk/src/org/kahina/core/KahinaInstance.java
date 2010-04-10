@@ -30,7 +30,7 @@ public class KahinaInstance
     	this.dataManager = dataManager;
         state = new KahinaState(this, KahinaDataHandlingMethod.DATABASE);
         controller = new KahinaController();
-        gui = new KahinaGUI(this, controller);
+        gui = new KahinaGUI(KahinaStep.class, this, controller);
         bridge = new KahinaBridge(this, gui, controller);
         nextStepID = 0;
     }
@@ -40,7 +40,7 @@ public class KahinaInstance
         this.dataManager = dataManager;
         state = new KahinaState(this, KahinaDataHandlingMethod.MEMORY);
         controller = new KahinaController();
-        gui = new KahinaGUI(this, controller);
+        gui = new KahinaGUI(KahinaStep.class, this, controller);
         bridge = new KahinaBridge(this, gui, controller);
         nextStepID = 0;
     }

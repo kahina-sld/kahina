@@ -15,19 +15,17 @@ public class TraleSLDInstance extends KahinaInstance
     
     public TraleSLDInstance(DbDataManager dataManager)
     {
-        super();
         this.dataManager = dataManager;
         state = new TraleSLDState(this, KahinaDataHandlingMethod.DATABASE);
-        gui = new LogicProgrammingGUI(this, controller);
+        gui = new LogicProgrammingGUI(TraleSLDStep.class, this, controller);
         bridge = new TraleSLDBridge(this, gui, controller);
     }
     
     public TraleSLDInstance(MemDataManager dataManager)
     {
-        super();
         this.dataManager = dataManager;
         state = new TraleSLDState(this, KahinaDataHandlingMethod.MEMORY);
-        gui = new LogicProgrammingGUI(this, controller);
+        gui = new LogicProgrammingGUI(TraleSLDStep.class, this, controller);
         bridge = new TraleSLDBridge(this, gui, controller);
     }
     

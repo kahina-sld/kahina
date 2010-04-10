@@ -2,12 +2,14 @@ package org.kahina.gui;
 
 import org.kahina.control.KahinaController;
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.KahinaStep;
+import org.kahina.core.LogicProgrammingStep;
 
 public class LogicProgrammingGUI extends KahinaGUI
 {
-    public LogicProgrammingGUI(KahinaInstance kahina, KahinaController control)
+    public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance kahina, KahinaController control)
     {
-        super(kahina, control);
+        super(stepType, kahina, control);
         getControlPanel().addControlButton("creep.png", "creep", "continue to next step");
         getControlPanel().addControlButton("roundskip.png", "skip", "auto-complete this step");
         getControlPanel().addControlButton("reject.png", "fail", "make this step fail");
