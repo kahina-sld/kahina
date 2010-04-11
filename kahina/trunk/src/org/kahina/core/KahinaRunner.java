@@ -1,10 +1,10 @@
 package org.kahina.core;
 
-import org.kahina.data.DataManager;
-import org.kahina.data.DbDataManager;
-import org.kahina.data.KahinaDataHandlingMethod;
-import org.kahina.data.MemDataManager;
-import org.kahina.io.database.DatabaseHandler;
+import org.kahina.core.data.DataManager;
+import org.kahina.core.data.DbDataManager;
+import org.kahina.core.data.KahinaDataHandlingMethod;
+import org.kahina.core.data.MemDataManager;
+import org.kahina.core.io.database.DatabaseHandler;
 
 public class KahinaRunner
 {

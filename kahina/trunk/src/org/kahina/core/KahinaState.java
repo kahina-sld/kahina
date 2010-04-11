@@ -1,9 +1,9 @@
 package org.kahina.core;
 
-import org.kahina.data.KahinaDataHandlingMethod;
-import org.kahina.data.tree.KahinaDbTree;
-import org.kahina.data.tree.KahinaMemTree;
-import org.kahina.data.tree.KahinaTree;
+import org.kahina.core.data.KahinaDataHandlingMethod;
+import org.kahina.core.data.tree.KahinaDbTree;
+import org.kahina.core.data.tree.KahinaMemTree;
+import org.kahina.core.data.tree.KahinaTree;
 
 /**
  * The current state of a Kahina instance.

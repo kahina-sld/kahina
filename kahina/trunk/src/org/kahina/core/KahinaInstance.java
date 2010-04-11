@@ -1,14 +1,14 @@
 package org.kahina.core;
 
-import org.kahina.bridge.KahinaBridge;
-import org.kahina.control.KahinaController;
-import org.kahina.data.KahinaDataHandlingMethod;
-import org.kahina.data.source.KahinaSourceCodeLocation;
-import org.kahina.data.tree.KahinaTree;
-import org.kahina.gui.KahinaGUI;
-import org.kahina.gui.KahinaViewRegistry;
-import org.kahina.visual.source.KahinaSourceCodeView;
-import org.kahina.visual.tree.KahinaTreeView;
+import org.kahina.core.bridge.KahinaBridge;
+import org.kahina.core.control.KahinaController;
+import org.kahina.core.data.KahinaDataHandlingMethod;
+import org.kahina.core.data.source.KahinaSourceCodeLocation;
+import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.gui.KahinaViewRegistry;
+import org.kahina.core.visual.source.KahinaSourceCodeView;
+import org.kahina.core.visual.tree.KahinaTreeView;
 
 public class KahinaInstance
 {

@@ -1,0 +1,31 @@
+package org.kahina.core.breakpoint;
+
+public class TreePattern
+{
+    private TreePatternNode root;
+    
+    public TreePattern()
+    {
+        root = new TreePatternNode();
+    }
+    
+    public TreePattern(TreeNodePattern rootPattern)
+    {
+        root = new TreePatternNode(rootPattern);
+    }
+
+    public TreePatternNode getRoot()
+    {
+        return root;
+    }
+
+    public void setRoot(TreePatternNode root)
+    {
+        this.root = root;
+    }
+    
+    public String toString()
+    {
+        return root.toString();
+    }
+}
