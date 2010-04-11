@@ -1,6 +1,5 @@
 package org.kahina.core.data;
 
-import org.kahina.lp.LogicProgrammingStep;
 
 /**
  * A data manager allows clients to store and retrieve pieces of data (e.g.

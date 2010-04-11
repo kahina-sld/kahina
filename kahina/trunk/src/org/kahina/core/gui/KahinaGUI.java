@@ -1,7 +1,6 @@
 package org.kahina.core.gui;
 
 import java.lang.reflect.Field;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

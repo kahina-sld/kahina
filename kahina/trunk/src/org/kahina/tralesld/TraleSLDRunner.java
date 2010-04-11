@@ -1,9 +1,7 @@
 package org.kahina.tralesld;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.DbDataManager;
 import org.kahina.core.data.KahinaDataHandlingMethod;
-import org.kahina.core.io.database.DatabaseHandler;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 
 public class TraleSLDRunner extends KahinaRunner

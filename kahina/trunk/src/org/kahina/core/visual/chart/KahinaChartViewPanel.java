@@ -1,9 +1,13 @@
 package org.kahina.core.visual.chart;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-
-import javax.swing.*;
 
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.visual.KahinaViewPanel;

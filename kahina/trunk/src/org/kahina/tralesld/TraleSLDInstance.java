@@ -2,10 +2,7 @@ package org.kahina.tralesld;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.DataManager;
-import org.kahina.core.data.DbDataManager;
 import org.kahina.core.data.KahinaDataHandlingMethod;
-import org.kahina.core.data.MemDataManager;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 

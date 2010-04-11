@@ -4,9 +4,6 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.event.KahinaEvent;
-import org.kahina.core.control.event.KahinaTreeEvent;
-import org.kahina.core.control.event.LogicProgrammingBridgeEvent;
-import org.kahina.core.data.DataManager;
 import org.kahina.core.data.tree.KahinaTree;
 
 public class KahinaTreeBehavior extends KahinaBehavior<KahinaTree> implements KahinaListener

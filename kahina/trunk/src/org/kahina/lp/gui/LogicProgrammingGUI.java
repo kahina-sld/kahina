@@ -4,7 +4,6 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
-import org.kahina.lp.LogicProgrammingStep;
 
 public class LogicProgrammingGUI extends KahinaGUI
 {

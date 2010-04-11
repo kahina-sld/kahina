@@ -11,12 +11,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.KahinaTypeException;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaTreeView extends KahinaView<KahinaTree>
 {

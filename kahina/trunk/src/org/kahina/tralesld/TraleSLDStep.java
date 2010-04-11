@@ -1,7 +1,6 @@
 package org.kahina.tralesld;
 
 import org.kahina.core.data.fs.KahinaFeatureStructure;
-import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.lp.LogicProgrammingStep;
 
 public class TraleSLDStep extends LogicProgrammingStep

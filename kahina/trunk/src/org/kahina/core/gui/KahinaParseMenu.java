@@ -2,15 +2,12 @@ package org.kahina.core.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
-import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.event.KahinaDialogEvent;
-import org.kahina.core.control.event.KahinaStateEvent;
 import org.kahina.core.control.event.KahinaSystemEvent;
 
 public class KahinaParseMenu extends JMenu implements ActionListener

@@ -16,7 +16,6 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.event.KahinaEvent;
 import org.kahina.core.control.event.KahinaTreeMatchEvent;
-import org.kahina.core.data.KahinaTypeException;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.tree.KahinaTreeView;

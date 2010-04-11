@@ -1,32 +1,12 @@
 package org.kahina.core.gui.breakpoint;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.text.JTextComponent;
 
-import org.kahina.core.breakpoint.PatternFormatException;
-import org.kahina.core.breakpoint.TreeNodePattern;
 import org.kahina.core.breakpoint.TreePatternNode;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;

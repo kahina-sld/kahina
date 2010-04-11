@@ -6,7 +6,6 @@ import java.util.Set;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.behavior.KahinaTreeBehavior;
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.event.KahinaEvent;
 import org.kahina.core.control.event.KahinaTreeEvent;
 import org.kahina.core.control.event.KahinaTreeEventType;

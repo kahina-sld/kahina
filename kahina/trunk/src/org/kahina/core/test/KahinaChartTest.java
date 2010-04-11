@@ -11,17 +11,15 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
 import org.kahina.core.data.KahinaDataHandlingMethod;
-import org.kahina.core.data.KahinaTypeException;
-import org.kahina.core.data.chart.*;
+import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.io.chart.KahinaChartIO;
 import org.kahina.core.io.database.DatabaseHandler;
 import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.core.visual.chart.KahinaChartViewMarker;
 import org.kahina.core.visual.chart.KahinaChartViewPanel;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 public class KahinaChartTest
 {

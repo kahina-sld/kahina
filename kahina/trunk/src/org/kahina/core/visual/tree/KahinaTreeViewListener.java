@@ -3,9 +3,8 @@ package org.kahina.core.visual.tree;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
-import java.awt.image.BufferedImage;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 
@@ -14,10 +13,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.visual.chart.KahinaChartView;
-import org.kahina.core.visual.chart.KahinaChartViewContextMenu;
-import org.kahina.core.visual.chart.KahinaChartViewMarker;
-import org.kahina.core.visual.chart.KahinaChartViewPanel;
 
 public class KahinaTreeViewListener extends MouseAdapter implements ActionListener
 {

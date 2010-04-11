@@ -1,13 +1,19 @@
 package org.kahina.core.visual.chart;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 
-import org.kahina.core.data.*;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.tree.KahinaTreeViewPanel;
 
 public class KahinaChartView extends KahinaView<KahinaChart>
 {

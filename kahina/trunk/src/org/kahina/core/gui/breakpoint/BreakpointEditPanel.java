@@ -17,10 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
 
 import org.kahina.core.breakpoint.KahinaBreakpoint;
-import org.kahina.core.breakpoint.PatternFormatException;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.event.KahinaEvent;
