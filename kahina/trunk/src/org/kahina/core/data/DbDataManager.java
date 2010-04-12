@@ -137,16 +137,10 @@ public class DbDataManager extends DataManager
     }
 
     @Override
-    public void registerDataType(Class<? extends KahinaObject> type,
-            DataStore store)
+    public void registerDataType(Class<? extends KahinaObject> type, DataStore store)
     {
-        if (isRegistered(type))
-        {
-            throw new KahinaException("A data store for type " + type
-                    + " is already registered.");
-        }
-        typeIDByType.put(type, storeByTypeID.size());
-        storeByTypeID.add(store);
+    	typeIDByType.put(type, storeByTypeID.size());
+    	doRegisterDataType(type, store);
     }
 
     /**
@@ -157,14 +151,26 @@ public class DbDataManager extends DataManager
     @Override
     public void registerDataType(Class<? extends KahinaObject> type)
     {
+    	typeIDByType.put(type, storeByTypeID.size());
         if (LightweightKahinaObject.class.isAssignableFrom(type))
         {
-            registerDataType(type, new LightweightKahinaObjectDbDataStore(type,
+            doRegisterDataType(type, new LightweightKahinaObjectDbDataStore(type,
                     this, db));
         } else
         {
-            registerDataType(type, new KahinaObjectMemDataStore());
+            doRegisterDataType(type, new KahinaObjectMemDataStore());
         }
+    }
+    
+    private void doRegisterDataType(Class<? extends KahinaObject> type,
+            DataStore store)
+    {
+        if (isRegistered(type))
+        {
+            throw new KahinaException("A data store for type " + type
+                    + " is already registered.");
+        }
+        storeByTypeID.add(store);
     }
 
     /**
