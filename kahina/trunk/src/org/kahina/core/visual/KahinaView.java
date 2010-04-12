@@ -10,6 +10,9 @@ public class KahinaView<T extends KahinaObject> implements KahinaListener
     //handle global events by means of a controller
     KahinaController control;
     
+    //the title of the tab or window this view is displayed in
+    String title = "Unnamed View";
+    
     protected T model;
     
     public void processEvent(KahinaEvent event)
@@ -32,5 +35,15 @@ public class KahinaView<T extends KahinaObject> implements KahinaListener
         KahinaViewPanel<T> panel = new KahinaViewPanel<T>();
         panel.setView(this);
         return panel;
+    }
+    
+    public String getTitle()
+    {
+        return title;
+    }
+    
+    public void setTitle(String title)
+    {
+        this.title = title;
     }
 }

@@ -57,17 +57,20 @@ public class LogicProgrammingBridge extends KahinaBridge
         int stepID = convertStepID(extID);
         LogicProgrammingStep.get(stepID).setGoalDesc(stepInfo);
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, stepInfo));
+        currentID = stepID;
     }
     
     public void registerStepSourceCodeLocation(int extID, String absolutePath, int lineNumber)
     {
         int stepID = convertStepID(extID);
         //LogicProgrammingStep.setSourceCodeLocation(stepID, absolutePath, lineNumber - 1);
+        currentID = stepID;
     }
     
     public void registerStepLocation(int stepID, int parentID)
     {
         control.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, convertStepID(stepID), convertStepID(parentID)));
+        currentID = stepID;
     }
     
     public void registerStepRedo(int extID)
@@ -78,6 +81,7 @@ public class LogicProgrammingBridge extends KahinaBridge
         newStep.setType(LogicProgrammingStepType.REDO);
         stepIDConv.put(extID, newStepID);
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
+        currentID = newStepID;
     }
     
     public void registerStepExit(int extID, boolean deterministic)
@@ -94,6 +98,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             step.setType(LogicProgrammingStepType.EXIT);
         }
         step.store();
+        currentID = step.getID();
     }
     
     public void registerStepFinished(int extID)
@@ -115,6 +120,14 @@ public class LogicProgrammingBridge extends KahinaBridge
         switch (bridgeState)
         {
             case 'n':
+            {
+                return 'n';
+            }
+            case 'p':
+            {
+                return 'n';
+            }
+            case 'q':
             {
                 return 'n';
             }
@@ -164,20 +177,90 @@ public class LogicProgrammingBridge extends KahinaBridge
         String command = e.getCommand();
         if (command.equals("creep"))
         {
-            bridgeState = 'c';
+            if (bridgeState == 'n')
+            {
+                bridgeState = 'c';
+            }
+            else if (bridgeState == 'p')
+            {
+                skipID = -1;
+                bridgeState = 'c';
+            }
+            else if (bridgeState == 'q')
+            {
+                skipID = -1;
+                bridgeState = 'c';
+            }
         }
         else if (command.equals("fail"))
         {
-            bridgeState = 'f';
+            if (bridgeState == 'n')
+            {
+                bridgeState = 'f';
+            }
+            else if (bridgeState == 'p')
+            {
+                skipID = -1;
+                bridgeState = 'f';
+            }
+            else if (bridgeState == 'q')
+            {
+                skipID = -1;
+                bridgeState = 'f';
+            }
         }
         else if (command.equals("skip"))
         {
-            bridgeState = 't';
-            skipID = currentID;
+            if (bridgeState == 'n')
+            {
+                bridgeState = 't';
+                skipID = currentID;
+            }
+            else if (bridgeState == 'p')
+            {
+                bridgeState = 't';
+            }
+            else if (bridgeState == 'q')
+            {
+                bridgeState = 't';
+                skipID = currentID;
+            }
         }
         else if (command.equals("leap"))
         {
-            bridgeState = 'l';
+            if (bridgeState == 'n')
+            {
+                bridgeState = 'l';
+            }
+            else if (bridgeState == 'p')
+            {
+                bridgeState = 'l';
+                skipID = -1;
+            }
+            else if (bridgeState == 'q')
+            {
+                bridgeState = 'l';
+                skipID = -1;
+            }
+        }
+        else if (command.equals("(un)pause"))
+        {
+            if (bridgeState == 't')
+            {
+                bridgeState = 'p';
+            }
+            else if (bridgeState == 's')
+            {
+                bridgeState = 'q';
+            }
+            else if (bridgeState == 'p')
+            {
+                bridgeState = 't';
+            }
+            else if (bridgeState == 'q')
+            {
+                bridgeState = 's';
+            }
         }
     }
 }

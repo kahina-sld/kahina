@@ -14,5 +14,6 @@ public class LogicProgrammingGUI extends KahinaGUI
         getControlPanel().addControlButton("roundskip.png", "skip", "auto-complete this step");
         getControlPanel().addControlButton("reject.png", "fail", "make this step fail");
         getControlPanel().addControlButton("leap.png", "leap", "jump to next breakpoint match");
+        getControlPanel().addControlButton("pause.png", "(un)pause", "pause the current skip operation");
     }
 }

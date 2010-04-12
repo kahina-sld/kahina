@@ -53,6 +53,7 @@ public class KahinaGUI implements KahinaListener
         fillFieldToView(stepType);
         
         mainTreeView = new KahinaTreeView();
+        mainTreeView.setTitle("Control flow tree");
         control.registerListener("update", mainTreeView);
         views.add(mainTreeView);
     }
@@ -67,8 +68,8 @@ public class KahinaGUI implements KahinaListener
         {
             if (KahinaObject.class.isAssignableFrom(field.getClass()))
             {
-                //TODO: get corresponding views from registry
                 KahinaView newView = KahinaViewRegistry.generateViewFor(stepType);
+                newView.setTitle("Step information: " + field.getName());
                 fieldToView.put(field, newView);
                 views.add(newView);
             }

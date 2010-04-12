@@ -35,7 +35,7 @@ public class KahinaBridge implements KahinaListener
         }
     }
     
-    //method stub to prevent infinite recursion
+    //method stub to prevent infinite recursion; implemented by specialized bridges
     public void processEvent(KahinaControlEvent e)
     {
         

@@ -55,7 +55,7 @@ public class KahinaWindow extends JFrame
         {
             JFrame viewWindow = new JFrame();
             viewWindow.add(new JScrollPane(view.wrapInPanel()));
-            viewWindow.setTitle(view.getModel().getClass().getName());
+            viewWindow.setTitle(view.getTitle());
             viewWindow.setVisible(true);
         }
     }
