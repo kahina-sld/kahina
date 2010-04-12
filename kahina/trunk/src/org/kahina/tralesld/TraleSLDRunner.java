@@ -33,6 +33,7 @@ public class TraleSLDRunner extends KahinaRunner
         DataManager dm = KahinaRunner.getDataManager();
         dm.registerDataType(KahinaStep.class);
         dm.registerDataType(LogicProgrammingStep.class);
+        dm.registerDataType(TraleSLDStep.class);
         dm.registerDataType(KahinaFeatureStructure.class);
         dm.registerDataType(KahinaSourceCodeLocation.class);
     }
