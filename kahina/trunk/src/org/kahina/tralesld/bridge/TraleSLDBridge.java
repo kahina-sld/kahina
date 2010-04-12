@@ -31,6 +31,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui, KahinaController control)
     {
         super(kahina,gui,control);
+        this.kahina = kahina;
         activeEdgeStack = new ArrayList<Integer>();
         successfulEdges = new HashSet<Integer>();
     }
