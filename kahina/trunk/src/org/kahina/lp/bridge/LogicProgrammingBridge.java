@@ -43,20 +43,29 @@ public class LogicProgrammingBridge extends KahinaBridge
      */
     public int convertStepID(int extID)
     {
+        System.err.print("convertStepID(" + extID + ") = ");
         Integer intID = stepIDConv.get(extID);
         if (intID == null)
         {
             intID = kahina.getNewStepID();
-            LogicProgrammingStep.get(intID).setExternalID(extID);
+            LogicProgrammingStep newStep = new LogicProgrammingStep();
+            newStep.setID(intID);
+            newStep.setExternalID(extID);
+            System.err.println(newStep);
+            newStep.store();
             stepIDConv.put(extID, intID);
         }
+        System.err.println(intID);
         return intID;
     }
     
     public void registerStepInformation(int extID, String stepInfo)
     {
+        System.err.println("Registering step information!");
         int stepID = convertStepID(extID);
+        System.err.println("Internal step ID: " + stepID);
         LogicProgrammingStep.get(stepID).setGoalDesc(stepInfo);
+        System.err.println("Managed to setGoalDesc!");
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, stepInfo));
         currentID = stepID;
     }

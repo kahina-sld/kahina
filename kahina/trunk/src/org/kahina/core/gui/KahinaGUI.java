@@ -39,6 +39,7 @@ public class KahinaGUI implements KahinaListener
     
     public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance kahina, KahinaController control) 
     {
+        System.err.println("creating Kahina GUI...");
         this.kahina = kahina;
         this.control = control;
         control.registerListener("select", this);
@@ -64,8 +65,10 @@ public class KahinaGUI implements KahinaListener
      */
     protected void fillFieldToView(Class<? extends KahinaStep> stepType)
     {
+        System.err.println("fill field to view!");
         for (Field field : stepType.getFields())
         {
+            System.err.println("\t field: " + field.getName());
             if (KahinaObject.class.isAssignableFrom(field.getClass()))
             {
                 KahinaView newView = KahinaViewRegistry.generateViewFor(stepType);
