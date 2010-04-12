@@ -127,19 +127,19 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		}
 		db.execute("CREATE TABLE " + OBJECT_TABLE_NAME + " ("
 				+ "class_id INT, " + "object_id INT, " + "field_id INT, "
-				+ "value_class_id INT, " + "value_object_id INT); ");
-		db.execute("CREATE INDEX id ON " + OBJECT_TABLE_NAME
-				+ " (class_id, object_id, field_id)");
+				+ "value_class_id INT, " + "value_object_id INT)");
+		db.execute("CREATE INDEX " + OBJECT_TABLE_NAME + "_id" + " ON "
+				+ OBJECT_TABLE_NAME + " (class_id, object_id, field_id)");
 		db.execute("CREATE TABLE " + STRING_TABLE_NAME + " " + "("
 				+ "class_id INT, " + "object_id INT, " + "field_id INT, "
-				+ "value LONG VARCHAR); ");
-		db.execute("CREATE INDEX id ON " + STRING_TABLE_NAME
-				+ " (class_id, object_id, field_id)");
+				+ "value LONG VARCHAR)");
+		db.execute("CREATE INDEX " + STRING_TABLE_NAME + "_id" + " ON "
+				+ STRING_TABLE_NAME + " (class_id, object_id, field_id)");
 		db.execute("CREATE TABLE " + INT_TABLE_NAME + " " + "("
 				+ "class_id INT, " + "object_id INT, " + "field_id INT, "
-				+ "value INT");
-		db.execute("CREATE INDEX id ON " + INT_TABLE_NAME
-				+ " (class_id, object_id, field_id)");
+				+ "value INT)");
+		db.execute("CREATE INDEX " + INT_TABLE_NAME + "_id" + " ON "
+				+ INT_TABLE_NAME + " (class_id, object_id, field_id)");
 		db.register(CLIENT_ID);
 	}
 
@@ -152,7 +152,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 				.prepareStatement("INSERT INTO "
 						+ OBJECT_TABLE_NAME
 						+ " (class_id, object_id, field_id, value_class_id, value_object_id) VALUES ("
-						+ storeTypeID + ", ?, ?, ?, ?");
+						+ storeTypeID + ", ?, ?, ?, ?)");
 		selectObjectStatement = db
 				.prepareStatement("SELECT value_class_id, value_object_id FROM "
 						+ OBJECT_TABLE_NAME
@@ -164,7 +164,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		insertStringStatement = db.prepareStatement("INSERT INTO "
 				+ STRING_TABLE_NAME
 				+ " (class_id, object_id, field_id, value) VALUES ("
-				+ storeTypeID + ", ?, ?, ?");
+				+ storeTypeID + ", ?, ?, ?)");
 		selectStringStatement = db.prepareStatement("SELECT value FROM "
 				+ STRING_TABLE_NAME + " WHERE class_id = " + storeTypeID
 				+ " AND object_id = ? AND field_id = ?");
@@ -174,7 +174,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		insertIntegerStatement = db.prepareStatement("INSERT INTO "
 				+ INT_TABLE_NAME
 				+ " (class_id, object_id, field_id, value) VALUES ("
-				+ storeTypeID + ", ?, ?, ?");
+				+ storeTypeID + ", ?, ?, ?)");
 		selectIntegerStatement = db.prepareStatement("SELECT value FROM "
 				+ INT_TABLE_NAME + " WHERE class_id = " + storeTypeID
 				+ " AND object_id = ? AND field_id = ?");
