@@ -103,7 +103,7 @@ public class KahinaDbChart extends KahinaChart implements
 		try
 		{
 			ResultSet resultSet = existsStatement.executeQuery();
-			return !resultSet.isAfterLast();
+			return resultSet.next();
 		} catch (SQLException e)
 		{
 			throw new KahinaException("SQL error", e);
