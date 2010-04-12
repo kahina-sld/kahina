@@ -1,8 +1,11 @@
 package org.kahina.tralesld;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.KahinaStep;
 import org.kahina.core.data.DataManager;
 import org.kahina.core.data.KahinaDataHandlingMethod;
+import org.kahina.core.data.fs.KahinaFeatureStructure;
+import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 
@@ -28,7 +31,10 @@ public class TraleSLDRunner extends KahinaRunner
     {
         KahinaRunner.initialize(dataHandlingType);
         DataManager dm = KahinaRunner.getDataManager();
+        dm.registerDataType(KahinaStep.class);
         dm.registerDataType(LogicProgrammingStep.class);
+        dm.registerDataType(KahinaFeatureStructure.class);
+        dm.registerDataType(KahinaSourceCodeLocation.class);
     }
     
     public static TraleSLDBridge runAndGetBridge()
