@@ -21,7 +21,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     protected HashMap<Integer,Integer> stepIDConv;
     
     //always contains the internal ID of the most recent step
-    int currentID = -1;
+    protected int currentID = -1;
     
     //store the state of the bridge, determining the next result of getPressedButton()
     char bridgeState;

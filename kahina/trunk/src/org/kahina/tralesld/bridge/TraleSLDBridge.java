@@ -8,16 +8,19 @@ package org.kahina.tralesld.bridge;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.util.PrologUtilities;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.lp.event.LogicProgrammingBridgeEvent;
 import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 import org.kahina.tralesld.TraleSLDInstance;
+import org.kahina.tralesld.TraleSLDStepStatus;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
@@ -40,6 +43,14 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	public void initializeParseTrace(String parsedSentenceList)
 	{
         System.err.println("initializeParseTrace(\"" + parsedSentenceList + "\")");
+        List<String> wordList = PrologUtilities.parsePrologStringList(parsedSentenceList);
+        LogicProgrammingStep newStep = new LogicProgrammingStep();
+        newStep.setGoalDesc("init");
+        newStep.setExternalID(0);
+        stepIDConv.put(0, newStep.getID());
+        newStep.store();
+        control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, 0, wordList.toString()));
+        currentID = 0;
 	}
 
 	public void registerRuleApplication(int extID, int left, int right, String ruleName)
@@ -54,6 +65,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
         newStep.setExternalID(extID);
         stepIDConv.put(extID, newStep.getID());
         kahina.getState().linkEdgeToNode(newEdgeID, newStep.getID()); 
+        newStep.store();
         
         //let TraleSLDTreeBehavior do the rest
         control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
@@ -119,6 +131,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
             //currentOverviewTreeNode = tracer.overviewTraceView.treeNodes.get(currentOverviewTreeNode).getParent();
             //lastEdge = edgeRegister.getData(currentOverviewTreeNode);
         }
+        currentID = stepID;
 	}
 	
 	public void registerStepFinished(int extID)

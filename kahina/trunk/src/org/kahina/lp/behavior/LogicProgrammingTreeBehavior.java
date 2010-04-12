@@ -18,7 +18,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 {
     //call dimension is always stored in a secondary tree structure
-    KahinaTree secondaryTree;
+    protected KahinaTree secondaryTree;
     
     //memory for construction of the primary tree
     protected int lastActiveID;

@@ -24,6 +24,13 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         control.registerListener("traleSLD bridge", this);
     }
     
+    public void initializeParseTree(String parsedSentence)
+    {
+        object.setRootID(0);
+        object.addNode("parsing " + parsedSentence, "", TraleSLDStepStatus.PROGRESS);
+        secondaryTree.setRootID(0);
+    }
+    
     public void processRuleApplication(int externalID, String ruleName)
     {
         int newID = object.addNode("rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);   
