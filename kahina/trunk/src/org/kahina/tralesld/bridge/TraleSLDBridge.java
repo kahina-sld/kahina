@@ -39,7 +39,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     //TODO: processing of the sentence string should instead take place here
 	public void initializeParseTrace(String parsedSentenceList)
 	{
-
+        System.err.println("initializeParseTrace(\"" + parsedSentenceList + "\")");
 	}
 
 	public void registerRuleApplication(int extID, int left, int right, String ruleName)
@@ -65,36 +65,32 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	public void registerChartEdge(int number, int left, int right, String ruleName)
 	{
-
+        System.err.println("registerChartEdge(" + number + "," + left + "," + right + ",\"" + ruleName + "\")");
 	}
 
 	public void registerEdgeDependency(int motherID, int daughterID)
 	{
-        
+        System.err.println("registerEdgeDependency(" + motherID + "," + daughterID + ")");
 	}
 
 	public void registerMessageChunk(String chunk)
 	{
-
+        System.err.println("registerMessageChunk(\"" + chunk + "\")");
 	}
 
-	public void registerMessageEnd(int externalStepID, String type)
+	public void registerMessageEnd(int extID, String type)
 	{
-
+        System.err.println("registerMessageChunk(" + extID + ",\"" + type + "\")");
 	}
 
 	public void registerParseEnd()
 	{
-
+        System.err.println("registerParseEnd()");
 	}
-
-	public void registerStepLocation(int externalStepID, int externalParentID)
-	{
-
-	}	
 	
 	public void registerStepFailure(int externalStepID)
 	{   
+        System.err.println("registerStepFailure(" + externalStepID + ")");
         super.registerStepFailure(externalStepID);
         int stepID = convertStepID(externalStepID);
         
@@ -127,6 +123,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	
 	public void registerStepFinished(int extID)
 	{
+        System.err.println("registerStepFinished(" + extID + ")");
         int stepID = convertStepID(extID);
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
         //TODO: this has to be covered by the TraleSLDTreeBehavior
@@ -140,14 +137,14 @@ public class TraleSLDBridge extends LogicProgrammingBridge
         }
 	}
 
-	public void registerBlockedPseudoStepInformation(int externalStepID, String goal)
+	public void registerBlockedPseudoStepInformation(int extID, String goal)
 	{
-
+        System.err.println("registerBlockedPseudoStepInformation(" + extID + ",\"" + goal + "\")");
 	}
 
-	public void registerUnblockedPseudoStepInformation(int externalStepID, int externalBlockedPseudoStepID, String goal)
+	public void registerUnblockedPseudoStepInformation(int extID, int extBlockedPseudoStepID, String goal)
 	{
-
+        System.err.println("registerUnblockedPseudoStepInformation(" + extID + "," + extBlockedPseudoStepID + ",\"" + goal + "\")");
 	}
 
 }
