@@ -93,19 +93,14 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	 * @param db
 	 */
 	public LightweightKahinaObjectDbDataStore(
-			Class<? extends KahinaObject> type, DbDataManager manager,
-			DatabaseHandler db)
+			Class<? extends KahinaObject> type)
 	{
-		super(manager, db);
-		manager.retrieveNextID(type);
 		this.type = type;
 		if (!LightweightKahinaObject.class.isAssignableFrom(type))
 		{
 			throw new KahinaException(
 					"Cannot deal with non-lightweight data type " + type + ".");
 		}
-		// TODO Do we need the ID here? It may not be available yet.
-		storeTypeID = manager.getTypeID(type);
 		try
 		{
 			constructor = type.getConstructor();
@@ -114,9 +109,17 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 			throw new KahinaException("Lightweight data type " + type
 					+ " is missing zero-arg constructor.", e);
 		}
+		examineType(type);
+	}
+	
+	@Override
+	public void initialize(DbDataManager manager, DatabaseHandler db)
+	{
+		super.initialize(manager, db);
+		manager.retrieveNextID(type);
+		storeTypeID = manager.getTypeID(type);
 		createTablesIfNecessary();
 		prepareStatements();
-		examineType(type);
 	}
 
 	private void createTablesIfNecessary()

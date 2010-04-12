@@ -14,7 +14,13 @@ public abstract class DbDataStore extends DataStore
 	
 	protected DatabaseHandler db;
 	
-	public DbDataStore(DbDataManager manager, DatabaseHandler db)
+	/**
+	 * Must be called by a {@link DbDataManager} after this store is registered
+	 * with it.
+	 * @param manager
+	 * @param db
+	 */
+	public void initialize(DbDataManager manager, DatabaseHandler db)
 	{
 		this.db = db;
 		this.manager = manager;
