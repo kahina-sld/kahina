@@ -16,20 +16,16 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaViewRegistry
 {
-    static Map<Class<? extends KahinaObject>,Class<? extends KahinaView>> map = new HashMap<Class<? extends KahinaObject>,Class<? extends KahinaView>>();
+    static Map<Class<? extends KahinaObject>,Class<? extends KahinaView<?>>> map = new HashMap<Class<? extends KahinaObject>,Class<? extends KahinaView<?>>>();
     
-    public static void registerMapping(Class<? extends KahinaObject> type, Class<? extends KahinaView> viewType)
+    public static <T extends KahinaObject> void registerMapping(Class<T> type, Class<? extends KahinaView<? super T>> viewType)
     {
-        //TODO: find way of implementing this check
-        //if (viewType.getTypeParameters()[0].getClass().isAssignableFrom(type))
-        {
-            map.put(type, viewType);
-        }
+    	map.put(type, viewType);
     }
     
-    public static KahinaView generateViewFor(Class<?> type)
+    public static KahinaView<?> generateViewFor(Class<?> type)
     {
-        Class<? extends KahinaView> viewType = map.get(type);
+        Class<? extends KahinaView<?>> viewType = map.get(type);
         while (viewType == null)
         {
             type = type.getSuperclass();
@@ -37,7 +33,7 @@ public class KahinaViewRegistry
         }      
         try
         {
-            KahinaView view = viewType.newInstance();
+            KahinaView<?> view = viewType.newInstance();
             return view;
         }
         catch (InstantiationException e)
