@@ -127,16 +127,19 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		}
 		db.execute("CREATE TABLE " + OBJECT_TABLE_NAME + " ("
 				+ "class_id INT, " + "object_id INT, " + "field_id INT, "
-				+ "value_class_id INT, " + "value_object_id INT, "
-				+ "INDEX id (class_id, object_id, field_id)" + "); "
-				+ "CREATE TABLE " + STRING_TABLE_NAME + " " + "("
+				+ "value_class_id INT, " + "value_object_id INT); ");
+		db.execute("CREATE INDEX id ON " + OBJECT_TABLE_NAME
+				+ " (class_id, object_id, field_id)");
+		db.execute("CREATE TABLE " + STRING_TABLE_NAME + " " + "("
 				+ "class_id INT, " + "object_id INT, " + "field_id INT, "
-				+ "value LONG VARCHAR, "
-				+ "INDEX id (class_id, object_id, field_id)" + "); "
-				+ "CREATE TABLE " + INT_TABLE_NAME + " " + "("
+				+ "value LONG VARCHAR); ");
+		db.execute("CREATE INDEX id ON " + STRING_TABLE_NAME
+				+ " (class_id, object_id, field_id)");
+		db.execute("CREATE TABLE " + INT_TABLE_NAME + " " + "("
 				+ "class_id INT, " + "object_id INT, " + "field_id INT, "
-				+ "value INT, " + "INDEX id (class_id, object_id, field_id)"
-				+ "); ");
+				+ "value INT");
+		db.execute("CREATE INDEX id ON " + INT_TABLE_NAME
+				+ " (class_id, object_id, field_id)");
 		db.register(CLIENT_ID);
 	}
 
