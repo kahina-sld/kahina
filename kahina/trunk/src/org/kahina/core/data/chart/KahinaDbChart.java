@@ -487,6 +487,6 @@ public class KahinaDbChart extends KahinaChart implements
 	@Override
 	protected int getNextEdgeID()
 	{
-		return db.queryInteger(getMaxEdgeIDStatement) + 1;
+		return db.queryInteger(getMaxEdgeIDStatement, -1) + 1;
 	}
 }
