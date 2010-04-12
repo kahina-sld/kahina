@@ -1,6 +1,6 @@
 package org.kahina.tralesld.control.event;
 
-import org.kahina.core.control.event.KahinaEvent;
+import org.kahina.core.event.KahinaEvent;
 
 public class TraleSLDBridgeEvent extends KahinaEvent
 {

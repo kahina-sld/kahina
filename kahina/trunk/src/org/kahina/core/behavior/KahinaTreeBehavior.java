@@ -3,8 +3,8 @@ package org.kahina.core.behavior;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.control.event.KahinaEvent;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.event.KahinaEvent;
 
 public class KahinaTreeBehavior extends KahinaBehavior<KahinaTree> implements KahinaListener
 {   

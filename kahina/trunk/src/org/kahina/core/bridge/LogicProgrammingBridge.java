@@ -4,14 +4,14 @@ import java.util.HashMap;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.control.event.KahinaControlEvent;
-import org.kahina.core.control.event.KahinaTreeEvent;
-import org.kahina.core.control.event.KahinaTreeEventType;
-import org.kahina.core.control.event.LogicProgrammingBridgeEvent;
-import org.kahina.core.control.event.LogicProgrammingBridgeEventType;
+import org.kahina.core.event.KahinaControlEvent;
+import org.kahina.core.event.KahinaTreeEvent;
+import org.kahina.core.event.KahinaTreeEventType;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
+import org.kahina.lp.event.LogicProgrammingBridgeEvent;
+import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingBridge extends KahinaBridge
 {   

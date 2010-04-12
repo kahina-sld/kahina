@@ -1,4 +1,4 @@
-package org.kahina.core.control.event;
+package org.kahina.core.event;
 
 public class KahinaControlEvent extends KahinaEvent
 {

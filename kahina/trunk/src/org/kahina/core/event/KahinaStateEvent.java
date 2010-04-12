@@ -1,4 +1,4 @@
-package org.kahina.core.control.event;
+package org.kahina.core.event;
 
 import java.io.File;
 

@@ -1,4 +1,6 @@
-package org.kahina.core.control.event;
+package org.kahina.lp.event;
+
+import org.kahina.core.event.KahinaEvent;
 
 public class LogicProgrammingBridgeEvent extends KahinaEvent
 {

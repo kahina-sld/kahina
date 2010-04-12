@@ -10,7 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.control.event.KahinaControlEvent;
+import org.kahina.core.event.KahinaControlEvent;
 
 public class KahinaControlPanel extends JPanel implements ActionListener
 {

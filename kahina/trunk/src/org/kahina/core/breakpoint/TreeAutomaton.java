@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.control.event.KahinaTreeMatchEvent;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.KahinaUnlayeredMemTree;
+import org.kahina.core.event.KahinaTreeMatchEvent;
 
 /**
  * This special kind of bottom-up tree automaton operates on a tree it is monitoring.

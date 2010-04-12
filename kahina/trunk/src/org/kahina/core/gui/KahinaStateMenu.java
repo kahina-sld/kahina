@@ -9,8 +9,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.control.event.KahinaStateEvent;
-import org.kahina.core.control.event.KahinaSystemEvent;
+import org.kahina.core.event.KahinaStateEvent;
+import org.kahina.core.event.KahinaSystemEvent;
 
 public class KahinaStateMenu extends JMenu implements ActionListener
 {

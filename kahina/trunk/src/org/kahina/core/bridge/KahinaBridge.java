@@ -3,8 +3,8 @@ package org.kahina.core.bridge;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.control.event.KahinaControlEvent;
-import org.kahina.core.control.event.KahinaEvent;
+import org.kahina.core.event.KahinaControlEvent;
+import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.KahinaGUI;
 
 /**

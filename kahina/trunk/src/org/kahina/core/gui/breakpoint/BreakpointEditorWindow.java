@@ -23,7 +23,7 @@ import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.control.event.KahinaEvent;
+import org.kahina.core.event.KahinaEvent;
 
 public class BreakpointEditorWindow extends JFrame implements ActionListener, KahinaListener, ListSelectionListener
 {

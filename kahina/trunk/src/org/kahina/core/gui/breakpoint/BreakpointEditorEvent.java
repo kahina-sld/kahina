@@ -2,7 +2,7 @@ package org.kahina.core.gui.breakpoint;
 
 import java.io.File;
 
-import org.kahina.core.control.event.KahinaEvent;
+import org.kahina.core.event.KahinaEvent;
 
 public class BreakpointEditorEvent extends KahinaEvent
 {    

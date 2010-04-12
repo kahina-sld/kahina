@@ -6,14 +6,14 @@ import java.util.Set;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.behavior.KahinaTreeBehavior;
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.control.event.KahinaEvent;
-import org.kahina.core.control.event.KahinaTreeEvent;
-import org.kahina.core.control.event.KahinaTreeEventType;
-import org.kahina.core.control.event.LogicProgrammingBridgeEvent;
-import org.kahina.core.control.event.LogicProgrammingBridgeEventType;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaTreeEvent;
+import org.kahina.core.event.KahinaTreeEventType;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
+import org.kahina.lp.event.LogicProgrammingBridgeEvent;
+import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 {

@@ -15,7 +15,7 @@ import org.kahina.core.breakpoint.TreePattern;
 import org.kahina.core.breakpoint.TreePatternNode;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.control.event.KahinaEvent;
+import org.kahina.core.event.KahinaEvent;
 
 public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaListener
 {

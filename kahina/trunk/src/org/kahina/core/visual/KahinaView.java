@@ -2,8 +2,8 @@ package org.kahina.core.visual;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.control.event.KahinaEvent;
 import org.kahina.core.data.KahinaObject;
+import org.kahina.core.event.KahinaEvent;
 
 public class KahinaView<T extends KahinaObject> implements KahinaListener
 {
