@@ -115,7 +115,6 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	public void initialize(DbDataManager manager, DatabaseHandler db)
 	{
 		super.initialize(manager, db);
-		manager.retrieveNextID(type);
 		storeTypeID = manager.getTypeID(type);
 		createTablesIfNecessary();
 		prepareStatements();
@@ -547,11 +546,5 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 			return currentlyBeingRetrieved.get(objectID);
 		}
 		return manager.retrieve(typeID, objectID);
-	}
-
-	@Override
-	public void persist()
-	{
-		manager.storeNextID(type);
 	}
 }
