@@ -20,7 +20,8 @@ public class KahinaViewRegistry
     
     public static void registerMapping(Class<? extends KahinaObject> type, Class<? extends KahinaView> viewType)
     {
-        if (viewType.getTypeParameters()[0].getClass().isAssignableFrom(type))
+        //TODO: find way of implementing this check
+        //if (viewType.getTypeParameters()[0].getClass().isAssignableFrom(type))
         {
             map.put(type, viewType);
         }

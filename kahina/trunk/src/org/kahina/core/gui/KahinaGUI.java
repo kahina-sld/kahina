@@ -54,7 +54,6 @@ public class KahinaGUI implements KahinaListener
         
         mainTreeView = new KahinaTreeView();
         control.registerListener("update", mainTreeView);
-        mainTreeView.display(kahina.getState().getStepTree());
         views.add(mainTreeView);
     }
     
@@ -83,6 +82,7 @@ public class KahinaGUI implements KahinaListener
     
     public void buildAndShow()
     {
+        mainTreeView.display(kahina.getState().getStepTree());       
         window = new KahinaWindow(this, control);
     }
     

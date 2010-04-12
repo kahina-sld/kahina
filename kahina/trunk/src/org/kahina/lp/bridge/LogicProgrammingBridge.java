@@ -118,7 +118,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             }
             case 'f':
             {
-                pressedButton = 'f';
+                pressedButton = 'n';
                 return 'f';
             }
             default:
