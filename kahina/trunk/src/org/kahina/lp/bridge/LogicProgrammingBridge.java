@@ -47,9 +47,8 @@ public class LogicProgrammingBridge extends KahinaBridge
         Integer intID = stepIDConv.get(extID);
         if (intID == null)
         {
-            intID = kahina.getNewStepID();
             LogicProgrammingStep newStep = new LogicProgrammingStep();
-            newStep.setID(intID);
+            intID = newStep.getID();
             newStep.setExternalID(extID);
             System.err.println(newStep);
             newStep.store();

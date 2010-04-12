@@ -43,6 +43,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	public void registerRuleApplication(int extID, int left, int right, String ruleName)
 	{
+        System.err.println("registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
         KahinaChart chart = kahina.getState().getChart();
         int newEdgeID = chart.addEdge(left, right, ruleName,TraleSLDChartEdgeStatus.ACTIVE);
         activeEdgeStack.add(0, newEdgeID);

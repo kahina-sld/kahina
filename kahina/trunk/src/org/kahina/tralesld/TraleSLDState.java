@@ -3,7 +3,10 @@ package org.kahina.tralesld;
 import java.util.HashMap;
 
 import org.kahina.core.KahinaState;
+import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.data.chart.KahinaDbChart;
+import org.kahina.core.data.chart.KahinaMemChart;
 
 public class TraleSLDState extends KahinaState
 {
@@ -16,6 +19,14 @@ public class TraleSLDState extends KahinaState
     public TraleSLDState(TraleSLDInstance kahina, int dataHandlingMethod)
     {
         super(kahina, dataHandlingMethod);
+        if (dataHandlingMethod == KahinaDataHandlingMethod.DATABASE)
+        {
+            chart = new KahinaDbChart();
+        }
+        else
+        {
+            chart = new KahinaMemChart();
+        }
         edgeToNode = new HashMap<Integer, Integer>();
         nodeToEdge = new HashMap<Integer, Integer>();
     }

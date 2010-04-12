@@ -17,6 +17,7 @@ public class TraleSLDRunner extends KahinaRunner
         bridge.initializeParseTrace("[she,thinks,she,gives,her,milk]");
         bridge.registerChartEdge(0, 5, 6, "lexicon");
         bridge.registerStepInformation(1, "rule_close");
+        bridge.registerRuleApplication(2,5,7,"subject_head_rule");
     }
     
     public static void initialize(int dataHandlingType)
