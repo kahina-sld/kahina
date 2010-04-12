@@ -157,8 +157,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		selectObjectStatement = db
 				.prepareStatement("SELECT value_class_id, value_object_id FROM "
 						+ OBJECT_TABLE_NAME
-						+ " WHERE class_id = "
-						+ storeTypeID + " AND object_id = ? AND field_id = ?");
+						+ " WHERE object_id = ? AND field_id = ?");
 		deleteStringStatement = db.prepareStatement("DELETE FROM "
 				+ STRING_TABLE_NAME + " WHERE class_id = " + storeTypeID
 				+ " AND object_id = ?");
@@ -167,8 +166,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 				+ " (class_id, object_id, field_id, value) VALUES ("
 				+ storeTypeID + ", ?, ?, ?)");
 		selectStringStatement = db.prepareStatement("SELECT value FROM "
-				+ STRING_TABLE_NAME + " WHERE class_id = " + storeTypeID
-				+ " AND object_id = ? AND field_id = ?");
+				+ STRING_TABLE_NAME + " WHERE object_id = ? AND field_id = ?");
 		deleteIntegerStatement = db.prepareStatement("DELETE FROM "
 				+ INT_TABLE_NAME + " WHERE class_id = " + storeTypeID
 				+ " AND object_id = ?");
@@ -177,8 +175,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 				+ " (class_id, object_id, field_id, value) VALUES ("
 				+ storeTypeID + ", ?, ?, ?)");
 		selectIntegerStatement = db.prepareStatement("SELECT value FROM "
-				+ INT_TABLE_NAME + " WHERE class_id = " + storeTypeID
-				+ " AND object_id = ? AND field_id = ?");
+				+ INT_TABLE_NAME + " WHERE object_id = ? AND field_id = ?");
 	}
 
 	private void examineType(Class<? extends KahinaObject> type)

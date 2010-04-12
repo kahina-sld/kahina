@@ -20,6 +20,9 @@ package org.kahina.core.data;
  */
 public abstract class DataManager
 {
+	
+	// TODO Should DataManager know the store for each ID?
+	// Could then choose store smarter than the user asks for it.
 
     /**
      * Returns the data store that is registered for a given data type.
@@ -55,6 +58,7 @@ public abstract class DataManager
      */
     public void store(KahinaObject object)
     {
+    	System.err.println("storing " + object.getClass() + "/" + object.getID());
         getStoreForType(object.getClass()).store(object);
     }
 
@@ -67,6 +71,7 @@ public abstract class DataManager
     @SuppressWarnings("unchecked")
 	public <T extends KahinaObject> T retrieve(Class<T> type, int id)
     {
+    	System.err.println("retrieving " + type + "/" + id);
         return (T) getStoreForType(type).retrieve(id);
     }
 
