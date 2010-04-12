@@ -50,9 +50,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
         newStep.setExternalID(0);
         stepIDConv.put(0, newStep.getID());
         newStep.store();
-        control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, 0, wordList.toString()));
-        currentID = 0;
-        control.processEvent(new KahinaSelectionEvent(0));
+        control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
+        currentID = newStep.getID();
+        control.processEvent(new KahinaSelectionEvent(newStep.getID()));
 	}
 
 	public void registerRuleApplication(int extID, int left, int right, String ruleName)

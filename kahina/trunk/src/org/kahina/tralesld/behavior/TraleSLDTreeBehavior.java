@@ -24,14 +24,14 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         control.registerListener("traleSLD bridge", this);
     }
     
-    public void initializeParseTree(String parsedSentence)
+    public void initializeParseTree(int stepID, String parsedSentence)
     {
-        object.setRootID(0);
+        object.setRootID(stepID);
         object.addNode("parsing " + parsedSentence, "", TraleSLDStepStatus.PROGRESS);
-        secondaryTree.setRootID(0);
+        secondaryTree.setRootID(stepID);
     }
     
-    public void processRuleApplication(int externalID, String ruleName)
+    public void processRuleApplication(int stepID, String ruleName)
     {
         int newID = object.addNode("rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);   
         object.addChild(lastActiveID, newID);
@@ -59,6 +59,11 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
             case TraleSLDBridgeEventType.RULE_APP:
             {
                 processRuleApplication(e.getExternalID(), e.getStrContent());
+                break;
+            }
+            case TraleSLDBridgeEventType.INIT:
+            {
+                initializeParseTree(e.getExternalID(), e.getStrContent());
                 break;
             }
         }
