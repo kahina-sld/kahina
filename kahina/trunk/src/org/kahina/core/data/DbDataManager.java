@@ -114,7 +114,11 @@ public class DbDataManager extends DataManager
         try
         {
             getNextIDStatement.setString(1, datatype.getName());
-            KahinaObject.setNextID(datatype, db.queryInteger(getNextIDStatement));
+            Integer nextID = db.queryInteger(getNextIDStatement);
+            if (nextID != null)
+            {
+            	KahinaObject.setNextID(datatype, nextID);
+            }
         } catch (SQLException e)
         {
             throw new KahinaException("SQL error.", e);
