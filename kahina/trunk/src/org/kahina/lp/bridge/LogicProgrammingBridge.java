@@ -19,8 +19,15 @@ public class LogicProgrammingBridge extends KahinaBridge
     //a dynamic map from external step IDs to most recent corresponding tree nodes
     protected HashMap<Integer,Integer> stepIDConv;
     
-    //store the next result of getPressedButton()
-    char pressedButton;
+    //always contains the internal ID of the most recent step
+    int currentID = -1;
+    
+    //store the state of the bridge, determining the next result of getPressedButton()
+    char bridgeState;
+    
+    //in skip mode, this is the internal step ID of the step we are skipping
+    int skipID = -1;
+    
     
     public LogicProgrammingBridge(KahinaInstance kahina, KahinaGUI gui, KahinaController control)
     {
@@ -105,7 +112,7 @@ public class LogicProgrammingBridge extends KahinaBridge
        
     public char getPressedButton()
     {
-        switch (pressedButton)
+        switch (bridgeState)
         {
             case 'n':
             {
@@ -113,17 +120,40 @@ public class LogicProgrammingBridge extends KahinaBridge
             }
             case 'c':
             {
-                pressedButton = 'n';
+                bridgeState = 'n';
                 return 'c';
             }
             case 'f':
             {
-                pressedButton = 'n';
+                bridgeState = 'n';
                 return 'f';
+            }
+            case 'l':
+            {
+                bridgeState = 'l';
+                return 'c';
+            }
+            case 't':
+            {
+                bridgeState = 's';
+                return 'c';
+            }
+            case 's':
+            {
+                if (skipID == currentID)
+                {
+                    skipID = -1;
+                    bridgeState = 'n';
+                    return 'n';
+                }
+                else
+                {
+                    return 'c';
+                }
             }
             default:
             {
-                pressedButton = 'n';
+                bridgeState = 'n';
                 return 'n';
             }
         }
@@ -134,19 +164,20 @@ public class LogicProgrammingBridge extends KahinaBridge
         String command = e.getCommand();
         if (command.equals("creep"))
         {
-            pressedButton = 'c';
+            bridgeState = 'c';
         }
         else if (command.equals("fail"))
         {
-            pressedButton = 'f';
+            bridgeState = 'f';
         }
         else if (command.equals("skip"))
         {
-            
+            bridgeState = 't';
+            skipID = currentID;
         }
         else if (command.equals("leap"))
         {
-            
+            bridgeState = 'l';
         }
     }
 }
