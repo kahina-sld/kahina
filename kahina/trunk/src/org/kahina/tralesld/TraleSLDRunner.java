@@ -17,7 +17,9 @@ public class TraleSLDRunner extends KahinaRunner
         bridge.initializeParseTrace("[she,thinks,she,gives,her,milk]");
         bridge.registerChartEdge(0, 5, 6, "lexicon");
         bridge.registerStepInformation(1, "rule_close");
+        bridge.registerStepLocation(1,0);
         bridge.registerRuleApplication(2,5,7,"subject_head_rule");
+        bridge.registerStepSourceCodeLocation(2,"/home/johannes/pro/kahina/trale/test_gram/theory3.pl",185);
     }
     
     public static void initialize(int dataHandlingType)

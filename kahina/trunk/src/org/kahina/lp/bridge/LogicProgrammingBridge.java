@@ -43,7 +43,6 @@ public class LogicProgrammingBridge extends KahinaBridge
      */
     public int convertStepID(int extID)
     {
-        System.err.print("convertStepID(" + extID + ") = ");
         Integer intID = stepIDConv.get(extID);
         if (intID == null)
         {
@@ -54,7 +53,6 @@ public class LogicProgrammingBridge extends KahinaBridge
             newStep.store();
             stepIDConv.put(extID, intID);
         }
-        System.err.println(intID);
         return intID;
     }
     
