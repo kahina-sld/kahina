@@ -475,9 +475,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	private void insertObjectValue(int objectID, int fieldID, KahinaObject value)
 			throws SQLException
 	{
-		if (value != null
-				&& !(value.getClass() == type && currentlyBeingStored
-						.contains(objectID)))
+		if (value != null && !currentlyBeingStored.contains(objectID))
 		{
 			manager.store(value);
 		}
@@ -540,8 +538,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 
 	private KahinaObject retrieve(int typeID, int objectID)
 	{
-		if (typeID == this.storeTypeID
-				&& currentlyBeingRetrieved.containsKey(objectID))
+		if (currentlyBeingRetrieved.containsKey(objectID))
 		{
 			return currentlyBeingRetrieved.get(objectID);
 		}
