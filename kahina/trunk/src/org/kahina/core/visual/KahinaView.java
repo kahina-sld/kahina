@@ -22,7 +22,7 @@ public class KahinaView<T extends KahinaObject> implements KahinaListener
     
     public void display(T model)
     {
-        
+        this.model = model;
     }
     
     public T getModel()

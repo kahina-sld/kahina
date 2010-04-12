@@ -8,6 +8,13 @@ public class KahinaSelectionEvent extends KahinaEvent
     int selectedStep;
     KahinaView view;
     
+    public KahinaSelectionEvent(int selectedStep)
+    {
+        super("select");
+        this.selectedStep = selectedStep;
+        this.view = null;
+    }
+    
     public KahinaSelectionEvent(int selectedStep, KahinaView view)
     {
         super("select");

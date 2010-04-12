@@ -2,10 +2,7 @@ package org.kahina.tralesld;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.DataManager;
-import org.kahina.core.data.DbDataManager;
 import org.kahina.core.data.KahinaDataHandlingMethod;
-import org.kahina.core.data.MemDataManager;
-import org.kahina.core.io.database.DatabaseHandler;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 
@@ -20,6 +17,11 @@ public class TraleSLDRunner extends KahinaRunner
         bridge.registerStepLocation(1,0);
         bridge.registerRuleApplication(2,5,7,"subject_head_rule");
         bridge.registerStepSourceCodeLocation(2,"/home/johannes/pro/kahina/trale/test_gram/theory3.pl",185);
+        bridge.registerStepLocation(2,1);
+        bridge.registerStepInformation(3,"unify(Subj)");
+        bridge.registerStepLocation(3,2);
+        bridge.registerStepInformation(4,"type(edge,bot)");
+        bridge.registerStepLocation(4,3);
     }
     
     public static void initialize(int dataHandlingType)

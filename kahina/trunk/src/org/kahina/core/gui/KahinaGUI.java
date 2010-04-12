@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
@@ -37,9 +39,12 @@ public class KahinaGUI implements KahinaListener
     
     Map<Field, KahinaView> fieldToView;
     
+    Class<? extends KahinaStep> stepType;
+    
     public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance kahina, KahinaController control) 
     {
         System.err.println("creating Kahina GUI...");
+        this.stepType = stepType;
         this.kahina = kahina;
         this.control = control;
         control.registerListener("select", this);
@@ -57,6 +62,7 @@ public class KahinaGUI implements KahinaListener
         mainTreeView.setTitle("Control flow tree");
         control.registerListener("update", mainTreeView);
         views.add(mainTreeView);
+        livingViews.add(mainTreeView);
     }
     
     /**
@@ -67,14 +73,15 @@ public class KahinaGUI implements KahinaListener
     {
         System.err.println("fill field to view!");
         for (Field field : stepType.getFields())
-        {
-            System.err.println("\t field: " + field.getName());
-            if (KahinaObject.class.isAssignableFrom(field.getClass()))
+        {    
+            System.err.println("\t field: " + field.getName() + " class: " + field.getType());
+            if (KahinaObject.class.isAssignableFrom(field.getType()))
             {
                 KahinaView newView = KahinaViewRegistry.generateViewFor(stepType);
                 newView.setTitle("Step information: " + field.getName());
                 fieldToView.put(field, newView);
                 views.add(newView);
+                livingViews.add(newView);
             }
         }
     }
@@ -92,7 +99,18 @@ public class KahinaGUI implements KahinaListener
     
     public void displayStepContent(int stepID)
     {
-        
+        KahinaStep step = KahinaRunner.getDataManager().retrieve(stepType, stepID);
+        for (Field field : fieldToView.keySet())
+        {    
+            try
+            {
+                fieldToView.get(field).display((KahinaObject) field.get(step));
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new KahinaException("Problem in displaying step content!", e);
+            }
+        }
     }
     
     public void processEvent(KahinaEvent e)
@@ -105,7 +123,7 @@ public class KahinaGUI implements KahinaListener
     
     public void processEvent(KahinaSelectionEvent e)
     {
-        if (livingViews.contains(e.getView()))
+        if (e.getView() == null || livingViews.contains(e.getView()))
         {
             int selectedStep = e.getSelectedStep();
             control.processEvent(new KahinaUpdateEvent(selectedStep));

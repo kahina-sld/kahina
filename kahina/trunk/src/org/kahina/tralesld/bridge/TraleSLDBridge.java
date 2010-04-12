@@ -13,6 +13,7 @@ import java.util.List;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.util.PrologUtilities;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
@@ -51,6 +52,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
         newStep.store();
         control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, 0, wordList.toString()));
         currentID = 0;
+        control.processEvent(new KahinaSelectionEvent(0));
 	}
 
 	public void registerRuleApplication(int extID, int left, int right, String ruleName)
@@ -132,6 +134,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
             //lastEdge = edgeRegister.getData(currentOverviewTreeNode);
         }
         currentID = stepID;
+        control.processEvent(new KahinaSelectionEvent(stepID));
 	}
 	
 	public void registerStepFinished(int extID)

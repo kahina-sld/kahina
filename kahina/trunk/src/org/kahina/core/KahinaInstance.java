@@ -3,10 +3,12 @@ package org.kahina.core;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.KahinaDataHandlingMethod;
+import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaViewRegistry;
+import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.source.KahinaSourceCodeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
 
@@ -69,6 +71,7 @@ public class KahinaInstance
      */
     protected void fillViewRegistry()
     {
+        KahinaViewRegistry.registerMapping(KahinaObject.class, KahinaDefaultView.class);
         KahinaViewRegistry.registerMapping(KahinaTree.class, KahinaTreeView.class);
         KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, KahinaSourceCodeView.class);
     }
