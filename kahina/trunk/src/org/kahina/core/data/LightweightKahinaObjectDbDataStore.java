@@ -92,8 +92,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	 * @param manager
 	 * @param db
 	 */
-	public LightweightKahinaObjectDbDataStore(
-			Class<? extends KahinaObject> type)
+	public LightweightKahinaObjectDbDataStore(Class<? extends KahinaObject> type)
 	{
 		this.type = type;
 		if (!LightweightKahinaObject.class.isAssignableFrom(type))
@@ -111,7 +110,7 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 		}
 		examineType(type);
 	}
-	
+
 	@Override
 	public void initialize(DbDataManager manager, DatabaseHandler db)
 	{
@@ -477,7 +476,9 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	private void insertObjectValue(int objectID, int fieldID, KahinaObject value)
 			throws SQLException
 	{
-		if (value != null && !currentlyBeingStored.contains(objectID))
+		if (value != null
+				&& !(value.getClass() == type && currentlyBeingStored
+						.contains(objectID)))
 		{
 			manager.store(value);
 		}
