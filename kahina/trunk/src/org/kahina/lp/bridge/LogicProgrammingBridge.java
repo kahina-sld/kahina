@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
@@ -63,7 +64,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     public void registerStepSourceCodeLocation(int extID, String absolutePath, int lineNumber)
     {
         int stepID = convertStepID(extID);
-        //LogicProgrammingStep.setSourceCodeLocation(stepID, absolutePath, lineNumber - 1);
+        LogicProgrammingStep.get(stepID).setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1));
         currentID = stepID;
     }
     
@@ -105,6 +106,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     {
         int stepID = convertStepID(extID);
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
+        currentID = stepID;
     }
     
     public void registerStepFailure(int extID)
@@ -113,6 +115,7 @@ public class LogicProgrammingBridge extends KahinaBridge
         LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.FAIL);   
         LogicProgrammingStep.get(stepID).store();  
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
+        currentID = stepID;
     }
        
     public char getPressedButton()
