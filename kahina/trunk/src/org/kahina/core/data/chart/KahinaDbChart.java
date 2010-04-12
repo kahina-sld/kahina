@@ -214,8 +214,8 @@ public class KahinaDbChart extends KahinaChart implements
 				+ EDGE_TABLE_NAME + " WHERE id = ? AND chart = " + chartID);
 		getMaxEdgeIDStatement = db.prepareStatement("SELECT MAX(id) FROM "
 				+ EDGE_TABLE_NAME);
-		existsStatement = db.prepareStatement("SELECT FROM " + CHART_TABLE_NAME
-				+ " WHERE id = " + chartID);
+		existsStatement = db.prepareStatement("SELECT id FROM "
+				+ CHART_TABLE_NAME + " WHERE id = " + chartID);
 	}
 
 	@Override
