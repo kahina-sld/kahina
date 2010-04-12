@@ -1,8 +1,9 @@
-package org.kahina.core.bridge;
+package org.kahina.lp.bridge;
 
 import java.util.HashMap;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaTreeEvent;

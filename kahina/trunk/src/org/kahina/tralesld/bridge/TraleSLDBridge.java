@@ -9,12 +9,12 @@ package org.kahina.tralesld.bridge;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import org.kahina.core.bridge.LogicProgrammingBridge;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
+import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.lp.event.LogicProgrammingBridgeEvent;
 import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 import org.kahina.tralesld.TraleSLDInstance;
