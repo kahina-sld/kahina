@@ -18,7 +18,15 @@ public class MapLVT extends LVT
 		}
 		MapLVT result = new MapLVT();
 		result.keyType = LVT.createLVT((Class<?>) arguments[0]);
+		if (result.keyType == null)
+		{
+			return null;
+		}
 		result.valueType = LVT.createLVT((Class<?>) arguments[1]);
+		if (result.valueType == null)
+		{
+			return null;
+		}
 		return result;
 	}
 

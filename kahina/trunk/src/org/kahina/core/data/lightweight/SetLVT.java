@@ -16,6 +16,10 @@ public class SetLVT extends LVT
 		}
 		SetLVT result = new SetLVT();
 		result.elementType = LVT.createLVT((Class<?>) arguments[0]);
+		if (result.elementType == null)
+		{
+			return null;
+		}
 		return result;
 	}
 }

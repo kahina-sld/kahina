@@ -16,6 +16,10 @@ public class ListLVT extends LVT
 		}
 		ListLVT result = new ListLVT();
 		result.elementType = LVT.createLVT((Class<?>) arguments[0]);
+		if (result.elementType == null)
+		{
+			return null;
+		}
 		return result;
 	}
 
