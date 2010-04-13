@@ -321,4 +321,40 @@ public class DatabaseHandler
 			throw new KahinaException("Failed to execute statement.", e);
 		}
 	}
+
+	public void createTable(String tableName, String ... elements)
+	{
+		StringBuilder query = new StringBuilder();
+		query.append("CREATE TABLE ");
+		query.append(tableName);
+		query.append(" (");
+		query.append(elements[0]);
+		for (int i = 1; i < elements.length; i++)
+		{
+			query.append(", ");
+			query.append(elements[i]);
+		}
+		query.append(")");
+		execute(query.toString());
+	}
+
+	public void createIndex(String tableName, String indexNameSuffix,
+			String ... columnNames)
+	{
+		StringBuilder query = new StringBuilder();
+		query.append("CREATE INDEX ");
+		query.append(tableName);
+		query.append(indexNameSuffix);
+		query.append(" ON ");
+		query.append(tableName);
+		query.append(" (");
+		query.append(columnNames[0]);
+		for (int i = 1; i < columnNames.length; i++)
+		{
+			query.append(", ");
+			query.append(columnNames[i]);
+		}
+		query.append(")");
+		execute(query.toString());
+	}
 }

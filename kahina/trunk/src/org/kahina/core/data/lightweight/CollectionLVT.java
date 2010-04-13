@@ -10,7 +10,7 @@ public class CollectionLVT extends LVT
 	
 	private boolean set = false;
 
-	public static CollectionLVT createListLVT(Class<?> type)
+	public static CollectionLVT createListLVT(Type type)
 	{
 		CollectionLVT result = new CollectionLVT();
 		Type[] arguments = typeArgumentsForInterface(type, List.class);

@@ -1,7 +1,10 @@
 package org.kahina.core.data.lightweight;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
+import org.kahina.core.data.KahinaObject;
 
 /**
  * Represents a lightweight value type.
@@ -11,16 +14,7 @@ import java.lang.reflect.Type;
  */
 public abstract class LVT
 {
-
-	/**
-	 * 
-	 * @param type
-	 *            Where possible, this should be retrieved by reflection methods
-	 *            that can return <b>parameterized</b> types (and cast to
-	 *            {@code Class<?>}, obviously).
-	 * @return
-	 */
-	public static LVT createLVT(Class<?> type)
+	public static LVT createLVT(Type type)
 	{
 		LVT result = IntegerLVT.createIntegerLVT(type);
 		if (result != null)
@@ -46,29 +40,63 @@ public abstract class LVT
 		return result;
 	}
 
-	public static Type[] typeArgumentsForInterface(Class<?> type,
+	public static Type[] typeArgumentsForInterface(Type type,
 			Class<?> targetRawType)
 	{
-		while (type != null)
+		Type[] result;
+		if (type instanceof ParameterizedType)
 		{
-			for (Type interfaceType : type.getGenericInterfaces())
+			result = typeArgumentsForInterface((ParameterizedType) type,
+					targetRawType);
+			if (result != null)
 			{
-				if (interfaceType instanceof ParameterizedType)
-				{
-					ParameterizedType parameterizedInterfaceType = (ParameterizedType) interfaceType;
-					if (parameterizedInterfaceType.getRawType() == targetRawType)
-					{
-						return parameterizedInterfaceType
-								.getActualTypeArguments();
-					}
-				} else if (interfaceType == targetRawType)
-				{
-					return new Type[0];
-				}
+				return result;
 			}
-			type = (Class<?>) type.getGenericSuperclass();
+		}
+		if (type instanceof Class<?>)
+		{
+			Class<?> clazz = (Class<?>) type;
+			while (clazz != null)
+			{
+				for (Type interfaceType : clazz.getGenericInterfaces())
+				{
+					if (interfaceType instanceof ParameterizedType)
+					{
+						result = typeArgumentsForInterface(
+								(ParameterizedType) interfaceType,
+								targetRawType);
+						if (result != null)
+						{
+							return result;
+						}
+					} else if (interfaceType == targetRawType)
+					{
+						return new Type[0];
+					}
+				}
+				clazz = (Class<?>) clazz.getGenericSuperclass();
+			}
 		}
 		return null;
 	}
+
+	public static Type[] typeArgumentsForInterface(ParameterizedType type,
+			Class<?> targetRawType)
+	{
+		Type rawType = type.getRawType();
+		if (rawType == targetRawType)
+		{
+			return type.getActualTypeArguments();
+		}
+		return null;
+	}
+
+	abstract void retrieveFieldValue(int objectID, int fieldID, Field field,
+			KahinaObject object, LightweightDbStore store)
+			throws IllegalAccessException;
+
+	abstract void storeFieldValue(int objectID, int fieldID, Field field,
+			KahinaObject object, LightweightDbStore store)
+			throws IllegalAccessException;
 
 }

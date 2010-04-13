@@ -9,7 +9,7 @@ public class MapLVT extends LVT
 	
 	private LVT valueType;
 
-	public static LVT createMapLVT(Class<?> type)
+	public static LVT createMapLVT(Type type)
 	{
 		Type[] arguments = typeArgumentsForInterface(type, Map.class);
 		if (arguments == null)
