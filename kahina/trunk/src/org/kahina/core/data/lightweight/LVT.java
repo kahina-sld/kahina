@@ -37,12 +37,7 @@ public abstract class LVT
 		{
 			return result;
 		}
-		result = ListLVT.createListLVT(type);
-		if (result != null)
-		{
-			return result;
-		}
-		result = SetLVT.createSetLVT(type);
+		result = CollectionLVT.createListLVT(type);
 		if (result != null)
 		{
 			return result;

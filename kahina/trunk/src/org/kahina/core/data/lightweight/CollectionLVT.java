@@ -1,20 +1,28 @@
 package org.kahina.core.data.lightweight;
 
 import java.util.List;
+import java.util.Set;
 import java.lang.reflect.Type;
 
-public class ListLVT extends LVT
+public class CollectionLVT extends LVT
 {
 	private LVT elementType;
+	
+	private boolean set = false;
 
-	public static ListLVT createListLVT(Class<?> type)
+	public static CollectionLVT createListLVT(Class<?> type)
 	{
+		CollectionLVT result = new CollectionLVT();
 		Type[] arguments = typeArgumentsForInterface(type, List.class);
+		if (arguments == null)
+		{
+			arguments = typeArgumentsForInterface(type, Set.class);
+			result.set = true;
+		}
 		if (arguments == null)
 		{
 			return null;
 		}
-		ListLVT result = new ListLVT();
 		result.elementType = LVT.createLVT((Class<?>) arguments[0]);
 		if (result.elementType == null)
 		{
