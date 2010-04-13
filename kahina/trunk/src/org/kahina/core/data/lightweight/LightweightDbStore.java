@@ -34,15 +34,8 @@ public class LightweightDbStore extends DbDataStore
 	private static final String MAP_ENTRIES_TABLE_NAME = TABLE_NAME_PREFIX
 			+ "_map_entries";
 
-	// Hacky, but unproblematic optimization: there is no table for integer
-	// values, instead they are stored directly in the columns where value IDs
-	// normally go.
-
 	private static final String STRING_VALUES_TABLE_NAME = TABLE_NAME_PREFIX
 			+ "_string_values";
-
-	private static final String KAHINA_OBJECT_VALUES_TABLE_NAME = TABLE_NAME_PREFIX
-			+ "_kahina_object_values";
 
 	private Constructor<?> constructor;
 
@@ -122,11 +115,9 @@ public class LightweightDbStore extends DbDataStore
 		db.createIndex(COLLECTION_ELEMENTS_TABLE_NAME, "_collection_id",
 				"collection_id");
 		db.createTable(MAP_ENTRIES_TABLE_NAME, "map_id INT", "key_id INT",
-				"value_id INT");
+				"value_id INT", "PRIMARY KEY (map_id, key_id)");
 		db.createTable(STRING_VALUES_TABLE_NAME, "value_id INT",
-				"value LONG VARCHAR");
-		db.createTable(KAHINA_OBJECT_VALUES_TABLE_NAME, "value_id INT",
-				"object_id INT");
+				"value LONG VARCHAR", "PRIMARY KEY value_id");
 		db.register(CLIENT_ID);
 	}
 
