@@ -25,6 +25,9 @@ import org.kahina.core.io.database.DatabaseHandler;
 
 public class LightweightDbStore extends DbDataStore
 {
+	// TODO how to update collection and maps field values? Could be some
+	// serious recursive deleting.
+
 	private static final String CLIENT_ID = LightweightDbStore.class.getName();
 
 	private static final String TABLE_NAME_PREFIX = LightweightDbStore.class
@@ -42,7 +45,7 @@ public class LightweightDbStore extends DbDataStore
 	private static final String MAP_ENTRIES_TABLE_NAME = TABLE_NAME_PREFIX
 			+ "_map_entries";
 
-	private static final String STRING_VALUES_TABLE_NAME = TABLE_NAME_PREFIX
+	private static final String REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME = TABLE_NAME_PREFIX
 			+ "_string_values";
 
 	private Constructor<?> constructor;
@@ -62,6 +65,12 @@ public class LightweightDbStore extends DbDataStore
 	private PreparedStatement updateFieldValueLongVarcharStatement;
 
 	private PreparedStatement insertFieldValueLongVarcharStatement;
+
+	private PreparedStatement selectCollectionStatement;
+
+	private PreparedStatement selectReferenceValueLongVarcharStatement;
+
+	private PreparedStatement insertReferenceValueLongVarcharStatement;
 
 	private Set<Integer> currentlyBeingStored = new HashSet<Integer>();
 
@@ -132,13 +141,16 @@ public class LightweightDbStore extends DbDataStore
 				"field_id INT", "value LONG VARCHAR",
 				"PRIMARY KEY (object_id, field_id)");
 		db.createTable(COLLECTION_ELEMENTS_TABLE_NAME, "collection_id INT",
-				"element_id INT");
+				"element INT");
 		db.createIndex(COLLECTION_ELEMENTS_TABLE_NAME, "_collection_id",
 				"collection_id");
-		db.createTable(MAP_ENTRIES_TABLE_NAME, "map_id INT", "key_id INT",
-				"value_id INT", "PRIMARY KEY (map_id, key_id)");
-		db.createTable(STRING_VALUES_TABLE_NAME, "value_id INT",
-				"value LONG VARCHAR", "PRIMARY KEY value_id");
+		db.createTable(MAP_ENTRIES_TABLE_NAME, "map_id INT", "key INT",
+				"value INT", "PRIMARY KEY (map_id, key_id)");
+		db
+				.createTable(
+						REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME,
+						"value_id INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
+						"value LONG VARCHAR", "PRIMARY KEY value_id");
 		db.register(CLIENT_ID);
 	}
 
@@ -164,6 +176,15 @@ public class LightweightDbStore extends DbDataStore
 				.prepareStatement("INSERT INTO "
 						+ FIELD_VALUES_LONG_VARCHAR_TABLE_NAME
 						+ " (object_id, field_id, value) VALUES (?, ?, ?)");
+		selectCollectionStatement = db.prepareStatement("SELECT value FROM "
+				+ COLLECTION_ELEMENTS_TABLE_NAME + " WHERE collection_id = ?");
+		selectReferenceValueLongVarcharStatement = db
+				.prepareStatement("SELECT value FROM "
+						+ REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME
+						+ " WHERE reference = ?");
+		insertReferenceValueLongVarcharStatement = db.prepareStatement(
+				"INSERT INTO " + REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME
+						+ " (value) VALUES (?)", new int[] { 1 });
 	}
 
 	@Override
@@ -214,7 +235,7 @@ public class LightweightDbStore extends DbDataStore
 			for (int fieldID = 0; fieldID < fields.length; fieldID++)
 			{
 				lvts[fieldID].storeFieldValue(id, fieldID, fields[fieldID],
-						object, this);
+						object, this, manager);
 			}
 		} catch (IllegalAccessException e)
 		{
@@ -301,6 +322,44 @@ public class LightweightDbStore extends DbDataStore
 				insertFieldValueLongVarcharStatement.setString(3, value);
 				insertFieldValueLongVarcharStatement.execute();
 			}
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	public List<Integer> retrieveCollection(int collectionID)
+	{
+		try
+		{
+			selectCollectionStatement.setInt(1, collectionID);
+			return db.queryIntList(selectCollectionStatement);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	public String retrieveReferenceValueLongVarchar(Integer reference)
+	{
+		try
+		{
+			selectReferenceValueLongVarcharStatement.setInt(1, reference);
+			return db.queryString(selectReferenceValueLongVarcharStatement);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	public int storeAsReferenceValueLongVarchar(String element)
+	{
+		try
+		{
+			insertReferenceValueLongVarcharStatement.setString(1, element);
+			insertReferenceValueLongVarcharStatement.execute();
+			return db.getGeneratedKey(insertReferenceValueLongVarcharStatement,
+					1);
 		} catch (SQLException e)
 		{
 			throw new KahinaException("SQL error.", e);

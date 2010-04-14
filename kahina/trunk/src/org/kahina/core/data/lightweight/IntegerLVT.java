@@ -18,8 +18,9 @@ public class IntegerLVT extends LVT
 	}
 
 	@Override
-	void retrieveFieldValue(int objectID, int fieldID, Field field, KahinaObject object,
-			LightweightDbStore store, DataManager manager) throws IllegalAccessException
+	void retrieveFieldValue(int objectID, int fieldID, Field field,
+			KahinaObject object, LightweightDbStore store, DataManager manager)
+			throws IllegalAccessException
 	{
 		// works for both int and Integer fields
 		field.set(object, store.retrieveInt(objectID, fieldID));
@@ -27,9 +28,24 @@ public class IntegerLVT extends LVT
 
 	@Override
 	void storeFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object, LightweightDbStore store) throws IllegalAccessException
+			KahinaObject object, LightweightDbStore store, DataManager manager)
+			throws IllegalAccessException
 	{
 		// works for both int and Integer fields
 		store.storeInt(objectID, fieldID, (Integer) field.get(object));
+	}
+
+	@Override
+	public Object retrieveReferenceValue(Integer reference,
+			LightweightDbStore store, DataManager manager)
+	{
+		return reference;
+	}
+
+	@Override
+	public int storeAsReferenceValue(Object element, LightweightDbStore store,
+			DataManager manager)
+	{
+		return (Integer) element;
 	}
 }

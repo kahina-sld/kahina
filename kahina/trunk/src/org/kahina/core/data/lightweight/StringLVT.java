@@ -31,10 +31,24 @@ public class StringLVT extends LVT
 
 	@Override
 	void storeFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object, LightweightDbStore store)
+			KahinaObject object, LightweightDbStore store, DataManager manager)
 			throws IllegalAccessException
 	{
 		store.storeLongVarchar(objectID, fieldID, (String) field.get(object));
+	}
+
+	@Override
+	public Object retrieveReferenceValue(Integer reference,
+			LightweightDbStore store, DataManager manager)
+	{
+		return store.retrieveReferenceValueLongVarchar(reference);
+	}
+
+	@Override
+	public int storeAsReferenceValue(Object element, LightweightDbStore store,
+			DataManager manager)
+	{
+		return store.storeAsReferenceValueLongVarchar((String) element);
 	}
 
 }

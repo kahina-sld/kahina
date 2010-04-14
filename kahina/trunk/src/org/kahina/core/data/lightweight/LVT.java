@@ -97,7 +97,13 @@ public abstract class LVT
 			throws IllegalAccessException;
 
 	abstract void storeFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object, LightweightDbStore store)
+			KahinaObject object, LightweightDbStore store, DataManager manager)
 			throws IllegalAccessException;
+
+	public abstract Object retrieveReferenceValue(Integer reference,
+			LightweightDbStore store, DataManager manager);
+
+	public abstract int storeAsReferenceValue(Object element,
+			LightweightDbStore store, DataManager manager);
 
 }

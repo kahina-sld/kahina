@@ -10,9 +10,9 @@ import org.kahina.core.KahinaException;
 
 public class MapLVT extends LVT
 {
-	private LVT keyType;
+	private LVT keyLVT;
 	
-	private LVT valueType;
+	private LVT valueLVT;
 	
 	private Constructor<?> constructor;
 
@@ -26,13 +26,13 @@ public class MapLVT extends LVT
 			return null;
 		}
 		MapLVT result = new MapLVT();
-		result.keyType = LVT.createLVT((Class<?>) arguments[0]);
-		if (result.keyType == null)
+		result.keyLVT = LVT.createLVT((Class<?>) arguments[0]);
+		if (result.keyLVT == null)
 		{
 			return null;
 		}
-		result.valueType = LVT.createLVT((Class<?>) arguments[1]);
-		if (result.valueType == null)
+		result.valueLVT = LVT.createLVT((Class<?>) arguments[1]);
+		if (result.valueLVT == null)
 		{
 			return null;
 		}

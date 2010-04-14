@@ -23,14 +23,32 @@ public class KahinaObjectLVT extends LVT
 			KahinaObject object, LightweightDbStore store, DataManager manager)
 			throws IllegalAccessException
 	{
-		field.set(object, manager.retrieve(store.retrieveInt(objectID, fieldID)));
+		field.set(object, manager
+				.retrieve(store.retrieveInt(objectID, fieldID)));
 	}
 
 	@Override
 	void storeFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object, LightweightDbStore store)
+			KahinaObject object, LightweightDbStore store, DataManager manager)
 			throws IllegalAccessException
 	{
-		// TODO
+		store.storeInt(objectID, fieldID, object.getID());
+		manager.store((KahinaObject) field.get(object));
+	}
+
+	@Override
+	public Object retrieveReferenceValue(Integer reference,
+			LightweightDbStore store, DataManager manager)
+	{
+		return manager.retrieve(reference);
+	}
+
+	@Override
+	public int storeAsReferenceValue(Object value, LightweightDbStore store,
+			DataManager manager)
+	{
+		KahinaObject object = (KahinaObject) value;
+		manager.store(object);
+		return object.getID();
 	}
 }

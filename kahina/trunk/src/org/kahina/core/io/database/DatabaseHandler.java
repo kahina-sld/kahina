@@ -299,6 +299,17 @@ public class DatabaseHandler
 		}
 	}
 
+	public PreparedStatement prepareStatement(String sql, int[] columnIndexes)
+	{
+		try
+		{
+			return connection.prepareStatement(sql, columnIndexes);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("Failed to prepare statement.", e);
+		}
+	}
+
 	private static void deleteRecursively(File directory)
 	{
 		if (directory.isDirectory())
@@ -322,7 +333,7 @@ public class DatabaseHandler
 		}
 	}
 
-	public void createTable(String tableName, String ... elements)
+	public void createTable(String tableName, String... elements)
 	{
 		StringBuilder query = new StringBuilder();
 		query.append("CREATE TABLE ");
@@ -339,7 +350,7 @@ public class DatabaseHandler
 	}
 
 	public void createIndex(String tableName, String indexNameSuffix,
-			String ... columnNames)
+			String... columnNames)
 	{
 		StringBuilder query = new StringBuilder();
 		query.append("CREATE INDEX ");
@@ -356,5 +367,24 @@ public class DatabaseHandler
 		}
 		query.append(")");
 		execute(query.toString());
+	}
+
+	public int getGeneratedKey(
+			PreparedStatement insertReferenceValueLongVarcharStatement,
+			int index)
+	{
+		try
+		{
+			ResultSet resultSet = insertReferenceValueLongVarcharStatement
+					.getGeneratedKeys();
+			for (int i = 0; i < index; i++)
+			{
+				resultSet.next();
+			}
+			return resultSet.getInt(1);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
 	}
 }

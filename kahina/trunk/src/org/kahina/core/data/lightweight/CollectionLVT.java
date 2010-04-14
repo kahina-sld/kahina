@@ -1,22 +1,25 @@
 package org.kahina.core.data.lightweight;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.kahina.core.KahinaException;
+import org.kahina.core.data.DataManager;
+import org.kahina.core.data.KahinaObject;
 
 public class CollectionLVT extends LVT
 {
-	private LVT elementType;
+	private LVT elementLVT;
 
-	private boolean set = false;
-
-	private Constructor constructor;
+	private Constructor<?> constructor;
 
 	public static CollectionLVT createListLVT(Type type)
 	{
@@ -27,14 +30,13 @@ public class CollectionLVT extends LVT
 		if (arguments == null)
 		{
 			arguments = typeArgumentsForInterface(type, Set.class);
-			result.set = true;
 		}
 		if (arguments == null)
 		{
 			return null;
 		}
-		result.elementType = LVT.createLVT((Class<?>) arguments[0]);
-		if (result.elementType == null)
+		result.elementLVT = LVT.createLVT((Class<?>) arguments[0]);
+		if (result.elementLVT == null)
 		{
 			return null;
 		}
@@ -86,8 +88,65 @@ public class CollectionLVT extends LVT
 				return null;
 			}
 		}
-		
+
 		return result;
+	}
+
+	@Override
+	void retrieveFieldValue(int objectID, int fieldID, Field field,
+			KahinaObject object, LightweightDbStore store, DataManager manager)
+			throws IllegalAccessException
+	{
+		field.set(object, retrieveReferenceValue(store.retrieveInt(objectID,
+				fieldID), store, manager));
+	}
+
+	@Override
+	public Object retrieveReferenceValue(Integer reference,
+			LightweightDbStore store, DataManager manager)
+	{
+		Collection<Object> collection;
+		try
+		{
+			collection = castToObjectCollection(constructor.newInstance());
+		} catch (IllegalArgumentException e)
+		{
+			throw new KahinaException("Error reconstructing collection.", e);
+		} catch (InstantiationException e)
+		{
+			throw new KahinaException("Error reconstructing collection.", e);
+		} catch (IllegalAccessException e)
+		{
+			throw new KahinaException("Error reconstructing collection.", e);
+		} catch (InvocationTargetException e)
+		{
+			throw new KahinaException("Error reconstructing collection.", e);
+		}
+		for (Integer element : store.retrieveCollection(reference))
+		{
+			collection.add(elementLVT.retrieveReferenceValue(element, store,
+					manager));
+		}
+		return collection;
+	}
+
+	@SuppressWarnings("unchecked")
+	private Collection<Object> castToObjectCollection(Object object)
+	{
+		return (Collection<Object>) object;
+	}
+
+	@Override
+	void storeFieldValue(int objectID, int fieldID, Field field,
+			KahinaObject object, LightweightDbStore store, DataManager manager)
+			throws IllegalAccessException
+	{
+		for (Object element : castToObjectCollection(field.get(object)))
+		{
+			int reference = elementLVT.storeAsReferenceValue(element, store,
+					manager);
+			store.storeInt(objectID, fieldID, reference);
+		}
 	}
 
 }
