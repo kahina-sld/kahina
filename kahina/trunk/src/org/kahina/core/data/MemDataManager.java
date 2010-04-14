@@ -17,6 +17,8 @@ public class MemDataManager extends DataManager
 	private Map<Class<? extends KahinaObject>, DataStore> storeByClass = new HashMap<Class<? extends KahinaObject>, DataStore>();
 
 	private DataStore defaultStore = new KahinaObjectMemDataStore();
+	
+	private Map<Integer, DataStore> storeByID = new HashMap<Integer, DataStore>();
 
 	@Override
 	public void registerDataType(Class<? extends KahinaObject> clazz)
@@ -40,5 +42,17 @@ public class MemDataManager extends DataManager
 	protected DataStore getStoreForType(Class<? extends KahinaObject> clazz)
 	{
 		return storeByClass.get(clazz);
+	}
+
+	@Override
+	protected DataStore getStoreForID(int id)
+	{
+		return storeByID.get(id);
+	}
+
+	@Override
+	protected void setStoreForID(int id, DataStore store)
+	{
+		storeByID.put(id, store);
 	}
 }

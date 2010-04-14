@@ -357,9 +357,8 @@ public class LightweightKahinaObjectDbDataStore extends DbDataStore
 	}
 
 	@Override
-	public void store(KahinaObject object)
+	public void store(KahinaObject object, int id)
 	{
-		int id = object.getID();
 		currentlyBeingStored.add(id); // to protect from cycles
 		try
 		{

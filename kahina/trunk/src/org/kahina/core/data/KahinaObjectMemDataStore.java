@@ -19,8 +19,8 @@ public class KahinaObjectMemDataStore extends DataStore
 	}
 
 	@Override
-	public void store(KahinaObject object)
+	public void store(KahinaObject object, int id)
 	{
-		objectByID.put(object.getID(), object);
+		objectByID.put(id, object);
 	}
 }

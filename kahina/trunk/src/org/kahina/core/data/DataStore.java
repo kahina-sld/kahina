@@ -9,7 +9,12 @@ package org.kahina.core.data;
  */
 public abstract class DataStore
 {
-    public abstract void store(KahinaObject object);
+    public final void store(KahinaObject object)
+    {
+    	store(object, object.getID());
+    }
+    
+    public abstract void store(KahinaObject object, int id);
 
     public abstract KahinaObject retrieve(int id);
 

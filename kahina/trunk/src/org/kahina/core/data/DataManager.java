@@ -31,6 +31,10 @@ public abstract class DataManager
      * @return
      */
     protected abstract DataStore getStoreForType(Class<? extends KahinaObject> type);
+    
+    protected abstract DataStore getStoreForID(int id);
+    
+    protected abstract void setStoreForID(int id, DataStore store);
 
     /**
      * Registers a given data store for a given data type. Only one data store
@@ -59,7 +63,10 @@ public abstract class DataManager
     public void store(KahinaObject object)
     {
     	System.err.println("storing " + object.getClass() + "/" + object.getID());
-        getStoreForType(object.getClass()).store(object);
+    	int id = object.getID();
+    	DataStore store = getStoreForType(object.getClass());
+    	setStoreForID(id, store);
+    	store.store(object);
     }
 
     /**
@@ -69,10 +76,15 @@ public abstract class DataManager
      * @return the desired object as a KahinaObject which can be cast to the original type
      */
     @SuppressWarnings("unchecked")
-	public <T extends KahinaObject> T retrieve(Class<T> type, int id)
+	public final <T extends KahinaObject> T retrieve(Class<T> type, int id)
     {
     	System.err.println("retrieving " + type + "/" + id);
         return (T) getStoreForType(type).retrieve(id);
+    }
+    
+    public KahinaObject retrieve(int id)
+    {
+    	return getStoreForID(id).retrieve(id);
     }
 
     /**

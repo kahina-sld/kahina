@@ -168,7 +168,7 @@ public class LightweightDbStore extends DbDataStore
 			for (int fieldID = 0; fieldID < fields.length; fieldID++)
 			{
 				lvts[fieldID].retrieveFieldValue(id, fieldID, fields[fieldID],
-						result, this);
+						result, this, manager);
 			}
 			return result;
 		} catch (IllegalArgumentException e)
@@ -187,13 +187,13 @@ public class LightweightDbStore extends DbDataStore
 	}
 
 	@Override
-	public void store(KahinaObject object)
+	public void store(KahinaObject object, int id)
 	{
 		try
 		{
 			for (int fieldID = 0; fieldID < fields.length; fieldID++)
 			{
-				lvts[fieldID].storeFieldValue(object.getID(), fieldID,
+				lvts[fieldID].storeFieldValue(id, fieldID,
 						fields[fieldID], object, this);
 			}
 		} catch (IllegalAccessException e)
