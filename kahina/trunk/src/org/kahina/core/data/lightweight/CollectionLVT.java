@@ -102,7 +102,7 @@ public class CollectionLVT extends LVT
 	}
 
 	@Override
-	public Object retrieveReferenceValue(Integer reference,
+	Object retrieveReferenceValue(Integer reference,
 			LightweightDbStore store, DataManager manager)
 	{
 		Collection<Object> collection;

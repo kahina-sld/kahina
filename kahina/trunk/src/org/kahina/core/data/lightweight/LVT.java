@@ -100,10 +100,10 @@ public abstract class LVT
 			KahinaObject object, LightweightDbStore store, DataManager manager)
 			throws IllegalAccessException;
 
-	public abstract Object retrieveReferenceValue(Integer reference,
+	abstract Object retrieveReferenceValue(Integer reference,
 			LightweightDbStore store, DataManager manager);
 
-	public abstract int storeAsReferenceValue(Object element,
+	abstract int storeAsReferenceValue(Object element,
 			LightweightDbStore store, DataManager manager);
 
 }

@@ -38,14 +38,14 @@ public class StringLVT extends LVT
 	}
 
 	@Override
-	public Object retrieveReferenceValue(Integer reference,
+	Object retrieveReferenceValue(Integer reference,
 			LightweightDbStore store, DataManager manager)
 	{
 		return store.retrieveReferenceValueLongVarchar(reference);
 	}
 
 	@Override
-	public int storeAsReferenceValue(Object element, LightweightDbStore store,
+	int storeAsReferenceValue(Object element, LightweightDbStore store,
 			DataManager manager)
 	{
 		return store.storeAsReferenceValueLongVarchar((String) element);

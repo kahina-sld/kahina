@@ -37,14 +37,14 @@ public class KahinaObjectLVT extends LVT
 	}
 
 	@Override
-	public Object retrieveReferenceValue(Integer reference,
+	Object retrieveReferenceValue(Integer reference,
 			LightweightDbStore store, DataManager manager)
 	{
 		return manager.retrieve(reference);
 	}
 
 	@Override
-	public int storeAsReferenceValue(Object value, LightweightDbStore store,
+	int storeAsReferenceValue(Object value, LightweightDbStore store,
 			DataManager manager)
 	{
 		KahinaObject object = (KahinaObject) value;
