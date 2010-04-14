@@ -25,8 +25,11 @@ public class LightweightDbStore extends DbDataStore
 	private static final String TABLE_NAME_PREFIX = LightweightDbStore.class
 			.getSimpleName();
 
-	private static final String FIELD_VALUES_TABLE_NAME = TABLE_NAME_PREFIX
-			+ "_field_values";
+	private static final String FIELD_VALUES_INT_TABLE_NAME = TABLE_NAME_PREFIX
+			+ "_field_values_int";
+
+	private static final String FIELD_VALUES_LONG_VARCHAR_TABLE_NAME = TABLE_NAME_PREFIX
+			+ "_field_values_long_varchar";
 
 	private static final String COLLECTION_ELEMENTS_TABLE_NAME = TABLE_NAME_PREFIX
 			+ "_collection_elements";
@@ -43,11 +46,17 @@ public class LightweightDbStore extends DbDataStore
 
 	private LVT[] lvts;
 
-	private PreparedStatement selectFieldValueStatement;
+	private PreparedStatement selectFieldValueIntStatement;
 
-	private PreparedStatement updateFieldValueStatement;
+	private PreparedStatement updateFieldValueIntStatement;
 
-	private PreparedStatement insertFieldValueStatement;
+	private PreparedStatement insertFieldValueIntStatement;
+
+	private PreparedStatement selectFieldValueLongVarcharStatement;
+
+	private PreparedStatement updateFieldValueLongVarcharStatement;
+
+	private PreparedStatement insertFieldValueLongVarcharStatement;
 
 	public LightweightDbStore(Class<LightweightKahinaObject> datatype)
 	{
@@ -107,8 +116,11 @@ public class LightweightDbStore extends DbDataStore
 		{
 			return;
 		}
-		db.createTable(FIELD_VALUES_TABLE_NAME, "object_id INT",
+		db.createTable(FIELD_VALUES_INT_TABLE_NAME, "object_id INT",
 				"field_id INT", "value INT",
+				"PRIMARY KEY (object_id, field_id)");
+		db.createTable(FIELD_VALUES_LONG_VARCHAR_TABLE_NAME, "object_id INT",
+				"field_id INT", "value LONG VARCHAR",
 				"PRIMARY KEY (object_id, field_id)");
 		db.createTable(COLLECTION_ELEMENTS_TABLE_NAME, "collection_id INT",
 				"element_id INT");
@@ -123,15 +135,26 @@ public class LightweightDbStore extends DbDataStore
 
 	private void prepareStatements()
 	{
-		selectFieldValueStatement = db.prepareStatement("SELECT value FROM "
-				+ FIELD_VALUES_TABLE_NAME
+		selectFieldValueIntStatement = db.prepareStatement("SELECT value FROM "
+				+ FIELD_VALUES_INT_TABLE_NAME
 				+ " WHERE object_id = ? AND field_id = ?");
-		updateFieldValueStatement = db.prepareStatement("UPDATE "
-				+ FIELD_VALUES_TABLE_NAME
+		updateFieldValueIntStatement = db.prepareStatement("UPDATE "
+				+ FIELD_VALUES_INT_TABLE_NAME
 				+ " SET value = ? WHERE object_id = ? AND field_id = ?");
-		insertFieldValueStatement = db.prepareStatement("INSERT INTO "
-				+ FIELD_VALUES_TABLE_NAME
+		insertFieldValueIntStatement = db.prepareStatement("INSERT INTO "
+				+ FIELD_VALUES_INT_TABLE_NAME
 				+ " (object_id, field_id, value) VALUES (?, ?, ?)");
+		selectFieldValueLongVarcharStatement = db
+				.prepareStatement("SELECT value FROM "
+						+ FIELD_VALUES_LONG_VARCHAR_TABLE_NAME
+						+ " WHERE object_id = ? AND field_id = ?");
+		updateFieldValueLongVarcharStatement = db.prepareStatement("UPDATE "
+				+ FIELD_VALUES_LONG_VARCHAR_TABLE_NAME
+				+ " SET value = ? WHERE object_id = ? AND field_id = ?");
+		insertFieldValueLongVarcharStatement = db
+				.prepareStatement("INSERT INTO "
+						+ FIELD_VALUES_LONG_VARCHAR_TABLE_NAME
+						+ " (object_id, field_id, value) VALUES (?, ?, ?)");
 	}
 
 	@Override
@@ -178,33 +201,67 @@ public class LightweightDbStore extends DbDataStore
 		}
 	}
 
-	int retrieveInteger(int id, int fieldID)
+	int retrieveInt(int id, int fieldID)
 	{
 		try
 		{
-			selectFieldValueStatement.setInt(1, id);
-			selectFieldValueStatement.setInt(2, fieldID);
-			return db.queryInteger(selectFieldValueStatement);
+			selectFieldValueIntStatement.setInt(1, id);
+			selectFieldValueIntStatement.setInt(2, fieldID);
+			return db.queryInteger(selectFieldValueIntStatement);
 		} catch (SQLException e)
 		{
 			throw new KahinaException("SQL error.", e);
 		}
 	}
 
-	void storeInteger(int objectID, int fieldID, int value)
+	void storeInt(int objectID, int fieldID, int value)
 	{
 		try
 		{
-			updateFieldValueStatement.setInt(1, value);
-			updateFieldValueStatement.setInt(2, objectID);
-			updateFieldValueStatement.setInt(3, fieldID);
+			updateFieldValueIntStatement.setInt(1, value);
+			updateFieldValueIntStatement.setInt(2, objectID);
+			updateFieldValueIntStatement.setInt(3, fieldID);
 
-			if (updateFieldValueStatement.executeUpdate() == 0)
+			if (updateFieldValueIntStatement.executeUpdate() == 0)
 			{
-				insertFieldValueStatement.setInt(1, objectID);
-				insertFieldValueStatement.setInt(2, fieldID);
-				insertFieldValueStatement.setInt(3, value);
-				insertFieldValueStatement.execute();
+				insertFieldValueIntStatement.setInt(1, objectID);
+				insertFieldValueIntStatement.setInt(2, fieldID);
+				insertFieldValueIntStatement.setInt(3, value);
+				insertFieldValueIntStatement.execute();
+			}
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	String retrieveLongVarchar(int id, int fieldID)
+	{
+		try
+		{
+			selectFieldValueLongVarcharStatement.setInt(1, id);
+			selectFieldValueLongVarcharStatement.setInt(2, fieldID);
+			return db.queryString(selectFieldValueLongVarcharStatement);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	void storeLongVarchar(int objectID, int fieldID, String value)
+	{
+		try
+		{
+			updateFieldValueLongVarcharStatement.setString(1, value);
+			updateFieldValueLongVarcharStatement.setInt(2, objectID);
+			updateFieldValueLongVarcharStatement.setInt(3, fieldID);
+
+			if (updateFieldValueLongVarcharStatement.executeUpdate() == 0)
+			{
+				insertFieldValueLongVarcharStatement.setInt(1, objectID);
+				insertFieldValueLongVarcharStatement.setInt(2, fieldID);
+				insertFieldValueLongVarcharStatement.setString(3, value);
+				insertFieldValueLongVarcharStatement.execute();
 			}
 		} catch (SQLException e)
 		{

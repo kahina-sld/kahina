@@ -20,13 +20,13 @@ public class IntegerLVT extends LVT
 	void retrieveFieldValue(int objectID, int fieldID, Field field, KahinaObject object,
 			LightweightDbStore store) throws IllegalAccessException
 	{
-		field.set(object, store.retrieveInteger(objectID, fieldID));
+		field.set(object, store.retrieveInt(objectID, fieldID));
 	}
 
 	@Override
 	void storeFieldValue(int objectID, int fieldID, Field field,
 			KahinaObject object, LightweightDbStore store) throws IllegalAccessException
 	{
-		store.storeInteger(objectID, fieldID, field.getInt(object));
+		store.storeInt(objectID, fieldID, field.getInt(object));
 	}
 }
