@@ -21,7 +21,6 @@ import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.lp.event.LogicProgrammingBridgeEvent;
 import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 import org.kahina.tralesld.TraleSLDInstance;
-import org.kahina.tralesld.TraleSLDStepStatus;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;

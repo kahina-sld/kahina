@@ -1,7 +1,5 @@
 package org.kahina.core.visual.source;
 
-import java.util.HashMap;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
