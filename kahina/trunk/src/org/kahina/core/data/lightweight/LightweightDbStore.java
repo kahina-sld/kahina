@@ -10,7 +10,11 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.kahina.core.KahinaException;
 import org.kahina.core.data.DbDataManager;
@@ -58,6 +62,10 @@ public class LightweightDbStore extends DbDataStore
 	private PreparedStatement updateFieldValueLongVarcharStatement;
 
 	private PreparedStatement insertFieldValueLongVarcharStatement;
+
+	private Set<Integer> currentlyBeingStored = new HashSet<Integer>();
+
+	private Map<Integer, KahinaObject> currentlyBeingRetrieved = new HashMap<Integer, KahinaObject>();
 
 	public LightweightDbStore(Class<LightweightKahinaObject> datatype)
 	{
@@ -161,9 +169,14 @@ public class LightweightDbStore extends DbDataStore
 	@Override
 	public KahinaObject retrieve(int id)
 	{
+		if (currentlyBeingRetrieved.containsKey(id))
+		{
+			return currentlyBeingRetrieved.get(id);
+		}
 		try
 		{
 			KahinaObject result = (KahinaObject) constructor.newInstance();
+			currentlyBeingRetrieved.put(id, result);
 			result.setID(id);
 			for (int fieldID = 0; fieldID < fields.length; fieldID++)
 			{
@@ -183,22 +196,32 @@ public class LightweightDbStore extends DbDataStore
 		} catch (InvocationTargetException e)
 		{
 			throw new KahinaException("Could not retrieve object.", e);
+		} finally
+		{
+			currentlyBeingRetrieved.remove(id);
 		}
 	}
 
 	@Override
 	public void store(KahinaObject object, int id)
 	{
+		if (!currentlyBeingStored.add(id))
+		{
+			return;
+		}
 		try
 		{
 			for (int fieldID = 0; fieldID < fields.length; fieldID++)
 			{
-				lvts[fieldID].storeFieldValue(id, fieldID,
-						fields[fieldID], object, this);
+				lvts[fieldID].storeFieldValue(id, fieldID, fields[fieldID],
+						object, this);
 			}
 		} catch (IllegalAccessException e)
 		{
 			throw new KahinaException("Could not store object.", e);
+		} finally
+		{
+			currentlyBeingStored.remove(id);
 		}
 	}
 
@@ -226,7 +249,7 @@ public class LightweightDbStore extends DbDataStore
 			{
 				updateFieldValueIntStatement.setInt(1, value);
 			}
-			
+
 			updateFieldValueIntStatement.setInt(2, objectID);
 			updateFieldValueIntStatement.setInt(3, fieldID);
 
@@ -234,7 +257,7 @@ public class LightweightDbStore extends DbDataStore
 			{
 				insertFieldValueIntStatement.setInt(1, objectID);
 				insertFieldValueIntStatement.setInt(2, fieldID);
-				
+
 				if (value == null)
 				{
 					insertFieldValueIntStatement.setNull(3, Types.INTEGER);
