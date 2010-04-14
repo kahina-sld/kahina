@@ -9,7 +9,7 @@ public class IntegerLVT extends LVT
 {
 	public static IntegerLVT createIntegerLVT(Type type)
 	{
-		if (type == int.class)
+		if (type == int.class || type == Integer.class)
 		{
 			return new IntegerLVT();
 		}
@@ -20,6 +20,7 @@ public class IntegerLVT extends LVT
 	void retrieveFieldValue(int objectID, int fieldID, Field field, KahinaObject object,
 			LightweightDbStore store) throws IllegalAccessException
 	{
+		// works for both int and Integer fields
 		field.set(object, store.retrieveInt(objectID, fieldID));
 	}
 
@@ -27,6 +28,7 @@ public class IntegerLVT extends LVT
 	void storeFieldValue(int objectID, int fieldID, Field field,
 			KahinaObject object, LightweightDbStore store) throws IllegalAccessException
 	{
-		store.storeInt(objectID, fieldID, field.getInt(object));
+		// works for both int and Integer fields
+		store.storeInt(objectID, fieldID, (Integer) field.get(object));
 	}
 }

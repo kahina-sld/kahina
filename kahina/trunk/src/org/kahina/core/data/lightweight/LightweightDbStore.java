@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -201,7 +202,7 @@ public class LightweightDbStore extends DbDataStore
 		}
 	}
 
-	int retrieveInt(int id, int fieldID)
+	Integer retrieveInt(int id, int fieldID)
 	{
 		try
 		{
@@ -214,11 +215,18 @@ public class LightweightDbStore extends DbDataStore
 		}
 	}
 
-	void storeInt(int objectID, int fieldID, int value)
+	void storeInt(int objectID, int fieldID, Integer value)
 	{
 		try
 		{
-			updateFieldValueIntStatement.setInt(1, value);
+			if (value == null)
+			{
+				updateFieldValueIntStatement.setNull(1, Types.INTEGER);
+			} else
+			{
+				updateFieldValueIntStatement.setInt(1, value);
+			}
+			
 			updateFieldValueIntStatement.setInt(2, objectID);
 			updateFieldValueIntStatement.setInt(3, fieldID);
 
@@ -226,7 +234,14 @@ public class LightweightDbStore extends DbDataStore
 			{
 				insertFieldValueIntStatement.setInt(1, objectID);
 				insertFieldValueIntStatement.setInt(2, fieldID);
-				insertFieldValueIntStatement.setInt(3, value);
+				
+				if (value == null)
+				{
+					insertFieldValueIntStatement.setNull(3, Types.INTEGER);
+				} else
+				{
+					insertFieldValueIntStatement.setInt(3, value);
+				}
 				insertFieldValueIntStatement.execute();
 			}
 		} catch (SQLException e)

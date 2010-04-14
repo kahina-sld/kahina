@@ -7,6 +7,10 @@ import org.kahina.core.data.KahinaObject;
 
 public class StringLVT extends LVT
 {
+	private StringLVT()
+	{
+	}
+	
 	public static StringLVT createStringLVT(Type type)
 	{
 		if (type == String.class)
