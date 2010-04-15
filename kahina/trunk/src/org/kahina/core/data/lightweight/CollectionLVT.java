@@ -102,8 +102,8 @@ public class CollectionLVT extends LVT
 	}
 
 	@Override
-	Object retrieveReferenceValue(Integer reference,
-			LightweightDbStore store, DataManager manager)
+	Object retrieveReferenceValue(Integer reference, LightweightDbStore store,
+			DataManager manager)
 	{
 		Collection<Object> collection;
 		try
@@ -141,12 +141,45 @@ public class CollectionLVT extends LVT
 			KahinaObject object, LightweightDbStore store, DataManager manager)
 			throws IllegalAccessException
 	{
-		for (Object element : castToObjectCollection(field.get(object)))
+		Integer oldReference = store.retrieveInt(objectID, fieldID);
+		if (oldReference != null)
 		{
-			int reference = elementLVT.storeAsReferenceValue(element, store,
-					manager);
-			store.storeInt(objectID, fieldID, reference);
+			deleteReferenceValue(oldReference, store);
 		}
+		store.storeInt(objectID, fieldID, storeAsReferenceValue(field
+				.get(object), store, manager));
 	}
 
+	@Override
+	int storeAsReferenceValue(Object object, LightweightDbStore store,
+			DataManager manager)
+	{
+		int reference = store.getNewCollectionReference();
+		for (Object element : castToObjectCollection(object))
+		{
+			store.storeCollectionElement(reference, elementLVT
+					.storeAsReferenceValue(element, store, manager));
+		}
+		return reference;
+	}
+
+	@Override
+	void deleteReferenceValue(Integer reference, LightweightDbStore store)
+	{
+		if (elementLVT.deletes())
+		{
+			List<Integer> elements = store.retrieveCollection(reference);
+			for (Integer element : elements)
+			{
+				elementLVT.deleteReferenceValue(element, store);
+			}
+		}
+		store.deleteCollection(reference);
+	}
+
+	@Override
+	boolean deletes()
+	{
+		return true;
+	}
 }
