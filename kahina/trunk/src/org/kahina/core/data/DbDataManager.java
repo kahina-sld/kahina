@@ -76,7 +76,7 @@ public class DbDataManager extends DataManager
 
 	private void createTables()
 	{
-		db.createTable(OBJECT_TABLE_NAME, "int object_id", "int store_id",
+		db.createTable(OBJECT_TABLE_NAME, "object_id INT", "store_id INT",
 				"PRIMARY KEY (object_id)");
 	}
 
