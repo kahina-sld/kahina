@@ -28,8 +28,8 @@ public class KahinaObjectLVT extends LVT
 	void storeFieldValue(int objectID, int fieldID, Field field,
 			KahinaObject object) throws IllegalAccessException
 	{
-		store.storeInt(objectID, fieldID, storeAsReferenceValue(field
-				.get(object)));
+		Integer reference = storeAsReferenceValue(field.get(object));
+		store.storeInt(objectID, fieldID, reference);
 	}
 
 	@Override
@@ -48,13 +48,17 @@ public class KahinaObjectLVT extends LVT
 	void retrieveFieldValue(int objectID, int fieldID, Field field,
 			KahinaObject object) throws IllegalAccessException
 	{
-		field.set(object, retrieveReferenceValue(store.retrieveInt(objectID,
-				fieldID)));
+		Integer reference = store.retrieveInt(objectID, fieldID);
+		field.set(object, retrieveReferenceValue(reference));
 	}
 
 	@Override
 	Object retrieveReferenceValue(Integer reference)
 	{
+		if (reference == null)
+		{
+			return null;
+		}
 		return manager.retrieve(reference);
 	}
 

@@ -90,6 +90,7 @@ public class DatabaseHandler
 			int result = resultSet.getInt(1);
 			if (resultSet.wasNull())
 			{
+				System.err.println("wasnull");
 				return defaultValue;
 			}
 			return result;
@@ -346,7 +347,6 @@ public class DatabaseHandler
 			query.append(elements[i]);
 		}
 		query.append(")");
-		System.err.println("Query: " + query);
 		execute(query.toString());
 	}
 

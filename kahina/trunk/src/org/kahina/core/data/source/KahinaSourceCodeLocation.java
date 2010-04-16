@@ -1,7 +1,7 @@
 package org.kahina.core.data.source;
 
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.data.LightweightKahinaObject;
+import org.kahina.core.data.lightweight.LightweightKahinaObject;
 
 public class KahinaSourceCodeLocation extends KahinaObject implements LightweightKahinaObject
 {    

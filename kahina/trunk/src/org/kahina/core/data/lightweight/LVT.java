@@ -102,8 +102,6 @@ public abstract class LVT
 		return null;
 	}
 
-	// TODO many of those arguments can become instance variables
-
 	abstract void retrieveFieldValue(int objectID, int fieldID, Field field,
 			KahinaObject object)
 			throws IllegalAccessException;

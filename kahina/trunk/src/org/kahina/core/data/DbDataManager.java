@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.kahina.core.KahinaException;
 import org.kahina.core.data.lightweight.LightweightDbStore;
+import org.kahina.core.data.lightweight.LightweightKahinaObject;
 import org.kahina.core.io.database.DatabaseHandler;
 
 /**
@@ -143,27 +144,20 @@ public class DbDataManager extends DataManager
 		return storeIDByType.get(type);
 	}
 
-	/**
-	 * Retrieves an object by the internal numeric ID given to its type by this
-	 * manager, and its object ID.
-	 * 
-	 * @param typeID
-	 * @param objectID
-	 * @return
-	 */
-	public KahinaObject retrieve(int typeID, int objectID)
-	{
-		return storeByStoreID.get(typeID).retrieve(objectID);
-	}
-
 	@Override
 	protected DataStore getStoreForID(int id)
 	{
+		System.err.println("gsfi" + id);
 		try
 		{
 			selectStoreForIDStatement.setInt(1, id);
-			return storeByStoreID.get(db
-					.queryInteger(selectStoreForIDStatement));
+			Integer storeID = db.queryInteger(selectStoreForIDStatement);
+			if (storeID == null)
+			{
+				throw new KahinaException("An object with ID " + id
+						+ " is not stored.");
+			}
+			return storeByStoreID.get(storeID);
 		} catch (SQLException e)
 		{
 			throw new KahinaException("SQL error.");
@@ -180,6 +174,7 @@ public class DbDataManager extends DataManager
 
 	protected void setStoreForID(int id, int storeID)
 	{
+		System.err.println("ssfi" + id + ":" + storeID);
 		try
 		{
 			updateStoreForIDStatement.setInt(1, storeID);
@@ -188,6 +183,7 @@ public class DbDataManager extends DataManager
 			{
 				insertStoreForIDStatement.setInt(1, id);
 				insertStoreForIDStatement.setInt(2, storeID);
+				insertStoreForIDStatement.execute();
 			}
 		} catch (SQLException e)
 		{

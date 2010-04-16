@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.data.LightweightKahinaObject;
+import org.kahina.core.data.lightweight.LightweightKahinaObject;
 import org.kahina.core.data.text.KahinaTextWithMarking;
 
 public class KahinaSourceFileModel extends KahinaObject implements LightweightKahinaObject

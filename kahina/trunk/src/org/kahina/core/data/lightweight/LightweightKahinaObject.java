@@ -1,4 +1,4 @@
-package org.kahina.core.data;
+package org.kahina.core.data.lightweight;
 
 /**
  * Clients who do not wish to implement their own database data store should

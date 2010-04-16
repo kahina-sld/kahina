@@ -62,7 +62,6 @@ public abstract class DataManager
      */
     public void store(KahinaObject object)
     {
-    	System.err.println("storing " + object.getClass() + "/" + object.getID());
     	int id = object.getID();
     	DataStore store = getStoreForType(object.getClass());
     	setStoreForID(id, store);
@@ -78,8 +77,7 @@ public abstract class DataManager
     @SuppressWarnings("unchecked")
 	public final <T extends KahinaObject> T retrieve(Class<T> type, int id)
     {
-    	System.err.println("retrieving " + type + "/" + id);
-        return (T) getStoreForType(type).retrieve(id);
+        return (T) getStoreForID(id).retrieve(id);
     }
     
     public KahinaObject retrieve(int id)

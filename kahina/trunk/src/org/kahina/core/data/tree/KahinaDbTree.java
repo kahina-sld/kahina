@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.LightweightKahinaObject;
+import org.kahina.core.data.lightweight.LightweightKahinaObject;
 import org.kahina.core.io.database.DatabaseHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

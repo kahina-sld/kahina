@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.LightweightKahinaObject;
+import org.kahina.core.data.lightweight.LightweightKahinaObject;
 import org.kahina.core.io.database.DatabaseHandler;
 
 public class KahinaDbChart extends KahinaChart implements

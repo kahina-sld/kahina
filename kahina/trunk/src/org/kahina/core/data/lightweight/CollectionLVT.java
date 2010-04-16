@@ -23,34 +23,35 @@ public class CollectionLVT extends LVT
 
 	private Constructor<?> constructor;
 
-	private static Map<LightweightDbStore, List<Object>> referenceValuesBeingStoredByStore = new HashMap<LightweightDbStore, List<Object>>();
+	private static Map<DataManager, List<Object>> referenceValuesBeingStoredByManager = new HashMap<DataManager, List<Object>>();
 
 	private List<Object> referenceValuesBeingStored;
 
-	private static Map<LightweightDbStore, List<Integer>> referencesBeingStoredByStore = new HashMap<LightweightDbStore, List<Integer>>();
+	private static Map<DataManager, List<Integer>> referencesBeingStoredByManager = new HashMap<DataManager, List<Integer>>();
 
 	private List<Integer> referencesBeingStored;
 
-	private static Map<LightweightDbStore, Map<Integer, Object>> referenceValuesBeingRetrievedByStore = new HashMap<LightweightDbStore, Map<Integer, Object>>();
+	private static Map<DataManager, Map<Integer, Object>> referenceValuesBeingRetrievedByManager = new HashMap<DataManager, Map<Integer, Object>>();
 
 	private Map<Integer, Object> referenceValuesBeingRetrieved;
 
 	private CollectionLVT(LightweightDbStore store, DataManager manager)
 	{
 		super(store, manager);
-		if (!referenceValuesBeingStoredByStore.containsKey(store))
+		if (!referenceValuesBeingStoredByManager.containsKey(store))
 		{
-			referenceValuesBeingStoredByStore.put(store,
+			referenceValuesBeingStoredByManager.put(manager,
 					new ArrayList<Object>());
-			referenceValuesBeingRetrievedByStore.put(store,
+			referenceValuesBeingRetrievedByManager.put(manager,
 					new HashMap<Integer, Object>());
-			referencesBeingStoredByStore.put(store, new ArrayList<Integer>());
+			referencesBeingStoredByManager.put(manager,
+					new ArrayList<Integer>());
 		}
-		referenceValuesBeingStored = referenceValuesBeingStoredByStore
-				.get(store);
-		referencesBeingStored = referencesBeingStoredByStore.get(store);
-		referenceValuesBeingRetrieved = referenceValuesBeingRetrievedByStore
-				.get(store);
+		referenceValuesBeingStored = referenceValuesBeingStoredByManager
+				.get(manager);
+		referencesBeingStored = referencesBeingStoredByManager.get(manager);
+		referenceValuesBeingRetrieved = referenceValuesBeingRetrievedByManager
+				.get(manager);
 	}
 
 	public static CollectionLVT createListLVT(Type type,

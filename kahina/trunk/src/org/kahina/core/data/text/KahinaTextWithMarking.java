@@ -1,7 +1,7 @@
 package org.kahina.core.data.text;
 
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.data.LightweightKahinaObject;
+import org.kahina.core.data.lightweight.LightweightKahinaObject;
 
 public class KahinaTextWithMarking extends KahinaObject implements LightweightKahinaObject
 {

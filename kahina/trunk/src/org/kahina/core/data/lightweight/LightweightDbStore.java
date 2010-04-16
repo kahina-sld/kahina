@@ -81,7 +81,8 @@ public class LightweightDbStore extends DbDataStore
 
 	private Map<Integer, KahinaObject> currentlyBeingRetrieved = new HashMap<Integer, KahinaObject>();
 
-	public LightweightDbStore(Class<? extends KahinaObject> datatype, DbDataManager manager, DatabaseHandler db)
+	public LightweightDbStore(Class<? extends KahinaObject> datatype,
+			DbDataManager manager, DatabaseHandler db)
 	{
 		super(manager, db);
 		createTablesIfNecessary();
@@ -216,6 +217,7 @@ public class LightweightDbStore extends DbDataStore
 				lvts[fieldID].retrieveFieldValue(id, fieldID, fields[fieldID],
 						result);
 			}
+			System.err.println("retrieved " + id + " " + result);
 			return result;
 		} catch (IllegalArgumentException e)
 		{
@@ -238,6 +240,7 @@ public class LightweightDbStore extends DbDataStore
 	@Override
 	public void store(KahinaObject object, int id)
 	{
+		System.err.println("storing " + id + " " + object);
 		if (!currentlyBeingStored.add(id))
 		{
 			return;
@@ -264,7 +267,8 @@ public class LightweightDbStore extends DbDataStore
 		{
 			selectFieldValueIntStatement.setInt(1, id);
 			selectFieldValueIntStatement.setInt(2, fieldID);
-			return db.queryInteger(selectFieldValueIntStatement);
+			Integer result = db.queryInteger(selectFieldValueIntStatement);
+			return result;
 		} catch (SQLException e)
 		{
 			throw new KahinaException("SQL error.", e);
@@ -273,6 +277,7 @@ public class LightweightDbStore extends DbDataStore
 
 	void storeInt(int objectID, int fieldID, Integer value)
 	{
+		System.err.println("setting " + objectID + "-" + fieldID + " to " + value);
 		try
 		{
 			if (value == null)
@@ -282,15 +287,12 @@ public class LightweightDbStore extends DbDataStore
 			{
 				updateFieldValueIntStatement.setInt(1, value);
 			}
-
 			updateFieldValueIntStatement.setInt(2, objectID);
 			updateFieldValueIntStatement.setInt(3, fieldID);
-
 			if (updateFieldValueIntStatement.executeUpdate() == 0)
 			{
 				insertFieldValueIntStatement.setInt(1, objectID);
 				insertFieldValueIntStatement.setInt(2, fieldID);
-
 				if (value == null)
 				{
 					insertFieldValueIntStatement.setNull(3, Types.INTEGER);
