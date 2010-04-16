@@ -1,6 +1,7 @@
 package org.kahina.core.bridge;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaControlEvent;
@@ -25,6 +26,11 @@ public class KahinaBridge implements KahinaListener
         this.gui = gui;
         this.control = control;
         control.registerListener("control", this);
+    }
+    
+    public KahinaStep generateStep()
+    {
+        return new KahinaStep();
     }
     
     public void processEvent(KahinaEvent e)

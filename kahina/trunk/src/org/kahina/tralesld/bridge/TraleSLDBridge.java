@@ -21,6 +21,7 @@ import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.lp.event.LogicProgrammingBridgeEvent;
 import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 import org.kahina.tralesld.TraleSLDInstance;
+import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
@@ -44,7 +45,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
         System.err.println("initializeParseTrace(\"" + parsedSentenceList + "\")");
         List<String> wordList = PrologUtilities.parsePrologStringList(parsedSentenceList);
-        LogicProgrammingStep newStep = new LogicProgrammingStep();
+        TraleSLDStep newStep = generateStep();
         newStep.setGoalDesc("init");
         newStep.setExternalID(0);
         stepIDConv.put(0, newStep.getID());
@@ -61,7 +62,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
         int newEdgeID = chart.addEdge(left, right, ruleName,TraleSLDChartEdgeStatus.ACTIVE);
         activeEdgeStack.add(0, newEdgeID);
         
-        LogicProgrammingStep newStep = new LogicProgrammingStep();
+        TraleSLDStep newStep = generateStep();
         newStep.setGoalDesc("rule(" + ruleName + ")");
         newStep.setExternalID(extID);
         stepIDConv.put(extID, newStep.getID());
@@ -161,5 +162,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
         System.err.println("registerUnblockedPseudoStepInformation(" + extID + "," + extBlockedPseudoStepID + ",\"" + goal + "\")");
 	}
+    
+    public TraleSLDStep generateStep()
+    {
+        return new TraleSLDStep();
+    }
 
 }

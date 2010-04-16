@@ -3,6 +3,7 @@ package org.kahina.lp.bridge;
 import java.util.HashMap;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.KahinaStep;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
@@ -47,7 +48,7 @@ public class LogicProgrammingBridge extends KahinaBridge
         Integer intID = stepIDConv.get(extID);
         if (intID == null)
         {
-            LogicProgrammingStep newStep = new LogicProgrammingStep();
+            LogicProgrammingStep newStep = generateStep();
             intID = newStep.getID();
             newStep.setExternalID(extID);
             System.err.println(newStep);
@@ -135,6 +136,11 @@ public class LogicProgrammingBridge extends KahinaBridge
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
         currentID = stepID;
         control.processEvent(new KahinaSelectionEvent(stepID));
+    }
+    
+    public LogicProgrammingStep generateStep()
+    {
+        return new LogicProgrammingStep();
     }
        
     public char getPressedButton()
