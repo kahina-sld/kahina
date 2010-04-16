@@ -32,6 +32,12 @@ public class IntegerLVT extends LVT
 	}
 
 	@Override
+	Object retrieveReferenceValue(Integer reference)
+	{
+		return reference;
+	}
+
+	@Override
 	void storeFieldValue(int objectID, int fieldID, Field field,
 			KahinaObject object) throws IllegalAccessException
 	{
@@ -40,13 +46,7 @@ public class IntegerLVT extends LVT
 	}
 
 	@Override
-	Object retrieveReferenceValue(Integer reference)
-	{
-		return reference;
-	}
-
-	@Override
-	int storeAsReferenceValue(Object element)
+	Integer storeAsReferenceValue(Object element)
 	{
 		return (Integer) element;
 	}

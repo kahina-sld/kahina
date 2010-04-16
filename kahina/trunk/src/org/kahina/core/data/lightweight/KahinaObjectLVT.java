@@ -13,7 +13,8 @@ public class KahinaObjectLVT extends LVT
 		super(store, manager);
 	}
 
-	public static LVT createKahinaObjectLVT(Type type, LightweightDbStore store, DataManager manager)
+	public static LVT createKahinaObjectLVT(Type type,
+			LightweightDbStore store, DataManager manager)
 	{
 		if (type instanceof Class<?>
 				&& KahinaObject.class.isAssignableFrom((Class<?>) type))
@@ -24,35 +25,37 @@ public class KahinaObjectLVT extends LVT
 	}
 
 	@Override
-	void retrieveFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object)
-			throws IllegalAccessException
+	void storeFieldValue(int objectID, int fieldID, Field field,
+			KahinaObject object) throws IllegalAccessException
 	{
-		field.set(object, manager
-				.retrieve(store.retrieveInt(objectID, fieldID)));
+		store.storeInt(objectID, fieldID, storeAsReferenceValue(field
+				.get(object)));
 	}
 
 	@Override
-	void storeFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object)
-			throws IllegalAccessException
+	Integer storeAsReferenceValue(Object value)
 	{
-		store.storeInt(objectID, fieldID, object.getID());
-		manager.store((KahinaObject) field.get(object));
+		if (value == null)
+		{
+			return null;
+		}
+		KahinaObject object = (KahinaObject) value;
+		manager.store(object);
+		return object.getID();
+	}
+
+	@Override
+	void retrieveFieldValue(int objectID, int fieldID, Field field,
+			KahinaObject object) throws IllegalAccessException
+	{
+		field.set(object, retrieveReferenceValue(store.retrieveInt(objectID,
+				fieldID)));
 	}
 
 	@Override
 	Object retrieveReferenceValue(Integer reference)
 	{
 		return manager.retrieve(reference);
-	}
-
-	@Override
-	int storeAsReferenceValue(Object value)
-	{
-		KahinaObject object = (KahinaObject) value;
-		manager.store(object);
-		return object.getID();
 	}
 
 	@Override

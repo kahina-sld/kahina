@@ -114,7 +114,7 @@ public abstract class LVT
 
 	abstract Object retrieveReferenceValue(Integer reference);
 
-	abstract int storeAsReferenceValue(Object element);
+	abstract Integer storeAsReferenceValue(Object element);
 
 	abstract void deleteReferenceValue(Integer reference);
 

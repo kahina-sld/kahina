@@ -187,7 +187,7 @@ public class CollectionLVT extends LVT
 	}
 
 	@Override
-	int storeAsReferenceValue(Object object)
+	Integer storeAsReferenceValue(Object object)
 	{
 		int size = referenceValuesBeingStored.size();
 		for (int i = 0; i < size; i++)
