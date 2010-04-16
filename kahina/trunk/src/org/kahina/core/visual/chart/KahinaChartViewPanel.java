@@ -10,10 +10,11 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.core.visual.tree.KahinaTreeView;
 
-public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChart>
+public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
 {
     BufferedImage image;
     KahinaChartView v;
@@ -30,6 +31,13 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChart>
         v = new KahinaChartView();
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaChartViewListener(this, marker));
+    }
+    
+    public void setView(KahinaChartView view)
+    {
+        this.v = view;
+        updateDisplay();
+        repaint();
     }
     
     public void paintComponent(Graphics canvas)

@@ -35,15 +35,15 @@ public class KahinaTreeTest
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
-            //TestLayeredTree m1 = TestLayeredTree.importXML(dom);
-            KahinaTree m1 = KahinaDbTree.importXML(dom, decider, data, null);
+            TestLayeredTree m1 = TestLayeredTree.importXML(dom);
+            //KahinaTree m1 = KahinaDbTree.importXML(dom, decider, data, null);
             
             file = new File("src/org/kahina/core/test/trale-tree2.xml");
             dbf = DocumentBuilderFactory.newInstance();
             db = dbf.newDocumentBuilder();
             dom = db.parse(file);
-            //TestLayeredTree m2 = TestLayeredTree.importXML(dom);
-            KahinaTree m2 = KahinaDbTree.importXML(dom, decider, data, m1);
+            TestLayeredTree m2 = TestLayeredTree.importXML(dom);
+            //KahinaTree m2 = KahinaDbTree.importXML(dom, decider, data, m1);
             
             KahinaTreeView v0 = new KahinaTreeView();
             v0.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);

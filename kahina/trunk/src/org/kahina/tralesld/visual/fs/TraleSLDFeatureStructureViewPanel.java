@@ -11,18 +11,19 @@ import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
 
 public class TraleSLDFeatureStructureViewPanel extends
-		KahinaViewPanel<TraleSLDFeatureStructure>
+		KahinaViewPanel<TraleSLDFeatureStructureView>
 {
-	
+	private TraleSLDFeatureStructureView v;
+    
 	private JPanel innerPanel;
 	
 	private VisualizationUtility util;
 
 	private TraleSLDFeatureStructureView view;
 	
-	public TraleSLDFeatureStructureViewPanel(TraleSLDFeatureStructureView view)
+	public TraleSLDFeatureStructureViewPanel()
 	{
-		this.view = view;
+        v = new TraleSLDFeatureStructureView();
 		util = VisualizationUtility.getDefault();
 		innerPanel = new JPanel();
 		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
@@ -44,5 +45,11 @@ public class TraleSLDFeatureStructureViewPanel extends
 		}
 		innerPanel.repaint();
 	}
+
+    @Override
+    public void setView(TraleSLDFeatureStructureView view)
+    {
+        this.v = view;
+    }
 
 }

@@ -1,6 +1,7 @@
 package org.kahina.tralesld.control.event;
 
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class TraleSLDBridgeEvent extends KahinaEvent
 {
@@ -47,5 +48,24 @@ public class TraleSLDBridgeEvent extends KahinaEvent
     public int getIntContent()
     {
         return intContent;
+    }
+    
+    public String toString()
+    {
+        String s = "tralesld bridge: ";
+        switch (eventType)
+        {
+            case TraleSLDBridgeEventType.RULE_APP:
+            {
+                s += "ruleApplication(" + externalID + ",\"" + strContent + "\")";
+                break;
+            }
+            case TraleSLDBridgeEventType.INIT:
+            {
+                s += "init(" + strContent + ")";
+                break;
+            }
+        }
+        return s;
     }
 }

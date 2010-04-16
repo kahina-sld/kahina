@@ -5,7 +5,7 @@ import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
 
-public class KahinaView<T extends KahinaObject> implements KahinaListener
+public abstract class KahinaView<T extends KahinaObject> implements KahinaListener
 {
     //handle global events by means of a controller
     protected KahinaController control;
@@ -37,12 +37,7 @@ public class KahinaView<T extends KahinaObject> implements KahinaListener
         
     }
     
-    public KahinaViewPanel<T> wrapInPanel()
-    {
-        KahinaViewPanel<T> panel = new KahinaViewPanel<T>();
-        panel.setView(this);
-        return panel;
-    }
+    public abstract KahinaViewPanel<?> wrapInPanel();
     
     public String getTitle()
     {

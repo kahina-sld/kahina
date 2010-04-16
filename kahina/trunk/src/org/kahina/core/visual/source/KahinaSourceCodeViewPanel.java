@@ -4,9 +4,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
+import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeLocation>
+public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeView>
 {
     KahinaSourceCodeView v;
     JTextArea codePane;
@@ -22,6 +23,13 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeL
         this.add(codeScrollPane);
         //files = new HashMap<String, SourceFileModel>();
         //this.addComponentListener(this);
+    }
+    
+    public void setView(KahinaSourceCodeView view)
+    {
+        this.v = view;
+        updateDisplay();
+        repaint();
     }
     
     public void updateDisplay()

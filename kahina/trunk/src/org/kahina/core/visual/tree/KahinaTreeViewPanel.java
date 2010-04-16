@@ -12,11 +12,13 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.visual.KahinaDefaultView;
+import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTree>
+public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
 {
-    KahinaTreeView v;
+    protected KahinaTreeView v;
     BufferedImage image;
     
     public KahinaTreeViewPanel()
@@ -31,6 +33,13 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTree>
         v = new KahinaTreeView();
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaTreeViewListener(this, marker));
+    }
+    
+    public void setView(KahinaTreeView view)
+    {
+        this.v = view;
+        updateDisplay();
+        repaint();
     }
     
     public void paintComponent(Graphics cnv)
@@ -51,11 +60,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTree>
     }
     
     public void updateDisplay()
-    {
-        //TODO: make this a lot more consistent
-        System.err.println("Recalculating!");
-        v.recalculate();
-        
+    {      
         image = new BufferedImage(v.getDisplayWidth() + 1, v.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = image.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;

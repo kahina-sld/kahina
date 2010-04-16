@@ -17,6 +17,8 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 {
+    private static boolean verbose = true;
+    
     //call dimension is always stored in a secondary tree structure
     protected KahinaTree secondaryTree;
     
@@ -37,6 +39,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         nonDetermBecauseOfRedo = new HashSet<Integer>();
         control.registerListener("tree", this);
         control.registerListener("logic programming bridge", this);
+        if (verbose) System.err.println("new LogicProgrammingTreeBehavior(" + tree + "," + control + "," + kahina + "," + secondaryTree + ")");
     }
     
     /**
@@ -45,6 +48,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
      */
     public void integrateIncomingNode(int stepID, int ancestorID)
     {    
+        if (verbose) System.err.println("LogicProgrammingTreeBehavior.integratingIncomingNode(" + stepID + "," + ancestorID + ")");
         object.addChild(lastActiveID, stepID);
         lastActiveID = stepID;
         secondaryTree.addChild(ancestorID, stepID);
@@ -58,6 +62,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
      */
     public void processStepInformation(int stepID, String stepInfo)
     {
+        if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepInformation(" + stepID + ",\"" + stepInfo + "\")");
         object.setNodeCaption(stepID, LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo);
     }
     
@@ -67,6 +72,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
      */
     public void processStepRedo(int lastStepID)
     {
+        if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepRedo(" + lastStepID + ")");
+        
         nonDetermBecauseOfRedo.add(lastStepID);
 
         //generate a  new node corresponding to the new internal step
@@ -108,6 +115,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
      */
     public void processStepFinished(int stepID)
     {
+        if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepFinished(" + stepID + ")");
+        
         deterministicallyExited.add(stepID);
         lastActiveID = stepID;
     }
@@ -118,6 +127,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
      */
     public void processStepFail(int stepID)
     {
+        if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepFail(" + stepID + ")");
+        
         deterministicallyExited.add(stepID);
         object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);   
         //TODO: determine whether behavior is correct; this operation could be risky
@@ -126,7 +137,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     
     public void processEvent(KahinaEvent e)
     {
-        System.err.println("LogicProgrammingBridge received event: " + e);
+        if (verbose) System.err.println("LogicProgrammingTreeBehavior.processEvent(" + e + ")");
         if (e instanceof KahinaTreeEvent)
         {
             processEvent((KahinaTreeEvent) e);

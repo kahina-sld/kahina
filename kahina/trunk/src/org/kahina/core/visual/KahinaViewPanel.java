@@ -9,15 +9,8 @@ import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 
-public class KahinaViewPanel<T extends KahinaObject> extends JPanel implements KahinaListener
-{
-    protected KahinaView<T> v;
-    
-    public KahinaViewPanel()
-    {
-        
-    }
-    
+public abstract class KahinaViewPanel<T extends KahinaView> extends JPanel implements KahinaListener
+{    
     public void processEvent(KahinaEvent event)
     {
         System.err.println("KahinaViewPanel received event: " + event.toString());
@@ -27,29 +20,10 @@ public class KahinaViewPanel<T extends KahinaObject> extends JPanel implements K
         }
     }
     
-    public void setView(KahinaView<T> view)
-    {
-        this.v = view;
-        updateDisplay();
-        repaint();
-    }
+    public abstract void setView(T view);
     
     public void updateDisplay()
     {
         
-    }
-    
-    public void paintComponent(Graphics canvas)
-    {
-        String displayString;
-        if (v.model != null)
-        {
-            displayString = v.model.toString();
-        }
-        else
-        {
-            displayString = "no info";
-        }
-        canvas.drawString(displayString, 50, 50);
     }
 }

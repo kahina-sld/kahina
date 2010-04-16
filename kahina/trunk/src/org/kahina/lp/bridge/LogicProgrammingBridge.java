@@ -18,7 +18,9 @@ import org.kahina.lp.event.LogicProgrammingBridgeEvent;
 import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingBridge extends KahinaBridge
-{   
+{  
+    private static boolean verbose = true;
+    
     //a dynamic map from external step IDs to most recent corresponding tree nodes
     protected HashMap<Integer,Integer> stepIDConv;
     
@@ -33,9 +35,10 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     
     public LogicProgrammingBridge(KahinaInstance kahina, KahinaGUI gui, KahinaController control)
-    {
+    {       
         super(kahina, gui, control);
         stepIDConv = new HashMap<Integer,Integer>();
+        if (verbose) System.err.println("new LogicProgrammingBridge(" + kahina + "," + gui + "," + control + ")");
     }
     
     /**
@@ -51,16 +54,16 @@ public class LogicProgrammingBridge extends KahinaBridge
             LogicProgrammingStep newStep = generateStep();
             intID = newStep.getID();
             newStep.setExternalID(extID);
-            System.err.println("new step with id " + intID + ": " + newStep);
             newStep.store();
             stepIDConv.put(extID, intID);
         }
+        if (verbose) System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ") = " + intID);
         return intID;
     }
     
     public void registerStepInformation(int extID, String stepInfo)
     {
-        System.err.println("registerStepInformation(" + extID + ",\"" + stepInfo + "\")");
+        if (verbose) System.err.println("LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + stepInfo + "\")");
         int stepID = convertStepID(extID);
         LogicProgrammingStep.get(stepID).setGoalDesc(stepInfo);
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, stepInfo));
@@ -70,7 +73,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     public void registerStepSourceCodeLocation(int extID, String absolutePath, int lineNumber)
     {
-        System.err.println("registerStepSourceCodeLocation(" + extID + ",\"" + absolutePath + "\"," + lineNumber + ")");
+        if (verbose) System.err.println("LogicProgrammingBridge.registerStepSourceCodeLocation(" + extID + ",\"" + absolutePath + "\"," + lineNumber + ")");
         int stepID = convertStepID(extID);
         LogicProgrammingStep.get(stepID).setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1));
         currentID = stepID;
@@ -79,7 +82,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     public void registerStepLocation(int extID, int parentID)
     {
-        System.err.println("registerStepLocation(" + extID + "," + parentID + ")");
+        if (verbose) System.err.println("LogicProgrammingBridge.registerStepLocation(" + extID + "," + parentID + ")");
         int stepID = convertStepID(extID);
         control.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, convertStepID(parentID)));
         currentID = stepID;
@@ -88,7 +91,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     public void registerStepRedo(int extID)
     {
-        System.err.println("registerStepRedo(" + extID + ")");
+        if (verbose) System.err.println("LogicProgrammingBridge.registerStepRedo(" + extID + ")");
         int lastStepID = convertStepID(extID);
         int newStepID = kahina.getNewStepID();
         LogicProgrammingStep newStep = LogicProgrammingStep.get(lastStepID).copy();
@@ -101,7 +104,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     public void registerStepExit(int extID, boolean deterministic)
     {
-        System.err.println("registerStepExit(" + extID + "," + deterministic + ")");
+        if (verbose) System.err.println("LogicProgrammingBridge.registerStepExit(" + extID + "," + deterministic + ")");
         LogicProgrammingStep step = LogicProgrammingStep.get(convertStepID(extID));
         if (deterministic)
         {
@@ -120,7 +123,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     public void registerStepFinished(int extID)
     {
-        System.err.println("registerStepFinished(" + extID + ")");
+        if (verbose) System.err.println("LogicProgrammingBridge.registerStepFinished(" + extID + ")");
         int stepID = convertStepID(extID);
         control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
         currentID = stepID;
@@ -129,7 +132,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     public void registerStepFailure(int extID)
     {
-        System.err.println("registerStepFailure(" + extID + ")");
+        if (verbose) System.err.println("LogicProgrammingBridge.registerStepFailure(" + extID + ")");
         int stepID = convertStepID(extID);
         LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.FAIL);   
         LogicProgrammingStep.get(stepID).store();  
