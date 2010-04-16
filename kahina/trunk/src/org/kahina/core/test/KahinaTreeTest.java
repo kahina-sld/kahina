@@ -31,14 +31,14 @@ public class KahinaTreeTest
         	LayerDecider decider = new TestLayerDecider();
         	DatabaseHandler data = new DatabaseHandler();
         	
-            File file = new File("src/org/kahina/test/trale-tree.xml");
+            File file = new File("src/org/kahina/core/test/trale-tree.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
             //TestLayeredTree m1 = TestLayeredTree.importXML(dom);
             KahinaTree m1 = KahinaDbTree.importXML(dom, decider, data, null);
             
-            file = new File("src/org/kahina/test/trale-tree2.xml");
+            file = new File("src/org/kahina/core/test/trale-tree2.xml");
             dbf = DocumentBuilderFactory.newInstance();
             db = dbf.newDocumentBuilder();
             dom = db.parse(file);

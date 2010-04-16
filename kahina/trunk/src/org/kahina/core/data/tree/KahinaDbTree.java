@@ -70,15 +70,15 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
 
     private PreparedStatement getMaxNodeIDStatement;
 
-    public KahinaDbTree()
+    public KahinaDbTree(DatabaseHandler db)
     {
-        this(new DefaultLayerDecider());
+        this(new DefaultLayerDecider(), db);
     }
 
-    public KahinaDbTree(LayerDecider decider)
+    public KahinaDbTree(LayerDecider decider, DatabaseHandler db)
     {
         super(decider);
-        db = KahinaRunner.getDatabaseHandler();
+        this.db = db;
         createTablesIfNecessary();
         prepareStatements();
     }
@@ -547,7 +547,7 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
     public static KahinaTree importXML(Document dom, LayerDecider decider,
             DatabaseHandler db, KahinaTree primaryModel)
     {
-        KahinaDbTree m = new KahinaDbTree(decider);
+        KahinaDbTree m = new KahinaDbTree(decider, db);
         if (primaryModel != null)
         {
             m.setPrimaryModel(primaryModel);
