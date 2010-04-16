@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
 
 public class TraleSLDFeatureStructureViewPanel extends
 		KahinaViewPanel<TraleSLDFeatureStructureView>
@@ -18,8 +17,6 @@ public class TraleSLDFeatureStructureViewPanel extends
 	private JPanel innerPanel;
 	
 	private VisualizationUtility util;
-
-	private TraleSLDFeatureStructureView view;
 	
 	public TraleSLDFeatureStructureViewPanel()
 	{
@@ -38,7 +35,7 @@ public class TraleSLDFeatureStructureViewPanel extends
 		innerPanel.removeAll();
 		try
 		{
-			innerPanel.add(util.visualize(view.getGrisuMessage()));
+			innerPanel.add(util.visualize(v.getGrisuMessage()));
 		} catch (ParseException e)
 		{
 			innerPanel.add(new JLabel("Parse error: " + e.getMessage()));
