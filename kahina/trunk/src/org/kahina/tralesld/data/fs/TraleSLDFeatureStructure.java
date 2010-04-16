@@ -6,4 +6,9 @@ import org.kahina.core.data.lightweight.LightweightKahinaObject;
 public class TraleSLDFeatureStructure extends KahinaObject implements LightweightKahinaObject
 {
 	public String grisuMessage;
+	
+	public TraleSLDFeatureStructure(String grisuMessage)
+	{
+		this.grisuMessage = grisuMessage;
+	}
 }

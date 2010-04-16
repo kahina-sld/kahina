@@ -25,12 +25,15 @@ import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
+import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
-{
+{	
     TraleSLDInstance kahina;
     ArrayList<Integer> activeEdgeStack;
     HashSet<Integer> successfulEdges;   
+    
+    StringBuilder grisuMessage;
     
     public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui, KahinaController control)
     {
@@ -38,6 +41,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
         this.kahina = kahina;
         activeEdgeStack = new ArrayList<Integer>();
         successfulEdges = new HashSet<Integer>();
+        grisuMessage = new StringBuilder();
     }
 
     //TODO: processing of the sentence string should instead take place here
@@ -90,11 +94,23 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	public void registerMessageChunk(String chunk)
 	{
         System.err.println("registerMessageChunk(\"" + chunk + "\")");
+        grisuMessage.append(chunk);
 	}
 
 	public void registerMessageEnd(int extID, String type)
 	{
         System.err.println("registerMessageChunk(" + extID + ",\"" + type + "\")");
+        TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
+        TraleSLDFeatureStructure fs = new TraleSLDFeatureStructure(grisuMessage.toString());
+        if ("start".equals(type))
+        {
+        	step.startFeatStruct = fs;
+        } else
+        {
+        	step.endFeatStruct = fs;
+        }
+        step.store();
+        grisuMessage = new StringBuilder();
 	}
 
 	public void registerParseEnd()

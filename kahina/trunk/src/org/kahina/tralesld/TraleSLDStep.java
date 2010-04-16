@@ -1,5 +1,6 @@
 package org.kahina.tralesld;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
 
@@ -26,5 +27,10 @@ public class TraleSLDStep extends LogicProgrammingStep
     public void setEndFeatureStructure(TraleSLDFeatureStructure endFeatStruct)
     {
         this.endFeatStruct = endFeatStruct;
+    }
+    
+    public static TraleSLDStep get(int id)
+    {
+        return KahinaRunner.getDataManager().retrieve(TraleSLDStep.class, id);
     }
 }
