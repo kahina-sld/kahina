@@ -11,6 +11,7 @@ import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaView;
+import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaWindow extends JFrame
 {
@@ -69,7 +70,9 @@ public class KahinaWindow extends JFrame
             {
                 maxY = height;
             }
-            viewWindow.add(new JScrollPane(view.wrapInPanel()));
+            KahinaViewPanel panel = view.wrapInPanel();
+            control.registerListener("redraw", panel);
+            viewWindow.add(new JScrollPane(panel));
             viewWindow.setTitle(view.getTitle());
             viewWindow.setSize(width, height);
             viewWindow.setLocation(xPos, yPos);

@@ -16,4 +16,9 @@ public class KahinaUpdateEvent extends KahinaEvent
     {
         return selectedStep;
     }
+    
+    public String toString()
+    {
+        return  "update: node " + selectedStep;
+    }
 }

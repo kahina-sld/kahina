@@ -17,7 +17,8 @@ public class KahinaView<T extends KahinaObject> implements KahinaListener
     
     public void processEvent(KahinaEvent event)
     {
-        System.err.println("KahinaView recieved event: " + event.toString());
+        System.err.println("KahinaView received event: " + event.toString());
+        recalculate();
     }
     
     public void display(T model)
@@ -28,6 +29,12 @@ public class KahinaView<T extends KahinaObject> implements KahinaListener
     public T getModel()
     {
         return model;
+    }
+    
+    //override this method to define necessary operations after changes to the model (coordinate recomputations etc.)
+    public void recalculate()
+    {
+        
     }
     
     public KahinaViewPanel<T> wrapInPanel()

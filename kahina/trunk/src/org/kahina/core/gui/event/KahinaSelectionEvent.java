@@ -31,4 +31,9 @@ public class KahinaSelectionEvent extends KahinaEvent
     {
         return view;
     }
+    
+    public String toString()
+    {
+        return  "select node " + selectedStep;
+    }
 }

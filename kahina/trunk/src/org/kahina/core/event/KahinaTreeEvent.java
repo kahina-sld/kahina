@@ -30,4 +30,18 @@ public class KahinaTreeEvent extends KahinaEvent
     {
         return secondID;
     }
+    
+    public String toString()
+    {
+        String s = "tree - ";
+        switch (treeEventType)
+        {
+            case KahinaTreeEventType.NEW_NODE:
+            {
+                s += "new node: firstID = " + firstID + ", secondID = " + secondID;
+                break;
+            }
+        }
+        return s;
+    }
 }

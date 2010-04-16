@@ -143,13 +143,37 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         maxNodeWidth = 1;
     }
     
+    public void display(KahinaTree treeModel)
+    {
+        treeLayer = 0;
+        model = treeModel;
+        nodeBorderColor = new HashMap<Integer, Color>();
+        recalculate();
+    }
+    
+    public void displaySecondaryTree(KahinaTree treeModel) throws KahinaTypeException
+    {
+        this.secondaryTreeModel = treeModel;
+        ((KahinaTree) this.secondaryTreeModel).setReferenceNode(model.getReferenceNode());
+        this.secondaryTreeModel.setPrimaryModel(model);
+        nodeBorderColor = new HashMap<Integer, Color>();
+        recalculate();
+    }
+    
+    public void display(KahinaTree layerModel, int layerID, int referenceNode) throws KahinaTypeException
+    {
+        treeLayer = layerID;
+        layerModel.setReferenceNode(referenceNode);
+        model = layerModel;
+        nodeBorderColor = new HashMap<Integer, Color>();
+        recalculate();
+    }
+    
     public void zoomIn()
     {
         if (fontSize < 30)
         {
             fontSize += 1;
-            resetAllStructures();
-            calculateCoordinates();
         }
         else
         {
@@ -162,8 +186,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         if (fontSize > 6)
         {
             fontSize -= 1;
-            resetAllStructures();
-            calculateCoordinates();
         }
         else
         {
@@ -174,8 +196,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     public void setZoomLevel(int level)
     {
         fontSize = level;
-        resetAllStructures();
-        calculateCoordinates();
     }
     
     public int getZoomLevel()
@@ -191,8 +211,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     public void setHorizontalDistance(int horizontalDistance)
     {
         this.horizontalDistance = horizontalDistance;
-        resetAllStructures();
-        calculateCoordinates();
     }
     
     public void decreaseHorizontalDistance()
@@ -200,8 +218,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         if (horizontalDistance > 2)
         {
             horizontalDistance -= 1;
-            resetAllStructures();
-            calculateCoordinates();
         }
         else
         {
@@ -214,8 +230,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         if (horizontalDistance < 20)
         {
             horizontalDistance += 1;
-            resetAllStructures();
-            calculateCoordinates();
         }
         else
         {
@@ -231,8 +245,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     public void toggleSecondDimensionDisplay()
     {
         displaySecondDimension = !displaySecondDimension;
-        resetAllStructures();
-        calculateCoordinates();
     }
 
     public int getVerticalDistance()
@@ -243,8 +255,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     public void setVerticalDistance(int verticalDistance)
     {
         this.verticalDistance = verticalDistance;
-        resetAllStructures();
-        calculateCoordinates();
     }
     
     public void decreaseVerticalDistance()
@@ -252,8 +262,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         if (verticalDistance > 2)
         {
             verticalDistance -= 1;
-            resetAllStructures();
-            calculateCoordinates();
         }
         else
         {
@@ -266,8 +274,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         if (verticalDistance < 20)
         {
             verticalDistance += 1;
-            resetAllStructures();
-            calculateCoordinates();
         }
         else
         {
@@ -285,8 +291,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         if (collapsePolicy >= 0 && collapsePolicy <= 2)
         {
             this.collapsePolicy = collapsePolicy;
-            resetAllStructures();
-            calculateCoordinates();
         }
         else
         {
@@ -389,8 +393,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         if (newPolicy >= 0 && newPolicy <= 4)
         {
             nodeDisplayPolicy = newPolicy;
-            resetAllStructures();
-            calculateCoordinates();
         }
         else
         {
@@ -442,8 +444,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         if (newPolicy >= 0 && newPolicy <= 2)
         {
             terminalsPolicy = newPolicy;
-            resetAllStructures();
-            calculateCoordinates();
         }
         else
         {
@@ -578,35 +578,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         nodeY = new HashMap<Integer, Integer>();
         
         subtreeWidths = new HashMap<Integer,WidthVector>();
-    }
-    
-    public void display(KahinaTree treeModel)
-    {
-        treeLayer = 0;
-        model = treeModel;
-        nodeBorderColor = new HashMap<Integer, Color>();
-        resetAllStructures();
-        calculateCoordinates();
-    }
-    
-    public void displaySecondaryTree(KahinaTree treeModel) throws KahinaTypeException
-    {
-        this.secondaryTreeModel = treeModel;
-        ((KahinaTree) this.secondaryTreeModel).setReferenceNode(model.getReferenceNode());
-        this.secondaryTreeModel.setPrimaryModel(model);
-        nodeBorderColor = new HashMap<Integer, Color>();
-        resetAllStructures();
-        calculateCoordinates();
-    }
-    
-    public void display(KahinaTree layerModel, int layerID, int referenceNode) throws KahinaTypeException
-    {
-        treeLayer = layerID;
-        layerModel.setReferenceNode(referenceNode);
-        model = layerModel;
-        nodeBorderColor = new HashMap<Integer, Color>();
-        resetAllStructures();
-        calculateCoordinates();
     }
     
     public void calculateCoordinates()
@@ -891,8 +862,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
             KahinaTree firstModel = model;
             model = secondaryTreeModel;
             secondaryTreeModel = firstModel;
-            resetAllStructures();
-            calculateCoordinates();
         }
     }
     
@@ -1045,5 +1014,12 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         KahinaTreeViewPanel panel = new KahinaTreeViewPanel();
         panel.setView(this);
         return panel;
+    }
+    
+    public void recalculate()
+    {
+        resetAllStructures();
+        calculateCoordinates();
+        System.err.println("Levels:\n" + showLevels());
     }
 }

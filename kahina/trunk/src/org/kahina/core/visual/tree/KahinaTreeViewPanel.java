@@ -52,6 +52,10 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTree>
     
     public void updateDisplay()
     {
+        //TODO: make this a lot more consistent
+        System.err.println("Recalculating!");
+        v.recalculate();
+        
         image = new BufferedImage(v.getDisplayWidth() + 1, v.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = image.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;

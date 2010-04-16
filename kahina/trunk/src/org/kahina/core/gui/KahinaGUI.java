@@ -16,6 +16,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
@@ -98,6 +99,8 @@ public class KahinaGUI implements KahinaListener
         window = new KahinaWindow(this, control);
     }
     
+
+    @SuppressWarnings("unchecked")
     public void displayStepContent(int stepID)
     {
         KahinaStep step = KahinaRunner.getDataManager().retrieve(stepType, stepID);
@@ -129,6 +132,7 @@ public class KahinaGUI implements KahinaListener
             int selectedStep = e.getSelectedStep();
             control.processEvent(new KahinaUpdateEvent(selectedStep));
             displayStepContent(selectedStep);
+            control.processEvent(new KahinaRedrawEvent());
         }
     }
 }
