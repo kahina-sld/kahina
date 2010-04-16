@@ -13,7 +13,7 @@ public class TestKahinaObject extends KahinaObject implements
 	
 	public List<Integer> integers;
 	
-	//public List<TestKahinaObject> objects;
+	public List<TestKahinaObject> objects;
 	
 	public List<List<Integer>> intLists;
 	

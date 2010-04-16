@@ -64,7 +64,7 @@ public class LightweightDbStoreTest
 		Assert.assertEquals(list, object.integers);
 	}
 	
-	/*@Test
+	@Test
 	public void storeAndRetrieveTestObjectList()
 	{
 		List<TestKahinaObject> list = new ArrayList<TestKahinaObject>();
@@ -84,7 +84,7 @@ public class LightweightDbStoreTest
 			System.err.println("Actual: " + object.objects);
 			throw e;
 		}
-	}*/
+	}
 	
 	@Test
 	public void storeAndRetrieveIntListList()
@@ -106,6 +106,18 @@ public class LightweightDbStoreTest
 		manager.store(object);
 		object = manager.retrieve(TestKahinaObject.class, object.getID());
 		Assert.assertEquals(list, object.intLists);
+	}
+	
+	@Test
+	public void storeAndRetrieveIndirectlyCyclicList()
+	{
+		List<TestKahinaObject> list = new ArrayList<TestKahinaObject>();
+		TestKahinaObject object = new TestKahinaObject();
+		object.objects = list;
+		list.add(object);
+		manager.store(object);
+		object = manager.retrieve(TestKahinaObject.class, object.getID());
+		Assert.assertEquals(list, object.objects);
 	}
 
 	@After
