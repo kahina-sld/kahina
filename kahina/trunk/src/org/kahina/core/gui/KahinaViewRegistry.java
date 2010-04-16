@@ -25,6 +25,7 @@ public class KahinaViewRegistry
     
     public static KahinaView<?> generateViewFor(Class<?> type)
     {
+        System.err.println("generateViewFor(" + type.toString() + ")");
         Class<? extends KahinaView<?>> viewType = map.get(type);
         while (viewType == null)
         {
@@ -33,6 +34,7 @@ public class KahinaViewRegistry
         }      
         try
         {
+            System.err.println("viewType = " + viewType);
             KahinaView<?> view = viewType.newInstance();
             return view;
         }

@@ -2,6 +2,7 @@ package org.kahina.core.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
@@ -27,7 +28,6 @@ public class KahinaWindow extends JFrame
         
         this.setTitle("Kahina Debugging Environment");
         this.setLayout(new BorderLayout());
-        //this.setSize(Toolkit.getDefaultToolkit().getScreenSize());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         JMenuBar menuBar = new JMenuBar();
@@ -39,23 +39,40 @@ public class KahinaWindow extends JFrame
         gui.getControlPanel().build();
         this.add(gui.getControlPanel(), BorderLayout.PAGE_START);
         
+        int width = gui.getControlPanel().controlButtons.size() * 75;
+        int height = 100;
+        this.setSize(width, height);
+        
         setVisible(true);
         
-        //TODO: this does not work; perhaps because the components are not displayed yet?
-        Dimension dim = new Dimension();
-        dim.height = menuBar.getHeight() + gui.getControlPanel().getHeight();
-        dim.width = gui.getControlPanel().getWidth();
-        System.err.println(dim);
-        this.setSize(dim);
-        
         this.validate();
+        
+        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int xPos = 0;
+        int yPos = 0;
+        int maxY = height;
         
         //create windows for all the other other registered views
         for (KahinaView view : gui.views)
         {
             JFrame viewWindow = new JFrame();
+            xPos += width + 20;
+            width = view.getTitle().length() * 12 + 50;
+            if (xPos + width > screenWidth)
+            {
+                xPos = 0;
+                yPos = maxY + 20;
+                maxY = 0;
+            }
+            height = view.getTitle().length() * 6;       
+            if (height > maxY)
+            {
+                maxY = height;
+            }
             viewWindow.add(new JScrollPane(view.wrapInPanel()));
             viewWindow.setTitle(view.getTitle());
+            viewWindow.setSize(width, height);
+            viewWindow.setLocation(xPos, yPos);
             viewWindow.setVisible(true);
         }
     }

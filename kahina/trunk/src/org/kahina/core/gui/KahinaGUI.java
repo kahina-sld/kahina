@@ -74,10 +74,11 @@ public class KahinaGUI implements KahinaListener
         System.err.println("fill field to view!");
         for (Field field : stepType.getFields())
         {    
-            System.err.println("\t field: " + field.getName() + " class: " + field.getType());
+            System.err.println("\tfield: " + field.getName() + "\n\t\tclass: " + field.getType());
             if (KahinaObject.class.isAssignableFrom(field.getType()))
             {
-                KahinaView newView = KahinaViewRegistry.generateViewFor(stepType);
+                KahinaView newView = KahinaViewRegistry.generateViewFor(field.getType());
+                System.err.println("\t\tview: " + newView);
                 newView.setTitle("Step information: " + field.getName());
                 fieldToView.put(field, newView);
                 views.add(newView);

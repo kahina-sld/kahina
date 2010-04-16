@@ -29,7 +29,15 @@ public class KahinaViewPanel<T extends KahinaObject> extends JPanel
     
     public void paint(Graphics canvas)
     {
-        String displayString = v.model.toString();
+        String displayString;
+        if (v.model != null)
+        {
+            displayString = v.model.toString();
+        }
+        else
+        {
+            displayString = "no info";
+        }
         canvas.drawString(displayString, 50, 50);
     }
 }
