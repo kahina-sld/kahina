@@ -25,8 +25,6 @@ import org.kahina.core.io.database.DatabaseHandler;
 
 public class LightweightDbStore extends DbDataStore
 {
-	// TODO how to update collection and maps field values? Could be some
-	// serious recursive deleting.
 
 	private static final String CLIENT_ID = LightweightDbStore.class.getName();
 
@@ -72,6 +70,14 @@ public class LightweightDbStore extends DbDataStore
 
 	private PreparedStatement insertReferenceValueLongVarcharStatement;
 
+	private PreparedStatement deleteCollectionStatement;
+
+	private PreparedStatement deleteLongVarcharStatement;
+
+	private PreparedStatement getNewCollectionReferenceStatement;
+
+	private PreparedStatement insertCollectionElementStatement;
+
 	private Set<Integer> currentlyBeingStored = new HashSet<Integer>();
 
 	private Map<Integer, KahinaObject> currentlyBeingRetrieved = new HashMap<Integer, KahinaObject>();
@@ -108,7 +114,8 @@ public class LightweightDbStore extends DbDataStore
 		{
 			if (Modifier.isPublic(field.getModifiers()))
 			{
-				LVT lvt = LVT.createLVT((Class<?>) field.getGenericType());
+				LVT lvt = LVT.createLVT((Class<?>) field.getGenericType(),
+						this, manager);
 				if (lvt != null)
 				{
 					fields.add(field);
@@ -149,8 +156,8 @@ public class LightweightDbStore extends DbDataStore
 		db
 				.createTable(
 						REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME,
-						"value_id INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
-						"value LONG VARCHAR", "PRIMARY KEY value_id");
+						"reference INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
+						"value LONG VARCHAR", "PRIMARY KEY reference");
 		db.register(CLIENT_ID);
 	}
 
@@ -185,6 +192,17 @@ public class LightweightDbStore extends DbDataStore
 		insertReferenceValueLongVarcharStatement = db.prepareStatement(
 				"INSERT INTO " + REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME
 						+ " (value) VALUES (?)", new int[] { 1 });
+		deleteCollectionStatement = db.prepareStatement("DELETE FROM "
+				+ COLLECTION_ELEMENTS_TABLE_NAME + " WHERE collection_id = ?");
+		deleteLongVarcharStatement = db.prepareStatement("DELETE FROM "
+				+ REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME
+				+ " WHERE reference = ?");
+		getNewCollectionReferenceStatement = db // TODO not fully satisfying
+				.prepareStatement("SELECT MAX(collection_id) + 1 FROM "
+						+ COLLECTION_ELEMENTS_TABLE_NAME);
+		insertCollectionElementStatement = db.prepareStatement("INSERT INTO "
+				+ COLLECTION_ELEMENTS_TABLE_NAME
+				+ " (collection_id, element) VALUES (?, ?)");
 	}
 
 	@Override
@@ -202,7 +220,7 @@ public class LightweightDbStore extends DbDataStore
 			for (int fieldID = 0; fieldID < fields.length; fieldID++)
 			{
 				lvts[fieldID].retrieveFieldValue(id, fieldID, fields[fieldID],
-						result, this, manager);
+						result);
 			}
 			return result;
 		} catch (IllegalArgumentException e)
@@ -235,7 +253,7 @@ public class LightweightDbStore extends DbDataStore
 			for (int fieldID = 0; fieldID < fields.length; fieldID++)
 			{
 				lvts[fieldID].storeFieldValue(id, fieldID, fields[fieldID],
-						object, this, manager);
+						object);
 			}
 		} catch (IllegalAccessException e)
 		{
@@ -328,7 +346,7 @@ public class LightweightDbStore extends DbDataStore
 		}
 	}
 
-	public List<Integer> retrieveCollection(int collectionID)
+	List<Integer> retrieveCollection(int collectionID)
 	{
 		try
 		{
@@ -340,7 +358,7 @@ public class LightweightDbStore extends DbDataStore
 		}
 	}
 
-	public String retrieveReferenceValueLongVarchar(Integer reference)
+	String retrieveReferenceValueLongVarchar(Integer reference)
 	{
 		try
 		{
@@ -352,7 +370,7 @@ public class LightweightDbStore extends DbDataStore
 		}
 	}
 
-	public int storeAsReferenceValueLongVarchar(String element)
+	int storeAsReferenceValueLongVarchar(String element)
 	{
 		try
 		{
@@ -364,6 +382,59 @@ public class LightweightDbStore extends DbDataStore
 		{
 			throw new KahinaException("SQL error.", e);
 		}
+	}
+
+	void deleteCollection(Integer reference)
+	{
+		try
+		{
+			deleteCollectionStatement.setInt(1, reference);
+			deleteCollectionStatement.execute();
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	void deleteLongVarchar(Integer reference)
+	{
+		try
+		{
+			deleteLongVarcharStatement.setInt(1, reference);
+			deleteLongVarcharStatement.execute();
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+
+	}
+
+	@Override
+	public void persist()
+	{
+		// do nothing
+		// TODO garbage-collect objects to which there are no more references
+		// and which have not been stored from outside, as soon as we have a
+		// way to know that
+	}
+
+	int getNewCollectionReference()
+	{
+		return db.queryInteger(getNewCollectionReferenceStatement, 1);
+	}
+
+	void storeCollectionElement(int collectionID, int elementReference)
+	{
+		try
+		{
+			insertCollectionElementStatement.setInt(1, collectionID);
+			insertCollectionElementStatement.setInt(2, elementReference);
+			insertCollectionElementStatement.execute();
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+
 	}
 
 }

@@ -1,12 +1,15 @@
 package org.kahina.core.data.lightweight;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.kahina.core.KahinaException;
+import org.kahina.core.data.DataManager;
+import org.kahina.core.data.KahinaObject;
 
 public class MapLVT extends LVT
 {
@@ -15,8 +18,13 @@ public class MapLVT extends LVT
 	private LVT valueLVT;
 	
 	private Constructor<?> constructor;
+	
+	protected MapLVT(LightweightDbStore store, DataManager manager)
+	{
+		super(store, manager);
+	}
 
-	public static LVT createMapLVT(Type type)
+	public static LVT createMapLVT(Type type, LightweightDbStore store, DataManager manager)
 	{
 		Type[] arguments = typeArgumentsForInterface(type, Map.class);
 		
@@ -25,13 +33,13 @@ public class MapLVT extends LVT
 		{
 			return null;
 		}
-		MapLVT result = new MapLVT();
-		result.keyLVT = LVT.createLVT((Class<?>) arguments[0]);
+		MapLVT result = new MapLVT(store, manager);
+		result.keyLVT = LVT.createLVT((Class<?>) arguments[0], store, manager);
 		if (result.keyLVT == null)
 		{
 			return null;
 		}
-		result.valueLVT = LVT.createLVT((Class<?>) arguments[1]);
+		result.valueLVT = LVT.createLVT((Class<?>) arguments[1], store, manager);
 		if (result.valueLVT == null)
 		{
 			return null;
@@ -77,5 +85,4 @@ public class MapLVT extends LVT
 		
 		return result;
 	}
-
 }

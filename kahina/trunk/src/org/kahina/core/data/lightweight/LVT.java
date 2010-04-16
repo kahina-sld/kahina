@@ -15,29 +15,39 @@ import org.kahina.core.data.KahinaObject;
  */
 public abstract class LVT
 {
-	public static LVT createLVT(Type type)
+	protected final LightweightDbStore store;
+	
+	protected final DataManager manager;
+	
+	protected LVT(LightweightDbStore store, DataManager manager)
 	{
-		LVT result = IntegerLVT.createIntegerLVT(type);
+		this.store = store;
+		this.manager = manager;
+	}
+	
+	public static LVT createLVT(Type type, LightweightDbStore store, DataManager manager)
+	{
+		LVT result = IntegerLVT.createIntegerLVT(type, store, manager);
 		if (result != null)
 		{
 			return result;
 		}
-		result = StringLVT.createStringLVT(type);
+		result = StringLVT.createStringLVT(type, store, manager);
 		if (result != null)
 		{
 			return result;
 		}
-		result = KahinaObjectLVT.createKahinaObjectLVT(type);
+		result = KahinaObjectLVT.createKahinaObjectLVT(type, store, manager);
 		if (result != null)
 		{
 			return result;
 		}
-		result = CollectionLVT.createListLVT(type);
+		result = CollectionLVT.createListLVT(type, store, manager);
 		if (result != null)
 		{
 			return result;
 		}
-		result = MapLVT.createMapLVT(type);
+		result = MapLVT.createMapLVT(type, store, manager);
 		return result;
 	}
 
@@ -92,18 +102,22 @@ public abstract class LVT
 		return null;
 	}
 
+	// TODO many of those arguments can become instance variables
+
 	abstract void retrieveFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object, LightweightDbStore store, DataManager manager)
+			KahinaObject object)
 			throws IllegalAccessException;
 
 	abstract void storeFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object, LightweightDbStore store, DataManager manager)
+			KahinaObject object)
 			throws IllegalAccessException;
 
-	abstract Object retrieveReferenceValue(Integer reference,
-			LightweightDbStore store, DataManager manager);
+	abstract Object retrieveReferenceValue(Integer reference);
 
-	abstract int storeAsReferenceValue(Object element,
-			LightweightDbStore store, DataManager manager);
+	abstract int storeAsReferenceValue(Object element);
+
+	abstract void deleteReferenceValue(Integer reference);
+
+	abstract boolean deletes();
 
 }

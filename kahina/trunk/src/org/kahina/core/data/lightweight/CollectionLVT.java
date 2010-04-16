@@ -7,8 +7,10 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.kahina.core.KahinaException;
@@ -21,9 +23,40 @@ public class CollectionLVT extends LVT
 
 	private Constructor<?> constructor;
 
-	public static CollectionLVT createListLVT(Type type)
+	private static Map<LightweightDbStore, List<Object>> referenceValuesBeingStoredByStore = new HashMap<LightweightDbStore, List<Object>>();
+
+	private List<Object> referenceValuesBeingStored;
+
+	private static Map<LightweightDbStore, List<Integer>> referencesBeingStoredByStore = new HashMap<LightweightDbStore, List<Integer>>();
+
+	private List<Integer> referencesBeingStored;
+
+	private static Map<LightweightDbStore, Map<Integer, Object>> referenceValuesBeingRetrievedByStore = new HashMap<LightweightDbStore, Map<Integer, Object>>();
+
+	private Map<Integer, Object> referenceValuesBeingRetrieved;
+
+	private CollectionLVT(LightweightDbStore store, DataManager manager)
 	{
-		CollectionLVT result = new CollectionLVT();
+		super(store, manager);
+		if (!referenceValuesBeingStoredByStore.containsKey(store))
+		{
+			referenceValuesBeingStoredByStore.put(store,
+					new ArrayList<Object>());
+			referenceValuesBeingRetrievedByStore.put(store,
+					new HashMap<Integer, Object>());
+			referencesBeingStoredByStore.put(store, new ArrayList<Integer>());
+		}
+		referenceValuesBeingStored = referenceValuesBeingStoredByStore
+				.get(store);
+		referencesBeingStored = referencesBeingStoredByStore.get(store);
+		referenceValuesBeingRetrieved = referenceValuesBeingRetrievedByStore
+				.get(store);
+	}
+
+	public static CollectionLVT createListLVT(Type type,
+			LightweightDbStore store, DataManager manager)
+	{
+		CollectionLVT result = new CollectionLVT(store, manager);
 
 		// Determine element type:
 		Type[] arguments = typeArgumentsForInterface(type, List.class);
@@ -35,7 +68,8 @@ public class CollectionLVT extends LVT
 		{
 			return null;
 		}
-		result.elementLVT = LVT.createLVT((Class<?>) arguments[0]);
+		result.elementLVT = LVT.createLVT((Class<?>) arguments[0], store,
+				manager);
 		if (result.elementLVT == null)
 		{
 			return null;
@@ -94,17 +128,19 @@ public class CollectionLVT extends LVT
 
 	@Override
 	void retrieveFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object, LightweightDbStore store, DataManager manager)
-			throws IllegalAccessException
+			KahinaObject object) throws IllegalAccessException
 	{
 		field.set(object, retrieveReferenceValue(store.retrieveInt(objectID,
-				fieldID), store, manager));
+				fieldID)));
 	}
 
 	@Override
-	Object retrieveReferenceValue(Integer reference, LightweightDbStore store,
-			DataManager manager)
+	Object retrieveReferenceValue(Integer reference)
 	{
+		if (referenceValuesBeingRetrieved.containsKey(reference))
+		{
+			return referenceValuesBeingRetrieved.get(reference);
+		}
 		Collection<Object> collection;
 		try
 		{
@@ -122,11 +158,12 @@ public class CollectionLVT extends LVT
 		{
 			throw new KahinaException("Error reconstructing collection.", e);
 		}
+		referenceValuesBeingRetrieved.put(reference, collection);
 		for (Integer element : store.retrieveCollection(reference))
 		{
-			collection.add(elementLVT.retrieveReferenceValue(element, store,
-					manager));
+			collection.add(elementLVT.retrieveReferenceValue(element));
 		}
+		referenceValuesBeingRetrieved.remove(reference);
 		return collection;
 	}
 
@@ -138,40 +175,50 @@ public class CollectionLVT extends LVT
 
 	@Override
 	void storeFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object, LightweightDbStore store, DataManager manager)
-			throws IllegalAccessException
+			KahinaObject object) throws IllegalAccessException
 	{
 		Integer oldReference = store.retrieveInt(objectID, fieldID);
 		if (oldReference != null)
 		{
-			deleteReferenceValue(oldReference, store);
+			deleteReferenceValue(oldReference);
 		}
 		store.storeInt(objectID, fieldID, storeAsReferenceValue(field
-				.get(object), store, manager));
+				.get(object)));
 	}
 
 	@Override
-	int storeAsReferenceValue(Object object, LightweightDbStore store,
-			DataManager manager)
+	int storeAsReferenceValue(Object object)
 	{
+		int size = referenceValuesBeingStored.size();
+		for (int i = 0; i < size; i++)
+		{
+			if (referenceValuesBeingStored.get(i) == object)
+			{
+				return referencesBeingStored.get(i);
+			}
+		}
 		int reference = store.getNewCollectionReference();
+		referenceValuesBeingStored.add(object);
+		referencesBeingStored.add(reference);
 		for (Object element : castToObjectCollection(object))
 		{
 			store.storeCollectionElement(reference, elementLVT
-					.storeAsReferenceValue(element, store, manager));
+					.storeAsReferenceValue(element));
 		}
+		referencesBeingStored.remove(size);
+		referenceValuesBeingStored.remove(size);
 		return reference;
 	}
 
 	@Override
-	void deleteReferenceValue(Integer reference, LightweightDbStore store)
+	void deleteReferenceValue(Integer reference)
 	{
 		if (elementLVT.deletes())
 		{
 			List<Integer> elements = store.retrieveCollection(reference);
 			for (Integer element : elements)
 			{
-				elementLVT.deleteReferenceValue(element, store);
+				elementLVT.deleteReferenceValue(element);
 			}
 		}
 		store.deleteCollection(reference);

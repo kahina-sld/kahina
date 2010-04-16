@@ -8,19 +8,24 @@ import org.kahina.core.data.KahinaObject;
 
 public class IntegerLVT extends LVT
 {
-	public static IntegerLVT createIntegerLVT(Type type)
+	private IntegerLVT(LightweightDbStore store, DataManager manager)
+	{
+		super(store, manager);
+	}
+
+	public static IntegerLVT createIntegerLVT(Type type,
+			LightweightDbStore store, DataManager manager)
 	{
 		if (type == int.class || type == Integer.class)
 		{
-			return new IntegerLVT();
+			return new IntegerLVT(store, manager);
 		}
 		return null;
 	}
 
 	@Override
 	void retrieveFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object, LightweightDbStore store, DataManager manager)
-			throws IllegalAccessException
+			KahinaObject object) throws IllegalAccessException
 	{
 		// works for both int and Integer fields
 		field.set(object, store.retrieveInt(objectID, fieldID));
@@ -28,24 +33,33 @@ public class IntegerLVT extends LVT
 
 	@Override
 	void storeFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object, LightweightDbStore store, DataManager manager)
-			throws IllegalAccessException
+			KahinaObject object) throws IllegalAccessException
 	{
 		// works for both int and Integer fields
 		store.storeInt(objectID, fieldID, (Integer) field.get(object));
 	}
 
 	@Override
-	Object retrieveReferenceValue(Integer reference,
-			LightweightDbStore store, DataManager manager)
+	Object retrieveReferenceValue(Integer reference)
 	{
 		return reference;
 	}
 
 	@Override
-	int storeAsReferenceValue(Object element, LightweightDbStore store,
-			DataManager manager)
+	int storeAsReferenceValue(Object element)
 	{
 		return (Integer) element;
+	}
+
+	@Override
+	void deleteReferenceValue(Integer reference)
+	{
+		// integer references refer to nothing but themselves, so do nothing
+	}
+
+	@Override
+	boolean deletes()
+	{
+		return false;
 	}
 }
