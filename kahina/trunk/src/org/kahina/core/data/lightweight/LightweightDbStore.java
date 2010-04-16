@@ -73,7 +73,7 @@ public class LightweightDbStore extends DbDataStore
 
 	private PreparedStatement deleteLongVarcharStatement;
 
-	private PreparedStatement getNewCollectionReferenceStatement;
+	private PreparedStatement nextCollectionReferenceStatement;
 
 	private PreparedStatement insertCollectionElementStatement;
 
@@ -81,12 +81,17 @@ public class LightweightDbStore extends DbDataStore
 
 	private Map<Integer, KahinaObject> currentlyBeingRetrieved = new HashMap<Integer, KahinaObject>();
 
+	// TODO this is ugly
+	private static int nextCollectionReference;
+
 	public LightweightDbStore(Class<? extends KahinaObject> datatype,
 			DbDataManager manager, DatabaseHandler db)
 	{
 		super(manager, db);
 		createTablesIfNecessary();
 		prepareStatements();
+		nextCollectionReference = db.queryInteger(
+				nextCollectionReferenceStatement, 1);
 		try
 		{
 			constructor = datatype.getConstructor();
@@ -117,8 +122,7 @@ public class LightweightDbStore extends DbDataStore
 		{
 			if (Modifier.isPublic(field.getModifiers()))
 			{
-				LVT lvt = LVT.createLVT((Class<?>) field.getGenericType(),
-						this, manager);
+				LVT lvt = LVT.createLVT(field.getGenericType(), this, manager);
 				if (lvt != null)
 				{
 					fields.add(field);
@@ -192,7 +196,7 @@ public class LightweightDbStore extends DbDataStore
 		deleteLongVarcharStatement = db.prepareStatement("DELETE FROM "
 				+ REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME
 				+ " WHERE value_id = ?");
-		getNewCollectionReferenceStatement = db // TODO not fully satisfying
+		nextCollectionReferenceStatement = db // TODO not fully satisfying
 				.prepareStatement("SELECT MAX(collection_id) + 1 FROM "
 						+ COLLECTION_ELEMENTS_TABLE_NAME);
 		insertCollectionElementStatement = db.prepareStatement("INSERT INTO "
@@ -413,15 +417,21 @@ public class LightweightDbStore extends DbDataStore
 
 	int getNewCollectionReference()
 	{
-		return db.queryInteger(getNewCollectionReferenceStatement, 1);
+		return nextCollectionReference++;
 	}
 
-	void storeCollectionElement(int collectionID, int elementReference)
+	void storeCollectionElement(int collectionID, Integer elementReference)
 	{
 		try
 		{
 			insertCollectionElementStatement.setInt(1, collectionID);
-			insertCollectionElementStatement.setInt(2, elementReference);
+			if (elementReference == null)
+			{
+				insertCollectionElementStatement.setNull(2, Types.INTEGER);
+			} else
+			{
+				insertCollectionElementStatement.setInt(2, elementReference);
+			}
 			insertCollectionElementStatement.execute();
 		} catch (SQLException e)
 		{

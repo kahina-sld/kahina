@@ -62,4 +62,10 @@ public class IntegerLVT extends LVT
 	{
 		return false;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "IntegerLVT";
+	}
 }

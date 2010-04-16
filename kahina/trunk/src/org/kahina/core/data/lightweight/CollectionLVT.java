@@ -23,6 +23,9 @@ public class CollectionLVT extends LVT
 
 	private Constructor<?> constructor;
 
+	// TODO think scope over - allow multiple references to the same structure
+	// within one field?
+
 	private static Map<DataManager, List<Object>> referenceValuesBeingStoredByManager = new HashMap<DataManager, List<Object>>();
 
 	private List<Object> referenceValuesBeingStored;
@@ -69,8 +72,7 @@ public class CollectionLVT extends LVT
 		{
 			return null;
 		}
-		result.elementLVT = LVT.createLVT((Class<?>) arguments[0], store,
-				manager);
+		result.elementLVT = LVT.createLVT(arguments[0], store, manager);
 		if (result.elementLVT == null)
 		{
 			return null;
@@ -138,6 +140,10 @@ public class CollectionLVT extends LVT
 	@Override
 	Object retrieveReferenceValue(Integer reference)
 	{
+		if (reference == null)
+		{
+			return null;
+		}
 		if (referenceValuesBeingRetrieved.containsKey(reference))
 		{
 			return referenceValuesBeingRetrieved.get(reference);
@@ -190,6 +196,10 @@ public class CollectionLVT extends LVT
 	@Override
 	Integer storeAsReferenceValue(Object object)
 	{
+		if (object == null)
+		{
+			return null;
+		}
 		int size = referenceValuesBeingStored.size();
 		for (int i = 0; i < size; i++)
 		{
@@ -203,8 +213,8 @@ public class CollectionLVT extends LVT
 		referencesBeingStored.add(reference);
 		for (Object element : castToObjectCollection(object))
 		{
-			store.storeCollectionElement(reference, elementLVT
-					.storeAsReferenceValue(element));
+			Integer elementReference = elementLVT.storeAsReferenceValue(element);
+			store.storeCollectionElement(reference, elementReference);
 		}
 		referencesBeingStored.remove(size);
 		referenceValuesBeingStored.remove(size);
@@ -229,5 +239,11 @@ public class CollectionLVT extends LVT
 	boolean deletes()
 	{
 		return true;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "CollectionLVT<" + elementLVT + ">";
 	}
 }

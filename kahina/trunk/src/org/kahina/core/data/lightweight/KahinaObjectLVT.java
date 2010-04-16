@@ -73,4 +73,10 @@ public class KahinaObjectLVT extends LVT
 	{
 		return false;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "KahinaObjectLVT";
+	}
 }

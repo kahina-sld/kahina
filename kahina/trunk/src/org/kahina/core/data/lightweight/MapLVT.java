@@ -34,12 +34,12 @@ public class MapLVT extends LVT
 			return null;
 		}
 		MapLVT result = new MapLVT(store, manager);
-		result.keyLVT = LVT.createLVT((Class<?>) arguments[0], store, manager);
+		result.keyLVT = LVT.createLVT(arguments[0], store, manager);
 		if (result.keyLVT == null)
 		{
 			return null;
 		}
-		result.valueLVT = LVT.createLVT((Class<?>) arguments[1], store, manager);
+		result.valueLVT = LVT.createLVT(arguments[1], store, manager);
 		if (result.valueLVT == null)
 		{
 			return null;
