@@ -51,7 +51,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             LogicProgrammingStep newStep = generateStep();
             intID = newStep.getID();
             newStep.setExternalID(extID);
-            System.err.println(newStep);
+            System.err.println("new step with id " + intID + ": " + newStep);
             newStep.store();
             stepIDConv.put(extID, intID);
         }

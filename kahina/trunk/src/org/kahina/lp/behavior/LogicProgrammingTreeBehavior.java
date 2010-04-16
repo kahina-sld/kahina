@@ -35,6 +35,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         this.lastActiveID = -1;
         deterministicallyExited = new HashSet<Integer>();
         nonDetermBecauseOfRedo = new HashSet<Integer>();
+        control.registerListener("tree", this);
         control.registerListener("logic programming bridge", this);
     }
     
@@ -125,6 +126,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     
     public void processEvent(KahinaEvent e)
     {
+        System.err.println("LogicProgrammingBridge received event: " + e);
         if (e instanceof KahinaTreeEvent)
         {
             processEvent((KahinaTreeEvent) e);
