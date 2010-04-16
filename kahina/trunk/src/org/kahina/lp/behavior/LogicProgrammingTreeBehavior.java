@@ -64,7 +64,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     public void processStepInformation(int stepID, String stepInfo)
     {
         if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepInformation(" + stepID + ",\"" + stepInfo + "\")");
-        object.setNodeCaption(stepID, LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo);
+        object.addNode(stepID, LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo,"",-1);
     }
     
     /**

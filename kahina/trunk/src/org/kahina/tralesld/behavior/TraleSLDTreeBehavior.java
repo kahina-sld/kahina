@@ -27,7 +27,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     public void initializeParseTree(int stepID, String parsedSentence)
     {
         object.setRootID(stepID);
-        object.addNode("parsing " + parsedSentence, "", TraleSLDStepStatus.PROGRESS);
+        object.addNode(stepID, "parsing " + parsedSentence, "", TraleSLDStepStatus.PROGRESS);
         secondaryTree.setRootID(stepID);
         lastActiveID = stepID;
     }
