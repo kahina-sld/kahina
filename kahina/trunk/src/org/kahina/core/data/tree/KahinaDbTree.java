@@ -139,15 +139,15 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
         getEdgeLabelStatement = db.prepareStatement("SELECT edgeLabel FROM "
                 + NODE_TABLE_NAME + " WHERE id = ? AND tree = " + treeID);
         setEdgeLabelStatement = db.prepareStatement("UPDATE " + NODE_TABLE_NAME
-                + " SET edgeLabel = ? WHERE tree = " + treeID);
+                + " SET edgeLabel = ? WHERE id = ? AND tree = " + treeID);
         getNodeCaptionStatement = db.prepareStatement("SELECT nodeCaption FROM " + NODE_TABLE_NAME
                 + " WHERE id = ? AND tree = " + treeID);
         setNodeCaptionStatement = db.prepareStatement("UPDATE " + NODE_TABLE_NAME
-                + " SET nodeCaption = ? WHERE tree = " + treeID);
+                + " SET nodeCaption = ? WHERE id = ? AND tree = " + treeID);
         getNodeStatusStatement = db.prepareStatement("SELECT status FROM "
                 + NODE_TABLE_NAME + " WHERE id = ? AND tree = " + treeID);
         setNodeStatusStatement = db.prepareStatement("UPDATE " + NODE_TABLE_NAME
-                + " SET status = ? WHERE tree = " + treeID);
+                + " SET status = ? WHERE id = ? AND tree = " + treeID);
         getRootStatement = db.prepareStatement("SELECT id FROM "
                 + NODE_TABLE_NAME + " WHERE realParent IS NULL AND tree = "
                 + treeID);
@@ -439,8 +439,8 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
     {
         try
         {
-            setNodeCaptionStatement.setInt(1, nodeID);
-            setNodeCaptionStatement.setString(2, nodeCaption);
+            setNodeCaptionStatement.setString(1, nodeCaption);
+            setNodeCaptionStatement.setInt(2, nodeID);
             setNodeCaptionStatement.execute();
         } catch (SQLException e)
         {
