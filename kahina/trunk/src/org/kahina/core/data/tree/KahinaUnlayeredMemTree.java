@@ -88,7 +88,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         String caption = nodeCaptions.get(nodeID);
         if (caption == null)
         {
-            return null;
+            return "";
         }
         else
         {

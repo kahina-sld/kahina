@@ -19,6 +19,7 @@ public class TraleSLDBridgeEvent extends KahinaEvent
     {
         super("traleSLD bridge");
         this.eventType = eventType;
+        this.externalID = externalID;
         this.strContent = strContent;
     }
     
@@ -26,6 +27,7 @@ public class TraleSLDBridgeEvent extends KahinaEvent
     {
         super("traleSLD bridge");
         this.eventType = eventType;
+        this.externalID = externalID;
         this.strContent = strContent;
         this.intContent = intContent;
     }

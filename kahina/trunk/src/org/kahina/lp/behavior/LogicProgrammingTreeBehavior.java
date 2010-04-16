@@ -37,7 +37,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         this.lastActiveID = -1;
         deterministicallyExited = new HashSet<Integer>();
         nonDetermBecauseOfRedo = new HashSet<Integer>();
-        control.registerListener("tree", this);
         control.registerListener("logic programming bridge", this);
         if (verbose) System.err.println("new LogicProgrammingTreeBehavior(" + tree + "," + control + "," + kahina + "," + secondaryTree + ")");
     }
@@ -49,6 +48,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     public void integrateIncomingNode(int stepID, int ancestorID)
     {    
         if (verbose) System.err.println("LogicProgrammingTreeBehavior.integratingIncomingNode(" + stepID + "," + ancestorID + ")");
+        if (verbose) System.err.println("\t object.addChild(" + lastActiveID + "," + stepID + ")");
         object.addChild(lastActiveID, stepID);
         System.err.println(object.exportXML());
         lastActiveID = stepID;
