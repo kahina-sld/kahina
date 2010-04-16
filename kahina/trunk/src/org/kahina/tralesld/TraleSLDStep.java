@@ -1,29 +1,29 @@
 package org.kahina.tralesld;
 
-import org.kahina.core.data.fs.KahinaFeatureStructure;
 import org.kahina.lp.LogicProgrammingStep;
+import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
 
 public class TraleSLDStep extends LogicProgrammingStep
 {
-    public KahinaFeatureStructure startFeatStruct;
-    public KahinaFeatureStructure endFeatStruct;
+    public TraleSLDFeatureStructure startFeatStruct;
+    public TraleSLDFeatureStructure endFeatStruct;
     
-    public KahinaFeatureStructure getStartFeatureStructure()
+    public TraleSLDFeatureStructure getStartFeatureStructure()
     {
         return startFeatStruct;
     }
     
-    public void setStartFeatureStructure(KahinaFeatureStructure startFeatStruct)
+    public void setStartFeatureStructure(TraleSLDFeatureStructure startFeatStruct)
     {
         this.startFeatStruct = startFeatStruct;
     }
     
-    public KahinaFeatureStructure getEndFeatureStructure()
+    public TraleSLDFeatureStructure getEndFeatureStructure()
     {
         return endFeatStruct;
     }
     
-    public void setEndFeatureStructure(KahinaFeatureStructure endFeatStruct)
+    public void setEndFeatureStructure(TraleSLDFeatureStructure endFeatStruct)
     {
         this.endFeatStruct = endFeatStruct;
     }

@@ -8,10 +8,10 @@ import org.kahina.core.event.KahinaEvent;
 public class KahinaView<T extends KahinaObject> implements KahinaListener
 {
     //handle global events by means of a controller
-    KahinaController control;
+    protected KahinaController control;
     
     //the title of the tab or window this view is displayed in
-    String title = "Unnamed View";
+    private String title = "Unnamed View";
     
     protected T model;
     
