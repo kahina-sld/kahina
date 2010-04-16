@@ -90,7 +90,6 @@ public class DatabaseHandler
 			int result = resultSet.getInt(1);
 			if (resultSet.wasNull())
 			{
-				System.err.println("wasnull");
 				return defaultValue;
 			}
 			return result;
