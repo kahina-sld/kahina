@@ -32,7 +32,7 @@ public class KahinaView<T extends KahinaObject> implements KahinaListener
     }
     
     //override this method to define necessary operations after changes to the model (coordinate recomputations etc.)
-    public void recalculate()
+    protected void recalculate()
     {
         
     }
