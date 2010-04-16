@@ -217,7 +217,6 @@ public class LightweightDbStore extends DbDataStore
 				lvts[fieldID].retrieveFieldValue(id, fieldID, fields[fieldID],
 						result);
 			}
-			System.err.println("retrieved " + id + " " + result);
 			return result;
 		} catch (IllegalArgumentException e)
 		{
@@ -240,7 +239,6 @@ public class LightweightDbStore extends DbDataStore
 	@Override
 	public void store(KahinaObject object, int id)
 	{
-		System.err.println("storing " + id + " " + object);
 		if (!currentlyBeingStored.add(id))
 		{
 			return;
@@ -277,7 +275,6 @@ public class LightweightDbStore extends DbDataStore
 
 	void storeInt(int objectID, int fieldID, Integer value)
 	{
-		System.err.println("setting " + objectID + "-" + fieldID + " to " + value);
 		try
 		{
 			if (value == null)

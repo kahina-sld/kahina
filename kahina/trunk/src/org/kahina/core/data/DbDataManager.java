@@ -147,7 +147,6 @@ public class DbDataManager extends DataManager
 	@Override
 	protected DataStore getStoreForID(int id)
 	{
-		System.err.println("gsfi" + id);
 		try
 		{
 			selectStoreForIDStatement.setInt(1, id);
@@ -174,7 +173,6 @@ public class DbDataManager extends DataManager
 
 	protected void setStoreForID(int id, int storeID)
 	{
-		System.err.println("ssfi" + id + ":" + storeID);
 		try
 		{
 			updateStoreForIDStatement.setInt(1, storeID);
