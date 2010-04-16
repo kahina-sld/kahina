@@ -7,6 +7,11 @@ public class TraleSLDFeatureStructure extends KahinaObject implements Lightweigh
 {
 	public String grisuMessage;
 	
+	public TraleSLDFeatureStructure()
+	{
+		// do nothing
+	}
+	
 	public TraleSLDFeatureStructure(String grisuMessage)
 	{
 		this.grisuMessage = grisuMessage;
