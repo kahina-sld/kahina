@@ -10,19 +10,13 @@ import org.kahina.core.io.database.DatabaseHandler;
  */
 public abstract class DbDataStore extends DataStore
 {	
-	protected DbDataManager manager;
+	protected final DbDataManager manager;
 	
-	protected DatabaseHandler db;
+	protected final DatabaseHandler db;
 	
-	/**
-	 * Must be called by a {@link DbDataManager} after this store is registered
-	 * with it.
-	 * @param manager
-	 * @param db
-	 */
-	public void initialize(DbDataManager manager, DatabaseHandler db)
+	protected DbDataStore(DbDataManager manager, DatabaseHandler db)
 	{
-		this.db = db;
 		this.manager = manager;
+		this.db = db;
 	}
 }

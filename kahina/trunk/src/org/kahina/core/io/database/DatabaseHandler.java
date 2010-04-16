@@ -346,6 +346,7 @@ public class DatabaseHandler
 			query.append(elements[i]);
 		}
 		query.append(")");
+		System.err.println("Query: " + query);
 		execute(query.toString());
 	}
 

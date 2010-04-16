@@ -20,7 +20,6 @@ import org.kahina.core.KahinaException;
 import org.kahina.core.data.DbDataManager;
 import org.kahina.core.data.DbDataStore;
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.data.LightweightKahinaObject;
 import org.kahina.core.io.database.DatabaseHandler;
 
 public class LightweightDbStore extends DbDataStore
@@ -82,8 +81,11 @@ public class LightweightDbStore extends DbDataStore
 
 	private Map<Integer, KahinaObject> currentlyBeingRetrieved = new HashMap<Integer, KahinaObject>();
 
-	public LightweightDbStore(Class<LightweightKahinaObject> datatype)
+	public LightweightDbStore(Class<? extends KahinaObject> datatype, DbDataManager manager, DatabaseHandler db)
 	{
+		super(manager, db);
+		createTablesIfNecessary();
+		prepareStatements();
 		try
 		{
 			constructor = datatype.getConstructor();
@@ -95,7 +97,7 @@ public class LightweightDbStore extends DbDataStore
 		examineType(datatype);
 	}
 
-	private void examineType(Class<LightweightKahinaObject> datatype)
+	private void examineType(Class<? extends KahinaObject> datatype)
 	{
 		List<Field> fields = new ArrayList<Field>();
 		List<LVT> lvts = new ArrayList<LVT>();
@@ -127,14 +129,6 @@ public class LightweightDbStore extends DbDataStore
 		this.lvts = lvts.toArray(new LVT[lvts.size()]);
 	}
 
-	@Override
-	public void initialize(DbDataManager manager, DatabaseHandler db)
-	{
-		super.initialize(manager, db);
-		createTablesIfNecessary();
-		prepareStatements();
-	}
-
 	private void createTablesIfNecessary()
 	{
 		if (db.isRegistered(CLIENT_ID))
@@ -151,13 +145,13 @@ public class LightweightDbStore extends DbDataStore
 				"element INT");
 		db.createIndex(COLLECTION_ELEMENTS_TABLE_NAME, "_collection_id",
 				"collection_id");
-		db.createTable(MAP_ENTRIES_TABLE_NAME, "map_id INT", "key INT",
-				"value INT", "PRIMARY KEY (map_id, key_id)");
+		db.createTable(MAP_ENTRIES_TABLE_NAME, "map_id INT", "\"key\" INT",
+				"value INT", "PRIMARY KEY (map_id,  \"key\")");
 		db
 				.createTable(
 						REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME,
-						"reference INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
-						"value LONG VARCHAR", "PRIMARY KEY reference");
+						"value_id INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
+						"value LONG VARCHAR", "PRIMARY KEY (value_id)");
 		db.register(CLIENT_ID);
 	}
 
@@ -183,12 +177,12 @@ public class LightweightDbStore extends DbDataStore
 				.prepareStatement("INSERT INTO "
 						+ FIELD_VALUES_LONG_VARCHAR_TABLE_NAME
 						+ " (object_id, field_id, value) VALUES (?, ?, ?)");
-		selectCollectionStatement = db.prepareStatement("SELECT value FROM "
+		selectCollectionStatement = db.prepareStatement("SELECT element FROM "
 				+ COLLECTION_ELEMENTS_TABLE_NAME + " WHERE collection_id = ?");
 		selectReferenceValueLongVarcharStatement = db
 				.prepareStatement("SELECT value FROM "
 						+ REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME
-						+ " WHERE reference = ?");
+						+ " WHERE value_id = ?");
 		insertReferenceValueLongVarcharStatement = db.prepareStatement(
 				"INSERT INTO " + REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME
 						+ " (value) VALUES (?)", new int[] { 1 });
@@ -196,7 +190,7 @@ public class LightweightDbStore extends DbDataStore
 				+ COLLECTION_ELEMENTS_TABLE_NAME + " WHERE collection_id = ?");
 		deleteLongVarcharStatement = db.prepareStatement("DELETE FROM "
 				+ REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME
-				+ " WHERE reference = ?");
+				+ " WHERE value_id = ?");
 		getNewCollectionReferenceStatement = db // TODO not fully satisfying
 				.prepareStatement("SELECT MAX(collection_id) + 1 FROM "
 						+ COLLECTION_ELEMENTS_TABLE_NAME);

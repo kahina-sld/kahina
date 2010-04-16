@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kahina.core.KahinaException;
+import org.kahina.core.data.lightweight.LightweightDbStore;
 import org.kahina.core.io.database.DatabaseHandler;
 
 /**
@@ -112,10 +113,6 @@ public class DbDataManager extends DataManager
 		}
 		storeIDByType.put(type, storeByStoreID.size());
 		storeByStoreID.add(store);
-		if (store instanceof DbDataStore)
-		{
-			((DbDataStore) store).initialize(this, db);
-		}
 	}
 
 	/**
@@ -128,7 +125,7 @@ public class DbDataManager extends DataManager
 	{
 		if (LightweightKahinaObject.class.isAssignableFrom(type))
 		{
-			registerDataType(type, new LightweightKahinaObjectDbDataStore(type));
+			registerDataType(type, new LightweightDbStore(type, this, db));
 		} else
 		{
 			registerDataType(type, new KahinaObjectMemDataStore());
