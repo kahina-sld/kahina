@@ -304,4 +304,13 @@ public class KahinaUnlayeredMemTree extends KahinaTree
             }
         }
     }
+
+	@Override
+	public void addNode(int id, String caption, String label, int nodeStatus)
+	{
+		setNodeCaption(id, caption);
+		setEdgeLabel(id, label);
+		setNodeStatus(id, nodeStatus);
+		nextID = Math.max(id + 1, nextID);
+	}
 }

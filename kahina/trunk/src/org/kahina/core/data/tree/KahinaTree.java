@@ -66,6 +66,8 @@ public abstract class KahinaTree extends KahinaObject
     {
         this.decider = decider;
     }
+    
+    public abstract void addNode(int id, String caption, String label, int nodeStatus);
 
     public abstract int addNode(String caption, String label, int nodeStatus);
 
