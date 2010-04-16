@@ -541,7 +541,7 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
 
     private int getMaxNodeID()
     {
-        return db.queryInteger(getMaxNodeIDStatement, 0);
+        return db.queryInteger(getMaxNodeIDStatement, -1);
     }
 
     public static KahinaTree importXML(Document dom, LayerDecider decider,

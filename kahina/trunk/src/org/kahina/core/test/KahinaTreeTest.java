@@ -35,8 +35,8 @@ public class KahinaTreeTest
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
-            TestLayeredTree m1 = TestLayeredTree.importXML(dom);
-            //KahinaTree m1 = KahinaDbTree.importXML(dom, decider, data, null);
+            //TestLayeredTree m1 = TestLayeredTree.importXML(dom);
+            KahinaTree m1 = KahinaDbTree.importXML(dom, decider, data, null);
             
             file = new File("src/org/kahina/core/test/trale-tree2.xml");
             dbf = DocumentBuilderFactory.newInstance();
