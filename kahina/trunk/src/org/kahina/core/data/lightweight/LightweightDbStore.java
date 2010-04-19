@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -76,6 +77,14 @@ public class LightweightDbStore extends DbDataStore
 	private PreparedStatement nextCollectionReferenceStatement;
 
 	private PreparedStatement insertCollectionElementStatement;
+
+	private PreparedStatement selectMapValuesStatement;
+
+	private PreparedStatement deleteMapStatement;
+
+	private PreparedStatement selectMapStatement;
+
+	private PreparedStatement insertMapEntryStatement;
 
 	private Set<Integer> currentlyBeingStored = new HashSet<Integer>();
 
@@ -152,6 +161,7 @@ public class LightweightDbStore extends DbDataStore
 				"collection_id");
 		db.createTable(MAP_ENTRIES_TABLE_NAME, "map_id INT", "\"key\" INT",
 				"value INT", "PRIMARY KEY (map_id,  \"key\")");
+		db.createIndex(MAP_ENTRIES_TABLE_NAME, "_values", "value");
 		db
 				.createTable(
 						REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME,
@@ -202,6 +212,16 @@ public class LightweightDbStore extends DbDataStore
 		insertCollectionElementStatement = db.prepareStatement("INSERT INTO "
 				+ COLLECTION_ELEMENTS_TABLE_NAME
 				+ " (collection_id, element) VALUES (?, ?)");
+		selectMapValuesStatement = db
+				.prepareStatement("SELECT DISTINCT value FROM "
+						+ MAP_ENTRIES_TABLE_NAME + " WHERE map_id = ?");
+		deleteMapStatement = db.prepareStatement("DELETE FROM "
+				+ MAP_ENTRIES_TABLE_NAME + " WHERE map_id = ?");
+		selectMapStatement = db.prepareStatement("SELECT \"key\", value FROM "
+				+ MAP_ENTRIES_TABLE_NAME + " WHERE map_id = ?");
+		insertMapEntryStatement = db.prepareStatement("INSERT INTO "
+				+ MAP_ENTRIES_TABLE_NAME
+				+ " (map_id, key, value) VALUES (?, ?, ?)");
 	}
 
 	@Override
@@ -355,6 +375,24 @@ public class LightweightDbStore extends DbDataStore
 		}
 	}
 
+	Map<Integer, Integer> retrieveMap(Integer reference)
+	{
+		Map<Integer, Integer> result = new HashMap<Integer, Integer>();
+		try
+		{
+			selectMapStatement.setInt(1, reference);
+			ResultSet resultSet = selectMapStatement.executeQuery();
+			while (resultSet.next())
+			{
+				result.put(resultSet.getInt(1), resultSet.getInt(1));
+			}
+			return result;
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
 	String retrieveReferenceValueLongVarchar(Integer reference)
 	{
 		try
@@ -387,6 +425,18 @@ public class LightweightDbStore extends DbDataStore
 		{
 			deleteCollectionStatement.setInt(1, reference);
 			deleteCollectionStatement.execute();
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	void deleteMap(Integer reference)
+	{
+		try
+		{
+			deleteMapStatement.setInt(1, reference);
+			deleteMapStatement.execute();
 		} catch (SQLException e)
 		{
 			throw new KahinaException("SQL error.", e);
@@ -438,6 +488,45 @@ public class LightweightDbStore extends DbDataStore
 			throw new KahinaException("SQL error.", e);
 		}
 
+	}
+
+	public void storeMapEntry(int mapID, Integer keyReference,
+			Integer valueReference)
+	{
+		try
+		{
+			insertMapEntryStatement.setInt(1, mapID);
+			if (keyReference == null)
+			{
+				insertMapEntryStatement.setNull(2, Types.INTEGER);
+			} else
+			{
+				insertMapEntryStatement.setInt(2, keyReference);
+			}
+			if (valueReference == null)
+			{
+				insertMapEntryStatement.setNull(3, Types.INTEGER);
+			} else
+			{
+				insertMapEntryStatement.setInt(3, valueReference);
+			}
+			insertMapEntryStatement.execute();
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	List<Integer> retrieveMapValues(Integer reference)
+	{
+		try
+		{
+			selectMapValuesStatement.setInt(1, reference);
+			return db.queryIntList(selectMapValuesStatement);
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
 	}
 
 }

@@ -28,160 +28,190 @@ import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
-{	
-    TraleSLDInstance kahina;
-    ArrayList<Integer> activeEdgeStack;
-    HashSet<Integer> successfulEdges;   
-    
-    StringBuilder grisuMessage;
-    
-    public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui, KahinaController control)
-    {
-        super(kahina,gui,control);
-        this.kahina = kahina;
-        activeEdgeStack = new ArrayList<Integer>();
-        successfulEdges = new HashSet<Integer>();
-        grisuMessage = new StringBuilder();
-    }
+{
+	TraleSLDInstance kahina;
+	ArrayList<Integer> activeEdgeStack;
+	HashSet<Integer> successfulEdges;
 
-    //TODO: processing of the sentence string should instead take place here
+	StringBuilder grisuMessage;
+
+	public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui,
+			KahinaController control)
+	{
+		super(kahina, gui, control);
+		this.kahina = kahina;
+		activeEdgeStack = new ArrayList<Integer>();
+		successfulEdges = new HashSet<Integer>();
+		grisuMessage = new StringBuilder();
+	}
+
+	// TODO: processing of the sentence string should instead take place here
 	public void initializeParseTrace(String parsedSentenceList)
 	{
-        System.err.println("initializeParseTrace(\"" + parsedSentenceList + "\")");
-        List<String> wordList = PrologUtilities.parsePrologStringList(parsedSentenceList);
-        TraleSLDStep newStep = generateStep();
-        newStep.setGoalDesc("init");
-        newStep.setExternalID(0);
-        stepIDConv.put(0, newStep.getID());
-        newStep.store();
-        control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
-        currentID = newStep.getID();
-        control.processEvent(new KahinaSelectionEvent(newStep.getID()));
+		System.err.println("initializeParseTrace(\"" + parsedSentenceList
+				+ "\")");
+		List<String> wordList = PrologUtilities
+				.parsePrologStringList(parsedSentenceList);
+		TraleSLDStep newStep = generateStep();
+		newStep.setGoalDesc("init");
+		newStep.setExternalID(0);
+		stepIDConv.put(0, newStep.getID());
+		newStep.store();
+		control.processEvent(new TraleSLDBridgeEvent(
+				TraleSLDBridgeEventType.INIT, newStep.getID(), wordList
+						.toString()));
+		currentID = newStep.getID();
+		control.processEvent(new KahinaSelectionEvent(newStep.getID()));
 	}
 
-	public void registerRuleApplication(int extID, int left, int right, String ruleName)
+	public void registerRuleApplication(int extID, int left, int right,
+			String ruleName)
 	{
-        System.err.println("registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
-        KahinaChart chart = kahina.getState().getChart();
-        int newEdgeID = chart.addEdge(left, right, ruleName,TraleSLDChartEdgeStatus.ACTIVE);
-        activeEdgeStack.add(0, newEdgeID);
-        
-        TraleSLDStep newStep = generateStep();
-        newStep.setGoalDesc("rule(" + ruleName + ")");
-        newStep.setExternalID(extID);
-        stepIDConv.put(extID, newStep.getID());
-        kahina.getState().linkEdgeToNode(newEdgeID, newStep.getID()); 
-        newStep.store();
-        
-        //let TraleSLDTreeBehavior do the rest
-        control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
-        
-        //the following two actions and the structures they operate on seem to be superfluous
-        //edgeRegister.put(internalStepID, currentEdge);
-        //lastEdge = currentEdge;
+		System.err.println("registerRuleApplication(" + extID + "," + left
+				+ "," + right + ",\"" + ruleName + "\")");
+		KahinaChart chart = kahina.getState().getChart();
+		int newEdgeID = chart.addEdge(left, right, ruleName,
+				TraleSLDChartEdgeStatus.ACTIVE);
+		activeEdgeStack.add(0, newEdgeID);
+
+		TraleSLDStep newStep = generateStep();
+		newStep.setGoalDesc("rule(" + ruleName + ")");
+		newStep.setExternalID(extID);
+		stepIDConv.put(extID, newStep.getID());
+		kahina.getState().linkEdgeToNode(newEdgeID, newStep.getID());
+		newStep.store();
+
+		// let TraleSLDTreeBehavior do the rest
+		control.processEvent(new TraleSLDBridgeEvent(
+				TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
+
+		// the following two actions and the structures they operate on seem to
+		// be superfluous
+		// edgeRegister.put(internalStepID, currentEdge);
+		// lastEdge = currentEdge;
 	}
 
-	public void registerChartEdge(int number, int left, int right, String ruleName)
+	public void registerChartEdge(int number, int left, int right,
+			String ruleName)
 	{
-        System.err.println("registerChartEdge(" + number + "," + left + "," + right + ",\"" + ruleName + "\")");
+		System.err.println("registerChartEdge(" + number + "," + left + ","
+				+ right + ",\"" + ruleName + "\")");
 	}
 
 	public void registerEdgeDependency(int motherID, int daughterID)
 	{
-        System.err.println("registerEdgeDependency(" + motherID + "," + daughterID + ")");
+		System.err.println("registerEdgeDependency(" + motherID + ","
+				+ daughterID + ")");
 	}
 
 	public void registerMessageChunk(String chunk)
 	{
-        System.err.println("registerMessageChunk(\"" + chunk + "\")");
-        grisuMessage.append(chunk);
+		System.err.println("registerMessageChunk(\"" + chunk + "\")");
+		grisuMessage.append(chunk);
 	}
 
 	public void registerMessageEnd(int extID, String type)
 	{
-        System.err.println("registerMessageChunk(" + extID + ",\"" + type + "\")");
-        TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
-        TraleSLDFeatureStructure fs = new TraleSLDFeatureStructure(grisuMessage.toString());
-        if ("start".equals(type))
-        {
-        	step.startFeatStruct = fs;
-        } else
-        {
-        	step.endFeatStruct = fs;
-        }
-        step.store();
-        grisuMessage = new StringBuilder();
+		System.err.println("registerMessageEnd(" + extID + ",\"" + type
+				+ "\"): " + grisuMessage);
+		TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
+		TraleSLDFeatureStructure fs = new TraleSLDFeatureStructure(grisuMessage
+				.toString());
+		if ("start".equals(type))
+		{
+			step.startFeatStruct = fs;
+		} else
+		{
+			step.endFeatStruct = fs;
+		}
+		step.store();
+		grisuMessage = new StringBuilder();
 	}
 
 	public void registerParseEnd()
 	{
-        System.err.println("registerParseEnd()");
+		System.err.println("registerParseEnd()");
 	}
-	
+
 	public void registerStepFailure(int externalStepID)
-	{   
-        System.err.println("registerStepFailure(" + externalStepID + ")");
-        super.registerStepFailure(externalStepID);
-        int stepID = convertStepID(externalStepID);
-        
-        String command = LogicProgrammingStep.get(stepID).getGoalDesc();
-        // need to handle bug: step failure is called even if edge was successful
-        if (command.startsWith("rule("))
-        {
-            int currentEdge = activeEdgeStack.remove(0);
-            if (successfulEdges.contains(currentEdge))
-            {
-                System.err.println("Successful edge! Deleting from chart model...");
-                kahina.getState().getChart().removeEdge(currentEdge);
-                //TODO: was SUCCESS in the original; what exactly is the difference?
-                LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.EXIT);
-            }
-            // current rule application failed; adapt chart accordingly
-            else
-            {
-                System.err.println("Failed edge! Leaving it on the chart as junk...");
-                kahina.getState().getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
-                //TODO: devise a way of separating edge activation from status
-                //currentEdge.active = false;
-                LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.FAIL);
-            }
-            // move up one level in overview tree (really necessary?)
-            //currentOverviewTreeNode = tracer.overviewTraceView.treeNodes.get(currentOverviewTreeNode).getParent();
-            //lastEdge = edgeRegister.getData(currentOverviewTreeNode);
-        }
-        currentID = stepID;
-        control.processEvent(new KahinaSelectionEvent(stepID));
+	{
+		System.err.println("registerStepFailure(" + externalStepID + ")");
+		super.registerStepFailure(externalStepID);
+		int stepID = convertStepID(externalStepID);
+
+		String command = LogicProgrammingStep.get(stepID).getGoalDesc();
+		// need to handle bug: step failure is called even if edge was
+		// successful
+		if (command.startsWith("rule("))
+		{
+			int currentEdge = activeEdgeStack.remove(0);
+			if (successfulEdges.contains(currentEdge))
+			{
+				System.err
+						.println("Successful edge! Deleting from chart model...");
+				kahina.getState().getChart().removeEdge(currentEdge);
+				// TODO: was SUCCESS in the original; what exactly is the
+				// difference?
+				LogicProgrammingStep.get(stepID).setType(
+						LogicProgrammingStepType.EXIT);
+			}
+			// current rule application failed; adapt chart accordingly
+			else
+			{
+				System.err
+						.println("Failed edge! Leaving it on the chart as junk...");
+				kahina.getState().getChart().setEdgeStatus(currentEdge,
+						TraleSLDChartEdgeStatus.FAILED);
+				// TODO: devise a way of separating edge activation from status
+				// currentEdge.active = false;
+				LogicProgrammingStep.get(stepID).setType(
+						LogicProgrammingStepType.FAIL);
+			}
+			// move up one level in overview tree (really necessary?)
+			// currentOverviewTreeNode =
+			// tracer.overviewTraceView.treeNodes.get(currentOverviewTreeNode).getParent();
+			// lastEdge = edgeRegister.getData(currentOverviewTreeNode);
+		}
+		currentID = stepID;
+		control.processEvent(new KahinaSelectionEvent(stepID));
 	}
-	
+
 	public void registerStepFinished(int extID)
 	{
-        System.err.println("registerStepFinished(" + extID + ")");
-        int stepID = convertStepID(extID);
-        control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
-        //TODO: this has to be covered by the TraleSLDTreeBehavior
-        if (LogicProgrammingStep.get(stepID).getGoalDesc().startsWith("rule_close"))
-        {
-            //TODO: in the original, this was SUCCESS - find out why
-            LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.DET_EXIT);
-            // move up one level in overview tree (really necessary?)
-            //currentOverviewTreeNode = tracer.overviewTraceView.treeNodes.get(currentOverviewTreeNode).getParent();
-            //lastEdge = edgeRegister.getData(currentOverviewTreeNode);
-        }
+		System.err.println("registerStepFinished(" + extID + ")");
+		int stepID = convertStepID(extID);
+		control.processEvent(new LogicProgrammingBridgeEvent(
+				LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
+		// TODO: this has to be covered by the TraleSLDTreeBehavior
+		if (LogicProgrammingStep.get(stepID).getGoalDesc().startsWith(
+				"rule_close"))
+		{
+			// TODO: in the original, this was SUCCESS - find out why
+			LogicProgrammingStep.get(stepID).setType(
+					LogicProgrammingStepType.DET_EXIT);
+			// move up one level in overview tree (really necessary?)
+			// currentOverviewTreeNode =
+			// tracer.overviewTraceView.treeNodes.get(currentOverviewTreeNode).getParent();
+			// lastEdge = edgeRegister.getData(currentOverviewTreeNode);
+		}
 	}
 
 	public void registerBlockedPseudoStepInformation(int extID, String goal)
 	{
-        System.err.println("registerBlockedPseudoStepInformation(" + extID + ",\"" + goal + "\")");
+		System.err.println("registerBlockedPseudoStepInformation(" + extID
+				+ ",\"" + goal + "\")");
 	}
 
-	public void registerUnblockedPseudoStepInformation(int extID, int extBlockedPseudoStepID, String goal)
+	public void registerUnblockedPseudoStepInformation(int extID,
+			int extBlockedPseudoStepID, String goal)
 	{
-        System.err.println("registerUnblockedPseudoStepInformation(" + extID + "," + extBlockedPseudoStepID + ",\"" + goal + "\")");
+		System.err.println("registerUnblockedPseudoStepInformation(" + extID
+				+ "," + extBlockedPseudoStepID + ",\"" + goal + "\")");
 	}
-    
-    public TraleSLDStep generateStep()
-    {
-        return new TraleSLDStep();
-    }
+
+	public TraleSLDStep generateStep()
+	{
+		return new TraleSLDStep();
+	}
 
 }
