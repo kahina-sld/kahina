@@ -78,7 +78,7 @@ public class KahinaGUI implements KahinaListener
             System.err.println("\tfield: " + field.getName() + "\n\t\tclass: " + field.getType());
             if (KahinaObject.class.isAssignableFrom(field.getType()))
             {
-                KahinaView newView = KahinaViewRegistry.generateViewFor(field.getType());
+                KahinaView<?> newView = KahinaViewRegistry.generateViewFor(field.getType());
                 System.err.println("\t\tview: " + newView);
                 newView.setTitle("Step information: " + field.getName());
                 fieldToView.put(field, newView);
@@ -108,7 +108,6 @@ public class KahinaGUI implements KahinaListener
         {    
             try
             {
-            	System.err.println("Telling " + fieldToView.get(field) + " to display " + field.get(step) + ".");
                 fieldToView.get(field).display((KahinaObject) field.get(step));
             }
             catch (IllegalAccessException e)

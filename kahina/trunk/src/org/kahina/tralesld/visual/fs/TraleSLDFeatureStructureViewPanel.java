@@ -13,14 +13,14 @@ public class TraleSLDFeatureStructureViewPanel extends
 		KahinaViewPanel<TraleSLDFeatureStructureView>
 {
 	private TraleSLDFeatureStructureView v;
-    
+
 	private JPanel innerPanel;
-	
+
 	private VisualizationUtility util;
-	
+
 	public TraleSLDFeatureStructureViewPanel()
 	{
-        v = new TraleSLDFeatureStructureView();
+		v = new TraleSLDFeatureStructureView();
 		util = VisualizationUtility.getDefault();
 		innerPanel = new JPanel();
 		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
@@ -28,25 +28,33 @@ public class TraleSLDFeatureStructureViewPanel extends
 		JScrollPane scrollPane = new JScrollPane(innerPanel);
 		add(scrollPane);
 	}
-	
+
 	@Override
 	public void updateDisplay()
 	{
 		innerPanel.removeAll();
-		try
+		String grisuMessage;
+		if (v == null || (grisuMessage = v.getGrisuMessage()) == null)
 		{
-			innerPanel.add(util.visualize(v.getGrisuMessage()));
-		} catch (ParseException e)
+			innerPanel.add(new JLabel(
+					"No feature structures (yet) at this port."));
+		} else
 		{
-			innerPanel.add(new JLabel("Parse error: " + e.getMessage()));
+			try
+			{
+				innerPanel.add(util.visualize(grisuMessage));
+			} catch (ParseException e)
+			{
+				innerPanel.add(new JLabel("Parse error: " + e.getMessage()));
+			}
 		}
 		innerPanel.repaint();
 	}
 
-    @Override
-    public void setView(TraleSLDFeatureStructureView view)
-    {
-        this.v = view;
-    }
+	@Override
+	public void setView(TraleSLDFeatureStructureView view)
+	{
+		this.v = view;
+	}
 
 }

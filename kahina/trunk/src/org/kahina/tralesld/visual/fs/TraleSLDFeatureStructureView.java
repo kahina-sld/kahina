@@ -14,6 +14,10 @@ public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFeatureStru
 
     public String getGrisuMessage()
     {
+    	if (model == null)
+    	{
+    		return null;
+    	}
         return model.grisuMessage;
     }
 }
