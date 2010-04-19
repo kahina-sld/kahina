@@ -221,7 +221,7 @@ public class LightweightDbStore extends DbDataStore
 				+ MAP_ENTRIES_TABLE_NAME + " WHERE map_id = ?");
 		insertMapEntryStatement = db.prepareStatement("INSERT INTO "
 				+ MAP_ENTRIES_TABLE_NAME
-				+ " (map_id, key, value) VALUES (?, ?, ?)");
+				+ " (map_id, \"key\", value) VALUES (?, ?, ?)");
 	}
 
 	@Override
