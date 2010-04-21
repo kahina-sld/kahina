@@ -29,7 +29,7 @@ public class KahinaGUI implements KahinaListener
     
     KahinaControlPanel controlPanel;
     
-    KahinaTreeView mainTreeView;
+    protected KahinaTreeView mainTreeView;
     
     List<KahinaView> views;
     //values as defined in KahinaViewVisibility
