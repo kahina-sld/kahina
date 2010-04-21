@@ -50,9 +50,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         if (verbose) System.err.println("LogicProgrammingTreeBehavior.integratingIncomingNode(" + stepID + "," + ancestorID + ")");
         if (verbose) System.err.println("\t object.addChild(" + lastActiveID + "," + stepID + ")");
         object.addChild(lastActiveID, stepID);
-        System.err.println(object.exportXML());
+        if (verbose) System.err.println(object.exportXML());
         lastActiveID = stepID;
         secondaryTree.addChild(ancestorID, stepID);
+        if (verbose) System.err.println(secondaryTree.exportXML());
     }
     
     /**
@@ -65,6 +66,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     {
         if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepInformation(" + stepID + ",\"" + stepInfo + "\")");
         object.addNode(stepID, LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo,"",-1);
+        //TODO: make this unnecessary => new structure for secondary tree, perhaps not a full tree model?
+        secondaryTree.addNode(stepID, LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo,"",-1);
     }
     
     /**
@@ -79,6 +82,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 
         //generate a  new node corresponding to the new internal step
         int newStepID = object.addNode(LogicProgrammingStep.get(lastStepID).getGoalDesc(), "", LogicProgrammingStepType.REDO);
+        //TODO: make this unnecessary if possible
+        object.addNode(LogicProgrammingStep.get(lastStepID).getGoalDesc(), "", LogicProgrammingStepType.REDO);
 
         //adapt call dimension
         int ancestorID = secondaryTree.getParent(lastStepID);
