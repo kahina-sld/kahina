@@ -14,7 +14,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
     
     public void processEvent(KahinaEvent event)
     {
-        System.err.println(this + " received event: " + event.toString());
+        //System.err.println(this + " received event: " + event.toString());
         recalculate();
     }
     

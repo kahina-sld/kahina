@@ -9,10 +9,11 @@ public abstract class KahinaViewPanel<T extends KahinaView> extends JPanel imple
 {    
     public void processEvent(KahinaEvent event)
     {
-        System.err.println(this + " received event: " + event.toString());
+        //System.err.println(this + " received event: " + event.toString());
         if (event.getType().equals("redraw"))
         {
             updateDisplay();
+            repaint();
         }
     }
     

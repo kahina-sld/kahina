@@ -1027,6 +1027,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     {
         resetAllStructures();
         calculateCoordinates();
-        System.err.println("Levels:\n" + showLevels());
+        //System.err.println("Levels:\n" + showLevels());
     }
 }
