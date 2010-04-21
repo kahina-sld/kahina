@@ -65,9 +65,9 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     public void processStepInformation(int stepID, String stepInfo)
     {
         if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepInformation(" + stepID + ",\"" + stepInfo + "\")");
-        object.addNode(stepID, LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo,"",-1);
+        object.addNode(stepID, LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo,"",LogicProgrammingStepType.CALL);
         //TODO: make this unnecessary => new structure for secondary tree, perhaps not a full tree model?
-        secondaryTree.addNode(stepID, LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo,"",-1);
+        secondaryTree.addNode(stepID, LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo,"",LogicProgrammingStepType.CALL);
     }
     
     /**
@@ -106,6 +106,9 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         if (deterministic)
         {
             deterministicallyExited.add(stepID);
+            System.err.println("Setting node status: " + stepID + " -> LogicProgrammingStepType.DET_EXIT");
+            //TODO: this does not seem to have any effect (?!?)
+            //TODO: but works with the DBTree
             object.setNodeStatus(stepID, LogicProgrammingStepType.DET_EXIT);
         }
         else
@@ -133,8 +136,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
      */
     public void processStepFail(int stepID)
     {
-        if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepFail(" + stepID + ")");
-        
+        if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepFail(" + stepID + ")");      
         deterministicallyExited.add(stepID);
         object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);   
         //TODO: determine whether behavior is correct; this operation could be risky

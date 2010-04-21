@@ -19,6 +19,7 @@ public class LogicProgrammingGUI extends KahinaGUI
         getControlPanel().addControlButton("leap.png", "leap", "jump to next breakpoint match");
         getControlPanel().addControlButton("pause.png", "(un)pause", "pause the current skip operation");
         
+        mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.CALL, Color.WHITE);
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.EXIT, Color.GREEN);
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.DET_EXIT, Color.GRAY);
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.FAIL, Color.RED);
