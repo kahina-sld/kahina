@@ -36,7 +36,6 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     {
         int newID = object.addNode("rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);   
         object.addChild(lastActiveID, newID);
-        lastActiveID = newID;
     }
     
     public void processStepFail(int externalID)
