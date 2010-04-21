@@ -12,6 +12,7 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewPanel;
+import org.kahina.core.visual.tree.KahinaTreeViewMarker;
 
 public class KahinaWindow extends JFrame
 {
@@ -53,7 +54,7 @@ public class KahinaWindow extends JFrame
         int yPos = 0;
         int maxY = height;
         
-        //create windows for all the other other registered views
+        //create windows for all the other registered views
         for (KahinaView view : gui.views)
         {
             JFrame viewWindow = new JFrame();

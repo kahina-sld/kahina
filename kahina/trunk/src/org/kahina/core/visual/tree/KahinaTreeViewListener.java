@@ -13,6 +13,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaTreeViewListener extends MouseAdapter implements ActionListener
 {
@@ -24,6 +25,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
     {
         this.view = view;
         this.marker = new KahinaTreeViewMarker((KahinaTree) view.v.getTreeModel());
+        marker.registerTreeView(view);
         this.lastMouseEvent = null;
     }
     
@@ -48,8 +50,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
             {
                 view.v.getModel().toggleCollapse(clickedNode);
             }
-            view.v.resetAllStructures();
-            view.v.calculateCoordinates();
+            view.v.recalculate();
             view.updateDisplay();
             view.repaint();
         }
@@ -84,84 +85,97 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         if (command.equals("Zoom In"))
         {
             view.v.zoomIn();
+            view.v.recalculate();
         }
         else if (command.equals("Zoom Out"))
         {
             view.v.zoomOut();
+            view.v.recalculate();
         }
         else if (command.equals("Bottom Up"))
         {
             view.v.setDisplayOrientation(KahinaTreeView.BOTTOM_UP_DISPLAY);
+            view.v.recalculate();
         }
         else if (command.equals("Top Down"))
         {
             view.v.setDisplayOrientation(KahinaTreeView.TOP_DOWN_DISPLAY);
+            view.v.recalculate();
         }
         else if (command.equals("Increase vertical distance"))
         {
             view.v.increaseVerticalDistance();
+            view.v.recalculate();
         }
         else if (command.equals("Decrease vertical distance"))
         {
             view.v.decreaseVerticalDistance();
+            view.v.recalculate();
         }
         else if (command.equals("Increase horizontal distance"))
         {
             view.v.increaseHorizontalDistance();
+            view.v.recalculate();
         }
         else if (command.equals("Decrease horizontal distance"))
         {
             view.v.decreaseHorizontalDistance();
+            view.v.recalculate();
         }
         else if (command.equals("No special treatment"))
         {
             view.v.setTerminalsPolicy(KahinaTreeView.NO_SPECIAL_TREATMENT);
+            view.v.recalculate();
         }
         else if (command.equals("On extra level"))
         {
             view.v.setTerminalsPolicy(KahinaTreeView.ON_EXTRA_LEVEL);
+            view.v.recalculate();
         }
         else if (command.equals("Graphically separated"))
         {
             view.v.setTerminalsPolicy(KahinaTreeView.GRAPHICALLY_SEPARATED);
+            view.v.recalculate();
         }
         else if (command.equals("Always"))
         {
             view.v.setNodeDisplayPolicy(KahinaTreeView.ALWAYS);
+            view.v.recalculate();
         }
         else if (command.equals("Status decides, default: YES"))
         {
             view.v.setNodeDisplayPolicy(KahinaTreeView.STATUS_DEFAULT_YES);
+            view.v.recalculate();
         }
         else if (command.equals("Status decides, default: NO"))
         {
             view.v.setNodeDisplayPolicy(KahinaTreeView.STATUS_DEFAULT_NO);
+            view.v.recalculate();
         }
         else if (command.equals("Never"))
         {
             view.v.setNodeDisplayPolicy(KahinaTreeView.NEVER);
+            view.v.recalculate();
         }
         else if (command.equals("External conditions"))
         {
             view.v.setNodeDisplayPolicy(KahinaTreeView.CONDITIONALLY);
+            view.v.recalculate();
         }
         else if (command.equals("No collapsing"))
         {
             view.v.setCollapsePolicy(KahinaTreeView.NO_COLLAPSING);
-            view.v.resetAllStructures();
-            view.v.calculateCoordinates();
+            view.v.recalculate();
         }
         else if (command.equals("Collapse primary dimension"))
         {
             view.v.setCollapsePolicy(KahinaTreeView.COLLAPSE_PRIMARY);
-            view.v.resetAllStructures();
-            view.v.calculateCoordinates();
+            view.v.recalculate();
         }
         else if (command.equals("Collapse secondary dimension"))
         {
             view.v.setCollapsePolicy(KahinaTreeView.COLLAPSE_SECONDARY);
-            view.v.resetAllStructures();
-            view.v.calculateCoordinates();
+            view.v.recalculate();
         }
         else if (command.equals("Box nodes"))
         {
@@ -206,20 +220,17 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         else if (command.equals("Centered"))
         {
             view.v.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
-            view.v.resetAllStructures();
-            view.v.calculateCoordinates();
+            view.v.recalculate();
         }
         else if (command.equals("Left alignment"))
         {
             view.v.setNodePositionPolicy(KahinaTreeView.LEFT_ALIGNED_NODES);
-            view.v.resetAllStructures();
-            view.v.calculateCoordinates();
+            view.v.recalculate();
         }
         else if (command.equals("Right alignment"))
         {
             view.v.setNodePositionPolicy(KahinaTreeView.RIGHT_ALIGNED_NODES);
-            view.v.resetAllStructures();
-            view.v.calculateCoordinates();
+            view.v.recalculate();
         }
         else if (command.equals("Antialiasing On"))
         {
@@ -233,24 +244,29 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         {
             int zoomLevel = Integer.parseInt(command.substring(0, command.length() - 3));
             view.v.setZoomLevel(zoomLevel);
+            view.v.recalculate();
         }
         else if (command.endsWith(" vertical distance"))
         {
             int vertDist = Integer.parseInt(command.substring(0, command.length() - 18));
             view.v.setVerticalDistance(vertDist);
+            view.v.recalculate();
         }
         else if (command.endsWith(" horizontal distance"))
         {
             int horiDist = Integer.parseInt(command.substring(0, command.length() - 20));
             view.v.setHorizontalDistance(horiDist);
+            view.v.recalculate();
         }
         else if (command.equals("Display second dimension"))
         {
             view.v.toggleSecondDimensionDisplay();
+            view.v.recalculate();
         }
         else if (command.equals("Swap dimensions"))
         {
             view.v.swapDimensions();
+            view.v.recalculate();
         }
         else if (command.equals("Save as PNG"))
         {

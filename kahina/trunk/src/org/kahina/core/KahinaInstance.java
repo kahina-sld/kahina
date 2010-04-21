@@ -31,7 +31,7 @@ public class KahinaInstance
         {
             state = new KahinaState(this, KahinaDataHandlingMethod.MEMORY);
         }
-        controller = new KahinaController();
+        controller = KahinaRunner.getControl();
         gui = new KahinaGUI(KahinaStep.class, this, controller);
         bridge = new KahinaBridge(this, gui, controller);
         nextStepID = 0;

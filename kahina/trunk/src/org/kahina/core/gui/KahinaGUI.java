@@ -72,7 +72,7 @@ public class KahinaGUI implements KahinaListener
      */
     protected void fillFieldToView(Class<? extends KahinaStep> stepType)
     {
-        System.err.println("fill field to view!");
+        System.err.println("Generating views for step fields:");
         for (Field field : stepType.getFields())
         {    
             System.err.println("\tfield: " + field.getName() + "\n\t\tclass: " + field.getType());
@@ -95,7 +95,8 @@ public class KahinaGUI implements KahinaListener
     
     public void buildAndShow()
     {
-        mainTreeView.display(kahina.getState().getStepTree());       
+        mainTreeView.display(kahina.getState().getStepTree());   
+        mainTreeView.displaySecondaryTree(kahina.getState().getSecondaryStepTree()); 
         window = new KahinaWindow(this, control);
     }
     

@@ -151,7 +151,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         recalculate();
     }
     
-    public void displaySecondaryTree(KahinaTree treeModel) throws KahinaTypeException
+    public void displaySecondaryTree(KahinaTree treeModel)
     {
         this.secondaryTreeModel = treeModel;
         ((KahinaTree) this.secondaryTreeModel).setReferenceNode(model.getReferenceNode());
@@ -1012,6 +1012,13 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     public KahinaTreeViewPanel wrapInPanel()
     {
         KahinaTreeViewPanel panel = new KahinaTreeViewPanel();
+        panel.setView(this);
+        return panel;
+    }
+    
+    public KahinaTreeViewPanel wrapInPanel(KahinaTreeViewMarker marker)
+    {
+        KahinaTreeViewPanel panel = new KahinaTreeViewPanel(marker);
         panel.setView(this);
         return panel;
     }
