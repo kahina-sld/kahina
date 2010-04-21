@@ -79,6 +79,7 @@ public class KahinaGUI implements KahinaListener
             if (KahinaObject.class.isAssignableFrom(field.getType()))
             {
                 KahinaView<?> newView = KahinaViewRegistry.generateViewFor(field.getType());
+                control.registerListener("update", newView);
                 System.err.println("\t\tview: " + newView);
                 newView.setTitle("Step information: " + field.getName());
                 fieldToView.put(field, newView);
@@ -133,8 +134,8 @@ public class KahinaGUI implements KahinaListener
         if (e.getView() == null || livingViews.contains(e.getView()))
         {
             int selectedStep = e.getSelectedStep();
-            control.processEvent(new KahinaUpdateEvent(selectedStep));
             displayStepContent(selectedStep);
+            control.processEvent(new KahinaUpdateEvent(selectedStep));
             control.processEvent(new KahinaRedrawEvent());
         }
     }

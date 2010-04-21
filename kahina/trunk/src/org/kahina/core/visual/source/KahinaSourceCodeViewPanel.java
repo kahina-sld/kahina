@@ -29,6 +29,8 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeV
         codePane = new JTextArea();
         codePane.setEditable(false);
         codePane.setLineWrap(false);
+        codePane.setColumns(50);
+        codePane.setRows(15);
         codeScrollPane = new JScrollPane(codePane);
         this.add(codeScrollPane);
         //files = new HashMap<String, SourceFileModel>();
@@ -46,6 +48,7 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeV
     {
         if (v.getModel() == null)
         {
+            System.err.println("No source code location found!");
             codePane.setText("-- no source code location specified --");
         }
         else

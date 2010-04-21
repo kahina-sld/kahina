@@ -5,7 +5,7 @@ import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.chart.KahinaChartViewPanel;
 
 public class KahinaSourceCodeView extends KahinaView<KahinaSourceCodeLocation>
-{
+{   
     public KahinaSourceCodeViewPanel wrapInPanel()
     {
         KahinaSourceCodeViewPanel panel = new KahinaSourceCodeViewPanel();
