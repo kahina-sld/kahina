@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.kahina.core.KahinaException;
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.lightweight.LightweightKahinaObject;
 import org.kahina.core.io.database.DatabaseHandler;
 import org.w3c.dom.Document;
@@ -460,14 +459,14 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
         }
         return db.queryInteger(getNodeStatusStatement, 0);
     }
-    
-    @Override
+
+	@Override
     public void setNodeStatus(int nodeID, int newStatus)
     {
         try
         {
-            setNodeStatusStatement.setInt(1, nodeID);
-            setNodeStatusStatement.setInt(2, newStatus);
+            setNodeStatusStatement.setInt(2, nodeID);
+            setNodeStatusStatement.setInt(1, newStatus);
             setNodeStatusStatement.execute();
         } catch (SQLException e)
         {
