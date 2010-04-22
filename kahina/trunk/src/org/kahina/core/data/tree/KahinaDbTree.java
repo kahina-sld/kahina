@@ -395,8 +395,8 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
     {
         try
         {
-            setEdgeLabelStatement.setInt(1, nodeID);
-            setEdgeLabelStatement.setString(2, edgeLabel);
+            setEdgeLabelStatement.setInt(2, nodeID);
+            setEdgeLabelStatement.setString(1, edgeLabel);
             setEdgeLabelStatement.execute();
         } catch (SQLException e)
         {
