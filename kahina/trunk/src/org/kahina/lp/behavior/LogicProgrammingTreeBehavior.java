@@ -17,7 +17,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 {
-    private static boolean verbose = false;
+    private static final boolean verbose = false;
     
     //call dimension is always stored in a secondary tree structure
     protected KahinaTree secondaryTree;
@@ -112,7 +112,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         {
             object.setNodeStatus(stepID, LogicProgrammingStepType.EXIT);
         }       
-        lastActiveID = stepID;
+        //lastActiveID = stepID;
     }
     
     /**
@@ -124,7 +124,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepFinished(" + stepID + ")");
         
         deterministicallyExited.add(stepID);
-        lastActiveID = stepID;
+        object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);
+        lastActiveID = object.getParent(stepID);
     }
     
     /**
@@ -135,8 +136,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     {
         if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepFail(" + stepID + ")");      
         deterministicallyExited.add(stepID);
-        object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);   
-        //TODO: determine whether behavior is correct; this operation could be risky
+        object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);
         lastActiveID = object.getParent(stepID);
     }
     

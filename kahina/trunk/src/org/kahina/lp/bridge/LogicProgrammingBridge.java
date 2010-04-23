@@ -20,7 +20,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingBridge extends KahinaBridge
 {  
-    private static boolean verbose = true;
+    private static final boolean verbose = false;
     
     //a dynamic map from external step IDs to most recent corresponding tree nodes
     protected HashMap<Integer,Integer> stepIDConv;
