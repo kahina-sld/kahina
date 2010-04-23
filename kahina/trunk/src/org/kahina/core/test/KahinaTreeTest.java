@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.KahinaTypeException;
 import org.kahina.core.data.tree.KahinaDbTree;
 import org.kahina.core.data.tree.KahinaTree;
@@ -58,7 +59,10 @@ public class KahinaTreeTest
             v0.setStatusColorEncoding(0,new Color(0,255,0));
             v0.setStatusColorEncoding(1,new Color(255,0,0));
             v0.setStatusColorEncoding(2,new Color(0,255,255));
-            v0.setStatusColorEncoding(3,new Color(255,255,255));  
+            v0.setStatusColorEncoding(3,new Color(255,255,255)); 
+            
+            KahinaRunner.getControl().registerListener("select", v0);
+            KahinaRunner.getControl().registerListener("update", v0);
             
             KahinaTreeView v1 = new KahinaTreeView();
             v1.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
@@ -75,6 +79,9 @@ public class KahinaTreeTest
             v1.setStatusColorEncoding(2,new Color(0,255,255));
             v1.setStatusColorEncoding(3,new Color(255,255,255));  
             
+            KahinaRunner.getControl().registerListener("select", v1);
+            KahinaRunner.getControl().registerListener("update", v1);
+            
             KahinaTreeView v2 = new KahinaTreeView();
             v2.setHorizontalDistance(15);
             v2.display(m1,2,17);
@@ -84,6 +91,9 @@ public class KahinaTreeTest
             v2.setStatusColorEncoding(1,new Color(255,0,0));
             v2.setStatusColorEncoding(2,new Color(0,255,255));
             v2.setStatusColorEncoding(3,new Color(255,255,255));  
+            
+            KahinaRunner.getControl().registerListener("select", v2);
+            KahinaRunner.getControl().registerListener("update", v2);
 
             KahinaTreeViewMarker treeMarker = new KahinaTreeViewMarker(m1,m2);
             KahinaTreeViewPanel vp0 = new KahinaTreeViewPanel(treeMarker);
@@ -101,6 +111,10 @@ public class KahinaTreeTest
             vp2pane.setBounds(0, 490, 500, 200);
             JLabel vp2label = new JLabel("Layer 2 (Detail View)");
             vp2label.setBounds(0, 470, 500, 15);
+            
+            KahinaRunner.getControl().registerListener("redraw", vp0);
+            KahinaRunner.getControl().registerListener("redraw", vp1);
+            KahinaRunner.getControl().registerListener("redraw", vp2);
             
             JFrame w = new JFrame("Kahina TreeView Demo");
             w.setSize(510, 720);

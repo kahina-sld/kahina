@@ -134,8 +134,13 @@ public class KahinaGUI implements KahinaListener
         {
             int selectedStep = e.getSelectedStep();
             displayStepContent(selectedStep);
-            control.processEvent(new KahinaUpdateEvent(selectedStep));
-            control.processEvent(new KahinaRedrawEvent());
+            KahinaRunner.processEvent(new KahinaUpdateEvent(selectedStep));
+            KahinaRunner.processEvent(new KahinaRedrawEvent());
+        }
+        else
+        {
+            e.getView().processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
+            e.getView().processEvent(new KahinaRedrawEvent());
         }
     }
 }

@@ -11,7 +11,7 @@ import org.kahina.core.io.database.DatabaseHandler;
 public class KahinaRunner
 {
     static DataManager dm;
-    static KahinaController control;
+    static KahinaController control = new KahinaController();
     
     public static void initialize(int dataHandlingType)
     {
@@ -23,7 +23,6 @@ public class KahinaRunner
         {
             setDataManager(new DbDataManager(new DatabaseHandler()));
         }
-        control = new KahinaController();
     }
     
     public static DataManager getDataManager()
