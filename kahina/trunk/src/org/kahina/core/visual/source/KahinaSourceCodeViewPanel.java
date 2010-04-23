@@ -1,5 +1,6 @@
 package org.kahina.core.visual.source;
 
+import java.awt.Color;
 import java.util.HashMap;
 
 import javax.swing.JScrollPane;
@@ -21,6 +22,8 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeV
     JTextArea codePane;
     JScrollPane codeScrollPane;
     
+    DefaultHighlighter.DefaultHighlightPainter painter = null;
+    
     public KahinaSourceCodeViewPanel()
     {
         files = new HashMap<String, KahinaSourceFileModel>();
@@ -35,6 +38,8 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeV
         this.add(codeScrollPane);
         //files = new HashMap<String, SourceFileModel>();
         //this.addComponentListener(this);
+        
+        painter = new DefaultHighlighter.DefaultHighlightPainter(Color.ORANGE);
     }
     
     public void setView(KahinaSourceCodeView view)
@@ -65,7 +70,7 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeV
             codePane.setText(textWithMarking.text);
             try
             {
-                codePane.getHighlighter().addHighlight(textWithMarking.beginIndex, textWithMarking.endIndex, DefaultHighlighter.DefaultPainter);
+                codePane.getHighlighter().addHighlight(textWithMarking.beginIndex, textWithMarking.endIndex, painter);
                 codePane.setCaretPosition(textWithMarking.caretIndex);
             }
             catch(BadLocationException ble) 
