@@ -49,6 +49,7 @@ public class LogicProgrammingBridge extends KahinaBridge
      */
     public int convertStepID(int extID)
     {
+    	if (verbose) System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ")");
         Integer intID = stepIDConv.get(extID);
         if (intID == null)
         {
@@ -122,10 +123,13 @@ public class LogicProgrammingBridge extends KahinaBridge
         {
             if (verbose) System.err.println("LogicProgrammingBridge.registerStepRedo(" + extID + ")");
             int lastStepID = convertStepID(extID);
-            int newStepID = kahina.getNewStepID();
-            LogicProgrammingStep newStep = LogicProgrammingStep.get(lastStepID).copy();
+            LogicProgrammingStep lastStep = LogicProgrammingStep.get(lastStepID);
+            lastStep.setType(LogicProgrammingStepType.DET_EXIT);
+            lastStep.store();
+            LogicProgrammingStep newStep = lastStep.copy();
             newStep.setType(LogicProgrammingStepType.REDO);
             newStep.store();
+            int newStepID = newStep.getID();
             stepIDConv.put(extID, newStepID);
             KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
             currentID = newStepID;
@@ -202,6 +206,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     public LogicProgrammingStep generateStep()
     {
+    	if (verbose) System.err.println("LogicProgrammingBridge.generateStep()");
         return new LogicProgrammingStep();
     }
        

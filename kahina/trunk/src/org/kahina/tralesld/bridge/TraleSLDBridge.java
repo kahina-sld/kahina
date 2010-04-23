@@ -37,7 +37,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	StringBuilder grisuMessage;
 
-	public static boolean verbose = false;
+	public static final boolean verbose = false;
 
 	public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui, KahinaController control)
 	{
@@ -286,6 +286,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	public TraleSLDStep generateStep()
 	{
+		if (verbose) System.err.println("TraleSLDBridge.generateStep()");
 		return new TraleSLDStep();
 	}
 

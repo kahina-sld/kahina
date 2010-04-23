@@ -84,6 +84,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         int newStepID = object.addNode(LogicProgrammingStep.get(lastStepID).getGoalDesc(), "", LogicProgrammingStepType.REDO);
         //TODO: make this unnecessary if possible
         secondaryTree.addNode(LogicProgrammingStep.get(lastStepID).getGoalDesc(), "", LogicProgrammingStepType.REDO);
+        
+        object.setNodeStatus(lastStepID, LogicProgrammingStepType.DET_EXIT);
 
         //adapt call dimension
         int ancestorID = secondaryTree.getParent(lastStepID);

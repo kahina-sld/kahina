@@ -1,5 +1,7 @@
 package org.kahina.core.data;
 
+import org.kahina.core.KahinaException;
+
 /**
  * A data manager allows clients to store and retrieve pieces of data (e.g.
  * information associated with debugger steps) in the form of
@@ -66,6 +68,7 @@ public abstract class DataManager
 	{
 		int id = object.getID();
 		DataStore store = getStoreForType(object.getClass());
+		System.err.println("storing object " + id + " of type " + object.getClass() + " in " + store);
 		setStoreForID(id, store);
 		store.store(object);
 	}
@@ -84,17 +87,23 @@ public abstract class DataManager
 	@SuppressWarnings("unchecked")
 	public final <T extends KahinaObject> T retrieve(Class<T> type, int id)
 	{
-		return (T) ear(getStoreForID(id).retrieve(id));
-	}
-
-	private KahinaObject ear(KahinaObject retrieve)
-	{
-		return retrieve;
+		DataStore store = getStoreForID(id);
+		System.err.println("retrieving object " + id + " of type " + type + " from " + store);
+		if (store == null)
+		{
+			throw new KahinaException("No object with ID " + id + " has been stored.");
+		}
+		return (T) store.retrieve(id);
 	}
 
 	public KahinaObject retrieve(int id)
 	{
-		return ear(getStoreForID(id).retrieve(id));
+		DataStore store = getStoreForID(id);
+		if (store == null)
+		{
+			throw new KahinaException("No object with ID " + id + " has been stored.");
+		}
+		return store.retrieve(id);
 	}
 
 	/**

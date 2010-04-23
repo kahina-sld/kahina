@@ -16,6 +16,8 @@ import org.kahina.core.gui.KahinaGUI;
  */
 public class KahinaBridge implements KahinaListener
 {
+	private static final boolean verbose = false;
+	
     protected KahinaInstance kahina;
     protected KahinaGUI gui;
     protected KahinaController control;   
@@ -30,6 +32,7 @@ public class KahinaBridge implements KahinaListener
     
     public KahinaStep generateStep()
     {
+    	if (verbose) System.err.println("KahinaBridge.generateStep()");
         return new KahinaStep();
     }
     
