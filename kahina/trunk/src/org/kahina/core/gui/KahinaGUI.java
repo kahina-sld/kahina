@@ -31,12 +31,12 @@ public class KahinaGUI implements KahinaListener
     
     protected KahinaTreeView mainTreeView;
     
-    List<KahinaView> views;
+    protected List<KahinaView<?>> views;
     //values as defined in KahinaViewVisibility
-    Map<KahinaView, Integer> viewVisibility;
+    Map<KahinaView<?>, Integer> viewVisibility;
     KahinaWindow window;
     
-    Set<KahinaView> livingViews;
+    protected Set<KahinaView<?>> livingViews;
     
     Map<Field, KahinaView> fieldToView;
     
@@ -52,10 +52,10 @@ public class KahinaGUI implements KahinaListener
         
         this.controlPanel = new KahinaControlPanel(control);
         
-        this.views = new ArrayList<KahinaView>();
-        this.viewVisibility = new HashMap<KahinaView, Integer>();
+        this.views = new ArrayList<KahinaView<?>>();
+        this.viewVisibility = new HashMap<KahinaView<?>, Integer>();
         
-        this.livingViews = new HashSet<KahinaView>();
+        this.livingViews = new HashSet<KahinaView<?>>();
         this.fieldToView = new HashMap<Field, KahinaView>();
         fillFieldToView(stepType);
         
@@ -94,13 +94,17 @@ public class KahinaGUI implements KahinaListener
         return controlPanel;
     }
     
-    public void buildAndShow()
+    public final void buildAndShow()
     {
-        mainTreeView.display(kahina.getState().getStepTree());   
-        mainTreeView.displaySecondaryTree(kahina.getState().getSecondaryStepTree()); 
+    	displayMainViews();
         window = new KahinaWindow(this, control);
     }
     
+    protected void displayMainViews()
+    {
+        mainTreeView.display(kahina.getState().getStepTree());   
+        mainTreeView.displaySecondaryTree(kahina.getState().getSecondaryStepTree()); 
+    }
 
     @SuppressWarnings("unchecked")
     public void displayStepContent(int stepID)

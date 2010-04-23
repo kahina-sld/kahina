@@ -119,8 +119,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
         if ("start".equals(type))
         {
             step.startFeatStruct = fs;
-        }
-        else
+        } else
         {
             step.endFeatStruct = fs;
         }
