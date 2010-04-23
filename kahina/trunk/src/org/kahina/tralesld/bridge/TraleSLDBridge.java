@@ -51,8 +51,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     
     public void initializeParseTrace(String parsedSentenceList)
     {
-        if (verbose) System.err.println("initializeParseTrace(\"" + parsedSentenceList
-                + "\")");
+        if (verbose) System.err.println("TraleSLDBridgeinitializeParseTrace(\"" + parsedSentenceList + "\")");
         List<String> wordList = PrologUtilities
                 .parsePrologStringList(parsedSentenceList);
         TraleSLDStep newStep = generateStep();
@@ -69,7 +68,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     
     public void registerRuleApplication(int extID, int left, int right, String ruleName)
     {
-        if (verbose) System.err.println("registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
+        if (verbose) System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
         KahinaChart chart = kahina.getState().getChart();
         int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.ACTIVE);
         activeEdgeStack.add(0, newEdgeID);
@@ -93,13 +92,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     public void registerChartEdge(int number, int left, int right,
             String ruleName)
     {
-        if (verbose) System.err.println("registerChartEdge(" + number + "," + left + ","
+        if (verbose) System.err.println("TraleSLDBridge.registerChartEdge(" + number + "," + left + ","
                 + right + ",\"" + ruleName + "\")");
     }
     
     public void registerEdgeDependency(int motherID, int daughterID)
     {
-        if (verbose) System.err.println("registerEdgeDependency(" + motherID + ","
+        if (verbose) System.err.println("TraleSLDBridge.registerEdgeDependency(" + motherID + ","
                 + daughterID + ")");
     }
     
@@ -176,15 +175,12 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     {
         if (verbose) System.err.println("registerStepFinished(" + extID + ")");
         int stepID = convertStepID(extID);
-        control.processEvent(new LogicProgrammingBridgeEvent(
-                LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
+        control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
         // TODO: this has to be covered by the TraleSLDTreeBehavior
-        if (LogicProgrammingStep.get(stepID).getGoalDesc().startsWith(
-                "rule_close"))
+        if (LogicProgrammingStep.get(stepID).getGoalDesc().startsWith("rule_close"))
         {
             // TODO: in the original, this was SUCCESS - find out why
-            LogicProgrammingStep.get(stepID).setType(
-                    LogicProgrammingStepType.DET_EXIT);
+            LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.DET_EXIT);
             // move up one level in overview tree (really necessary?)
             // currentOverviewTreeNode =
             // tracer.overviewTraceView.treeNodes.get(currentOverviewTreeNode).getParent();

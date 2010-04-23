@@ -61,8 +61,8 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
     
     public void updateDisplay()
     {      
-        image = new BufferedImage(v.getDisplayWidth() + 1, v.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics cnv = image.getGraphics();
+        BufferedImage newImage = new BufferedImage(v.getDisplayWidth() + 1, v.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
+        Graphics cnv = newImage.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;
         if (v.getAntialiasingPolicy() == KahinaTreeView.ANTIALIASING)
         {
@@ -96,6 +96,8 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         printTreeEdges(canvas);
         printSecondaryTreeEdges(canvas);
         printTreeNodes(canvas);
+        
+        image = newImage;
 
         /*for (TreeViewExtension ext : viewExtensionsAfterMainRendering)
         {

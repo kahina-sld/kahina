@@ -50,10 +50,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         if (verbose) System.err.println("LogicProgrammingTreeBehavior.integratingIncomingNode(" + stepID + "," + ancestorID + ")");
         if (verbose) System.err.println("\t object.addChild(" + lastActiveID + "," + stepID + ")");
         object.addChild(lastActiveID, stepID);
-        if (verbose) System.err.println(object.exportXML());
+        //if (verbose) System.err.println(object.exportXML());
         lastActiveID = stepID;
         secondaryTree.addChild(ancestorID, stepID);
-        if (verbose) System.err.println(secondaryTree.exportXML());
+        //if (verbose) System.err.println(secondaryTree.exportXML());
     }
     
     /**

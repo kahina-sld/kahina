@@ -36,11 +36,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     public void processRuleApplication(int stepID, String ruleName)
     {
         object.addNode(stepID, "rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);  
-        //TODO: make this unnecessary if possible
-        //TODO: need a new handling for the secondary tree because this causes a conflict of used node IDs
         secondaryTree.addNode(stepID, "rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);   
-        object.addChild(lastActiveID, stepID);
-        secondaryTree.addChild(lastActiveID, stepID);
     }
     
     public void processStepFail(int externalID)
