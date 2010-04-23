@@ -92,6 +92,11 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     public void display(KahinaChart chartModel)
     {
         this.model = chartModel;
+        recalculate();
+    }
+    
+    public void recalculate()
+    {
         resetAllStructures();
         calculateCoordinates();
     }
@@ -101,8 +106,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         if (fontSize < 20)
         {
             fontSize += 1;
-            resetAllStructures();
-            calculateCoordinates();
+            recalculate();
         }
         else
         {
@@ -115,8 +119,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         if (fontSize > 4)
         {
             fontSize -= 1;
-            resetAllStructures();
-            calculateCoordinates();
+            recalculate();
         }
         else
         {
@@ -127,8 +130,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     public void setZoomLevel(int level)
     {
         fontSize = level;
-        resetAllStructures();
-        calculateCoordinates();
+        recalculate();
     }
     
     public int getZoomLevel()
@@ -141,8 +143,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         if (newPolicy >= 0 && newPolicy <= 2)
         {
             cellWidthPolicy = newPolicy;
-            resetAllStructures();
-            calculateCoordinates();
+            recalculate();
         }
         else
         {
@@ -155,8 +156,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         if (newPolicy >= 0 && newPolicy <= 1)
         {
             displayOrientation = newPolicy;
-            resetAllStructures();
-            calculateCoordinates();
+            recalculate();
         }
         else
         {
@@ -169,8 +169,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         if (newPolicy >= 0 && newPolicy <= 2)
         {
             displayRangePolicy = newPolicy;
-            resetAllStructures();
-            calculateCoordinates();
+            recalculate();
         }
         else
         {
@@ -183,8 +182,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         if (newPolicy >= 0 && newPolicy <= 1)
         {
             edgeStackingPolicy = newPolicy;
-            resetAllStructures();
-            calculateCoordinates();
+            recalculate();
         }
         else
         {
