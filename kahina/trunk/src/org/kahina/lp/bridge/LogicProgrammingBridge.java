@@ -71,6 +71,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             int stepID = convertStepID(extID);
             LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
             step.setGoalDesc(stepInfo);
+            step.setSourceCodeLocation(LogicProgrammingStep.get(currentID).getSourceCodeLocation());
             step.store();
             KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, stepInfo));
             currentID = stepID;
