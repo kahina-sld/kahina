@@ -52,9 +52,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
-				System.err.println("TraleSLDBridgeinitializeParseTrace(\"" + parsedSentenceList + "\")");
+			if (verbose) System.err.println("TraleSLDBridgeinitializeParseTrace(\"" + parsedSentenceList + "\")");
 			List<String> wordList = PrologUtilities.parsePrologStringList(parsedSentenceList);
+            KahinaChart chart = kahina.getState().getChart();
+            for (int i = 0; i < wordList.size(); i++)
+            {
+                chart.setSegmentCaption(i, wordList.get(i));
+            }
 			TraleSLDStep newStep = generateStep();
 			newStep.setGoalDesc("init");
 			newStep.setExternalID(0);
@@ -63,7 +67,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
 			currentID = newStep.getID();
 			control.processEvent(new KahinaSelectionEvent(newStep.getID()));
-		} catch (Exception e)
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);

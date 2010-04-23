@@ -23,7 +23,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     int cellWidthPolicy = KahinaChartView.MINIMAL_NECESSARY_WIDTH;
     int edgeStackingPolicy = KahinaChartView.STACK_EDGES_FILL_SPACE;
     int displayOrientation = KahinaChartView.BOTTOM_UP_DISPLAY;
-    int displayRangePolicy = KahinaChartView.RANGE_COMPLETE;
+    int displayRangePolicy = KahinaChartView.RANGE_USED_OR_CAPTION_DEFINED;
     int antialiasingPolicy = KahinaChartView.ANTIALIASING;
     HashMap<Integer,Boolean> statusDisplayed;
     int fontSize; //also determines zoom factor and cell height
@@ -366,6 +366,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
                 }   
                 edgeY.put(curEdge, drawIntoRow * (cellHeight + 3));
                 height.put(curEdge, cellHeight + 3);
+                System.err.println(segmentOffsets.get(model.getLeftBoundForEdge(curEdge)));
                 int leftOffset = segmentOffsets.get(model.getLeftBoundForEdge(curEdge));
                 int rightOffset = segmentOffsets.get(model.getRightBoundForEdge(curEdge));
                 rightOffset += getSegmentWidth(model.getRightBoundForEdge(curEdge));
