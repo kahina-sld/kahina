@@ -29,24 +29,23 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         object.setRootID(stepID);
         object.addNode(stepID, "parsing " + parsedSentence, "", TraleSLDStepStatus.PROGRESS);
         secondaryTree.setRootID(stepID);
-        //TODO: possibly avoid this?
         secondaryTree.addNode(stepID, "parsing " + parsedSentence, "", TraleSLDStepStatus.PROGRESS);
         lastActiveID = stepID;
     }
     
     public void processRuleApplication(int stepID, String ruleName)
     {
-        int newID = object.addNode("rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);  
+        object.addNode(stepID, "rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);  
         //TODO: make this unnecessary if possible
         //TODO: need a new handling for the secondary tree because this causes a conflict of used node IDs
-        //secondaryTree.addNode("rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);   
-        object.addChild(lastActiveID, newID);
-        secondaryTree.addChild(lastActiveID, newID);
+        secondaryTree.addNode(stepID, "rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);   
+        object.addChild(lastActiveID, stepID);
+        secondaryTree.addChild(lastActiveID, stepID);
     }
     
     public void processStepFail(int externalID)
     {
-        
+        super.processStepFail(externalID);
     }
     
     public void processEvent(KahinaEvent e)

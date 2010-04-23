@@ -20,9 +20,9 @@ public class LogicProgrammingGUI extends KahinaGUI
         getControlPanel().addControlButton("pause.png", "(un)pause", "pause the current skip operation");
         
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.CALL, Color.WHITE);
-        mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.EXIT, Color.GREEN);
-        mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.DET_EXIT, Color.GRAY);
-        mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.FAIL, Color.RED);
-        mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.REDO, Color.ORANGE);
+        mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.EXIT, new Color(153,255,102));
+        mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.DET_EXIT, new Color(102,153,102));
+        mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.FAIL, new Color(183,50,50));
+        mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.REDO, new Color(204,102,0));
     }
 }

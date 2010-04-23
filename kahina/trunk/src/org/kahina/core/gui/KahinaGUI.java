@@ -111,7 +111,6 @@ public class KahinaGUI implements KahinaListener
             try
             {
                 fieldToView.get(field).display((KahinaObject) field.get(step));
-                System.err.println("Step content: " + field);
             }
             catch (IllegalAccessException e)
             {

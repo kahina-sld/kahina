@@ -17,7 +17,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 {
-    private static boolean verbose = true;
+    private static boolean verbose = false;
     
     //call dimension is always stored in a secondary tree structure
     protected KahinaTree secondaryTree;
@@ -106,9 +106,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         if (deterministic)
         {
             deterministicallyExited.add(stepID);
-            System.err.println("Setting node status: " + stepID + " -> LogicProgrammingStepType.DET_EXIT");
-            //TODO: this does not seem to have any effect (?!?)
-            //TODO: but works with the DBTree
             object.setNodeStatus(stepID, LogicProgrammingStepType.DET_EXIT);
         }
         else

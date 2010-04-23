@@ -37,6 +37,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     
     StringBuilder grisuMessage;
     
+    public static boolean verbose = false;
+    
     public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui,
             KahinaController control)
     {
@@ -49,7 +51,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     
     public void initializeParseTrace(String parsedSentenceList)
     {
-        System.err.println("initializeParseTrace(\"" + parsedSentenceList
+        if (verbose) System.err.println("initializeParseTrace(\"" + parsedSentenceList
                 + "\")");
         List<String> wordList = PrologUtilities
                 .parsePrologStringList(parsedSentenceList);
@@ -65,14 +67,11 @@ public class TraleSLDBridge extends LogicProgrammingBridge
         control.processEvent(new KahinaSelectionEvent(newStep.getID()));
     }
     
-    public void registerRuleApplication(int extID, int left, int right,
-            String ruleName)
+    public void registerRuleApplication(int extID, int left, int right, String ruleName)
     {
-        System.err.println("registerRuleApplication(" + extID + "," + left
-                + "," + right + ",\"" + ruleName + "\")");
+        if (verbose) System.err.println("registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
         KahinaChart chart = kahina.getState().getChart();
-        int newEdgeID = chart.addEdge(left, right, ruleName,
-                TraleSLDChartEdgeStatus.ACTIVE);
+        int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.ACTIVE);
         activeEdgeStack.add(0, newEdgeID);
         
         TraleSLDStep newStep = generateStep();
@@ -83,8 +82,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
         newStep.store();
         
         // let TraleSLDTreeBehavior do the rest
-        control.processEvent(new TraleSLDBridgeEvent(
-                TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
+        control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
         
         // the following two actions and the structures they operate on seem to
         // be superfluous
@@ -95,25 +93,25 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     public void registerChartEdge(int number, int left, int right,
             String ruleName)
     {
-        System.err.println("registerChartEdge(" + number + "," + left + ","
+        if (verbose) System.err.println("registerChartEdge(" + number + "," + left + ","
                 + right + ",\"" + ruleName + "\")");
     }
     
     public void registerEdgeDependency(int motherID, int daughterID)
     {
-        System.err.println("registerEdgeDependency(" + motherID + ","
+        if (verbose) System.err.println("registerEdgeDependency(" + motherID + ","
                 + daughterID + ")");
     }
     
     public void registerMessageChunk(String chunk)
     {
-        System.err.println("registerMessageChunk(\"" + chunk + "\")");
+        if (verbose) System.err.println("registerMessageChunk(\"" + chunk + "\")");
         grisuMessage.append(chunk);
     }
     
     public void registerMessageEnd(int extID, String type)
     {
-        System.err.println("registerMessageEnd(" + extID + ",\"" + type
+        if (verbose) System.err.println("registerMessageEnd(" + extID + ",\"" + type
                 + "\"): " + grisuMessage);
         TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
         TraleSLDFeatureStructure fs = new TraleSLDFeatureStructure(grisuMessage
@@ -132,12 +130,12 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     
     public void registerParseEnd()
     {
-        System.err.println("registerParseEnd()");
+        if (verbose) System.err.println("registerParseEnd()");
     }
     
     public void registerStepFailure(int externalStepID)
     {
-        System.err.println("registerStepFailure(" + externalStepID + ")");
+        if (verbose) System.err.println("registerStepFailure(" + externalStepID + ")");
         super.registerStepFailure(externalStepID);
         int stepID = convertStepID(externalStepID);
         
@@ -149,13 +147,11 @@ public class TraleSLDBridge extends LogicProgrammingBridge
             int currentEdge = activeEdgeStack.remove(0);
             if (successfulEdges.contains(currentEdge))
             {
-                System.err
-                        .println("Successful edge! Deleting from chart model...");
+                System.err.println("Successful edge! Deleting from chart model...");
                 kahina.getState().getChart().removeEdge(currentEdge);
                 // TODO: was SUCCESS in the original; what exactly is the
                 // difference?
-                LogicProgrammingStep.get(stepID).setType(
-                        LogicProgrammingStepType.EXIT);
+                LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.EXIT);
             }
             // current rule application failed; adapt chart accordingly
             else
@@ -166,8 +162,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
                         TraleSLDChartEdgeStatus.FAILED);
                 // TODO: devise a way of separating edge activation from status
                 // currentEdge.active = false;
-                LogicProgrammingStep.get(stepID).setType(
-                        LogicProgrammingStepType.FAIL);
+                LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.FAIL);
             }
             // move up one level in overview tree (really necessary?)
             // currentOverviewTreeNode =
@@ -180,7 +175,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     
     public void registerStepFinished(int extID)
     {
-        System.err.println("registerStepFinished(" + extID + ")");
+        if (verbose) System.err.println("registerStepFinished(" + extID + ")");
         int stepID = convertStepID(extID);
         control.processEvent(new LogicProgrammingBridgeEvent(
                 LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
@@ -200,14 +195,14 @@ public class TraleSLDBridge extends LogicProgrammingBridge
     
     public void registerBlockedPseudoStepInformation(int extID, String goal)
     {
-        System.err.println("registerBlockedPseudoStepInformation(" + extID
+        if (verbose) System.err.println("registerBlockedPseudoStepInformation(" + extID
                 + ",\"" + goal + "\")");
     }
     
     public void registerUnblockedPseudoStepInformation(int extID,
             int extBlockedPseudoStepID, String goal)
     {
-        System.err.println("registerUnblockedPseudoStepInformation(" + extID
+        if (verbose) System.err.println("registerUnblockedPseudoStepInformation(" + extID
                 + "," + extBlockedPseudoStepID + ",\"" + goal + "\")");
     }
     
