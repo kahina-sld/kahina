@@ -125,6 +125,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             int newStepID = kahina.getNewStepID();
             LogicProgrammingStep newStep = LogicProgrammingStep.get(lastStepID).copy();
             newStep.setType(LogicProgrammingStepType.REDO);
+            newStep.store();
             stepIDConv.put(extID, newStepID);
             KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
             currentID = newStepID;

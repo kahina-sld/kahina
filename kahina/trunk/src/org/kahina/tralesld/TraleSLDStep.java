@@ -9,6 +9,18 @@ public class TraleSLDStep extends LogicProgrammingStep
     public TraleSLDFeatureStructure startFeatStruct;
     public TraleSLDFeatureStructure endFeatStruct;
     
+    public TraleSLDStep copy()
+    {
+    	TraleSLDStep copy = new TraleSLDStep();
+    	copy.type = type;
+    	copy.goalDesc = goalDesc;
+    	copy.externalID = externalID;
+    	copy.codeLocation = codeLocation;
+    	copy.startFeatStruct = startFeatStruct;
+    	copy.endFeatStruct = endFeatStruct;
+    	return copy;
+    }
+    
     public TraleSLDFeatureStructure getStartFeatureStructure()
     {
         return startFeatStruct;
