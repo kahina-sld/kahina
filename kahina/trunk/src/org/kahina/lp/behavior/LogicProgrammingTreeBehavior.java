@@ -81,9 +81,9 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         nonDetermBecauseOfRedo.add(lastStepID);
 
         //generate a  new node corresponding to the new internal step
-        int newStepID = object.addNode(LogicProgrammingStep.get(lastStepID).getGoalDesc(), "", LogicProgrammingStepType.REDO);
+        int newStepID = object.addNode(object.getNodeCaption(lastStepID), "", LogicProgrammingStepType.REDO);
         //TODO: make this unnecessary if possible
-        secondaryTree.addNode(LogicProgrammingStep.get(lastStepID).getGoalDesc(), "", LogicProgrammingStepType.REDO);
+        secondaryTree.addNode(object.getNodeCaption(lastStepID), "", LogicProgrammingStepType.REDO);
         
         object.setNodeStatus(lastStepID, LogicProgrammingStepType.DET_EXIT);
 
