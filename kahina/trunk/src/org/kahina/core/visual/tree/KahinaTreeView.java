@@ -15,7 +15,6 @@ import org.kahina.core.data.KahinaTypeException;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.tralesld.TraleSLDStep;
 
 public class KahinaTreeView extends KahinaView<KahinaTree>
 {

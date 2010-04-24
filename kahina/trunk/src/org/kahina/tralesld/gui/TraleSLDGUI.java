@@ -8,6 +8,7 @@ import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStepType;
+import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 
 public class TraleSLDGUI extends LogicProgrammingGUI
@@ -27,6 +28,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         views.add(mainChartView);
         livingViews.add(mainChartView);
         
+
         mainTreeView.setStatusColorEncoding(TraleSLDStepType.FINISHED, new Color(102,51,153));
         mainTreeView.setStatusColorEncoding(TraleSLDStepType.BLOCKED, Color.BLACK);
         //TODO: build font color customization facilities into TreeView
@@ -41,7 +43,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
     protected void displayMainViews()
     {
     	super.displayMainViews();
-        mainChartView.display(instance.getState().getChart()); 
-    	
+        mainTreeView.getModel().setLayerDecider(new TraleSLDLayerDecider());
+        mainChartView.display(instance.getState().getChart());  	
     }
 }

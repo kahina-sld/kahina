@@ -20,6 +20,7 @@ import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
+import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
 
 public class KahinaGUI implements KahinaListener
@@ -29,7 +30,7 @@ public class KahinaGUI implements KahinaListener
     
     KahinaControlPanel controlPanel;
     
-    protected KahinaTreeView mainTreeView;
+    protected KahinaLayeredTreeView mainTreeView;
     
     protected List<KahinaView<?>> views;
     //values as defined in KahinaViewVisibility
@@ -59,7 +60,7 @@ public class KahinaGUI implements KahinaListener
         this.fieldToView = new HashMap<Field, KahinaView>();
         fillFieldToView(stepType);
         
-        mainTreeView = new KahinaTreeView();
+        mainTreeView = new KahinaLayeredTreeView(0, 1);
         mainTreeView.setTitle("Control flow tree");
         control.registerListener("update", mainTreeView);
         views.add(mainTreeView);
