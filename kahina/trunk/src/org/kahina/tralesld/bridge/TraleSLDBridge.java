@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.KahinaGUI;
@@ -18,8 +19,6 @@ import org.kahina.core.util.PrologUtilities;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
-import org.kahina.lp.event.LogicProgrammingBridgeEvent;
-import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
@@ -238,19 +237,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			if (verbose)
-				System.err.println("registerStepFinished(" + extID + ")");
+				System.err.println("TraleSLDBridge.registerStepFinished(" + extID + ")");
 			int stepID = convertStepID(extID);
-			control.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
-			// TODO: this has to be covered by the TraleSLDTreeBehavior
-			if (LogicProgrammingStep.get(stepID).getGoalDesc().startsWith("rule_close"))
-			{
-				// TODO: in the original, this was SUCCESS - find out why
-				LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.DET_EXIT);
-				// move up one level in overview tree (really necessary?)
-				// currentOverviewTreeNode =
-				// tracer.overviewTraceView.treeNodes.get(currentOverviewTreeNode).getParent();
-				// lastEdge = edgeRegister.getData(currentOverviewTreeNode);
-			}
+			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
 		} catch (Exception e)
 		{
 			e.printStackTrace();

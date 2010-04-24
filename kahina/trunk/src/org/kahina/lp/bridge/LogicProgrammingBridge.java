@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.KahinaStep;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
@@ -162,22 +161,6 @@ public class LogicProgrammingBridge extends KahinaBridge
             step.store();
             currentID = step.getID();
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(step.getID()));
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
-    
-    public void registerStepFinished(int extID)
-    {
-        try
-        {
-            if (verbose) System.err.println("LogicProgrammingBridge.registerStepFinished(" + extID + ")");
-            int stepID = convertStepID(extID);
-            KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FINISHED, stepID));
-            currentID = stepID;
         }
         catch (Exception e)
         {

@@ -4,8 +4,10 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.tralesld.TraleSLDStepStatus;
+import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 
@@ -18,6 +20,8 @@ import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 
 public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
 {   
+	private static final boolean verbose = false;
+	
     public TraleSLDTreeBehavior(KahinaTree tree, KahinaController control, KahinaInstance kahina, KahinaTree secondaryTree)
     {
         super(tree, control, kahina, secondaryTree);  
@@ -39,9 +43,17 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         secondaryTree.addNode(stepID, "rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);   
     }
     
-    public void processStepFail(int externalID)
+    /**
+     * registers and reacts to a finished step
+     * @param externalID - the ID of the step that was finished in the monitored logic programming system
+     */
+    public void processStepFinished(int stepID)
     {
-        super.processStepFail(externalID);
+        if (verbose) System.err.println("TraleSLDTreeBehavior.processStepFinished(" + stepID + ")");
+        
+        deterministicallyExited.add(stepID);
+        object.setNodeStatus(stepID,TraleSLDStepType.FINISHED);
+        lastActiveID = object.getParent(stepID);
     }
     
     public void processEvent(KahinaEvent e)
@@ -65,6 +77,11 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
             case TraleSLDBridgeEventType.INIT:
             {
                 initializeParseTree(e.getExternalID(), e.getStrContent());
+                break;
+            }
+            case TraleSLDBridgeEventType.STEP_FINISHED:
+            {
+                processStepFinished(e.getExternalID());
                 break;
             }
         }

@@ -118,19 +118,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     }
     
     /**
-     * registers and reacts to a finished step
-     * @param externalID - the ID of the step that was finished in the monitored logic programming system
-     */
-    public void processStepFinished(int stepID)
-    {
-        if (verbose) System.err.println("LogicProgrammingTreeBehavior.processStepFinished(" + stepID + ")");
-        
-        deterministicallyExited.add(stepID);
-        object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);
-        lastActiveID = object.getParent(stepID);
-    }
-    
-    /**
      * registers and reacts to an incoming failed step
      * @param externalID - the ID of the step that failed in the monitored logic programming system
      */
@@ -189,11 +176,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
             case LogicProgrammingBridgeEventType.STEP_NONDET_EXIT:
             {
                 processStepExit(e.getExternalID(), false);
-                break;
-            }
-            case LogicProgrammingBridgeEventType.STEP_FINISHED:
-            {
-                processStepFinished(e.getExternalID());
                 break;
             }
             case LogicProgrammingBridgeEventType.STEP_FAIL:

@@ -7,6 +7,5 @@ public class LogicProgrammingBridgeEventType
     public static final int STEP_REDO = 2;
     public static final int STEP_DET_EXIT = 3;
     public static final int STEP_NONDET_EXIT = 4;
-    public static final int STEP_FINISHED = 5;
-    public static final int STEP_FAIL = 6;
+    public static final int STEP_FAIL = 5;
 }

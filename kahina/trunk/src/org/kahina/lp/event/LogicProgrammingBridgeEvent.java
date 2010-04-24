@@ -91,11 +91,6 @@ public class LogicProgrammingBridgeEvent extends KahinaEvent
                 s += "stepNondetExit (" + externalID + ")";
                 break;
             }
-            case LogicProgrammingBridgeEventType.STEP_FINISHED:
-            {
-                s += "stepFinished (" + externalID + ")";
-                break;
-            }
             case LogicProgrammingBridgeEventType.STEP_FAIL:
             {
                 s += "stepFail (" + externalID + ")";

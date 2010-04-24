@@ -15,6 +15,13 @@ public class TraleSLDBridgeEvent extends KahinaEvent
     private String strContent;
     private int intContent;
     
+    public TraleSLDBridgeEvent(int eventType, int externalID)
+    {
+    	super("traleSLD bridge");
+    	this.eventType = eventType;
+    	this.externalID = externalID;
+    }
+    
     public TraleSLDBridgeEvent(int eventType, int externalID, String strContent)
     {
         super("traleSLD bridge");
@@ -65,6 +72,11 @@ public class TraleSLDBridgeEvent extends KahinaEvent
             case TraleSLDBridgeEventType.INIT:
             {
                 s += "init(" + strContent + ")";
+                break;
+            }
+            case TraleSLDBridgeEventType.STEP_FINISHED:
+            {
+                s += "stepFinished (" + externalID + ")";
                 break;
             }
         }
