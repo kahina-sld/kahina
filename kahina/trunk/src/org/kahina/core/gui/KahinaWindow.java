@@ -1,7 +1,6 @@
 package org.kahina.core.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.HashMap;
 
@@ -12,10 +11,14 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.core.visual.tree.KahinaTreeViewMarker;
 
 public class KahinaWindow extends JFrame
 {
+    /**
+     * just to keep the compiler happy
+     */
+    private static final long serialVersionUID = 1L;
+    
     KahinaGUI gui;
     KahinaController control;
     
@@ -58,6 +61,7 @@ public class KahinaWindow extends JFrame
         for (KahinaView view : gui.views)
         {
             JFrame viewWindow = new JFrame();
+            viewWindow.setLayout(new BorderLayout());
             xPos += width + 20;
             width = view.getTitle().length() * 12 + 50;
             if (xPos + width > screenWidth)
