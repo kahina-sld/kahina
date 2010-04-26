@@ -4,21 +4,14 @@ import java.awt.Graphics;
 
 public class KahinaDefaultViewPanel extends KahinaViewPanel<KahinaDefaultView>
 {
-    KahinaDefaultView v;
-    
-    public void setView(KahinaDefaultView view)
-    {
-        this.v = view;
-        updateDisplay();
-        repaint();
-    }
-    
-    public void paintComponent(Graphics canvas)
+	private static final long serialVersionUID = -5117530919344443714L;
+
+	public void paintComponent(Graphics canvas)
     {
         String displayString;
-        if (v.model != null)
+        if (view.model != null)
         {
-            displayString = v.model.toString();
+            displayString = view.model.toString();
         }
         else
         {

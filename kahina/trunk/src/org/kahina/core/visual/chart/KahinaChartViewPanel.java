@@ -14,28 +14,22 @@ import org.kahina.core.visual.tree.KahinaTreeView;
 
 public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
 {
-    BufferedImage image;
-    KahinaChartView v;
+	private static final long serialVersionUID = -1083038134731774917L;
+	
+	BufferedImage image;
     
     public KahinaChartViewPanel()
     {
-        v = new KahinaChartView();
+        view = new KahinaChartView();
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaChartViewListener(this));
     }
     
     public KahinaChartViewPanel(KahinaChartViewMarker marker)
     {
-        v = new KahinaChartView();
+        view = new KahinaChartView();
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaChartViewListener(this, marker));
-    }
-    
-    public void setView(KahinaChartView view)
-    {
-        this.v = view;
-        updateDisplay();
-        repaint();
     }
     
     public void paintComponent(Graphics canvas)
@@ -57,22 +51,22 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
     
     public void updateDisplay()
     {
-        if (v == null) return;
-        image = new BufferedImage(v.getDisplayWidth() + 8, v.getDisplayHeight() + 5 + 2 * v.getZoomLevel(), BufferedImage.TYPE_4BYTE_ABGR);
+        if (view == null) return;
+        image = new BufferedImage(view.getDisplayWidth() + 8, view.getDisplayHeight() + 5 + 2 * view.getZoomLevel(), BufferedImage.TYPE_4BYTE_ABGR);
         Graphics canvas = image.getGraphics();
         Graphics2D cnv = (Graphics2D) canvas;
         
-        if (v.getAntialiasingPolicy() == KahinaTreeView.ANTIALIASING)
+        if (view.getAntialiasingPolicy() == KahinaTreeView.ANTIALIASING)
         {
             cnv.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
         
         //determine font size
-        int fontSize = v.getZoomLevel();
+        int fontSize = view.getZoomLevel();
         Font font = new Font("Arial", Font.PLAIN, fontSize);
         canvas.setFont(font);
-        int maxX = v.getDisplayWidth() + 4;
-        int maxY = v.getDisplayHeight();
+        int maxX = view.getDisplayWidth() + 4;
+        int maxY = view.getDisplayHeight();
         clearCanvas(canvas);
         
         //cosmetic improvement of frame
@@ -84,38 +78,38 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         cnv.drawLine(5, maxY + 6, maxX, maxY + 6);
         
         //draw all the edges
-        for (Integer id : v.getEdgeIDs())
+        for (Integer id : view.getEdgeIDs())
         {
             //store edge information that is used multiple times
-            int x = v.getEdgeX(id);
-            int y = v.getEdgeY(id);
-            int width = v.getEdgeWidth(id);
-            int height = v.getEdgeHeight(id);    
+            int x = view.getEdgeX(id);
+            int y = view.getEdgeY(id);
+            int width = view.getEdgeWidth(id);
+            int height = view.getEdgeHeight(id);    
             
             //System.err.println("Edge " + id + ": x=" + x + " y=" + y + " width=" + width + " height=" + height);
 
             //paint edge background in appropriate colour
-            cnv.setColor(v.getEdgeColor(id));
+            cnv.setColor(view.getEdgeColor(id));
             cnv.fillRect(x + 5, y + 5, width, height);
             
             //paint edge rim and caption as desired
             cnv.setColor(Color.BLACK);
-            cnv.setStroke(v.getEdgeStroke(id));
-            cnv.setFont(v.getEdgeFont(id)); 
+            cnv.setStroke(view.getEdgeStroke(id));
+            cnv.setFont(view.getEdgeFont(id)); 
             cnv.drawRect(x + 5, y + 5, width, height);
-            cnv.drawString(v.getEdgeCaption(id), x + 7, y + v.fontSize + 6);
+            cnv.drawString(view.getEdgeCaption(id), x + 7, y + view.fontSize + 6);
         }
         
         //draw segment captions
         cnv.setStroke(new BasicStroke(1));
-        cnv.setFont(new Font(Font.MONOSPACED,Font.PLAIN, v.fontSize));
+        cnv.setFont(new Font(Font.MONOSPACED,Font.PLAIN, view.fontSize));
         cnv.setColor(Color.BLACK);
         
-        for (Integer i : v.getModel().getSegmentsWithCaption())
+        for (Integer i : view.getModel().getSegmentsWithCaption())
         {
-            if (v.getSegmentWidth(i) > 0)
+            if (view.getSegmentWidth(i) > 0)
             {
-                cnv.drawString(i + " " + v.getSegmentCaption(i), v.getSegmentOffset(i) + 5, maxY + v.fontSize + 6);
+                cnv.drawString(i + " " + view.getSegmentCaption(i), view.getSegmentOffset(i) + 5, maxY + view.fontSize + 6);
             }
         }    
         
@@ -129,13 +123,13 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
     public void clearCanvas(Graphics canvas)
     {
         // clear canvas
-        Dimension newD = new Dimension(v.getDisplayWidth() + 8, v.getDisplayHeight() + 5 + 2 * v.getZoomLevel());
+        Dimension newD = new Dimension(view.getDisplayWidth() + 8, view.getDisplayHeight() + 5 + 2 * view.getZoomLevel());
         this.setSize(newD);
         this.setMinimumSize(newD);
         this.setMaximumSize(newD);
         this.setPreferredSize(newD);
-        this.setBackground(v.bgColor);
-        canvas.setColor(v.bgColor);
+        this.setBackground(view.bgColor);
+        canvas.setColor(view.bgColor);
         //little hack to account for small charts
         canvas.fillRect(0, 0, 2000, 2000);
         canvas.fillRect(0, 0, this.getSize().width, this.getSize().height);

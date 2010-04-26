@@ -15,9 +15,10 @@ import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeView>
 {
-    HashMap<String, KahinaSourceFileModel> files;
+	private static final long serialVersionUID = 8239151024120580599L;
+
+	HashMap<String, KahinaSourceFileModel> files;
     
-    KahinaSourceCodeView v;
     JTextArea codePane;
     JScrollPane codeScrollPane;
     
@@ -27,7 +28,7 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeV
     {
         files = new HashMap<String, KahinaSourceFileModel>();
         
-        v = new KahinaSourceCodeView();
+        view = new KahinaSourceCodeView();
         codePane = new JTextArea();
         codePane.setEditable(false);
         codePane.setLineWrap(false);
@@ -41,23 +42,16 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeV
         painter = new DefaultHighlighter.DefaultHighlightPainter(Color.ORANGE);
     }
     
-    public void setView(KahinaSourceCodeView view)
-    {
-        this.v = view;
-        updateDisplay();
-        repaint();
-    }
-    
     public void updateDisplay()
     {
-        if (v.getModel() == null)
+        if (view.getModel() == null)
         {
             System.err.println("No source code location found!");
             codePane.setText("-- no source code location specified --");
         }
         else
         {
-            KahinaSourceCodeLocation m = v.getModel();
+            KahinaSourceCodeLocation m = view.getModel();
             KahinaSourceFileModel sourceModel = files.get(m.absolutePath);
             if (sourceModel == null)
             {

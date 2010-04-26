@@ -41,7 +41,7 @@ public class KahinaTreeViewMarker
             //deactivate marking in all registered views, inconsistencies otherwise
             for (KahinaTreeViewPanel view : views)
             {
-                view.v.setMarkedNode(-1);
+                view.view.setMarkedNode(-1);
                 view.updateDisplay();
                 view.repaint();
             }
@@ -56,13 +56,13 @@ public class KahinaTreeViewMarker
             for (KahinaTreeViewPanel view : views)
             {
                 //view.v.recalculate();
-                if (view.v.displaysNode(nodeID))
+                if (view.view.displaysNode(nodeID))
                 {
-                    view.v.setMarkedNode(nodeID);
+                    view.view.setMarkedNode(nodeID);
                 }
                 else
                 {
-                    view.v.setMarkedNode(model.getParent(nodeID, view.v.getTreeLayer()));
+                    view.view.setMarkedNode(model.getParent(nodeID, view.view.getTreeLayer()));
                 }
                 KahinaRunner.processEvent(new KahinaSelectionEvent(model.getReferenceNode()));
                 //view.updateDisplay();

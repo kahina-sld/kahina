@@ -9,6 +9,7 @@ import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTreeView>
 {
+	private static final long serialVersionUID = -1304882362038211887L;
 
 	private KahinaTreeViewPanel overviewPanel;
 
@@ -33,6 +34,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 	@Override
 	public void setView(KahinaLayeredTreeView view)
 	{
+		super.setView(view);
 		overviewPanel.setView(view.getOverview());
 		detailPanel.setView(view.getDetailView());
 	}

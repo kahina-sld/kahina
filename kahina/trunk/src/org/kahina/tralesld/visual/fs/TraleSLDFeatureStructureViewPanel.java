@@ -9,10 +9,9 @@ import javax.swing.JScrollPane;
 
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class TraleSLDFeatureStructureViewPanel extends
-		KahinaViewPanel<TraleSLDFeatureStructureView>
+public class TraleSLDFeatureStructureViewPanel extends KahinaViewPanel<TraleSLDFeatureStructureView>
 {
-	private TraleSLDFeatureStructureView v;
+	private static final long serialVersionUID = -8507986910087886388L;
 
 	private JPanel innerPanel;
 
@@ -20,7 +19,6 @@ public class TraleSLDFeatureStructureViewPanel extends
 
 	public TraleSLDFeatureStructureViewPanel()
 	{
-		v = new TraleSLDFeatureStructureView();
 		util = VisualizationUtility.getDefault();
 		innerPanel = new JPanel();
 		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
@@ -34,7 +32,7 @@ public class TraleSLDFeatureStructureViewPanel extends
 	{
 		innerPanel.removeAll();
 		String grisuMessage;
-		if (v == null || (grisuMessage = v.getGrisuMessage()) == null)
+		if (view == null || (grisuMessage = view.getGrisuMessage()) == null)
 		{
 			innerPanel.add(new JLabel(
 					"No feature structures (yet) at this port."));
@@ -49,12 +47,6 @@ public class TraleSLDFeatureStructureViewPanel extends
 			}
 		}
 		innerPanel.repaint();
-	}
-
-	@Override
-	public void setView(TraleSLDFeatureStructureView view)
-	{
-		this.v = view;
 	}
 
 }

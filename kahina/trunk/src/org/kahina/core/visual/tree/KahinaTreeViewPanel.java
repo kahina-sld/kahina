@@ -15,28 +15,22 @@ import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
 {
-    protected KahinaTreeView v;
-    BufferedImage image;
+	private static final long serialVersionUID = 6701252380309408342L;
+	
+	BufferedImage image;
     
     public KahinaTreeViewPanel()
     {       
-        v = new KahinaTreeView();
+        view = new KahinaTreeView();
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaTreeViewListener(this));
     }
     
     public KahinaTreeViewPanel(KahinaTreeViewMarker marker)
     {       
-        v = new KahinaTreeView();
+        view = new KahinaTreeView();
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaTreeViewListener(this, marker));
-    }
-    
-    public void setView(KahinaTreeView view)
-    {
-        this.v = view;
-        updateDisplay();
-        repaint();
     }
     
     public void paintComponent(Graphics cnv)
@@ -58,15 +52,15 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
     
     public void updateDisplay()
     {      
-        BufferedImage newImage = new BufferedImage(v.getDisplayWidth() + 1, v.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
+        BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = newImage.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;
-        if (v.getAntialiasingPolicy() == KahinaTreeView.ANTIALIASING)
+        if (view.getAntialiasingPolicy() == KahinaTreeView.ANTIALIASING)
         {
             canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
         //determine font size
-        int fontSize = v.getZoomLevel();
+        int fontSize = view.getZoomLevel();
         Font font = new Font("Arial", Font.PLAIN, fontSize);
         canvas.setFont(font);
 
@@ -77,18 +71,18 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         }*/
         canvas.setStroke(new BasicStroke(1));
         canvas.setColor(Color.BLACK);
-        if (v.getTerminalsPolicy() == KahinaTreeView.GRAPHICALLY_SEPARATED)
+        if (view.getTerminalsPolicy() == KahinaTreeView.GRAPHICALLY_SEPARATED)
         {
-            int y = v.getDisplayHeight() - 2 * v.getZoomLevel() * v.getVerticalDistance();
-            int y2 = v.getDisplayHeight();
-            canvas.drawLine(0, y, v.getDisplayWidth() - 1, y);
-            canvas.drawLine(3, y+3, v.getDisplayWidth() - 4, y+3);
+            int y = view.getDisplayHeight() - 2 * view.getZoomLevel() * view.getVerticalDistance();
+            int y2 = view.getDisplayHeight();
+            canvas.drawLine(0, y, view.getDisplayWidth() - 1, y);
+            canvas.drawLine(3, y+3, view.getDisplayWidth() - 4, y+3);
             canvas.drawLine(0, y, 0, y2);
             canvas.drawLine(3, y+3, 3, y2 - 3);
-            canvas.drawLine(v.getDisplayWidth() - 1, y, v.getDisplayWidth() - 1, y2);
-            canvas.drawLine(v.getDisplayWidth() - 4, y+3, v.getDisplayWidth() - 4, y2 - 3);
-            canvas.drawLine(3, y2 - 4, v.getDisplayWidth() - 4, y2 - 4);
-            canvas.drawLine(0, y2 - 1, v.getDisplayWidth() - 1, y2 - 1);
+            canvas.drawLine(view.getDisplayWidth() - 1, y, view.getDisplayWidth() - 1, y2);
+            canvas.drawLine(view.getDisplayWidth() - 4, y+3, view.getDisplayWidth() - 4, y2 - 3);
+            canvas.drawLine(3, y2 - 4, view.getDisplayWidth() - 4, y2 - 4);
+            canvas.drawLine(0, y2 - 1, view.getDisplayWidth() - 1, y2 - 1);
         }
         printTreeEdges(canvas);
         printSecondaryTreeEdges(canvas);
@@ -105,13 +99,13 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
     public void clearCanvas(Graphics canvas)
     {
         // clear canvas
-        Dimension newD = new Dimension(v.getDisplayWidth(), v.getDisplayHeight());
+        Dimension newD = new Dimension(view.getDisplayWidth(), view.getDisplayHeight());
         this.setSize(newD);
         this.setMinimumSize(newD);
         this.setMaximumSize(newD);
         this.setPreferredSize(newD);
-        this.setBackground(v.bgColor);
-        canvas.setColor(v.bgColor);
+        this.setBackground(view.bgColor);
+        canvas.setColor(view.bgColor);
         //little hack to account for small trees
         canvas.fillRect(0, 0, 2000, 2000);
         canvas.fillRect(0, 0, this.getSize().width, this.getSize().height);
@@ -121,16 +115,16 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
     {
         //TODO: make this dependent on current scrolling window, ONLY draw nodes there (redraw happens anyway!)
         //print nodes of the tree
-        for (int i = 0; i < v.nodeLevels.size(); i++)
+        for (int i = 0; i < view.nodeLevels.size(); i++)
         {
-            List<Integer> nodes = v.nodeLevels.get(i);
+            List<Integer> nodes = view.nodeLevels.get(i);
             for (int j = 0; j < nodes.size(); j++)
             {
-                if (v.getNodeShapePolicy() == KahinaTreeView.BOX_SHAPE)
+                if (view.getNodeShapePolicy() == KahinaTreeView.BOX_SHAPE)
                 {
                     printBoxAroundNodeTag(cnv, nodes.get(j));               
                 }
-                else if (v.getNodeShapePolicy() == KahinaTreeView.OVAL_SHAPE)
+                else if (view.getNodeShapePolicy() == KahinaTreeView.OVAL_SHAPE)
                 {
                     printOvalAroundNodeTag(cnv, nodes.get(j));
                 }
@@ -141,132 +135,132 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
     
     public void printBoxAroundNodeTag(Graphics2D canvas, int nodeID)
     {
-        canvas.setFont(v.getNodeFont(nodeID));
+        canvas.setFont(view.getNodeFont(nodeID));
         FontMetrics fm = canvas.getFontMetrics();
-        int width = fm.stringWidth(v.getContentfulTreeModel().getNodeCaption(nodeID));
-        int x = v.getNodeX(nodeID) - width / 2;
-        int y = v.getNodeY(nodeID) - v.getNodeHeight(nodeID) + 2;
-        if (v.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
+        int width = fm.stringWidth(view.getContentfulTreeModel().getNodeCaption(nodeID));
+        int x = view.getNodeX(nodeID) - width / 2;
+        int y = view.getNodeY(nodeID) - view.getNodeHeight(nodeID) + 2;
+        if (view.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
         {
             x += width / 2;
         }
-        else if (v.getNodePositionPolicy() == KahinaTreeView.RIGHT_ALIGNED_NODES)
+        else if (view.getNodePositionPolicy() == KahinaTreeView.RIGHT_ALIGNED_NODES)
         {
             x -= width / 2;
         }
-        Color color = v.getNodeColor(nodeID);
+        Color color = view.getNodeColor(nodeID);
         if (color != null)
         { 
             canvas.setColor(color);
-            canvas.fillRect(x - 2, y, width + 4, v.getNodeHeight(nodeID) + 2);
+            canvas.fillRect(x - 2, y, width + 4, view.getNodeHeight(nodeID) + 2);
             canvas.setColor(Color.BLACK);
-            canvas.drawRect(x - 2, y, width + 4, v.getNodeHeight(nodeID) + 2);
-            if (v.getMarkedNode() == nodeID)
+            canvas.drawRect(x - 2, y, width + 4, view.getNodeHeight(nodeID) + 2);
+            if (view.getMarkedNode() == nodeID)
             {
                 canvas.setColor(Color.ORANGE);
                 canvas.setStroke(new BasicStroke(2));
-                canvas.drawRect(x - 3, y - 1, width + 6, v.getNodeHeight(nodeID) + 4);
+                canvas.drawRect(x - 3, y - 1, width + 6, view.getNodeHeight(nodeID) + 4);
             }
-            if (v.getNodeBorderColor(nodeID) != null)
+            if (view.getNodeBorderColor(nodeID) != null)
             {
-                canvas.setColor(v.getNodeBorderColor(nodeID));
+                canvas.setColor(view.getNodeBorderColor(nodeID));
                 canvas.setStroke(new BasicStroke(2));
-                canvas.drawRect(x - 3, y - 1, width + 6, v.getNodeHeight(nodeID) + 4);
+                canvas.drawRect(x - 3, y - 1, width + 6, view.getNodeHeight(nodeID) + 4);
             }
         }
     }
     
     public void printOvalAroundNodeTag(Graphics2D canvas, int nodeID)
     {
-        canvas.setFont(v.getNodeFont(nodeID));
+        canvas.setFont(view.getNodeFont(nodeID));
         FontMetrics fm = canvas.getFontMetrics();
-        int width = fm.stringWidth(v.getContentfulTreeModel().getNodeCaption(nodeID));
-        int x = v.getNodeX(nodeID) - width / 2;
-        int y = v.getNodeY(nodeID) - v.getNodeHeight(nodeID) + 2;
+        int width = fm.stringWidth(view.getContentfulTreeModel().getNodeCaption(nodeID));
+        int x = view.getNodeX(nodeID) - width / 2;
+        int y = view.getNodeY(nodeID) - view.getNodeHeight(nodeID) + 2;
         //TODO: correct oval drawing also for non-central alignments
-        if (v.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
+        if (view.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
         {
             x += width / 2;
         }
-        else if (v.getNodePositionPolicy() == KahinaTreeView.RIGHT_ALIGNED_NODES)
+        else if (view.getNodePositionPolicy() == KahinaTreeView.RIGHT_ALIGNED_NODES)
         {
             x -= width / 2;
         }
-        Color color = v.getNodeColor(nodeID);
+        Color color = view.getNodeColor(nodeID);
         if (color != null)
         { 
             canvas.setColor(color);
-            canvas.fillOval(x - 2, y, width + 4, v.getNodeHeight(nodeID) + 4);
+            canvas.fillOval(x - 2, y, width + 4, view.getNodeHeight(nodeID) + 4);
             canvas.setColor(Color.BLACK);
-            canvas.drawOval(x - 2, y, width + 4, v.getNodeHeight(nodeID) + 4);
-            if (v.getMarkedNode() == nodeID)
+            canvas.drawOval(x - 2, y, width + 4, view.getNodeHeight(nodeID) + 4);
+            if (view.getMarkedNode() == nodeID)
             {
                 canvas.setColor(Color.ORANGE);
                 canvas.setStroke(new BasicStroke(2));
-                canvas.drawOval(x - 3, y - 1, width + 6, v.getNodeHeight(nodeID) + 6);
+                canvas.drawOval(x - 3, y - 1, width + 6, view.getNodeHeight(nodeID) + 6);
             }
         }
     }
     
     public void printNodeTag(Graphics2D canvas, int nodeID)
     {
-        canvas.setFont(v.getNodeFont(nodeID));
+        canvas.setFont(view.getNodeFont(nodeID));
         FontMetrics fm = canvas.getFontMetrics();
-        String tag = v.getContentfulTreeModel().getNodeCaption(nodeID);
+        String tag = view.getContentfulTreeModel().getNodeCaption(nodeID);
         int width = fm.stringWidth(tag);
         canvas.setColor(Color.BLACK);
         //print tag name of node
-        int x = v.getNodeX(nodeID) - width / 2;
-        if (v.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
+        int x = view.getNodeX(nodeID) - width / 2;
+        if (view.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
         {
             x += width / 2;
         }
-        else if (v.getNodePositionPolicy() == KahinaTreeView.RIGHT_ALIGNED_NODES)
+        else if (view.getNodePositionPolicy() == KahinaTreeView.RIGHT_ALIGNED_NODES)
         {
             x -= width / 2;
         }
-        int y = v.getNodeY(nodeID);  
+        int y = view.getNodeY(nodeID);  
         canvas.drawString(tag, x, y);
         canvas.setStroke(new BasicStroke(1));
-        canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, v.getZoomLevel()));
+        canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, view.getZoomLevel()));
     }
     
     public void printTreeEdges(Graphics canvas)
     {
         // create lines and their tags
         canvas.setColor(Color.BLACK);
-        for (int i = 0; i < v.nodeLevels.size(); i++)
+        for (int i = 0; i < view.nodeLevels.size(); i++)
         {
-            List<Integer> nodes = v.nodeLevels.get(i);
+            List<Integer> nodes = view.nodeLevels.get(i);
             for (int nodeID : nodes)
             {
-                if (v.getModel().getParent(nodeID,v.getTreeLayer()) != -1)
+                if (view.getModel().getParent(nodeID,view.getTreeLayer()) != -1)
                 {
-                    int parent = v.getModel().getParent(nodeID,v.getTreeLayer());
-                    while (!v.displaysNode(parent))
+                    int parent = view.getModel().getParent(nodeID,view.getTreeLayer());
+                    while (!view.displaysNode(parent))
                     {
-                        parent = v.getModel().getParent(parent,v.getTreeLayer());
+                        parent = view.getModel().getParent(parent,view.getTreeLayer());
                     }
-                    int x1 = v.getNodeX(parent);
-                    int y1 = v.getNodeY(parent);
-                    int x2 = v.getNodeX(nodeID);
-                    int y2 = v.getNodeY(nodeID);
-                    if (v.getDisplayOrientation() == KahinaTreeView.TOP_DOWN_DISPLAY)
+                    int x1 = view.getNodeX(parent);
+                    int y1 = view.getNodeY(parent);
+                    int x2 = view.getNodeX(nodeID);
+                    int y2 = view.getNodeY(nodeID);
+                    if (view.getDisplayOrientation() == KahinaTreeView.TOP_DOWN_DISPLAY)
                     {
-                        y1 += v.getNodeHeight(v.getModel().getParent(nodeID,v.getTreeLayer())) + 4 - v.getZoomLevel();
-                        y2 -= v.getZoomLevel() - 2;
+                        y1 += view.getNodeHeight(view.getModel().getParent(nodeID,view.getTreeLayer())) + 4 - view.getZoomLevel();
+                        y2 -= view.getZoomLevel() - 2;
                     }
-                    switch (v.getLineShapePolicy())
+                    switch (view.getLineShapePolicy())
                     {
                         case KahinaTreeView.STRAIGHT_LINES:
                         {
-                            drawLineAccordingToType(canvas,v.getEdgeStyle(nodeID),x1, y1, x2, y2);
+                            drawLineAccordingToType(canvas,view.getEdgeStyle(nodeID),x1, y1, x2, y2);
                             break;
                         }
                         case KahinaTreeView.EDGY_LINES:
                         {
-                            drawLineAccordingToType(canvas,v.getEdgeStyle(nodeID),x1, y1, x2, y1);
-                            drawLineAccordingToType(canvas,v.getEdgeStyle(nodeID),x2, y1, x2, y2);
+                            drawLineAccordingToType(canvas,view.getEdgeStyle(nodeID),x1, y1, x2, y1);
+                            drawLineAccordingToType(canvas,view.getEdgeStyle(nodeID),x2, y1, x2, y2);
                             break;
                         }
                         //third case: do not draw anything
@@ -281,15 +275,15 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
     
     public void printSecondaryTreeEdges(Graphics canvas)
     {
-        if (v.secondaryTreeModel != null)
+        if (view.secondaryTreeModel != null)
         {
             canvas.setColor(Color.GRAY);
-            for (int i = 0; i < v.nodeLevels.size(); i++)
+            for (int i = 0; i < view.nodeLevels.size(); i++)
             {
-                List<Integer> nodes = v.nodeLevels.get(i);
+                List<Integer> nodes = view.nodeLevels.get(i);
                 for (int node : nodes)
                 {
-                    if (v.getMarkedNode() == node)
+                    if (view.getMarkedNode() == node)
                     {
                         canvas.setColor(Color.BLACK);
                     }
@@ -297,24 +291,24 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
                     {
                         canvas.setColor(Color.GRAY);
                     }
-                    int parent = v.secondaryTreeModel.getParent(node, v.treeLayer);
-                    if (parent != -1 && v.displaysNode(parent))
+                    int parent = view.secondaryTreeModel.getParent(node, view.treeLayer);
+                    if (parent != -1 && view.displaysNode(parent))
                     {
-                        switch (v.getSecondaryLineShapePolicy())
+                        switch (view.getSecondaryLineShapePolicy())
                         {
                             case KahinaTreeView.EDGY_LINES:
                             {
-                                int x1 = v.getNodeX(parent);
-                                int x2 = v.getNodeX(node);
-                                int y1 = v.getNodeY(parent);
-                                int y2 = v.getNodeY(node);
-                                int zoomLevel = v.getZoomLevel();
-                                if (v.getDisplayOrientation() == KahinaTreeView.BOTTOM_UP_DISPLAY)
+                                int x1 = view.getNodeX(parent);
+                                int x2 = view.getNodeX(node);
+                                int y1 = view.getNodeY(parent);
+                                int y2 = view.getNodeY(node);
+                                int zoomLevel = view.getZoomLevel();
+                                if (view.getDisplayOrientation() == KahinaTreeView.BOTTOM_UP_DISPLAY)
                                 {
                                     y2 += zoomLevel / 2;
                                     y1 -= zoomLevel / 2;
                                 }
-                                if (v.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
+                                if (view.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
                                 {
                                     int x3 = x1;
                                     if (x2 <= x1) x3 = x2;
@@ -322,10 +316,10 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
                                     canvas.drawLine(x3 - zoomLevel, y1, x3 - zoomLevel, y2 - zoomLevel / 2);
                                     canvas.drawLine(x3 - zoomLevel, y2 - zoomLevel / 2, x2, y2 - zoomLevel / 2);
                                 }
-                                else if (v.getNodePositionPolicy() == KahinaTreeView.CENTERED_NODES)
+                                else if (view.getNodePositionPolicy() == KahinaTreeView.CENTERED_NODES)
                                 {
-                                    int parentWidth = canvas.getFontMetrics().stringWidth(v.getContentfulTreeModel().getNodeCaption(parent));
-                                    int nodeWidth = canvas.getFontMetrics().stringWidth(v.getContentfulTreeModel().getNodeCaption(node));
+                                    int parentWidth = canvas.getFontMetrics().stringWidth(view.getContentfulTreeModel().getNodeCaption(parent));
+                                    int nodeWidth = canvas.getFontMetrics().stringWidth(view.getContentfulTreeModel().getNodeCaption(node));
                                     x1 -= parentWidth / 2;
                                     x2 -= nodeWidth / 2;
                                     int x3 = x1;
@@ -334,7 +328,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
                                     canvas.drawLine(x3 - zoomLevel, y1, x3 - zoomLevel, y2 - zoomLevel / 2);
                                     canvas.drawLine(x3 - zoomLevel, y2 - zoomLevel / 2, x2, y2 - zoomLevel / 2);
                                 }
-                                else if (v.getNodePositionPolicy() == KahinaTreeView.RIGHT_ALIGNED_NODES)
+                                else if (view.getNodePositionPolicy() == KahinaTreeView.RIGHT_ALIGNED_NODES)
                                 {
                                     int x3 = x1;
                                     if (x2 > x1) x3 = x2;

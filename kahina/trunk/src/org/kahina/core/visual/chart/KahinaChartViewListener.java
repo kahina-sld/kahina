@@ -23,7 +23,7 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
     {
         this.view = view;
         //separate empty model: marking clicks will not have any effect
-        this.marker = new KahinaChartViewMarker(view.v.getModel());
+        this.marker = new KahinaChartViewMarker(view.view.getModel());
     }
     
     public KahinaChartViewListener(KahinaChartViewPanel view, KahinaChartViewMarker m)
@@ -34,7 +34,7 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
     
     public void mouseClicked(MouseEvent e)
     {
-        int clickedEdge = view.v.edgeAtCoordinates(e.getX() - 5, e.getY() - 5);
+        int clickedEdge = view.view.edgeAtCoordinates(e.getX() - 5, e.getY() - 5);
         marker.markEdge(clickedEdge);
         view.updateDisplay();
         view.repaint();
@@ -54,7 +54,7 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
     {
         if (e.isPopupTrigger()) 
         {
-            KahinaChartViewContextMenu.getMenu(this, view.v).show(e.getComponent(),e.getX(), e.getY());
+            KahinaChartViewContextMenu.getMenu(this, view.view).show(e.getComponent(),e.getX(), e.getY());
         }
     }
     
@@ -63,64 +63,64 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
         String command = e.getActionCommand();
         if (command.equals("Zoom In"))
         {
-            view.v.zoomIn();
+            view.view.zoomIn();
         }
         else if (command.equals("Zoom Out"))
         {
-            view.v.zoomOut();
+            view.view.zoomOut();
         }
         else if (command.equals("Minimal necessary width"))
         {
-            view.v.setCellWidthPolicy(KahinaChartView.MINIMAL_NECESSARY_WIDTH);
+            view.view.setCellWidthPolicy(KahinaChartView.MINIMAL_NECESSARY_WIDTH);
         }
         else if (command.equals("Maximal necessary width"))
         {
-            view.v.setCellWidthPolicy(KahinaChartView.MAXIMAL_NECESSARY_WIDTH);
+            view.view.setCellWidthPolicy(KahinaChartView.MAXIMAL_NECESSARY_WIDTH);
         }
         else if (command.equals("Fixed width"))
         {
-            view.v.setCellWidthPolicy(KahinaChartView.FIXED_WIDTH);
+            view.view.setCellWidthPolicy(KahinaChartView.FIXED_WIDTH);
         }
         else if (command.equals("Fill space compactly"))
         {
-            view.v.setEdgeStackingPolicy(KahinaChartView.STACK_EDGES_FILL_SPACE);
+            view.view.setEdgeStackingPolicy(KahinaChartView.STACK_EDGES_FILL_SPACE);
         }
         else if (command.equals("Maintain chronological order"))
         {
-            view.v.setEdgeStackingPolicy(KahinaChartView.STACK_EDGES_BY_ID);
+            view.view.setEdgeStackingPolicy(KahinaChartView.STACK_EDGES_BY_ID);
         }
         else if (command.equals("Bottom Up"))
         {
-            view.v.setDisplayOrientation(KahinaChartView.BOTTOM_UP_DISPLAY);
+            view.view.setDisplayOrientation(KahinaChartView.BOTTOM_UP_DISPLAY);
         }
         else if (command.equals("Top Down"))
         {
-            view.v.setDisplayOrientation(KahinaChartView.TOP_DOWN_DISPLAY);
+            view.view.setDisplayOrientation(KahinaChartView.TOP_DOWN_DISPLAY);
         }
         else if (command.equals("Used range only"))
         {
-            view.v.setDisplayRangePolicy(KahinaChartView.RANGE_USED_ONLY);
+            view.view.setDisplayRangePolicy(KahinaChartView.RANGE_USED_ONLY);
         }
         else if (command.equals("Defined range"))
         {
-            view.v.setDisplayRangePolicy(KahinaChartView.RANGE_USED_OR_CAPTION_DEFINED);
+            view.view.setDisplayRangePolicy(KahinaChartView.RANGE_USED_OR_CAPTION_DEFINED);
         }
         else if (command.equals("Complete range"))
         {
-            view.v.setDisplayRangePolicy(KahinaChartView.RANGE_COMPLETE);
+            view.view.setDisplayRangePolicy(KahinaChartView.RANGE_COMPLETE);
         }
         else if (command.equals("Antialiasing On"))
         {
-            view.v.setAntialiasingPolicy(KahinaChartView.ANTIALIASING);
+            view.view.setAntialiasingPolicy(KahinaChartView.ANTIALIASING);
         }
         else if (command.equals("Antialiasing Off"))
         {
-            view.v.setAntialiasingPolicy(KahinaChartView.NO_ANTIALIASING);
+            view.view.setAntialiasingPolicy(KahinaChartView.NO_ANTIALIASING);
         }
         else if (command.endsWith("0 %"))
         {
             int zoomLevel = Integer.parseInt(command.substring(0, command.length() - 3));
-            view.v.setZoomLevel(zoomLevel);
+            view.view.setZoomLevel(zoomLevel);
         }
         else if (command.equals("Save as PNG"))
         {
@@ -130,7 +130,7 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
             chooser.showSaveDialog(view);
             File outputFile = chooser.getSelectedFile();
             
-            BufferedImage outputImage = new BufferedImage(view.v.getDisplayWidth() + 8, view.v.getDisplayHeight() + view.v.cellHeight + 8, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage outputImage = new BufferedImage(view.view.getDisplayWidth() + 8, view.view.getDisplayHeight() + view.view.cellHeight + 8, BufferedImage.TYPE_INT_ARGB);
             Graphics outputCanvas = outputImage.getGraphics();
             view.paint(outputCanvas);
             try
