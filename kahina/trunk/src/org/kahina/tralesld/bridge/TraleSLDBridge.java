@@ -25,9 +25,13 @@ import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
+import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
+	// TODO keep current step in memory until information about another one
+	// comes in, then persist
+	
 	TraleSLDInstance kahina;
 
 	ArrayList<Integer> activeEdgeStack;
@@ -147,6 +151,11 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 
+	/**
+	 * Register message ends for local trees.
+	 * @param extID
+	 * @param type
+	 */
 	public void registerMessageEnd(int extID, String type)
 	{
 		try
@@ -158,13 +167,40 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			if ("start".equals(type))
 			{
 				step.startFeatStruct = fs;
-			} else
+			} else if ("end".equals(type))
 			{
 				step.endFeatStruct = fs;
 			}
 			step.store();
 			grisuMessage = new StringBuilder();
 		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+	
+	/**
+	 * Register message ends for variable bindings.
+	 * @param extID
+	 * @param varName
+	 * @param tag
+	 * @param type
+	 */
+	public void registerMessageEnd(int extID, String varName, String tag, String type)
+	{
+		try
+		{
+			if (verbose)
+			{
+				System.err.println("registerMessageEnd(" + extID + ",\"" + varName + ",\"" + tag + ",\"" + type + "): " + grisuMessage);
+			}
+			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
+			TraleSLDVariableBinding binding = new TraleSLDVariableBinding(varName, tag, type, grisuMessage.toString());
+			step.addVariableBinding(binding);
+			grisuMessage = new StringBuilder();
+		}
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
