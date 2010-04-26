@@ -180,6 +180,11 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 	
+	public void registerMessageEnd(int extID, String varName, String type)
+	{
+		registerMessageEnd(extID, varName, null, type);
+	}
+	
 	/**
 	 * Register message ends for variable bindings.
 	 * @param extID
