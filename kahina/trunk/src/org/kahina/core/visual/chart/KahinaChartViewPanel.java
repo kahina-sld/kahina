@@ -9,8 +9,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import org.kahina.core.data.chart.KahinaChart;
-import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.core.visual.tree.KahinaTreeView;
 

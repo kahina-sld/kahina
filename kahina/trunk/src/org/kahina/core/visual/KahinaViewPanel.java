@@ -5,7 +5,7 @@ import javax.swing.JPanel;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 
-public abstract class KahinaViewPanel<T extends KahinaView> extends JPanel implements KahinaListener
+public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel implements KahinaListener
 {    
     public void processEvent(KahinaEvent event)
     {

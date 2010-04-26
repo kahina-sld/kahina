@@ -30,7 +30,7 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
 	// TODO keep current step in memory until information about another one
-	// comes in, then persist
+	// comes in, then store
 	
 	TraleSLDInstance kahina;
 
@@ -202,7 +202,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
 			TraleSLDVariableBinding binding = new TraleSLDVariableBinding(varName, tag, type, grisuMessage.toString());
-			step.addVariableBinding(binding);
+			step.bindings.add(binding);
 			grisuMessage = new StringBuilder();
 		}
 		catch (Exception e)

@@ -11,9 +11,6 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.visual.KahinaDefaultView;
-import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>

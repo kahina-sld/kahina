@@ -13,7 +13,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaTreeViewListener extends MouseAdapter implements ActionListener
 {

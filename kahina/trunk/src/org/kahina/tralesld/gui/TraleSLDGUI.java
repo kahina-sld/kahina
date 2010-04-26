@@ -8,8 +8,8 @@ import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStepType;
-import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
+import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
 
 public class TraleSLDGUI extends LogicProgrammingGUI
 {

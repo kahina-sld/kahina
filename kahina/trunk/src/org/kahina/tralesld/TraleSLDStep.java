@@ -1,20 +1,15 @@
 package org.kahina.tralesld;
 
-import java.util.Collections;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import org.kahina.core.KahinaRunner;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
-import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
+import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 
 public class TraleSLDStep extends LogicProgrammingStep
 {
     public TraleSLDFeatureStructure startFeatStruct;
     public TraleSLDFeatureStructure endFeatStruct;
-    // declared as TreeSet, so lightweight store will construct it as such
-	public TreeSet<TraleSLDVariableBinding> variableBindings = new TreeSet<TraleSLDVariableBinding>();
+    public TraleSLDVariableBindingSet bindings = new TraleSLDVariableBindingSet();
     
     public TraleSLDStep copy()
     {
@@ -25,7 +20,7 @@ public class TraleSLDStep extends LogicProgrammingStep
     	copy.codeLocation = codeLocation;
     	copy.startFeatStruct = startFeatStruct;
     	copy.endFeatStruct = endFeatStruct;
-    	copy.variableBindings.addAll(variableBindings);
+    	copy.bindings = bindings.copy();
     	return copy;
     }
     
@@ -53,14 +48,4 @@ public class TraleSLDStep extends LogicProgrammingStep
     {
         return KahinaRunner.getDataManager().retrieve(TraleSLDStep.class, id);
     }
-
-	public void addVariableBinding(TraleSLDVariableBinding binding)
-	{
-		variableBindings.add(binding);
-	}
-	
-	public SortedSet<TraleSLDVariableBinding> getVariableBindings()
-	{
-		return Collections.unmodifiableSortedSet(variableBindings);
-	}
 }

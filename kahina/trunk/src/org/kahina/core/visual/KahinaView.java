@@ -1,7 +1,6 @@
 package org.kahina.core.visual;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
@@ -56,7 +55,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
         
     }
     
-    public abstract KahinaViewPanel<?> wrapInPanel();
+    public abstract KahinaViewPanel<? extends KahinaView<T>> wrapInPanel();
     
     public String getTitle()
     {

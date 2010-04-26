@@ -11,7 +11,6 @@ import javax.swing.text.DefaultHighlighter;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.source.KahinaSourceFileModel;
 import org.kahina.core.data.text.KahinaTextWithMarking;
-import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeView>

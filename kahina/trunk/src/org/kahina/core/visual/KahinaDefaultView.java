@@ -6,7 +6,7 @@ public class KahinaDefaultView extends KahinaView<KahinaObject>
 {
     KahinaObject v;
     
-    public KahinaViewPanel<?> wrapInPanel()
+    public KahinaViewPanel<KahinaDefaultView> wrapInPanel()
     {
         KahinaDefaultViewPanel panel = new KahinaDefaultViewPanel();
         panel.setView(this);

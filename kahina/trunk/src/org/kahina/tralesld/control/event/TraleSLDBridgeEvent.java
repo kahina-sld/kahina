@@ -1,7 +1,6 @@
 package org.kahina.tralesld.control.event;
 
 import org.kahina.core.event.KahinaEvent;
-import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class TraleSLDBridgeEvent extends KahinaEvent
 {

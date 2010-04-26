@@ -21,7 +21,6 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.tree.KahinaLayeredTreeView;
-import org.kahina.core.visual.tree.KahinaTreeView;
 
 public class KahinaGUI implements KahinaListener
 {
