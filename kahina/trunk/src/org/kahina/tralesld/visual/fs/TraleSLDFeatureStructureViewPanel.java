@@ -1,5 +1,7 @@
 package org.kahina.tralesld.visual.fs;
 
+import gralej.parsers.ParseException;
+
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -40,11 +42,21 @@ public class TraleSLDFeatureStructureViewPanel extends KahinaViewPanel<TraleSLDF
 		{
 			innerPanel.add(new JLabel(
 					"No feature structures (yet) at this port."));
-			innerPanel.repaint(); // TODO ???
 		} else
 		{
-			util.visualize(grisuMessage, innerPanel);
+			try
+			{
+				innerPanel.add(util.visualize(grisuMessage));
+			} catch (ParseException e)
+			{
+				innerPanel.add(new JLabel("Parse error: " + e.getMessage()));
+			}
+			// TODO should use the asynchronous method instead, but currently
+			// leads to weird behavior - some updates then happen only on the
+			// second click
+			//util.visualize(grisuMessage, innerPanel);
 		}
+		innerPanel.repaint();
 	}
 
 }

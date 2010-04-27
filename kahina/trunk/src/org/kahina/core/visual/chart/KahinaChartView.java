@@ -92,7 +92,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     public void display(KahinaChart chartModel)
     {
         this.model = chartModel;
-        recalculate();
+        recalculate(); // TODO is this necessary?
     }
     
     public void recalculate()

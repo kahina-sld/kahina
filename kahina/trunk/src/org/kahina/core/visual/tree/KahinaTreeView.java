@@ -150,7 +150,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         treeLayer = 0;
         model = treeModel;
         nodeBorderColor = new HashMap<Integer, Color>();
-        recalculate();
+        recalculate(); // TODO is this necessary?
     }
     
     public void displaySecondaryTree(KahinaTree treeModel)
@@ -159,7 +159,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         ((KahinaTree) this.secondaryTreeModel).setReferenceNode(model.getReferenceNode());
         this.secondaryTreeModel.setPrimaryModel(model);
         nodeBorderColor = new HashMap<Integer, Color>();
-        recalculate();
+        recalculate(); // TODO is this necessary?
     }
     
     public void display(KahinaTree layerModel, int layerID, int referenceNode) throws KahinaTypeException

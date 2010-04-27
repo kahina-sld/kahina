@@ -28,5 +28,10 @@ public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable
 		return bindings.iterator();
 	}
 	
+	public int size()
+	{
+		return bindings.size();
+	}
+	
 	
 }
