@@ -40,7 +40,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	StringBuilder grisuMessage;
 
-	public static final boolean verbose = false;
+	public static final boolean verbose = true;
 
 	public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui, KahinaController control)
 	{
