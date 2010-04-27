@@ -7,8 +7,10 @@ import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
+import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 import org.kahina.tralesld.gui.TraleSLDGUI;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
+import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
 
 public class TraleSLDInstance extends KahinaInstance
 {
@@ -43,7 +45,7 @@ public class TraleSLDInstance extends KahinaInstance
 	protected void fillViewRegistry()
 	{
 		super.fillViewRegistry();
-		KahinaViewRegistry.registerMapping(TraleSLDFeatureStructure.class,
-				TraleSLDFeatureStructureView.class);
+		KahinaViewRegistry.registerMapping(TraleSLDFeatureStructure.class, TraleSLDFeatureStructureView.class);
+		KahinaViewRegistry.registerMapping(TraleSLDVariableBindingSet.class, TraleSLDVariableBindingSetView.class);
 	}
 }

@@ -28,8 +28,5 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
     	repaint();
     }
     
-    public void updateDisplay()
-    {
-        
-    }
+    public abstract void updateDisplay();
 }

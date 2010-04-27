@@ -19,4 +19,10 @@ public class KahinaDefaultViewPanel extends KahinaViewPanel<KahinaDefaultView>
         }
         canvas.drawString(displayString, 50, 50);
     }
+
+	@Override
+	public void updateDisplay()
+	{
+		// do nothing
+	}
 }
