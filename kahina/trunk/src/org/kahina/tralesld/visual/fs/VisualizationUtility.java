@@ -3,13 +3,18 @@ package org.kahina.tralesld.visual.fs;
 import gralej.Config;
 import gralej.controller.StreamInfo;
 import gralej.parsers.GraleParserFactory;
+import gralej.parsers.IDataPackage;
 import gralej.parsers.IGraleParser;
 import gralej.parsers.ParseException;
 import gralej.parsers.UnsupportedProtocolException;
 
 import java.io.ByteArrayInputStream;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.JPanel;
+import javax.swing.SwingWorker;
+
+import org.kahina.core.KahinaException;
 
 /**
  * 
@@ -58,9 +63,33 @@ public class VisualizationUtility
 	 *         method called <code>getCanvas()</code> to obtain the actual
 	 *         {@link JPanel}.
 	 */
-	public JPanel visualize(String grisuMessage) throws ParseException
+	public JPanel visualize(final String grisuMessage) throws ParseException
 	{
-		return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView().getCanvas();
+		SwingWorker<IDataPackage, Object> worker = new SwingWorker<IDataPackage, Object>() {
+
+			@Override
+			protected IDataPackage doInBackground() throws Exception
+			{
+				return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0);
+			}
+			
+		};
+		worker.execute();
+		try
+		{
+			return worker.get().createView().getCanvas();
+		} catch (InterruptedException e)
+		{
+			throw new KahinaException("FS parser interrupted.", e);
+		} catch (ExecutionException e)
+		{
+			Throwable cause = e.getCause();
+			if (cause instanceof ParseException)
+			{
+				throw (ParseException) cause;
+			}
+			throw (RuntimeException) cause;
+		}
 	}
 
 }
