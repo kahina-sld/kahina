@@ -33,7 +33,7 @@ public class TraleSLDVariableBindingSetViewPanel extends KahinaViewPanel<TraleSL
 		{
 			for (TraleSLDVariableBinding binding : model)
 			{
-				tabbedPane.addTab(binding.varName, new FSPane(binding.fs.grisuMessage, util));
+				// TODO
 			}
 		}
 	}

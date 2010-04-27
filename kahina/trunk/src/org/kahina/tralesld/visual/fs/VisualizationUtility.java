@@ -11,10 +11,10 @@ import gralej.parsers.UnsupportedProtocolException;
 import java.io.ByteArrayInputStream;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
-
-import org.kahina.core.KahinaException;
 
 /**
  * 
@@ -63,33 +63,39 @@ public class VisualizationUtility
 	 *         method called <code>getCanvas()</code> to obtain the actual
 	 *         {@link JPanel}.
 	 */
-	public JPanel visualize(final String grisuMessage) throws ParseException
+	public JPanel visualize(String grisuMessage) throws ParseException
+	{
+		return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView().getCanvas();
+	}
+	
+	public void visualize(final String grisuMessage, final JComponent parent)
 	{
 		SwingWorker<IDataPackage, Object> worker = new SwingWorker<IDataPackage, Object>() {
 
 			@Override
-			protected IDataPackage doInBackground() throws Exception
+			protected IDataPackage doInBackground() throws ParseException
 			{
 				return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0);
 			}
 			
+			@Override
+			protected void done()
+			{
+				try
+				{
+					parent.add(get().createView().getCanvas());
+				} catch (ExecutionException e)
+				{
+					parent.add(new JLabel("Parse error: " + e.getCause().getMessage()));
+				} catch (InterruptedException e)
+				{
+					parent.add(new JLabel("Parse error."));
+				}
+				parent.repaint(); // TODO ???
+			}
+			
 		};
 		worker.execute();
-		try
-		{
-			return worker.get().createView().getCanvas();
-		} catch (InterruptedException e)
-		{
-			throw new KahinaException("FS parser interrupted.", e);
-		} catch (ExecutionException e)
-		{
-			Throwable cause = e.getCause();
-			if (cause instanceof ParseException)
-			{
-				throw (ParseException) cause;
-			}
-			throw (RuntimeException) cause;
-		}
 	}
 
 }
