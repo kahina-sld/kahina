@@ -63,21 +63,30 @@ public class VisualizationUtility
 	 *         method called <code>getCanvas()</code> to obtain the actual
 	 *         {@link JPanel}.
 	 */
-	public JPanel visualize(String grisuMessage) throws ParseException
+	public JPanel visualize(String grisuMessage)
 	{
-		return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView().getCanvas();
+		try
+		{
+			return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView().getCanvas();
+		} catch (ParseException e)
+		{
+			JPanel result = new JPanel();
+			result.add(new JLabel("Parse error: " + e.getMessage()));
+			return result;
+		}
 	}
-	
+
 	public void visualize(final String grisuMessage, final JComponent parent)
 	{
-		SwingWorker<IDataPackage, Object> worker = new SwingWorker<IDataPackage, Object>() {
+		SwingWorker<IDataPackage, Object> worker = new SwingWorker<IDataPackage, Object>()
+		{
 
 			@Override
 			protected IDataPackage doInBackground() throws ParseException
 			{
 				return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0);
 			}
-			
+
 			@Override
 			protected void done()
 			{
@@ -93,7 +102,7 @@ public class VisualizationUtility
 				}
 				parent.repaint(); // TODO ???
 			}
-			
+
 		};
 		worker.execute();
 	}
