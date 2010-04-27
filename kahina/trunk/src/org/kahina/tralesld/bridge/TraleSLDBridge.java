@@ -156,18 +156,18 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	 * @param extID
 	 * @param type
 	 */
-	public void registerMessageEnd(int extID, String type)
+	public void registerMessageEnd(int extID, String key)
 	{
 		try
 		{
 			if (verbose)
-				System.err.println("registerMessageEnd(" + extID + ",\"" + type + "\"): " + grisuMessage);
+				System.err.println("registerMessageEnd(" + extID + ",\"" + key + "\"): " + grisuMessage);
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
 			TraleSLDFeatureStructure fs = new TraleSLDFeatureStructure(grisuMessage.toString());
-			if ("start".equals(type))
+			if ("start".equals(key))
 			{
 				step.startFeatStruct = fs;
-			} else if ("end".equals(type))
+			} else if ("end".equals(key))
 			{
 				step.endFeatStruct = fs;
 			}
@@ -180,9 +180,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 	
-	public void registerMessageEnd(int extID, String varName, String type)
+	public void registerMessageEnd(int extID, String key, String varName, String type)
 	{
-		registerMessageEnd(extID, varName, null, type);
+		registerMessageEnd(extID, key, varName, null, type);
 	}
 	
 	/**
@@ -192,7 +192,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	 * @param tag
 	 * @param type
 	 */
-	public void registerMessageEnd(int extID, String varName, String tag, String type)
+	public void registerMessageEnd(int extID, String key, String varName, String tag, String type)
 	{
 		try
 		{
@@ -202,7 +202,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
 			TraleSLDVariableBinding binding = new TraleSLDVariableBinding(varName, tag, type, grisuMessage.toString());
-			step.bindings.add(binding);
+			if ("start".equals(key))
+			{
+				step.startBindings.add(binding);
+			} else
+			{
+				step.endBindings.add(binding);
+			}
 			grisuMessage = new StringBuilder();
 		}
 		catch (Exception e)

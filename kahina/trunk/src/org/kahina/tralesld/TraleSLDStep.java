@@ -9,7 +9,8 @@ public class TraleSLDStep extends LogicProgrammingStep
 {
     public TraleSLDFeatureStructure startFeatStruct;
     public TraleSLDFeatureStructure endFeatStruct;
-    public TraleSLDVariableBindingSet bindings = new TraleSLDVariableBindingSet();
+    public TraleSLDVariableBindingSet startBindings = new TraleSLDVariableBindingSet();
+    public TraleSLDVariableBindingSet endBindings = new TraleSLDVariableBindingSet();
     
     public TraleSLDStep copy()
     {
@@ -20,7 +21,8 @@ public class TraleSLDStep extends LogicProgrammingStep
     	copy.codeLocation = codeLocation;
     	copy.startFeatStruct = startFeatStruct;
     	copy.endFeatStruct = endFeatStruct;
-    	copy.bindings = bindings.copy();
+    	copy.startBindings = startBindings.copy();
+    	copy.endBindings = endBindings.copy();
     	return copy;
     }
     

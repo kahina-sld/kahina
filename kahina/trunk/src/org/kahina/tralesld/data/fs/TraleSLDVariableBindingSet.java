@@ -7,8 +7,10 @@ import org.kahina.core.data.KahinaObject;
 
 public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable<TraleSLDVariableBinding>
 {
-    // declared as TreeSet, so lightweight store will construct it as such
+	// declared as TreeSet, so lightweight store will construct it as such
 	public TreeSet<TraleSLDVariableBinding> bindings = new TreeSet<TraleSLDVariableBinding>();
+
+	private static final boolean verbose = true;
 
 	public TraleSLDVariableBindingSet copy()
 	{
@@ -19,6 +21,10 @@ public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable
 
 	public void add(TraleSLDVariableBinding binding)
 	{
+		if (verbose)
+		{
+			System.err.println("TraleSLDVariableBindingSet.add(" + binding + ")");
+		}
 		bindings.add(binding);
 	}
 
@@ -27,11 +33,14 @@ public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable
 	{
 		return bindings.iterator();
 	}
-	
+
 	public int size()
 	{
+		if (verbose)
+		{
+			System.err.println("TraleSLDVariableBindingSet.size(): " + bindings.size());
+		}
 		return bindings.size();
 	}
-	
-	
+
 }

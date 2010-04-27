@@ -32,5 +32,11 @@ public class TraleSLDVariableBinding extends KahinaObject implements Comparable<
 		}
 		return result;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return getClass().getName() + "(" + varName + "," + tag + "," + type + ")";
+	}
 
 }
