@@ -16,6 +16,8 @@ import org.kahina.core.visual.KahinaViewPanel;
 public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeView>
 {
 	private static final long serialVersionUID = 8239151024120580599L;
+	
+	private static final boolean verbose = false;
 
 	HashMap<String, KahinaSourceFileModel> files;
     
@@ -46,7 +48,10 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeV
     {
         if (view.getModel() == null)
         {
-            System.err.println("No source code location found!");
+            if (verbose)
+            {
+            	System.err.println("No source code location found!");
+            }
             codePane.setText("-- no source code location specified --");
         }
         else
@@ -58,7 +63,10 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeV
                 sourceModel = new KahinaSourceFileModel(m.absolutePath);
                 files.put(m.absolutePath, sourceModel);
             }
-            System.err.println("Show code location: " + m.absolutePath + ", line " + m.lineNumber);
+            if (verbose)
+            {
+            	System.err.println("Show code location: " + m.absolutePath + ", line " + m.lineNumber);
+            }
             KahinaTextWithMarking textWithMarking = sourceModel.getCompleteContentWithLineOffsets(m.lineNumber);
             codePane.setText(textWithMarking.text);
             try

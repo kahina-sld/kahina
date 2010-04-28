@@ -39,7 +39,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	StringBuilder grisuMessage;
 
-	public static final boolean verbose = true;
+	public static final boolean verbose = false;
 
 	public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui)
 	{
@@ -140,8 +140,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
-				System.err.println("registerMessageChunk(\"" + chunk + "\")");
+			//if (verbose)
+			//	System.err.println("registerMessageChunk(\"" + chunk + "\")");
 			grisuMessage.append(chunk);
 		} catch (Exception e)
 		{
@@ -159,8 +159,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
-				System.err.println("registerMessageEnd(" + extID + ",\"" + key + "\"): " + grisuMessage);
+			//if (verbose)
+			//	System.err.println("registerMessageEnd(" + extID + ",\"" + key + "\"): " + grisuMessage);
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
 			TraleSLDFeatureStructure fs = new TraleSLDFeatureStructure(grisuMessage.toString());
 			if ("start".equals(key))
@@ -204,10 +204,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
-			{
-				System.err.println("registerMessageEnd(" + extID + ",\"" + varName + ",\"" + tag + ",\"" + type + "): " + grisuMessage);
-			}
+			//if (verbose)
+			//{
+			//	System.err.println("registerMessageEnd(" + extID + ",\"" + varName + ",\"" + tag + ",\"" + type + "): " + grisuMessage);
+			//}
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
 			TraleSLDVariableBinding binding = new TraleSLDVariableBinding(varName, tag, type, grisuMessage.toString());
 			if ("start".equals(key))
@@ -330,7 +330,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	public TraleSLDStep generateStep()
 	{
-		if (verbose) System.err.println("TraleSLDBridge.generateStep()");
+		//if (verbose) System.err.println("TraleSLDBridge.generateStep()");
 		return new TraleSLDStep();
 	}
 

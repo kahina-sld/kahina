@@ -10,7 +10,7 @@ public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable
 	// declared as TreeSet, so lightweight store will construct it as such
 	public TreeSet<TraleSLDVariableBinding> bindings = new TreeSet<TraleSLDVariableBinding>();
 
-	private static final boolean verbose = true;
+	private static final boolean verbose = false;
 
 	public TraleSLDVariableBindingSet copy()
 	{

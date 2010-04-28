@@ -68,7 +68,7 @@ public abstract class DataManager
 	{
 		int id = object.getID();
 		DataStore store = getStoreForType(object.getClass());
-		System.err.println("storing object " + id + " of type " + object.getClass() + " in " + store);
+		//System.err.println("storing object " + id + " of type " + object.getClass() + " in " + store);
 		setStoreForID(id, store);
 		store.store(object);
 	}
@@ -88,7 +88,7 @@ public abstract class DataManager
 	public final <T extends KahinaObject> T retrieve(Class<T> type, int id)
 	{
 		DataStore store = getStoreForID(id);
-		System.err.println("retrieving object " + id + " of type " + type + " from " + store);
+		//System.err.println("retrieving object " + id + " of type " + type + " from " + store);
 		if (store == null)
 		{
 			throw new KahinaException("No object with ID " + id + " has been stored.");

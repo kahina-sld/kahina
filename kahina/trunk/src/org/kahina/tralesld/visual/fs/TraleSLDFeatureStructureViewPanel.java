@@ -15,7 +15,7 @@ public class TraleSLDFeatureStructureViewPanel extends KahinaViewPanel<TraleSLDF
 
 	private VisualizationUtility util;
 
-	private static final boolean verbose = true;
+	private static final boolean verbose = false;
 
 	public TraleSLDFeatureStructureViewPanel()
 	{
