@@ -61,11 +61,11 @@ public class VariableBindingTableModel extends AbstractTableModel
 
 	public List<Integer> setBindings(TraleSLDVariableBindingSet model, int[] oldSelectedRows)
 	{
-		/*Set<String> oldSelectedVariableNames = new TreeSet<String>();
+		Set<String> oldSelectedVariableNames = new TreeSet<String>();
 		for (int rowIndex : oldSelectedRows)
 		{
 			oldSelectedVariableNames.add(variableNames[rowIndex]);
-		}*/ // TODO
+		}
 		if (model == null)
 		{
 			variableNames = new String[0];
@@ -84,10 +84,10 @@ public class VariableBindingTableModel extends AbstractTableModel
 				variableNames[i] = binding.varName;
 				types[i] = binding.type;
 				grisuMessages[i] = binding.fs.grisuMessage;
-				/*if (oldSelectedVariableNames.contains(binding.varName))
+				if (oldSelectedVariableNames.contains(binding.varName))
 				{
 					newSelectedRows.add(i);
-				}*/ // TODO
+				}
 				i++;
 			}
 			return newSelectedRows;
