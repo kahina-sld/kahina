@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.KahinaTypeException;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
@@ -1013,18 +1018,20 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     	}
     }
     
-    public KahinaTreeViewPanel wrapInPanel()
+    public JComponent wrapInPanel()
     {
         KahinaTreeViewPanel panel = new KahinaTreeViewPanel();
-        panel.setView(this);
-        return panel;
+        KahinaRunner.getControl().registerListener("redraw", panel);
+        panel.setView(this);   
+        return new JScrollPane(panel);
     }
     
-    public KahinaTreeViewPanel wrapInPanel(KahinaTreeViewMarker marker)
+    public JComponent wrapInPanel(KahinaTreeViewMarker marker)
     {
         KahinaTreeViewPanel panel = new KahinaTreeViewPanel(marker);
-        panel.setView(this);
-        return panel;
+        KahinaRunner.getControl().registerListener("redraw", panel);
+        panel.setView(this);   
+        return new JScrollPane(panel);
     }
     
     public void recalculate()

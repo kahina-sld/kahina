@@ -2,7 +2,10 @@ package org.kahina.core.visual.tree;
 
 import java.awt.Color;
 
+import javax.swing.JComponent;
+
 import org.kahina.core.KahinaException;
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.KahinaTypeException;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaView;
@@ -63,9 +66,10 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 	}
 
 	@Override
-	public KahinaLayeredTreeViewPanel wrapInPanel()
+	public JComponent wrapInPanel()
 	{
 		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(model, secondaryModel);
+        KahinaRunner.getControl().registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;
 	}

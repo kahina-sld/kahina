@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.util.HashMap;
 
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
@@ -75,9 +76,7 @@ public class KahinaWindow extends JFrame
             {
                 maxY = height;
             }
-            KahinaViewPanel panel = view.wrapInPanel();
-            control.registerListener("redraw", panel);
-            viewWindow.add(new JScrollPane(panel));
+            viewWindow.add(view.wrapInPanel());
             viewWindow.setTitle(view.getTitle());
             viewWindow.setSize(width, height);
             viewWindow.setLocation(xPos, yPos);

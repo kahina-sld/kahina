@@ -1,5 +1,7 @@
 package org.kahina.core.visual;
 
+import javax.swing.JComponent;
+
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
@@ -55,7 +57,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
         
     }
     
-    public abstract KahinaViewPanel<? extends KahinaView<T>> wrapInPanel();
+    public abstract JComponent wrapInPanel();
     
     public String getTitle()
     {

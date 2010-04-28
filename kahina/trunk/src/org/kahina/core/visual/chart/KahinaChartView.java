@@ -12,6 +12,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.visual.KahinaView;
 
@@ -723,11 +727,12 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         return result;
     }
     
-    public KahinaChartViewPanel wrapInPanel()
+    public JComponent wrapInPanel()
     {
         KahinaChartViewPanel panel = new KahinaChartViewPanel();
+        KahinaRunner.getControl().registerListener("redraw", panel);
         panel.setView(this);
-        return panel;
+        return new JScrollPane(panel);
     }
 }
 
