@@ -172,7 +172,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			step.store();
 			grisuMessage = new StringBuilder();
-		} catch (Exception e)
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -181,7 +182,15 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	
 	public void registerMessageEnd(int extID, String key, String varName, String type)
 	{
-		registerMessageEnd(extID, key, varName, null, type);
+        try
+        {
+            registerMessageEnd(extID, key, varName, null, type);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
 	}
 	
 	/**
