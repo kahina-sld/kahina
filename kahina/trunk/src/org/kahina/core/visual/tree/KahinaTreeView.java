@@ -690,9 +690,9 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
                 int depth = 0;
                 ArrayList<Integer> agenda = new ArrayList<Integer>();
                 agenda.add(secondaryTreeModel.getRootID(treeLayer));
+                if (verbose) System.err.println("\tvirtual root id: " + secondaryTreeModel.getRootID(treeLayer));
                 while (agenda.size() > 0)
                 {
-                    if (verbose) System.err.println("Agenda: " + agenda);
                     int s = agenda.size();
                     for (int i = 0; i < s; i++)
                     {
@@ -705,10 +705,14 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
                             }
                             else
                             {
+                               
                                 nodeX.put(nodeID, nodeX.get(nodeID) + depth * fontSize);
                             }
+                            if (verbose) System.err.println("\t Shifting node " + nodeID + " by " + depth);
                             //System.err.println(" depth(" + nodeID + ") = " + depth);
                             agenda.addAll(getVisibleVirtualChildren(secondaryTreeModel,nodeID));
+                            if (verbose) System.err.println("\t Visible virtual children: " + getVisibleVirtualChildren(secondaryTreeModel,nodeID));
+                            if (verbose) System.err.println("\t Agenda: " + agenda);
                         }
                     }
                     depth++;
@@ -794,7 +798,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     private ArrayList<Integer> getVisibleVirtualChildren(KahinaTree treeModel, int nodeID)
     {
         ArrayList<Integer> descendants = new ArrayList<Integer>();
-        //System.err.println("Actual children for node " + nodeID + ": " + treeModel.getChildren(nodeID,treeLayer));
+        //System.err.println("\t Actual children for node " + nodeID + ": " + treeModel.getChildren(nodeID,treeLayer));
         if (treeModel.isCollapsed(nodeID) && collapsePolicy == COLLAPSE_PRIMARY) return descendants;
         descendants.addAll(treeModel.getChildren(nodeID,treeLayer));
         for (int i = 0; i < descendants.size(); i++)

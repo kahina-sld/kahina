@@ -62,18 +62,19 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
     @Override
 	public List<Integer> getChildren(int nodeID, int layerID)
     {
-        if (verbose) System.err.print("KahinaLayeredTree.getChildren(" + nodeID + "," + layerID + ") = ");
+        if (verbose) System.err.println("\t\t KahinaMemTree.getChildren(" + nodeID + "," + layerID + ")");
         List<Integer> chi = new ArrayList<Integer>();
         List<Integer> frontLine = new ArrayList<Integer>();
+        if (verbose) System.err.println("\t\t\t layer( " + nodeID + " ) = " + decider.decideOnLayer(nodeID, this));
         if (nodeID == getRootID(layerID) || decider.decideOnLayer(nodeID, this) >= layerID)
         {
             frontLine.addAll(super.getChildren(nodeID, layerID));
         }
-        if (verbose) System.err.println("front line: " + frontLine);
+        if (verbose) System.err.println("\t\t\t front line: " + frontLine);
         while (frontLine.size() > 0)
         {
             int child = frontLine.remove(0);
-            if (verbose) System.err.println("child: " + child + " level: " + decider.decideOnLayer(child, this));
+            if (verbose) System.err.println("\t\t\t layer( " + child + " ) = " + decider.decideOnLayer(child, this));
             if (decider.decideOnLayer(child, this) <= layerID)
             {
                 chi.add(child);
@@ -86,7 +87,7 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
                 frontLine.addAll(super.getChildren(child,0));
             }
         }
-        if (verbose) System.err.println(" node: " + nodeID + " layer: " + layerID + " chi: " + chi);
+        if (verbose) System.err.println("\t\t => KahinaMemTree.getChildren(" + nodeID + "," + layerID + ") = " + chi);
         //System.err.println(chi);
         return chi;
     }

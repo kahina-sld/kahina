@@ -55,7 +55,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     @Override
 	public void addChild(int parent, int child)
     {
-        System.err.println("KahinaUnlayeredMemTree.addChild(" + parent + "," + child + ")");
+        //System.err.println("KahinaUnlayeredMemTree.addChild(" + parent + "," + child + ")");
         if (parent != -1)
         {
             List<Integer> childIDs = children.get(parent);
