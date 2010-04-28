@@ -617,6 +617,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
                 for (int node : nodeLevels.get(i))
                 {
                     int nodeLabelWidth = fm.stringWidth(getContentfulTreeModel().getNodeCaption(node));
+                    //System.err.println("labelWidth(" + getContentfulTreeModel().getNodeCaption(node) + ") = " + nodeLabelWidth);
                     if (maxNodeWidth < nodeLabelWidth) maxNodeWidth = nodeLabelWidth;
                     ArrayList<Integer> children = getVisibleVirtualChildren(model, node);
                     subtreeWidths.put(node,constructWidthVector(children));
@@ -657,7 +658,9 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
                     {
                         parent = newParent;
                         if (verbose) System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
-                        xOffset = (int)((nodeX.get(parent) -  (subtreeWidths.get(parent).getStart(1) * 0.5  - 0.5) * horizontalDistance * fontSize));
+                        //old variant of xOffset computation
+                        //xOffset = (int)((nodeX.get(parent) -  (subtreeWidths.get(parent).getStart(1) * 0.5  - 0.5) * horizontalDistance * fontSize));
+                        xOffset = nodeX.get(parent) -  subtreeWidths.get(parent).getStart(1) / 2 * horizontalDistance * fontSize / 2;
                     }
                     if (i > 0)
                     {
@@ -718,6 +721,8 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
                     depth++;
                 }
                 if (verbose) System.err.println("COMPLETE: adapt X values to secondary tree model");
+                //need to adapt tree width; otherwise nodes will protrude over the edge of the tree
+                totalTreeWidth += depth * fontSize;
             }
         }
         if (verbose)  System.err.println("COMPLETE: Calculate coordinates for layer " + treeLayer);
@@ -1041,5 +1046,19 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         resetAllStructures();
         calculateCoordinates();
         //System.err.println("Levels:\n" + showLevels());
+    }
+    
+    /**
+     * tell the GUI to adapt horizontal distance in order to avoid clashes
+     * will be overridden by manual distance adaptation
+     */
+    public void avoidClashesByAdaptingHorizontalDistance()
+    {
+        //stepwise increase of horizontal distance until all clashes are avoided
+        while (maxNodeWidth > horizontalDistance * fontSize / 2)
+        {
+            horizontalDistance++;
+        }
+        calculateCoordinates();
     }
 }
