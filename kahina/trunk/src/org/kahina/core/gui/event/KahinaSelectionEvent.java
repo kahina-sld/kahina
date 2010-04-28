@@ -1,25 +1,25 @@
 package org.kahina.core.gui.event;
 
 import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.visual.KahinaView;
+import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaSelectionEvent extends KahinaEvent
 {
     int selectedStep;
-    KahinaView view;
+    KahinaViewPanel panel;
     
     public KahinaSelectionEvent(int selectedStep)
     {
         super("select");
         this.selectedStep = selectedStep;
-        this.view = null;
+        this.panel = null;
     }
     
-    public KahinaSelectionEvent(int selectedStep, KahinaView view)
+    public KahinaSelectionEvent(int selectedStep, KahinaViewPanel panel)
     {
         super("select");
         this.selectedStep = selectedStep;
-        this.view = view;
+        this.panel = panel;
     }
     
     public int getSelectedStep()
@@ -27,9 +27,9 @@ public class KahinaSelectionEvent extends KahinaEvent
         return selectedStep;
     }
     
-    public KahinaView getView()
+    public KahinaViewPanel getPanel()
     {
-        return view;
+        return panel;
     }
     
     public String toString()

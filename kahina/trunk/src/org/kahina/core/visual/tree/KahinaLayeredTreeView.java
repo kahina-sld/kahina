@@ -28,6 +28,7 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
         overview.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
         overview.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
         overview.setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
+        overview.toggleSecondDimensionDisplay();
         overview.setVerticalDistance(3);
         overview.setHorizontalDistance(18);
 		detailView = new KahinaTreeView();

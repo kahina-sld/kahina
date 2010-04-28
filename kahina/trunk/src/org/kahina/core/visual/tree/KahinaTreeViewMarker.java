@@ -32,8 +32,6 @@ public class KahinaTreeViewMarker
         views.add(view);
     }
     
-    //TODO: turn this into a test case for the future "tentacle" concept
-    //TODO: much more complex because of interaction between multiple views
     public void markNode(int nodeID)
     {     
         if (nodeID == -1)
@@ -55,7 +53,7 @@ public class KahinaTreeViewMarker
             }
             for (KahinaTreeViewPanel view : views)
             {
-                //view.v.recalculate();
+                //view.view.recalculate();
                 if (view.view.displaysNode(nodeID))
                 {
                     view.view.setMarkedNode(nodeID);

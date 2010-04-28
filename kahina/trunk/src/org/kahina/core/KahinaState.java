@@ -23,7 +23,11 @@ public class KahinaState
     
     public KahinaState(KahinaInstance kahina, int dataHandlingMethod)
     {
-        switch (dataHandlingMethod)
+        stepTree = new KahinaMemTree();
+        secondaryStepTree = new KahinaMemTree();
+        
+        //database variant turned out to be too slow
+        /* switch (dataHandlingMethod)
         {
             case KahinaDataHandlingMethod.DATABASE:
             {
@@ -37,7 +41,7 @@ public class KahinaState
                 secondaryStepTree = new KahinaMemTree();
                 break;
             }
-        }
+        }*/
     }
     
     public KahinaTree getStepTree()

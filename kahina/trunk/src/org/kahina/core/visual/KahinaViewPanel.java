@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
 
 public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel implements KahinaListener
 {
@@ -13,8 +14,7 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 	
     public void processEvent(KahinaEvent event)
     {
-        //System.err.println(this + " received event: " + event.toString());
-        if (event.getType().equals("redraw"))
+        if (event instanceof KahinaRedrawEvent)
         {
             updateDisplay();
             repaint();

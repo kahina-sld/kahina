@@ -36,7 +36,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
     public void processEvent(KahinaSelectionEvent e)
     {
         KahinaRunner.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
-        KahinaRunner.processEvent(new KahinaRedrawEvent()); // TODO seems to be unused
+        KahinaRunner.processEvent(new KahinaRedrawEvent());
     }
     
     public void display(T model)

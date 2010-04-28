@@ -157,7 +157,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
             canvas.drawRect(x - 2, y, width + 4, view.getNodeHeight(nodeID) + 2);
             if (view.getMarkedNode() == nodeID)
             {
-                canvas.setColor(Color.ORANGE);
+                canvas.setColor(Color.YELLOW);
                 canvas.setStroke(new BasicStroke(2));
                 canvas.drawRect(x - 3, y - 1, width + 6, view.getNodeHeight(nodeID) + 4);
             }
@@ -195,7 +195,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
             canvas.drawOval(x - 2, y, width + 4, view.getNodeHeight(nodeID) + 4);
             if (view.getMarkedNode() == nodeID)
             {
-                canvas.setColor(Color.ORANGE);
+                canvas.setColor(new Color(255,255,170));
                 canvas.setStroke(new BasicStroke(2));
                 canvas.drawOval(x - 3, y - 1, width + 6, view.getNodeHeight(nodeID) + 6);
             }

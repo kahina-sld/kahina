@@ -38,8 +38,8 @@ public class KahinaSourceCodeViewPanel extends KahinaViewPanel<KahinaSourceCodeV
         this.add(codeScrollPane);
         //files = new HashMap<String, SourceFileModel>();
         //this.addComponentListener(this);
-        
-        painter = new DefaultHighlighter.DefaultHighlightPainter(Color.ORANGE);
+
+        painter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
     }
     
     public void updateDisplay()
