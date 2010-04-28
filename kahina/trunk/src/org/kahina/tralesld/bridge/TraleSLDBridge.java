@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
@@ -42,9 +41,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	public static final boolean verbose = true;
 
-	public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui, KahinaController control)
+	public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui)
 	{
-		super(kahina, gui, control);
+		super(kahina, gui);
 		this.kahina = kahina;
 		activeEdgeStack = new ArrayList<Integer>();
 		successfulEdges = new HashSet<Integer>();
@@ -67,9 +66,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.setExternalID(0);
 			stepIDConv.put(0, newStep.getID());
 			newStep.store();
-			control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
+			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
 			currentID = newStep.getID();
-			control.processEvent(new KahinaSelectionEvent(newStep.getID()));
+			KahinaRunner.processEvent(new KahinaSelectionEvent(newStep.getID()));
 		} 
         catch (Exception e)
 		{
@@ -96,7 +95,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.store();
 
 			// let TraleSLDTreeBehavior do the rest
-			control.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
+			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
 
 			// the following two actions and the structures they operate on seem
 			// to
@@ -271,7 +270,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				// lastEdge = edgeRegister.getData(currentOverviewTreeNode);
 			}
 			currentID = stepID;
-			control.processEvent(new KahinaSelectionEvent(stepID));
+			KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 		} catch (Exception e)
 		{
 			e.printStackTrace();

@@ -4,42 +4,33 @@ import java.awt.BorderLayout;
 import java.awt.Toolkit;
 import java.util.HashMap;
 
-import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
-import javax.swing.JScrollPane;
 
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaWindow extends JFrame
 {
-    /**
-     * just to keep the compiler happy
-     */
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6613805267152521669L;
+
+	KahinaGUI gui;
     
-    KahinaGUI gui;
-    KahinaController control;
+    HashMap<KahinaView<?>, JFrame> viewWindows;
     
-    HashMap<KahinaView, JFrame> viewWindows;
-    
-    public KahinaWindow(KahinaGUI gui, KahinaController control)
+    public KahinaWindow(KahinaGUI gui)
     {
         this.gui = gui;
-        this.control = control;
         
-        this.viewWindows = new HashMap<KahinaView, JFrame>();
+        this.viewWindows = new HashMap<KahinaView<?>, JFrame>();
         
         this.setTitle("Kahina Debugging Environment");
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         JMenuBar menuBar = new JMenuBar();
-        menuBar.add(new KahinaStateMenu(control));
-        menuBar.add(new KahinaParseMenu(control));
-        menuBar.add(new KahinaHelpMenu(control));
+        menuBar.add(new KahinaStateMenu());
+        menuBar.add(new KahinaParseMenu());
+        menuBar.add(new KahinaHelpMenu());
         this.setJMenuBar(menuBar);
         
         gui.getControlPanel().build();
@@ -59,7 +50,7 @@ public class KahinaWindow extends JFrame
         int maxY = height;
         
         //create windows for all the other registered views
-        for (KahinaView view : gui.views)
+        for (KahinaView<?> view : gui.views)
         {
             JFrame viewWindow = new JFrame();
             viewWindow.setLayout(new BorderLayout());

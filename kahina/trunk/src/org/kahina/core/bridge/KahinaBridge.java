@@ -1,8 +1,8 @@
 package org.kahina.core.bridge;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEvent;
@@ -19,15 +19,13 @@ public class KahinaBridge implements KahinaListener
 	private static final boolean verbose = false;
 	
     protected KahinaInstance kahina;
-    protected KahinaGUI gui;
-    protected KahinaController control;   
+    protected KahinaGUI gui; 
     
-    public KahinaBridge(KahinaInstance kahina, KahinaGUI gui, KahinaController control)
+    public KahinaBridge(KahinaInstance kahina, KahinaGUI gui)
     {
         this.kahina = kahina;
         this.gui = gui;
-        this.control = control;
-        control.registerListener("control", this);
+        KahinaRunner.getControl().registerListener("control", this);
     }
     
     public KahinaStep generateStep()

@@ -41,9 +41,21 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
         KahinaRunner.processEvent(new KahinaRedrawEvent());
     }
     
-    public void display(T model)
+    /**
+     * Subclasses may override this method to take certain actions directly
+     * after {@link #model} has changed. This default implementation does
+     * nothing.
+     */
+    public void doDisplay()
     {
-        this.model = model;
+    	// do nothing
+    }
+    
+    @SuppressWarnings("unchecked")
+	public final void display(KahinaObject model)
+    {
+        this.model = (T) model;
+        doDisplay();
     }
     
     public T getModel()

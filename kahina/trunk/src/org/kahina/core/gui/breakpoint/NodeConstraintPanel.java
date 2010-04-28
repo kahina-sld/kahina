@@ -7,16 +7,16 @@ import java.awt.event.ActionListener;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.TreePatternNode;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 
 public class NodeConstraintPanel extends JPanel implements ActionListener, KahinaListener
 {
-    KahinaController control;
-    
-    NodeConstraintOptions constrOptions;  
+	private static final long serialVersionUID = 427644200687377800L;
+
+	NodeConstraintOptions constrOptions;  
     
     SingleNodeConstraintPanel constPanel;
     BooleanOperationsPanel boolOpsPanel;
@@ -26,10 +26,9 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
     //changes coordinated with boolean connector panels via event system 
     private int selectionMode;
     
-    public NodeConstraintPanel(KahinaController control)
+    public NodeConstraintPanel()
     {
-        this.control = control;
-        control.registerListener("breakpoint_editor", this);
+        KahinaRunner.getControl().registerListener("breakpoint_editor", this);
         
         constrOptions = new NodeConstraintOptions();
         constrOptions.setStandardOptions();
@@ -46,7 +45,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         hintPanel = new BreakpointEditorHintPanel();   
         add(hintPanel);
         
-        constPanel = new SingleNodeConstraintPanel(constrOptions, control);
+        constPanel = new SingleNodeConstraintPanel(constrOptions);
         constPanel.setHintPanel(hintPanel);
         constPanel.setSynchronized(true);
         add(constPanel);  
@@ -54,9 +53,9 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         selectionMode = -1;
     }
     
-    public NodeConstraintPanel(KahinaController control, NodeConstraintOptions constrOptions)
+    public NodeConstraintPanel(NodeConstraintOptions constrOptions)
     {
-        this(control);
+        this();
         this.constrOptions = constrOptions;
         constPanel.setConstrOptions(constrOptions);
     }
@@ -79,7 +78,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         {
             if (constPanel.getMarkedPattern() != null)
             {
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_AND_OPERATION));
+                KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_AND_OPERATION));
                 hint("Now select the second conjunct.", Color.BLACK);
             }
             else
@@ -91,7 +90,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         {
             if (constPanel.getMarkedPattern() != null)
             {
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_OR_OPERATION));
+                KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_OR_OPERATION));
                 hint("Now select the second disjunct.", Color.BLACK);
             }
             else
@@ -103,7 +102,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
         {
             if (constPanel.getMarkedPattern() != null)
             {
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_IMPL_OPERATION));
+                KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_IMPL_OPERATION));
                 hint("Now select the consequent.", Color.BLACK);
             }
             else
@@ -184,7 +183,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
     
     public void displayNodeConstraint(TreePatternNode n)
     {
-        constPanel = new SingleNodeConstraintPanel(constrOptions, control, n);
+        constPanel = new SingleNodeConstraintPanel(constrOptions, n);
         constPanel.setHintPanel(hintPanel);
         constPanel.setSynchronized(true);
         this.add(constPanel);

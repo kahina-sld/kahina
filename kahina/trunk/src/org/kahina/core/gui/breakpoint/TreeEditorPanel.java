@@ -15,7 +15,9 @@ import org.kahina.core.visual.tree.WidthVector;
 
 public class TreeEditorPanel extends JPanel
 {
-    TreeFragmentPanel fragment;
+	private static final long serialVersionUID = -6222799443680145976L;
+
+	TreeFragmentPanel fragment;
     
     private HashMap<JPanel, Integer> x;
     private HashMap<JPanel, Integer> y;
@@ -36,10 +38,10 @@ public class TreeEditorPanel extends JPanel
         y.put(fragment.getRoot(), 100);
         
         List<List<JPanel>> nodeLevels = createNodeLayers();
-        for (List<JPanel> nodeLevel : nodeLevels)
+        /*for (List<JPanel> nodeLevel : nodeLevels)
         {
-            //System.err.println(nodeLevel);
-        }
+            System.err.println(nodeLevel);
+        }*/
         
         int totalTreeWidth = 50;
         int totalTreeHeight = 50;   

@@ -11,7 +11,9 @@ import javax.swing.JPanel;
 
 public class TreeGenerationPanel extends JPanel
 {
-    JButton addRandomNodeButton;
+	private static final long serialVersionUID = -2045828338668568984L;
+	
+	JButton addRandomNodeButton;
     JButton randomTreeGrowthButton;
     JButton stopTreeGrowthButton;
     JButton discardTreeButton;

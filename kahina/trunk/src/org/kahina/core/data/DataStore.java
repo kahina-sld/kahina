@@ -21,10 +21,7 @@ public abstract class DataStore
     /**
      * {@link DataManager}s call this method when their
      * {@link DataManager#persist()} method is called to tell the store to take
-     * all steps necessary to persist the objects it is responsible for. In
-     * particular, this involves storing the next available ID for the datatype
-     * as returned by {@link KahinaObject#getNextID(java.lang.Class)}
-     * persistently.
+     * all steps necessary to persist the objects it is responsible for.
      * @throws UnsupportedOperationException if this data store does not support
      * persistence.
      */

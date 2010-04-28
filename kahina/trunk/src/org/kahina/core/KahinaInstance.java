@@ -1,7 +1,6 @@
 package org.kahina.core;
 
 import org.kahina.core.bridge.KahinaBridge;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
@@ -15,7 +14,6 @@ import org.kahina.core.visual.tree.KahinaTreeView;
 public class KahinaInstance
 {
     protected KahinaState state;
-    protected KahinaController controller;
     protected KahinaGUI gui;
     protected KahinaBridge bridge;
     
@@ -31,17 +29,11 @@ public class KahinaInstance
         {
             state = new KahinaState(this, KahinaDataHandlingMethod.MEMORY);
         }
-        controller = KahinaRunner.getControl();
-        gui = new KahinaGUI(KahinaStep.class, this, controller);
-        bridge = new KahinaBridge(this, gui, controller);
+        gui = new KahinaGUI(KahinaStep.class, this);
+        bridge = new KahinaBridge(this, gui);
         nextStepID = 0;
         
         fillViewRegistry();
-    }
-
-    public KahinaController getController()
-    {
-        return controller;
     }
 
     public KahinaGUI getGUI()

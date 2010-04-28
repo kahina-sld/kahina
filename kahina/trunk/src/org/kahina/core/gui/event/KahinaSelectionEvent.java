@@ -6,7 +6,7 @@ import org.kahina.core.visual.KahinaViewPanel;
 public class KahinaSelectionEvent extends KahinaEvent
 {
     int selectedStep;
-    KahinaViewPanel panel;
+    KahinaViewPanel<?> panel;
     
     public KahinaSelectionEvent(int selectedStep)
     {
@@ -15,7 +15,7 @@ public class KahinaSelectionEvent extends KahinaEvent
         this.panel = null;
     }
     
-    public KahinaSelectionEvent(int selectedStep, KahinaViewPanel panel)
+    public KahinaSelectionEvent(int selectedStep, KahinaViewPanel<?> panel)
     {
         super("select");
         this.selectedStep = selectedStep;
@@ -27,7 +27,7 @@ public class KahinaSelectionEvent extends KahinaEvent
         return selectedStep;
     }
     
-    public KahinaViewPanel getPanel()
+    public KahinaViewPanel<?> getPanel()
     {
         return panel;
     }

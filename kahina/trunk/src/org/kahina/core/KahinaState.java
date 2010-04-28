@@ -1,7 +1,5 @@
 package org.kahina.core;
 
-import org.kahina.core.data.KahinaDataHandlingMethod;
-import org.kahina.core.data.tree.KahinaDbTree;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 

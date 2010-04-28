@@ -11,7 +11,9 @@ import javax.swing.JPanel;
 
 public class NodeOperationsPanel extends JPanel
 {
-    JButton addChildOperationButton;
+	private static final long serialVersionUID = -1153096468131693807L;
+	
+	JButton addChildOperationButton;
     JButton setParentOperationButton;
     JButton removeOperationButton;
     

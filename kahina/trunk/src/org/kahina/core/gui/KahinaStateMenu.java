@@ -8,18 +8,17 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.event.KahinaStateEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 
 public class KahinaStateMenu extends JMenu implements ActionListener
 {
-    KahinaController control;
+	private static final long serialVersionUID = -3140345218228195395L;
     
-    public KahinaStateMenu(KahinaController control)
+    public KahinaStateMenu()
     {
         super("State");
-        this.control = control;
             
         JMenuItem saveStateItem = new JMenuItem("Save...");
         saveStateItem.setActionCommand("saveState");
@@ -48,7 +47,7 @@ public class KahinaStateMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Restore state");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) control.processEvent(new KahinaStateEvent(KahinaStateEvent.LOAD_STATE, dataFile));
+            if (dataFile != null) KahinaRunner.processEvent(new KahinaStateEvent(KahinaStateEvent.LOAD_STATE, dataFile));
         }
         else if (s.equals("saveState"))
         {
@@ -56,11 +55,11 @@ public class KahinaStateMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Save current state");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null)  control.processEvent(new KahinaStateEvent(KahinaStateEvent.SAVE_STATE, dataFile));
+            if (dataFile != null)  KahinaRunner.processEvent(new KahinaStateEvent(KahinaStateEvent.SAVE_STATE, dataFile));
         }
         else if (s.equals("quit"))
         {
-            control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
+            KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
         }
     }
 }

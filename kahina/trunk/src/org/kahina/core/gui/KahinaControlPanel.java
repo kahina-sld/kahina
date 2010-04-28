@@ -9,21 +9,19 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.event.KahinaControlEvent;
 
 public class KahinaControlPanel extends JPanel implements ActionListener
 {
-    KahinaController control;
-    
-    //definitions of simple buttons
+	private static final long serialVersionUID = 6440832833800241356L;
+	
+	//definitions of simple buttons
     List<KahinaControlButton> controlButtons;
     
-    public KahinaControlPanel(KahinaController control)
+    public KahinaControlPanel()
     {
         super();
-
-        this.control = control;
         controlButtons = new ArrayList<KahinaControlButton>();
     }
     
@@ -49,6 +47,6 @@ public class KahinaControlPanel extends JPanel implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         String command = e.getActionCommand();
-        control.processEvent(new KahinaControlEvent(command));
+        KahinaRunner.processEvent(new KahinaControlEvent(command));
     }
 }

@@ -4,15 +4,14 @@ import java.awt.Color;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaStep;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.lp.LogicProgrammingStepType;
 
 public class LogicProgrammingGUI extends KahinaGUI
 {
-    public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance kahina, KahinaController control)
+    public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance kahina)
     {
-        super(stepType, kahina, control);
+        super(stepType, kahina);
         getControlPanel().addControlButton("creep.png", "creep", "continue to next step");
         getControlPanel().addControlButton("roundskip.png", "skip", "auto-complete this step");
         getControlPanel().addControlButton("reject.png", "fail", "make this step fail");

@@ -12,11 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.KahinaTypeException;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaView;
@@ -167,7 +165,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         recalculate(); // TODO is this necessary?
     }
     
-    public void display(KahinaTree layerModel, int layerID, int referenceNode) throws KahinaTypeException
+    public void display(KahinaTree layerModel, int layerID, int referenceNode)
     {
         treeLayer = layerID;
         layerModel.setReferenceNode(referenceNode);

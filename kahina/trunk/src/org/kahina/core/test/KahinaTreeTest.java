@@ -12,7 +12,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.KahinaTypeException;
 import org.kahina.core.data.tree.KahinaDbTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.LayerDecider;
@@ -141,10 +140,6 @@ public class KahinaTreeTest
             System.err.println(e.getMessage());
         }
         catch (IOException e)
-        {
-            System.err.println(e.getMessage());
-        }
-        catch (KahinaTypeException e)
         {
             System.err.println(e.getMessage());
         }

@@ -6,17 +6,16 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.event.KahinaDialogEvent;
 
 public class KahinaHelpMenu extends JMenu implements ActionListener
 {
-    KahinaController control;
-    
-    public KahinaHelpMenu(KahinaController control)
+	private static final long serialVersionUID = -8825991093423631389L;
+
+	public KahinaHelpMenu()
     {
         super("?");
-        this.control = control;
             
         JMenuItem helpItem = new JMenuItem("Help");
         helpItem.setActionCommand("help");
@@ -36,11 +35,11 @@ public class KahinaHelpMenu extends JMenu implements ActionListener
         String s = e.getActionCommand();
         if (s.equals("help"))
         {
-            control.processEvent(new KahinaDialogEvent(KahinaDialogEvent.HELP));
+            KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.HELP));
         }
         else if (s.equals("about"))
         {
-            control.processEvent(new KahinaDialogEvent(KahinaDialogEvent.ABOUT));
+            KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.ABOUT));
         }
     }   
 }

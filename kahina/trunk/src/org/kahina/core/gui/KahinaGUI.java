@@ -12,7 +12,6 @@ import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
@@ -25,7 +24,6 @@ import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 public class KahinaGUI implements KahinaListener
 {
     KahinaInstance kahina;
-    KahinaController control;
     
     KahinaControlPanel controlPanel;
     
@@ -38,30 +36,29 @@ public class KahinaGUI implements KahinaListener
     
     protected Set<KahinaView<?>> livingViews;
     
-    Map<Field, KahinaView> fieldToView;
+    Map<Field, KahinaView<? extends KahinaObject>> fieldToView;
     
     Class<? extends KahinaStep> stepType;
     
-    public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance kahina, KahinaController control) 
+    public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance kahina) 
     {
         System.err.println("creating Kahina GUI...");
         this.stepType = stepType;
         this.kahina = kahina;
-        this.control = control;
-        control.registerListener("select", this);
+        KahinaRunner.getControl().registerListener("select", this);
         
-        this.controlPanel = new KahinaControlPanel(control);
+        this.controlPanel = new KahinaControlPanel();
         
         this.views = new ArrayList<KahinaView<?>>();
         this.viewVisibility = new HashMap<KahinaView<?>, Integer>();
         
         this.livingViews = new HashSet<KahinaView<?>>();
-        this.fieldToView = new HashMap<Field, KahinaView>();
+        this.fieldToView = new HashMap<Field, KahinaView<? extends KahinaObject>>();
         fillFieldToView(stepType);
         
         mainTreeView = new KahinaLayeredTreeView(0, 1);
         mainTreeView.setTitle("Control flow tree");
-        control.registerListener("update", mainTreeView);
+        KahinaRunner.getControl().registerListener("update", mainTreeView);
         views.add(mainTreeView);
         livingViews.add(mainTreeView);
     }
@@ -79,7 +76,7 @@ public class KahinaGUI implements KahinaListener
             if (KahinaObject.class.isAssignableFrom(field.getType()))
             {
                 KahinaView<?> newView = KahinaViewRegistry.generateViewFor(field.getType());
-                control.registerListener("update", newView);
+                KahinaRunner.getControl().registerListener("update", newView);
                 System.err.println("\t\tview: " + newView);
                 newView.setTitle("Step information: " + field.getName());
                 fieldToView.put(field, newView);
@@ -97,7 +94,7 @@ public class KahinaGUI implements KahinaListener
     public final void buildAndShow()
     {
     	displayMainViews();
-        window = new KahinaWindow(this, control);
+        window = new KahinaWindow(this);
     }
     
     protected void displayMainViews()
@@ -106,7 +103,6 @@ public class KahinaGUI implements KahinaListener
         mainTreeView.displaySecondaryTree(kahina.getState().getSecondaryStepTree()); 
     }
 
-    @SuppressWarnings("unchecked")
     public void displayStepContent(int stepID)
     {
         KahinaStep step = KahinaRunner.getDataManager().retrieve(stepType, stepID);

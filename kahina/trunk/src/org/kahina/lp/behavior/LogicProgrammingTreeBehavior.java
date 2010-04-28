@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.behavior.KahinaTreeBehavior;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaTreeEvent;
@@ -30,15 +30,15 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     protected Set<Integer> deterministicallyExited;
     protected Set<Integer> nonDetermBecauseOfRedo;
     
-    public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaController control, KahinaInstance kahina, KahinaTree secondaryTree)
+    public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance kahina, KahinaTree secondaryTree)
     {
-        super(tree, control, kahina);
+        super(tree, kahina);
         this.secondaryTree = secondaryTree;
         this.lastActiveID = -1;
         deterministicallyExited = new HashSet<Integer>();
         nonDetermBecauseOfRedo = new HashSet<Integer>();
-        control.registerListener("logic programming bridge", this);
-        if (verbose) System.err.println("new LogicProgrammingTreeBehavior(" + tree + "," + control + "," + kahina + "," + secondaryTree + ")");
+        KahinaRunner.getControl().registerListener("logic programming bridge", this);
+        if (verbose) System.err.println("new LogicProgrammingTreeBehavior(" + tree + "," + "," + kahina + "," + secondaryTree + ")");
     }
     
     /**

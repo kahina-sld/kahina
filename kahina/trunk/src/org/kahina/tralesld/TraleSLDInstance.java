@@ -27,9 +27,9 @@ public class TraleSLDInstance extends KahinaInstance
 			state = new TraleSLDState(this, KahinaDataHandlingMethod.MEMORY);
 		}
 		// TODO: this reeks a wee bit of Bad Software Design
-		new TraleSLDTreeBehavior(state.getStepTree(), controller, this, state.getSecondaryStepTree());
-		gui = new TraleSLDGUI(TraleSLDStep.class, this, controller);
-		bridge = new TraleSLDBridge(this, gui, controller);
+		new TraleSLDTreeBehavior(state.getStepTree(), this, state.getSecondaryStepTree());
+		gui = new TraleSLDGUI(TraleSLDStep.class, this);
+		bridge = new TraleSLDBridge(this, gui);
 	}
 
 	public TraleSLDState getState()

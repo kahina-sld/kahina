@@ -6,18 +6,17 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 
 public class KahinaParseMenu extends JMenu implements ActionListener
 {
-    KahinaController control;
-    
-    public KahinaParseMenu(KahinaController control)
+	private static final long serialVersionUID = -1290849167486564257L;
+
+	public KahinaParseMenu()
     {
         super("Parse");
-        this.control = control;
             
         JMenuItem restartItem = new JMenuItem("Restart");
         restartItem.setActionCommand("restartParse");
@@ -42,15 +41,15 @@ public class KahinaParseMenu extends JMenu implements ActionListener
         String s = e.getActionCommand();
         if (s.equals("restartParse"))
         {
-            control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.RESTART));
+            KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.RESTART));
         }
         else if (s.equals("editBreakpoints"))
         {
-            control.processEvent(new KahinaDialogEvent(KahinaDialogEvent.BREAKPOINTS));
+            KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.BREAKPOINTS));
         }
         else if (s.equals("parseOptions"))
         {
-            control.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE_OPTIONS));
+            KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE_OPTIONS));
         }
     }
 }

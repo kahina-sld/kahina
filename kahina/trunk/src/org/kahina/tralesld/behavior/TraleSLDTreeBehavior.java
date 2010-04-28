@@ -1,7 +1,7 @@
 package org.kahina.tralesld.behavior;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
@@ -21,10 +21,10 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
 {   
 	private static final boolean verbose = false;
 	
-    public TraleSLDTreeBehavior(KahinaTree tree, KahinaController control, KahinaInstance kahina, KahinaTree secondaryTree)
+    public TraleSLDTreeBehavior(KahinaTree tree, KahinaInstance kahina, KahinaTree secondaryTree)
     {
-        super(tree, control, kahina, secondaryTree);  
-        control.registerListener("traleSLD bridge", this);
+        super(tree, kahina, secondaryTree);  
+        KahinaRunner.getControl().registerListener("traleSLD bridge", this);
     }
     
     public void initializeParseTree(int stepID, String parsedSentence)

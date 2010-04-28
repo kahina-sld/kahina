@@ -2,8 +2,8 @@ package org.kahina.tralesld.gui;
 
 import java.awt.Color;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.tralesld.TraleSLDInstance;
@@ -17,14 +17,14 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	
 	protected KahinaChartView mainChartView;
 	
-    public TraleSLDGUI(Class<? extends KahinaStep> stepType, TraleSLDInstance instance, KahinaController control)
+    public TraleSLDGUI(Class<? extends KahinaStep> stepType, TraleSLDInstance instance)
     {
-        super(stepType, instance, control);
+        super(stepType, instance);
         this.instance = instance;      
         
         mainChartView = new KahinaChartView();
         mainChartView.setTitle("Chart");
-        control.registerListener("update", mainChartView);
+        KahinaRunner.getControl().registerListener("update", mainChartView);
         views.add(mainChartView);
         livingViews.add(mainChartView);
         

@@ -1,12 +1,10 @@
 package org.kahina.tralesld.visual.fs;
 
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -20,7 +18,7 @@ public class TraleSLDVariableBindingSetViewPanel extends KahinaViewPanel<TraleSL
 {
 	private static final long serialVersionUID = 8545282386910165013L;
 	
-	private static final boolean verbose = true;
+	private static final boolean verbose = false;
 
 	private final JTable table;
 	

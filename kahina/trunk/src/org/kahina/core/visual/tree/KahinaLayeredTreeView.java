@@ -4,60 +4,51 @@ import java.awt.Color;
 
 import javax.swing.JComponent;
 
-import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.KahinaTypeException;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 {
-	
+
 	private final int firstLayer;
-	
+
 	private final int secondLayer;
-	
+
 	private KahinaTreeView overview;
-	
+
 	private KahinaTreeView detailView;
-	
+
 	private KahinaTree secondaryModel;
-	
+
 	public KahinaLayeredTreeView(int firstLayer, int secondLayer)
 	{
 		this.firstLayer = firstLayer;
 		this.secondLayer = secondLayer;
 		overview = new KahinaTreeView();
-        overview.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
-        overview.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
-        overview.setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
-        overview.toggleSecondDimensionDisplay();
-        overview.setVerticalDistance(3);
-        overview.setHorizontalDistance(18);
+		overview.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
+		overview.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
+		overview.setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
+		overview.toggleSecondDimensionDisplay();
+		overview.setVerticalDistance(3);
+		overview.setHorizontalDistance(18);
 		detailView = new KahinaTreeView();
 	}
-	
+
 	@Override
-	public void display(KahinaTree treeModel)
+	public void doDisplay()
 	{
-		super.display(treeModel);
-		try
-		{
-			int rootID = treeModel.getRootID();
-			overview.display(treeModel, firstLayer, rootID);
-			detailView.display(treeModel, secondLayer, rootID);
-		} catch (KahinaTypeException e)
-		{
-			throw new KahinaException("Unexpected type error.", e);
-		}
+		int rootID = model.getRootID();
+		overview.display(model, firstLayer, rootID);
+		detailView.display(model, secondLayer, rootID);
 	}
-	
+
 	@Override
 	public KahinaTree getModel()
 	{
 		return overview.getModel();
 	}
-	
+
 	public void displaySecondaryTree(KahinaTree treeModel)
 	{
 		this.secondaryModel = treeModel;
@@ -69,23 +60,23 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 	public JComponent wrapInPanel()
 	{
 		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(model, secondaryModel);
-        KahinaRunner.getControl().registerListener("redraw", panel);
+		KahinaRunner.getControl().registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;
 	}
-	
+
 	@Override
 	public void recalculate()
 	{
 		overview.recalculate();
 		detailView.recalculate();
 	}
-	
+
 	public KahinaTreeView getOverview()
 	{
 		return overview;
 	}
-	
+
 	public KahinaTreeView getDetailView()
 	{
 		return detailView;
