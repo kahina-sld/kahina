@@ -71,7 +71,7 @@ public class VisualizationUtility
 		} catch (ParseException e)
 		{
 			JPanel result = new JPanel();
-			result.add(new JLabel("Parse error: " + e.getMessage()));
+			result.add(new JLabel("Parse error: \n" + e.getMessage() + "\nGrisu message was: \n" + grisuMessage));
 			return result;
 		}
 	}
