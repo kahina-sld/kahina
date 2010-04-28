@@ -193,7 +193,12 @@ public class DbDataManager extends DataManager
 	public void store(KahinaObject object)
 	{
 		int id = object.getID();
-		int storeID = storeIDByType.get(object.getClass());
+		Class<?> clazz = object.getClass();
+		if (!storeIDByType.containsKey(clazz))
+		{
+			throw new KahinaException("Tried to store object " + id + " with unregistered type " + clazz);
+		}
+		int storeID = storeIDByType.get(clazz);
 		storeByStoreID.get(storeID).store(object, id);
 		setStoreForID(id, storeID);
 	}
