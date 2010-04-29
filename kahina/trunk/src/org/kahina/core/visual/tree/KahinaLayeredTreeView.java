@@ -6,13 +6,10 @@ import javax.swing.JComponent;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 {
-	
-	private static final boolean verbose = true;
 
 	private final int firstLayer;
 

@@ -4,7 +4,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaViewPanel;
 
@@ -20,9 +19,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 	{
 		KahinaTreeViewMarker marker = new KahinaTreeViewMarker(model, secondaryModel);
 		overviewPanel = new KahinaTreeViewPanel(marker);
-		KahinaRunner.getControl().registerListener("redraw", overviewPanel);
 		detailPanel = new KahinaTreeViewPanel(marker);
-		KahinaRunner.getControl().registerListener("redraw", detailPanel);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(createSplitPane());
 	}

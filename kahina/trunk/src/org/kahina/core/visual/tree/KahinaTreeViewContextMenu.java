@@ -11,7 +11,9 @@ import javax.swing.JRadioButtonMenuItem;
 
 public class KahinaTreeViewContextMenu extends JPopupMenu
 {
-    KahinaTreeView v;
+	private static final long serialVersionUID = 9048500561913489861L;
+	
+	KahinaTreeView v;
     
     public KahinaTreeViewContextMenu(ActionListener l, KahinaTreeView v)
     {

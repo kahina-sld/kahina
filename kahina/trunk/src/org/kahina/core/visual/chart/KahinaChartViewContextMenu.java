@@ -10,7 +10,9 @@ import javax.swing.JRadioButtonMenuItem;
 
 public class KahinaChartViewContextMenu extends JPopupMenu
 {
-    KahinaChartView v;
+	private static final long serialVersionUID = 3314767645836373938L;
+	
+	KahinaChartView v;
     
     public KahinaChartViewContextMenu(ActionListener l, KahinaChartView v)
     {
