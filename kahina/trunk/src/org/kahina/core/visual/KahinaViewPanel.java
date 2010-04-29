@@ -10,7 +10,7 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 {
 	private static final long serialVersionUID = 5677332450070203832L;
 	
-	private static final boolean verbose = true;
+	private static final boolean verbose = false;
 	
 	public T view;
 	

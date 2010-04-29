@@ -18,10 +18,10 @@ public class KahinaBridge implements KahinaListener
 {
 	private static final boolean verbose = false;
 	
-    protected KahinaInstance kahina;
+    protected KahinaInstance<?, ?, ?> kahina;
     protected KahinaGUI gui; 
     
-    public KahinaBridge(KahinaInstance kahina, KahinaGUI gui)
+    public KahinaBridge(KahinaInstance<?, ?, ?> kahina, KahinaGUI gui)
     {
         this.kahina = kahina;
         this.gui = gui;

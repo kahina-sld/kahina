@@ -12,24 +12,40 @@ import org.kahina.tralesld.gui.TraleSLDGUI;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
 import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
 
-public class TraleSLDInstance extends KahinaInstance
+public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
-	TraleSLDState state;
-	TraleSLDBridge bridge;
 
 	public TraleSLDInstance()
 	{
-		if (KahinaRunner.getDatabaseHandler() != null)
-		{
-			state = new TraleSLDState(this, KahinaDataHandlingMethod.DATABASE);
-		} else
-		{
-			state = new TraleSLDState(this, KahinaDataHandlingMethod.MEMORY);
-		}
 		// TODO: this reeks a wee bit of Bad Software Design
 		new TraleSLDTreeBehavior(state.getStepTree(), this, state.getSecondaryStepTree());
-		gui = new TraleSLDGUI(TraleSLDStep.class, this);
-		bridge = new TraleSLDBridge(this, gui);
+		//gui = new TraleSLDGUI(TraleSLDStep.class, this);
+		//bridge = new TraleSLDBridge(this, gui);
+	}
+
+	@Override
+	protected TraleSLDBridge createBridge()
+	{
+		return new TraleSLDBridge(this, gui);
+	}
+
+	@Override
+	protected TraleSLDGUI createGUI()
+	{
+		return new TraleSLDGUI(TraleSLDStep.class, this);
+	}
+
+	@Override
+	protected TraleSLDState createState()
+	{
+
+		if (KahinaRunner.getDatabaseHandler() != null)
+		{
+			return new TraleSLDState(this, KahinaDataHandlingMethod.DATABASE);
+		} else
+		{
+			return new TraleSLDState(this, KahinaDataHandlingMethod.MEMORY);
+		}
 	}
 
 	public TraleSLDState getState()

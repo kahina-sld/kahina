@@ -27,7 +27,7 @@ public class KahinaGUI implements KahinaListener
 {
 	private static final boolean verbose = false;
 
-	KahinaInstance kahina;
+	KahinaInstance<?, ?, ?> kahina;
 
 	KahinaControlPanel controlPanel;
 
@@ -44,7 +44,7 @@ public class KahinaGUI implements KahinaListener
 
 	Class<? extends KahinaStep> stepType;
 
-	public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance kahina)
+	public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
 	{
 		if (verbose)
 		{

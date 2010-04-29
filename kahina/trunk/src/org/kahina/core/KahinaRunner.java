@@ -56,10 +56,4 @@ public class KahinaRunner
     {
         return control;
     }
-    
-    public static void main(String[] args)
-    {
-        KahinaInstance kahina = new KahinaInstance();
-        // TODO database handler should be closed
-    }
 }

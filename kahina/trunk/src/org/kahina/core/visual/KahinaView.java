@@ -12,7 +12,7 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 
 public abstract class KahinaView<T extends KahinaObject> implements KahinaListener
 {  
-	private static final boolean verbose = true;
+	private static final boolean verbose = false;
 	
     //the title of the tab or window this view is displayed in
     private String title = "Unnamed View";

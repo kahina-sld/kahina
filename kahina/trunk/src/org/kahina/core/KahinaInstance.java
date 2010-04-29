@@ -1,7 +1,6 @@
 package org.kahina.core;
 
 import org.kahina.core.bridge.KahinaBridge;
-import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.tree.KahinaTree;
@@ -11,42 +10,40 @@ import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.source.KahinaSourceCodeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
 
-public class KahinaInstance
+public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge>
 {
-    protected KahinaState state;
-    protected KahinaGUI gui;
-    protected KahinaBridge bridge;
+    protected S state;
+    protected G gui;
+    protected B bridge;
     
     private int nextStepID;
     
     public KahinaInstance()
-    {
-        if (KahinaRunner.getDatabaseHandler() != null)
-        {
-            state = new KahinaState(this, KahinaDataHandlingMethod.DATABASE);
-        }
-        else
-        {
-            state = new KahinaState(this, KahinaDataHandlingMethod.MEMORY);
-        }
-        gui = new KahinaGUI(KahinaStep.class, this);
-        bridge = new KahinaBridge(this, gui);
-        nextStepID = 0;
-        
+    {   
         fillViewRegistry();
+    	state = createState();
+    	gui = createGUI();
+    	bridge = createBridge();
+        nextStepID = 0;     
     }
+    
+    protected abstract S createState();
+    
+    protected abstract G createGUI();
+    
+    protected abstract B createBridge();
 
-    public KahinaGUI getGUI()
+    public G getGUI()
     {
         return gui;
     }
     
-    public KahinaBridge getBridge()
+    public B getBridge()
     {
         return bridge;
     }
     
-    public KahinaState getState()
+    public S getState()
     {
         return state;
     }

@@ -61,12 +61,11 @@ public class KahinaTreeViewMarker
                 else
                 {
                     view.view.setMarkedNode(model.getParent(nodeID, view.view.getTreeLayer()));
-                    System.err.println("should mark " + nodeID + ", marked " + model.getParent(nodeID, view.view.getTreeLayer()));
                 }
-                KahinaRunner.processEvent(new KahinaSelectionEvent(model.getReferenceNode()));
                 //view.updateDisplay();
                 //view.repaint();
             }
+            KahinaRunner.processEvent(new KahinaSelectionEvent(model.getReferenceNode()));
         }
     }
 }

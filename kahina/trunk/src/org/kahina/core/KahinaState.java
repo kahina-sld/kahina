@@ -19,7 +19,7 @@ public class KahinaState
     KahinaTree stepTree;
     KahinaTree secondaryStepTree;
     
-    public KahinaState(KahinaInstance kahina, int dataHandlingMethod)
+    public KahinaState(KahinaInstance<?, ?, ?> kahina, int dataHandlingMethod)
     {
         stepTree = new KahinaMemTree();
         secondaryStepTree = new KahinaMemTree();

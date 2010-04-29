@@ -10,6 +10,8 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 {
+	
+	private static final boolean verbose = false;
 
 	private final int firstLayer;
 
@@ -25,6 +27,10 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 
 	public KahinaLayeredTreeView(int firstLayer, int secondLayer)
 	{
+		if (verbose)
+		{
+			System.out.println("Constructing " + this);
+		}
 		this.firstLayer = firstLayer;
 		this.secondLayer = secondLayer;
 		overview = new KahinaTreeView();
