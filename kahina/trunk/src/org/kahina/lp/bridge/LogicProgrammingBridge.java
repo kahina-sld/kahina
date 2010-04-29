@@ -2,7 +2,6 @@ package org.kahina.lp.bridge;
 
 import java.util.HashMap;
 
-import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
@@ -10,7 +9,6 @@ import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaStepFocusEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.event.LogicProgrammingBridgeEvent;
 import org.kahina.lp.event.LogicProgrammingBridgeEventType;
@@ -32,11 +30,11 @@ public class LogicProgrammingBridge extends KahinaBridge
     int skipID = -1;
     
     
-    public LogicProgrammingBridge(KahinaInstance<?, ?, ?> kahina, KahinaGUI gui)
-    {       
-        super(kahina, gui);
+    public LogicProgrammingBridge()
+    {
+    	super();
         stepIDConv = new HashMap<Integer,Integer>();
-        if (verbose) System.err.println("new LogicProgrammingBridge(" + kahina + "," + gui + "," + ")");
+        if (verbose) System.err.println("new LogicProgrammingBridge()");
     }
     
     /**

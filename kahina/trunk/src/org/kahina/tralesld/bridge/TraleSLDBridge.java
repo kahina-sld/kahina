@@ -13,7 +13,6 @@ import java.util.List;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.event.KahinaStepFocusEvent;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.util.PrologUtilities;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
@@ -40,9 +39,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	public static final boolean verbose = false;
 
-	public TraleSLDBridge(TraleSLDInstance kahina, KahinaGUI gui)
+	public TraleSLDBridge(TraleSLDInstance kahina)
 	{
-		super(kahina, gui);
+		super();
 		this.kahina = kahina;
 		activeEdgeStack = new ArrayList<Integer>();
 		successfulEdges = new HashSet<Integer>();

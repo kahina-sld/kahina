@@ -26,7 +26,7 @@ public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI,
 	@Override
 	protected TraleSLDBridge createBridge()
 	{
-		return new TraleSLDBridge(this, gui);
+		return new TraleSLDBridge(this);
 	}
 
 	@Override
