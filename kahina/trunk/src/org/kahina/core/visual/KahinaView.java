@@ -12,6 +12,8 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 
 public abstract class KahinaView<T extends KahinaObject> implements KahinaListener
 {  
+	private static final boolean verbose = true;
+	
     //the title of the tab or window this view is displayed in
     private String title = "Unnamed View";
     
@@ -19,7 +21,10 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
     
     public void processEvent(KahinaEvent e)
     {
-        //System.err.println(this + " received event: " + e.toString());
+		if (verbose)
+		{
+			System.err.println(this + " received " + e);
+		}
         if (e instanceof KahinaUpdateEvent)
         {
             processEvent((KahinaUpdateEvent) e);
@@ -30,12 +35,12 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
         }
     }
     
-    public void processEvent(KahinaUpdateEvent e)
+    private void processEvent(KahinaUpdateEvent e)
     {
         recalculate();
     }
     
-    public void processEvent(KahinaSelectionEvent e)
+    private void processEvent(KahinaSelectionEvent e)
     {
         KahinaRunner.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
         KahinaRunner.processEvent(new KahinaRedrawEvent());

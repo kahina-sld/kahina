@@ -370,7 +370,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
                 }   
                 edgeY.put(curEdge, drawIntoRow * (cellHeight + 3));
                 height.put(curEdge, cellHeight + 3);
-                System.err.println(segmentOffsets.get(model.getLeftBoundForEdge(curEdge)));
+                //System.err.println(segmentOffsets.get(model.getLeftBoundForEdge(curEdge)));
                 int leftOffset = segmentOffsets.get(model.getLeftBoundForEdge(curEdge));
                 int rightOffset = segmentOffsets.get(model.getRightBoundForEdge(curEdge));
                 rightOffset += getSegmentWidth(model.getRightBoundForEdge(curEdge));

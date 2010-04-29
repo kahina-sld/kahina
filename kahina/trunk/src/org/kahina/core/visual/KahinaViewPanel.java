@@ -10,10 +10,16 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 {
 	private static final long serialVersionUID = 5677332450070203832L;
 	
+	private static final boolean verbose = true;
+	
 	public T view;
 	
     public void processEvent(KahinaEvent event)
     {
+    	if (verbose)
+    	{
+    		System.err.println(this + " received " + event);
+    	}
         if (event instanceof KahinaRedrawEvent)
         {
             updateDisplay();

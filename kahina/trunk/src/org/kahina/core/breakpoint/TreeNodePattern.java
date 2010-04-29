@@ -433,7 +433,6 @@ public class TreeNodePattern
     {
         if (relString.equals("="))
         {
-            System.err.println("=");
             rel = IDENTITY;
         }
         else if (relString.equals(">"))

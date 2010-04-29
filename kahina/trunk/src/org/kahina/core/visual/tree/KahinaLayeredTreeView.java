@@ -6,10 +6,13 @@ import javax.swing.JComponent;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 {
+	
+	private static final boolean verbose = true;
 
 	private final int firstLayer;
 
@@ -33,6 +36,8 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		overview.setVerticalDistance(3);
 		overview.setHorizontalDistance(18);
 		detailView = new KahinaTreeView();
+		KahinaRunner.getControl().registerListener("update", overview);
+		KahinaRunner.getControl().registerListener("update", detailView);
 	}
 
 	@Override
@@ -70,13 +75,6 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		return panel;
 	}
 
-	@Override
-	public void recalculate()
-	{
-		overview.recalculate();
-		detailView.recalculate();
-	}
-
 	public KahinaTreeView getOverview()
 	{
 		return overview;
@@ -92,5 +90,5 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		overview.setStatusColorEncoding(status, color);
 		detailView.setStatusColorEncoding(status, color);
 	}
-
+	
 }
