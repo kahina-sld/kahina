@@ -53,7 +53,7 @@ public class KahinaTreeViewMarker
             }
             for (KahinaTreeViewPanel view : views)
             {
-                //view.view.recalculate();
+                view.view.recalculate(); // TODO often necessary so displaysNode(nodeID) will be true. Can we do this more efficiently?
                 if (view.view.displaysNode(nodeID))
                 {
                     view.view.setMarkedNode(nodeID);
@@ -61,6 +61,7 @@ public class KahinaTreeViewMarker
                 else
                 {
                     view.view.setMarkedNode(model.getParent(nodeID, view.view.getTreeLayer()));
+                    System.err.println("should mark " + nodeID + ", marked " + model.getParent(nodeID, view.view.getTreeLayer()));
                 }
                 KahinaRunner.processEvent(new KahinaSelectionEvent(model.getReferenceNode()));
                 //view.updateDisplay();
