@@ -89,9 +89,8 @@ public class LogicProgrammingBridge extends KahinaBridge
             int stepID = convertStepID(extID);
             LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
             step.setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1));
-            step.store();
             currentID = stepID;
-            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+            step.store();
         }
         catch (Exception e)
         {
@@ -108,6 +107,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             int stepID = convertStepID(extID);
             KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, convertStepID(parentID)));
             currentID = stepID;
+            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
         }
         catch (Exception e)
         {
