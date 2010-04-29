@@ -9,7 +9,7 @@ import org.kahina.lp.LogicProgrammingStepType;
 
 public class LogicProgrammingGUI extends KahinaGUI
 {
-    public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance kahina)
+    public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
     {
         super(stepType, kahina);
         getControlPanel().addControlButton("creep.png", "creep", "continue to next step");

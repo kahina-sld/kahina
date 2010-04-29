@@ -16,11 +16,9 @@ import org.kahina.core.event.KahinaStepFocusEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.util.PrologUtilities;
 import org.kahina.lp.LogicProgrammingStep;
-import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStep;
-import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
@@ -261,9 +259,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				{
 					System.err.println("Successful edge! Deleting from chart model...");
 					kahina.getState().getChart().removeEdge(currentEdge);
-					// TODO: was SUCCESS in the original; what exactly is the
-					// difference?
-					LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.EXIT);
 				}
 				// current rule application failed; adapt chart accordingly
 				else
@@ -273,7 +268,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 					// TODO: devise a way of separating edge activation from
 					// status
 					// currentEdge.active = false;
-					LogicProgrammingStep.get(stepID).setType(LogicProgrammingStepType.FAIL);
 				}
 				// move up one level in overview tree (really necessary?)
 				// currentOverviewTreeNode =
@@ -299,7 +293,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			int stepID = convertStepID(extID);
 			TraleSLDStep step = TraleSLDStep.get(stepID);
-			step.setType(TraleSLDStepType.FINISHED);
 			step.store();
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
 			currentID = stepID;

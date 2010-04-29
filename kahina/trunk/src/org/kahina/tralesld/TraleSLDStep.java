@@ -15,7 +15,6 @@ public class TraleSLDStep extends LogicProgrammingStep
     public TraleSLDStep copy()
     {
     	TraleSLDStep copy = new TraleSLDStep();
-    	copy.type = type;
     	copy.goalDesc = goalDesc;
     	copy.externalID = externalID;
     	copy.codeLocation = codeLocation;

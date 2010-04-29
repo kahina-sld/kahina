@@ -30,7 +30,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     protected Set<Integer> deterministicallyExited;
     protected Set<Integer> nonDetermBecauseOfRedo;
     
-    public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance kahina, KahinaTree secondaryTree)
+    public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?> kahina, KahinaTree secondaryTree)
     {
         super(tree, kahina);
         this.secondaryTree = secondaryTree;
