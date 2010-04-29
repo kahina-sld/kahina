@@ -7,10 +7,10 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.event.KahinaControlEvent;
+import org.kahina.core.event.KahinaStepFocusEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
 import org.kahina.core.gui.KahinaGUI;
-import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.event.LogicProgrammingBridgeEvent;
@@ -27,7 +27,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     protected int currentID = -1;
     
     //store the state of the bridge, determining the next result of getPressedButton()
-    char bridgeState;
+    protected char bridgeState;
     
     //in skip mode, this is the internal step ID of the step we are skipping
     int skipID = -1;
@@ -107,7 +107,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             int stepID = convertStepID(extID);
             KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, convertStepID(parentID)));
             currentID = stepID;
-            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaStepFocusEvent(stepID));
         }
         catch (Exception e)
         {
@@ -132,7 +132,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             stepIDConv.put(extID, newStepID);
             KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
             currentID = newStepID;
-            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
+            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaStepFocusEvent(newStepID));
         }
         catch (Exception e)
         {
@@ -159,7 +159,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             }
             step.store();
             currentID = step.getID();
-            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(step.getID()));
+            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaStepFocusEvent(step.getID()));
         }
         catch (Exception e)
         {
@@ -178,7 +178,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             LogicProgrammingStep.get(stepID).store();  
             KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
             currentID = stepID;
-            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaStepFocusEvent(stepID));
         }
         catch (Exception e)
         {

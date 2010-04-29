@@ -15,9 +15,11 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 
 	private final int secondLayer;
 
-	private KahinaTreeView overview;
+	private final KahinaTreeView overview;
 
-	private KahinaTreeView detailView;
+	private final KahinaTreeView detailView;
+	
+	private KahinaTreeViewMarker marker;
 
 	private KahinaTree secondaryModel;
 
@@ -66,7 +68,8 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 	@Override
 	public JComponent wrapInPanel()
 	{
-		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(model, secondaryModel);
+		marker = new KahinaTreeViewMarker(model, secondaryModel);
+		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(model, secondaryModel, marker);
 		KahinaRunner.getControl().registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;
@@ -86,6 +89,14 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 	{
 		overview.setStatusColorEncoding(status, color);
 		detailView.setStatusColorEncoding(status, color);
+	}
+
+	public void selectStep(int stepID)
+	{
+		if (marker != null)
+		{
+			marker.markNode(stepID);
+		}
 	}
 	
 }

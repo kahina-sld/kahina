@@ -12,7 +12,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.event.KahinaStepFocusEvent;
 
 public class KahinaTreeViewListener extends MouseAdapter implements ActionListener
 {
@@ -55,7 +57,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         }
         else
         {
-            marker.markNode(clickedNode);
+            KahinaRunner.processEvent(new KahinaStepFocusEvent(clickedNode));
             lastMouseEvent = e;
         }
     }

@@ -15,6 +15,8 @@ import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.event.KahinaStepFocusEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
@@ -50,7 +52,8 @@ public class KahinaGUI implements KahinaListener
 		}
 		this.stepType = stepType;
 		this.kahina = kahina;
-		KahinaRunner.getControl().registerListener("select", this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.STEP_FOCUS, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELEСTION, this);
 
 		this.controlPanel = new KahinaControlPanel();
 
@@ -63,7 +66,7 @@ public class KahinaGUI implements KahinaListener
 
 		mainTreeView = new KahinaLayeredTreeView(0, 1);
 		mainTreeView.setTitle("Control flow tree");
-		KahinaRunner.getControl().registerListener("update", mainTreeView);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, mainTreeView);
 		views.add(mainTreeView);
 		livingViews.add(mainTreeView);
 	}
@@ -140,10 +143,13 @@ public class KahinaGUI implements KahinaListener
 		if (e instanceof KahinaSelectionEvent)
 		{
 			processEvent((KahinaSelectionEvent) e);
+		} else if (e instanceof KahinaStepFocusEvent)
+		{
+			processEvent((KahinaStepFocusEvent) e);
 		}
 	}
 
-	public void processEvent(KahinaSelectionEvent e)
+	private void processEvent(KahinaSelectionEvent e)
 	{
 		if (e.getPanel() == null || livingViews.contains(e.getPanel().view))
 		{
@@ -159,5 +165,10 @@ public class KahinaGUI implements KahinaListener
 			e.getPanel().view.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
 			e.getPanel().processEvent(new KahinaRedrawEvent());
 		}
+	}
+	
+	private void processEvent(KahinaStepFocusEvent e)
+	{
+		mainTreeView.selectStep(e.getStepID());
 	}
 }

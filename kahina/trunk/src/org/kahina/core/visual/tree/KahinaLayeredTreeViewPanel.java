@@ -15,9 +15,8 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 
 	private KahinaTreeViewPanel detailPanel;
 
-	public KahinaLayeredTreeViewPanel(KahinaTree model, KahinaTree secondaryModel)
+	public KahinaLayeredTreeViewPanel(KahinaTree model, KahinaTree secondaryModel, KahinaTreeViewMarker marker)
 	{
-		KahinaTreeViewMarker marker = new KahinaTreeViewMarker(model, secondaryModel);
 		overviewPanel = new KahinaTreeViewPanel(marker);
 		detailPanel = new KahinaTreeViewPanel(marker);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
