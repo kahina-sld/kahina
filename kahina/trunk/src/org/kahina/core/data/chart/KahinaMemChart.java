@@ -38,6 +38,8 @@ public class KahinaMemChart extends KahinaChart
         rightBounds = new HashMap<Integer, Integer>();
         edgeCaptions = new HashMap<Integer, String>();
         status = new HashMap<Integer, Integer>();
+        motherEdges = new HashMap<Integer, Set<Integer>>();
+        daughterEdges = new HashMap<Integer, Set<Integer>>();
     }
     
     public int getLeftBound()
@@ -199,16 +201,34 @@ public class KahinaMemChart extends KahinaChart
     
     public void addEdgeDependency(int motherID, int daughterID)
     {
+        Set<Integer> daughters = daughterEdges.get(motherID);
+        if (daughters == null)
+        {
+            daughters = new HashSet<Integer>();
+            daughterEdges.put(motherID, daughters);
+        }
+        daughters.add(daughterID);
         
+        Set<Integer> mothers = motherEdges.get(daughterID);
+        if (mothers == null)
+        {
+            mothers = new HashSet<Integer>();
+            motherEdges.put(daughterID, mothers);
+        }
+        mothers.add(motherID);
     }
     
-    public Set<Integer> getMotherEdgesForEdge(int id)
+    public Set<Integer> getMotherEdgesForEdge(int daughterID)
     {
-        return new HashSet<Integer>();
+        Set<Integer> mothers = motherEdges.get(daughterID);
+        if (mothers == null) return new HashSet<Integer>();
+        return mothers;
     }
     
-    public Set<Integer> getDaughterEdgesForEdge(int id)
+    public Set<Integer> getDaughterEdgesForEdge(int motherID)
     {
-        return new HashSet<Integer>();
+        Set<Integer> daughters = daughterEdges.get(motherID);
+        if (daughters == null) return new HashSet<Integer>();
+        return daughters;
     }
 }

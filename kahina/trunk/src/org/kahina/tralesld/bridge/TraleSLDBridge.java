@@ -65,7 +65,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.storeCaching();
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
 			currentID = newStep.getID();
-			KahinaRunner.processEvent(new KahinaSelectionEvent(newStep.getID()));
+			//if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(newStep.getID()));
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -92,6 +92,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// let TraleSLDTreeBehavior do the rest
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
 
+            //if (bridgeState == 'n')
+            {
+                KahinaRunner.processEvent(new KahinaSelectionEvent(newStep.getID()));
+            }
 			// the following two actions and the structures they operate on seem
 			// to
 			// be superfluous
@@ -123,7 +127,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			if (verbose) System.err.println("TraleSLDBridge.registerEdgeDependency(" + motherID + "," + daughterID + ")");
-		} catch (Exception e)
+            kahina.getState().getChart().addEdgeDependency(motherID, daughterID);
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -181,7 +187,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			registerMessageEnd(extID, key, varName, null, type);
-		} catch (Exception e)
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -266,7 +273,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				// lastEdge = edgeRegister.getData(currentOverviewTreeNode);
 			}
 			currentID = stepID;
-            //if (bridgeState == 'n')
+            if (bridgeState == 'n')
             {
                 KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
             }

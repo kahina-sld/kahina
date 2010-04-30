@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -32,6 +34,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     int edgeStackingPolicy = KahinaChartView.STACK_EDGES_FILL_SPACE;
     int displayOrientation = KahinaChartView.BOTTOM_UP_DISPLAY;
     int displayRangePolicy = KahinaChartView.RANGE_USED_OR_CAPTION_DEFINED;
+    int dependencyDisplayPolicy = KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS;
     int antialiasingPolicy = KahinaChartView.ANTIALIASING;
     HashMap<Integer,Boolean> statusDisplayed;
     int fontSize; //also determines zoom factor and cell height
@@ -57,6 +60,12 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     public static final int RANGE_USED_ONLY = 1;
     public static final int RANGE_COMPLETE = 2;
     
+    //possible values for dependencyDisplayPolicy
+    public static final int BOTH_ANCESTORS_AND_DESCENDANTS = 0;
+    public static final int ANCESTORS_ONLY = 1;
+    public static final int DESCENDANTS_ONLY = 2;
+    public static final int NO_DEPENDENCIES = 3;
+    
     //possible values for antialiasing policy
     public static final int ANTIALIASING = 0;
     public static final int NO_ANTIALIASING = 1;
@@ -78,6 +87,9 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     
     //allow marking of a single edge in the chart
     private int markedEdge;
+    
+    //allow highlighting of a set of edges (depends on ancestors and descendants of current node)
+    private Set<Integer> highlights = new HashSet<Integer>();
     
     //hack to allow precalculations from outside any drawing method
     private Graphics2D g;
@@ -228,6 +240,23 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     public int getDisplayRangePolicy()
     {
         return displayRangePolicy;
+    }
+    
+    public int getDependencyDisplayPolicy()
+    {
+        return dependencyDisplayPolicy;
+    }
+    
+    public void setDependencyDisplayPolicy(int newPolicy)
+    {
+        if (newPolicy >= 0 && newPolicy <= 3)
+        {
+            dependencyDisplayPolicy = newPolicy;
+        }
+        else
+        {
+            System.err.println("WARNING: unknown dependency display policy value " + newPolicy);
+        }
     }
     
     public int getAntialiasingPolicy()
@@ -453,20 +482,39 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         return model.getRightmostCovered() - model.getLeftmostCovered();
     }
     
+    /**
+     * returns highlight color for highlighted edges
+     * @param edgeID
+     * @return
+     */
     public Color getEdgeColor(int edgeID)
     {
         int status = model.getEdgeStatus(edgeID);
-        Color col = statusColorEncoding.get(status);
-        if (col == null)
+        Color col = null;
+        if (highlights.contains(edgeID))
         {
-            return Color.WHITE;
+            col = statusHighlightColorEncoding.get(status);
+            if (col == null)
+            {
+                col = Color.YELLOW;
+            }
         }
         else
         {
-            return col;
+            col = statusColorEncoding.get(status);
+            if (col == null)
+            {
+                col = Color.WHITE;
+            }
         }
+        return col;
     }
     
+    /**
+     * always returns highlight color, even if edge is not highlighted
+     * @param edgeID
+     * @return
+     */
     public Color getEdgeHighlightColor(int edgeID)
     {
         int status = model.getEdgeStatus(edgeID);
@@ -735,6 +783,41 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     public void setMarkedEdge(int markedEdge)
     {
         this.markedEdge = markedEdge;
+        updateHighlightings();
+    }
+    
+    public void updateHighlightings()
+    {
+        highlights.clear();
+        highlights.add(markedEdge);
+        if (    dependencyDisplayPolicy == KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS || 
+                dependencyDisplayPolicy == KahinaChartView.ANCESTORS_ONLY   )
+        {
+            //highlight ancestors
+            LinkedList<Integer> agenda = new LinkedList<Integer>();
+            agenda.addAll(model.getMotherEdgesForEdge(markedEdge));
+            int nextAncestor = -1;
+            while (agenda.size() > 0)
+            {
+                nextAncestor = agenda.remove(0);
+                highlights.add(markedEdge);
+                agenda.addAll(model.getMotherEdgesForEdge(nextAncestor));
+            }
+        }
+        if (    dependencyDisplayPolicy == KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS || 
+                dependencyDisplayPolicy == KahinaChartView.DESCENDANTS_ONLY   )
+        {
+            //highlight descendants
+            LinkedList<Integer> agenda = new LinkedList<Integer>();
+            agenda.addAll(model.getMotherEdgesForEdge(markedEdge));
+            int nextAncestor = -1;
+            while (agenda.size() > 0)
+            {
+                nextAncestor = agenda.remove(0);
+                highlights.add(markedEdge);
+                agenda.addAll(model.getMotherEdgesForEdge(nextAncestor));
+            }
+        }
     }
 
     public void setCellWidth(int cellWidth)
