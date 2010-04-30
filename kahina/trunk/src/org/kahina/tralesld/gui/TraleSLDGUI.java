@@ -36,6 +36,9 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.ACTIVE, Color.WHITE);
         mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.SUCCESSFUL, new Color(102,153,102));
         mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.FAILED, new Color(183,50,50));
+        mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.ACTIVE, Color.WHITE);
+        mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.SUCCESSFUL, Color.GREEN);
+        mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.FAILED, Color.RED);
     }
     
     @Override

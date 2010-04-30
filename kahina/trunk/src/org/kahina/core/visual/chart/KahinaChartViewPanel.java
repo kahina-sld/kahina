@@ -82,14 +82,30 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
             //System.err.println("Edge " + id + ": x=" + x + " y=" + y + " width=" + width + " height=" + height);
 
             //paint edge background in appropriate colour
-            cnv.setColor(view.getEdgeColor(id));
+            if (view.getMarkedEdge() == id)
+            {
+                cnv.setColor(view.getEdgeHighlightColor(id));
+            }
+            else
+            {
+                cnv.setColor(view.getEdgeColor(id));
+            }
             cnv.fillRect(x + 5, y + 5, width, height);
             
             //paint edge rim and caption as desired
-            cnv.setColor(Color.BLACK);
-            cnv.setStroke(view.getEdgeStroke(id));
+            if (view.getMarkedEdge() == id)
+            {
+                cnv.setColor(Color.YELLOW);
+                cnv.setStroke(new BasicStroke(2));
+            }
+            else
+            {
+                cnv.setColor(Color.BLACK);
+                cnv.setStroke(view.getEdgeStroke(id));
+            }
             cnv.setFont(view.getEdgeFont(id)); 
             cnv.drawRect(x + 5, y + 5, width, height);
+            cnv.setColor(Color.BLACK);
             cnv.drawString(view.getEdgeCaption(id), x + 7, y + view.fontSize + 6);
         }
         

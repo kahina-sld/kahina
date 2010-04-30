@@ -72,6 +72,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     
     //mapping from status values to display properties
     HashMap<Integer, Color> statusColorEncoding;
+    HashMap<Integer, Color> statusHighlightColorEncoding;
     HashMap<Integer, Stroke> statusStrokeEncoding;
     HashMap<Integer, Font> statusFontEncoding;
     
@@ -93,6 +94,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         g = null;
         resetAllStructures();
         statusColorEncoding = new HashMap<Integer, Color>();
+        statusHighlightColorEncoding = new HashMap<Integer, Color>();
         statusStrokeEncoding = new HashMap<Integer, Stroke>();
         statusFontEncoding = new HashMap<Integer, Font>();
         chartWidth = 0;
@@ -465,6 +467,20 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         }
     }
     
+    public Color getEdgeHighlightColor(int edgeID)
+    {
+        int status = model.getEdgeStatus(edgeID);
+        Color col = statusHighlightColorEncoding.get(status);
+        if (col == null)
+        {
+            return Color.YELLOW;
+        }
+        else
+        {
+            return col;
+        }
+    }
+    
     public Stroke getEdgeStroke(int edgeID)
     {
         int status = model.getEdgeStatus(edgeID);
@@ -668,9 +684,42 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         }
     }
     
+    /**
+     * Define the color of normal (non-highlighted) edges with a certain status.
+     *
+     * @param status - the status the color will be assigned to
+     * @param color - the color for normal edges of that status
+     */
     public void setStatusColorEncoding(int status, Color color)
     {
         statusColorEncoding.put(status, color);
+    }
+    
+    /**
+     * Define the color of highlighted edges with a certain status.
+     *
+     * @param status - the status the color will be assigned to
+     * @param color - the color for highlighted edges of that status
+     */
+    public void setStatusHighlightColorEncoding(int status, Color color)
+    {
+        statusHighlightColorEncoding.put(status, color);
+    }
+    
+    /**
+     * Define the color encoding for a status.
+     * Automatically generates a dimmer variant for normal edges
+     * and a more saturated variant for highlighted edges.
+     * More customizable variant: encode colors separately using
+     * {@link #setStatusColorEncoding(int, Color)} and 
+     * {@link #setStatusHighlightColorEncoding(int, Color)}.
+     * @param status - the status the color will be assigned to
+     * @param color - the base color to encode the status
+     */
+    public void setStatusAutoColorEncoding(int status, Color color)
+    {
+        statusColorEncoding.put(status, color.darker());
+        statusHighlightColorEncoding.put(status, color.brighter());
     }
     
     public void setStatusFontEncoding(int status, Font font)
