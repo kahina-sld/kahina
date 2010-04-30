@@ -7,8 +7,11 @@ package org.kahina.tralesld.bridge;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
@@ -29,13 +32,15 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	TraleSLDInstance kahina;
 
-	ArrayList<Integer> activeEdgeStack;
+	List<Integer> activeEdgeStack;
 
-	HashSet<Integer> successfulEdges;
+	Set<Integer> successfulEdges;
+	
+	Map<Integer, Integer> edgeIDConv;
 
 	StringBuilder grisuMessage;
 
-	public static final boolean verbose = false;
+	public static final boolean verbose = true;
 
 	public TraleSLDBridge(TraleSLDInstance kahina)
 	{
@@ -43,6 +48,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		this.kahina = kahina;
 		activeEdgeStack = new ArrayList<Integer>();
 		successfulEdges = new HashSet<Integer>();
+		edgeIDConv = new HashMap<Integer, Integer>();
 		grisuMessage = new StringBuilder();
 	}
 
@@ -108,12 +114,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 
-	public void registerChartEdge(int number, int left, int right, String ruleName)
+	public void registerChartEdge(int externalEdgeID, int left, int right, String ruleName)
 	{
 		try
 		{
-			if (verbose) System.err.println("TraleSLDBridge.registerChartEdge(" + number + "," + left + "," + right + ",\"" + ruleName + "\")");
-			kahina.getState().getChart().addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.SUCCESSFUL);
+			if (verbose) System.err.println("TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
+			int internalEdgeID = kahina.getState().getChart().addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.SUCCESSFUL);
+			edgeIDConv.put(externalEdgeID, internalEdgeID);
 		} 
         catch (Exception e)
 		{
@@ -127,7 +134,21 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			if (verbose) System.err.println("TraleSLDBridge.registerEdgeDependency(" + motherID + "," + daughterID + ")");
-            kahina.getState().getChart().addEdgeDependency(motherID, daughterID);
+            kahina.getState().getChart().addEdgeDependency(edgeIDConv.get(motherID), edgeIDConv.get(daughterID));
+		}
+        catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+	
+	public void registerActiveEdgeDependency(int daughterID)
+	{
+		try
+		{
+			if (verbose) System.err.println("TraleSLDBridge.registerActiveEdgeDependency(" + daughterID + ")");
+            kahina.getState().getChart().addEdgeDependency(activeEdgeStack.get(0), edgeIDConv.get(daughterID));
 		} 
         catch (Exception e)
 		{

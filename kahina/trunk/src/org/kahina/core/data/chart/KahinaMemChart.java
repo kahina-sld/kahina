@@ -8,6 +8,8 @@ import java.util.Set;
 
 public class KahinaMemChart extends KahinaChart
 {
+	private static final boolean verbose = false;
+	
     //the chart is divided up into cells (vertical segments) that the edges can range over
     //leftmost: leftBound, rightmost: rightBound
     
@@ -201,6 +203,10 @@ public class KahinaMemChart extends KahinaChart
     
     public void addEdgeDependency(int motherID, int daughterID)
     {
+    	if (verbose)
+    	{
+    		System.err.println(this + ".addEdgeDependency(" + motherID + ", " + daughterID + ")");
+    	}
         Set<Integer> daughters = daughterEdges.get(motherID);
         if (daughters == null)
         {
@@ -220,15 +226,31 @@ public class KahinaMemChart extends KahinaChart
     
     public Set<Integer> getMotherEdgesForEdge(int daughterID)
     {
+    	if (verbose)
+    	{
+    		System.err.print(this + ".getMotherEdgesForEdge(" + daughterID + ")=");
+    	}
         Set<Integer> mothers = motherEdges.get(daughterID);
-        if (mothers == null) return new HashSet<Integer>();
+        if (mothers == null) mothers = new HashSet<Integer>();
+        if (verbose)
+        {
+        	System.err.println(mothers);
+        }
         return mothers;
     }
     
     public Set<Integer> getDaughterEdgesForEdge(int motherID)
     {
+    	if (verbose)
+    	{
+    		System.err.print(this + ".getDaughterEdgesForEdge(" + motherID + ")=");
+    	}
         Set<Integer> daughters = daughterEdges.get(motherID);
-        if (daughters == null) return new HashSet<Integer>();
+        if (daughters == null) daughters = new HashSet<Integer>();
+        if (verbose)
+        {
+        	System.err.println(daughters);
+        }
         return daughters;
     }
 }

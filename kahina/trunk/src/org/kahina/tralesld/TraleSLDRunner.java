@@ -23,6 +23,7 @@ public class TraleSLDRunner extends KahinaRunner
         bridge.registerRuleApplication(2,5,7,"subject_head_rule");
         bridge.registerStepSourceCodeLocation(2,"/home/johannes/pro/kahina/trale/test_gram/theory3.pl",185);
         bridge.registerStepLocation(2,1);
+        bridge.registerActiveEdgeDependency(0);
         bridge.registerStepInformation(3,"unify(Subj)");
         bridge.registerStepSourceCodeLocation(3,"/home/johannes/pro/kahina/trale/test_gram/theory3.pl",191);
         bridge.registerStepLocation(3,2);
@@ -45,6 +46,7 @@ public class TraleSLDRunner extends KahinaRunner
         bridge.registerRuleApplication(8,5,7,"head_complement_rule");
         bridge.registerStepSourceCodeLocation(8,"/home/johannes/pro/kahina/trale/test_gram/theory3.pl",195);
         bridge.registerStepLocation(8,1);
+        bridge.registerActiveEdgeDependency(0);
         bridge.registerStepInformation(9,"unify(Head)");
         bridge.registerStepSourceCodeLocation(9,"/home/johannes/pro/kahina/trale/test_gram/theory3.pl",201);
         bridge.registerStepLocation(9,8);
@@ -68,7 +70,7 @@ public class TraleSLDRunner extends KahinaRunner
     public static TraleSLDBridge runAndGetBridge()
     {
         System.err.println("Starting TraleSLD instance...");
-        initialize(KahinaDataHandlingMethod.MEMORY);
+        initialize(KahinaDataHandlingMethod.DATABASE);
         TraleSLDInstance kahina = new TraleSLDInstance();
         kahina.getGUI().buildAndShow();
         return kahina.getBridge();

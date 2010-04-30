@@ -21,12 +21,12 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
-import org.kahina.core.gui.event.KahinaSelectionEvent;
-import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaChartView extends KahinaView<KahinaChart>
 {
+	private static final boolean verbose = false;
+	
     //display options
     private int cellWidth = 150; 
     Color bgColor = Color.WHITE;
@@ -489,10 +489,18 @@ public class KahinaChartView extends KahinaView<KahinaChart>
      */
     public Color getEdgeColor(int edgeID)
     {
+    	if (verbose)
+    	{
+    		System.err.print(this + ".getEdgeColor(" + edgeID + ")=");
+    	}
         int status = model.getEdgeStatus(edgeID);
         Color col = null;
         if (highlights.contains(edgeID))
         {
+        	if (verbose)
+        	{
+        		System.err.print("[hl]");
+        	}
             col = statusHighlightColorEncoding.get(status);
             if (col == null)
             {
@@ -501,11 +509,19 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         }
         else
         {
+        	if (verbose)
+        	{
+        		System.err.print("[nohl]");
+        	}
             col = statusColorEncoding.get(status);
             if (col == null)
             {
                 col = Color.WHITE;
             }
+        }
+        if (verbose)
+        {
+        	System.err.println(col);
         }
         return col;
     }
@@ -800,7 +816,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
             while (agenda.size() > 0)
             {
                 nextAncestor = agenda.remove(0);
-                highlights.add(markedEdge);
+                highlights.add(nextAncestor);
                 agenda.addAll(model.getMotherEdgesForEdge(nextAncestor));
             }
         }
@@ -809,13 +825,13 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         {
             //highlight descendants
             LinkedList<Integer> agenda = new LinkedList<Integer>();
-            agenda.addAll(model.getMotherEdgesForEdge(markedEdge));
+            agenda.addAll(model.getDaughterEdgesForEdge(markedEdge));
             int nextAncestor = -1;
             while (agenda.size() > 0)
             {
                 nextAncestor = agenda.remove(0);
-                highlights.add(markedEdge);
-                agenda.addAll(model.getMotherEdgesForEdge(nextAncestor));
+                highlights.add(nextAncestor);
+                agenda.addAll(model.getDaughterEdgesForEdge(nextAncestor));
             }
         }
     }
