@@ -52,7 +52,7 @@ public class KahinaGUI implements KahinaListener
 		this.stepType = stepType;
 		this.kahina = kahina;
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.STEP_FOCUS, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELEСTION, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
 
 		this.controlPanel = new KahinaControlPanel();
 
