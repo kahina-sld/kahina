@@ -71,6 +71,45 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         }
         add(cellWidthPolicySubmenu);
         
+        JMenu dependencyDisplayPolicySubmenu = new JMenu("Dependency display policy");
+        ButtonGroup dependencyDisplayPolicyGroup = new ButtonGroup();
+        JRadioButtonMenuItem bothAncestorsAndDescendantsItem = new JRadioButtonMenuItem("Ancestors and Descendants");
+        bothAncestorsAndDescendantsItem.addActionListener(l);
+        dependencyDisplayPolicyGroup.add(bothAncestorsAndDescendantsItem);
+        dependencyDisplayPolicySubmenu.add(bothAncestorsAndDescendantsItem);
+        JRadioButtonMenuItem onlyAncestorsItem = new JRadioButtonMenuItem("Only ancestors (= production)");
+        onlyAncestorsItem.addActionListener(l);
+        dependencyDisplayPolicyGroup.add(onlyAncestorsItem);
+        dependencyDisplayPolicySubmenu.add(onlyAncestorsItem);
+        JRadioButtonMenuItem onlyDescendantsItem = new JRadioButtonMenuItem("Only descendants (= origin)");
+        onlyDescendantsItem.addActionListener(l);
+        dependencyDisplayPolicyGroup.add(onlyDescendantsItem);
+        dependencyDisplayPolicySubmenu.add(onlyDescendantsItem);
+        JRadioButtonMenuItem noDependenciesItem = new JRadioButtonMenuItem("No dependencies");
+        noDependenciesItem.addActionListener(l);
+        dependencyDisplayPolicyGroup.add(noDependenciesItem);
+        dependencyDisplayPolicySubmenu.add(noDependenciesItem);
+        switch (v.getDependencyDisplayPolicy())
+        {
+            case 0:
+            {
+                bothAncestorsAndDescendantsItem.setSelected(true); break;
+            }
+            case 1:
+            {
+                onlyAncestorsItem.setSelected(true); break;
+            }
+            case 2:
+            {
+                onlyDescendantsItem.setSelected(true); break;
+            }
+            case 3:
+            {
+                noDependenciesItem.setSelected(true);
+            }
+        }
+        add(dependencyDisplayPolicySubmenu);
+        
         JMenu edgeStackingPolicySubmenu = new JMenu("Edge stacking policy");
         ButtonGroup edgeStackingPolicyGroup = new ButtonGroup();
         JRadioButtonMenuItem fillSpaceCompactlyItem = new JRadioButtonMenuItem("Fill space compactly");

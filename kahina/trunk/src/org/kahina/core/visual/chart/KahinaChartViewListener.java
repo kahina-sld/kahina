@@ -73,6 +73,22 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
         {
             view.view.setCellWidthPolicy(KahinaChartView.FIXED_WIDTH);
         }
+        else if (command.equals("Ancestors and Descendants"))
+        {
+            view.view.setDependencyDisplayPolicy(KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS);
+        }
+        else if (command.equals("Only ancestors (= production)"))
+        {
+            view.view.setDependencyDisplayPolicy(KahinaChartView.ANCESTORS_ONLY);
+        }
+        else if (command.equals("Only descendants (= origin)"))
+        {
+            view.view.setDependencyDisplayPolicy(KahinaChartView.DESCENDANTS_ONLY);
+        }
+        else if (command.equals("No dependencies"))
+        {
+            view.view.setDependencyDisplayPolicy(KahinaChartView.NO_DEPENDENCIES);
+        }
         else if (command.equals("Fill space compactly"))
         {
             view.view.setEdgeStackingPolicy(KahinaChartView.STACK_EDGES_FILL_SPACE);
@@ -135,6 +151,7 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
             }
         }
         view.view.recalculate();
+        view.updateDisplay();
         view.repaint();
     }
 
