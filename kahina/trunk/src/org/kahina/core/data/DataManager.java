@@ -72,6 +72,19 @@ public abstract class DataManager
 		setStoreForID(id, store);
 		store.store(object);
 	}
+	
+	/**
+	 * Behaves like {@link #store(KahinaObject)}, but if this data manager
+	 * implements a caching strategy, then this object is not directly written
+	 * to the backend storage (such as a database), but cached instead. Use this
+	 * if this object is likely to be retrieved soon.
+	 * @param object
+	 */
+	public void storeCaching(KahinaObject object)
+	{
+		// no caching strategy implemented
+		store(object);
+	}
 
 	/**
 	 * Retrieves a stored object by its data type and ID.
@@ -87,13 +100,7 @@ public abstract class DataManager
 	@SuppressWarnings("unchecked")
 	public final <T extends KahinaObject> T retrieve(Class<T> type, int id)
 	{
-		DataStore store = getStoreForID(id);
-		//System.err.println("retrieving object " + id + " of type " + type + " from " + store);
-		if (store == null)
-		{
-			throw new KahinaException("No object with ID " + id + " has been stored.");
-		}
-		return (T) store.retrieve(id);
+		return (T) retrieve(id);
 	}
 
 	public KahinaObject retrieve(int id)

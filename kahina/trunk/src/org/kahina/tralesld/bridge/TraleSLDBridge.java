@@ -26,8 +26,6 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
-	// TODO keep current step in memory until information about another one
-	// comes in, then store
 
 	TraleSLDInstance kahina;
 
@@ -64,7 +62,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.setGoalDesc("init");
 			newStep.setExternalID(0);
 			stepIDConv.put(0, newStep.getID());
-			newStep.store();
+			newStep.storeCaching();
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
 			currentID = newStep.getID();
 			KahinaRunner.processEvent(new KahinaSelectionEvent(newStep.getID()));
@@ -89,7 +87,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.setExternalID(extID);
 			stepIDConv.put(extID, newStep.getID());
 			kahina.getState().linkEdgeToNode(newEdgeID, newStep.getID());
-			newStep.store();
+			newStep.storeCaching();
 
 			// let TraleSLDTreeBehavior do the rest
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
@@ -170,7 +168,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				step.endFeatStruct = fs;
 			}
-			step.store();
+			step.storeCaching();
 			grisuMessage = new StringBuilder();
 		} catch (Exception e)
 		{
@@ -291,8 +289,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				System.err.println("LogicProgrammingBridge.registerStepFailure(" + extID + ")");
 			}
 			int stepID = convertStepID(extID);
-			TraleSLDStep step = TraleSLDStep.get(stepID);
-			step.store();
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
 			currentID = stepID;
 			if (bridgeState == 'n') 

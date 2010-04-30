@@ -1,6 +1,7 @@
 package org.kahina.core;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.data.CachingDbDataManager;
 import org.kahina.core.data.DataManager;
 import org.kahina.core.data.DbDataManager;
 import org.kahina.core.data.KahinaDataHandlingMethod;
@@ -21,7 +22,7 @@ public class KahinaRunner
         }
         else 
         {
-            setDataManager(new DbDataManager(new DatabaseHandler()));
+            setDataManager(new CachingDbDataManager(new DatabaseHandler()));
         }
     }
     

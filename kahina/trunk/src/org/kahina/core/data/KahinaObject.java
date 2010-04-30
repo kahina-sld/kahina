@@ -68,4 +68,9 @@ public class KahinaObject
     {
         KahinaRunner.getDataManager().store(this);
     }
+    
+    public void storeCaching()
+    {
+    	KahinaRunner.getDataManager().storeCaching(this);
+    }
 }
