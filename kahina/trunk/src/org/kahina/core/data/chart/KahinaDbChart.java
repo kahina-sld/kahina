@@ -11,8 +11,7 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.lightweight.LightweightKahinaObject;
 import org.kahina.core.io.database.DatabaseHandler;
 
-public class KahinaDbChart extends KahinaChart implements
-		LightweightKahinaObject
+public class KahinaDbChart extends KahinaChart implements LightweightKahinaObject
 {
 	private static final String CLIENT_ID = KahinaDbChart.class.getName();
 

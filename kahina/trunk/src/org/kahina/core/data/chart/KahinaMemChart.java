@@ -3,6 +3,7 @@ package org.kahina.core.data.chart;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 public class KahinaMemChart extends KahinaChart
@@ -26,6 +27,8 @@ public class KahinaMemChart extends KahinaChart
     HashMap<Integer, Integer> rightBounds;
     HashMap<Integer, String> edgeCaptions; //captions are displayed on the edges
     HashMap<Integer, Integer> status; //can be used to encode different types
+    HashMap<Integer, Set<Integer>> motherEdges;
+    HashMap<Integer, Set<Integer>> daughterEdges;   
     
     public KahinaMemChart()
     {
@@ -192,5 +195,20 @@ public class KahinaMemChart extends KahinaChart
     {
         String segmentCaption = segmentCaptions.get(id);
         return (segmentCaption != null);
+    }
+    
+    public void addEdgeDependency(int motherID, int daughterID)
+    {
+        
+    }
+    
+    public Set<Integer> getMotherEdgesForEdge(int id)
+    {
+        return new HashSet<Integer>();
+    }
+    
+    public Set<Integer> getDaughterEdgesForEdge(int id)
+    {
+        return new HashSet<Integer>();
     }
 }

@@ -95,7 +95,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// the following two actions and the structures they operate on seem
 			// to
 			// be superfluous
-			// edgeRegister.put(internalStepID, currentEdge);
 			// lastEdge = currentEdge;
 		} 
         catch (Exception e)
@@ -123,8 +122,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
-				System.err.println("TraleSLDBridge.registerEdgeDependency(" + motherID + "," + daughterID + ")");
+			if (verbose) System.err.println("TraleSLDBridge.registerEdgeDependency(" + motherID + "," + daughterID + ")");
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -170,7 +168,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			step.storeCaching();
 			grisuMessage = new StringBuilder();
-		} catch (Exception e)
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -246,8 +245,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			int stepID = convertStepID(externalStepID);
 
 			String command = LogicProgrammingStep.get(stepID).getGoalDesc();
-			// need to handle bug: step failure is called even if edge was
-			// successful
+			// need to handle bug: step failure is called even if edge was successful
 			if (command.startsWith("rule("))
 			{
 				int currentEdge = activeEdgeStack.remove(0);

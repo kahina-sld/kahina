@@ -25,8 +25,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         mainChartView = new KahinaChartView();
         mainChartView.setTitle("Chart");
         views.add(mainChartView);
-        livingViews.add(mainChartView);
-        
+        livingViews.add(mainChartView); 
 
         mainTreeView.setStatusColorEncoding(TraleSLDStepType.FINISHED, new Color(102,51,153));
         mainTreeView.setStatusColorEncoding(TraleSLDStepType.BLOCKED, Color.BLACK);

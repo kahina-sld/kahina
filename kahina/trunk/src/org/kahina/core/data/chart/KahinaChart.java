@@ -83,4 +83,10 @@ public abstract class KahinaChart extends KahinaObject
     {
         return nextEdgeID++;
     }
+    
+    public abstract void addEdgeDependency(int motherID, int daughterID);
+    
+    public abstract Set<Integer> getMotherEdgesForEdge(int id);
+    
+    public abstract Set<Integer> getDaughterEdgesForEdge(int id);
 }
