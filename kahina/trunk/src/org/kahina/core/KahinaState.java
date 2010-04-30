@@ -1,7 +1,10 @@
 package org.kahina.core;
 
+import org.kahina.core.data.text.KahinaLineReference;
+import org.kahina.core.data.text.KahinaText;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.event.KahinaMessageEvent;
 
 /**
  * The current state of a Kahina instance.
@@ -19,10 +22,14 @@ public class KahinaState
     KahinaTree stepTree;
     KahinaTree secondaryStepTree;
     
+    //the messages that will be stored in the console
+    KahinaText consoleMessages;
+    
     public KahinaState(KahinaInstance<?, ?, ?> kahina, int dataHandlingMethod)
     {
         stepTree = new KahinaMemTree();
         secondaryStepTree = new KahinaMemTree();
+        consoleMessages = new KahinaText();
         
         //database variant turned out to be too slow
         /* switch (dataHandlingMethod)
@@ -40,6 +47,17 @@ public class KahinaState
                 break;
             }
         }*/
+    }
+    
+    public void consoleMessage(int stepID, String message)
+    {
+        int lineID = consoleMessages.addLine(message);
+        KahinaRunner.processEvent(new KahinaMessageEvent(new KahinaLineReference(consoleMessages,lineID,stepID)));
+    }
+    
+    public KahinaText getConsoleMessages()
+    {
+        return consoleMessages;
     }
     
     public KahinaTree getStepTree()

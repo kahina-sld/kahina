@@ -2,6 +2,7 @@ package org.kahina.lp.bridge;
 
 import java.util.HashMap;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
@@ -12,6 +13,7 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.event.LogicProgrammingBridgeEvent;
 import org.kahina.lp.event.LogicProgrammingBridgeEventType;
+import org.kahina.tralesld.TraleSLDInstance;
 
 public class LogicProgrammingBridge extends KahinaBridge
 {  
@@ -29,10 +31,12 @@ public class LogicProgrammingBridge extends KahinaBridge
     //in skip mode, this is the internal step ID of the step we are skipping
     int skipID = -1;
     
+    KahinaInstance kahina; 
     
-    public LogicProgrammingBridge()
+    public LogicProgrammingBridge(KahinaInstance kahina)
     {
     	super();
+        this.kahina = kahina;
         stepIDConv = new HashMap<Integer,Integer>();
         if (verbose) System.err.println("new LogicProgrammingBridge()");
     }
@@ -88,6 +92,8 @@ public class LogicProgrammingBridge extends KahinaBridge
             step.setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1));
             currentID = stepID;
             step.storeCaching();
+            
+            kahina.getState().consoleMessage(stepID, "registerStepSourceCodeLocation(" + extID + ",\"" + absolutePath + "\"," + lineNumber + ")");
         }
         catch (Exception e)
         {
@@ -105,6 +111,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, convertStepID(parentID)));
             currentID = stepID;
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+            kahina.getState().consoleMessage(stepID, "registerStepLocation(" + extID + "," + parentID + ")");
         }
         catch (Exception e)
         {
@@ -127,6 +134,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
             currentID = newStepID;
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
+            kahina.getState().consoleMessage(newStepID, "registerStepRedo(" + extID + ")");
         }
         catch (Exception e)
         {
@@ -151,6 +159,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             }
             currentID = stepID;
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+            kahina.getState().consoleMessage(stepID, "registerStepExit(" + extID + ")");
         }
         catch (Exception e)
         {
@@ -168,6 +177,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
             currentID = stepID;
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+            kahina.getState().consoleMessage(stepID, "registerStepFailure(" + extID + ")");
         }
         catch (Exception e)
         {

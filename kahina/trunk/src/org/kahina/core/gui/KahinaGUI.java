@@ -20,6 +20,7 @@ import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
+import org.kahina.core.visual.text.KahinaTextView;
 import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 
 public class KahinaGUI implements KahinaListener
@@ -31,6 +32,8 @@ public class KahinaGUI implements KahinaListener
 	KahinaControlPanel controlPanel;
 
 	protected KahinaLayeredTreeView mainTreeView;
+    
+    protected KahinaTextView messageConsoleView;
 
 	protected List<KahinaView<?>> views;
 	// values as defined in KahinaViewVisibility
@@ -68,6 +71,12 @@ public class KahinaGUI implements KahinaListener
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, mainTreeView);
 		views.add(mainTreeView);
 		livingViews.add(mainTreeView);
+        
+        messageConsoleView = new KahinaTextView();
+        messageConsoleView.setTitle("Message console");
+        KahinaRunner.getControl().registerListener("message", messageConsoleView);
+        views.add(messageConsoleView);
+        livingViews.add(messageConsoleView);
 	}
 
 	/**
@@ -119,6 +128,8 @@ public class KahinaGUI implements KahinaListener
 	{
 		mainTreeView.display(kahina.getState().getStepTree());
 		mainTreeView.displaySecondaryTree(kahina.getState().getSecondaryStepTree());
+        //Bad Software Design: KahinaTextViews do not really have models
+        //messageConsoleView.display();
 	}
 
 	public void displayStepContent(int stepID)
