@@ -111,7 +111,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     HashMap<Integer, Font> statusFontEncoding;
     HashMap<Integer, Boolean> statusVisibilityEncoding;
     
-    //TODO: generalize this concept, via status if possible
     //allow marking of a single node in the tree
     private int markedNode;
     

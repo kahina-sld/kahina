@@ -13,31 +13,23 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.kahina.core.KahinaRunner;
+import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
+
 public class KahinaChartViewListener extends MouseAdapter implements ActionListener
 {
     KahinaChartViewPanel view;
     
-    KahinaChartViewMarker marker;
-    
     public KahinaChartViewListener(KahinaChartViewPanel view)
     {
         this.view = view;
-        //separate empty model: marking clicks will not have any effect
-        this.marker = new KahinaChartViewMarker(view.view.getModel());
-    }
-    
-    public KahinaChartViewListener(KahinaChartViewPanel view, KahinaChartViewMarker m)
-    {
-        this.view = view;
-        this.marker = m;
     }
     
     public void mouseClicked(MouseEvent e)
     {
         int clickedEdge = view.view.edgeAtCoordinates(e.getX() - 5, e.getY() - 5);
-        marker.markEdge(clickedEdge);
-        view.updateDisplay();
-        view.repaint();
+        //marking and redrawing happens indirectly
+        KahinaRunner.processEvent(new KahinaEdgeSelectionEvent(clickedEdge));
     }
     
     public void mousePressed(MouseEvent e) 
@@ -142,7 +134,7 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
                 JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-        view.updateDisplay();
+        view.view.recalculate();
         view.repaint();
     }
 

@@ -79,8 +79,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
-				System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
+			if (verbose) System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
 			KahinaChart chart = kahina.getState().getChart();
 			int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.ACTIVE);
 			activeEdgeStack.add(0, newEdgeID);
@@ -100,7 +99,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// be superfluous
 			// edgeRegister.put(internalStepID, currentEdge);
 			// lastEdge = currentEdge;
-		} catch (Exception e)
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -111,10 +111,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
-				System.err.println("TraleSLDBridge.registerChartEdge(" + number + "," + left + "," + right + ",\"" + ruleName + "\")");
+			if (verbose) System.err.println("TraleSLDBridge.registerChartEdge(" + number + "," + left + "," + right + ",\"" + ruleName + "\")");
 			kahina.getState().getChart().addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.SUCCESSFUL);
-		} catch (Exception e)
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -243,8 +243,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
-				System.err.println("registerStepFailure(" + externalStepID + ")");
+			if (verbose) System.err.println("registerStepFailure(" + externalStepID + ")");
 			super.registerStepFailure(externalStepID);
 			int stepID = convertStepID(externalStepID);
 
@@ -264,9 +263,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				{
 					System.err.println("Failed edge! Leaving it on the chart as junk...");
 					kahina.getState().getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
-					// TODO: devise a way of separating edge activation from
-					// status
-					// currentEdge.active = false;
 				}
 				// move up one level in overview tree (really necessary?)
 				// currentOverviewTreeNode =
@@ -274,8 +270,12 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				// lastEdge = edgeRegister.getData(currentOverviewTreeNode);
 			}
 			currentID = stepID;
-			KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
-		} catch (Exception e)
+            //if (bridgeState == 'n')
+            {
+                KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+            }
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -295,7 +295,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			step.store();
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
 			currentID = stepID;
-			if (bridgeState == 'n') {
+			if (bridgeState == 'n') 
+            {
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 			}
 		} catch (Exception e)
@@ -336,5 +337,4 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		// if (verbose) System.err.println("TraleSLDBridge.generateStep()");
 		return new TraleSLDStep();
 	}
-
 }

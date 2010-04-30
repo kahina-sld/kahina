@@ -17,6 +17,10 @@ import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.gui.event.KahinaChartUpdateEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaChartView extends KahinaView<KahinaChart>
@@ -71,6 +75,9 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     HashMap<Integer, Stroke> statusStrokeEncoding;
     HashMap<Integer, Font> statusFontEncoding;
     
+    //allow marking of a single edge in the chart
+    private int markedEdge;
+    
     //hack to allow precalculations from outside any drawing method
     private Graphics2D g;
     
@@ -91,6 +98,13 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         chartWidth = 0;
         fontSize = 10;
         cellHeight = 14;
+        KahinaRunner.getControl().registerListener("chart update", this);
+    }
+    
+    public KahinaChartView(KahinaChart chartModel)
+    {
+        this();
+        display(chartModel);
     }
     
     public void display(KahinaChart chartModel)
@@ -328,7 +342,6 @@ public class KahinaChartView extends KahinaView<KahinaChart>
             }
         }
         
-
         int currentOffset = 0;
         if (displayRangePolicy == RANGE_COMPLETE)
         {
@@ -664,6 +677,16 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     {
         statusFontEncoding.put(status, font);
     }
+    
+    public int getMarkedEdge()
+    {
+        return markedEdge;
+    }
+    
+    public void setMarkedEdge(int markedEdge)
+    {
+        this.markedEdge = markedEdge;
+    }
 
     public void setCellWidth(int cellWidth)
     {
@@ -733,6 +756,22 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         KahinaRunner.getControl().registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
+    }
+    
+    //not interested in selection events or update events
+    //because they always contain step information, not edge IDs
+    public void processEvent(KahinaEvent e)
+    {
+        if (e instanceof KahinaChartUpdateEvent)
+        {
+            processEvent((KahinaChartUpdateEvent) e);
+        }
+    }
+    
+    protected void processEvent(KahinaChartUpdateEvent e)
+    {
+        setMarkedEdge(e.getSelectedEdge());
+        recalculate();
     }
 }
 

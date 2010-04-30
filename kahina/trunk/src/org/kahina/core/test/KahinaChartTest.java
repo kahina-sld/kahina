@@ -16,7 +16,6 @@ import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.io.chart.KahinaChartIO;
 import org.kahina.core.io.database.DatabaseHandler;
 import org.kahina.core.visual.chart.KahinaChartView;
-import org.kahina.core.visual.chart.KahinaChartViewMarker;
 import org.kahina.core.visual.chart.KahinaChartViewPanel;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -45,8 +44,7 @@ public class KahinaChartTest
             v.setStatusFontEncoding(2, new Font(Font.SANS_SERIF,Font.BOLD, 10));
             v.setStatusFontEncoding(3, new Font(Font.SANS_SERIF,Font.BOLD, 10));
 
-            KahinaChartViewMarker chartMarker = new KahinaChartViewMarker(m);
-            KahinaChartViewPanel vp = new KahinaChartViewPanel(chartMarker);
+            KahinaChartViewPanel vp = new KahinaChartViewPanel();
             JScrollPane vpp = new JScrollPane(vp);
             vpp.setBounds(0, 0, 500, 300);
             JFrame w = new JFrame("Kahina ChartView Demo");

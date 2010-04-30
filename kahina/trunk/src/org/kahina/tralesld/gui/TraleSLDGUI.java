@@ -24,7 +24,6 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         
         mainChartView = new KahinaChartView();
         mainChartView.setTitle("Chart");
-        KahinaRunner.getControl().registerListener("update", mainChartView);
         views.add(mainChartView);
         livingViews.add(mainChartView);
         
@@ -46,6 +45,6 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         //set deciders here because the trees are generated generically by the KahinaState
         mainTreeView.getModel().setLayerDecider(new TraleSLDLayerDecider());
         mainTreeView.getSecondaryModel().setLayerDecider(new TraleSLDLayerDecider());
-        mainChartView.display(instance.getState().getChart());  	
+        mainChartView.display(instance.getState().getChart());  
     }
 }

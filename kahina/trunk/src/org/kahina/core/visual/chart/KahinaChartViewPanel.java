@@ -20,16 +20,9 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
     
     public KahinaChartViewPanel()
     {
-        view = new KahinaChartView();
+        view = null;
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaChartViewListener(this));
-    }
-    
-    public KahinaChartViewPanel(KahinaChartViewMarker marker)
-    {
-        view = new KahinaChartView();
-        image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
-        this.addMouseListener(new KahinaChartViewListener(this, marker));
     }
     
     public void paintComponent(Graphics canvas)
