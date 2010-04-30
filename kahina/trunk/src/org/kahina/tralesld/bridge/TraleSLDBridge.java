@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
-import org.kahina.core.event.KahinaStepFocusEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.util.PrologUtilities;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
@@ -67,7 +67,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.store();
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
 			currentID = newStep.getID();
-			KahinaRunner.processEvent(new KahinaStepFocusEvent(newStep.getID()));
+			KahinaRunner.processEvent(new KahinaSelectionEvent(newStep.getID()));
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -274,7 +274,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				// lastEdge = edgeRegister.getData(currentOverviewTreeNode);
 			}
 			currentID = stepID;
-			KahinaRunner.processEvent(new KahinaStepFocusEvent(stepID));
+			KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -296,7 +296,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
 			currentID = stepID;
 			if (bridgeState == 'n') {
-				KahinaRunner.processEvent(new KahinaStepFocusEvent(stepID));
+				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 			}
 		} catch (Exception e)
 		{

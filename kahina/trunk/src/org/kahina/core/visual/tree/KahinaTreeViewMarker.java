@@ -62,10 +62,7 @@ public class KahinaTreeViewMarker
                 {
                     view.view.setMarkedNode(model.getParent(nodeID, view.view.getTreeLayer()));
                 }
-                //view.updateDisplay();
-                //view.repaint();
             }
-            KahinaRunner.processEvent(new KahinaSelectionEvent(model.getReferenceNode()));
         }
     }
 }

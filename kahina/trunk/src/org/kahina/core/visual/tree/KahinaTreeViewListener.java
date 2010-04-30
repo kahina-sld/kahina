@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.event.KahinaStepFocusEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaTreeViewListener extends MouseAdapter implements ActionListener
 {
@@ -57,7 +57,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         }
         else
         {
-            KahinaRunner.processEvent(new KahinaStepFocusEvent(clickedNode));
+            KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
             lastMouseEvent = e;
         }
     }

@@ -6,11 +6,11 @@ import javax.swing.JComponent;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
-{
-	
+{	
 	private static final boolean verbose = false;
 
 	private final int firstLayer;
@@ -105,4 +105,9 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		}
 	}
 	
+    protected void processEvent(KahinaUpdateEvent e)
+    {
+        //recalculation is implicitly part of this (via marker)
+        selectStep(e.getSelectedStep());
+    }
 }

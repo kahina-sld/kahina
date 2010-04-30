@@ -1,28 +1,28 @@
 package org.kahina.core.visual.chart;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaChartViewMarker
 {
     int markedEdge = -1;
-    KahinaChart m;
+    KahinaChart view;
     
-    public KahinaChartViewMarker(KahinaChart m)
+    public KahinaChartViewMarker(KahinaChart view)
     {
-        this.m = m;
+        this.view = view;
     }
-    
-    //TODO: turn this into a test case for the future "tentacle" concept
+ 
     public void markEdge(int edgeID)
     {
-        if (markedEdge != -1)
+        if (edgeID == -1)
         {
-            m.setEdgeStatus(markedEdge, m.getEdgeStatus(markedEdge) - 2);
+            markedEdge = edgeID;
+            //view.setMarkedNode(-1);
+            //view.updateDisplay();
+            //view.repaint();
         }
-        if (edgeID != -1)
-        {
-            m.setEdgeStatus(edgeID, m.getEdgeStatus(edgeID) + 2);
-        }
-        markedEdge = edgeID;
+        //KahinaRunner.processEvent(new KahinaSelectionEvent());
     }
 }

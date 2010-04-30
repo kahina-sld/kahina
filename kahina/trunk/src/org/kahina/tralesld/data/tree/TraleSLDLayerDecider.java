@@ -12,7 +12,7 @@ public class TraleSLDLayerDecider extends DefaultLayerDecider
 		if (nodeID == -1)
 			return -1;
 		KahinaTree primaryModel = tree.getPrimaryModel();
-		if (primaryModel.getNodeCaption(nodeID).indexOf("rule") != -1 || primaryModel.getNodeCaption(nodeID).indexOf("\"") != -1)
+		if (primaryModel.getNodeCaption(nodeID).indexOf("rule") != -1 || primaryModel.getNodeCaption(nodeID).indexOf("\"") != -1 || primaryModel.getNodeCaption(nodeID).indexOf("goal") != -1)
 			return 0;
 		return 1;
 	}

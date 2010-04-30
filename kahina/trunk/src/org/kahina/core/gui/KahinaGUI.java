@@ -16,7 +16,6 @@ import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
-import org.kahina.core.event.KahinaStepFocusEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
@@ -143,9 +142,6 @@ public class KahinaGUI implements KahinaListener
 		if (e instanceof KahinaSelectionEvent)
 		{
 			processEvent((KahinaSelectionEvent) e);
-		} else if (e instanceof KahinaStepFocusEvent)
-		{
-			processEvent((KahinaStepFocusEvent) e);
 		}
 	}
 
@@ -165,10 +161,5 @@ public class KahinaGUI implements KahinaListener
 			e.getPanel().view.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
 			e.getPanel().processEvent(new KahinaRedrawEvent());
 		}
-	}
-	
-	private void processEvent(KahinaStepFocusEvent e)
-	{
-		mainTreeView.selectStep(e.getStepID());
 	}
 }

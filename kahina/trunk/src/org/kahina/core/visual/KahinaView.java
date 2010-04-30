@@ -35,11 +35,12 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
         }
     }
     
-    private void processEvent(KahinaUpdateEvent e)
+    protected void processEvent(KahinaUpdateEvent e)
     {
         recalculate();
     }
     
+    //only listens to this in absence of KahinaGUI; do not register as listener in KahinaGUI case!!!
     private void processEvent(KahinaSelectionEvent e)
     {
         KahinaRunner.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
