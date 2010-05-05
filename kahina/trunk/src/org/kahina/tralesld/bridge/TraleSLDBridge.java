@@ -72,7 +72,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
 			currentID = newStep.getID();
             
-            kahina.getState().consoleMessage(newStep.getID(), "TraleSLDBridgeinitializeParseTrace(\"" + parsedSentenceList + "\")");
+            kahina.getState().consoleMessage(newStep.getID(), "initialising parse: " + parsedSentenceList);
 			//if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(newStep.getID()));
 		} catch (Exception e)
 		{
@@ -102,7 +102,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
             
             //experimental: message for console
-			kahina.getState().consoleMessage(newStep.getID(), "TraleSLDBridge.registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
+			kahina.getState().consoleMessage(newStep.getID(), "rule application " + extID + ": \"" + ruleName + "\" on [" + left + "," + right + "]");
 
             //if (bridgeState == 'n')
             {
@@ -295,7 +295,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 					kahina.getState().getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
 				}
                 
-                kahina.getState().consoleMessage(stepID, "registerStepFailure(" + externalStepID + ")");
 				// move up one level in overview tree (really necessary?)
 				// currentOverviewTreeNode =
 				// tracer.overviewTraceView.treeNodes.get(currentOverviewTreeNode).getParent();
