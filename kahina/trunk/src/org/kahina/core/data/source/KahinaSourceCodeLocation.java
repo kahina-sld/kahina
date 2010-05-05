@@ -1,22 +1,35 @@
 package org.kahina.core.data.source;
 
+import java.util.HashMap;
+
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.lightweight.LightweightKahinaObject;
+import org.kahina.core.data.text.KahinaLineReference;
+import org.kahina.core.data.text.KahinaText;
 
-public class KahinaSourceCodeLocation extends KahinaObject implements LightweightKahinaObject
+public class KahinaSourceCodeLocation extends KahinaLineReference
 {    
-    public String absolutePath;
+    static HashMap<String,KahinaSourceFileModel> codeFiles = new HashMap<String,KahinaSourceFileModel>();
     
-    public int lineNumber;
-
     public KahinaSourceCodeLocation()
     {
-        // need no-arg constructor to be lightweight
+        super();
     }
-
-    public KahinaSourceCodeLocation(String absolutePath, int lineNumber)
+    
+    public KahinaSourceCodeLocation(String absolutePath, int lineNumber, int stepID)
     {
-        this.absolutePath = absolutePath;
-        this.lineNumber = lineNumber;
+        super(lineNumber, stepID);
+        KahinaSourceFileModel file = codeFiles.get(absolutePath);
+        if (file == null)
+        {
+            file = new KahinaSourceFileModel(absolutePath);
+            codeFiles.put(absolutePath, file);
+        }
+        this.text = file;
+    }
+    
+    public KahinaSourceFileModel getText()
+    {
+        return (KahinaSourceFileModel) text;
     }
 }

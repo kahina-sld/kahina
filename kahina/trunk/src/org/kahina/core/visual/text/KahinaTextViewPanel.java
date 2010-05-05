@@ -11,7 +11,7 @@ import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
 {
-    JList list;
+    protected JList list;
     JScrollPane listScrollPane;
     
     public KahinaTextViewPanel()

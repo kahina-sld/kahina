@@ -19,10 +19,10 @@ import org.kahina.core.gui.event.KahinaConsoleLineEvent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.chart.KahinaChartViewPanel;
 
-public class KahinaTextView extends KahinaView<KahinaText> implements KahinaListener
+public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T> implements KahinaListener
 {
-    DefaultListModel listModel;
-    ListSelectionModel selectionModel;
+    protected DefaultListModel listModel;
+    protected ListSelectionModel selectionModel;
     
     public KahinaTextView()
     {

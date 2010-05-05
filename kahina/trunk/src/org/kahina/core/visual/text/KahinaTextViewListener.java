@@ -22,7 +22,10 @@ public class KahinaTextViewListener implements MouseListener
     {
         int index = list.locationToIndex(e.getPoint());
         KahinaLineReference ref = (KahinaLineReference) list.getModel().getElementAt(index);
-        KahinaRunner.processEvent(new KahinaSelectionEvent(ref.getStepID()));
+        if (ref.getStepID() != -1)
+        {
+            KahinaRunner.processEvent(new KahinaSelectionEvent(ref.getStepID()));
+        }
     }
 
     public void mouseEntered(MouseEvent arg0)

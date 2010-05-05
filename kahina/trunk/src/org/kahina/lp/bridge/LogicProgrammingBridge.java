@@ -89,7 +89,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             if (verbose) System.err.println("LogicProgrammingBridge.registerStepSourceCodeLocation(" + extID + ",\"" + absolutePath + "\"," + lineNumber + ")");
             int stepID = convertStepID(extID);
             LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
-            step.setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1));
+            step.setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1, stepID));
             currentID = stepID;
             step.storeCaching();
             
