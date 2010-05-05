@@ -1,7 +1,9 @@
 package org.kahina.core;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
@@ -35,14 +37,14 @@ public class KahinaState implements KahinaListener
     //the messages that will be stored in the console
     KahinaText consoleMessages;
     //map from stepIDs to lines in console
-    Map<Integer,Integer> consoleLines;
+    Map<Integer,Set<Integer>> consoleLines;
     
     public KahinaState(KahinaInstance<?, ?, ?> kahina, int dataHandlingMethod)
     {
         stepTree = new KahinaMemTree();
         secondaryStepTree = new KahinaMemTree();
         consoleMessages = new KahinaText();
-        consoleLines = new HashMap<Integer,Integer>();
+        consoleLines = new HashMap<Integer,Set<Integer>>();
         
         //database variant turned out to be too slow
         /* switch (dataHandlingMethod)
@@ -65,7 +67,13 @@ public class KahinaState implements KahinaListener
     public void consoleMessage(int stepID, String message)
     {
         int lineID = consoleMessages.addLine(message);
-        consoleLines.put(stepID, lineID);
+        Set<Integer> lineIDs = consoleLines.get(stepID);
+        if (lineIDs == null)
+        {
+            lineIDs = new HashSet<Integer>();
+            consoleLines.put(stepID, lineIDs);
+        }
+        lineIDs.add(lineID);
         KahinaRunner.processEvent(new KahinaMessageEvent(new KahinaLineReference(consoleMessages,lineID,stepID)));
     }
     
@@ -94,7 +102,7 @@ public class KahinaState implements KahinaListener
     
     public void processEvent(KahinaUpdateEvent e)
     {
-        Integer consoleLine = consoleLines.get(e.getSelectedStep());
-        if (consoleLine != null) KahinaRunner.processEvent(new KahinaConsoleLineEvent(consoleLine));
+        Set<Integer> lineIDs = consoleLines.get(e.getSelectedStep());
+        if (lineIDs != null) KahinaRunner.processEvent(new KahinaConsoleLineEvent(lineIDs));
     }
 }

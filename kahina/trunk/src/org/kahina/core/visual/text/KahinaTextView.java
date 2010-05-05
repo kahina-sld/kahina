@@ -1,11 +1,15 @@
 package org.kahina.core.visual.text;
 
+import java.util.Set;
+
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaText;
@@ -13,6 +17,7 @@ import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaMessageEvent;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
 import org.kahina.core.visual.KahinaView;
+import org.kahina.core.visual.chart.KahinaChartViewPanel;
 
 public class KahinaTextView extends KahinaView<KahinaText> implements KahinaListener
 {
@@ -44,6 +49,7 @@ public class KahinaTextView extends KahinaView<KahinaText> implements KahinaList
     public JComponent wrapInPanel()
     {
         KahinaTextViewPanel panel = new KahinaTextViewPanel();
+        KahinaRunner.getControl().registerListener("redraw", panel);
         panel.setView(this);
         return panel;
     }
@@ -67,6 +73,18 @@ public class KahinaTextView extends KahinaView<KahinaText> implements KahinaList
     
     public void processEvent(KahinaConsoleLineEvent e)
     {
-        selectionModel.setSelectionInterval(e.getConsoleLine(), e.getConsoleLine());
+        Set<Integer> consoleLines = e.getConsoleLines();
+        int leadIndex = selectionModel.getLeadSelectionIndex();
+        if (!consoleLines.contains(leadIndex))
+        {
+            leadIndex = e.getConsoleLines().iterator().next();
+        }
+        selectionModel.clearSelection();
+        for (int consoleLine : e.getConsoleLines())
+        {
+            selectionModel.addSelectionInterval(consoleLine, consoleLine);
+        }
+        selectionModel.setAnchorSelectionIndex(leadIndex);
+        selectionModel.setLeadSelectionIndex(leadIndex);
     }
 }
