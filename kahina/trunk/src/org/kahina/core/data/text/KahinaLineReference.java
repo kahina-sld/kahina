@@ -21,4 +21,9 @@ public class KahinaLineReference extends KahinaObject implements LightweightKahi
     {
         return text.getLine(line);
     }
+    
+    public int getStepID()
+    {
+        return step;
+    }
 }

@@ -15,7 +15,7 @@ import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 
-public class TraleSLDState extends KahinaState implements KahinaListener
+public class TraleSLDState extends KahinaState
 {
     KahinaChart chart;
     
@@ -71,6 +71,7 @@ public class TraleSLDState extends KahinaState implements KahinaListener
     
     public void processEvent(KahinaUpdateEvent e)
     {
+        super.processEvent(e);
         Integer edgeID = nodeToEdge.get(e.getSelectedStep());
         if (edgeID != null) KahinaRunner.processEvent(new KahinaChartUpdateEvent(edgeID));
     }

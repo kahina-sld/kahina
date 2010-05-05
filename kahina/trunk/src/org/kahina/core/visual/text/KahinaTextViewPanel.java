@@ -18,6 +18,7 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
         list = new JList();
         list.setSelectionBackground(Color.YELLOW);
         list.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
+        list.addMouseListener(new KahinaTextViewListener(this));
         
         JScrollPane scrollPane = new JScrollPane(list);
         this.add(scrollPane);          
@@ -27,6 +28,7 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
     public void setView(KahinaTextView view)
     {
         list.setModel(view.getListModel());
+        list.setSelectionModel(view.getSelectionModel());
         revalidate();
         updateDisplay();
     }
