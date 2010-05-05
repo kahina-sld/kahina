@@ -3,6 +3,7 @@ package org.kahina.core.bridge;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaListener;
+import org.kahina.core.event.KahinaAbortEvent;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEvent;
 
@@ -32,11 +33,19 @@ public class KahinaBridge implements KahinaListener
         if (e instanceof KahinaControlEvent)
         {
             processEvent((KahinaControlEvent) e);
+        } else if (e instanceof KahinaAbortEvent)
+        {
+        	processEvent((KahinaAbortEvent) e);
         }
     }
     
     //method stub to prevent infinite recursion; implemented by specialized bridges
-    public void processEvent(KahinaControlEvent e)
+    protected void processEvent(KahinaControlEvent e)
+    {
+        
+    }
+    
+    protected void processEvent(KahinaAbortEvent e)
     {
         
     }

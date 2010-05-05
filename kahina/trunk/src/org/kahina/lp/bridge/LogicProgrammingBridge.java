@@ -6,14 +6,15 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
+import org.kahina.core.event.KahinaAbortEvent;
 import org.kahina.core.event.KahinaControlEvent;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.event.LogicProgrammingBridgeEvent;
 import org.kahina.lp.event.LogicProgrammingBridgeEventType;
-import org.kahina.tralesld.TraleSLDInstance;
 
 public class LogicProgrammingBridge extends KahinaBridge
 {  
@@ -31,13 +32,14 @@ public class LogicProgrammingBridge extends KahinaBridge
     //in skip mode, this is the internal step ID of the step we are skipping
     int skipID = -1;
     
-    KahinaInstance kahina; 
+    KahinaInstance<?,?,?> kahina; 
     
-    public LogicProgrammingBridge(KahinaInstance kahina)
+    public LogicProgrammingBridge(KahinaInstance<?,?,?> kahina)
     {
     	super();
         this.kahina = kahina;
         stepIDConv = new HashMap<Integer,Integer>();
+        KahinaRunner.getControl().registerListener(KahinaEventTypes.ABORT, this);
         if (verbose) System.err.println("new LogicProgrammingBridge()");
     }
     
@@ -241,6 +243,10 @@ public class LogicProgrammingBridge extends KahinaBridge
                     return 'c';
                 }
             }
+            case 'a':
+            {
+            	return 'a';
+            }
             default:
             {
                 bridgeState = 'n';
@@ -249,7 +255,14 @@ public class LogicProgrammingBridge extends KahinaBridge
         }
     }
     
-    public void processEvent(KahinaControlEvent e)
+    @Override
+    protected void processEvent(KahinaAbortEvent e)
+    {
+    	bridgeState = 'a';
+    }
+    
+    @Override
+    protected void processEvent(KahinaControlEvent e)
     {
         String command = e.getCommand();
         if (command.equals("creep"))
