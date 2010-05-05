@@ -15,8 +15,6 @@ import java.util.Set;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
-import org.kahina.core.data.text.KahinaLineReference;
-import org.kahina.core.event.KahinaMessageEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.util.PrologUtilities;
 import org.kahina.lp.LogicProgrammingStep;
@@ -39,8 +37,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	
 	Map<Integer, Integer> edgeIDConv;
 
-	StringBuilder grisuMessage;
-
 	public static final boolean verbose = true;
 
 	public TraleSLDBridge(TraleSLDInstance kahina)
@@ -50,7 +46,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		activeEdgeStack = new ArrayList<Integer>();
 		successfulEdges = new HashSet<Integer>();
 		edgeIDConv = new HashMap<Integer, Integer>();
-		grisuMessage = new StringBuilder();
 	}
 
 	public void initializeParseTrace(String parsedSentenceList)
@@ -163,27 +158,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 
-	public void registerMessageChunk(String chunk)
-	{
-		try
-		{
-			// if (verbose)
-			// System.err.println("registerMessageChunk(\"" + chunk + "\")");
-			grisuMessage.append(chunk);
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-
 	/**
 	 * Register message ends for local trees.
 	 * 
 	 * @param extID
 	 * @param type
 	 */
-	public void registerMessageEnd(int extID, String key)
+	public void registerMessage(int extID, String key, String grisuMessage)
 	{
 		try
 		{
@@ -191,7 +172,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// System.err.println("registerMessageEnd(" + extID + ",\"" + key +
 			// "\"): " + grisuMessage);
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
-			TraleSLDFeatureStructure fs = new TraleSLDFeatureStructure(grisuMessage.toString());
+			TraleSLDFeatureStructure fs = new TraleSLDFeatureStructure(grisuMessage);
 			if ("start".equals(key))
 			{
 				step.startFeatStruct = fs;
@@ -200,7 +181,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				step.endFeatStruct = fs;
 			}
 			step.storeCaching();
-			grisuMessage = new StringBuilder();
 		} 
         catch (Exception e)
 		{
@@ -209,11 +189,11 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 
-	public void registerMessageEnd(int extID, String key, String varName, String type)
+	public void registerMessage(int extID, String key, String varName, String type, String grisuMessage)
 	{
 		try
 		{
-			registerMessageEnd(extID, key, varName, null, type);
+			registerMessage(extID, key, varName, null, type, grisuMessage);
 		} 
         catch (Exception e)
 		{
@@ -230,7 +210,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	 * @param tag
 	 * @param type
 	 */
-	public void registerMessageEnd(int extID, String key, String varName, String tag, String type)
+	public void registerMessage(int extID, String key, String varName, String tag, String type, String grisuMessage)
 	{
 		try
 		{
@@ -240,7 +220,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// varName + ",\"" + tag + ",\"" + type + "): " + grisuMessage);
 			// }
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
-			TraleSLDVariableBinding binding = new TraleSLDVariableBinding(varName, tag, type, grisuMessage.toString());
+			TraleSLDVariableBinding binding = new TraleSLDVariableBinding(varName, tag, type, grisuMessage);
 			if ("start".equals(key))
 			{
 				step.startBindings.add(binding);
@@ -248,7 +228,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				step.endBindings.add(binding);
 			}
-			grisuMessage = new StringBuilder();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
