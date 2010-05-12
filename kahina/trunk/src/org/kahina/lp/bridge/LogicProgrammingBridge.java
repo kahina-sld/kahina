@@ -2,7 +2,6 @@ package org.kahina.lp.bridge;
 
 import java.util.HashMap;
 
-import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;

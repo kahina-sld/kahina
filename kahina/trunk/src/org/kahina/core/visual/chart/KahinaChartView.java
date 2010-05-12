@@ -393,6 +393,10 @@ public class KahinaChartView extends KahinaView<KahinaChart>
             ArrayList<Integer> sortedSegmentIDs = new ArrayList<Integer>();
             sortedSegmentIDs.addAll(segmentIDs);
             Collections.sort(sortedSegmentIDs);
+            if (!sortedSegmentIDs.isEmpty())
+            {
+            	sortedSegmentIDs.add(sortedSegmentIDs.get(sortedSegmentIDs.size() - 1) + 1);
+            }
             for (int segmentID : sortedSegmentIDs)
             {
                 segmentOffsets.put(segmentID, currentOffset);
@@ -400,10 +404,19 @@ public class KahinaChartView extends KahinaView<KahinaChart>
             }
         }
         chartWidth = currentOffset;
+        
+        if (verbose)
+        {
+        	System.err.println("Adapting edge coordinates...");
+        }
 
         //second go: adapt all edge coordinates to determined column widths
         for (int curEdge : model.getEdgeIDs())
         {
+        	if (verbose)
+        	{
+        		System.err.println("curEdge: " + curEdge);
+        	}
             if (decideEdgeDisplayByStatus(curEdge))
             {
                 //straightforward use of segmentOffsets to determine all the coordinates
@@ -416,6 +429,14 @@ public class KahinaChartView extends KahinaView<KahinaChart>
                 height.put(curEdge, cellHeight + 3);
                 //System.err.println(segmentOffsets.get(model.getLeftBoundForEdge(curEdge)));
                 int leftOffset = segmentOffsets.get(model.getLeftBoundForEdge(curEdge));
+                if (verbose)
+                {
+                	System.err.println("Segment offsets: " + segmentOffsets);
+                	if (segmentOffsets != null)
+                	{
+                		System.err.println("Segment offset: " + segmentOffsets.get(model.getRightBoundForEdge(curEdge)));
+                	}
+                }
                 int rightOffset = segmentOffsets.get(model.getRightBoundForEdge(curEdge));
                 rightOffset += getSegmentWidth(model.getRightBoundForEdge(curEdge));
                 edgeX.put(curEdge, leftOffset);
@@ -580,6 +601,10 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     
     public int getEdgeX(int edgeID)
     {
+    	if (verbose)
+    	{
+    		System.err.println("Edge ID: " + edgeID);
+    	}
         return edgeX.get(edgeID);
     }
     

@@ -13,16 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.util.PrologUtilities;
-import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
-import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
@@ -41,7 +39,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	
 	Map<Integer, Integer> edgeIDConv;
 
-	public static final boolean verbose = true;
+	public static final boolean verbose = false;
 
 	public TraleSLDBridge(TraleSLDState state)
 	{
@@ -125,7 +123,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		{
 			if (verbose) System.err.println("TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
 			int internalEdgeID = state.getChart().addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.SUCCESSFUL);
+			if (verbose) System.err.println("Internal edge ID: " + internalEdgeID);
 			edgeIDConv.put(externalEdgeID, internalEdgeID);
+			KahinaRunner.processEvent(new KahinaChartUpdateEvent(internalEdgeID));
 		} 
         catch (Exception e)
 		{
