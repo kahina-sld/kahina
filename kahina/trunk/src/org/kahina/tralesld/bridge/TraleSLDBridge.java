@@ -13,13 +13,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.util.PrologUtilities;
+import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
+import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.tralesld.TraleSLDInstance;
+import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
@@ -29,8 +33,8 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
-	TraleSLDInstance kahina;
-
+    TraleSLDState state;
+    
 	List<Integer> activeEdgeStack;
 
 	Set<Integer> successfulEdges;
@@ -39,10 +43,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	public static final boolean verbose = true;
 
-	public TraleSLDBridge(TraleSLDInstance kahina)
+	public TraleSLDBridge(TraleSLDState state)
 	{
-		super(kahina);
-		this.kahina = kahina;
+		super(state);
+        this.state = state;
 		activeEdgeStack = new ArrayList<Integer>();
 		successfulEdges = new HashSet<Integer>();
 		edgeIDConv = new HashMap<Integer, Integer>();
@@ -54,7 +58,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		{
 			if (verbose) System.err.println("TraleSLDBridgeinitializeParseTrace(\"" + parsedSentenceList + "\")");
 			List<String> wordList = PrologUtilities.parsePrologStringList(parsedSentenceList);
-			KahinaChart chart = kahina.getState().getChart();
+			KahinaChart chart = state.getChart();
 			for (int i = 0; i < wordList.size(); i++)
 			{
 				chart.setSegmentCaption(i, wordList.get(i));
@@ -67,7 +71,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
 			currentID = newStep.getID();
             
-            kahina.getState().consoleMessage(newStep.getID(), "initialising parse: " + parsedSentenceList);
+            state.consoleMessage(newStep.getID(), 0, LogicProgrammingStepType.CALL, "initialising parse: " + parsedSentenceList);
 			//if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(newStep.getID()));
 		} catch (Exception e)
 		{
@@ -76,13 +80,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 
-	public void registerRuleApplication(int extID, int left, int right, String ruleName)
+	public void registerRuleApplication(int extID, int left, int right, String ruleName, String consoleMessage)
 	{
 		try
 		{
 			if (verbose) System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
 
-			KahinaChart chart = kahina.getState().getChart();
+			KahinaChart chart = state.getChart();
 			int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.ACTIVE);
 			activeEdgeStack.add(0, newEdgeID);
 
@@ -90,14 +94,14 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.setGoalDesc("rule(" + ruleName + ")");
 			newStep.setExternalID(extID);
 			stepIDConv.put(extID, newStep.getID());
-			kahina.getState().linkEdgeToNode(newEdgeID, newStep.getID());
+			state.linkEdgeToNode(newEdgeID, newStep.getID());
 			newStep.storeCaching();
 
 			// let TraleSLDTreeBehavior do the rest    
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
             
             //experimental: message for console
-			kahina.getState().consoleMessage(newStep.getID(), "rule application " + extID + ": \"" + ruleName + "\" on [" + left + "," + right + "]");
+            state.consoleMessage(newStep.getID(), extID, LogicProgrammingStepType.CALL, consoleMessage+ " on [" + left + "," + right + "]");
 
             //if (bridgeState == 'n')
             {
@@ -120,7 +124,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			if (verbose) System.err.println("TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
-			int internalEdgeID = kahina.getState().getChart().addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.SUCCESSFUL);
+			int internalEdgeID = state.getChart().addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.SUCCESSFUL);
 			edgeIDConv.put(externalEdgeID, internalEdgeID);
 		} 
         catch (Exception e)
@@ -135,7 +139,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			if (verbose) System.err.println("TraleSLDBridge.registerEdgeDependency(" + motherID + "," + daughterID + ")");
-            kahina.getState().getChart().addEdgeDependency(edgeIDConv.get(motherID), edgeIDConv.get(daughterID));
+            state.getChart().addEdgeDependency(edgeIDConv.get(motherID), edgeIDConv.get(daughterID));
 		}
         catch (Exception e)
 		{
@@ -149,7 +153,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			if (verbose) System.err.println("TraleSLDBridge.registerActiveEdgeDependency(" + daughterID + ")");
-            kahina.getState().getChart().addEdgeDependency(activeEdgeStack.get(0), edgeIDConv.get(daughterID));
+            state.getChart().addEdgeDependency(activeEdgeStack.get(0), edgeIDConv.get(daughterID));
 		} 
         catch (Exception e)
 		{
@@ -265,13 +269,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				if (successfulEdges.contains(currentEdge))
 				{
 					System.err.println("Successful edge! Deleting from chart model...");
-					kahina.getState().getChart().removeEdge(currentEdge);
+					state.getChart().removeEdge(currentEdge);
 				}
 				// current rule application failed; adapt chart accordingly
 				else
 				{
 					System.err.println("Failed edge! Leaving it on the chart as junk...");
-					kahina.getState().getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
+					state.getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
 				}
                 
 				// move up one level in overview tree (really necessary?)

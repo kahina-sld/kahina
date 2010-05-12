@@ -20,13 +20,13 @@ public class KahinaSourceCodeViewPanel extends KahinaTextViewPanel
     
     public void updateDisplay()
     {
-        System.err.println("Updating source code view panel!");
-        System.err.println("Old list model length: " + list.getModel().getSize());
+        //System.err.println("Updating source code view panel!");
+        //System.err.println("Old list model length: " + list.getModel().getSize());
         if (list.getModel() != view.getListModel())
         {
             list.setModel(view.getListModel());
             list.setSelectionModel(view.getSelectionModel());
-            System.err.println("New list model length: " + list.getModel().getSize());
+            //System.err.println("New list model length: " + list.getModel().getSize());
         }
         super.updateDisplay();
     }

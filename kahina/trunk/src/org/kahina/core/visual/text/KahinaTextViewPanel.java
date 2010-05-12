@@ -13,6 +13,9 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
 {
     protected JList list;
     JScrollPane listScrollPane;
+    //determines how many lines are automatically displayed before and after the lead selection line
+    //also determines the minimum height of the component
+    int displayContext = 2;
     
     public KahinaTextViewPanel()
     {
@@ -42,7 +45,18 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
         Integer leadIndex = view.getSelectionModel().getLeadSelectionIndex();  
         if (leadIndex != null)
         {
-            Rectangle r = list.getCellBounds(leadIndex, leadIndex);
+            int startIndex = leadIndex - displayContext;
+            int endIndex = leadIndex + displayContext;
+            if (startIndex < 0)
+            {
+                startIndex = 0;
+                endIndex -= startIndex;
+            }
+            if (endIndex >= list.getModel().getSize())
+            {
+                endIndex = list.getModel().getSize();
+            }
+            Rectangle r = list.getCellBounds(startIndex, endIndex);
             if (r != null)
             {
                 list.scrollRectToVisible(r);

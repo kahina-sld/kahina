@@ -73,16 +73,17 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
     
     public void processEvent(KahinaConsoleLineEvent e)
     {
-        Set<Integer> consoleLines = e.getConsoleLines();
+        Set<KahinaLineReference> consoleLines = e.getConsoleLines();
         int leadIndex = selectionModel.getLeadSelectionIndex();
-        if (!consoleLines.contains(leadIndex))
+        if (leadIndex == -1 || !consoleLines.contains(listModel.getElementAt(leadIndex)))
         {
-            leadIndex = e.getConsoleLines().iterator().next();
+            leadIndex = listModel.indexOf(consoleLines.iterator().next());
         }
         selectionModel.clearSelection();
-        for (int consoleLine : e.getConsoleLines())
+        for (KahinaLineReference consoleLine : consoleLines)
         {
-            selectionModel.addSelectionInterval(consoleLine, consoleLine);
+            int index =  listModel.indexOf(consoleLine);
+            selectionModel.addSelectionInterval(index, index);
         }
         selectionModel.setAnchorSelectionIndex(leadIndex);
         selectionModel.setLeadSelectionIndex(leadIndex);

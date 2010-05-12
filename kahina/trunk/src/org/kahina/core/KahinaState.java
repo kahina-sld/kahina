@@ -35,16 +35,16 @@ public class KahinaState implements KahinaListener
     KahinaTree secondaryStepTree;
     
     //the messages that will be stored in the console
-    KahinaText consoleMessages;
+    protected KahinaText consoleMessages;
     //map from stepIDs to lines in console
-    Map<Integer,Set<Integer>> consoleLines;
+    protected Map<Integer,Set<KahinaLineReference>> consoleLines;
     
     public KahinaState(KahinaInstance<?, ?, ?> kahina, int dataHandlingMethod)
     {
         stepTree = new KahinaMemTree();
         secondaryStepTree = new KahinaMemTree();
         consoleMessages = new KahinaText();
-        consoleLines = new HashMap<Integer,Set<Integer>>();
+        consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
         
         //database variant turned out to be too slow
         /* switch (dataHandlingMethod)
@@ -67,14 +67,15 @@ public class KahinaState implements KahinaListener
     public void consoleMessage(int stepID, String message)
     {
         int lineID = consoleMessages.addLine(message);
-        Set<Integer> lineIDs = consoleLines.get(stepID);
-        if (lineIDs == null)
+        KahinaLineReference ref = new KahinaLineReference(consoleMessages,lineID,stepID);
+        Set<KahinaLineReference> refs = consoleLines.get(stepID);
+        if (refs == null)
         {
-            lineIDs = new HashSet<Integer>();
-            consoleLines.put(stepID, lineIDs);
+            refs = new HashSet<KahinaLineReference>();
+            consoleLines.put(stepID, refs);
         }
-        lineIDs.add(lineID);
-        KahinaRunner.processEvent(new KahinaMessageEvent(new KahinaLineReference(consoleMessages,lineID,stepID)));
+        refs.add(ref);
+        KahinaRunner.processEvent(new KahinaMessageEvent(ref));
     }
     
     public KahinaText getConsoleMessages()
@@ -102,7 +103,7 @@ public class KahinaState implements KahinaListener
     
     public void processEvent(KahinaUpdateEvent e)
     {
-        Set<Integer> lineIDs = consoleLines.get(e.getSelectedStep());
-        if (lineIDs != null) KahinaRunner.processEvent(new KahinaConsoleLineEvent(lineIDs));
+        Set<KahinaLineReference> refs = consoleLines.get(e.getSelectedStep());
+        if (refs != null) KahinaRunner.processEvent(new KahinaConsoleLineEvent(refs));
     }
 }

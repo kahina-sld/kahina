@@ -14,8 +14,9 @@ import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.lp.LogicProgrammingState;
 
-public class TraleSLDState extends KahinaState
+public class TraleSLDState extends LogicProgrammingState
 {
     KahinaChart chart;
     

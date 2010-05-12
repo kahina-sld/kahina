@@ -28,7 +28,7 @@ public class KahinaSourceCodeView extends KahinaTextView<KahinaSourceCodeLocatio
     {
         if (model != null)
         {
-            System.err.println("Displaying source code model with text " + model.getText());
+            //System.err.println("Displaying source code model with text " + model.getText());
             DefaultListModel newModel = sourceCodeModels.get(model.getText());
             if (newModel == null)
             {
