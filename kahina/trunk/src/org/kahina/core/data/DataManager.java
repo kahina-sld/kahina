@@ -67,7 +67,12 @@ public abstract class DataManager
 	public void store(KahinaObject object)
 	{
 		int id = object.getID();
-		DataStore store = getStoreForType(object.getClass());
+		Class<? extends KahinaObject> clazz = object.getClass();
+		DataStore store = getStoreForType(clazz);
+		if (store == null)
+		{
+			throw new KahinaException("Attempted to store object with unregistered type " + clazz);
+		}
 		//System.err.println("storing object " + id + " of type " + object.getClass() + " in " + store);
 		setStoreForID(id, store);
 		store.store(object);
