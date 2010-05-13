@@ -39,7 +39,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	
 	Map<Integer, Integer> edgeIDConv;
 
-	public static final boolean verbose = false;
+	public static final boolean verbose = true;
 
 	public TraleSLDBridge(TraleSLDState state)
 	{
@@ -66,7 +66,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.setExternalID(0);
 			stepIDConv.put(0, newStep.getID());
 			newStep.storeCaching();
-			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStep.getID(), wordList.toString()));
+			int id = newStep.getID();
+			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, id, wordList.toString()));
+			KahinaRunner.processEvent(new KahinaSelectionEvent(id));
 			currentID = newStep.getID();
             
             state.consoleMessage(newStep.getID(), 0, LogicProgrammingStepType.CALL, "initialising parse: " + parsedSentenceList);
