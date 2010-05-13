@@ -31,7 +31,7 @@ public class LogicProgrammingState extends KahinaState
             consoleLines.put(stepID, refs);
         }
         refs.add(ref);
-        ref.store();
+        //ref.store();
         KahinaRunner.processEvent(new KahinaMessageEvent(ref));
     }
     
@@ -44,7 +44,7 @@ public class LogicProgrammingState extends KahinaState
             consoleLines.put(ref.step, refs);
         }
         refs.add(ref);
-        ref.store();
+        //ref.store();
         KahinaRunner.processEvent(new KahinaMessageEvent(ref));
     }
     

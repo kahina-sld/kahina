@@ -12,6 +12,11 @@ public class LogicProgrammingLineReference extends KahinaLineReference
     //store the externalID for synthesis of the console line
     public int extID;
     
+    public LogicProgrammingLineReference()
+    {
+    	super();
+    }
+    
     public LogicProgrammingLineReference(KahinaText consoleMessages, int lineID, int stepID, int extID, int port)
     {
         super(consoleMessages,lineID,stepID);

@@ -153,7 +153,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                                                 .getConsoleLineRefForStep(lastStepID)
                                                 .generatePortVariant(LogicProgrammingStepType.REDO);
             ref.step = newStepID;
-            ref.store();
+            //ref.store();
             state.consoleMessage(ref);
         }
         catch (Exception e)
@@ -188,7 +188,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                 ref = state.getConsoleLineRefForStep(stepID)
                       .generatePortVariant(LogicProgrammingStepType.EXIT);
             }
-            ref.store();
+            //ref.store();
             state.consoleMessage(ref);
         }
         catch (Exception e)
@@ -209,7 +209,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
             LogicProgrammingLineReference ref = state.getConsoleLineRefForStep(stepID)
                                                 .generatePortVariant(LogicProgrammingStepType.FAIL);
-            ref.store();
+            //ref.store();
             state.consoleMessage(ref);
         }
         catch (Exception e)
@@ -233,7 +233,7 @@ public class LogicProgrammingBridge extends KahinaBridge
             {
             	if (verbose)
             	{
-            		System.err.println("Bridge state/pressed button: n/n");
+            		//System.err.println("Bridge state/pressed button: n/n");
             	}
                 return 'n';
             }
