@@ -256,6 +256,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                 {
                     skipID = -1;
                     bridgeState = 'n';
+                    KahinaRunner.processEvent(new KahinaSelectionEvent(currentID));
                     return 'n';
                 }
                 else
