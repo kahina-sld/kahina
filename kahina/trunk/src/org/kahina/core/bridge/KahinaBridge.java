@@ -6,6 +6,7 @@ import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaAbortEvent;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 /**
  * policy: bridges may only operate directly on steps, not on complex structures (behaviors for that purpose)
@@ -30,7 +31,10 @@ public class KahinaBridge implements KahinaListener
     
     public void processEvent(KahinaEvent e)
     {
-        if (e instanceof KahinaControlEvent)
+    	if (e instanceof KahinaSelectionEvent)
+    	{
+    		processEvent((KahinaSelectionEvent) e);
+    	} else if (e instanceof KahinaControlEvent)
         {
             processEvent((KahinaControlEvent) e);
         } else if (e instanceof KahinaAbortEvent)
@@ -48,5 +52,10 @@ public class KahinaBridge implements KahinaListener
     protected void processEvent(KahinaAbortEvent e)
     {
         
+    }
+    
+    protected void processEvent(KahinaSelectionEvent e)
+    {
+    	
     }
 }

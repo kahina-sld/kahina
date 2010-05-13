@@ -28,6 +28,9 @@ public class LogicProgrammingBridge extends KahinaBridge
     //always contains the internal ID of the most recent step
     protected int currentID = -1;
     
+    //always contains the interal ID of the selected step
+    protected int selectedID = -1;
+    
     //store the state of the bridge, determining the next result of getPressedButton()
     protected char bridgeState;
     
@@ -42,6 +45,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     	this.state = state;
         stepIDConv = new HashMap<Integer,Integer>();
         KahinaRunner.getControl().registerListener(KahinaEventTypes.ABORT, this);
+        KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
         if (verbose) System.err.println("new LogicProgrammingBridge()");
     }
     
@@ -330,7 +334,13 @@ public class LogicProgrammingBridge extends KahinaBridge
             if (bridgeState == 'n')
             {
                 bridgeState = 't';
-                skipID = currentID;
+                if (selectedID == -1)
+                {
+                	skipID = currentID;
+                } else
+                {
+                	skipID = selectedID;
+                }
             }
             else if (bridgeState == 'p')
             {
@@ -378,5 +388,11 @@ public class LogicProgrammingBridge extends KahinaBridge
                 bridgeState = 's';
             }
         }
+    }
+    
+    @Override
+    protected void processEvent(KahinaSelectionEvent e)
+    {
+    	selectedID = e.getSelectedStep();
     }
 }
