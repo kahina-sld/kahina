@@ -39,7 +39,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	
 	Map<Integer, Integer> edgeIDConv;
 
-	public static final boolean verbose = true;
+	public static final boolean verbose = false;
 
 	public TraleSLDBridge(TraleSLDState state)
 	{

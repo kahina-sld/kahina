@@ -20,7 +20,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingBridge extends KahinaBridge
 {  
-    private static final boolean verbose = true;
+    private static final boolean verbose = false;
     
     //a dynamic map from external step IDs to most recent corresponding tree nodes
     protected HashMap<Integer,Integer> stepIDConv;
@@ -32,7 +32,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     protected int selectedID = -1;
     
     //store the state of the bridge, determining the next result of getPressedButton()
-    protected char bridgeState;
+    protected char bridgeState = 'n';
     
     //in skip mode, this is the internal step ID of the step we are skipping
     int skipID = -1;
@@ -118,7 +118,14 @@ public class LogicProgrammingBridge extends KahinaBridge
             int stepID = convertStepID(extID);
             KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, convertStepID(parentID)));
             currentID = stepID;
-            if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+            if (verbose)
+            {
+            	System.err.println("Bridge state: " + bridgeState);
+            }
+            if (bridgeState == 'n')
+            {
+            	KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+            }
         }
         catch (Exception e)
         {
@@ -224,33 +231,61 @@ public class LogicProgrammingBridge extends KahinaBridge
         {
             case 'n':
             {
+            	if (verbose)
+            	{
+            		System.err.println("Bridge state/pressed button: n/n");
+            	}
                 return 'n';
             }
             case 'p':
             {
+            	if (verbose)
+            	{
+            		System.err.println("Bridge state/pressed button: p/n");
+            	}
                 return 'n';
             }
             case 'q':
             {
+            	if (verbose)
+            	{
+            		System.err.println("Bridge state/pressed button: q/n");
+            	}
                 return 'n';
             }
             case 'c':
             {
+            	if (verbose)
+            	{
+            		System.err.println("Bridge state/pressed button: c/c");
+            	}
                 bridgeState = 'n';
                 return 'c';
             }
             case 'f':
             {
+            	if (verbose)
+            	{
+            		System.err.println("Bridge state/pressed button: f/f");
+            	}
                 bridgeState = 'n';
                 return 'f';
             }
             case 'l':
             {
+            	if (verbose)
+            	{
+            		System.err.println("Bridge state/pressed button: l/c");
+            	}
                 bridgeState = 'l';
                 return 'c';
             }
             case 't':
             {
+            	if (verbose)
+            	{
+            		System.err.println("Bridge state/pressed button: t/c");
+            	}
                 bridgeState = 's';
                 return 'c';
             }
@@ -258,6 +293,10 @@ public class LogicProgrammingBridge extends KahinaBridge
             {
                 if (skipID == currentID)
                 {
+                	if (verbose)
+                	{
+                		System.err.println("Bridge state/pressed button: s/n");
+                	}
                     skipID = -1;
                     bridgeState = 'n';
                     KahinaRunner.processEvent(new KahinaSelectionEvent(currentID));
@@ -265,15 +304,27 @@ public class LogicProgrammingBridge extends KahinaBridge
                 }
                 else
                 {
+                	if (verbose)
+                	{
+                		System.err.println("Bridge state/pressed button: s/c");
+                	}
                     return 'c';
                 }
             }
             case 'a':
             {
+            	if (verbose)
+            	{
+            		System.err.println("Bridge state/pressed button: a/a");
+            	}
             	return 'a';
             }
             default:
             {
+            	if (verbose)
+            	{
+            		System.err.println("Bridge state/pressed button: " + bridgeState + "/n");
+            	}
                 bridgeState = 'n';
                 return 'n';
             }
