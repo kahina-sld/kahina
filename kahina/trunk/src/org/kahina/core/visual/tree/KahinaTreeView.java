@@ -19,6 +19,10 @@ import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaView;
 
+// TODO Second dimension sometimes isn't properly displayed when there is no
+// second-dimension root of the nodes in one view. Test case: set goal nodes to
+// be cornerstone nodes in a layer decider.
+
 public class KahinaTreeView extends KahinaView<KahinaTree>
 {
     public static final boolean verbose = false;

@@ -1,21 +1,21 @@
 package org.kahina.tralesld.data.fs;
 
 import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 import org.kahina.core.data.KahinaObject;
 
 public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable<TraleSLDVariableBinding>
 {
 	// declared as TreeSet, so lightweight store will construct it as such
-	public TreeSet<TraleSLDVariableBinding> bindings = new TreeSet<TraleSLDVariableBinding>();
+	public TreeMap<String, TraleSLDVariableBinding> bindings = new TreeMap<String, TraleSLDVariableBinding>();
 
 	private static final boolean verbose = false;
 
 	public TraleSLDVariableBindingSet copy()
 	{
 		TraleSLDVariableBindingSet result = new TraleSLDVariableBindingSet();
-		result.bindings.addAll(bindings);
+		result.bindings.putAll(bindings);
 		return result;
 	}
 
@@ -25,13 +25,13 @@ public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable
 		{
 			System.err.println("TraleSLDVariableBindingSet.add(" + binding + ")");
 		}
-		bindings.add(binding);
+		bindings.put(binding.getVarName(), binding);
 	}
 
 	@Override
 	public Iterator<TraleSLDVariableBinding> iterator()
 	{
-		return bindings.iterator();
+		return bindings.values().iterator();
 	}
 
 	public int size()
