@@ -350,7 +350,8 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
         return Collections.emptyList();
     }
 
-    private List<Integer> getChildren(int nodeID)
+    @Override
+    public List<Integer> getChildren(int nodeID)
     {
         try
         {
