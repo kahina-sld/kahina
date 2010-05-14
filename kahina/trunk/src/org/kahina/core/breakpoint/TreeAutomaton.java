@@ -45,6 +45,10 @@ public class TreeAutomaton
     //link to the breakpoint this automaton implements; contains more contextual info
     KahinaBreakpoint bp;
     
+    //flag do determine whether the automaton reports matches directly over new nodes twice
+    //TODO: generalize for patterns of depth > 2
+    boolean constellationMatch = false;
+    
     public TreeAutomaton(KahinaBreakpoint bp)
     {
         states = new HashSet<Integer>();
@@ -69,6 +73,11 @@ public class TreeAutomaton
         {
             process(leafID);
         }
+    }
+    
+    public void setConstellationMatch(boolean constellationMatch)
+    {
+        this.constellationMatch = constellationMatch;
     }
     
     public KahinaController getController()
@@ -140,6 +149,13 @@ public class TreeAutomaton
                 announcePatternMatch(nodeID);
             }
             return true;
+        }
+        if (constellationMatch)
+        {
+            if (acceptingStates.contains(stateID))
+            {
+                announcePatternMatch(nodeID);
+            }
         }
         return false;
     }

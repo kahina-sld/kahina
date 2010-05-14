@@ -47,8 +47,9 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         TreeAutomaton aut = bp.compile();
         aut.setTree(secondaryTree);
         aut.setController(KahinaRunner.getControl());
+        aut.setConstellationMatch(true);
         this.skipPoints.add(aut);
-        System.err.println(aut.toString());
+        //System.err.println(aut.toString());
     }
     
     public void initializeParseTree(int stepID, String parsedSentence)

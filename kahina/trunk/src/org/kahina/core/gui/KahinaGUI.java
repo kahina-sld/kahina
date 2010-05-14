@@ -8,14 +8,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JOptionPane;
+
 import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
+import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.gui.breakpoint.BreakpointEditorWindow;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
@@ -56,6 +61,7 @@ public class KahinaGUI implements KahinaListener
 		this.kahina = kahina;
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.STEP_FOCUS, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
+        KahinaRunner.getControl().registerListener("dialog", this);
 
 		this.controlPanel = new KahinaControlPanel();
 
@@ -155,6 +161,10 @@ public class KahinaGUI implements KahinaListener
 		{
 			processEvent((KahinaSelectionEvent) e);
 		}
+        else if (e instanceof KahinaDialogEvent)
+        {
+            processEvent((KahinaDialogEvent) e);
+        }
 	}
 
 	private void processEvent(KahinaSelectionEvent e)
@@ -178,4 +188,21 @@ public class KahinaGUI implements KahinaListener
 			e.getPanel().processEvent(new KahinaRedrawEvent());
 		}
 	}
+    
+    private void processEvent(KahinaDialogEvent e)
+    {
+        switch (e.getDialogEventType())
+        {
+            case KahinaDialogEvent.BREAKPOINTS:
+            {
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController());
+                breakpointEditor.setVisible(true);
+                break;
+            }
+            case KahinaDialogEvent.ABOUT:
+            {
+                JOptionPane.showMessageDialog(window, "(c) Kilian Evang, Johannes Dellert 2009-2010");
+            }
+        }
+    }
 }

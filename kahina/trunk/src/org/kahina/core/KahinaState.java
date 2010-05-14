@@ -2,9 +2,11 @@ package org.kahina.core;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kahina.core.breakpoint.TreePattern;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaText;
@@ -38,6 +40,9 @@ public class KahinaState implements KahinaListener
     protected KahinaText consoleMessages;
     //map from stepIDs to lines in console
     protected Map<Integer,Set<KahinaLineReference>> consoleLines;
+    
+    //store the tree patterns for breakpoint matching
+    protected List<TreePattern> breakpointPatterns;
     
     public KahinaState(KahinaInstance<?, ?, ?> kahina, int dataHandlingMethod)
     {

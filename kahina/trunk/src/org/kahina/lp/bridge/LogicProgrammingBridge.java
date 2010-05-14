@@ -37,6 +37,8 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     //store the state of the bridge, determining the next result of getPressedButton()
     protected char bridgeState = 'n';
+    //used to hand on skip commands to the logic programming system
+    protected boolean skipFlag = false;
     
     //in skip mode, this is the internal step ID of the step we are skipping
     int skipID = -1;
@@ -231,6 +233,15 @@ public class LogicProgrammingBridge extends KahinaBridge
        
     public char getPressedButton()
     {
+        if (skipFlag)
+        {
+            if (verbose)
+            {
+                System.err.println("Bridge state/pressed button: " + bridgeState + "/s");
+            }
+            skipFlag = false;
+            return 's';
+        }
         switch (bridgeState)
         {
             case 'n':
@@ -322,15 +333,6 @@ public class LogicProgrammingBridge extends KahinaBridge
             		System.err.println("Bridge state/pressed button: a/a");
             	}
             	return 'a';
-            }
-            case 'k':
-            {
-                if (verbose)
-                {
-                    System.err.println("Bridge state/pressed button: k/n");
-                }
-                bridgeState = 'n';
-                return 's';
             }
             default:
             {
@@ -480,7 +482,6 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     protected void processSkipPointMatch(int nodeID, KahinaBreakpoint bp)
     {
-        System.err.println("Skip point match!");
-        bridgeState = 'k';
+        skipFlag = true;
     }
 }
