@@ -13,10 +13,11 @@ public class LogicProgrammingGUI extends KahinaGUI
     {
         super(stepType, kahina);
         getControlPanel().addControlButton("creep.png", "creep", "continue to next step");
-        getControlPanel().addControlButton("roundskip.png", "skip", "auto-complete this step");
         getControlPanel().addControlButton("reject.png", "fail", "make this step fail");
-        getControlPanel().addControlButton("leap.png", "leap", "jump to next breakpoint match");
+        getControlPanel().addControlButton("roundskip.png", "skip", "auto-complete this step");
         getControlPanel().addControlButton("pause.png", "(un)pause", "pause the current skip operation");
+        getControlPanel().addControlButton("leap.png", "leap", "jump to next breakpoint match");
+        getControlPanel().addControlButton("stop.png", "stop", "abort skip or leap");
         
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.CALL, Color.WHITE);
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.EXIT, new Color(153,255,102));

@@ -55,6 +55,10 @@ public class KahinaText extends KahinaObject implements LightweightKahinaObject
     
     public String getLine(int lineID)
     {
+        if (lineID < 0 || lineID >= lines.size())
+        {
+            return "WARNING: LINE " + lineID + " NOT DEFINED IN TEXT!";
+        }
         return lines.get(lineID);
     }
     
