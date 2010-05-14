@@ -11,9 +11,7 @@ import javax.swing.JPanel;
 
 public class BooleanOperationsPanel extends JPanel
 {
-	private static final long serialVersionUID = -8654088517859959423L;
-	
-	JButton andOperationButton;
+    JButton andOperationButton;
     JButton orOperationButton;
     JButton negOperationButton;
     JButton implOperationButton;

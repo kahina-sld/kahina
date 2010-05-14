@@ -14,16 +14,15 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.TreeNodePattern;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 
 public class BooleanConnectorPanel extends JPanel implements MouseListener, KahinaListener
 {
-	private static final long serialVersionUID = -5611561341051826124L;
-	
-	SingleNodeConstraintPanel nodeConstPanel;   
+    KahinaController control; 
+    SingleNodeConstraintPanel nodeConstPanel;   
     Map<TreeNodePattern, Integer> xCoord; 
     Map<TreeNodePattern, Integer> yCoord;
     
@@ -35,9 +34,10 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
     // event system is responsible for synchronization with NodeConstraintPanel and TreeFragmentPanel
     private int nodeSelectionMode;
     
-    public BooleanConnectorPanel(SingleNodeConstraintPanel nodeConstPanel)
+    public BooleanConnectorPanel(SingleNodeConstraintPanel nodeConstPanel, KahinaController control)
     {
-        KahinaRunner.getControl().registerListener("breakpoint_editor", this);
+        this.control = control;
+        control.registerListener("breakpoint_editor", this);
         
         this.nodeConstPanel = nodeConstPanel;
         this.addMouseListener(this);
@@ -308,7 +308,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
         if (markedPattern != null && selectedPattern == markedPattern)
         {
             switchType(markedPattern);
-            KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
             nodeConstPanel.hint("click on the same connective again to switch its type");
             repaint();
         }
@@ -332,7 +332,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
                 {
                     nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                 }
-                KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE,nodeConstPanel));
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE,nodeConstPanel));
                 repaint();
             }
             else
@@ -356,7 +356,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
                         {
                             nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                         }
-                        KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
+                        control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.NO_PENDING_OPERATION));
                     }
                     else if (nodeSelectionMode == BreakpointEditPanel.PENDING_OR_OPERATION)
                     {
@@ -375,7 +375,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
                         {
                             nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                         }
-                        KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
+                        control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
                     }
                     else if (nodeSelectionMode == BreakpointEditPanel.PENDING_IMPL_OPERATION)
                     {
@@ -394,15 +394,15 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
                         {
                             nodeConstPanel.hint("Add or a remove a constraint, or select a connective.");
                         }
-                        KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
+                        control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
                     }
-                    KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE,nodeConstPanel));
+                    control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE,nodeConstPanel));
                     repaint();
                 }
                 else
                 {
                     nodeConstPanel.hint("Cannot establish connectives across nodes!",Color.RED);
-                    KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
+                    control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE,BreakpointEditPanel.NO_PENDING_OPERATION));
                 }
             }          
         }     
@@ -442,6 +442,6 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
     
     public void informControl(BreakpointEditorEvent e)
     {
-        KahinaRunner.processEvent(e);
+        control.processEvent(e);
     }
 }

@@ -8,16 +8,17 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaSystemEvent;
 
 public class BreakpointEditorFileMenu extends JMenu implements ActionListener
 {
-	private static final long serialVersionUID = 9177386472936733515L;
-
-	public BreakpointEditorFileMenu()
+    KahinaController control;
+    
+    public BreakpointEditorFileMenu(KahinaController control)
     {
         super("Breakpoints");
+        this.control = control;
         
         JMenuItem newBreakpointItem = new JMenuItem("New...");
         newBreakpointItem.setActionCommand("newBreakpoint");
@@ -59,7 +60,7 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
         String s = e.getActionCommand();
         if (s.equals("newBreakpoint"))
         {
-            KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.NEW_BREAKPOINT));
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.NEW_BREAKPOINT));
         }
         else if (s.equals("exportBreakpoint"))
         {
@@ -67,7 +68,7 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Export breakpoint");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.EXPORT_BREAKPOINT, dataFile));
+            if (dataFile != null) control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.EXPORT_BREAKPOINT, dataFile));
         }
         else if (s.equals("importBreakpoint"))
         {
@@ -75,15 +76,15 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Import breakpoint");
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.IMPORT_BREAKPOINT, dataFile));
+            if (dataFile != null) control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.IMPORT_BREAKPOINT, dataFile));
         }
         else if (s.equals("testBreakpoints"))
         {
-            KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TEST_BREAKPOINTS));
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TEST_BREAKPOINTS));
         }
         else if (s.equals("quit"))
         {
-            KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
+            control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
             System.exit(0);
         }
     }

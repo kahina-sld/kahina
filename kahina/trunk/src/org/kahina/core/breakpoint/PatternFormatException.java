@@ -2,9 +2,7 @@ package org.kahina.core.breakpoint;
 
 public class PatternFormatException extends Exception
 {
-	private static final long serialVersionUID = -7747363956775016819L;
-	
-	String desiredType;
+    String desiredType;
     String badString;
     
     public PatternFormatException(String desiredType, String badString)

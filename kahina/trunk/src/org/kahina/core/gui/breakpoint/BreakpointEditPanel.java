@@ -18,16 +18,16 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 
 public class BreakpointEditPanel extends JPanel implements ActionListener, KahinaListener
 {
-	private static final long serialVersionUID = 2642550462312511105L;
-	
-	private JTabbedPane editTabs;  
+    private KahinaController control;
+    
+    private JTabbedPane editTabs;  
     private NodeConstraintPanel nodeConstraintPanel;
     private TreeFragmentPanel treeFragmentPanel; 
     private JLabel nameLabel;
@@ -46,16 +46,17 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
     public static final int PENDING_OR_OPERATION = 1;
     public static final int PENDING_IMPL_OPERATION = 2;
     
-    public BreakpointEditPanel()
+    public BreakpointEditPanel(KahinaController control)
     {
-        KahinaRunner.getControl().registerListener("breakpoint_editor", this);
+        this.control = control;
+        control.registerListener("breakpoint_editor", this);
         
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBorder(BorderFactory.createTitledBorder("Edit Breakpoint"));    
        
         editTabs = new JTabbedPane();
-        editTabs.add("Step Constraint", buildNodeConstraintPanel());
-        editTabs.add("Decision Tree Pattern", buildTreeFragmentPanel());
+        editTabs.add("Step Constraint", buildNodeConstraintPanel(control));
+        editTabs.add("Decision Tree Pattern", buildTreeFragmentPanel(control));
         
         add(editTabs);
         add(Box.createRigidArea(new Dimension(0,5)));
@@ -124,15 +125,15 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         }
     }
     
-    private NodeConstraintPanel buildNodeConstraintPanel()
+    private NodeConstraintPanel buildNodeConstraintPanel(KahinaController control)
     {
-        nodeConstraintPanel = new NodeConstraintPanel();     
+        nodeConstraintPanel = new NodeConstraintPanel(control);     
         return nodeConstraintPanel;
     }
     
-    private TreeFragmentPanel buildTreeFragmentPanel()
+    private TreeFragmentPanel buildTreeFragmentPanel(KahinaController control)
     {
-        treeFragmentPanel = new TreeFragmentPanel();
+        treeFragmentPanel = new TreeFragmentPanel(control);
         return treeFragmentPanel;
     }
     
@@ -154,7 +155,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         {
             breakpoint.setName(breakpoint.getPattern().toString());
             nameField.setText(breakpoint.getName());
-            KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE));
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE));
         }
     }
     
@@ -250,7 +251,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         {
             String val = nameField.getText();
             breakpoint.setName(val);
-            KahinaRunner.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE));
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE));
         }
 
         public void keyTyped(KeyEvent e) 

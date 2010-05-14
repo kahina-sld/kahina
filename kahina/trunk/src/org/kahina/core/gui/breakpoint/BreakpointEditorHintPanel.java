@@ -9,9 +9,7 @@ import javax.swing.JPanel;
 
 public class BreakpointEditorHintPanel extends JPanel
 {
-	private static final long serialVersionUID = -8634880000420210523L;
-	
-	JLabel hintLabel;
+    JLabel hintLabel;
     
     public BreakpointEditorHintPanel()
     {
