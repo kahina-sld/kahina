@@ -2,6 +2,7 @@ package org.kahina.core.visual.text;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Rectangle;
 
 import javax.swing.JList;
@@ -19,6 +20,7 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
     
     public KahinaTextViewPanel()
     {
+        this.setLayout(new GridLayout());
         view = null;
         list = new JList();
         list.setSelectionBackground(Color.YELLOW);
@@ -27,7 +29,6 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
         
         listScrollPane = new JScrollPane(list);
         this.add(listScrollPane);          
-        //add selection listener to list
     }
     
     public void setView(KahinaTextView view)
@@ -54,7 +55,7 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
             }
             if (endIndex >= list.getModel().getSize())
             {
-                endIndex = list.getModel().getSize();
+                endIndex = list.getModel().getSize() - 1;
             }
             Rectangle r = list.getCellBounds(startIndex, endIndex);
             if (r != null)
