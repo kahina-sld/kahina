@@ -2,10 +2,12 @@ package org.kahina.core.bridge;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
+import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaAbortEvent;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaTreeMatchEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 /**
@@ -21,6 +23,7 @@ public class KahinaBridge implements KahinaListener
     public KahinaBridge()
     {
         KahinaRunner.getControl().registerListener("control", this);
+        KahinaRunner.getControl().registerListener("treeMatch", this);
     }
     
     public KahinaStep generateStep()
@@ -41,6 +44,10 @@ public class KahinaBridge implements KahinaListener
         {
         	processEvent((KahinaAbortEvent) e);
         }
+        else if (e instanceof KahinaTreeMatchEvent)
+        {
+            processEvent((KahinaTreeMatchEvent) e);
+        }
     }
     
     //method stub to prevent infinite recursion; implemented by specialized bridges
@@ -57,5 +64,39 @@ public class KahinaBridge implements KahinaListener
     protected void processEvent(KahinaSelectionEvent e)
     {
     	
+    }
+    
+    protected void processEvent(KahinaTreeMatchEvent e)
+    {
+        String breakpointName = e.getBreakpoint().getName();
+        int stepID = e.getNodeID();
+        //TODO: base this decision on some means other than breakpoint naming
+        if (breakpointName.startsWith("skip"))
+        {
+            processSkipPointMatch(e.getNodeID(), e.getBreakpoint());
+        }
+        else if (breakpointName.startsWith("break"))
+        {
+            processBreakPointMatch(e.getNodeID(), e.getBreakpoint());
+        }
+        else if (breakpointName.startsWith("prof"))
+        {
+            processProfilePointMatch(e.getNodeID(), e.getBreakpoint());
+        }
+    }
+    
+    protected void processSkipPointMatch(int nodeID, KahinaBreakpoint bp)
+    {
+        
+    }
+    
+    protected void processBreakPointMatch(int nodeID, KahinaBreakpoint bp)
+    {
+        
+    }
+    
+    protected void processProfilePointMatch(int nodeID, KahinaBreakpoint bp)
+    {
+        
     }
 }

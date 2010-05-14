@@ -61,7 +61,7 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
             Rectangle r = list.getCellBounds(startIndex, endIndex);
             if (r != null)
             {
-                list.scrollRectToVisible(r);
+                //list.scrollRectToVisible(r);
             }
         }
         repaint();      

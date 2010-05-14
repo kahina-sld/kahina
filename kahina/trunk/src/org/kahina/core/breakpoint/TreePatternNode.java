@@ -23,6 +23,12 @@ public class TreePatternNode
         this.parent = null;
         this.children = new ArrayList<TreePatternNode>();
     }
+    
+    public void addChild(TreePatternNode child)
+    {
+        children.add(child);
+        child.setParent(this);
+    }
 
     public List<TreePatternNode> getChildren()
     {

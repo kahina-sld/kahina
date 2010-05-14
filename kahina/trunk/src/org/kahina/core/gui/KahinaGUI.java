@@ -161,10 +161,14 @@ public class KahinaGUI implements KahinaListener
 	{
 		if (e.getPanel() == null || livingViews.contains(e.getPanel().view))
 		{
-			int selectedStep = e.getSelectedStep();
-			displayStepContent(selectedStep);
-			KahinaRunner.processEvent(new KahinaUpdateEvent(selectedStep));
-			KahinaRunner.processEvent(new KahinaRedrawEvent());
+            //ignore selections that would lead to an empty current node
+            if (e.getSelectedStep() != -1)
+            {
+                int selectedStep = e.getSelectedStep();
+                displayStepContent(selectedStep);
+                KahinaRunner.processEvent(new KahinaUpdateEvent(selectedStep));
+                KahinaRunner.processEvent(new KahinaRedrawEvent());
+            }
 		}
 		// for special case of isolated view components: there is no
 		// coordinating KahinaGUI

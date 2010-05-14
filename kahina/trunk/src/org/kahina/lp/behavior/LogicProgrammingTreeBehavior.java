@@ -1,11 +1,14 @@
 package org.kahina.lp.behavior;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.behavior.KahinaTreeBehavior;
+import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaTreeEvent;
@@ -30,6 +33,9 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     protected Set<Integer> deterministicallyExited;
     protected Set<Integer> nonDetermBecauseOfRedo;
     
+    //this stores the skip tree automata
+    protected List<TreeAutomaton> skipPoints;
+    
     public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?> kahina, KahinaTree secondaryTree)
     {
         super(tree, kahina);
@@ -39,6 +45,17 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         nonDetermBecauseOfRedo = new HashSet<Integer>();
         KahinaRunner.getControl().registerListener("logic programming bridge", this);
         if (verbose) System.err.println("new LogicProgrammingTreeBehavior(" + tree + "," + "," + kahina + "," + secondaryTree + ")");
+        skipPoints = new ArrayList<TreeAutomaton>();
+        initializeSkipPoints();
+    }
+    
+    /**
+     * overwrite this to fill the skipPoints list with node patterns
+     * describing for which nodes the bridge is to hand over a skip command to the logic programming system
+     */
+    public void initializeSkipPoints()
+    {
+        
     }
     
     /**
@@ -54,6 +71,11 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         lastActiveID = stepID;
         secondaryTree.addChild(ancestorID, stepID);
         //if (verbose) System.err.println(secondaryTree.exportXML());
+        //see whether we have reached skip point
+        for (TreeAutomaton aut : skipPoints)
+        {
+            aut.process(stepID);
+        }
     }
     
     /**

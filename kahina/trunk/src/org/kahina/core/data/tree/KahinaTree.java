@@ -88,6 +88,8 @@ public abstract class KahinaTree extends KahinaObject
 
     protected abstract void collectLeaves(int nodeID, List<Integer> leaves);
 
+    public abstract List<Integer> getChildren(int nodeID);
+    
     public abstract List<Integer> getChildren(int nodeID, int layer);
 
     public abstract int getNodeStatus(int nodeID);

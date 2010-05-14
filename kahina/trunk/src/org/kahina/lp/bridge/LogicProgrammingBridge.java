@@ -1,8 +1,12 @@
 package org.kahina.lp.bridge;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.breakpoint.KahinaBreakpoint;
+import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.event.KahinaAbortEvent;
@@ -319,6 +323,15 @@ public class LogicProgrammingBridge extends KahinaBridge
             	}
             	return 'a';
             }
+            case 'k':
+            {
+                if (verbose)
+                {
+                    System.err.println("Bridge state/pressed button: k/n");
+                }
+                bridgeState = 'n';
+                return 's';
+            }
             default:
             {
             	if (verbose)
@@ -348,6 +361,24 @@ public class LogicProgrammingBridge extends KahinaBridge
                 bridgeState = 'c';
             }
             else if (bridgeState == 'p')
+            {
+                skipID = -1;
+                bridgeState = 'c';
+            }
+            else if (bridgeState == 'q')
+            {
+                skipID = -1;
+                bridgeState = 'c';
+            }
+            else if (bridgeState == 'l')
+            {
+                skipID = -1;
+                bridgeState = 'n';
+            }
+        }
+        else if (command.equals("stop"))
+        {
+            if (bridgeState == 'p')
             {
                 skipID = -1;
                 bridgeState = 'c';
@@ -445,5 +476,11 @@ public class LogicProgrammingBridge extends KahinaBridge
     protected void processEvent(KahinaSelectionEvent e)
     {
     	selectedID = e.getSelectedStep();
+    }
+    
+    protected void processSkipPointMatch(int nodeID, KahinaBreakpoint bp)
+    {
+        System.err.println("Skip point match!");
+        bridgeState = 'k';
     }
 }

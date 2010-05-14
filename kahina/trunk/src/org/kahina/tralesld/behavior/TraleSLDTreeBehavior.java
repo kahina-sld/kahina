@@ -2,6 +2,11 @@ package org.kahina.tralesld.behavior;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.breakpoint.KahinaBreakpoint;
+import org.kahina.core.breakpoint.TreeAutomaton;
+import org.kahina.core.breakpoint.TreeNodePattern;
+import org.kahina.core.breakpoint.TreePattern;
+import org.kahina.core.breakpoint.TreePatternNode;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
@@ -25,6 +30,25 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     {
         super(tree, kahina, secondaryTree);  
         KahinaRunner.getControl().registerListener("traleSLD bridge", this);
+    }
+    
+    public void initializeSkipPoints()
+    {
+        TreePattern pat = new TreePattern();
+        TreePatternNode rootNode = new TreePatternNode();
+        TreeNodePattern rootPattern = new TreeNodePattern(TreeNodePattern.CAPTION, TreeNodePattern.MATCHING, "[0-9]* (cats?|mother)");    
+        rootNode.setPattern(rootPattern);
+        rootNode.addChild(new TreePatternNode(new TreeNodePattern()));
+        pat.setRoot(rootNode);
+        KahinaBreakpoint bp = new KahinaBreakpoint();
+        //TODO: make this more elegant than checking via name whether it is a skip point
+        bp.setName("skip1");
+        bp.setPattern(pat);
+        TreeAutomaton aut = bp.compile();
+        aut.setTree(secondaryTree);
+        aut.setController(KahinaRunner.getControl());
+        this.skipPoints.add(aut);
+        System.err.println(aut.toString());
     }
     
     public void initializeParseTree(int stepID, String parsedSentence)

@@ -14,6 +14,8 @@ import java.util.Set;
 
 public class TreeAutomatonRule
 {
+    public static boolean verbose = false;
+    
     //no order can be imposed on the required child annotations by this type of rule
     Set<Integer> requiredChildAnnotations;
     //second part of the LHS: allow all kinds of conditions on the node to be annotated
@@ -38,6 +40,8 @@ public class TreeAutomatonRule
     {
         if (pattern.matches(aut.tree, nodeID))
         {
+            if (verbose) System.err.println("    pattern.matches(" + nodeID + ")");
+            if (verbose) System.err.println("    child annotations: " + aut.getChildAnnotations(nodeID));
             if (aut.getChildAnnotations(nodeID).containsAll(requiredChildAnnotations))
             {
                 return true;

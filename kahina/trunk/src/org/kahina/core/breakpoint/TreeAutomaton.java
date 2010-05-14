@@ -24,6 +24,8 @@ import org.kahina.core.event.KahinaTreeMatchEvent;
 
 public class TreeAutomaton
 {
+    public static boolean verbose = false;
+    
     /*logic of the tree automaton*/
     //also the possible annotations (no negative integers!)
     Set<Integer> states;
@@ -86,21 +88,28 @@ public class TreeAutomaton
      */
     public void process(int nodeID)
     {
+        if (verbose) System.err.println("Skip Point automaton processing node " + nodeID + " " + annotations.get(nodeID));
         //TODO: perhaps introduce a way of detecting the loss of annotations as well
         boolean annotationChange = false;
         for (TreeAutomatonRule rule : rules)
         {
+            if (verbose) System.err.println("  Trying to apply rule " + rule);
             if (rule.ruleApplies(this, nodeID))
             {
+                if (verbose) System.err.println("  Success!");
                 if (annotate(nodeID, rule.getAssignedLabel()))
                 {
                     annotationChange = true;
                 }
             }
+            else
+            {
+                if (verbose) System.err.println("  Failure!");
+            }
         }
         if (annotationChange)
         {
-            int parentID = tree.getParent(nodeID, 0);
+            int parentID = tree.getParent(nodeID);
             if (parentID != -1)
             {
                 process(parentID);
@@ -116,15 +125,16 @@ public class TreeAutomaton
      */
     public boolean annotate(int nodeID, int stateID)
     {
+        if (verbose) System.err.println("Skip Point automaton processing node " + nodeID);
         Set<Integer> ann = annotations.get(nodeID);
         if (ann == null)
         {
             ann = new HashSet<Integer>();
             annotations.put(nodeID, ann);
         }
-        //if this annotation
         if (ann.add(stateID))
         {
+            //a match is detected if annotation with an accepting state occurs
             if (acceptingStates.contains(stateID))
             {
                 announcePatternMatch(nodeID);
@@ -157,7 +167,7 @@ public class TreeAutomaton
     public Set<Integer> getChildAnnotations(int nodeID)
     {
         Set<Integer> childAnn = new HashSet<Integer>();
-        for (int childID : tree.getChildren(nodeID, 0))
+        for (int childID : tree.getChildren(nodeID))
         {
             childAnn.addAll(getAnnotations(childID));
         }
@@ -166,6 +176,7 @@ public class TreeAutomaton
     
     private void announcePatternMatch(int nodeID)
     {
+        if (verbose) System.err.println("Skip Point automaton matched at node " + nodeID);
         if (ctrl == null)
         {
             System.err.println("WARNING! Tree pattern match, but no controller is listening!");
@@ -174,6 +185,7 @@ public class TreeAutomaton
         {
             if (bp.isActive())
             {
+                if (verbose) System.err.println("Skip Point fired TreeMatchEvent at node " + nodeID);
                 ctrl.processEvent(new KahinaTreeMatchEvent(bp, nodeID));
             }
         }
