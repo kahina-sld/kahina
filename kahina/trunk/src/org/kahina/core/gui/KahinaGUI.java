@@ -1,5 +1,7 @@
 package org.kahina.core.gui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
@@ -201,8 +210,34 @@ public class KahinaGUI implements KahinaListener
             }
             case KahinaDialogEvent.ABOUT:
             {
-                JOptionPane.showMessageDialog(window, "(c) Kilian Evang, Johannes Dellert 2009-2010");
+                new AboutDialog(window).setVisible(true);        
             }
+        }
+    }
+    
+    private class AboutDialog extends JDialog 
+    {
+        public AboutDialog(JFrame parent) 
+        {
+          super(parent, "About Kahina", false);
+          getContentPane().setLayout(new BoxLayout(getContentPane(),BoxLayout.Y_AXIS));
+          add(new JLabel("Kilian Evang, Johannes Dellert"));
+          add(new JLabel("Tuebingen University"));
+          add(new JLabel("(c) 2009-2010"));
+
+          JPanel p2 = new JPanel();
+          JButton ok = new JButton("Ok");
+          p2.add(ok);
+          getContentPane().add(p2, "South");
+
+          ok.addActionListener(new ActionListener() 
+          {
+            public void actionPerformed(ActionEvent evt) 
+            {
+              setVisible(false);
+            }
+          });
+          setSize(250, 150);
         }
     }
 }
