@@ -270,13 +270,19 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				int currentEdge = activeEdgeStack.remove(0);
 				if (successfulEdges.contains(currentEdge))
 				{
-					System.err.println("Successful edge! Deleting from chart model...");
+					if (verbose)
+					{
+						System.err.println("Successful edge! Deleting from chart model...");
+					}
 					state.getChart().removeEdge(currentEdge);
 				}
 				// current rule application failed; adapt chart accordingly
 				else
 				{
-					System.err.println("Failed edge! Leaving it on the chart as junk...");
+					if (verbose)
+					{
+						System.err.println("Failed edge! Leaving it on the chart as junk...");
+					}
 					state.getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
 				}
                 
