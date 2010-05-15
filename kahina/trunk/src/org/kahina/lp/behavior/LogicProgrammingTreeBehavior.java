@@ -118,6 +118,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         object.addChild(parentID, newStepID);
         
         lastActiveID = newStepID;
+        for (TreeAutomaton aut : skipPoints)
+        {
+            aut.process(newStepID);
+        }
     }
     
     /**

@@ -31,6 +31,8 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
+	public static final boolean verbose = false;
+	
     TraleSLDState state;
     
 	List<Integer> activeEdgeStack;
@@ -38,8 +40,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	Set<Integer> successfulEdges;
 	
 	Map<Integer, Integer> edgeIDConv;
-
-	public static final boolean verbose = false;
 
 	public TraleSLDBridge(TraleSLDState state)
 	{

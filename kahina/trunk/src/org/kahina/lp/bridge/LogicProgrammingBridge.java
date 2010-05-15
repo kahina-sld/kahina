@@ -1,12 +1,9 @@
 package org.kahina.lp.bridge;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
-import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.event.KahinaAbortEvent;
@@ -89,7 +86,9 @@ public class LogicProgrammingBridge extends KahinaBridge
             KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, nodeLabel));
             currentID = stepID;
             
+            
             state.consoleMessage(stepID, extID, LogicProgrammingStepType.CALL ,consoleMessage);
+            if (verbose) System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + nodeLabel + "\")");
         }
         catch (Exception e)
         {
