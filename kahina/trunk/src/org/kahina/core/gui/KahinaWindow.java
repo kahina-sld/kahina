@@ -65,6 +65,8 @@ public class KahinaWindow extends JFrame
         {
             JFrame viewWindow = new JFrame();
             viewWindow.setLayout(new BorderLayout());
+            viewWindow.add(view.wrapInPanel());
+            viewWindow.setTitle(view.getTitle());
             xPos += width + 20;
             width = view.getTitle().length() * 12 + 50;
             if (xPos + width > screenWidth)
@@ -78,8 +80,6 @@ public class KahinaWindow extends JFrame
             {
                 maxY = height;
             }
-            viewWindow.add(view.wrapInPanel());
-            viewWindow.setTitle(view.getTitle());
             viewWindow.setSize(width, height);
             viewWindow.setLocation(xPos, yPos);
             viewWindow.setVisible(true);

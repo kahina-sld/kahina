@@ -121,7 +121,7 @@ public class KahinaGUI implements KahinaListener
 				{
 					System.err.println("\t\tview: " + newView);
 				}
-				newView.setTitle("Step information: " + field.getName());
+				newView.setTitle(field.getName());
 				fieldToView.put(field, newView);
 				views.add(newView);
 				livingViews.add(newView);
