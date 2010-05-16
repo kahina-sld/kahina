@@ -11,6 +11,10 @@ public class TraleSLDVariableBinding extends KahinaObject implements Lightweight
 	public String type;
 	public TraleSLDFeatureStructure fs;
 	
+	public TraleSLDVariableBinding()
+	{
+	}
+	
 	public TraleSLDVariableBinding(String varName, String tag, String type, String grisuMessage)
 	{
 		this.varName = varName;

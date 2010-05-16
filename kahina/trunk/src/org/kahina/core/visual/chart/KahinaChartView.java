@@ -31,7 +31,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     private int cellWidth = 150; 
     Color bgColor = Color.WHITE;
     int cellWidthPolicy = KahinaChartView.MINIMAL_NECESSARY_WIDTH;
-    int edgeStackingPolicy = KahinaChartView.STACK_EDGES_FILL_SPACE;
+    int edgeStackingPolicy = KahinaChartView.STACK_EDGES_BY_ID;
     int displayOrientation = KahinaChartView.BOTTOM_UP_DISPLAY;
     int displayRangePolicy = KahinaChartView.RANGE_USED_OR_CAPTION_DEFINED;
     int dependencyDisplayPolicy = KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS;

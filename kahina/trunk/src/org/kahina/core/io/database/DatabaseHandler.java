@@ -200,6 +200,7 @@ public class DatabaseHandler
 
 	private void startDatabase()
 	{
+		System.setProperty("derby.system.durability", "test");
 		try
 		{
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
@@ -207,7 +208,6 @@ public class DatabaseHandler
 		{
 			throw new KahinaException("Derby JDBC driver not available.", e);
 		}
-
 		try
 		{
 			connection = DriverManager.getConnection("jdbc:derby:"
