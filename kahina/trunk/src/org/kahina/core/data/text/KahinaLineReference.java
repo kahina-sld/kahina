@@ -5,7 +5,7 @@ import org.kahina.core.data.lightweight.LightweightKahinaObject;
 
 public class KahinaLineReference extends KahinaObject implements LightweightKahinaObject
 {
-    public KahinaText text;
+    public KahinaTextModel text;
     public int line;
     
     public int step;
@@ -24,7 +24,7 @@ public class KahinaLineReference extends KahinaObject implements LightweightKahi
         this.step = step;
     }
     
-    public KahinaLineReference(KahinaText text, int line, int step)
+    public KahinaLineReference(KahinaTextModel text, int line, int step)
     {
         this.text = text;
         this.line = line;
@@ -33,7 +33,7 @@ public class KahinaLineReference extends KahinaObject implements LightweightKahi
     
     public String toString()
     {
-        return text.getLine(line);
+        return text.text.getLine(line);
     }
     
     public int getStepID()
@@ -41,7 +41,7 @@ public class KahinaLineReference extends KahinaObject implements LightweightKahi
         return step;
     }
     
-    public KahinaText getText()
+    public KahinaTextModel getText()
     {
         return text;
     }

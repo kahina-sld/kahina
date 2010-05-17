@@ -18,6 +18,11 @@ public class KahinaText extends KahinaObject implements LightweightKahinaObject
         lines = new ArrayList<String>();
     }
     
+    public KahinaText(List<String> lines)
+    {
+    	this.lines = lines;
+    }
+    
     public KahinaText(String absolutePathName)
     {
         lines = new ArrayList<String>();

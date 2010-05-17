@@ -115,7 +115,6 @@ public class DatabaseHandler
 			while (resultSet.next())
 			{
 				int element = resultSet.getInt(1);
-
 				if (resultSet.wasNull())
 				{
 					result.add(null);
@@ -123,6 +122,31 @@ public class DatabaseHandler
 				{
 					result.add(element);
 				}
+			}
+			return result;
+		} catch (SQLException e)
+		{
+			throw new KahinaException("SQL error.", e);
+		}
+	}
+
+	/**
+	 * Returns the result of a statement as a list of Strings. <tt>NULL</tt>
+	 * values are represented as {@code null} values.
+	 * 
+	 * @param statement
+	 * @return
+	 */
+	public List<String> queryStringList(PreparedStatement statement)
+	{
+		List<String> result = new ArrayList<String>();
+		try
+		{
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next())
+			{
+				String element = resultSet.getString(1);
+				result.add(element);
 			}
 			return result;
 		} catch (SQLException e)

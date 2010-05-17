@@ -9,15 +9,12 @@ import java.util.Set;
 import org.kahina.core.breakpoint.TreePattern;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
-import org.kahina.core.data.text.KahinaText;
+import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaMessageEvent;
-import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
-import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
-import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 
 /**
@@ -37,7 +34,7 @@ public class KahinaState implements KahinaListener
     KahinaTree secondaryStepTree;
     
     //the messages that will be stored in the console
-    protected KahinaText consoleMessages;
+    protected KahinaTextModel consoleMessages;
     //map from stepIDs to lines in console
     protected Map<Integer,Set<KahinaLineReference>> consoleLines;
     
@@ -48,7 +45,7 @@ public class KahinaState implements KahinaListener
     {
         stepTree = new KahinaMemTree();
         secondaryStepTree = new KahinaMemTree();
-        consoleMessages = new KahinaText();
+        consoleMessages = new KahinaTextModel();
         consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
         
         //database variant turned out to be too slow
@@ -71,7 +68,7 @@ public class KahinaState implements KahinaListener
     
     public void consoleMessage(int stepID, String message)
     {
-        int lineID = consoleMessages.addLine(message);
+        int lineID = consoleMessages.text.addLine(message);
         KahinaLineReference ref = new KahinaLineReference(consoleMessages,lineID,stepID);
         Set<KahinaLineReference> refs = consoleLines.get(stepID);
         if (refs == null)
@@ -83,7 +80,7 @@ public class KahinaState implements KahinaListener
         KahinaRunner.processEvent(new KahinaMessageEvent(ref));
     }
     
-    public KahinaText getConsoleMessages()
+    public KahinaTextModel getConsoleMessages()
     {
         return consoleMessages;
     }

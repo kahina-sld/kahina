@@ -2,6 +2,7 @@ package org.kahina.lp.data.text;
 
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaText;
+import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.lp.LogicProgrammingStepType;
 
 public class LogicProgrammingLineReference extends KahinaLineReference
@@ -17,7 +18,7 @@ public class LogicProgrammingLineReference extends KahinaLineReference
     	super();
     }
     
-    public LogicProgrammingLineReference(KahinaText consoleMessages, int lineID, int stepID, int extID, int port)
+    public LogicProgrammingLineReference(KahinaTextModel consoleMessages, int lineID, int stepID, int extID, int port)
     {
         super(consoleMessages,lineID,stepID);
         this.extID = extID;
@@ -60,6 +61,6 @@ public class LogicProgrammingLineReference extends KahinaLineReference
                 break;
             }
         }
-        return extID + portString + text.getLine(line);
+        return extID + portString + text.text.getLine(line);
     }
 }

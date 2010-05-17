@@ -3,25 +3,21 @@ package org.kahina.core.visual.source;
 import java.util.HashMap;
 
 import javax.swing.DefaultListModel;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
-import javax.swing.ListSelectionModel;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
-import org.kahina.core.data.source.KahinaSourceFileModel;
-import org.kahina.core.data.text.KahinaText;
-import org.kahina.core.visual.KahinaView;
+import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.core.visual.text.KahinaTextView;
 
 public class KahinaSourceCodeView extends KahinaTextView<KahinaSourceCodeLocation>
 {     
-    HashMap<KahinaText, DefaultListModel> sourceCodeModels;
+    HashMap<KahinaTextModel, DefaultListModel> sourceCodeModels;
     
     public KahinaSourceCodeView()
     {
         super();
-        sourceCodeModels = new HashMap<KahinaText, DefaultListModel>();
+        sourceCodeModels = new HashMap<KahinaTextModel, DefaultListModel>();
     }
     
     public void doDisplay()
@@ -33,7 +29,7 @@ public class KahinaSourceCodeView extends KahinaTextView<KahinaSourceCodeLocatio
             if (newModel == null)
             {
                 newModel = new DefaultListModel();
-                int lineNum = model.getText().getLines().size();
+                int lineNum = model.getText().text.getLines().size();
                 for (int i = 0; i < lineNum; i++)
                 {          
                     newModel.addElement(new KahinaSourceCodeLocation(model.getText().absolutePathName,i,-1));
