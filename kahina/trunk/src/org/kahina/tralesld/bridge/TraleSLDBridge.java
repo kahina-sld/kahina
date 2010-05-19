@@ -40,6 +40,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	Set<Integer> successfulEdges;
 	
 	Map<Integer, Integer> edgeIDConv;
+	
+	int lastRegisteredChartEdge = -1;
 
 	public TraleSLDBridge(TraleSLDState state)
 	{
@@ -77,6 +79,16 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		{
 			e.printStackTrace();
 			System.exit(1);
+		}
+	}
+	
+	@Override
+	public void registerStepInformation(int extID, String nodeLabel, String consoleMessage)
+	{
+		super.registerStepInformation(extID, nodeLabel, consoleMessage);
+		if (nodeLabel.startsWith("rule_close") && lastRegisteredChartEdge != -1)
+		{
+			state.linkEdgeToNode(lastRegisteredChartEdge, currentID);
 		}
 	}
 
@@ -134,6 +146,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			if (verbose) System.err.println("Internal edge ID: " + internalEdgeID);
 			edgeIDConv.put(externalEdgeID, internalEdgeID);
+			lastRegisteredChartEdge = internalEdgeID;
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(internalEdgeID));
 		} 
         catch (Exception e)
