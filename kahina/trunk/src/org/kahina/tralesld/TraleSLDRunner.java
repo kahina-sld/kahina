@@ -88,7 +88,7 @@ public class TraleSLDRunner extends KahinaRunner
     public static TraleSLDBridge runAndGetBridge()
     {
         System.err.println("Starting TraleSLD instance...");
-        initialize(KahinaDataHandlingMethod.DATABASE);
+        initialize(KahinaDataHandlingMethod.MEMORY);
         TraleSLDInstance kahina = new TraleSLDInstance();
         kahina.getGUI().buildAndShow();
         return kahina.getBridge();

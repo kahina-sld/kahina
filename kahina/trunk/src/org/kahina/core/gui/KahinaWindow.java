@@ -39,6 +39,7 @@ public class KahinaWindow extends JFrame
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(new KahinaStateMenu());
         menuBar.add(new KahinaParseMenu());
+        menuBar.add(new KahinaBreakpointMenu());
         menuBar.add(new KahinaHelpMenu());
         this.setJMenuBar(menuBar);
         

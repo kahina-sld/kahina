@@ -19,11 +19,13 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaSystemEvent;
 
 public class BreakpointEditorWindow extends JFrame implements ActionListener, KahinaListener, ListSelectionListener
 {
@@ -42,13 +44,18 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
     List<TreeAutomaton> compiledBreakpoints;
     int curID; //list ID of the breakpoint we are editing
     
-    public BreakpointEditorWindow(KahinaController control)
-    {       
+    //is one of the constant values in org.kahina.core.breakpoint.KahinaBreakpointType
+    int breakpointType;
+    
+    public BreakpointEditorWindow(KahinaController control, int breakpointType)
+    {      
+        this.breakpointType = breakpointType;
+        
         this.control = control;
         control.registerListener("breakpoint_editor", this);
         this.setTitle("Kahina Breakpoint Editor");
         this.setSize(800,600);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
        
         breakpoints = new ArrayList<KahinaBreakpoint>();
         compiledBreakpoints = new ArrayList<TreeAutomaton>();
@@ -67,6 +74,14 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         this.setJMenuBar(menuBar);
         
         adaptActivationStatus();
+    }
+    
+    //TODO: this has to become a lot more gentle and smooth
+    public void loadBreakpointProfile(List<KahinaBreakpoint> breakpoints)
+    {
+        this.breakpoints = breakpoints;
+        breakpointList.setListData(breakpoints.toArray());
+        breakpointList.repaint();
     }
     
     private JPanel buildLeftPanel()
@@ -158,7 +173,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         {
             case BreakpointEditorEvent.NEW_BREAKPOINT:
             {
-                KahinaBreakpoint newBreakpoint = new KahinaBreakpoint();
+                KahinaBreakpoint newBreakpoint = new KahinaBreakpoint(breakpointType);
                 breakpoints.add(newBreakpoint);
                 compiledBreakpoints.add(new TreeAutomaton(newBreakpoint));
                 breakpointList.setListData(breakpoints.toArray());
@@ -202,6 +217,12 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
             {
                 breakpointList.repaint();
                 breakpointList.validate();
+            }
+            case BreakpointEditorEvent.APPLY_QUIT:
+            {
+                KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.APPLY_BREAKPOINTS, breakpointType));
+                this.setVisible(false);
+                this.dispose();
             }
         }
     }

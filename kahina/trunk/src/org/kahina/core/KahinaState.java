@@ -1,11 +1,13 @@
 package org.kahina.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.breakpoint.TreePattern;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
@@ -38,8 +40,10 @@ public class KahinaState implements KahinaListener
     //map from stepIDs to lines in console
     protected Map<Integer,Set<KahinaLineReference>> consoleLines;
     
-    //store the tree patterns for breakpoint matching
-    protected List<TreePattern> breakpointPatterns;
+    //store the three types of breakpoints
+    protected List<KahinaBreakpoint> primaryBreakpoints;
+    protected List<KahinaBreakpoint> secondaryBreakpoints;
+    protected List<KahinaBreakpoint> skipPoints;
     
     public KahinaState(KahinaInstance<?, ?, ?> kahina, int dataHandlingMethod)
     {
@@ -47,6 +51,10 @@ public class KahinaState implements KahinaListener
         secondaryStepTree = new KahinaMemTree();
         consoleMessages = new KahinaTextModel();
         consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
+        
+        primaryBreakpoints = new ArrayList<KahinaBreakpoint>();
+        secondaryBreakpoints = new ArrayList<KahinaBreakpoint>();
+        skipPoints = new ArrayList<KahinaBreakpoint>();
         
         //database variant turned out to be too slow
         /* switch (dataHandlingMethod)
@@ -93,6 +101,21 @@ public class KahinaState implements KahinaListener
     public KahinaTree getSecondaryStepTree()
     {
         return secondaryStepTree;
+    }
+    
+    public List<KahinaBreakpoint> getPrimaryBreakpoints()
+    {
+        return primaryBreakpoints;
+    }
+    
+    public List<KahinaBreakpoint> getSecondaryBreakpoints()
+    {
+        return secondaryBreakpoints;
+    }
+    
+    public List<KahinaBreakpoint> getSkipPoints()
+    {
+        return skipPoints;
     }
     
     public void processEvent(KahinaEvent e)

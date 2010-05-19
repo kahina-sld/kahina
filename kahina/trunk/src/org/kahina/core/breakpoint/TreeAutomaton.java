@@ -62,17 +62,20 @@ public class TreeAutomaton
     
     /**
      * set or change the tree this breakpoint is monitoring
-     * the automaton will recompute its annotations in bottom-up manner
+     * the automaton will silently recompute its annotations in bottom-up manner
      * @param tree - the tree model this breakpoint is monitoring
      */
     public void setTree(KahinaTree tree)
     {
         annotations =  new HashMap<Integer,Set<Integer>>();
         this.tree = tree;
+        boolean wasActive = bp.isActive();
+        this.bp.deactivate();
         for (int leafID : tree.getLeaves())
         {
             process(leafID);
         }
+        if (wasActive) this.bp.activate();
     }
     
     public void setConstellationMatch(boolean constellationMatch)

@@ -61,6 +61,11 @@ public class LogicProgrammingLineReference extends KahinaLineReference
                 break;
             }
         }
-        return extID + portString + text.text.getLine(line);
+        String extIDString = "";
+        if (extID != -1)
+        {
+            extIDString += extID;
+        }
+        return extIDString + portString + text.text.getLine(line);
     }
 }

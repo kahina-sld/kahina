@@ -17,6 +17,13 @@ public class LogicProgrammingState extends KahinaState
         super(kahina, dataHandlingMethod);
     }
     
+    public void breakpointConsoleMessage(int stepID, String message)
+    {
+        int lineID = consoleMessages.text.addLine(message);
+        KahinaLineReference ref = new LogicProgrammingLineReference(consoleMessages,lineID,stepID,-1, -1);
+        KahinaRunner.processEvent(new KahinaMessageEvent(ref));
+    }
+    
     public void consoleMessage(int stepID, int extID, int port, String message)
     {
         int lineID = consoleMessages.text.addLine(message);

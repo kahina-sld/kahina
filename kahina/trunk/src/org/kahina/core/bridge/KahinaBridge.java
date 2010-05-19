@@ -3,6 +3,7 @@ package org.kahina.core.bridge;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
+import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaAbortEvent;
 import org.kahina.core.event.KahinaControlEvent;
@@ -68,20 +69,27 @@ public class KahinaBridge implements KahinaListener
     
     protected void processEvent(KahinaTreeMatchEvent e)
     {
-        String breakpointName = e.getBreakpoint().getName();
-        int stepID = e.getNodeID();
-        //TODO: base this decision on some means other than breakpoint naming
-        if (breakpointName.startsWith("skip"))
+        switch (e.getBreakpoint().getType())
         {
-            processSkipPointMatch(e.getNodeID(), e.getBreakpoint());
-        }
-        else if (breakpointName.startsWith("break"))
-        {
-            processBreakPointMatch(e.getNodeID(), e.getBreakpoint());
-        }
-        else if (breakpointName.startsWith("prof"))
-        {
-            processProfilePointMatch(e.getNodeID(), e.getBreakpoint());
+            case KahinaBreakpointType.SKIP_POINT:
+            {
+                processSkipPointMatch(e.getNodeID(), e.getBreakpoint());
+                break;
+            }
+            case KahinaBreakpointType.PRIMARY_BREAKPOINT:
+            {
+                //no break here, same as next case
+            }
+            case KahinaBreakpointType.SECONDARY_BREAKPOINT:
+            {
+                processBreakPointMatch(e.getNodeID(), e.getBreakpoint());
+                break;
+            }
+            case KahinaBreakpointType.PROFILE_POINT:
+            {
+                processProfilePointMatch(e.getNodeID(), e.getBreakpoint());
+                break;
+            }
         }
     }
     

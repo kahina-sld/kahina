@@ -8,9 +8,12 @@ import java.util.Set;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.behavior.KahinaTreeBehavior;
+import org.kahina.core.breakpoint.KahinaBreakpoint;
+import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
 import org.kahina.lp.LogicProgrammingStep;
@@ -33,7 +36,9 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     protected Set<Integer> deterministicallyExited;
     protected Set<Integer> nonDetermBecauseOfRedo;
     
-    //this stores the skip tree automata
+    //this stores the different breakpoint automata
+    protected List<TreeAutomaton> primaryBreakpoints;
+    protected List<TreeAutomaton> secondaryBreakpoints;
     protected List<TreeAutomaton> skipPoints;
     
     public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?> kahina, KahinaTree secondaryTree)
@@ -44,9 +49,35 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         deterministicallyExited = new HashSet<Integer>();
         nonDetermBecauseOfRedo = new HashSet<Integer>();
         KahinaRunner.getControl().registerListener("logic programming bridge", this);
+        KahinaRunner.getControl().registerListener("system", this);
         if (verbose) System.err.println("new LogicProgrammingTreeBehavior(" + tree + "," + "," + kahina + "," + secondaryTree + ")");
+        primaryBreakpoints = new ArrayList<TreeAutomaton>();
+        initializePrimaryBreakpoints();
+        compilePrimaryBreakpoints();
+        secondaryBreakpoints = new ArrayList<TreeAutomaton>();
+        initializeSecondaryBreakpoints();
+        compileSecondaryBreakpoints();
         skipPoints = new ArrayList<TreeAutomaton>();
         initializeSkipPoints();
+        compileSkipPoints();
+    }
+    
+    /**
+     * overwrite this to fill the primaryBreakpoints list with node patterns
+     * describing at detection of which node patterns in the primary step tree the bridge is to pause leaping or skipping
+     */
+    public void initializePrimaryBreakpoints()
+    {
+        
+    }
+    
+    /**
+     * overwrite this to fill the secondaryBreakpoints list with node patterns
+     * describing at detection of which node patterns in the secondary step tree the bridge is to pause leaping or skipping
+     */
+    public void initializeSecondaryBreakpoints()
+    {
+        
     }
     
     /**
@@ -56,6 +87,62 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     public void initializeSkipPoints()
     {
         
+    }
+    
+    public void compilePrimaryBreakpoints()
+    {
+        for (KahinaBreakpoint bp : kahina.getState().getPrimaryBreakpoints())
+        {
+            TreeAutomaton aut = bp.compile();
+            aut.setTree(object);
+            aut.setController(KahinaRunner.getControl());
+            aut.setConstellationMatch(false);
+            this.primaryBreakpoints.add(aut);
+        }
+    }
+    
+    public void compileSecondaryBreakpoints()
+    {
+        for (KahinaBreakpoint bp : kahina.getState().getSecondaryBreakpoints())
+        {
+            TreeAutomaton aut = bp.compile();
+            aut.setTree(secondaryTree);
+            aut.setController(KahinaRunner.getControl());
+            aut.setConstellationMatch(false);
+            this.secondaryBreakpoints.add(aut);
+        }
+    }
+    
+    public void compileSkipPoints()
+    {
+        for (KahinaBreakpoint bp : kahina.getState().getSkipPoints())
+        {
+            TreeAutomaton aut = bp.compile();
+            aut.setTree(secondaryTree);
+            aut.setController(KahinaRunner.getControl());
+            aut.setConstellationMatch(true);
+            this.skipPoints.add(aut);
+        }
+    }
+    
+    /** 
+     * checks for breakpoint matches caused by adding or modifying the step at stepID 
+     * causes events to be fired in the case of matches
+     */
+    public void breakpointCheck(int stepID)
+    {
+        for (TreeAutomaton aut : primaryBreakpoints)
+        {
+            aut.process(stepID);
+        }
+        for (TreeAutomaton aut : secondaryBreakpoints)
+        {
+            aut.process(stepID);
+        }
+        for (TreeAutomaton aut : skipPoints)
+        {
+            aut.process(stepID);
+        }
     }
     
     /**
@@ -71,11 +158,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         lastActiveID = stepID;
         secondaryTree.addChild(ancestorID, stepID);
         //if (verbose) System.err.println(secondaryTree.exportXML());
-        //see whether we have reached skip point
-        for (TreeAutomaton aut : skipPoints)
-        {
-            aut.process(stepID);
-        }
+        breakpointCheck(stepID);
     }
     
     /**
@@ -118,10 +201,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         object.addChild(parentID, newStepID);
         
         lastActiveID = newStepID;
-        for (TreeAutomaton aut : skipPoints)
-        {
-            aut.process(newStepID);
-        }
+        breakpointCheck(newStepID);
     }
     
     /**
@@ -166,6 +246,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
         {
             processEvent((LogicProgrammingBridgeEvent) e);
         }
+        else if (e instanceof KahinaSystemEvent)
+        {
+            processEvent((KahinaSystemEvent) e);
+        }
     }
     
     public void processEvent(KahinaTreeEvent e)
@@ -208,6 +292,31 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
             {
                 processStepFail(e.getExternalID());
                 break;
+            }
+        }
+    }
+    
+    public void processEvent(KahinaSystemEvent e)
+    {
+        if (e.getSystemEventType() == KahinaSystemEvent.APPLY_BREAKPOINTS)
+        {
+            switch (e.getIntContent())
+            {
+                case KahinaBreakpointType.PRIMARY_BREAKPOINT:
+                {
+                    compilePrimaryBreakpoints();
+                    break;
+                }
+                case KahinaBreakpointType.SECONDARY_BREAKPOINT:
+                {
+                    compileSecondaryBreakpoints();
+                    break;
+                }
+                case KahinaBreakpointType.SKIP_POINT:
+                {
+                    compileSkipPoints();
+                    break;
+                }
             }
         }
     }

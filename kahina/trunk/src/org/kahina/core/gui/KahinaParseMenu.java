@@ -24,11 +24,6 @@ public class KahinaParseMenu extends JMenu implements ActionListener
         this.add(restartItem);
         
         this.addSeparator();
-        
-        JMenuItem breakpointsItem = new JMenuItem("Breakpoints...");
-        breakpointsItem.setActionCommand("editBreakpoints");
-        breakpointsItem.addActionListener(this);
-        this.add(breakpointsItem);
              
         JMenuItem parseOptionsItem = new JMenuItem("Options...");
         parseOptionsItem.setActionCommand("parseOptions");
@@ -42,10 +37,6 @@ public class KahinaParseMenu extends JMenu implements ActionListener
         if (s.equals("restartParse"))
         {
             KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.RESTART));
-        }
-        else if (s.equals("editBreakpoints"))
-        {
-            KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.BREAKPOINTS));
         }
         else if (s.equals("parseOptions"))
         {

@@ -4,10 +4,12 @@ public class KahinaDialogEvent extends KahinaEvent
 {
     int dialogEventType;
     
-    public static final int BREAKPOINTS = 0;
     public static final int PARSE_OPTIONS = 1;
     public static final int HELP = 2;
     public static final int ABOUT = 3;
+    public static final int PRIMARY_BREAKPOINTS = 4;
+    public static final int SECONDARY_BREAKPOINTS = 5;
+    public static final int SKIP_POINTS = 6;
     
     public KahinaDialogEvent(int dialogEventType)
     {
@@ -23,11 +25,7 @@ public class KahinaDialogEvent extends KahinaEvent
     public String toString()
     {
         String s = "dialog: ";
-        if (dialogEventType == BREAKPOINTS)
-        {
-            s += "breakpoints"; 
-        }
-        else if (dialogEventType == PARSE_OPTIONS)
+        if (dialogEventType == PARSE_OPTIONS)
         {
             s += "parse options"; 
         }
@@ -38,6 +36,18 @@ public class KahinaDialogEvent extends KahinaEvent
         else if (dialogEventType == ABOUT)
         {
             s += "about"; 
+        }
+        else if (dialogEventType == PRIMARY_BREAKPOINTS)
+        {
+            s += "primary breakpoints"; 
+        }
+        else if (dialogEventType == SECONDARY_BREAKPOINTS)
+        {
+            s += "secondary breakpoints"; 
+        }
+        else if (dialogEventType == SKIP_POINTS)
+        {
+            s += "skip points"; 
         }
         else
         {

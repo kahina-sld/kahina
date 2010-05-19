@@ -17,24 +17,38 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
     
     public BreakpointEditorFileMenu(KahinaController control)
     {
-        super("Breakpoints");
+        super("Profile");
         this.control = control;
         
-        JMenuItem newBreakpointItem = new JMenuItem("New...");
-        newBreakpointItem.setActionCommand("newBreakpoint");
-        newBreakpointItem.addActionListener(this);
-        newBreakpointItem.setEnabled(false);
-        this.add(newBreakpointItem);
+        JMenuItem newBreakpointProfileItem = new JMenuItem("New Profile");
+        newBreakpointProfileItem.setActionCommand("newBreakpointProfile");
+        newBreakpointProfileItem.addActionListener(this);
+        //newBreakpointProfileItem.setEnabled(false);
+        this.add(newBreakpointProfileItem);
+        
+        this.addSeparator();
+        
+        JMenuItem exportBreakpointProfileItem = new JMenuItem("Export Profile");
+        exportBreakpointProfileItem.setActionCommand("exportBreakpointProfile");
+        exportBreakpointProfileItem.addActionListener(this);
+        //exportBreakpointProfileItem.setEnabled(false);
+        this.add(exportBreakpointProfileItem);
+        
+        JMenuItem importBreakpointProfileItem = new JMenuItem("Import Profile");
+        importBreakpointProfileItem.setActionCommand("importBreakpointProfile");
+        importBreakpointProfileItem.addActionListener(this);
+        //importBreakpointItem.setEnabled(false);
+        this.add(importBreakpointProfileItem);
         
         this.addSeparator();
             
-        JMenuItem exportBreakpointItem = new JMenuItem("Export...");
+        JMenuItem exportBreakpointItem = new JMenuItem("Export Breakpoint");
         exportBreakpointItem.setActionCommand("exportBreakpoint");
         exportBreakpointItem.addActionListener(this);
         exportBreakpointItem.setEnabled(false);
         this.add(exportBreakpointItem);
         
-        JMenuItem importBreakpointItem = new JMenuItem("Import...");
+        JMenuItem importBreakpointItem = new JMenuItem("Import Breakpoint");
         importBreakpointItem.setActionCommand("importBreakpoint");
         importBreakpointItem.addActionListener(this);
         importBreakpointItem.setEnabled(false);
@@ -49,8 +63,8 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
         
         this.addSeparator();
         
-        JMenuItem quitItem = new JMenuItem("Quit");
-        quitItem.setActionCommand("quit");
+        JMenuItem quitItem = new JMenuItem("Apply and Quit");
+        quitItem.setActionCommand("applyQuit");
         quitItem.addActionListener(this);
         this.add(quitItem);
     }
@@ -82,10 +96,9 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
         {
             control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TEST_BREAKPOINTS));
         }
-        else if (s.equals("quit"))
+        else if (s.equals("applyQuit"))
         {
-            control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
-            System.exit(0);
+            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.APPLY_QUIT));
         }
     }
 }

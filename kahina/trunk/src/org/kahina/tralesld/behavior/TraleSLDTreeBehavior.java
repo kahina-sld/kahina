@@ -3,6 +3,7 @@ package org.kahina.tralesld.behavior;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
+import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.breakpoint.TreeNodePattern;
 import org.kahina.core.breakpoint.TreePattern;
@@ -40,15 +41,10 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         rootNode.setPattern(rootPattern);
         rootNode.addChild(new TreePatternNode(new TreeNodePattern()));
         pat.setRoot(rootNode);
-        KahinaBreakpoint bp = new KahinaBreakpoint();
-        //TODO: make this more elegant than checking via name whether it is a skip point
-        bp.setName("skip1");
+        KahinaBreakpoint bp = new KahinaBreakpoint(KahinaBreakpointType.SKIP_POINT);
+        bp.setName("Cat/Mother Detail Skip");
         bp.setPattern(pat);
-        TreeAutomaton aut = bp.compile();
-        aut.setTree(secondaryTree);
-        aut.setController(KahinaRunner.getControl());
-        aut.setConstellationMatch(true);
-        this.skipPoints.add(aut);
+        kahina.getState().getSkipPoints().add(bp);
         //System.err.println(aut.toString());
     }
     

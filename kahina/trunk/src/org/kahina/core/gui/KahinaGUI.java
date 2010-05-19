@@ -23,6 +23,7 @@ import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
+import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
@@ -202,9 +203,27 @@ public class KahinaGUI implements KahinaListener
     {
         switch (e.getDialogEventType())
         {
-            case KahinaDialogEvent.BREAKPOINTS:
+            case KahinaDialogEvent.PRIMARY_BREAKPOINTS:
             {
-                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController());
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.PRIMARY_BREAKPOINT);
+                breakpointEditor.setTitle("Edit primary breakpoints");
+                breakpointEditor.loadBreakpointProfile(kahina.getState().getPrimaryBreakpoints());
+                breakpointEditor.setVisible(true);
+                break;
+            }
+            case KahinaDialogEvent.SECONDARY_BREAKPOINTS:
+            {
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.SECONDARY_BREAKPOINT);
+                breakpointEditor.setTitle("Edit secondary breakpoints");
+                breakpointEditor.loadBreakpointProfile(kahina.getState().getSecondaryBreakpoints());
+                breakpointEditor.setVisible(true);
+                break;
+            }
+            case KahinaDialogEvent.SKIP_POINTS:
+            {
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.SKIP_POINT);
+                breakpointEditor.setTitle("Edit skip points");
+                breakpointEditor.loadBreakpointProfile(kahina.getState().getSkipPoints());
                 breakpointEditor.setVisible(true);
                 break;
             }

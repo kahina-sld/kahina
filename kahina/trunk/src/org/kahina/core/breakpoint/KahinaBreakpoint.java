@@ -9,14 +9,17 @@ public class KahinaBreakpoint
     private boolean active;
     private Color signalColor;
     private TreePattern pattern;
+    //has one of the constant values in KahinaBreakpointType
+    private int type;
     
-    public KahinaBreakpoint()
+    public KahinaBreakpoint(int type)
     {
         number++;
         setName("Breakpoint " + number);
         signalColor = randomColor();
         active = true;
         pattern = new TreePattern();
+        this.type = type;
     }
     
     public TreeAutomaton compile()
@@ -105,5 +108,15 @@ public class KahinaBreakpoint
         int g = (255 - r) + (int) (Math.random() * r);
         int b = 510 - r - g;
         return new Color(r,g,b);
+    }
+
+    public int getType()
+    {
+        return type;
+    }
+
+    public void setType(int type)
+    {
+        this.type = type;
     }
 }

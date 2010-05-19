@@ -483,4 +483,22 @@ public class LogicProgrammingBridge extends KahinaBridge
     {
         skipFlag = true;
     }
+    
+    protected void processBreakPointMatch(int nodeID, KahinaBreakpoint bp)
+    {
+        //same reaction as in pause mode
+        if (bridgeState == 't')
+        {
+            bridgeState = 'p';
+        }
+        else if (bridgeState == 's')
+        {
+            bridgeState = 'q';
+        }
+        else if (bridgeState == 'l')
+        {
+            bridgeState = 'n';
+        }
+        state.breakpointConsoleMessage(currentID, "Breakpoint match: " + bp.getName() + " at node " + currentID);
+    }
 }
