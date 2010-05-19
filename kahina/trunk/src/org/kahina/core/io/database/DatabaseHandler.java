@@ -21,12 +21,9 @@ public class DatabaseHandler
 	// TODO should support persisting a state by closing the connection and then
 	// copying the temporary directory to a user-specified location
 
-	private static final String TABLE_NAME_PREFIX = DatabaseHandler.class
-			.getSimpleName()
-			+ "_";
+	private static final String TABLE_NAME_PREFIX = DatabaseHandler.class.getSimpleName() + "_";
 
-	private static final String CLIENTS_TABLE_NAME = TABLE_NAME_PREFIX
-			+ "clients";
+	private static final String CLIENTS_TABLE_NAME = TABLE_NAME_PREFIX + "clients";
 
 	private PreparedStatement isRegisteredStatement;
 
@@ -77,8 +74,7 @@ public class DatabaseHandler
 		return queryInteger(statement, null);
 	}
 
-	public Integer queryInteger(PreparedStatement statement,
-			Integer defaultValue)
+	public Integer queryInteger(PreparedStatement statement, Integer defaultValue)
 	{
 		try
 		{
@@ -227,34 +223,24 @@ public class DatabaseHandler
 		System.setProperty("derby.system.durability", "test");
 		try
 		{
-			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-		} catch (ClassNotFoundException e)
-		{
-			throw new KahinaException("Derby JDBC driver not available.", e);
-		}
-		try
-		{
-			connection = DriverManager.getConnection("jdbc:derby:"
-					+ dbDirectory.getPath() + ";create=true");
+			// TODO Dynamically switch between Derby/MySQL SQL dialects. ARGH!
+			//connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/kahina", "kahina", "kahina");
+			connection = DriverManager.getConnection("jdbc:derby:" + dbDirectory.getPath() + ";create=true");
 		} catch (SQLException e)
 		{
-			throw new KahinaException(
-					"Failed to establish a database connection.", e);
+			throw new KahinaException("Failed to establish a database connection.", e);
 		}
 	}
 
 	private void createTables()
 	{
-		execute("CREATE TABLE " + CLIENTS_TABLE_NAME
-				+ " (client_id VARCHAR(255) PRIMARY KEY)");
+		execute("CREATE TABLE " + CLIENTS_TABLE_NAME + " (client_id VARCHAR(255) PRIMARY KEY)");
 	}
 
 	private void prepareStatements()
 	{
-		isRegisteredStatement = prepareStatement("SELECT COUNT(*) FROM "
-				+ CLIENTS_TABLE_NAME + " WHERE client_id = ?");
-		registerStatement = prepareStatement("INSERT INTO "
-				+ CLIENTS_TABLE_NAME + " (client_id) VALUES (?)");
+		isRegisteredStatement = prepareStatement("SELECT COUNT(*) FROM " + CLIENTS_TABLE_NAME + " WHERE client_id = ?");
+		registerStatement = prepareStatement("INSERT INTO " + CLIENTS_TABLE_NAME + " (client_id) VALUES (?)");
 	}
 
 	/**
@@ -373,8 +359,7 @@ public class DatabaseHandler
 		execute(query.toString());
 	}
 
-	public void createIndex(String tableName, String indexNameSuffix,
-			String... columnNames)
+	public void createIndex(String tableName, String indexNameSuffix, String... columnNames)
 	{
 		StringBuilder query = new StringBuilder();
 		query.append("CREATE INDEX ");
@@ -393,14 +378,11 @@ public class DatabaseHandler
 		execute(query.toString());
 	}
 
-	public int getGeneratedKey(
-			PreparedStatement insertReferenceValueLongVarcharStatement,
-			int index)
+	public int getGeneratedKey(PreparedStatement insertReferenceValueLongVarcharStatement, int index)
 	{
 		try
 		{
-			ResultSet resultSet = insertReferenceValueLongVarcharStatement
-					.getGeneratedKeys();
+			ResultSet resultSet = insertReferenceValueLongVarcharStatement.getGeneratedKeys();
 			for (int i = 0; i < index; i++)
 			{
 				resultSet.next();
