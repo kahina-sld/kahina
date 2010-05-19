@@ -125,6 +125,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		{
 			if (verbose) System.err.println("TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
 			int internalEdgeID = state.getChart().addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.SUCCESSFUL);
+			if (activeEdgeStack.isEmpty())
+			{
+				// Lexicon edge. TODO: link it to lex node.
+			} else
+			{
+				state.linkEdgeToNode(internalEdgeID, state.getNodeForEdge(activeEdgeStack.get(0)));
+			}
 			if (verbose) System.err.println("Internal edge ID: " + internalEdgeID);
 			edgeIDConv.put(externalEdgeID, internalEdgeID);
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(internalEdgeID));

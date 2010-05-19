@@ -3,8 +3,6 @@ package org.kahina.tralesld;
 import java.util.HashMap;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.KahinaState;
-import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.data.chart.KahinaDbChart;
@@ -75,5 +73,15 @@ public class TraleSLDState extends LogicProgrammingState
         super.processEvent(e);
         Integer edgeID = nodeToEdge.get(e.getSelectedStep());
         if (edgeID != null) KahinaRunner.processEvent(new KahinaChartUpdateEvent(edgeID));
+    }
+    
+    public int getNodeForEdge(int edgeID)
+    {
+    	Integer result = edgeToNode.get(edgeID);
+    	if (result == null)
+    	{
+    		return -1;
+    	}
+    	return result;
     }
 }
