@@ -41,9 +41,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     
     private JPanel elConstPanel;
     private BooleanConnectorPanel boolPanel;
-    private List<JComboBox> typeComboBoxes;
-    private List<JComboBox> relComboBoxes;
-    private List<JComboBox> valComboBoxes;
+    private List<NodeConstraintComboBox> typeComboBoxes;
+    private List<NodeConstraintComboBox> relComboBoxes;
+    private List<NodeConstraintComboBox> valComboBoxes;
     private List<ValueBoxKeyListener> valKeyListeners;
     private List<JButton> addButtons;
     private List<JButton> remButtons;
@@ -71,9 +71,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         elConstPanel.setLayout(new GridBagLayout());
         elConstPanel.setBorder(BorderFactory.createTitledBorder("Node Constraint")); 
         
-        typeComboBoxes = new ArrayList<JComboBox>();
-        relComboBoxes = new ArrayList<JComboBox>();
-        valComboBoxes = new ArrayList<JComboBox>();
+        typeComboBoxes = new ArrayList<NodeConstraintComboBox>();
+        relComboBoxes = new ArrayList<NodeConstraintComboBox>();
+        valComboBoxes = new ArrayList<NodeConstraintComboBox>();
         valKeyListeners = new ArrayList<ValueBoxKeyListener>();
         
         addButtons = new ArrayList<JButton>();
@@ -107,9 +107,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         elConstPanel.setLayout(new GridBagLayout());
         elConstPanel.setBorder(BorderFactory.createTitledBorder("Node Constraint")); 
         
-        typeComboBoxes = new ArrayList<JComboBox>();
-        relComboBoxes = new ArrayList<JComboBox>();
-        valComboBoxes = new ArrayList<JComboBox>();
+        typeComboBoxes = new ArrayList<NodeConstraintComboBox>();
+        relComboBoxes = new ArrayList<NodeConstraintComboBox>();
+        valComboBoxes = new ArrayList<NodeConstraintComboBox>();
         valKeyListeners = new ArrayList<ValueBoxKeyListener>();
         
         addButtons = new ArrayList<JButton>();
@@ -139,8 +139,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             generateElementaryConstraintRow(elementaryConstraintNumber);        
             adaptNamingAndLayout(elementaryConstraintNumber);           
             basePatterns.add(node);
+            //TODO: this type of item selection does not seem to work --> an additional mapping to explicit indices?
             typeComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getTypeAsString());
-            relComboBoxes.get(elementaryConstraintNumber).setModel(new DefaultComboBoxModel(constrOptions.getRelationsForType(node.getTypeAsString()).toArray()));
+            relComboBoxes.get(elementaryConstraintNumber).setModel(constrOptions.getRelationsForType(node.getTypeAsString()));
             relComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getRelAsString());
             valComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getValueAsString());
             elementaryConstraintNumber++;
@@ -170,9 +171,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         
         elConstPanel.removeAll();
         
-        typeComboBoxes = new ArrayList<JComboBox>();
-        relComboBoxes = new ArrayList<JComboBox>();
-        valComboBoxes = new ArrayList<JComboBox>();
+        typeComboBoxes = new ArrayList<NodeConstraintComboBox>();
+        relComboBoxes = new ArrayList<NodeConstraintComboBox>();
+        valComboBoxes = new ArrayList<NodeConstraintComboBox>();
         valKeyListeners = new ArrayList<ValueBoxKeyListener>();
         
         addButtons = new ArrayList<JButton>();
@@ -228,7 +229,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     {
         GridBagConstraints c = new GridBagConstraints();
 
-        JComboBox constTypeChoice = new JComboBox(constrOptions.getTypes().toArray());
+        NodeConstraintComboBox constTypeChoice = new NodeConstraintComboBox(constrOptions.getTypes());
         constTypeChoice.setActionCommand("changeType" + rowID);      
         constTypeChoice.addActionListener(this);      
         c.fill = GridBagConstraints.HORIZONTAL;
@@ -237,7 +238,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         elConstPanel.add(constTypeChoice, c);
         typeComboBoxes.add(rowID, constTypeChoice);
 
-        JComboBox compTypeChoice = new JComboBox(constrOptions.getRelationsForType("--").toArray());
+        NodeConstraintComboBox compTypeChoice = new NodeConstraintComboBox(constrOptions.getRelationsForType("--"));
         compTypeChoice.setActionCommand("changeRel" + rowID);    
         compTypeChoice.addActionListener(this);  
         c.gridx = 2;
@@ -245,7 +246,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         relComboBoxes.add(rowID, compTypeChoice);
          
         List<String> values = constrOptions.getValuesForType("--");
-        JComboBox valueChoice = new JComboBox(values.toArray());
+        NodeConstraintComboBox valueChoice = new NodeConstraintComboBox(values);
         if (values.contains(""))
         {
             valueChoice.setEditable(true);
