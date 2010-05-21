@@ -4,6 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -217,12 +221,28 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
             {
                 breakpointList.repaint();
                 breakpointList.validate();
+                break;
             }
             case BreakpointEditorEvent.APPLY_QUIT:
             {
                 KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.APPLY_BREAKPOINTS, breakpointType));
                 this.setVisible(false);
                 this.dispose();
+                break;
+            }
+            case BreakpointEditorEvent.EXPORT_BREAKPOINT:
+            {
+                exportBreakpointXML(e.getFile(), breakpoints.get(curID));
+            }
+            case BreakpointEditorEvent.IMPORT_BREAKPOINT:
+            {
+            }
+            case BreakpointEditorEvent.EXPORT_BREAKPOINT_PROFILE:
+            {
+                exportBreakpointProfileXML(e.getFile());
+            }
+            case BreakpointEditorEvent.IMPORT_BREAKPOINT_PROFILE:
+            {
             }
         }
     }
@@ -271,6 +291,49 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
             }
             removeBreakpointButton.setEnabled(true);
             editPanel.setEnabled(true);
+        }
+    }
+    
+    public void exportBreakpointProfileXML(File breakpointProfileFile)
+    {
+        StringBuilder profileString = new StringBuilder();
+        profileString.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+        profileString.append("<breakpointProfile>\n");
+        for (KahinaBreakpoint bp : breakpoints)
+        {
+            profileString.append(bp.exportXML(false));
+        }
+        profileString.append("</breakpointProfile>\n");
+        try
+        {
+            FileWriter fw = new FileWriter(breakpointProfileFile);
+            fw.write(profileString.toString());
+            fw.close();
+        }
+        catch (IOException e)
+        {
+            System.err.println("IOException: Could not export breakpoint!");
+            e.printStackTrace();
+        }
+    }
+    
+    public void importBreakpointProfileXML(File breakpointProfileFile)
+    {
+        
+    }
+    
+    public void exportBreakpointXML(File breakpointFile, KahinaBreakpoint breakpoint)
+    {
+        try
+        {
+            FileWriter fw = new FileWriter(breakpointFile);
+            fw.write(breakpoint.exportXML(true));
+            fw.close();
+        }
+        catch (IOException e)
+        {
+            System.err.println("IOException: Could not export breakpoint!");
+            e.printStackTrace();
         }
     }
 }

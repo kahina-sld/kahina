@@ -76,12 +76,15 @@ public class TreePatternNode
         if (asFile) b.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
         b.append("<patternNode>\n");
         b.append(pattern.exportXML(false));
-        b.append("<children>\n");
-        for (TreePatternNode child : children)
+        if (children.size() > 0)
         {
-            b.append(child.exportXML(false));
+            b.append("<children>\n");
+            for (TreePatternNode child : children)
+            {
+                b.append(child.exportXML(false));
+            }
+            b.append("</children>\n");
         }
-        b.append("</children>\n");
         b.append("</patternNode>");
         return b.toString();
     }

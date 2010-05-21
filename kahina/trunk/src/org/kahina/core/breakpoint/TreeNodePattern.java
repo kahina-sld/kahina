@@ -497,16 +497,16 @@ public class TreeNodePattern
     {
         switch (rel)
         {
-            case IDENTITY: return "id" + intValue;
-            case LESS: return "lt" + intValue;
-            case LESS_OR_EQUAL: return "leq" + intValue;
-            case GREATER: return "gt" + intValue;
-            case GREATER_OR_EQUAL: return "geq" + intValue; 
-            case EQUALITY: return "eq" + stringValue; 
-            case MATCHING: return "match" + stringValue; 
-            case STARTS_WITH: return "startsWith(" + stringValue + ")"; 
-            case CONTAINS: return "contains(" + stringValue + ")"; 
-            case ENDS_WITH: return "endsWith(" + stringValue + ")"; 
+            case IDENTITY: return "id";
+            case LESS: return "lt";
+            case LESS_OR_EQUAL: return "leq";
+            case GREATER: return "gt";
+            case GREATER_OR_EQUAL: return "geq"; 
+            case EQUALITY: return "eq"; 
+            case MATCHING: return "match"; 
+            case STARTS_WITH: return "startsWith"; 
+            case CONTAINS: return "contains"; 
+            case ENDS_WITH: return "endsWith"; 
         }
         return "";
     }
@@ -520,7 +520,7 @@ public class TreeNodePattern
         {
             b.append("<intVal>" + intValue + "</intVal>");
         }
-        if (stringValue != null)
+        if (stringValue.length() > 0 && !stringValue.equals("--"))
         {
             b.append("<stringVal regex=\"" +  (regexValue != null) + "\">" + stringValue + "</stringVal>");
         }

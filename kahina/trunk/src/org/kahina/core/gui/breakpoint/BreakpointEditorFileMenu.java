@@ -45,13 +45,13 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
         JMenuItem exportBreakpointItem = new JMenuItem("Export Breakpoint");
         exportBreakpointItem.setActionCommand("exportBreakpoint");
         exportBreakpointItem.addActionListener(this);
-        exportBreakpointItem.setEnabled(false);
+        //exportBreakpointItem.setEnabled(false);
         this.add(exportBreakpointItem);
         
         JMenuItem importBreakpointItem = new JMenuItem("Import Breakpoint");
         importBreakpointItem.setActionCommand("importBreakpoint");
         importBreakpointItem.addActionListener(this);
-        importBreakpointItem.setEnabled(false);
+        //importBreakpointItem.setEnabled(false);
         this.add(importBreakpointItem);
         
         this.addSeparator();
@@ -75,6 +75,22 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
         if (s.equals("newBreakpoint"))
         {
             control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.NEW_BREAKPOINT));
+        }
+        else if (s.equals("exportBreakpointProfile"))
+        {
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.setDialogTitle("Export breakpoint profile");
+            chooser.showSaveDialog(this);
+            File dataFile = chooser.getSelectedFile();
+            if (dataFile != null) control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.EXPORT_BREAKPOINT_PROFILE, dataFile));
+        }
+        else if (s.equals("importBreakpointProfile"))
+        {
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.setDialogTitle("Import breakpoint profile");
+            chooser.showOpenDialog(this);
+            File dataFile = chooser.getSelectedFile();
+            if (dataFile != null) control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.IMPORT_BREAKPOINT_PROFILE, dataFile));
         }
         else if (s.equals("exportBreakpoint"))
         {
