@@ -140,17 +140,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			if (verbose)
 				System.err.println("TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
 			int internalEdgeID = state.getChart().addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.SUCCESSFUL);
-			// Linking nodes to chart edges. In the edge-node direction, this
-			// will instantly be undone because the edge will be linked to the
-			// rule_close node. In the node-edge direction, this mapping is
-			// conceptually one-to-many, but the most recent one always
-			// overwrites older ones. In sum, we currently have two competing
-			// strategies neither of which is perfect.
-			if (!activeEdgeStack.isEmpty())
-			{
-				// non-lexical edge, so there is a rule application that created this edge and wants to be linked to it
-				state.linkEdgeToNode(internalEdgeID, state.getNodeForEdge(activeEdgeStack.get(0)));
-			}
 			if (verbose)
 				System.err.println("Internal edge ID: " + internalEdgeID);
 			edgeIDConv.put(externalEdgeID, internalEdgeID);
