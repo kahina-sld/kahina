@@ -48,7 +48,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         //System.err.println(aut.toString());
         TreePattern pat2 = new TreePattern();
         TreePatternNode rootNode2 = new TreePatternNode();
-        TreeNodePattern rootPattern2 = new TreeNodePattern(TreeNodePattern.CAPTION, TreeNodePattern.MATCHING, "[0-9]* lexicon.*");    
+        TreeNodePattern rootPattern2 = new TreeNodePattern(TreeNodePattern.CAPTION, TreeNodePattern.MATCHING, "[0-9]* lex\\(.*");    
         rootNode2.setPattern(rootPattern2);
         pat2.setRoot(rootNode2);
         KahinaBreakpoint bp2 = new KahinaBreakpoint(KahinaBreakpointType.SKIP_POINT);

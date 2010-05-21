@@ -84,6 +84,11 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
     public void loadBreakpointProfile(List<KahinaBreakpoint> breakpoints)
     {
         this.breakpoints = breakpoints;
+        compiledBreakpoints.clear();
+        for (KahinaBreakpoint bp : breakpoints)
+        {
+            compiledBreakpoints.add(bp.compile());
+        }
         breakpointList.setListData(breakpoints.toArray());
         breakpointList.repaint();
     }
