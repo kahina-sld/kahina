@@ -2,6 +2,15 @@ package org.kahina.core.breakpoint;
 
 import java.awt.Color;
 
+import org.kahina.core.data.KahinaDataHandlingMethod;
+import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.data.chart.KahinaDbChart;
+import org.kahina.core.data.chart.KahinaMemChart;
+import org.kahina.core.io.database.DatabaseHandler;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 public class KahinaBreakpoint
 {
     static int number = 0;
@@ -118,5 +127,67 @@ public class KahinaBreakpoint
     public void setType(int type)
     {
         this.type = type;
+    }
+    
+    public String exportXML(boolean asFile)
+    {
+        StringBuilder b = new StringBuilder("");
+        if (asFile) b.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+        b.append("<breakpoint name=\"" + name + "\" type=\"" + type + "\" color=\"" + signalColor. +"\" active=\"" + active + "\">\n");
+        for (Integer id : chart.getSegmentsWithCaption())
+        {
+            b.append("  <segment ");
+            b.append("id=\"" + id + "\" ");
+            b.append("caption=\"" + chart.getSegmentCaption(id) + "\" ");
+            b.append("/>\n");
+        }
+        for (Integer id : chart.getEdgeIDs())
+        {
+            b.append("  <edge ");
+            b.append("id=\"" + id + "\" ");
+            b.append("left=\"" + chart.getLeftBoundForEdge(id) + "\" ");
+            b.append("right=\"" + chart.getRightBoundForEdge(id) + "\" ");
+            b.append("status=\"" + chart.getEdgeStatus(id) + "\" ");
+            b.append("caption=\"" + chart.getEdgeCaption(id) + "\" ");
+            b.append("/>\n");
+        }
+        b.append("</chart>");
+        return b.toString();
+    }
+    
+    public static KahinaBreakpoint importXML(Document dom, int dataHandlingMethod, DatabaseHandler db)
+    {
+        KahinaChart m;
+        if (dataHandlingMethod == KahinaDataHandlingMethod.MEMORY)
+        {
+            m = new KahinaMemChart();
+        }
+        else
+        {
+            m = new KahinaDbChart();
+        }
+        NodeList segments = dom.getElementsByTagName("segment");
+        for (int i = 0; i < segments.getLength(); i++)
+        {
+            Element segment = (Element) segments.item(i);
+            int id = Integer.parseInt(segment.getAttribute("id"));
+            m.setSegmentCaption(id,segment.getAttribute("caption"));
+        }
+        NodeList edges = dom.getElementsByTagName("edge");
+        for (int i = 0; i < edges.getLength(); i++)
+        {
+            Element edge = (Element) edges.item(i);
+            int id = Integer.parseInt(edge.getAttribute("id"));
+            int left = Integer.parseInt(edge.getAttribute("left"));
+            int right = Integer.parseInt(edge.getAttribute("right"));
+            int status = Integer.parseInt(edge.getAttribute("status"));
+            if (left < m.getLeftmostCovered()) m.setLeftmostCovered(left);
+            if (right > m.getRightmostCovered()) m.setRightmostCovered(right);
+            m.setLeftBoundForEdge(id, left);
+            m.setRightBoundForEdge(id, right);
+            m.setEdgeStatus(id, status);
+            m.setEdgeCaption(id,edge.getAttribute("caption"));
+        }
+        return m;
     }
 }

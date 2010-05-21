@@ -486,6 +486,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     
     protected void processBreakPointMatch(int nodeID, KahinaBreakpoint bp)
     {
+        //TODO: temporarily mark matching node in the breakpoint's signal color
         //same reaction as in pause mode
         if (bridgeState == 't')
         {
