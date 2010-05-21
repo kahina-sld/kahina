@@ -1,6 +1,7 @@
 package org.kahina.core.breakpoint;
 
 import java.awt.Color;
+import java.io.File;
 
 import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.chart.KahinaChart;
@@ -8,6 +9,7 @@ import org.kahina.core.data.chart.KahinaDbChart;
 import org.kahina.core.data.chart.KahinaMemChart;
 import org.kahina.core.io.color.ColorIO;
 import org.kahina.core.io.database.DatabaseHandler;
+import org.kahina.core.io.util.XMLUtilities;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -138,6 +140,18 @@ public class KahinaBreakpoint
         b.append(pattern.exportXML(false));
         b.append("</breakpoint>");
         return b.toString();
+    }
+    
+    public static KahinaBreakpoint importXML(Element breakpointNode)
+    {
+        KahinaBreakpoint newBreakpoint = new KahinaBreakpoint(-1);
+        newBreakpoint.setName(breakpointNode.getAttribute("name"));
+        newBreakpoint.setType(Integer.parseInt(breakpointNode.getAttribute("type")));    
+        newBreakpoint.setSignalColor(ColorIO.decodeHTML(breakpointNode.getAttribute("color")));
+        newBreakpoint.active = Boolean.parseBoolean(breakpointNode.getAttribute("active"));
+        //expect only one tree pattern
+        newBreakpoint.pattern = TreePattern.importXML((Element) breakpointNode.getElementsByTagName("treePattern").item(0));
+        return newBreakpoint;
     }
     
     /*public static KahinaBreakpoint importXML(Document dom, int dataHandlingMethod, DatabaseHandler db)

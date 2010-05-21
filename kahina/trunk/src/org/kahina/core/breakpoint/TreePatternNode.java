@@ -3,6 +3,9 @@ package org.kahina.core.breakpoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 public class TreePatternNode
 {
     private TreeNodePattern pattern;
@@ -87,5 +90,32 @@ public class TreePatternNode
         }
         b.append("</patternNode>");
         return b.toString();
+    }
+    
+    public static TreePatternNode importXML(Element treePatternNodeNode)
+    {
+        System.err.println("Importing TreePatternNode!");
+        TreePatternNode newTreePatternNode = new TreePatternNode();
+        NodeList childNodes = treePatternNodeNode.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++)
+        {
+            if (childNodes.item(i).getNodeName().equals("pattern"))
+            {
+                newTreePatternNode.pattern = TreeNodePattern.importXML((Element) childNodes.item(i));
+            }
+            if (childNodes.item(i).getNodeName().equals("children"))
+            {
+                NodeList childPatternNodeNodes = treePatternNodeNode.getChildNodes();
+                for (int j = 0; j < childPatternNodeNodes.getLength(); j++)
+                {
+                    if (childPatternNodeNodes.item(i).getNodeName().equals("patternNode"))
+                    {
+                        TreePatternNode childPatternNode = TreePatternNode.importXML((Element) childPatternNodeNodes.item(i));
+                        newTreePatternNode.addChild(childPatternNode);
+                    }
+                }
+            }
+        }
+        return newTreePatternNode;
     }
 }

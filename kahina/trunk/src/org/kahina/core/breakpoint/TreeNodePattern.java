@@ -5,6 +5,9 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.io.color.ColorIO;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * TreeNodePatterns are a means of defining which nodes are accepted
@@ -429,6 +432,46 @@ public class TreeNodePattern
         }
     }
     
+    public void setXMLType(String typeString)
+    {
+        if (typeString.equals("neg"))
+        {
+            type = NEGATION;
+        }
+        else if (typeString.equals("conj"))
+        {
+            type = CONJUNCTION;
+        }
+        else if (typeString.equals("disj"))
+        {
+            type = DISJUNCTION;
+        }
+        else if (typeString.equals("impl"))
+        {
+            type = IMPLICATION;
+        }
+        else if (typeString.equals("caption"))
+        {
+            type = CAPTION;
+        }
+        else if (typeString.equals("edgeLabel"))
+        {
+            type = EDGE_LABEL;
+        }
+        else if (typeString.equals("status"))
+        {
+            type = STATUS;
+        }
+        else if (typeString.equals("id"))
+        {
+            type = ID;
+        }
+        else
+        {
+            type = 0;
+        }
+    }
+    
     public void setRelation(String relString)
     {
         if (relString.equals("="))
@@ -468,6 +511,54 @@ public class TreeNodePattern
             rel = CONTAINS;
         }
         else if (relString.equals("ends with"))
+        {
+            rel = ENDS_WITH;
+        }
+        else
+        {
+            rel = 0;
+        }
+    }
+    
+    public void setXMLRelation(String relString)
+    {
+        if (relString.equals("id"))
+        {
+            rel = IDENTITY;
+        }
+        else if (relString.equals("gt"))
+        {
+            rel = GREATER;
+        }
+        else if (relString.equals("lt"))
+        {
+            rel = LESS;
+        }
+        else if (relString.equals("geq"))
+        {
+            rel = GREATER_OR_EQUAL;
+        }
+        else if (relString.equals("leq"))
+        {
+            rel = LESS_OR_EQUAL;
+        }
+        else if (relString.equals("eq"))
+        {
+            rel = EQUALITY;
+        }
+        else if (relString.equals("match"))
+        {
+            rel = MATCHING;
+        }
+        else if (relString.equals("startsWith"))
+        {
+            rel = STARTS_WITH;
+        }
+        else if (relString.equals("contains"))
+        {
+            rel = CONTAINS;
+        }
+        else if (relString.equals("endsWith"))
         {
             rel = ENDS_WITH;
         }
@@ -538,5 +629,41 @@ public class TreeNodePattern
         }
         b.append("</pattern>");
         return b.toString();
+    }
+    
+    public static TreeNodePattern importXML(Element treeNodePatternNode)
+    {
+
+        TreeNodePattern newTreeNodePattern = new TreeNodePattern();
+        newTreeNodePattern.setXMLType(treeNodePatternNode.getAttribute("type"));
+        newTreeNodePattern.setXMLRelation(treeNodePatternNode.getAttribute("rel"));  
+        System.err.println("Stage 1: " + newTreeNodePattern.toString());
+        NodeList childNodes = treeNodePatternNode.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++)
+        {
+            String nodeName = childNodes.item(i).getNodeName();
+            if (nodeName.equals("intVal"))
+            {
+                String intValString = childNodes.item(i).getTextContent();
+                newTreeNodePattern.intValue = Integer.parseInt(intValString);
+            }
+            else if (nodeName.equals("stringVal"))
+            {
+                newTreeNodePattern.stringValue = childNodes.item(i).getTextContent();
+                if (((Element) (childNodes.item(i))).getAttribute("regEx").equals(true))
+                {
+                    newTreeNodePattern.regexValue = Pattern.compile(newTreeNodePattern.stringValue);
+                }
+            }
+            else if (nodeName.equals("leftArg"))
+            {
+                newTreeNodePattern.leftArg = TreeNodePattern.importXML((Element) childNodes.item(i));
+            }
+            else if (nodeName.equals("rightArg"))
+            {
+                newTreeNodePattern.rightArg = TreeNodePattern.importXML((Element) childNodes.item(i));
+            }
+        }
+        return newTreeNodePattern;
     }
 }

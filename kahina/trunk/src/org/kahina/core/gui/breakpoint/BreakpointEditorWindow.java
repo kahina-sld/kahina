@@ -30,6 +30,10 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaSystemEvent;
+import org.kahina.core.io.util.XMLUtilities;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class BreakpointEditorWindow extends JFrame implements ActionListener, KahinaListener, ListSelectionListener
 {
@@ -238,16 +242,21 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
             case BreakpointEditorEvent.EXPORT_BREAKPOINT:
             {
                 exportBreakpointXML(e.getFile(), breakpoints.get(curID));
+                break;
             }
             case BreakpointEditorEvent.IMPORT_BREAKPOINT:
             {
+                break;
             }
             case BreakpointEditorEvent.EXPORT_BREAKPOINT_PROFILE:
             {
                 exportBreakpointProfileXML(e.getFile());
+                break;
             }
             case BreakpointEditorEvent.IMPORT_BREAKPOINT_PROFILE:
             {
+                importBreakpointProfileXML(e.getFile());
+                break;
             }
         }
     }
@@ -324,7 +333,21 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
     
     public void importBreakpointProfileXML(File breakpointProfileFile)
     {
-        
+        breakpoints.clear();
+        compiledBreakpoints.clear();
+        curID = -1;
+        Document dom = XMLUtilities.parseXMLFile(breakpointProfileFile, false); 
+        NodeList breakpointNodes = dom.getElementsByTagName("breakpoint");
+        for (int i = 0; i < breakpointNodes.getLength(); i++)
+        {
+            Element breakpointNode = (Element) breakpointNodes.item(i);
+            KahinaBreakpoint breakpoint = KahinaBreakpoint.importXML(breakpointNode);
+            breakpoints.add(breakpoint);
+            compiledBreakpoints.add(breakpoint.compile());
+        }
+        //TODO: update views for perfect behavior
+        breakpointList.setListData(breakpoints.toArray());
+        breakpointList.repaint();
     }
     
     public void exportBreakpointXML(File breakpointFile, KahinaBreakpoint breakpoint)

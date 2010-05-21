@@ -1,6 +1,8 @@
 package org.kahina.core.breakpoint;
 
 import org.kahina.core.io.color.ColorIO;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class TreePattern
 {
@@ -39,5 +41,20 @@ public class TreePattern
         b.append(root.exportXML(false));
         b.append("</treePattern>");
         return b.toString();
+    }
+    
+    public static TreePattern importXML(Element treePatternNode)
+    {
+        TreePattern newTreePattern = new TreePattern();
+        //last defined TreePatternNode will become the root node, possible others will be discarded
+        NodeList childNodes = treePatternNode.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++)
+        {
+            if (childNodes.item(i).getNodeName().equals("patternNode"))
+            {
+                newTreePattern.root = TreePatternNode.importXML((Element) childNodes.item(i));
+            }
+        }
+        return newTreePattern;
     }
 }
