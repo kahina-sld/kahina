@@ -476,4 +476,67 @@ public class TreeNodePattern
             rel = 0;
         }
     }
+    
+    public String getTypeAsXMLString()
+    {
+        switch (type)
+        {
+            case NEGATION: return "neg";
+            case CONJUNCTION: return "conj";
+            case DISJUNCTION: return "disj";
+            case IMPLICATION: return "impl";    
+            case CAPTION: return "caption";
+            case EDGE_LABEL: return "edgeLabel";
+            case STATUS: return "status";
+            case ID: return "id";          
+        }
+        return "";
+    }
+    
+    public String getRelAsXMLString()
+    {
+        switch (rel)
+        {
+            case IDENTITY: return "id" + intValue;
+            case LESS: return "lt" + intValue;
+            case LESS_OR_EQUAL: return "leq" + intValue;
+            case GREATER: return "gt" + intValue;
+            case GREATER_OR_EQUAL: return "geq" + intValue; 
+            case EQUALITY: return "eq" + stringValue; 
+            case MATCHING: return "match" + stringValue; 
+            case STARTS_WITH: return "startsWith(" + stringValue + ")"; 
+            case CONTAINS: return "contains(" + stringValue + ")"; 
+            case ENDS_WITH: return "endsWith(" + stringValue + ")"; 
+        }
+        return "";
+    }
+    
+    public String exportXML(boolean asFile)
+    {
+        StringBuilder b = new StringBuilder("");
+        if (asFile) b.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+        b.append("<pattern type=\"" + getTypeAsXMLString() + "\" rel=\"" + getRelAsXMLString() + "\">\n");
+        if (intValue != -1)
+        {
+            b.append("<intVal>" + intValue + "</intVal>");
+        }
+        if (stringValue != null)
+        {
+            b.append("<stringVal regex=\"" +  (regexValue != null) + "\">" + stringValue + "</stringVal>");
+        }
+        if (leftArg != null)
+        {
+            b.append("<leftArg>\n");
+            b.append(leftArg.exportXML(false));
+            b.append("</leftArg>\n");
+        }
+        if (rightArg != null)
+        {
+            b.append("<rightArg>\n");
+            b.append(rightArg.exportXML(false));
+            b.append("</rightArg>\n");
+        }
+        b.append("</pattern>");
+        return b.toString();
+    }
 }

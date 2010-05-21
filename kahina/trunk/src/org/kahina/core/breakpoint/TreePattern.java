@@ -1,5 +1,7 @@
 package org.kahina.core.breakpoint;
 
+import org.kahina.core.io.color.ColorIO;
+
 public class TreePattern
 {
     private TreePatternNode root;
@@ -27,5 +29,15 @@ public class TreePattern
     public String toString()
     {
         return root.toString();
+    }
+    
+    public String exportXML(boolean asFile)
+    {
+        StringBuilder b = new StringBuilder("");
+        if (asFile) b.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+        b.append("<treePattern>\n");
+        b.append(root.exportXML(false));
+        b.append("</treePattern>");
+        return b.toString();
     }
 }

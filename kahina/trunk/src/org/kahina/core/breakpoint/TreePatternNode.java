@@ -69,4 +69,20 @@ public class TreePatternNode
         }
         return str.toString();   
     }
+    
+    public String exportXML(boolean asFile)
+    {
+        StringBuilder b = new StringBuilder("");
+        if (asFile) b.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+        b.append("<patternNode>\n");
+        b.append(pattern.exportXML(false));
+        b.append("<children>\n");
+        for (TreePatternNode child : children)
+        {
+            b.append(child.exportXML(false));
+        }
+        b.append("</children>\n");
+        b.append("</patternNode>");
+        return b.toString();
+    }
 }
