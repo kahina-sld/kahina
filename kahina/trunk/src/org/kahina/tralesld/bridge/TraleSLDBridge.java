@@ -8,10 +8,8 @@ package org.kahina.tralesld.bridge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
@@ -31,13 +29,11 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
-	public static final boolean verbose = false;
+	public static final boolean verbose = true;
 
 	TraleSLDState state;
 
-	List<Integer> activeEdgeStack;
-
-	Set<Integer> successfulEdges;
+	List<Integer> prospectiveEdgeStack;
 
 	Map<Integer, Integer> edgeIDConv;
 
@@ -47,8 +43,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		super(state);
 		this.state = state;
-		activeEdgeStack = new ArrayList<Integer>();
-		successfulEdges = new HashSet<Integer>();
+		prospectiveEdgeStack = new ArrayList<Integer>();
 		edgeIDConv = new HashMap<Integer, Integer>();
 	}
 
@@ -94,22 +89,74 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 
-	public void registerRuleApplication(int extID, int left, int right, String ruleName, String consoleMessage)
-	{		
+	/**
+	 * Called by {@link #registerRuleApplication(int, int, int, String, String)}
+	 * to register the first prospective edge of a rule application, and
+	 * directly via the Jasper interface to register any subsequent prospective
+	 * edge of that rule application.
+	 * 
+	 * @param left
+	 * @param right
+	 * @param ruleApplicationExtID
+	 * @param ruleName
+	 */
+	public void registerProspectiveEdge(int left, int right, int ruleApplicationExtID, String ruleName, int leftmostDaughterExtID)
+	{
+		KahinaChart chart = state.getChart();
+		int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.PROSPECTIVE);
+		prospectiveEdgeStack.add(0, newEdgeID);
+		state.linkEdgeToNode(newEdgeID, stepIDConv.get(ruleApplicationExtID));
+		chart.addEdgeDependency(newEdgeID, edgeIDConv.get(leftmostDaughterExtID));
+	}
+
+	public void registerEdgeRetrieval(int daughterID)
+	{
+		try
+		{
+			if (verbose)
+			{
+				System.err.println("TraleSLDBridge.registerEdgeRetrieval(" + daughterID + ")");
+			}
+			int daughter = edgeIDConv.get(daughterID);
+			int mother = prospectiveEdgeStack.get(0);
+			KahinaChart chart = state.getChart();
+			chart.addEdgeDependency(mother, daughter);
+			chart.setRightBoundForEdge(mother, chart.getRightBoundForEdge(mother) + chart.getRightBoundForEdge(daughter) - chart.getLeftBoundForEdge(daughter));
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	/**
+	 * Called by {@link #registerStepFailure(int)} to register the failure of
+	 * the first prospective edge of a rule application, and directly via the
+	 * Jasper interface to register the failure of any subsequent prospective
+	 * edge of that rule application.
+	 */
+	public void registerProspectiveEdgeFailure()
+	{
+		int currentEdge = prospectiveEdgeStack.remove(0);
+		if (verbose)
+		{
+			System.err.println("Prospective edge " + currentEdge + " failed.");
+		}
+		state.getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
+	}
+
+	public void registerRuleApplication(int extID, int left, int right, String ruleName, String consoleMessage, int leftmostDaughter)
+	{
 		try
 		{
 			if (verbose)
 				System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
 
-			KahinaChart chart = state.getChart();
-			int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.ACTIVE);
-			activeEdgeStack.add(0, newEdgeID);
-
 			TraleSLDStep newStep = generateStep();
 			newStep.setGoalDesc("rule(" + ruleName + ")");
 			newStep.setExternalID(extID);
 			stepIDConv.put(extID, newStep.getID());
-			state.linkEdgeToNode(newEdgeID, newStep.getID());
+			registerProspectiveEdge(left, right, extID, ruleName, leftmostDaughter);
 			newStep.storeCaching();
 
 			// let TraleSLDTreeBehavior do the rest
@@ -159,20 +206,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			if (verbose)
 				System.err.println("TraleSLDBridge.registerEdgeDependency(" + motherID + "," + daughterID + ")");
 			state.getChart().addEdgeDependency(edgeIDConv.get(motherID), edgeIDConv.get(daughterID));
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-
-	public void registerActiveEdgeDependency(int daughterID)
-	{
-		try
-		{
-			if (verbose)
-				System.err.println("TraleSLDBridge.registerActiveEdgeDependency(" + daughterID + ")");
-			state.getChart().addEdgeDependency(activeEdgeStack.get(0), edgeIDConv.get(daughterID));
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -288,29 +321,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// successful
 			if (command.startsWith("rule("))
 			{
-				int currentEdge = activeEdgeStack.remove(0);
-				if (successfulEdges.contains(currentEdge))
-				{
-					if (verbose)
-					{
-						System.err.println("Successful edge! Deleting from chart model...");
-					}
-					state.getChart().removeEdge(currentEdge);
-				}
-				// current rule application failed; adapt chart accordingly
-				else
-				{
-					if (verbose)
-					{
-						System.err.println("Failed edge! Leaving it on the chart as junk...");
-					}
-					state.getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
-				}
-
-				// move up one level in overview tree (really necessary?)
-				// currentOverviewTreeNode =
-				// tracer.overviewTraceView.treeNodes.get(currentOverviewTreeNode).getParent();
-				// lastEdge = edgeRegister.getData(currentOverviewTreeNode);
+				registerProspectiveEdgeFailure();
 			}
 			currentID = stepID;
 			if (verbose)

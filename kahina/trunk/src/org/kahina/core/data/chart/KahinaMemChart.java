@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class KahinaMemChart extends KahinaChart
 {
-	private static final boolean verbose = false;
+	private static final boolean verbose = true;
 	
     //the chart is divided up into cells (vertical segments) that the edges can range over
     //leftmost: leftBound, rightmost: rightBound
@@ -125,6 +125,10 @@ public class KahinaMemChart extends KahinaChart
     
     public void setRightBoundForEdge(int edgeID, int rightBound)
     {
+    	if (verbose)
+    	{
+    		System.err.println(this + ".setRightBoundForEdge(" + edgeID + ", " + rightBound + ")");
+    	}
         rightBounds.put(edgeID, rightBound);
     }
     
