@@ -37,12 +37,11 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     {
         TreePattern pat = new TreePattern();
         TreePatternNode rootNode = new TreePatternNode();
-        TreeNodePattern rootPattern = new TreeNodePattern(TreeNodePattern.CAPTION, TreeNodePattern.MATCHING, "[0-9]* (cats?|mother)");    
+        TreeNodePattern rootPattern = new TreeNodePattern(TreeNodePattern.CAPTION, TreeNodePattern.MATCHING, "[0-9]* (unify|featval|type).*");    
         rootNode.setPattern(rootPattern);
-        rootNode.addChild(new TreePatternNode(new TreeNodePattern()));
         pat.setRoot(rootNode);
         KahinaBreakpoint bp = new KahinaBreakpoint(KahinaBreakpointType.SKIP_POINT);
-        bp.setName("Cat/Mother Detail Skip");
+        bp.setName("unify/featval/type Skip");
         bp.setPattern(pat);
         kahina.getState().getSkipPoints().add(bp);
         //System.err.println(aut.toString());
