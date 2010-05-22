@@ -354,6 +354,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     @Override
     protected void processEvent(KahinaControlEvent e)
     {
+    	// TODO update chart when exiting leap/skip. Gah.
         String command = e.getCommand();
         if (command.equals("creep"))
         {

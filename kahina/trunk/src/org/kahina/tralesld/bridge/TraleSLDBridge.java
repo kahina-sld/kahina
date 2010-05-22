@@ -16,7 +16,6 @@ import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.util.PrologUtilities;
-import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.tralesld.TraleSLDState;
@@ -34,6 +33,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	TraleSLDState state;
 
 	List<Integer> prospectiveEdgeStack;
+
+	private boolean prospectiveEdgeCanFail = false;
 
 	Map<Integer, Integer> edgeIDConv;
 
@@ -100,13 +101,21 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	 * @param ruleApplicationExtID
 	 * @param ruleName
 	 */
-	public void registerProspectiveEdge(int left, int right, int ruleApplicationExtID, String ruleName, int leftmostDaughterExtID)
+	public void registerProspectiveEdge(int ruleApplicationExtID, String ruleName, int left, int right)
 	{
+		if (verbose)
+		{
+			System.err.println(this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + left + "," + right);
+		} 
 		KahinaChart chart = state.getChart();
 		int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.PROSPECTIVE);
 		prospectiveEdgeStack.add(0, newEdgeID);
+		prospectiveEdgeCanFail = true;
 		state.linkEdgeToNode(newEdgeID, stepIDConv.get(ruleApplicationExtID));
-		chart.addEdgeDependency(newEdgeID, edgeIDConv.get(leftmostDaughterExtID));
+		if (bridgeState == 'n')
+		{
+			KahinaRunner.processEvent(new KahinaChartUpdateEvent(newEdgeID));
+		}
 	}
 
 	public void registerEdgeRetrieval(int daughterID)
@@ -122,27 +131,15 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			KahinaChart chart = state.getChart();
 			chart.addEdgeDependency(mother, daughter);
 			chart.setRightBoundForEdge(mother, chart.getRightBoundForEdge(mother) + chart.getRightBoundForEdge(daughter) - chart.getLeftBoundForEdge(daughter));
+			if (bridgeState == 'n')
+			{
+				KahinaRunner.processEvent(new KahinaChartUpdateEvent(mother));
+			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
 		}
-	}
-
-	/**
-	 * Called by {@link #registerStepFailure(int)} to register the failure of
-	 * the first prospective edge of a rule application, and directly via the
-	 * Jasper interface to register the failure of any subsequent prospective
-	 * edge of that rule application.
-	 */
-	public void registerProspectiveEdgeFailure()
-	{
-		int currentEdge = prospectiveEdgeStack.remove(0);
-		if (verbose)
-		{
-			System.err.println("Prospective edge " + currentEdge + " failed.");
-		}
-		state.getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
 	}
 
 	public void registerRuleApplication(int extID, int left, int right, String ruleName, String consoleMessage, int leftmostDaughter)
@@ -156,7 +153,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.setGoalDesc("rule(" + ruleName + ")");
 			newStep.setExternalID(extID);
 			stepIDConv.put(extID, newStep.getID());
-			registerProspectiveEdge(left, right, extID, ruleName, leftmostDaughter);
+			registerProspectiveEdge(extID, ruleName, left, right);
 			newStep.storeCaching();
 
 			// let TraleSLDTreeBehavior do the rest
@@ -191,7 +188,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				System.err.println("Internal edge ID: " + internalEdgeID);
 			edgeIDConv.put(externalEdgeID, internalEdgeID);
 			lastRegisteredChartEdge = internalEdgeID;
-			KahinaRunner.processEvent(new KahinaChartUpdateEvent(internalEdgeID));
+				KahinaRunner.processEvent(new KahinaChartUpdateEvent(internalEdgeID));
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -312,16 +309,25 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			if (verbose)
+			{
 				System.err.println("registerStepFailure(" + externalStepID + ")");
+			}
 			super.registerStepFailure(externalStepID);
 			int stepID = convertStepID(externalStepID);
-
-			String command = LogicProgrammingStep.get(stepID).getGoalDesc();
-			// need to handle bug: step failure is called even if edge was
-			// successful
-			if (command.startsWith("rule("))
+			if (prospectiveEdgeCanFail)
 			{
-				registerProspectiveEdgeFailure();
+				int currentEdge = prospectiveEdgeStack.remove(0);
+				prospectiveEdgeCanFail = false;
+				if (verbose)
+				{
+					System.err.println("Prospective edge " + currentEdge + " failed.");
+				}
+				state.getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
+				state.linkEdgeToNode(currentEdge, stepID);
+				if (bridgeState == 'n')
+				{
+					KahinaRunner.processEvent(new KahinaChartUpdateEvent(currentEdge));
+				}
 			}
 			currentID = stepID;
 			if (verbose)
