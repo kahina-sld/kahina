@@ -83,10 +83,25 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	@Override
 	public void registerStepInformation(int extID, String nodeLabel, String consoleMessage)
 	{
-		super.registerStepInformation(extID, nodeLabel, consoleMessage);
-		if (nodeLabel.startsWith("rule_close") && lastRegisteredChartEdge != -1)
+		try
 		{
-			state.linkEdgeToNode(lastRegisteredChartEdge, currentID);
+			if (verbose)
+			{
+				System.err.println(this + ".registerStepInformation(" + extID + "," + nodeLabel + "," + consoleMessage + ")");
+			}
+			super.registerStepInformation(extID, nodeLabel, consoleMessage);
+			if (nodeLabel.startsWith("rule_close") && lastRegisteredChartEdge != -1)
+			{
+				state.linkEdgeToNode(lastRegisteredChartEdge, currentID);
+			}
+			if (verbose)
+			{
+				System.err.println("//" + this + ".registerStepInformation(" + extID + "," + nodeLabel + "," + consoleMessage + ")");
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -103,18 +118,22 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	 */
 	public void registerProspectiveEdge(int ruleApplicationExtID, String ruleName, int left, int right)
 	{
-		if (verbose)
+		try
 		{
-			System.err.println(this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + left + "," + right);
-		} 
-		KahinaChart chart = state.getChart();
-		int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.PROSPECTIVE);
-		prospectiveEdgeStack.add(0, newEdgeID);
-		prospectiveEdgeCanFail = true;
-		state.linkEdgeToNode(newEdgeID, stepIDConv.get(ruleApplicationExtID));
-		if (bridgeState == 'n')
-		{
+			if (verbose)
+			{
+				System.err.println(this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + left + "," + right);
+			}
+			KahinaChart chart = state.getChart();
+			int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.PROSPECTIVE);
+			prospectiveEdgeStack.add(0, newEdgeID);
+			prospectiveEdgeCanFail = true;
+			state.linkEdgeToNode(newEdgeID, stepIDConv.get(ruleApplicationExtID));
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(newEdgeID));
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 
@@ -124,16 +143,18 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		{
 			if (verbose)
 			{
-				System.err.println("TraleSLDBridge.registerEdgeRetrieval(" + daughterID + ")");
+				System.err.println(this + "registerEdgeRetrieval(" + daughterID + ")");
 			}
 			int daughter = edgeIDConv.get(daughterID);
 			int mother = prospectiveEdgeStack.get(0);
 			KahinaChart chart = state.getChart();
 			chart.addEdgeDependency(mother, daughter);
 			chart.setRightBoundForEdge(mother, chart.getRightBoundForEdge(mother) + chart.getRightBoundForEdge(daughter) - chart.getLeftBoundForEdge(daughter));
-			if (bridgeState == 'n')
+			//lastRegisteredChartEdge = mother;
+			KahinaRunner.processEvent(new KahinaChartUpdateEvent(mother));
+			if (verbose)
 			{
-				KahinaRunner.processEvent(new KahinaChartUpdateEvent(mother));
+				System.err.println("//" + this + ".registerEdgeRetrieval(" + daughterID + ")");
 			}
 		} catch (Exception e)
 		{
@@ -150,7 +171,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
 
 			TraleSLDStep newStep = generateStep();
-			newStep.setGoalDesc("rule(" + ruleName + ")");
+			newStep.setGoalDesc(extID + " rule(" + ruleName + ")");
 			newStep.setExternalID(extID);
 			stepIDConv.put(extID, newStep.getID());
 			registerProspectiveEdge(extID, ruleName, left, right);
@@ -182,13 +203,15 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			if (verbose)
+			{
 				System.err.println("TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
+			}
 			int internalEdgeID = state.getChart().addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.SUCCESSFUL);
 			if (verbose)
 				System.err.println("Internal edge ID: " + internalEdgeID);
 			edgeIDConv.put(externalEdgeID, internalEdgeID);
 			lastRegisteredChartEdge = internalEdgeID;
-				KahinaRunner.processEvent(new KahinaChartUpdateEvent(internalEdgeID));
+			KahinaRunner.processEvent(new KahinaChartUpdateEvent(internalEdgeID));
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -201,7 +224,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			if (verbose)
+			{
 				System.err.println("TraleSLDBridge.registerEdgeDependency(" + motherID + "," + daughterID + ")");
+			}
 			state.getChart().addEdgeDependency(edgeIDConv.get(motherID), edgeIDConv.get(daughterID));
 		} catch (Exception e)
 		{
@@ -324,10 +349,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				}
 				state.getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
 				state.linkEdgeToNode(currentEdge, stepID);
-				if (bridgeState == 'n')
-				{
-					KahinaRunner.processEvent(new KahinaChartUpdateEvent(currentEdge));
-				}
+				//lastRegisteredChartEdge = currentEdge;
+				KahinaRunner.processEvent(new KahinaChartUpdateEvent(currentEdge));
 			}
 			currentID = stepID;
 			if (verbose)

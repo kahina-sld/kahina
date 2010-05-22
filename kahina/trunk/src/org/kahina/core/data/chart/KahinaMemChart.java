@@ -130,6 +130,10 @@ public class KahinaMemChart extends KahinaChart
     		System.err.println(this + ".setRightBoundForEdge(" + edgeID + ", " + rightBound + ")");
     	}
         rightBounds.put(edgeID, rightBound);
+    	if (verbose)
+    	{
+    		System.err.println("//" + this + ".setRightBoundForEdge(" + edgeID + ", " + rightBound + ")");
+    	}
     }
     
     public int getEdgeStatus(int edgeID)
