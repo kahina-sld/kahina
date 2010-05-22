@@ -633,11 +633,18 @@ public class TreeNodePattern
     
     public static TreeNodePattern importXML(Element treeNodePatternNode)
     {
-
+        //find the "pattern" child node, this will be the root element for the pattern
+        for (int i = 0; i < treeNodePatternNode.getChildNodes().getLength(); i++)
+        {
+            //System.err.println("   Child node of name: " + childNodes.item(i).getNodeName());
+            if (treeNodePatternNode.getChildNodes().item(i).getNodeName().equals("pattern"))
+            {
+                treeNodePatternNode = (Element) treeNodePatternNode.getChildNodes().item(i);
+            }
+        }
         TreeNodePattern newTreeNodePattern = new TreeNodePattern();
         newTreeNodePattern.setXMLType(treeNodePatternNode.getAttribute("type"));
         newTreeNodePattern.setXMLRelation(treeNodePatternNode.getAttribute("rel"));  
-        System.err.println("Stage 1: " + newTreeNodePattern.toString());
         NodeList childNodes = treeNodePatternNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++)
         {
