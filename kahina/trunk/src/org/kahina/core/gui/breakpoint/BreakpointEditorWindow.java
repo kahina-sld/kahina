@@ -246,6 +246,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
             }
             case BreakpointEditorEvent.IMPORT_BREAKPOINT:
             {
+                importBreakpointXML(e.getFile());
                 break;
             }
             case BreakpointEditorEvent.EXPORT_BREAKPOINT_PROFILE:
@@ -363,5 +364,21 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
             System.err.println("IOException: Could not export breakpoint!");
             e.printStackTrace();
         }
+    }
+    
+    public void importBreakpointXML(File breakpointFile)
+    {
+        Document dom = XMLUtilities.parseXMLFile(breakpointFile, false); 
+        NodeList breakpointNodes = dom.getElementsByTagName("breakpoint");
+        for (int i = 0; i < breakpointNodes.getLength(); i++)
+        {
+            Element breakpointNode = (Element) breakpointNodes.item(i);
+            KahinaBreakpoint breakpoint = KahinaBreakpoint.importXML(breakpointNode);
+            breakpoints.add(breakpoint);
+            compiledBreakpoints.add(breakpoint.compile());
+        }
+        //TODO: update views for perfect behavior
+        breakpointList.setListData(breakpoints.toArray());
+        breakpointList.repaint();
     }
 }

@@ -94,22 +94,24 @@ public class TreePatternNode
     
     public static TreePatternNode importXML(Element treePatternNodeNode)
     {
-        System.err.println("Importing TreePatternNode!");
+        //System.err.println("Importing TreePatternNode!");
         TreePatternNode newTreePatternNode = new TreePatternNode();
         NodeList childNodes = treePatternNodeNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++)
         {
+            //System.err.println("   Child node of name: " + childNodes.item(i).getNodeName());
             if (childNodes.item(i).getNodeName().equals("pattern"))
             {
                 newTreePatternNode.pattern = TreeNodePattern.importXML((Element) childNodes.item(i));
             }
-            if (childNodes.item(i).getNodeName().equals("children"))
+            else if (childNodes.item(i).getNodeName().equals("children"))
             {
-                NodeList childPatternNodeNodes = treePatternNodeNode.getChildNodes();
+                NodeList childPatternNodeNodes = childNodes.item(i).getChildNodes();
                 for (int j = 0; j < childPatternNodeNodes.getLength(); j++)
                 {
+                    //System.err.println("       Grandchild node of name: " + childPatternNodeNodes.item(i).getNodeName());
                     if (childPatternNodeNodes.item(i).getNodeName().equals("patternNode"))
-                    {
+                    {      
                         TreePatternNode childPatternNode = TreePatternNode.importXML((Element) childPatternNodeNodes.item(i));
                         newTreePatternNode.addChild(childPatternNode);
                     }
