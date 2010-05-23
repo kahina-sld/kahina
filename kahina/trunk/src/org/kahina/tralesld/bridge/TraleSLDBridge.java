@@ -28,7 +28,7 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
-	public static final boolean verbose = true;
+	public static final boolean verbose = false;
 
 	TraleSLDState state;
 
@@ -171,7 +171,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
 
 			TraleSLDStep newStep = generateStep();
-			newStep.setGoalDesc(extID + " rule(" + ruleName + ")");
+			newStep.setGoalDesc("rule(" + ruleName + ")");
 			newStep.setExternalID(extID);
 			stepIDConv.put(extID, newStep.getID());
 			registerProspectiveEdge(extID, ruleName, left, right);
@@ -351,6 +351,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				state.linkEdgeToNode(currentEdge, stepID);
 				//lastRegisteredChartEdge = currentEdge;
 				KahinaRunner.processEvent(new KahinaChartUpdateEvent(currentEdge));
+			}
+			if (TraleSLDStep.get(stepID).getGoalDesc().startsWith("rule("))
+			{
+				prospectiveEdgeCanFail = true;
 			}
 			currentID = stepID;
 			if (verbose)
