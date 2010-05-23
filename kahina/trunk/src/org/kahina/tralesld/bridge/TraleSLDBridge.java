@@ -115,8 +115,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	 * @param right
 	 * @param ruleApplicationExtID
 	 * @param ruleName
+	 * @param leftmostDaughter pass {@code -1} to not register a leftmost daughter
 	 */
-	public void registerProspectiveEdge(int ruleApplicationExtID, String ruleName, int left, int right)
+	public void registerProspectiveEdge(int ruleApplicationExtID, String ruleName, int left, int right, int leftmostDaughter)
 	{
 		try
 		{
@@ -126,6 +127,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			KahinaChart chart = state.getChart();
 			int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.PROSPECTIVE);
+			if (leftmostDaughter != -1)
+			{
+				chart.addEdgeDependency(newEdgeID, edgeIDConv.get(leftmostDaughter));
+			}
 			prospectiveEdgeStack.add(0, newEdgeID);
 			prospectiveEdgeCanFail = true;
 			state.linkEdgeToNode(newEdgeID, stepIDConv.get(ruleApplicationExtID));
@@ -174,7 +179,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.setGoalDesc("rule(" + ruleName + ")");
 			newStep.setExternalID(extID);
 			stepIDConv.put(extID, newStep.getID());
-			registerProspectiveEdge(extID, ruleName, left, right);
+			registerProspectiveEdge(extID, ruleName, left, right, leftmostDaughter);
 			newStep.storeCaching();
 
 			// let TraleSLDTreeBehavior do the rest
@@ -339,7 +344,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			super.registerStepFailure(externalStepID);
 			int stepID = convertStepID(externalStepID);
-			if (prospectiveEdgeCanFail)
+			if (prospectiveEdgeCanFail && !prospectiveEdgeStack.isEmpty())
 			{
 				int currentEdge = prospectiveEdgeStack.remove(0);
 				prospectiveEdgeCanFail = false;
