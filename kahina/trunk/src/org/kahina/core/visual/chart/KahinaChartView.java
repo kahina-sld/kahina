@@ -436,8 +436,10 @@ public class KahinaChartView extends KahinaView<KahinaChart>
                 	{
                 		System.err.println("Segment offset: " + segmentOffsets.get(model.getRightBoundForEdge(curEdge)));
                 	}
+                    System.err.println("model.getRightBoundForEdge(" + curEdge + ") = " + model.getRightBoundForEdge(curEdge));
+                    System.err.println("segmentOffsets.get(model.getRightBoundForEdge(curEdge) = " + segmentOffsets.get(model.getRightBoundForEdge(curEdge)));
                 }
-                int rightOffset = segmentOffsets.get(model.getRightBoundForEdge(curEdge));
+                int rightOffset = getSegmentOffset(model.getRightBoundForEdge(curEdge));
                 rightOffset += getSegmentWidth(model.getRightBoundForEdge(curEdge));
                 edgeX.put(curEdge, leftOffset);
                 width.put(curEdge, rightOffset - leftOffset);
@@ -646,8 +648,17 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     public int getSegmentOffset(int segmentID)
     {
         Integer offset = segmentOffsets.get(segmentID);
-        if (offset == null) return 0;
-        else return offset;
+        if (offset == null)
+        {
+            //simply return maximum offset
+            for (int i = segmentID; i > 0; i--) 
+            {
+                offset = segmentOffsets.get(i);
+                if (offset != null) return offset;
+            }
+            return 0;
+        }
+       return offset;
     }
     
     public FontMetrics getFontMetrics(Font f, Stroke s, int fontSize)

@@ -99,7 +99,9 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
             cnv.setFont(view.getEdgeFont(id)); 
             cnv.drawRect(x + 5, y + 5, width, height);
             cnv.setColor(Color.BLACK);
-            cnv.drawString(view.getEdgeCaption(id), x + 7, y + view.fontSize + 6);
+            //cnv.drawString(view.getEdgeCaption(id), x + 7, y + view.fontSize + 6);
+            //debugging version
+            cnv.drawString(view.getEdgeCaption(id) + "(" + view.getModel().getLeftBoundForEdge(id) + "," + view.getModel().getRightBoundForEdge(id) + ")", x + 7, y + view.fontSize + 6);
         }
         
         //draw segment captions
