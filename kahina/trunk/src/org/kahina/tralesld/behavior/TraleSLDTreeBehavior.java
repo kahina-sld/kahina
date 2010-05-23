@@ -43,7 +43,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         KahinaBreakpoint bp = new KahinaBreakpoint(KahinaBreakpointType.SKIP_POINT);
         bp.setName("unify/featval/type Skip");
         bp.setPattern(pat);
-        kahina.getState().getSkipPoints().add(bp);
+        //kahina.getState().getSkipPoints().add(bp); TODO embeds interesting when's, what to do about it?
         //System.err.println(aut.toString());
         TreePattern pat2 = new TreePattern();
         TreePatternNode rootNode2 = new TreePatternNode();

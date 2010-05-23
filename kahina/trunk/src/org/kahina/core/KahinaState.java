@@ -1,6 +1,7 @@
 package org.kahina.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kahina.core.breakpoint.KahinaBreakpoint;
-import org.kahina.core.breakpoint.TreePattern;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaTextModel;
@@ -30,10 +30,13 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
  */
 
 public class KahinaState implements KahinaListener
-{      
-    //the data structures that a kahina state always contains
+{
     KahinaTree stepTree;
     KahinaTree secondaryStepTree;
+    
+    // A kind of tertiary tree structure defined by links between nodes:
+    Map<Integer, List<Integer>> anchorsByTarget;
+    Map<Integer, Integer> targetByAnchor;
     
     //the messages that will be stored in the console
     protected KahinaTextModel consoleMessages;
@@ -49,6 +52,8 @@ public class KahinaState implements KahinaListener
     {
         stepTree = new KahinaMemTree();
         secondaryStepTree = new KahinaMemTree();
+        anchorsByTarget = new HashMap<Integer, List<Integer>>();
+        targetByAnchor = new HashMap<Integer, Integer>();
         consoleMessages = new KahinaTextModel();
         consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
         
@@ -116,6 +121,33 @@ public class KahinaState implements KahinaListener
     public List<KahinaBreakpoint> getSkipPoints()
     {
         return skipPoints;
+    }
+    
+    public void linkNodes(int anchor, int target)
+    {
+    	targetByAnchor.put(anchor, target);
+    	List<Integer> anchors = anchorsByTarget.get(target);
+    	if (anchors == null)
+    	{
+    		anchors = new ArrayList<Integer>();
+    		anchorsByTarget.put(target, anchors);    		
+    	}
+		anchors.add(anchor);
+    }
+    
+    public Integer getLinkTarget(int anchor)
+    {
+    	return targetByAnchor.get(anchor);
+    }
+    
+    public List<Integer> getLinkAnchors(int target)
+    {
+    	List<Integer> result = anchorsByTarget.get(target);
+    	if (result == null)
+    	{
+    		return Collections.emptyList();
+    	}
+    	return Collections.unmodifiableList(result);
     }
     
     public void processEvent(KahinaEvent e)

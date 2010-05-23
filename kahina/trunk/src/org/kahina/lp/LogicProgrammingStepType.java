@@ -7,4 +7,5 @@ public class LogicProgrammingStepType
     public static final int DET_EXIT = 2;
     public static final int FAIL = 3;
     public static final int REDO = 4;
+	public static final int PSEUDO_UNBLOCKED = 5;
 }

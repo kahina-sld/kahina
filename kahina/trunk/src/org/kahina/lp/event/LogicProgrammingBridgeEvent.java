@@ -8,7 +8,7 @@ public class LogicProgrammingBridgeEvent extends KahinaEvent
     private int eventType;
     
     //the logic programming step ID
-    private int externalID;
+    private int id;
     
     //fields for handing on different possible values
     private String strContent;
@@ -17,14 +17,14 @@ public class LogicProgrammingBridgeEvent extends KahinaEvent
     public LogicProgrammingBridgeEvent(int eventType, int externalID)
     {
         super("logic programming bridge");
-        this.externalID = externalID;
+        this.id = externalID;
         this.eventType = eventType;
     }
     
     public LogicProgrammingBridgeEvent(int eventType, int externalID, String strContent)
     {
         super("logic programming bridge");
-        this.externalID = externalID;
+        this.id = externalID;
         this.eventType = eventType;
         this.strContent = strContent;
     }
@@ -32,7 +32,7 @@ public class LogicProgrammingBridgeEvent extends KahinaEvent
     public LogicProgrammingBridgeEvent(int eventType, int externalID, int intContent)
     {
         super("logic programming bridge");
-        this.externalID = externalID;
+        this.id = externalID;
         this.eventType = eventType;
         this.intContent = intContent;
     }
@@ -40,7 +40,7 @@ public class LogicProgrammingBridgeEvent extends KahinaEvent
     public LogicProgrammingBridgeEvent(int eventType, int externalID, String strContent, int intContent)
     {
         super("logic programming bridge");
-        this.externalID = externalID;
+        this.id = externalID;
         this.eventType = eventType;
         this.strContent = strContent;
         this.intContent = intContent;
@@ -51,9 +51,9 @@ public class LogicProgrammingBridgeEvent extends KahinaEvent
         return eventType;
     }
     
-    public int getExternalID()
+    public int getID()
     {
-        return externalID;
+        return id;
     }
     
     public String getStrContent()
@@ -73,27 +73,27 @@ public class LogicProgrammingBridgeEvent extends KahinaEvent
         {
             case LogicProgrammingBridgeEventType.SET_GOAL_DESC:
             {
-                s += "setGoalDesc (" + externalID + ",\"" + strContent + "\")";
+                s += "setGoalDesc (" + id + ",\"" + strContent + "\")";
                 break;
             }
             case LogicProgrammingBridgeEventType.STEP_REDO:
             {
-                s += "stepRedo (" + externalID + ")";
+                s += "stepRedo (" + id + ")";
                 break;
             }
             case LogicProgrammingBridgeEventType.STEP_DET_EXIT:
             {
-                s += "stepDetExit (" + externalID + ")";
+                s += "stepDetExit (" + id + ")";
                 break;
             }
             case LogicProgrammingBridgeEventType.STEP_NONDET_EXIT:
             {
-                s += "stepNondetExit (" + externalID + ")";
+                s += "stepNondetExit (" + id + ")";
                 break;
             }
             case LogicProgrammingBridgeEventType.STEP_FAIL:
             {
-                s += "stepFail (" + externalID + ")";
+                s += "stepFail (" + id + ")";
                 break;
             }
         }
