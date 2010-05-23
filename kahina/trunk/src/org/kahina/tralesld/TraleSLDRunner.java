@@ -76,7 +76,8 @@ public class TraleSLDRunner extends KahinaRunner
         if (dm instanceof DbDataManager)
         {
             dm.registerDataType(KahinaText.class, new KahinaConstantDbTextStore((DbDataManager) dm, getDatabaseHandler()));
-        } else
+        } 
+        else
         {
         	dm.registerDataType(KahinaText.class);
         }

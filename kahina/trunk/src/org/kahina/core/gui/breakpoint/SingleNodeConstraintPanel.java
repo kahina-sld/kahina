@@ -43,7 +43,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     private BooleanConnectorPanel boolPanel;
     private List<NodeConstraintComboBox> typeComboBoxes;
     private List<NodeConstraintComboBox> relComboBoxes;
-    private List<NodeConstraintComboBox> valComboBoxes;
+    private List<JComboBox> valComboBoxes;
     private List<ValueBoxKeyListener> valKeyListeners;
     private List<JButton> addButtons;
     private List<JButton> remButtons;
@@ -73,7 +73,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         
         typeComboBoxes = new ArrayList<NodeConstraintComboBox>();
         relComboBoxes = new ArrayList<NodeConstraintComboBox>();
-        valComboBoxes = new ArrayList<NodeConstraintComboBox>();
+        valComboBoxes = new ArrayList<JComboBox>();
         valKeyListeners = new ArrayList<ValueBoxKeyListener>();
         
         addButtons = new ArrayList<JButton>();
@@ -109,7 +109,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         
         typeComboBoxes = new ArrayList<NodeConstraintComboBox>();
         relComboBoxes = new ArrayList<NodeConstraintComboBox>();
-        valComboBoxes = new ArrayList<NodeConstraintComboBox>();
+        valComboBoxes = new ArrayList<JComboBox>();
         valKeyListeners = new ArrayList<ValueBoxKeyListener>();
         
         addButtons = new ArrayList<JButton>();
@@ -123,8 +123,11 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         c.gridheight = 1;
         elConstPanel.add(boolPanel, c);
         
-        setRootPattern(patternNode.getPattern());  
+        setRootPattern(patternNode.getPattern()); 
+        //synchronization mode to prevent combo boxes from changing the pattern during construction
+        synchronizationMode = true;
         addStructure(getRootPattern());
+        synchronizationMode = false;
 
         this.add(elConstPanel);
         displayChangeInConnectiveStructure();
@@ -134,12 +137,13 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     {
         TreeNodePattern left = node.getLeftArgument();
         TreeNodePattern right = node.getRightArgument();
+        //if we have a leaf pattern, add an elementary constraint row for it
         if (left == null)
         {
             generateElementaryConstraintRow(elementaryConstraintNumber);        
             adaptNamingAndLayout(elementaryConstraintNumber);           
             basePatterns.add(node);
-            //TODO: this type of item selection does not seem to work --> an additional mapping to explicit indices?
+            System.err.println("displaying TreeNodePattern " + node.hashCode() + ": " + node);
             typeComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getTypeAsString());
             relComboBoxes.get(elementaryConstraintNumber).setModel(constrOptions.getRelationsForType(node.getTypeAsString()));
             relComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getRelAsString());
@@ -147,6 +151,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             elementaryConstraintNumber++;
             adaptBoolPanel();
         }
+        //boolean connectives do not require elementary constraint rows
         else
         {
             parentPatterns.put(left, node);
@@ -173,7 +178,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         
         typeComboBoxes = new ArrayList<NodeConstraintComboBox>();
         relComboBoxes = new ArrayList<NodeConstraintComboBox>();
-        valComboBoxes = new ArrayList<NodeConstraintComboBox>();
+        valComboBoxes = new ArrayList<JComboBox>();
         valKeyListeners = new ArrayList<ValueBoxKeyListener>();
         
         addButtons = new ArrayList<JButton>();

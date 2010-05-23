@@ -29,23 +29,23 @@ import org.w3c.dom.NodeList;
 public class TreeNodePattern
 {
     //define the type of the match (0 is reserved for "always matching")
-    int type = 0;
+    private int type = 0;
     
     //define the relation for this match (0 is reserved for (token) identity, i.e. Java ==)
-    int rel = 0;
+    private int rel = 0;
     
     //used for the most simple matchings (e.g. for all kinds of discrete values)
-    int intValue = 0;
+    private int intValue = 0;
     
     //used for string matchings
-    String stringValue;
+    private String stringValue;
     
     //precompiled regular expression, only used in case of String matching
-    Pattern regexValue;
+    private Pattern regexValue;
     
     //child pattern for complex boolean matches
-    TreeNodePattern leftArg;
-    TreeNodePattern rightArg;
+    private TreeNodePattern leftArg;
+    private TreeNodePattern rightArg;
     
     //predefined atomic match types (inheriting classes can add their own types)
     public static final int CAPTION = 1;
@@ -180,6 +180,7 @@ public class TreeNodePattern
 
     public void setRel(int rel)
     {
+        System.err.println("TreeNodePattern(" + this.hashCode() + ").setRel(" + rel + ")");
         this.rel = rel;
     }
 
@@ -474,6 +475,7 @@ public class TreeNodePattern
     
     public void setRelation(String relString)
     {
+        System.err.println("TreeNodePattern(" + this.hashCode() + ").setRelation(" + relString + ")");
         if (relString.equals("="))
         {
             rel = IDENTITY;
@@ -564,6 +566,7 @@ public class TreeNodePattern
         }
         else
         {
+            System.err.println("XML Import Warning: unknown relation type \"" + relString + "\"");
             rel = 0;
         }
     }
