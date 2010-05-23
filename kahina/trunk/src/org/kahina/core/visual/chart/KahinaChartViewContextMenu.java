@@ -3,6 +3,7 @@ package org.kahina.core.visual.chart;
 import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -39,6 +40,25 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         add(zoomSubmenu);
         
         addSeparator();
+        
+        JMenu edgeLabelDisplayPolicySubmenu = new JMenu("Show edges with label");
+        v.displayDecider.updatePossibleEdgeLabels();
+        for (String edgeLabel : v.displayDecider.getPossibleEdgeLabels())
+        {
+            JCheckBoxMenuItem displayEdgeLabelItem = new JCheckBoxMenuItem(edgeLabel);
+            displayEdgeLabelItem.setActionCommand("edgeLabel:" + edgeLabel);
+            displayEdgeLabelItem.addActionListener(l);
+            if (v.displayDecider.hiddenEdgeLabels.contains(edgeLabel))
+            {
+                displayEdgeLabelItem.setSelected(false);
+            }
+            else
+            {
+                displayEdgeLabelItem.setSelected(true);
+            }
+            edgeLabelDisplayPolicySubmenu.add(displayEdgeLabelItem);
+        }
+        add(edgeLabelDisplayPolicySubmenu);
         
         JMenu cellWidthPolicySubmenu = new JMenu("Cell width policy");
         ButtonGroup cellWidthPolicyGroup = new ButtonGroup();

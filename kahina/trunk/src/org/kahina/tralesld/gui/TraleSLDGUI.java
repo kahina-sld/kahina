@@ -9,6 +9,7 @@ import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
+import org.kahina.tralesld.visual.chart.TraleSLDChartEdgeDisplayDecider;
 
 public class TraleSLDGUI extends LogicProgrammingGUI
 {
@@ -37,6 +38,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.PROSPECTIVE, Color.WHITE);
         mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.SUCCESSFUL, Color.GREEN);
         mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.FAILED, Color.RED);
+        mainChartView.setDisplayDecider(new TraleSLDChartEdgeDisplayDecider());
     }
     
     @Override

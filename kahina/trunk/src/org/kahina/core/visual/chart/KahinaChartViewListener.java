@@ -150,6 +150,11 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
                 JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+        else if (command.startsWith("edgeLabel:"))
+        {
+            String edgeLabel = command.substring(10);
+            view.view.displayDecider.swapLabelDisplay(edgeLabel);
+        }
         view.view.recalculate();
         view.updateDisplay();
         view.repaint();

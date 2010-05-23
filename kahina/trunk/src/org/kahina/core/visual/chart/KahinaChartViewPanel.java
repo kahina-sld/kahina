@@ -71,7 +71,7 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         cnv.drawLine(5, maxY + 6, maxX, maxY + 6);
         
         //draw all the edges
-        for (Integer id : view.getEdgeIDs())
+        for (Integer id : view.getVisibleEdgeIDs())
         {
             //store edge information that is used multiple times
             int x = view.getEdgeX(id);

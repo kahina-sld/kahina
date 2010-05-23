@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JComponent;
@@ -36,7 +37,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     int displayRangePolicy = KahinaChartView.RANGE_USED_OR_CAPTION_DEFINED;
     int dependencyDisplayPolicy = KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS;
     int antialiasingPolicy = KahinaChartView.ANTIALIASING;
-    HashMap<Integer,Boolean> statusDisplayed;
+    KahinaChartEdgeDisplayDecider displayDecider;
     int fontSize; //also determines zoom factor and cell height
     int cellHeight; //do not implement a setter for this, but change it with font size
         
@@ -112,6 +113,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         chartWidth = 0;
         fontSize = 10;
         cellHeight = 14;
+        displayDecider = new KahinaChartEdgeDisplayDecider();
+        displayDecider.setChartView(this);
         KahinaRunner.getControl().registerListener("chart update", this);
     }
     
@@ -131,6 +134,12 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     {
         resetAllStructures();
         calculateCoordinates();
+    }
+    
+    public void setDisplayDecider(KahinaChartEdgeDisplayDecider displayDecider)
+    {
+        this.displayDecider = displayDecider;
+        displayDecider.setChartView(this);
     }
     
     public void zoomIn()
@@ -277,9 +286,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     }
     
     private void resetAllStructures()
-    {
-        statusDisplayed = new HashMap<Integer,Boolean>();
-        
+    {   
         usedSpace = new ArrayList<HashMap<Integer,Integer>>();
         
         edgeX = new HashMap<Integer, Integer>();
@@ -319,7 +326,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
 
         for (int curEdge : model.getEdgeIDs())
         {
-            if (decideEdgeDisplayByStatus(curEdge))
+            if (decideEdgeDisplay(curEdge))
             {
                 int leftBound = model.getLeftBoundForEdge(curEdge);
                 int rightBound = model.getRightBoundForEdge(curEdge);
@@ -417,7 +424,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         	{
         		System.err.println("curEdge: " + curEdge);
         	}
-            if (decideEdgeDisplayByStatus(curEdge))
+            if (decideEdgeDisplay(curEdge))
             {
                 //straightforward use of segmentOffsets to determine all the coordinates
                 int drawIntoRow = rowForEdge.get(curEdge);               
@@ -488,16 +495,10 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         }
     }
     
-    private boolean decideEdgeDisplayByStatus(int status)
+    private boolean decideEdgeDisplay(int edgeID)
     {
-        if (statusDisplayed.get(status) == null)
-        {
-            return true;
-        }
-        else
-        {
-            return statusDisplayed.get(status);
-        }
+        if (displayDecider == null) return true;
+        return displayDecider.decideEdgeDisplay(edgeID);
     }
     
     public int getNumberOfSegments()
@@ -599,6 +600,19 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     public Iterable<Integer> getEdgeIDs()
     {
         return model.getEdgeIDs();
+    }
+    
+    public Iterable<Integer> getVisibleEdgeIDs()
+    {
+        List<Integer> visibleEdges = new LinkedList<Integer>();
+        for (int edge : model.getEdgeIDs())
+        {
+            if (decideEdgeDisplay(edge))
+            {
+                visibleEdges.add(edge);
+            }
+        }
+        return visibleEdges;
     }
     
     public int getEdgeX(int edgeID)
