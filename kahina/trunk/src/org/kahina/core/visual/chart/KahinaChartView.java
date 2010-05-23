@@ -312,7 +312,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
                 if (segmentDisplayed(id))
                 {
                     int width = fm.stringWidth(id + " " + model.getSegmentCaption(id) + " ");
-                    distributeWidthOverSegments(id, id, width);
+                    distributeWidthOverSegments(id, id + 1, width);
                 }
             }
         }
@@ -440,7 +440,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
                     System.err.println("segmentOffsets.get(model.getRightBoundForEdge(curEdge) = " + segmentOffsets.get(model.getRightBoundForEdge(curEdge)));
                 }
                 int rightOffset = getSegmentOffset(model.getRightBoundForEdge(curEdge));
-                rightOffset += getSegmentWidth(model.getRightBoundForEdge(curEdge));
+                //rightOffset += getSegmentWidth(model.getRightBoundForEdge(curEdge));
                 edgeX.put(curEdge, leftOffset);
                 width.put(curEdge, rightOffset - leftOffset);
             }
@@ -687,7 +687,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     private int getNecessarySegmentWidthSum(int leftBound, int rightBound)
     {
         int widthSum = 0;
-        for (int i = leftBound; i <= rightBound; i++)
+        for (int i = leftBound; i < rightBound; i++)
         {
             widthSum += getNecessarySegmentWidth(i);
         }
@@ -775,8 +775,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     
     private void distributeWidthOverSegments(int leftBound, int rightBound, int addedWidth)
     {
-        int addedWidthPerSegment = addedWidth/(rightBound + 1 - leftBound) + 1;
-        for (int i = leftBound; i <= rightBound; i++)
+        int addedWidthPerSegment = addedWidth/(rightBound - leftBound);
+        for (int i = leftBound; i < rightBound; i++)
         {
             int newWidth = getNecessarySegmentWidth(i) + addedWidthPerSegment;
             if (newWidth > totalCellWidthMaximum) totalCellWidthMaximum = newWidth;

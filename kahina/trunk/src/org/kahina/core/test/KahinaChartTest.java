@@ -25,13 +25,13 @@ public class KahinaChartTest
     {
         try
         {
-            File file = new File("src/org/kahina/test/test-chart.xml");
+            File file = new File("src/org/kahina/core/test/test-chart.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
-            DatabaseHandler data = new DatabaseHandler(new File("otoka.dat"));
-            KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.DATABASE, data);
-            //KahinaChart m = KahinaChartIO.importXML(dom, KahinaDataHandlingMethod.MEMORY, null);
+            //DatabaseHandler data = new DatabaseHandler(new File("otoka.dat"));
+            //KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.DATABASE, data);
+            KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.MEMORY, null);
             KahinaChartView v = new KahinaChartView();
             v.display(m);       
 
