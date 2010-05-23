@@ -4,7 +4,6 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.breakpoint.KahinaBreakpointType;
-import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.breakpoint.TreeNodePattern;
 import org.kahina.core.breakpoint.TreePattern;
 import org.kahina.core.breakpoint.TreePatternNode;

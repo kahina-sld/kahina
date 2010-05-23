@@ -117,16 +117,16 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	 * @param ruleName
 	 * @param leftmostDaughter pass {@code -1} to not register a leftmost daughter
 	 */
-	public void registerProspectiveEdge(int ruleApplicationExtID, String ruleName, int left, int right, int leftmostDaughter)
+	public void registerProspectiveEdge(int ruleApplicationExtID, String ruleName, int leftmostDaughter)
 	{
 		try
 		{
 			if (verbose)
 			{
-				System.err.println(this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + left + "," + right);
+				System.err.println(this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + leftmostDaughter);
 			}
 			KahinaChart chart = state.getChart();
-			int newEdgeID = chart.addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.PROSPECTIVE);
+			int newEdgeID = chart.addEdge(chart.getLeftBoundForEdge(edgeIDConv.get(leftmostDaughter)), chart.getRightBoundForEdge(edgeIDConv.get(leftmostDaughter)), ruleName, TraleSLDChartEdgeStatus.PROSPECTIVE);
 			if (leftmostDaughter != -1)
 			{
 				chart.addEdgeDependency(newEdgeID, edgeIDConv.get(leftmostDaughter));
@@ -153,8 +153,15 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			int daughter = edgeIDConv.get(daughterID);
 			int mother = prospectiveEdgeStack.get(0);
 			KahinaChart chart = state.getChart();
+			if (!chart.getDaughterEdgesForEdge(mother).contains(daughter))
+			{
+				if (verbose)
+				{
+					System.err.println("Setting right bound for " + mother + " to that of" + daughter);
+				}
+				chart.setRightBoundForEdge(mother, chart.getRightBoundForEdge(daughter));
+			}
 			chart.addEdgeDependency(mother, daughter);
-			chart.setRightBoundForEdge(mother, chart.getRightBoundForEdge(mother) + chart.getRightBoundForEdge(daughter) - chart.getLeftBoundForEdge(daughter));
 			//lastRegisteredChartEdge = mother;
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(mother));
 			if (verbose)
@@ -168,25 +175,25 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 
-	public void registerRuleApplication(int extID, int left, int right, String ruleName, String consoleMessage, int leftmostDaughter)
+	public void registerRuleApplication(int extID, String ruleName, int leftmostDaughter, String consoleMessage)
 	{
 		try
 		{
 			if (verbose)
-				System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + "," + left + "," + right + ",\"" + ruleName + "\")");
+				System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + ",\"" + ruleName + "," + leftmostDaughter + "\")");
 
 			TraleSLDStep newStep = generateStep();
 			newStep.setGoalDesc("rule(" + ruleName + ")");
 			newStep.setExternalID(extID);
 			stepIDConv.put(extID, newStep.getID());
-			registerProspectiveEdge(extID, ruleName, left, right, leftmostDaughter);
+			registerProspectiveEdge(extID, ruleName, leftmostDaughter);
 			newStep.storeCaching();
 
 			// let TraleSLDTreeBehavior do the rest
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
 
 			// experimental: message for console
-			state.consoleMessage(newStep.getID(), extID, LogicProgrammingStepType.CALL, consoleMessage + " on [" + left + "," + right + "]");
+			state.consoleMessage(newStep.getID(), extID, LogicProgrammingStepType.CALL, consoleMessage);
 
 			// if (bridgeState == 'n')
 			{
@@ -392,32 +399,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 			}
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-
-	public void registerBlockedPseudoStepInformation(int extID, String goal)
-	{
-		try
-		{
-			if (verbose)
-				System.err.println("registerBlockedPseudoStepInformation(" + extID + ",\"" + goal + "\")");
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-
-	public void registerUnblockedPseudoStepInformation(int extID, int extBlockedPseudoStepID, String goal)
-	{
-		try
-		{
-			if (verbose)
-				System.err.println("registerUnblockedPseudoStepInformation(" + extID + "," + extBlockedPseudoStepID + ",\"" + goal + "\")");
 		} catch (Exception e)
 		{
 			e.printStackTrace();

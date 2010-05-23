@@ -25,7 +25,7 @@ public class TraleSLDRunner extends KahinaRunner
         bridge.registerChartEdge(0, 5, 6, "lexicon");
         bridge.registerStepInformation(1, "rule_close", "close chart edge under rule application");
         bridge.registerStepLocation(1,0);
-        bridge.registerRuleApplication(2,5,7,"subject_head_rule", "apply rule, subject_head_rule", -1); // TODO
+        bridge.registerRuleApplication(2,"subject_head_rule",0, "apply rule, subject_head_rule"); // TODO
         bridge.registerStepSourceCodeLocation(2,"/home/johannes/pro/kahina/trale/test_gram/theory3.pl",185);
         bridge.registerStepLocation(2,1);
         bridge.registerEdgeRetrieval(0);
@@ -48,7 +48,7 @@ public class TraleSLDRunner extends KahinaRunner
         bridge.registerStepExit(6,true);
         bridge.registerStepExit(5,true);
         bridge.registerStepFailure(2);
-        bridge.registerRuleApplication(8,5,7,"head_complement_rule", "apply rule, head_complement_rule", -1); // TODO
+        bridge.registerRuleApplication(8,"head_complement_rule",0, "apply rule, head_complement_rule");
         bridge.registerStepSourceCodeLocation(8,"/home/johannes/pro/kahina/trale/test_gram/theory3.pl",195);
         bridge.registerStepLocation(8,1);
         bridge.registerEdgeRetrieval(0);

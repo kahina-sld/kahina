@@ -23,7 +23,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 {
-	private static final boolean verbose = true;
+	private static final boolean verbose = false;
 
 	// call dimension is always stored in a secondary tree structure
 	protected KahinaTree secondaryTree;

@@ -8,7 +8,7 @@ import java.util.Set;
 
 public class KahinaMemChart extends KahinaChart
 {
-	private static final boolean verbose = true;
+	private static final boolean verbose = false;
 	
     //the chart is divided up into cells (vertical segments) that the edges can range over
     //leftmost: leftBound, rightmost: rightBound
