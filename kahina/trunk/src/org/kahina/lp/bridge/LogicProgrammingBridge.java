@@ -238,10 +238,17 @@ public class LogicProgrammingBridge extends KahinaBridge
 			pseudoStep.setExternalID(-1); // mark as pseudo
 			pseudoStep.setGoalDesc(description);
 			pseudoStep.store();
-			state.linkNodes(pseudoStep.getID(), stepIDConv.get(blockingStepExtID));
+			Integer blockingStepID = stepIDConv.get(blockingStepExtID);
+			if (blockingStepID != null)
+			{
+				state.linkNodes(pseudoStep.getID(), blockingStepID);
+			} else
+			{
+				blockingStepID = -1;
+			}
 			// description = node caption, passed via event for convenience,
 			// tree behavior could also be changed to fetch it from the step
-			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.UNBLOCKED, pseudoStep.getID(), description, stepIDConv.get(blockingStepExtID)));
+			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.UNBLOCKED, pseudoStep.getID(), description));
 		} catch (Exception e)
 		{
 			e.printStackTrace();

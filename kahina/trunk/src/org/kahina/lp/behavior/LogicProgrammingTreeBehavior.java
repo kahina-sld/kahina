@@ -171,7 +171,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		breakpointCheck(stepID);
 	}
 
-	private void processUnblocked(int pseudoStepInternalID, int blockingStepInternalID, String description)
+	private void processUnblocked(int pseudoStepInternalID, String description)
     {
 		// 1. process information
     	object.addNode(pseudoStepInternalID, description, "", LogicProgrammingStepType.PSEUDO_UNBLOCKED);
@@ -339,13 +339,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			}
 			case LogicProgrammingBridgeEventType.UNBLOCKED:
 			{
-				processUnblocked(e.getID(), e.getIntContent(), e.getStrContent()); // content:
-																					// internal
-																					// ID
-																					// of
-																					// blocking
-																					// step,
-																					// description
+				processUnblocked(e.getID(), e.getStrContent());
 			}
 		}
 	}
