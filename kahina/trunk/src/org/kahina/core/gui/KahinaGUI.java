@@ -51,7 +51,7 @@ public class KahinaGUI implements KahinaListener
 	protected List<KahinaView<?>> views;
 	// values as defined in KahinaViewVisibility
 	Map<KahinaView<?>, Integer> viewVisibility;
-	KahinaWindow window;
+	KahinaWindowManager windowManager;
 
 	protected Set<KahinaView<?>> livingViews;
 
@@ -136,15 +136,13 @@ public class KahinaGUI implements KahinaListener
 	public final void buildAndShow()
 	{
 		displayMainViews();
-		window = new KahinaWindow(this);
+		windowManager = new KahinaWindowManager(this);
 	}
 
 	protected void displayMainViews()
 	{
 		mainTreeView.display(kahina.getState().getStepTree());
 		mainTreeView.displaySecondaryTree(kahina.getState().getSecondaryStepTree());
-        //Bad Software Design: KahinaTextViews do not really have models
-        //messageConsoleView.display();
 	}
 
 	public void displayStepContent(int stepID)
@@ -243,7 +241,7 @@ public class KahinaGUI implements KahinaListener
             }
             case KahinaDialogEvent.ABOUT:
             {
-                new AboutDialog(window).setVisible(true);        
+                new AboutDialog(windowManager.mainWindow).setVisible(true);        
             }
         }
     }
