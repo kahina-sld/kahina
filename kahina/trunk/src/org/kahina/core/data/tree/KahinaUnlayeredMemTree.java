@@ -161,7 +161,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     }
     
     @Override
-	public List<Integer> getChildren(int nodeID, int layerID)
+	public List<Integer> getChildren(int nodeID, int layerID, boolean stopAtCornerstones)
     {
         //System.err.print("KahinaTree.getChildren(" + nodeID + "," + layerID + ") = ");
         List<Integer> ids = children.get(nodeID);

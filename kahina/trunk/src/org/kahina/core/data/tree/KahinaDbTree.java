@@ -318,7 +318,7 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
     }
 
     @Override
-    public List<Integer> getChildren(int nodeID, int layer)
+    public List<Integer> getChildren(int nodeID, int layer, boolean stopAtCornerstones)
     {
         int nodeLayer = getLayer(nodeID);
         if (layer == nodeLayer)
@@ -328,7 +328,7 @@ public class KahinaDbTree extends KahinaTree implements LightweightKahinaObject
             List<Integer> result = getChildrenForLayer(nodeID, nodeLayer);
             return result;
         }
-        if (nodeID == getRootID(layer) || nodeLayer >= layer)
+        if (!stopAtCornerstones || nodeID == getRootID(layer) || nodeLayer >= layer)
         {
             // usually only the case for the root of a partial tree
             List<Integer> frontLine = getChildren(nodeID);

@@ -90,7 +90,7 @@ public abstract class KahinaTree extends KahinaObject
 
     public abstract List<Integer> getChildren(int nodeID);
     
-    public abstract List<Integer> getChildren(int nodeID, int layer);
+    public abstract List<Integer> getChildren(int nodeID, int layer, boolean stopAtCornerstones);
 
     public abstract int getNodeStatus(int nodeID);
 
@@ -128,7 +128,7 @@ public abstract class KahinaTree extends KahinaObject
     {
         createSpace(b, depth);
         b.append("<node id=\"" + node + "\" caption=\"" + getNodeCaption(node) + "\" label=\"" + getEdgeLabel(node) + "\" status=\"" + getNodeStatus(node) + "\">\n");
-        for (int child : getChildren(node, 0))
+        for (int child : getChildren(node, 0, true))
         {
             exportXML(b, child, depth + 2);
         }
