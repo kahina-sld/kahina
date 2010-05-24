@@ -3,6 +3,7 @@ package org.kahina.tralesld.gui;
 import java.awt.Color;
 
 import org.kahina.core.KahinaStep;
+import org.kahina.core.gui.KahinaViewIntegrationType;
 import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.tralesld.TraleSLDInstance;
@@ -49,5 +50,13 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         mainTreeView.getModel().setLayerDecider(new TraleSLDLayerDecider(2));
         mainTreeView.getSecondaryModel().setLayerDecider(new TraleSLDLayerDecider(2));
         mainChartView.display(instance.getState().getChart());  
+    }
+    
+    public void prepare()
+    {
+        super.prepare();
+        integrateVariableDisplays(KahinaViewIntegrationType.VERTICAL, "startBindings", "endBindings", "Variable bindings");
+        integrateVariableDisplays(KahinaViewIntegrationType.VERTICAL, "codeLocation", "messageConsole", "Source & Console");
+        integrateVariableDisplays(KahinaViewIntegrationType.HORIZONTAL, "startFeatStruct", "endFeatStruct", "Feature Structures");
     }
 }

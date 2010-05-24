@@ -12,7 +12,7 @@ import org.kahina.core.event.KahinaAbortEvent;
 
 public class KahinaMainWindow extends KahinaWindow
 {
-    public static boolean verbose = true;
+    public static boolean verbose = false;
     
     public KahinaWindowManager windowManager;
     

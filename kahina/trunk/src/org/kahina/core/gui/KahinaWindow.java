@@ -23,6 +23,6 @@ public class KahinaWindow extends JFrame
     
     public KahinaWindow()
     {                 
-        
+        setLayout(new BorderLayout());
     }
 }

@@ -56,6 +56,7 @@ public class KahinaGUI implements KahinaListener
 	protected Set<KahinaView<?>> livingViews;
 
 	Map<Field, KahinaView<? extends KahinaObject>> fieldToView;
+    Map<String, KahinaView<? extends KahinaObject>> varNameToView;
 
 	Class<? extends KahinaStep> stepType;
 
@@ -78,6 +79,7 @@ public class KahinaGUI implements KahinaListener
 
 		this.livingViews = new HashSet<KahinaView<?>>();
 		this.fieldToView = new HashMap<Field, KahinaView<? extends KahinaObject>>();
+        this.varNameToView = new HashMap<String, KahinaView<? extends KahinaObject>>();
 		fillFieldToView(stepType);
 
 		mainTreeView = new KahinaLayeredTreeView(0, 1, 2);
@@ -92,6 +94,7 @@ public class KahinaGUI implements KahinaListener
         KahinaRunner.getControl().registerListener("console line", messageConsoleView);
         views.add(messageConsoleView);
         livingViews.add(messageConsoleView);
+        varNameToView.put("messageConsole", messageConsoleView);
 	}
 
 	/**
@@ -122,6 +125,7 @@ public class KahinaGUI implements KahinaListener
 				}
 				newView.setTitle(field.getName());
 				fieldToView.put(field, newView);
+                varNameToView.put(field.getName(), newView);
 				views.add(newView);
 				livingViews.add(newView);
 			}
@@ -132,12 +136,47 @@ public class KahinaGUI implements KahinaListener
 	{
 		return controlPanel;
 	}
+    
+    public void integrateVariableDisplays(int integrationType, String var1, String var2, String newTitle)
+    {
+        KahinaView<?> view1 = varNameToView.get(var1);
+        KahinaView<?> view2 = varNameToView.get(var2);
+        if (view1 == null || view2 == null)
+        {
+            System.err.println("Error integrating views: " + var1 + " and " + var2);
+        }
+        else
+        {
+            switch (integrationType)
+            {
+                case KahinaViewIntegrationType.VERTICAL:
+                {
+                    windowManager.integrateInVerticallySplitWindow(view1, view2, newTitle);
+                    break;
+                }
+                case KahinaViewIntegrationType.HORIZONTAL:
+                {
+                    windowManager.integrateInHorizontallySplitWindow(view1, view2, newTitle);
+                    break;
+                }
+                case KahinaViewIntegrationType.TABBED:
+                {
+                    //TODO
+                }
+            }
+        }
+    }
 
-	public final void buildAndShow()
+	public void prepare()
 	{
-		displayMainViews();
-		windowManager = new KahinaWindowManager(this);
+        displayMainViews();
+        windowManager = new KahinaWindowManager(this);
 	}
+    
+    public final void buildAndShow()
+    {
+        windowManager.displayWindows();
+    }
 
 	protected void displayMainViews()
 	{
