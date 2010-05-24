@@ -512,6 +512,21 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		skipFlag = true;
 	}
+    
+    protected void processCreepPointMatch(int nodeID, KahinaBreakpoint bp)
+    {
+        //no change if we are in leap or skip mode anyway
+        if (bridgeState != 's' && bridgeState != 't' && bridgeState != 'l')
+        {
+            bridgeState = 'c';
+        }
+    }
+    
+    protected void processFailPointMatch(int nodeID, KahinaBreakpoint bp)
+    {
+        //TODO: handle this more elegantly if in skip or leap mode (possibly additional state)
+        bridgeState = 'f';
+    }
 
 	protected void processBreakPointMatch(int nodeID, KahinaBreakpoint bp)
 	{

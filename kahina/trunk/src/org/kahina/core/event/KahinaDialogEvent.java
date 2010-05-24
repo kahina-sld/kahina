@@ -10,6 +10,8 @@ public class KahinaDialogEvent extends KahinaEvent
     public static final int PRIMARY_BREAKPOINTS = 4;
     public static final int SECONDARY_BREAKPOINTS = 5;
     public static final int SKIP_POINTS = 6;
+    public static final int CREEP_POINTS = 7;
+    public static final int FAIL_POINTS = 8;
     
     public KahinaDialogEvent(int dialogEventType)
     {
@@ -48,6 +50,14 @@ public class KahinaDialogEvent extends KahinaEvent
         else if (dialogEventType == SKIP_POINTS)
         {
             s += "skip points"; 
+        }
+        else if (dialogEventType == CREEP_POINTS)
+        {
+            s += "creep points"; 
+        }
+        else if (dialogEventType == FAIL_POINTS)
+        {
+            s += "fail points"; 
         }
         else
         {

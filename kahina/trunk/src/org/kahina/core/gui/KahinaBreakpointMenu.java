@@ -28,12 +28,22 @@ public class KahinaBreakpointMenu  extends JMenu implements ActionListener
         secondaryBreakpointsItem.addActionListener(this);
         this.add(secondaryBreakpointsItem);
         
-        this.addSeparator();
-             
-        JMenuItem parseOptionsItem = new JMenuItem("Skip Points");
-        parseOptionsItem.setActionCommand("editSkipPoints");
-        parseOptionsItem.addActionListener(this);
-        this.add(parseOptionsItem);
+        this.addSeparator();       
+        
+        JMenuItem creepPointsItem = new JMenuItem("Creep Points");
+        creepPointsItem.setActionCommand("editCreepPoints");
+        creepPointsItem.addActionListener(this);
+        this.add(creepPointsItem);
+        
+        JMenuItem failPointsItem = new JMenuItem("Fail Points");
+        failPointsItem.setActionCommand("editFailPoints");
+        failPointsItem.addActionListener(this);
+        this.add(failPointsItem);
+        
+        JMenuItem skipPointsItem = new JMenuItem("Skip Points");
+        skipPointsItem.setActionCommand("editSkipPoints");
+        skipPointsItem.addActionListener(this);
+        this.add(skipPointsItem);
     }
     
     public void actionPerformed(ActionEvent e)
@@ -50,6 +60,14 @@ public class KahinaBreakpointMenu  extends JMenu implements ActionListener
         else if (s.equals("editSkipPoints"))
         {
             KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.SKIP_POINTS));
+        }
+        else if (s.equals("editCreepPoints"))
+        {
+            KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.CREEP_POINTS));
+        }
+        else if (s.equals("editFailPoints"))
+        {
+            KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.FAIL_POINTS));
         }
     }
 }

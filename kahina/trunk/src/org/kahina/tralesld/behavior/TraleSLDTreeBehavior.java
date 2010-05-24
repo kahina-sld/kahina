@@ -55,6 +55,20 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         kahina.getState().getSkipPoints().add(bp2);
     }
     
+    public void initializeCreepPoints()
+    {
+        TreePattern pat = new TreePattern();
+        TreePatternNode rootNode = new TreePatternNode();
+        TreeNodePattern rootPattern = new TreeNodePattern(TreeNodePattern.CAPTION, TreeNodePattern.MATCHING, "[0-9]* lex\\(.*");    
+        rootNode.setPattern(rootPattern);
+        pat.setRoot(rootNode);
+        KahinaBreakpoint bp = new KahinaBreakpoint(KahinaBreakpointType.CREEP_POINT);
+        bp.setName("Failed Lex Creep");
+        bp.setPattern(pat);
+        kahina.getState().getCreepPoints().add(bp);
+        //System.err.println(aut.toString());
+    }
+    
     public void initializeParseTree(int stepID, String parsedSentence)
     {
         object.setRootID(stepID);

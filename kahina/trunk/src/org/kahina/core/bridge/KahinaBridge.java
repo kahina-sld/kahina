@@ -76,6 +76,16 @@ public class KahinaBridge implements KahinaListener
                 processSkipPointMatch(e.getNodeID(), e.getBreakpoint());
                 break;
             }
+            case KahinaBreakpointType.CREEP_POINT:
+            {
+                processCreepPointMatch(e.getNodeID(), e.getBreakpoint());
+                break;
+            }
+            case KahinaBreakpointType.FAIL_POINT:
+            {
+                processFailPointMatch(e.getNodeID(), e.getBreakpoint());
+                break;
+            }
             case KahinaBreakpointType.PRIMARY_BREAKPOINT:
             {
                 //no break here, same as next case
@@ -94,6 +104,16 @@ public class KahinaBridge implements KahinaListener
     }
     
     protected void processSkipPointMatch(int nodeID, KahinaBreakpoint bp)
+    {
+        
+    }
+    
+    protected void processCreepPointMatch(int nodeID, KahinaBreakpoint bp)
+    {
+        
+    }
+    
+    protected void processFailPointMatch(int nodeID, KahinaBreakpoint bp)
     {
         
     }

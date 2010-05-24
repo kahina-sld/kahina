@@ -225,6 +225,22 @@ public class KahinaGUI implements KahinaListener
                 breakpointEditor.setVisible(true);
                 break;
             }
+            case KahinaDialogEvent.CREEP_POINTS:
+            {
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.CREEP_POINT);
+                breakpointEditor.setTitle("Edit creep points");
+                breakpointEditor.loadBreakpointProfile(kahina.getState().getCreepPoints());
+                breakpointEditor.setVisible(true);
+                break;
+            }
+            case KahinaDialogEvent.FAIL_POINTS:
+            {
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.FAIL_POINT);
+                breakpointEditor.setTitle("Edit fail points");
+                breakpointEditor.loadBreakpointProfile(kahina.getState().getFailPoints());
+                breakpointEditor.setVisible(true);
+                break;
+            }
             case KahinaDialogEvent.ABOUT:
             {
                 new AboutDialog(window).setVisible(true);        

@@ -47,6 +47,8 @@ public class KahinaState implements KahinaListener
     protected List<KahinaBreakpoint> primaryBreakpoints;
     protected List<KahinaBreakpoint> secondaryBreakpoints;
     protected List<KahinaBreakpoint> skipPoints;
+    protected List<KahinaBreakpoint> creepPoints;
+    protected List<KahinaBreakpoint> failPoints;
     
     public KahinaState(KahinaInstance<?, ?, ?> kahina, int dataHandlingMethod)
     {
@@ -60,6 +62,8 @@ public class KahinaState implements KahinaListener
         primaryBreakpoints = new ArrayList<KahinaBreakpoint>();
         secondaryBreakpoints = new ArrayList<KahinaBreakpoint>();
         skipPoints = new ArrayList<KahinaBreakpoint>();
+        creepPoints = new ArrayList<KahinaBreakpoint>();
+        failPoints = new ArrayList<KahinaBreakpoint>();
         
         //database variant turned out to be too slow
         /* switch (dataHandlingMethod)
@@ -121,6 +125,16 @@ public class KahinaState implements KahinaListener
     public List<KahinaBreakpoint> getSkipPoints()
     {
         return skipPoints;
+    }
+    
+    public List<KahinaBreakpoint> getCreepPoints()
+    {
+        return creepPoints;
+    }
+    
+    public List<KahinaBreakpoint> getFailPoints()
+    {
+        return failPoints;
     }
     
     public void linkNodes(int anchor, int target)
