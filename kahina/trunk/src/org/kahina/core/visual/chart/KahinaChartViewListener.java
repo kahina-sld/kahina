@@ -89,6 +89,14 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
         {
             view.view.setDependencyDisplayPolicy(KahinaChartView.NO_DEPENDENCIES);
         }
+        else if (command.equals("ancestorTransitivity"))
+        {
+            view.view.swapAncestorTransitivity();
+        }
+        else if (command.equals("descendantTransitivity"))
+        {
+            view.view.swapDescendantTransitivity();
+        }
         else if (command.equals("Fill space compactly"))
         {
             view.view.setEdgeStackingPolicy(KahinaChartView.STACK_EDGES_FILL_SPACE);

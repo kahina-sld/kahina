@@ -10,7 +10,23 @@ public class SwingUtilities
     public static void scrollToCenter(JScrollPane scrollPane, int x, int y)
     {
         JViewport viewport = scrollPane.getViewport();
-        Point p = new Point(x - viewport.getWidth() / 2, y - viewport.getHeight() / 2);
-        viewport.setViewPosition(p);
+        
+        //TODO: instead, allow coordinates beyond object corner without producing artefacts
+        int cornerX = x - viewport.getWidth() / 2;
+        int cornerY = y - viewport.getHeight() / 2;
+        if (cornerX < 0) cornerX = 0;
+        if (cornerY < 0) cornerY = 0;
+        
+
+        Point p = new Point(cornerX, cornerY);
+        try
+        {
+            //again: be careful because of weird swing errors
+            viewport.setViewPosition(p);
+        }
+        catch (NullPointerException e)
+        {
+            System.err.println("Problems adapting scroll pane position: crash prevented.");
+        }
     }
 }

@@ -128,6 +128,17 @@ public class KahinaChartViewContextMenu extends JPopupMenu
                 noDependenciesItem.setSelected(true);
             }
         }
+        dependencyDisplayPolicySubmenu.addSeparator();
+        JCheckBoxMenuItem ancestorTransitivityItem = new JCheckBoxMenuItem("Ancestor Transitivity");
+        ancestorTransitivityItem.setActionCommand("ancestorTransitivity");
+        ancestorTransitivityItem.addActionListener(l);
+        ancestorTransitivityItem.setSelected(v.getAncestorTransitivity());
+        dependencyDisplayPolicySubmenu.add(ancestorTransitivityItem);
+        JCheckBoxMenuItem descendantTransitivityItem = new JCheckBoxMenuItem("Descendant Transitivity");
+        descendantTransitivityItem.setActionCommand("descendantTransitivity");
+        descendantTransitivityItem.addActionListener(l);
+        descendantTransitivityItem.setSelected(v.getDescendantTransitivity());
+        dependencyDisplayPolicySubmenu.add(descendantTransitivityItem);
         add(dependencyDisplayPolicySubmenu);
         
         JMenu edgeStackingPolicySubmenu = new JMenu("Edge stacking policy");

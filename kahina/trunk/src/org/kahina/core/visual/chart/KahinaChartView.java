@@ -37,6 +37,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     int displayRangePolicy = KahinaChartView.RANGE_USED_OR_CAPTION_DEFINED;
     int dependencyDisplayPolicy = KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS;
     int antialiasingPolicy = KahinaChartView.ANTIALIASING;
+    boolean transitiveAncestors;
+    boolean transitiveDescendants;
     KahinaChartEdgeDisplayDecider displayDecider;
     int fontSize; //also determines zoom factor and cell height
     int cellHeight; //do not implement a setter for this, but change it with font size
@@ -110,6 +112,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         statusHighlightColorEncoding = new HashMap<Integer, Color>();
         statusStrokeEncoding = new HashMap<Integer, Stroke>();
         statusFontEncoding = new HashMap<Integer, Font>();
+        transitiveAncestors = false;
+        transitiveDescendants = false;
         chartWidth = 0;
         fontSize = 10;
         cellHeight = 14;
@@ -283,6 +287,26 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         {
             System.err.println("WARNING: unknown antialiasing policy value " + newPolicy);
         }
+    }
+    
+    public boolean getAncestorTransitivity()
+    {
+        return transitiveAncestors;
+    }
+    
+    public void swapAncestorTransitivity()
+    {
+        transitiveAncestors = !transitiveAncestors;
+    }
+    
+    public boolean getDescendantTransitivity()
+    {
+        return transitiveDescendants;
+    }
+    
+    public void swapDescendantTransitivity()
+    {
+        transitiveDescendants = !transitiveDescendants;
     }
     
     private void resetAllStructures()
@@ -867,7 +891,10 @@ public class KahinaChartView extends KahinaView<KahinaChart>
             {
                 nextAncestor = agenda.remove(0);
                 highlights.add(nextAncestor);
-                agenda.addAll(model.getMotherEdgesForEdge(nextAncestor));
+                if (transitiveAncestors)
+                {
+                    agenda.addAll(model.getMotherEdgesForEdge(nextAncestor));
+                }
             }
         }
         if (    dependencyDisplayPolicy == KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS || 
@@ -881,7 +908,10 @@ public class KahinaChartView extends KahinaView<KahinaChart>
             {
                 nextAncestor = agenda.remove(0);
                 highlights.add(nextAncestor);
-                agenda.addAll(model.getDaughterEdgesForEdge(nextAncestor));
+                if (transitiveDescendants)
+                {
+                    agenda.addAll(model.getDaughterEdgesForEdge(nextAncestor));
+                }
             }
         }
     }
