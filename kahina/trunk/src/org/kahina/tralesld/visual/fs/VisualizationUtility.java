@@ -22,6 +22,7 @@ import javax.swing.SwingWorker;
  */
 public class VisualizationUtility
 {
+	private static boolean verbose = false;
 
 	private static VisualizationUtility def;
 
@@ -67,6 +68,10 @@ public class VisualizationUtility
 	{
 		try
 		{
+			if (verbose)
+			{
+				System.err.println(this + ".visualize(" + grisuMessage + ")");
+			}
 			return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView().getCanvas();
 		} catch (ParseException e)
 		{
