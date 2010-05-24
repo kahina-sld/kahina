@@ -51,12 +51,12 @@ public class KahinaGUI implements KahinaListener
 	protected List<KahinaView<?>> views;
 	// values as defined in KahinaViewVisibility
 	Map<KahinaView<?>, Integer> viewVisibility;
-	KahinaWindowManager windowManager;
+	protected KahinaWindowManager windowManager;
 
 	protected Set<KahinaView<?>> livingViews;
 
 	Map<Field, KahinaView<? extends KahinaObject>> fieldToView;
-    Map<String, KahinaView<? extends KahinaObject>> varNameToView;
+    protected Map<String, KahinaView<? extends KahinaObject>> varNameToView;
 
 	Class<? extends KahinaStep> stepType;
 
@@ -87,6 +87,7 @@ public class KahinaGUI implements KahinaListener
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, mainTreeView);
 		views.add(mainTreeView);
 		livingViews.add(mainTreeView);
+        varNameToView.put("controlFlowTree", mainTreeView);
         
         messageConsoleView = new KahinaTextView();
         messageConsoleView.setTitle("Message console");
@@ -136,6 +137,16 @@ public class KahinaGUI implements KahinaListener
 	{
 		return controlPanel;
 	}
+    
+    public KahinaWindow getWindowForVarName(String varName)
+    {
+        KahinaView<?> view = varNameToView.get(varName);
+        if (view != null)
+        {
+            return windowManager.topLevelWindows.get(view);
+        }
+        return null;
+    }
     
     public void integrateVariableDisplays(int integrationType, String var1, String var2, String newTitle)
     {

@@ -27,6 +27,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         mainChartView.setTitle("Chart");
         views.add(mainChartView);
         livingViews.add(mainChartView); 
+        varNameToView.put("chart", mainChartView);
 
         mainTreeView.setStatusColorEncoding(TraleSLDStepType.FINISHED, new Color(102,51,153));
         mainTreeView.setStatusColorEncoding(TraleSLDStepType.BLOCKED, Color.BLACK);
@@ -58,5 +59,16 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         integrateVariableDisplays(KahinaViewIntegrationType.VERTICAL, "startBindings", "endBindings", "Variable bindings");
         integrateVariableDisplays(KahinaViewIntegrationType.VERTICAL, "codeLocation", "messageConsole", "Source & Console");
         integrateVariableDisplays(KahinaViewIntegrationType.HORIZONTAL, "startFeatStruct", "endFeatStruct", "Feature Structures");
+        //slightly hacky: allow direct manipulation of view components
+        getWindowForVarName("codeLocation").setSize(400, 500);
+        getWindowForVarName("codeLocation").setLocation(400, 0);
+        getWindowForVarName("startFeatStruct").setSize(700, 300);
+        getWindowForVarName("startFeatStruct").setLocation(0, 550);
+        getWindowForVarName("startBindings").setSize(200, 300);
+        getWindowForVarName("startBindings").setLocation(700, 550);
+        getWindowForVarName("controlFlowTree").setSize(500, 800);
+        getWindowForVarName("controlFlowTree").setLocation(800, 0);
+        getWindowForVarName("chart").setSize(400, 400);
+        getWindowForVarName("chart").setLocation(0, 150);
     }
 }
