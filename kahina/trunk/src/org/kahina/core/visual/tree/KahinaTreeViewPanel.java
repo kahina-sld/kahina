@@ -97,6 +97,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         
         //TODO: improve behavior when View is smaller than viewport (e.g. add dummy material)
         scrollToNode(view.getMarkedNode());
+        revalidate();
         
         /*for (TreeViewExtension ext : viewExtensionsAfterMainRendering)
         {
