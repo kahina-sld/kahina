@@ -498,7 +498,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         else
         {
             HashMap<Integer,Integer> usedInRow = usedSpace.get(rowID);
-            for (int i = leftBound; i <= rightBound; i++)
+            for (int i = leftBound; i < rightBound; i++)
             {
                 if (usedInRow.get(i) != null) return false;
             }
@@ -513,7 +513,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
             usedSpace.add(new HashMap<Integer,Integer>());
         }
         HashMap<Integer,Integer> usedInRow = usedSpace.get(rowID);
-        for (int i = leftBound; i <= rightBound; i++)
+        for (int i = leftBound; i < rightBound; i++)
         {
             usedInRow.put(i,edgeID);
         }
