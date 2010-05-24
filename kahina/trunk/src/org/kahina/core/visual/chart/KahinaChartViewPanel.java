@@ -30,6 +30,7 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         try
         {
             Thread.sleep(10);
+            super.paintComponent(canvas);
             if ( image == null ) 
             {
                 return;

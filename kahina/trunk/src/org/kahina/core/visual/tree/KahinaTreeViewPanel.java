@@ -42,6 +42,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         try
         {
             Thread.sleep(10);
+            super.paintComponent(cnv);
             if ( image == null ) 
             {
                 return;
