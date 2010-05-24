@@ -43,7 +43,7 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
     
     @Override
     public void updateDisplay()
-    {
+    {   
         Integer leadIndex = view.getSelectionModel().getLeadSelectionIndex();  
         if (leadIndex != null)
         {
@@ -58,11 +58,15 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
             {
                 endIndex = list.getModel().getSize() - 1;
             }
-            Rectangle r = list.getCellBounds(startIndex, endIndex);
-            if (r != null)
+            try
             {
-                //TODO: this causes nasty swing bugs, try to find a workaround for this
-                //list.scrollRectToVisible(r);
+                list.ensureIndexIsVisible(startIndex);
+                list.ensureIndexIsVisible(endIndex);
+            }
+            //be extremely careful because of nasty swing errors
+            catch (NullPointerException e)
+            {
+                System.err.println("Jumping within a KahinaTextViewLabel would have caused an error - evaded.");
             }
         }
         repaint();      

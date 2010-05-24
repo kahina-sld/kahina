@@ -1032,16 +1032,21 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     {
         KahinaTreeViewPanel panel = new KahinaTreeViewPanel();
         KahinaRunner.getControl().registerListener("redraw", panel);
-        panel.setView(this);   
-        return new JScrollPane(panel);
+        panel.setView(this);
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.getViewport().setBackground(bgColor);
+        return scrollPane;
     }
     
     public JComponent wrapInPanel(KahinaTreeViewMarker marker)
     {
         KahinaTreeViewPanel panel = new KahinaTreeViewPanel(marker);
+        panel.setBackground(new Color(255, 255, 255));
         KahinaRunner.getControl().registerListener("redraw", panel);
         panel.setView(this);   
-        return new JScrollPane(panel);
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.getViewport().setBackground(bgColor);
+        return scrollPane;
     }
     
     public void recalculate()

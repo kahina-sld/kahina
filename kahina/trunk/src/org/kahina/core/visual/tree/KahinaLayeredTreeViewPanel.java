@@ -1,5 +1,7 @@
 package org.kahina.core.visual.tree;
 
+import java.awt.Color;
+
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -28,15 +30,18 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 	private JComponent createSplitPane(int index)
 	{
 		JScrollPane top = new JScrollPane(panels[index]);
-		JScrollPane bottom;
+        top.getViewport().setBackground(Color.WHITE);
+		JComponent bottom;
 		index++;
 		if (index + 1 == panels.length)
 		{
 			bottom = new JScrollPane(panels[index]);
+            ((JScrollPane) bottom).getViewport().setBackground(Color.WHITE);
 		} else
 		{
-			bottom = new JScrollPane(createSplitPane(index));
+			bottom = createSplitPane(index);
 		}	
+
 		return new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
 	}
 

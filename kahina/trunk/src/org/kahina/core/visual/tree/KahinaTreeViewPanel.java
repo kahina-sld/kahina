@@ -2,6 +2,7 @@ package org.kahina.core.visual.tree;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -11,6 +12,9 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+import javax.swing.JScrollPane;
+
+import org.kahina.core.util.SwingUtilities;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
@@ -42,7 +46,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
             {
                 return;
             }
-            cnv.drawImage( image, 0, 0, this );
+            cnv.drawImage(image, 0, 0, this );
         }
         catch (InterruptedException e)
         {
@@ -89,7 +93,11 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         printTreeNodes(canvas);
         
         image = newImage;
-
+        repaint();
+        
+        //TODO: improve behavior when View is smaller than viewport (e.g. add dummy material)
+        scrollToNode(view.getMarkedNode());
+        
         /*for (TreeViewExtension ext : viewExtensionsAfterMainRendering)
         {
             ext.paintOnTreePanel(this, canvas);
@@ -440,5 +448,24 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
             }
         }
         g.setColor(c);
+    }
+    
+    public void scrollToNode(int nodeID)
+    {
+        //System.err.println("Scrolling to node " + nodeID + " on layer " + view.treeLayer);
+        Container parent = this.getParent().getParent();
+        if (nodeID != -1 && parent instanceof JScrollPane)
+        {
+            Integer x = view.getNodeX(nodeID);
+            Integer y = view.getNodeY(nodeID);
+            if (x == null || y == null)
+            {
+                System.err.println("Could not find scroll coordinates for node " + nodeID);
+            }
+            else
+            {
+                SwingUtilities.scrollToCenter((JScrollPane) parent, view.getNodeX(nodeID), view.getNodeY(nodeID));
+            }
+        }
     }
 }
