@@ -1,6 +1,7 @@
 package org.kahina.core.visual.tree;
 
 import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
@@ -11,38 +12,51 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 {
 	private static final long serialVersionUID = -1304882362038211887L;
 
-	private KahinaTreeViewPanel overviewPanel;
+	private KahinaTreeViewPanel[] panels;
 
-	private KahinaTreeViewPanel detailPanel;
-
-	public KahinaLayeredTreeViewPanel(KahinaTree model, KahinaTree secondaryModel, KahinaTreeViewMarker marker)
+	public KahinaLayeredTreeViewPanel(KahinaTree model, KahinaTree secondaryModel, int layers, KahinaTreeViewMarker marker)
 	{
-		overviewPanel = new KahinaTreeViewPanel(marker);
-		detailPanel = new KahinaTreeViewPanel(marker);
+		panels = new KahinaTreeViewPanel[layers];
+		for (int i = 0; i < panels.length; i++)
+		{
+			panels[i] = new KahinaTreeViewPanel(marker);
+		}
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		add(createSplitPane());
+		add(createSplitPane(0));
 	}
 
-	private JSplitPane createSplitPane()
+	private JComponent createSplitPane(int index)
 	{
-		JScrollPane overviewScrollPane = new JScrollPane(overviewPanel);
-		JScrollPane detailScrollPane = new JScrollPane(detailPanel);		
-		return new JSplitPane(JSplitPane.VERTICAL_SPLIT, overviewScrollPane, detailScrollPane);
+		JScrollPane top = new JScrollPane(panels[index]);
+		JScrollPane bottom;
+		index++;
+		if (index + 1 == panels.length)
+		{
+			bottom = new JScrollPane(panels[index]);
+		} else
+		{
+			bottom = new JScrollPane(createSplitPane(index));
+		}	
+		return new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
 	}
 
 	@Override
 	public void setView(KahinaLayeredTreeView view)
 	{
 		super.setView(view);
-		overviewPanel.setView(view.getOverview());
-		detailPanel.setView(view.getDetailView());
+		for (int i = 0; i < panels.length; i++)
+		{
+			panels[i].setView(view.getView(i));
+		}
 	}
 
 	@Override
 	public void updateDisplay()
 	{
-		overviewPanel.updateDisplay();
-		detailPanel.updateDisplay();
+		for (KahinaTreeViewPanel panel : panels)
+		{
+			panel.updateDisplay();
+		}
 	}
 
 }

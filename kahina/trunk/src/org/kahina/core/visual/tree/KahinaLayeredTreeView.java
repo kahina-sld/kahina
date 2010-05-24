@@ -10,91 +10,92 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
-{	
+{
 	private static final boolean verbose = false;
 
-	private final int firstLayer;
+	private final int[] layers;
 
-	private final int secondLayer;
+	private final KahinaTreeView[] views;
 
-	private final KahinaTreeView overview;
-
-	private final KahinaTreeView detailView;
-	
 	private KahinaTreeViewMarker marker;
 
 	private KahinaTree secondaryModel;
 
-	public KahinaLayeredTreeView(int firstLayer, int secondLayer)
+	public KahinaLayeredTreeView(int... layers)
 	{
 		if (verbose)
 		{
 			System.out.println("Constructing " + this);
 		}
-		this.firstLayer = firstLayer;
-		this.secondLayer = secondLayer;
-		overview = new KahinaTreeView();
-		overview.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
-		overview.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
-		overview.setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
-		overview.toggleSecondDimensionDisplay();
-		overview.setVerticalDistance(3);
-		overview.setHorizontalDistance(18);
-		detailView = new KahinaTreeView();
-		KahinaRunner.getControl().registerListener("update", overview);
-		KahinaRunner.getControl().registerListener("update", detailView);
+		this.layers = layers;
+		views = new KahinaTreeView[layers.length];
+		views[0] = new KahinaTreeView();
+		views[0].setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
+		views[0].setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
+		views[0].setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
+		views[0].toggleSecondDimensionDisplay();
+		views[0].setVerticalDistance(3);
+		views[0].setHorizontalDistance(18);
+		for (int i = 1; i < views.length; i++)
+		{
+			views[i] = new KahinaTreeView();
+			KahinaRunner.getControl().registerListener("update", views[i]);
+		}
 	}
 
 	@Override
 	public void doDisplay()
 	{
 		int rootID = model.getRootID();
-		overview.display(model, firstLayer, rootID);
-		detailView.display(model, secondLayer, rootID);
+		for (int i = 0; i < views.length; i++)
+		{
+			views[i].display(model, layers[i], rootID);
+			views[i].display(model, layers[i], rootID);
+		}
 	}
 
 	@Override
 	public KahinaTree getModel()
 	{
-		return overview.getModel();
+		return views[0].getModel();
 	}
-    
-    public KahinaTree getSecondaryModel()
-    {
-        return overview.secondaryTreeModel;
-    }
+
+	public KahinaTree getSecondaryModel()
+	{
+		return views[0].secondaryTreeModel;
+	}
 
 	public void displaySecondaryTree(KahinaTree treeModel)
 	{
 		this.secondaryModel = treeModel;
-		overview.displaySecondaryTree(treeModel);
-		detailView.displaySecondaryTree(treeModel);
+		for (int i = 0; i < views.length; i++)
+		{
+			views[i].displaySecondaryTree(treeModel);
+			views[i].displaySecondaryTree(treeModel);
+		}
 	}
 
 	@Override
 	public JComponent wrapInPanel()
 	{
 		marker = new KahinaTreeViewMarker(model, secondaryModel);
-		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(model, secondaryModel, marker);
+		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(model, secondaryModel, views.length, marker);
 		KahinaRunner.getControl().registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;
 	}
 
-	public KahinaTreeView getOverview()
+	public KahinaTreeView getView(int index)
 	{
-		return overview;
-	}
-
-	public KahinaTreeView getDetailView()
-	{
-		return detailView;
+		return views[index];
 	}
 
 	public void setStatusColorEncoding(int status, Color color)
 	{
-		overview.setStatusColorEncoding(status, color);
-		detailView.setStatusColorEncoding(status, color);
+		for (KahinaTreeView view : views)
+		{
+			view.setStatusColorEncoding(status, color);
+		}
 	}
 
 	public void selectStep(int stepID)
@@ -104,10 +105,10 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 			marker.markNode(stepID);
 		}
 	}
-	
-    protected void processEvent(KahinaUpdateEvent e)
-    {
-        //recalculation is implicitly part of this (via marker)
-        selectStep(e.getSelectedStep());
-    }
+
+	protected void processEvent(KahinaUpdateEvent e)
+	{
+		// recalculation is implicitly part of this (via marker)
+		selectStep(e.getSelectedStep());
+	}
 }
