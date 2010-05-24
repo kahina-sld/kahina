@@ -9,7 +9,9 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -94,6 +96,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
     int treeLayer = 0;
     //layered structure for drawing; also used for reverse indexing
     ArrayList<List<Integer>> nodeLevels;
+    Set<Integer> allNodes;
     
     //is usually null; add another model here for two-dimensional display
     KahinaTree secondaryTreeModel;
@@ -582,6 +585,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         statusDisplayed = new HashMap<Integer,Boolean>();
         
         nodeLevels = new ArrayList<List<Integer>>();
+        allNodes = new HashSet<Integer>();
         
         nodeX = new HashMap<Integer, Integer>();
         nodeY = new HashMap<Integer, Integer>();
@@ -630,6 +634,9 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
             if (verbose) System.err.println("COMPLETE: Calculate subtree widths for layer " + treeLayer);
             if (verbose) System.err.println("maxNodeWidth = " + maxNodeWidth);
             nodeX.put(model.getRootID(treeLayer), subtreeWidths.get(model.getRootID(treeLayer)).maximumLeftDistance() * horizontalDistance * fontSize / 2);
+            // Nodes in this view whose secondary parent is not in this view.
+            // Will start from there to display secondary tree:
+            ArrayList<Integer> indentAgenda = new ArrayList<Integer>();
             for (int i = 0; i < nodeLevels.size(); i++)
             {
                 if (verbose) System.err.println("Node level: " + i);
@@ -671,6 +678,11 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
                     }
                     nodeY.put(node, verticalDistance * fontSize * i + fontSize * 3);
                     if (verbose) System.err.println(" X:" + nodeX.get(node) + " Y:" + nodeY.get(node));
+                    // Fill indent agenda:
+                    if (displaySecondDimension && secondaryTreeModel != null && !allNodes.contains(getVisibleSecondaryParent(node)))
+                    {
+                    	indentAgenda.add(node);
+                    }
                 }
                 //adapt total tree width to maximum level width (i.e. maximum x position of a node in any level)     
                 if (nodes.size() > 0)
@@ -694,15 +706,14 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
             {
                 if (verbose) System.err.println("BEGIN: adapt X values to secondary tree model");
                 int depth = 0;
-                ArrayList<Integer> agenda = new ArrayList<Integer>();
-                agenda.add(secondaryTreeModel.getRootID(treeLayer));
+                indentAgenda.add(secondaryTreeModel.getRootID(treeLayer));
                 if (verbose) System.err.println("\tvirtual root id: " + secondaryTreeModel.getRootID(treeLayer));
-                while (agenda.size() > 0)
+                while (indentAgenda.size() > 0)
                 {
-                    int s = agenda.size();
+                    int s = indentAgenda.size();
                     for (int i = 0; i < s; i++)
                     {
-                        int nodeID = agenda.remove(0);
+                        int nodeID = indentAgenda.remove(0);
                         if (nodeX.get(nodeID) != null)
                         {
                             if (nodePositionPolicy == KahinaTreeView.RIGHT_ALIGNED_NODES)
@@ -716,9 +727,9 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
                             }
                             if (verbose) System.err.println("\t Shifting node " + nodeID + " by " + depth);
                             //System.err.println(" depth(" + nodeID + ") = " + depth);
-                            agenda.addAll(getVisibleVirtualChildren(secondaryTreeModel,nodeID));
+                            indentAgenda.addAll(getVisibleVirtualChildren(secondaryTreeModel,nodeID));
                             if (verbose) System.err.println("\t Visible virtual children: " + getVisibleVirtualChildren(secondaryTreeModel,nodeID));
-                            if (verbose) System.err.println("\t Agenda: " + agenda);
+                            if (verbose) System.err.println("\t Agenda: " + indentAgenda);
                         }
                     }
                     depth++;
@@ -741,6 +752,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
       {
           rootLevel.add(rootID);
           nodeLevels.add(rootLevel);
+          allNodes.addAll(rootLevel);
           List<Integer> children = getVisibleVirtualChildren(model, model.getRootID(treeLayer));
           while(true)
           {
@@ -760,6 +772,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
                 }
             }
             nodeLevels.add(children);
+            allNodes.addAll(children);
             children = grandchildren;
             if (grandchildren.size() == 0)
             {
@@ -803,6 +816,16 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
         return parent;
     }
     
+    private int getVisibleSecondaryParent(int nodeID)
+    {
+    	int secondaryParent = secondaryTreeModel.getParent(nodeID, treeLayer);
+    	while (!nodeIsVisible(secondaryParent))
+    	{
+    		secondaryParent = secondaryTreeModel.getParent(secondaryParent, treeLayer); 
+    	}
+    	return secondaryParent;
+    }
+    
     private ArrayList<Integer> getVisibleVirtualChildren(KahinaTree treeModel, int nodeID)
     {
         ArrayList<Integer> descendants = new ArrayList<Integer>();
@@ -819,7 +842,10 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
                 i--;
             }
         }
-        //System.err.println("Virtual children for node " + nodeID + ": " + descendants);
+        if (verbose)
+        {
+        	System.err.println("Virtual children for node " + nodeID + ": " + descendants);
+        }
         return descendants;
     }
     
