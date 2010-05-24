@@ -80,7 +80,7 @@ public class KahinaGUI implements KahinaListener
 		this.fieldToView = new HashMap<Field, KahinaView<? extends KahinaObject>>();
 		fillFieldToView(stepType);
 
-		mainTreeView = new KahinaLayeredTreeView(0, 1);
+		mainTreeView = new KahinaLayeredTreeView(0, 1, 2);
 		mainTreeView.setTitle("Control flow tree");
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, mainTreeView);
 		views.add(mainTreeView);
