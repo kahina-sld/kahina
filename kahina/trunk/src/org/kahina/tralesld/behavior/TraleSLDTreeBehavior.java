@@ -78,10 +78,11 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         lastActiveID = stepID;
     }
     
-    public void processRuleApplication(int stepID, String ruleName)
+    public void processRuleApplication(int stepID, int externalID, String ruleName)
     {
-        object.addNode(stepID, "rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);  
-        secondaryTree.addNode(stepID, "rule(" + ruleName + ")", "", TraleSLDStepStatus.PROGRESS);   
+    	String caption = externalID + " rule(" + ruleName + ")";
+        object.addNode(stepID, caption, "", TraleSLDStepStatus.PROGRESS);  
+        secondaryTree.addNode(stepID, caption, "", TraleSLDStepStatus.PROGRESS);   
     }
     
     /**
@@ -112,17 +113,17 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         {
             case TraleSLDBridgeEventType.RULE_APP:
             {
-                processRuleApplication(e.getExternalID(), e.getStrContent());
+                processRuleApplication(e.getInternalID(), e.getIntContent(), e.getStrContent());
                 break;
             }
             case TraleSLDBridgeEventType.INIT:
             {
-                initializeParseTree(e.getExternalID(), e.getStrContent());
+                initializeParseTree(e.getInternalID(), e.getStrContent());
                 break;
             }
             case TraleSLDBridgeEventType.STEP_FINISHED:
             {
-                processStepFinished(e.getExternalID());
+                processStepFinished(e.getInternalID());
                 break;
             }
         }

@@ -8,32 +8,32 @@ public class TraleSLDBridgeEvent extends KahinaEvent
     private int eventType;
     
     //the logic programming step ID
-    private int externalID;
+    private int internalID;
     
     //fields for handing on different possible values
     private String strContent;
     private int intContent;
     
-    public TraleSLDBridgeEvent(int eventType, int externalID)
+    public TraleSLDBridgeEvent(int eventType, int internalID)
     {
     	super("traleSLD bridge");
     	this.eventType = eventType;
-    	this.externalID = externalID;
+    	this.internalID = internalID;
     }
     
-    public TraleSLDBridgeEvent(int eventType, int externalID, String strContent)
+    public TraleSLDBridgeEvent(int eventType, int internalID, String strContent)
     {
         super("traleSLD bridge");
         this.eventType = eventType;
-        this.externalID = externalID;
+        this.internalID = internalID;
         this.strContent = strContent;
     }
     
-    public TraleSLDBridgeEvent(int eventType, int externalID, String strContent, int intContent)
+    public TraleSLDBridgeEvent(int eventType, int internalID, String strContent, int intContent)
     {
         super("traleSLD bridge");
         this.eventType = eventType;
-        this.externalID = externalID;
+        this.internalID = internalID;
         this.strContent = strContent;
         this.intContent = intContent;
     }
@@ -43,9 +43,9 @@ public class TraleSLDBridgeEvent extends KahinaEvent
         return eventType;
     }
     
-    public int getExternalID()
+    public int getInternalID()
     {
-        return externalID;
+        return internalID;
     }
     
     public String getStrContent()
@@ -65,7 +65,7 @@ public class TraleSLDBridgeEvent extends KahinaEvent
         {
             case TraleSLDBridgeEventType.RULE_APP:
             {
-                s += "ruleApplication(" + externalID + ",\"" + strContent + "\")";
+                s += "ruleApplication(" + internalID + ",\"" + strContent + "\")";
                 break;
             }
             case TraleSLDBridgeEventType.INIT:
@@ -75,7 +75,7 @@ public class TraleSLDBridgeEvent extends KahinaEvent
             }
             case TraleSLDBridgeEventType.STEP_FINISHED:
             {
-                s += "stepFinished (" + externalID + ")";
+                s += "stepFinished (" + internalID + ")";
                 break;
             }
         }

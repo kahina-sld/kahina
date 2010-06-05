@@ -21,7 +21,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingBridge extends KahinaBridge
 {
-	private static final boolean verbose = false;
+	private static final boolean verbose = true;
 
 	// a dynamic map from external step IDs to most recent corresponding tree
 	// nodes
@@ -158,7 +158,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			newStep.storeCaching();
 			int newStepID = newStep.getID();
 			stepIDConv.put(extID, newStepID);
-			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
+			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID, stepIDConv));
 			currentID = newStepID;
 			if (bridgeState == 'n')
 				KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));

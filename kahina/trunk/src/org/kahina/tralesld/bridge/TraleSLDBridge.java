@@ -190,7 +190,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.storeCaching();
 
 			// let TraleSLDTreeBehavior do the rest
-			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName));
+			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName, extID));
 
 			// experimental: message for console
 			state.consoleMessage(newStep.getID(), extID, LogicProgrammingStepType.CALL, consoleMessage);
