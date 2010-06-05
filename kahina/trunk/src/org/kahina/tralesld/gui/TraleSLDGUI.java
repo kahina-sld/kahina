@@ -34,10 +34,10 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         //TODO: build font color customization facilities into TreeView
         //mainTreeView.setStatusFontColorEncoding(TraleSLDStepType.BLOCKED, Color.BLACK);
         
-        mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.PROSPECTIVE, Color.LIGHT_GRAY);
+        mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.PROSPECTIVE, new Color(192, 192, 192));
         mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.SUCCESSFUL, new Color(102,153,102));
         mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.FAILED, new Color(183,50,50));
-        mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.PROSPECTIVE, Color.WHITE);
+        mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.PROSPECTIVE, new Color(240, 240, 240));
         mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.SUCCESSFUL, Color.GREEN);
         mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.FAILED, Color.RED);
         mainChartView.setDisplayDecider(new TraleSLDChartEdgeDisplayDecider());
