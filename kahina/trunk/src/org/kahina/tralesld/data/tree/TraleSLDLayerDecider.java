@@ -7,7 +7,7 @@ import org.kahina.core.data.tree.KahinaTree;
 
 public class TraleSLDLayerDecider extends DefaultLayerDecider
 {
-	private static final boolean verbose = false;
+	private static final boolean verbose = true;
 	
 	private static final Pattern LEVEL0_PATTERN = Pattern.compile("\\d+ (rule|lexicon).*");
 	

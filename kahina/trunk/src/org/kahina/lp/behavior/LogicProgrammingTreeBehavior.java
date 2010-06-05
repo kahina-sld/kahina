@@ -3,7 +3,6 @@ package org.kahina.lp.behavior;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.kahina.core.KahinaInstance;
@@ -24,7 +23,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 {
-	private static final boolean verbose = true;
+	private static final boolean verbose = false;
 
 	// call dimension is always stored in a secondary tree structure
 	protected KahinaTree secondaryTree;
@@ -299,7 +298,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 *            - the ID of the step being redone in the monitored logic
 	 *            programming system
 	 */
-	public void processStepRedo(int lastStepID, Map<Integer, Integer> stepIDConv)
+	public void processStepRedo(int lastStepID)
 	{
 		if (verbose)
 			System.err.println("LogicProgrammingTreeBehavior.processStepRedo(" + lastStepID + ")");
@@ -314,19 +313,12 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		object.setNodeStatus(lastStepID, LogicProgrammingStepType.DET_EXIT);
 
 		// adapt call dimension
-		int secondaryParentID = stepIDConv.get(LogicProgrammingStep.get(secondaryTree.getParent(lastStepID)).getExternalID());
-		secondaryTree.addChild(secondaryParentID, newStepID);
+		int ancestorID = secondaryTree.getParent(lastStepID);
+		secondaryTree.addChild(ancestorID, newStepID);
 
 		// adapt control flow dimension
-		if (verbose)
-		{
-			System.err.println("Last step: " + lastStepID);
-			System.err.println("Primary parent of last step: " + object.getParent(lastStepID));
-			System.err.println("Parent's extID: " + LogicProgrammingStep.get(object.getParent(lastStepID)).getExternalID());
-			System.err.println("Corresponding internal ID: " + stepIDConv.get(LogicProgrammingStep.get(object.getParent(lastStepID)).getExternalID()));
-		}
-		int primaryParentID = stepIDConv.get(LogicProgrammingStep.get(object.getParent(lastStepID)).getExternalID());
-		object.addChild(primaryParentID, newStepID);
+		int parentID = object.getParent(lastStepID);
+		object.addChild(parentID, newStepID);
 
 		lastActiveID = newStepID;
 		breakpointCheck(newStepID);
@@ -410,7 +402,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			}
 			case LogicProgrammingBridgeEventType.STEP_REDO:
 			{
-				processStepRedo(e.getID(), e.getStepIDConv());
+				processStepRedo(e.getID());
 				break;
 			}
 			case LogicProgrammingBridgeEventType.STEP_DET_EXIT:
