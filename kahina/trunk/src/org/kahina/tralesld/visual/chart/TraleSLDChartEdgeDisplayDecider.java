@@ -11,6 +11,6 @@ public class TraleSLDChartEdgeDisplayDecider extends KahinaChartEdgeDisplayDecid
         displayedEdgeStatus.add(TraleSLDChartEdgeStatus.PROSPECTIVE);
         displayedEdgeStatus.add(TraleSLDChartEdgeStatus.SUCCESSFUL);
         //hiddenEdgeLabels.add("subject_head_rule");
-        hiddenEdgeLabels.add("head_complement_rule");
+        //hiddenEdgeLabels.add("head_complement_rule");
     }
 }
