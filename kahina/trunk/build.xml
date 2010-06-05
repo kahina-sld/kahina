@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="compile">
+	<property name="src" location="src"/>
+	<property name="bin" location="bin"/>
+	<property file="build.properties"/>
+	<property name="prop.message" value="must be defined, preferably in the file build.properties"/>
+	<fail message="gralej.path ${prop.message}" unless="gralej.path"/>
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${bin}" source="1.6" target="1.6">
+			<classpath>
+				<pathelement location="${gralej.path}"/>
+			</classpath>
+		</javac>
+	</target>
+	<target name="init">
+		<mkdir dir="${bin}"/>
+	</target>
+	<target name="clean">
+		<delete dir="${bin}"/>
+	</target>
+</project>
