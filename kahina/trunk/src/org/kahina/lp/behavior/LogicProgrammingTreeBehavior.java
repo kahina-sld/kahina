@@ -1,8 +1,10 @@
 package org.kahina.lp.behavior;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.kahina.core.KahinaInstance;
@@ -45,6 +47,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     protected List<TreeAutomaton> failPoints;
     
     protected int stepBeingRedone = -1;
+    protected Map<Integer, Integer> newStepIDByLastStepID = new HashMap<Integer, Integer>();
 
 	public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?> kahina, KahinaTree secondaryTree)
 	{
@@ -310,6 +313,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 
 		// generate a new node corresponding to the new internal step
 		int newStepID = object.addNode(object.getNodeCaption(lastStepID), "", LogicProgrammingStepType.REDO);
+		newStepIDByLastStepID.put(lastStepID, newStepID);
 		// TODO: make this unnecessary if possible
 		secondaryTree.addNode(object.getNodeCaption(lastStepID), "", LogicProgrammingStepType.REDO);
 
@@ -317,6 +321,18 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 
 		// adapt call dimension
 		int secondaryParentID = secondaryTree.getParent(lastStepID);
+		if (verbose)
+		{
+			System.err.println("Secondary parent for " + newStepID + " (copy of " + lastStepID + "): " + secondaryParentID);
+		}
+		while (newStepIDByLastStepID.containsKey(secondaryParentID))
+		{
+			secondaryParentID = newStepIDByLastStepID.get(secondaryParentID);
+			if (verbose)
+			{
+				System.err.println("Correction, secondary parent for " + newStepID + " (copy of " + lastStepID + "): " + secondaryParentID);
+			}
+		}
 		secondaryTree.addChild(secondaryParentID, newStepID);
 
 		// adapt control flow dimension
