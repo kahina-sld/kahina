@@ -1,10 +1,18 @@
 package org.kahina.tralesld.data.tree;
 
+import java.util.regex.Pattern;
+
 import org.kahina.core.data.tree.DefaultLayerDecider;
 import org.kahina.core.data.tree.KahinaTree;
 
 public class TraleSLDLayerDecider extends DefaultLayerDecider
 {
+	private static final boolean verbose = true;
+	
+	private static final Pattern LEVEL0_PATTERN = Pattern.compile("\\d+ (rule|lexicon).*");
+	
+	private static final Pattern LEVEL1_PATTERN = Pattern.compile("\\d+ (cat|retrieve|goal|mother|lex).*");
+	
 	int limit;
 
 	public TraleSLDLayerDecider()
@@ -35,16 +43,24 @@ public class TraleSLDLayerDecider extends DefaultLayerDecider
 			return -1;
 		}
 		String nodeCaption = tree.getPrimaryModel().getNodeCaption(nodeID);
-		if (nodeCaption.indexOf("rule") != -1 || nodeCaption.indexOf("lexicon") != -1)
+		if (LEVEL0_PATTERN.matcher(nodeCaption).matches())
 		{
+			if (verbose)
+			{
+				System.err.println("Level 0 pattern matches for " + nodeCaption);
+			}
 			return 0;
 		}
 		if (limit == 1)
 		{
 			return 1;
 		}
-		if (nodeCaption.indexOf("lex") != -1 || nodeCaption.indexOf("goal") != -1)
+		if (LEVEL1_PATTERN.matcher(nodeCaption).matches())
 		{
+			if (verbose)
+			{
+				System.err.println("Level 1 pattern matches for " + nodeCaption);
+			}
 			return 1;
 		}
 		return 2;
