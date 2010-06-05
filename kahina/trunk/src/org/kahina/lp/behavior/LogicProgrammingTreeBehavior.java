@@ -43,6 +43,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	protected List<TreeAutomaton> skipPoints;
     protected List<TreeAutomaton> creepPoints;
     protected List<TreeAutomaton> failPoints;
+    
+    protected int currentRedoCascadeRoot = -1;
 
 	public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?> kahina, KahinaTree secondaryTree)
 	{
@@ -245,6 +247,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			System.err.println("LogicProgrammingTreeBehavior.integratingIncomingNode(" + stepID + "," + ancestorID + ")");
 		if (verbose)
 			System.err.println("\t object.addChild(" + lastActiveID + "," + stepID + ")");
+		currentRedoCascadeRoot = -1;
 		object.addChild(lastActiveID, stepID);
 		// if (verbose) System.err.println(object.exportXML());
 		lastActiveID = stepID;
@@ -307,6 +310,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 
 		// generate a new node corresponding to the new internal step
 		int newStepID = object.addNode(object.getNodeCaption(lastStepID), "", LogicProgrammingStepType.REDO);
+		currentRedoCascadeRoot = newStepID;
 		// TODO: make this unnecessary if possible
 		secondaryTree.addNode(object.getNodeCaption(lastStepID), "", LogicProgrammingStepType.REDO);
 
@@ -335,6 +339,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 */
 	public void processStepExit(int stepID, boolean deterministic)
 	{
+		currentRedoCascadeRoot = -1;
 		if (deterministic)
 		{
 			deterministicallyExited.add(stepID);
@@ -357,6 +362,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	{
 		if (verbose)
 			System.err.println("LogicProgrammingTreeBehavior.processStepFail(" + stepID + ")");
+		currentRedoCascadeRoot = -1;
 		deterministicallyExited.add(stepID);
 		object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);
 		lastActiveID = object.getParent(stepID);
