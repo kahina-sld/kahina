@@ -3,16 +3,17 @@ package org.kahina.core.visual.text;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.Rectangle;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
+public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView<?>>
 {
-    protected JList list;
+	private static final long serialVersionUID = -615641085387993443L;
+	
+	protected JList list;
     JScrollPane listScrollPane;
     //determines how many lines are automatically displayed before and after the lead selection line
     //also determines the minimum height of the component
@@ -32,7 +33,8 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView>
         this.add(listScrollPane);          
     }
     
-    public void setView(KahinaTextView view)
+    @Override
+    public void setView(KahinaTextView<?> view)
     {
         this.view = view;
         list.setModel(view.getListModel());
