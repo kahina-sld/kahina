@@ -92,7 +92,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     public void processStepFinished(int stepID)
     {
         if (verbose) System.err.println("TraleSLDTreeBehavior.processStepFinished(" + stepID + ")");
-        currentRedoCascadeRoot = -1;
+        
         deterministicallyExited.add(stepID);
         object.setNodeStatus(stepID,TraleSLDStepType.FINISHED);
         lastActiveID = object.getParent(stepID);
