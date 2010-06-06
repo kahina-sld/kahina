@@ -1,6 +1,7 @@
 package org.kahina.lp.gui;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaStep;
@@ -12,12 +13,18 @@ public class LogicProgrammingGUI extends KahinaGUI
     public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
     {
         super(stepType, kahina);
-        getControlPanel().addControlButton("creep.png", "creep", "continue to next step");
-        getControlPanel().addControlButton("reject.png", "fail", "make this step fail");
-        getControlPanel().addControlButton("roundskip.png", "skip", "auto-complete this step");
-        getControlPanel().addControlButton("pause.png", "(un)pause", "pause the current skip operation");
-        getControlPanel().addControlButton("leap.png", "leap", "jump to next breakpoint match");
-        getControlPanel().addControlButton("stop.png", "stop", "abort skip or leap");
+        getControlPanel().addControlButtonGroup("Control");
+        getControlPanel().addControlButton("creep.png", "creep", "(C)ontinue to next step", "Control", KeyEvent.VK_C);
+        getControlPanel().addControlButton("roundskip.png", "auto-complete", "(A)uto-complete this step", "Control", KeyEvent.VK_A);
+        getControlPanel().addControlButton("pause.png", "(un)pause", "(P)ause the current skip operation", "Control", KeyEvent.VK_P);
+        getControlPanel().addControlButton("skip.png", "skip", "(S)kip this step", "Control", KeyEvent.VK_S);
+        getControlPanel().addControlButton("reject.png", "fail", "make this step (F)ail", "Control", KeyEvent.VK_F);
+        getControlPanel().addControlButton("leap.png", "leap", "(L)eap to next breakpoint match",  "Control", KeyEvent.VK_L);
+        getControlPanel().addControlButton("stop.png", "stop", "abort skip or leap (X)",  "Control", KeyEvent.VK_X);
+        
+        getControlPanel().addControlButtonGroup("History");
+        getControlPanel().addControlButton("back.png", "backInHistory", "Back (Q)",  "History", KeyEvent.VK_Q);
+        getControlPanel().addControlButton("forward.png", "forwardInHistory", "Forward (W)",  "History", KeyEvent.VK_W);
         
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.CALL, Color.WHITE);
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.EXIT, new Color(153,255,102));

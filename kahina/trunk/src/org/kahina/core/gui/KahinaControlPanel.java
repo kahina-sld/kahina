@@ -3,8 +3,10 @@ package org.kahina.core.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -16,19 +18,37 @@ public class KahinaControlPanel extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = 6440832833800241356L;
 	
-	//definitions of simple buttons
-    List<KahinaControlButton> controlButtons;
+	//definitions of control button groups
+    HashMap<String, KahinaControlButtonGroup> controlButtonGroups;
+    
+    List<String> buttonGroupOrdering;
     
     public KahinaControlPanel()
     {
         super();
-        controlButtons = new ArrayList<KahinaControlButton>();
+        controlButtonGroups = new HashMap<String, KahinaControlButtonGroup>();
+        buttonGroupOrdering = new ArrayList<String>();
     }
     
-    //used to add simple button definitions (not more than an icon path, a command and a tool tip)
-    public void addControlButton(String iconFilePath, String command, String toolTipText)
+    public void addControlButtonGroup(String groupCaption)
     {
-        controlButtons.add(new KahinaControlButton(iconFilePath, command, toolTipText));       
+        if (controlButtonGroups.get(groupCaption) == null)
+        {
+            controlButtonGroups.put(groupCaption, new KahinaControlButtonGroup(groupCaption));
+        }
+        buttonGroupOrdering.add(groupCaption);
+    }
+    
+    //used to add simple button definitions (not more than an icon path, a command, a tool tip and a mnemonic)
+    public void addControlButton(String iconFilePath, String command, String toolTipText, String groupCaption, int mnemonic)
+    {
+        KahinaControlButtonGroup buttonGroup = controlButtonGroups.get(groupCaption);
+        if (buttonGroup == null)
+        {
+            buttonGroup = new KahinaControlButtonGroup(groupCaption);
+            controlButtonGroups.put(groupCaption, buttonGroup);
+        }
+        buttonGroup.addControlButton(iconFilePath, command, toolTipText, mnemonic);       
     }
     
     //used to fill the panel with the content defined by the controlButtons
@@ -36,11 +56,19 @@ public class KahinaControlPanel extends JPanel implements ActionListener
     {
         this.removeAll();
         this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
-        for (KahinaControlButton controlButton : controlButtons)
+        for (String buttonGroupID : buttonGroupOrdering)
         {
-            JButton button = controlButton.create();
-            button.addActionListener(this);
-            add(button);
+            KahinaControlButtonGroup buttonGroup = controlButtonGroups.get(buttonGroupID);
+            JPanel panel = new JPanel();
+            panel.setBorder(BorderFactory.createTitledBorder(buttonGroup.groupCaption));
+            panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
+            for (KahinaControlButton controlButton : buttonGroup.controlButtons)
+            {
+                JButton button = controlButton.create();
+                button.addActionListener(this);
+                panel.add(button);
+            }
+            add(panel);
         }
     }
     

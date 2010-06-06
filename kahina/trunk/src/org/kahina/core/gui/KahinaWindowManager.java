@@ -27,7 +27,7 @@ public class KahinaWindowManager
         
         mainWindow = new KahinaMainWindow(this);
         
-        int width = gui.getControlPanel().controlButtons.size() * 75;
+        int width = gui.getControlPanel().getWidth();
         int height = 100;
         
         int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;

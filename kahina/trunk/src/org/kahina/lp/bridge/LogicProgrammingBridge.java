@@ -401,35 +401,42 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (bridgeState == 'n')
 			{
 				bridgeState = 'c';
-			} else if (bridgeState == 'p')
+			} 
+            else if (bridgeState == 'p')
 			{
 				skipID = -1;
 				bridgeState = 'c';
-			} else if (bridgeState == 'q')
+			} 
+            else if (bridgeState == 'q')
 			{
 				skipID = -1;
 				bridgeState = 'c';
-			} else if (bridgeState == 'l')
+			} 
+            else if (bridgeState == 'l')
 			{
 				skipID = -1;
 				bridgeState = 'n';
 			}
-		} else if (command.equals("stop"))
+		} 
+        else if (command.equals("stop"))
 		{
 			if (bridgeState == 'p')
 			{
 				skipID = -1;
 				bridgeState = 'c';
-			} else if (bridgeState == 'q')
+			} 
+            else if (bridgeState == 'q')
 			{
 				skipID = -1;
 				bridgeState = 'c';
-			} else if (bridgeState == 'l')
+			} 
+            else if (bridgeState == 'l')
 			{
 				skipID = -1;
 				bridgeState = 'n';
 			}
-		} else if (command.equals("fail"))
+		} 
+        else if (command.equals("fail"))
 		{
 			if (bridgeState == 'n')
 			{
@@ -443,7 +450,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 				skipID = -1;
 				bridgeState = 'f';
 			}
-		} else if (command.equals("skip"))
+		} 
+        else if (command.equals("auto-complete"))
 		{
 			if (bridgeState == 'n')
 			{
@@ -451,19 +459,27 @@ public class LogicProgrammingBridge extends KahinaBridge
 				if (selectedID == -1)
 				{
 					skipID = currentID;
-				} else
+				} 
+                else
 				{
 					skipID = selectedID;
 				}
-			} else if (bridgeState == 'p')
+			} 
+            else if (bridgeState == 'p')
 			{
 				bridgeState = 't';
-			} else if (bridgeState == 'q')
+			} 
+            else if (bridgeState == 'q')
 			{
 				bridgeState = 't';
 				skipID = currentID;
-			}
-		} else if (command.equals("leap"))
+			}        
+		} 
+        else if (command.equals("skip"))
+        {
+            skipFlag = true;
+        } 
+        else if (command.equals("leap"))
 		{
 			if (bridgeState == 'n')
 			{

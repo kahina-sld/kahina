@@ -35,8 +35,9 @@ public class KahinaMainWindow extends KahinaWindow
         windowManager.gui.getControlPanel().build();
         this.add(windowManager.gui.getControlPanel(), BorderLayout.PAGE_START);
         
-        int width = windowManager.gui.getControlPanel().controlButtons.size() * 75;
-        int height = 100;
+        //TODO: adapt this to the size of the control panel
+        int width = 625;
+        int height = 120;
         this.setSize(width, height);
         
         setVisible(true);

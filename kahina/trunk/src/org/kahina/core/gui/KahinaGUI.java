@@ -25,6 +25,7 @@ import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
+import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
@@ -41,6 +42,8 @@ public class KahinaGUI implements KahinaListener
 	private static final boolean verbose = false;
 
 	KahinaInstance<?, ?, ?> kahina;
+    
+    KahinaSelectionHistory selectionHistory;
 
 	KahinaControlPanel controlPanel;
 
@@ -71,6 +74,9 @@ public class KahinaGUI implements KahinaListener
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.STEP_FOCUS, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
         KahinaRunner.getControl().registerListener("dialog", this);
+        KahinaRunner.getControl().registerListener("control", this);
+        
+        this.selectionHistory = new KahinaSelectionHistory();
 
 		this.controlPanel = new KahinaControlPanel();
 
@@ -221,6 +227,10 @@ public class KahinaGUI implements KahinaListener
         {
             processEvent((KahinaDialogEvent) e);
         }
+        else if (e instanceof KahinaControlEvent)
+        {
+            processEvent((KahinaControlEvent) e);
+        }
 	}
 
 	private void processEvent(KahinaSelectionEvent e)
@@ -293,6 +303,19 @@ public class KahinaGUI implements KahinaListener
             {
                 new AboutDialog(windowManager.mainWindow).setVisible(true);        
             }
+        }
+    }
+    
+    private void processEvent(KahinaControlEvent e)
+    {
+        String command = e.getCommand();
+        if (command.equals("backInHistory"))
+        {
+            selectionHistory.moveToPrevious();
+        }
+        else if (command.equals("forwardInHistory"))
+        {
+            selectionHistory.moveToNext();
         }
     }
     
