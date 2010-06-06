@@ -117,6 +117,11 @@ public abstract class DataManager
 		}
 		return store.retrieve(id);
 	}
+	
+	public void initialize()
+	{
+		KahinaObject.setNextID(1);
+	}
 
 	/**
 	 * This method must be called to persist the stored objects across runtimes.

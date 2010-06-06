@@ -135,6 +135,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			prospectiveEdgeCanFail = true;
 			state.linkEdgeToNode(newEdgeID, stepIDConv.get(ruleApplicationExtID));
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(newEdgeID));
+			if (verbose)
+			{
+				System.err.println("//" + this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + leftmostDaughter);
+			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -180,21 +184,35 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			if (verbose)
+			{
 				System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + ",\"" + ruleName + "," + leftmostDaughter + "\")");
-
+			}
 			TraleSLDStep newStep = generateStep();
 			newStep.setGoalDesc("rule(" + ruleName + ")");
 			newStep.setExternalID(extID);
 			stepIDConv.put(extID, newStep.getID());
 			registerProspectiveEdge(extID, ruleName, leftmostDaughter);
+			if (verbose)
+			{
+				System.err.println("Storing new step.");
+			}
 			newStep.storeCaching();
-
+			if (verbose)
+			{
+				System.err.println("Firing rule application event.");
+			}
 			// let TraleSLDTreeBehavior do the rest
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName, extID));
-
+			if (verbose)
+			{
+				System.err.println("Creating console message.");
+			}
 			// experimental: message for console
 			state.consoleMessage(newStep.getID(), extID, LogicProgrammingStepType.CALL, consoleMessage);
-
+			if (verbose)
+			{
+				System.err.println("Firing selection event.");
+			}
 			// if (bridgeState == 'n')
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(newStep.getID()));
@@ -203,6 +221,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// to
 			// be superfluous
 			// lastEdge = currentEdge;
+			if (verbose)
+			{
+				System.err.println("//TraleSLDBridge.registerRuleApplication(" + extID + ",\"" + ruleName + "," + leftmostDaughter + "\")");
+			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
