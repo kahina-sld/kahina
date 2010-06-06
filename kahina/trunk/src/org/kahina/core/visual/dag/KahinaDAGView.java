@@ -2,6 +2,7 @@ package org.kahina.core.visual.dag;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
@@ -52,6 +53,9 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     //display coordinates for nodes
     private HashMap<Integer, Integer> nodeX;
     private HashMap<Integer, Integer> nodeY;
+    private HashMap<Integer, Integer> nodeHeights;
+    private HashMap<Integer, Integer> nodeWidths;
+
 
     // special display properties for certain nodes
     HashMap<Integer, Color> nodeBorderColor;
@@ -282,10 +286,15 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     {
         return nodeY.get(nodeID);
     }
+    
+    public int getNodeWidth(int nodeID)
+    {
+        return nodeWidths.get(nodeID);
+    }
 
     public int getNodeHeight(int nodeID)
     {
-        return nodeHeight;
+        return nodeHeights.get(nodeID);
     }
     
     public void setStatusColorEncoding(int status, Color color)
@@ -315,6 +324,8 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
 
         nodeX = new HashMap<Integer, Integer>();
         nodeY = new HashMap<Integer, Integer>();
+        nodeWidths = new HashMap<Integer, Integer>();
+        nodeHeights = new HashMap<Integer, Integer>();
 
         subtreeWidths = new HashMap<Integer, WidthVector>();
     }
@@ -574,15 +585,16 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
             // calculate (maximum) subtree width for each node bottom-up
             for (int i = nodeLevels.size() - 1; i >= 0; i--)
             {
-                if (verbose)
-                    System.err.println("Node level: " + i);
+                if (verbose) System.err.println("Node level: " + i);
                 for (int node : nodeLevels.get(i))
                 {
-                    int nodeLabelWidth = fm.stringWidth(model.getNodeCaption(node));
+                    Dimension nodeDimension = computeNodeDimension(fm, node);
+                    nodeWidths.put(node, nodeDimension.width);
+                    nodeHeights.put(node, nodeDimension.height);
                     // System.err.println("labelWidth(" +
                     // getContentfulTreeModel().getNodeCaption(node) + ") = " +
                     // nodeLabelWidth);
-                    if (maxNodeWidth < nodeLabelWidth) maxNodeWidth = nodeLabelWidth;
+                    if (maxNodeWidth < nodeDimension.width) maxNodeWidth = nodeDimension.width;
                     ArrayList<Integer> children = getVisibleVirtualDescendants(model, node);
                     subtreeWidths.put(node, constructWidthVector(children));
                     if (verbose)  System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
@@ -638,6 +650,19 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         }
         if (verbose)
             System.err.println("COMPLETE: Calculate coordinates");
+    }
+    
+    private Dimension computeNodeDimension(FontMetrics fm, int nodeID)
+    {
+        int maxWidth = 0;
+        String tag = model.getNodeCaption(nodeID);
+        String[] stringParts = tag.split("\\\\n");
+        for (String part : stringParts)
+        {
+            int width = fm.stringWidth(part);
+            if (width > maxWidth) maxWidth = width;
+        }        
+        return new Dimension(maxWidth, stringParts.length * nodeHeight + 4);
     }
     
     private int getVisibleMiddleAntecedent(int nodeID)

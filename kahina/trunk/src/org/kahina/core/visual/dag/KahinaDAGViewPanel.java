@@ -10,6 +10,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JScrollPane;
@@ -120,46 +121,54 @@ private static final long serialVersionUID = 6701252380309408342L;
     
     public void printBoxAroundNodeTag(Graphics2D canvas, int nodeID)
     {
-        canvas.setFont(view.getNodeFont(nodeID));
-        FontMetrics fm = canvas.getFontMetrics();
-        int width = fm.stringWidth(view.getModel().getNodeCaption(nodeID));
-        int x = view.getNodeX(nodeID) - width / 2;
-        int y = view.getNodeY(nodeID) - view.getNodeHeight(nodeID) + 2;
+        int x = view.getNodeX(nodeID);
+        int y = view.getNodeY(nodeID);
+        int width = view.getNodeWidth(nodeID);
+        int height = view.getNodeHeight(nodeID);
         Color color = view.getNodeColor(nodeID);
         if (color != null)
         { 
             canvas.setColor(color);
-            canvas.fillRect(x - 2, y, width + 4, view.getNodeHeight(nodeID) + 2);
+            canvas.fillRect(x, y, width, height);
             canvas.setColor(Color.BLACK);
-            canvas.drawRect(x - 2, y, width + 4, view.getNodeHeight(nodeID) + 2);
+            canvas.drawRect(x, y, width, height);
             if (view.getMarkedNode() == nodeID)
             {
                 canvas.setColor(Color.YELLOW);
                 canvas.setStroke(new BasicStroke(2));
-                canvas.drawRect(x - 3, y - 1, width + 6, view.getNodeHeight(nodeID) + 4);
+                canvas.drawRect(x - 2, y - 2, width + 4, height + 4);
             }
             if (view.getNodeBorderColor(nodeID) != null)
             {
                 canvas.setColor(view.getNodeBorderColor(nodeID));
                 canvas.setStroke(new BasicStroke(2));
-                canvas.drawRect(x - 3, y - 1, width + 6, view.getNodeHeight(nodeID) + 4);
+                canvas.drawRect(x - 2, y - 2, width + 4, height + 4);
             }
         }
     }   
     
     public void printNodeTag(Graphics2D canvas, int nodeID)
     {
-        canvas.setFont(view.getNodeFont(nodeID));
-        FontMetrics fm = canvas.getFontMetrics();
-        String tag = view.getModel().getNodeCaption(nodeID);
-        int width = fm.stringWidth(tag);
-        canvas.setColor(Color.BLACK);
-        //print tag name of node
-        int x = view.getNodeX(nodeID) - width / 2;
-        int y = view.getNodeY(nodeID);  
-        canvas.drawString(tag + " " + nodeID, x, y);
+        canvas.setFont(view.getNodeFont(nodeID));      
+        drawNodeTagWithLineBreaks(nodeID, canvas);
         canvas.setStroke(new BasicStroke(1));
         canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, view.getZoomLevel()));
+    }
+    
+    private void drawNodeTagWithLineBreaks(int nodeID, Graphics2D canvas)
+    {
+        FontMetrics fm = canvas.getFontMetrics();
+        String tag = view.getModel().getNodeCaption(nodeID);
+        String[] stringParts = tag.split("\\\\n");   
+        canvas.setColor(Color.BLACK);
+        int x = view.getNodeX(nodeID);
+        int y = view.getNodeY(nodeID) + fm.getHeight(); 
+        
+        for (String part : stringParts)
+        {
+            canvas.drawString(part, x, y); 
+            y += fm.getHeight();
+        }
     }
     
     public void printDAGEdges(Graphics canvas)
@@ -183,9 +192,9 @@ private static final long serialVersionUID = 6701252380309408342L;
                         }
                         else
                         {
-                            int x1 = view.getNodeX(ancestor);
-                            int y1 = view.getNodeY(ancestor);
-                            int x2 = view.getNodeX(nodeID);
+                            int x1 = view.getNodeX(ancestor) + view.getNodeWidth(ancestor) / 2;
+                            int y1 = view.getNodeY(ancestor) + view.getNodeHeight(ancestor);
+                            int x2 = view.getNodeX(nodeID) + view.getNodeWidth(nodeID) / 2;
                             int y2 = view.getNodeY(nodeID);
                             canvas.drawLine(x1, y1, x2, y2);
                                     
