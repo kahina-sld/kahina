@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kahinaDAG>
+  <node id="0" caption="[&lt;v, {}&gt;([_X]) --&gt; &lt;TVnp1-70-216--schläft2--0, {}&gt;([_X]) no_op ,0,&lt;0,0&gt;=0,[[-1,-1]],lpa={}]"/>
+  <node id="1" caption="[&lt;TVnp1-70-216--schläft2--0, {}&gt;([_X0][_X1][schläft][_Y1][_X2][_X2.1][_Y2.1][_Y2][_Y0]) --&gt; &lt;adj, top category: v, bot category: v, +, {TVnp1-70-215--schläft2--0 }&gt;([_X0],[_Y0]) &lt;adj, top category: v, bot category: v, -, {}&gt;([_X1],[_Y1]) &lt;adj, top category: v, bot category: v, +, {}&gt;([_X2],[_Y2]) &lt;adj, top category: v, bot category: v, -, {}&gt;([_X2.1],[_Y2.1]) no_op ,0,&lt;0,0&gt;=0,[[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1]],lpa={}]"/>
+  <node id="2" caption="[&lt;TVnp1-70-216--schläft2--0, {}&gt;([_X0][_X1][schläft][_Y1][_X2][_X2.1][_Y2.1][_Y2][_Y0]) --&gt; &lt;adj, top category: v, bot category: v, +, {}&gt;([_X0],[_Y0]) &lt;adj, top category: v, bot category: v, -, {}&gt;([_X1],[_Y1]) &lt;adj, top category: v, bot category: v, +, {TVnp1-70-215--schläft2--0 }&gt;([_X2],[_Y2]) &lt;adj, top category: v, bot category: v, -, {}&gt;([_X2.1],[_Y2.1]) no_op ,0,&lt;0,0&gt;=0,[[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1],[-1,-1]],lpa={}]"/>
+  <edge id="0" start="0" end="1" label="predict"/>
+  <edge id="1" start="0" end="2" label="predict"/>
+</kahinaDAG>

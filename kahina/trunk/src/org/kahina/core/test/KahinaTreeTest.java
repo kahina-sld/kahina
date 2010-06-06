@@ -12,6 +12,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.tree.KahinaDbTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.LayerDecider;
@@ -60,6 +61,7 @@ public class KahinaTreeTest
             v0.setStatusColorEncoding(2,new Color(0,255,255));
             v0.setStatusColorEncoding(3,new Color(255,255,255)); 
             
+            KahinaRunner.initialize(KahinaDataHandlingMethod.MEMORY);
             KahinaRunner.getControl().registerListener("select", v0);
             KahinaRunner.getControl().registerListener("update", v0);
             
