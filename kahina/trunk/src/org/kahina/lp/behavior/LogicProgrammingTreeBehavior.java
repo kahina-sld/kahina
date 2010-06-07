@@ -259,23 +259,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		breakpointCheck(stepID);
 	}
 
-	private void processUnblocked(int pseudoStepInternalID, String description)
-    {
-		// 1. process information
-    	object.addNode(pseudoStepInternalID, description, "", LogicProgrammingStepType.PSEUDO_UNBLOCKED);
-    	// TODO make this unnecessary, see processStepInformation
-    	secondaryTree.addNode(pseudoStepInternalID, description, "", LogicProgrammingStepType.PSEUDO_UNBLOCKED);
-    	// 2. integrate node
-    	if (verbose)
-    	{
-    		System.err.println("Adding pseudostep " + pseudoStepInternalID + " as child of " + lastActiveID);
-    	}
-    	object.addChild(lastActiveID, pseudoStepInternalID);
-    	secondaryTree.addChild(lastActiveID, pseudoStepInternalID);
-    	lastActiveID = pseudoStepInternalID;
-    	breakpointCheck(pseudoStepInternalID);
-    }
-
 	/**
 	 * integrate incoming step detail information (usually goal descriptions)
 	 * into tree called by the event processing routine for a KahinaTreeEvent of
@@ -460,10 +443,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			{
 				processStepFail(e.getID());
 				break;
-			}
-			case LogicProgrammingBridgeEventType.UNBLOCKED:
-			{
-				processUnblocked(e.getID(), e.getStrContent());
 			}
 		}
 	}

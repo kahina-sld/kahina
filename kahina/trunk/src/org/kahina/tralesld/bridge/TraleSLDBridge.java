@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
@@ -28,7 +30,9 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
-	public static final boolean verbose = false;
+	public static final boolean verbose = true;
+	
+	private static final Pattern NOW_PATTERN = Pattern.compile("now\\((\\d+)\\)");
 
 	TraleSLDState state;
 
@@ -93,6 +97,25 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			if (nodeLabel.startsWith("rule_close") && lastRegisteredChartEdge != -1)
 			{
 				state.linkEdgeToNode(lastRegisteredChartEdge, currentID);
+			}
+			if (verbose)
+			{
+				System.err.println("Matching...");
+			}
+			Matcher matcher = NOW_PATTERN.matcher(nodeLabel);
+			if (matcher.matches())
+			{
+				/*if (verbose)
+				{
+					System.err.println("Matched! Current ID: " + currentID);
+				}
+				int blockingStepExtID = Integer.parseInt(matcher.group(1));
+				int blockingStepID = stepIDConv.get(blockingStepExtID);
+				state.linkNodes(currentID, blockingStepID); TODO little arrow*/
+			}
+			if (verbose)
+			{
+				System.err.println("Done matching.");
 			}
 			if (verbose)
 			{

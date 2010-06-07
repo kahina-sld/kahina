@@ -8,5 +8,4 @@ public class LogicProgrammingBridgeEventType
     public static final int STEP_DET_EXIT = 3;
     public static final int STEP_NONDET_EXIT = 4;
     public static final int STEP_FAIL = 5;
-	public static final int UNBLOCKED = 6;
 }
