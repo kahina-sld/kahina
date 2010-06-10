@@ -9,6 +9,7 @@ import org.kahina.core.breakpoint.TreePattern;
 import org.kahina.core.breakpoint.TreePatternNode;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.tralesld.TraleSLDStepStatus;
 import org.kahina.tralesld.TraleSLDStepType;
@@ -42,7 +43,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         KahinaBreakpoint bp = new KahinaBreakpoint(KahinaBreakpointType.SKIP_POINT);
         bp.setName("unify/featval/type Skip");
         bp.setPattern(pat);
-        kahina.getState().getSkipPoints().add(bp); // TODO embeds interesting when's, what to do about it?
+        ((LogicProgrammingState) kahina.getState()).getSkipPoints().add(bp); // TODO embeds interesting when's, what to do about it?
         //System.err.println(aut.toString());
         TreePattern pat2 = new TreePattern();
         TreePatternNode rootNode2 = new TreePatternNode();
@@ -52,7 +53,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         KahinaBreakpoint bp2 = new KahinaBreakpoint(KahinaBreakpointType.SKIP_POINT);
         bp2.setName("Lex Detail Skip");
         bp2.setPattern(pat2);
-        kahina.getState().getSkipPoints().add(bp2);
+        ((LogicProgrammingState) kahina.getState()).getSkipPoints().add(bp2);
     }
     
     public void initializeCreepPoints()
@@ -65,7 +66,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         KahinaBreakpoint bp = new KahinaBreakpoint(KahinaBreakpointType.CREEP_POINT);
         bp.setName("Failed Lex Creep");
         bp.setPattern(pat);
-        kahina.getState().getCreepPoints().add(bp);
+        ((LogicProgrammingState) kahina.getState()).getCreepPoints().add(bp);
         //System.err.println(aut.toString());
     }
     

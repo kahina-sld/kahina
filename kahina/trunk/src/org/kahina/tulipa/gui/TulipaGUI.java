@@ -4,13 +4,8 @@ import java.awt.Color;
 
 import org.kahina.core.KahinaStep;
 import org.kahina.core.gui.KahinaGUI;
-import org.kahina.core.gui.KahinaViewIntegrationType;
-import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.core.visual.dag.KahinaDAGView;
-import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStepType;
-import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
-import org.kahina.tralesld.visual.chart.TraleSLDChartEdgeDisplayDecider;
 import org.kahina.tulipa.TulipaInstance;
 
 public class TulipaGUI extends KahinaGUI
@@ -30,8 +25,8 @@ public class TulipaGUI extends KahinaGUI
         livingViews.add(mainDAGView); 
         varNameToView.put("dag", mainDAGView);
 
-        mainTreeView.setStatusColorEncoding(TraleSLDStepType.FINISHED, new Color(102,51,153));
-        mainTreeView.setStatusColorEncoding(TraleSLDStepType.BLOCKED, Color.BLACK);
+        mainDAGView.setStatusColorEncoding(TraleSLDStepType.FINISHED, new Color(102,51,153));
+        mainDAGView.setStatusColorEncoding(TraleSLDStepType.BLOCKED, Color.BLACK);
         //TODO: build font color customization facilities into TreeView
         //mainTreeView.setStatusFontColorEncoding(TraleSLDStepType.BLOCKED, Color.BLACK);
     }

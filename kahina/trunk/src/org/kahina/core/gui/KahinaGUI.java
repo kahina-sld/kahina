@@ -41,13 +41,11 @@ public class KahinaGUI implements KahinaListener
 {
 	private static final boolean verbose = false;
 
-	KahinaInstance<?, ?, ?> kahina;
+	protected KahinaInstance<?, ?, ?> kahina;
     
     KahinaSelectionHistory selectionHistory;
 
 	KahinaControlPanel controlPanel;
-
-	protected KahinaLayeredTreeView mainTreeView;
     
     protected KahinaTextView messageConsoleView;
 
@@ -87,13 +85,6 @@ public class KahinaGUI implements KahinaListener
 		this.fieldToView = new HashMap<Field, KahinaView<? extends KahinaObject>>();
         this.varNameToView = new HashMap<String, KahinaView<? extends KahinaObject>>();
 		fillFieldToView(stepType);
-
-		mainTreeView = new KahinaLayeredTreeView(0, 1, 2);
-		mainTreeView.setTitle("Control flow tree");
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, mainTreeView);
-		views.add(mainTreeView);
-		livingViews.add(mainTreeView);
-        varNameToView.put("controlFlowTree", mainTreeView);
         
         messageConsoleView = new KahinaTextView();
         messageConsoleView.setTitle("Message console");
@@ -197,8 +188,6 @@ public class KahinaGUI implements KahinaListener
 
 	protected void displayMainViews()
 	{
-		mainTreeView.display(kahina.getState().getStepTree());
-		mainTreeView.displaySecondaryTree(kahina.getState().getSecondaryStepTree());
 	}
 
 	public void displayStepContent(int stepID)
@@ -259,46 +248,6 @@ public class KahinaGUI implements KahinaListener
     {
         switch (e.getDialogEventType())
         {
-            case KahinaDialogEvent.PRIMARY_BREAKPOINTS:
-            {
-                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.PRIMARY_BREAKPOINT);
-                breakpointEditor.setTitle("Edit primary breakpoints");
-                breakpointEditor.loadBreakpointProfile(kahina.getState().getPrimaryBreakpoints());
-                breakpointEditor.setVisible(true);
-                break;
-            }
-            case KahinaDialogEvent.SECONDARY_BREAKPOINTS:
-            {
-                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.SECONDARY_BREAKPOINT);
-                breakpointEditor.setTitle("Edit secondary breakpoints");
-                breakpointEditor.loadBreakpointProfile(kahina.getState().getSecondaryBreakpoints());
-                breakpointEditor.setVisible(true);
-                break;
-            }
-            case KahinaDialogEvent.SKIP_POINTS:
-            {
-                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.SKIP_POINT);
-                breakpointEditor.setTitle("Edit skip points");
-                breakpointEditor.loadBreakpointProfile(kahina.getState().getSkipPoints());
-                breakpointEditor.setVisible(true);
-                break;
-            }
-            case KahinaDialogEvent.CREEP_POINTS:
-            {
-                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.CREEP_POINT);
-                breakpointEditor.setTitle("Edit creep points");
-                breakpointEditor.loadBreakpointProfile(kahina.getState().getCreepPoints());
-                breakpointEditor.setVisible(true);
-                break;
-            }
-            case KahinaDialogEvent.FAIL_POINTS:
-            {
-                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.FAIL_POINT);
-                breakpointEditor.setTitle("Edit fail points");
-                breakpointEditor.loadBreakpointProfile(kahina.getState().getFailPoints());
-                breakpointEditor.setVisible(true);
-                break;
-            }
             case KahinaDialogEvent.ABOUT:
             {
                 new AboutDialog(windowManager.mainWindow).setVisible(true);        

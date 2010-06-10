@@ -18,6 +18,7 @@ import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
+import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.event.LogicProgrammingBridgeEvent;
@@ -130,7 +131,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	public void compilePrimaryBreakpoints()
 	{
 		this.primaryBreakpoints.clear();
-		for (KahinaBreakpoint bp : kahina.getState().getPrimaryBreakpoints())
+		for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getPrimaryBreakpoints())
 		{
 			TreeAutomaton aut = bp.compile();
 			aut.setTree(object);
@@ -143,7 +144,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	public void compileSecondaryBreakpoints()
 	{
 		this.secondaryBreakpoints.clear();
-		for (KahinaBreakpoint bp : kahina.getState().getSecondaryBreakpoints())
+		for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getSecondaryBreakpoints())
 		{
 			TreeAutomaton aut = bp.compile();
 			aut.setTree(secondaryTree);
@@ -156,7 +157,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	public void compileSkipPoints()
 	{
 		this.skipPoints.clear();
-		for (KahinaBreakpoint bp : kahina.getState().getSkipPoints())
+		for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getSkipPoints())
 		{
 			TreeAutomaton aut = bp.compile();
 			aut.setTree(secondaryTree);
@@ -169,7 +170,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     public void compileCreepPoints()
     {
         this.creepPoints.clear();
-        for (KahinaBreakpoint bp : kahina.getState().getCreepPoints())
+        for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getCreepPoints())
         {
             TreeAutomaton aut = bp.compile();
             aut.setTree(secondaryTree);
@@ -182,7 +183,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
     public void compileFailPoints()
     {
         this.failPoints.clear();
-        for (KahinaBreakpoint bp : kahina.getState().getFailPoints())
+        for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getFailPoints())
         {
             TreeAutomaton aut = bp.compile();
             aut.setTree(secondaryTree);

@@ -30,57 +30,18 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
  */
 
 public class KahinaState implements KahinaListener
-{
-    KahinaTree stepTree;
-    KahinaTree secondaryStepTree;
-    
-    // A kind of tertiary tree structure defined by links between nodes:
-    Map<Integer, List<Integer>> anchorsByTarget;
-    Map<Integer, Integer> targetByAnchor;
-    
+{   
     //the messages that will be stored in the console
     protected KahinaTextModel consoleMessages;
     //map from stepIDs to lines in console
     protected Map<Integer,Set<KahinaLineReference>> consoleLines;
     
-    //store the three types of breakpoints
-    protected List<KahinaBreakpoint> primaryBreakpoints;
-    protected List<KahinaBreakpoint> secondaryBreakpoints;
-    protected List<KahinaBreakpoint> skipPoints;
-    protected List<KahinaBreakpoint> creepPoints;
-    protected List<KahinaBreakpoint> failPoints;
-    
     public KahinaState(KahinaInstance<?, ?, ?> kahina, int dataHandlingMethod)
     {
-        stepTree = new KahinaMemTree();
-        secondaryStepTree = new KahinaMemTree();
-        anchorsByTarget = new HashMap<Integer, List<Integer>>();
-        targetByAnchor = new HashMap<Integer, Integer>();
         consoleMessages = new KahinaTextModel();
         consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
         
-        primaryBreakpoints = new ArrayList<KahinaBreakpoint>();
-        secondaryBreakpoints = new ArrayList<KahinaBreakpoint>();
-        skipPoints = new ArrayList<KahinaBreakpoint>();
-        creepPoints = new ArrayList<KahinaBreakpoint>();
-        failPoints = new ArrayList<KahinaBreakpoint>();
         
-        //database variant turned out to be too slow
-        /* switch (dataHandlingMethod)
-        {
-            case KahinaDataHandlingMethod.DATABASE:
-            {
-                stepTree = new KahinaDbTree(KahinaRunner.getDatabaseHandler());
-                secondaryStepTree = new KahinaDbTree(KahinaRunner.getDatabaseHandler());
-                break;
-            }
-            case KahinaDataHandlingMethod.MEMORY:
-            {
-                stepTree = new KahinaMemTree();
-                secondaryStepTree = new KahinaMemTree();
-                break;
-            }
-        }*/
     }
     
     public void consoleMessage(int stepID, String message)
@@ -100,68 +61,6 @@ public class KahinaState implements KahinaListener
     public KahinaTextModel getConsoleMessages()
     {
         return consoleMessages;
-    }
-    
-    public KahinaTree getStepTree()
-    {
-        return stepTree;
-    }
-    
-    public KahinaTree getSecondaryStepTree()
-    {
-        return secondaryStepTree;
-    }
-    
-    public List<KahinaBreakpoint> getPrimaryBreakpoints()
-    {
-        return primaryBreakpoints;
-    }
-    
-    public List<KahinaBreakpoint> getSecondaryBreakpoints()
-    {
-        return secondaryBreakpoints;
-    }
-    
-    public List<KahinaBreakpoint> getSkipPoints()
-    {
-        return skipPoints;
-    }
-    
-    public List<KahinaBreakpoint> getCreepPoints()
-    {
-        return creepPoints;
-    }
-    
-    public List<KahinaBreakpoint> getFailPoints()
-    {
-        return failPoints;
-    }
-    
-    public void linkNodes(int anchor, int target)
-    {
-    	targetByAnchor.put(anchor, target);
-    	List<Integer> anchors = anchorsByTarget.get(target);
-    	if (anchors == null)
-    	{
-    		anchors = new ArrayList<Integer>();
-    		anchorsByTarget.put(target, anchors);    		
-    	}
-		anchors.add(anchor);
-    }
-    
-    public Integer getLinkTarget(int anchor)
-    {
-    	return targetByAnchor.get(anchor);
-    }
-    
-    public List<Integer> getLinkAnchors(int target)
-    {
-    	List<Integer> result = anchorsByTarget.get(target);
-    	if (result == null)
-    	{
-    		return Collections.emptyList();
-    	}
-    	return Collections.unmodifiableList(result);
     }
     
     public void processEvent(KahinaEvent e)

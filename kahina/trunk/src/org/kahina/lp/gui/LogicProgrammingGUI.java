@@ -4,15 +4,32 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
+import org.kahina.core.breakpoint.KahinaBreakpointType;
+import org.kahina.core.control.KahinaController;
+import org.kahina.core.event.KahinaDialogEvent;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.gui.breakpoint.BreakpointEditorWindow;
+import org.kahina.core.visual.tree.KahinaLayeredTreeView;
+import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStepType;
 
 public class LogicProgrammingGUI extends KahinaGUI
 {
+    protected KahinaLayeredTreeView mainTreeView;
+    
     public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
     {
         super(stepType, kahina);
+        mainTreeView = new KahinaLayeredTreeView(0, 1, 2);
+        mainTreeView.setTitle("Control flow tree");
+        KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, mainTreeView);
+        views.add(mainTreeView);
+        livingViews.add(mainTreeView);
+        varNameToView.put("controlFlowTree", mainTreeView);
+        
         getControlPanel().addControlButtonGroup("Control");
         getControlPanel().addControlButton("creep.png", "creep", "(C)ontinue to next step", "Control", KeyEvent.VK_C);
         getControlPanel().addControlButton("roundskip.png", "auto-complete", "(A)uto-complete this step", "Control", KeyEvent.VK_A);
@@ -32,5 +49,59 @@ public class LogicProgrammingGUI extends KahinaGUI
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.FAIL, new Color(183,50,50));
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.REDO, new Color(204,102,0));
         mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.PSEUDO_UNBLOCKED, Color.LIGHT_GRAY);
+    }
+    
+    protected void displayMainViews()
+    {
+        mainTreeView.display(((LogicProgrammingState) kahina.getState()).getStepTree());
+        mainTreeView.displaySecondaryTree(((LogicProgrammingState) kahina.getState()).getSecondaryStepTree());
+    }
+    
+    private void processEvent(KahinaDialogEvent e)
+    {
+        super.processEvent(e);
+        switch (e.getDialogEventType())
+        {
+            case KahinaDialogEvent.PRIMARY_BREAKPOINTS:
+            {
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.PRIMARY_BREAKPOINT);
+                breakpointEditor.setTitle("Edit primary breakpoints");
+                breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getPrimaryBreakpoints());
+                breakpointEditor.setVisible(true);
+                break;
+            }
+            case KahinaDialogEvent.SECONDARY_BREAKPOINTS:
+            {
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.SECONDARY_BREAKPOINT);
+                breakpointEditor.setTitle("Edit secondary breakpoints");
+                breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getSecondaryBreakpoints());
+                breakpointEditor.setVisible(true);
+                break;
+            }
+            case KahinaDialogEvent.SKIP_POINTS:
+            {
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.SKIP_POINT);
+                breakpointEditor.setTitle("Edit skip points");
+                breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getSkipPoints());
+                breakpointEditor.setVisible(true);
+                break;
+            }
+            case KahinaDialogEvent.CREEP_POINTS:
+            {
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.CREEP_POINT);
+                breakpointEditor.setTitle("Edit creep points");
+                breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getCreepPoints());
+                breakpointEditor.setVisible(true);
+                break;
+            }
+            case KahinaDialogEvent.FAIL_POINTS:
+            {
+                BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.FAIL_POINT);
+                breakpointEditor.setTitle("Edit fail points");
+                breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getFailPoints());
+                breakpointEditor.setVisible(true);
+                break;
+            }
+        }
     }
 }
