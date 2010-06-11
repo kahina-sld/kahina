@@ -45,7 +45,6 @@ public class TulipaGUI extends KahinaGUI
     
     protected void displayMainViews()
     {
-        //TODO: remove the standard tree view manually or do not make it part of a standard Kahina
         super.displayMainViews();
         mainDAGView.display(instance.getState().getDAG());  
     }
