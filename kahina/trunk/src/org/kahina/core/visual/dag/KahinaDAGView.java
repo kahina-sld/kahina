@@ -22,6 +22,7 @@ import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.core.visual.tree.KahinaTreeViewMarker;
@@ -97,6 +98,8 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         markedNode = -1;
 
         maxNodeWidth = 1;
+        
+        KahinaRunner.getControl().registerListener("update", this);
     }
     
     public void display(KahinaDAG dagModel)
@@ -671,5 +674,12 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         if (antecedents.size() == 0) return -1;
         int middleIndex = antecedents.size() / 2;
         return model.getStartNode(middleIndex);
+    }
+    
+    protected void processEvent(KahinaUpdateEvent e)
+    {
+        // recalculation is implicitly part of this (via marker)
+        markedNode = e.getSelectedStep();
+        this.recalculate();
     }
 }

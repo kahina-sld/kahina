@@ -57,7 +57,7 @@ public class LogicProgrammingGUI extends KahinaGUI
         mainTreeView.displaySecondaryTree(((LogicProgrammingState) kahina.getState()).getSecondaryStepTree());
     }
     
-    private void processEvent(KahinaDialogEvent e)
+    protected void processEvent(KahinaDialogEvent e)
     {
         super.processEvent(e);
         switch (e.getDialogEventType())
