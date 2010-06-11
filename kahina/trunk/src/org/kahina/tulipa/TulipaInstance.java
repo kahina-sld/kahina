@@ -65,7 +65,5 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
     protected void fillViewRegistry()
     {
         super.fillViewRegistry();
-        KahinaViewRegistry.registerMapping(TraleSLDFeatureStructure.class, TraleSLDFeatureStructureView.class);
-        KahinaViewRegistry.registerMapping(TraleSLDVariableBindingSet.class, TraleSLDVariableBindingSetView.class);
     }
 }

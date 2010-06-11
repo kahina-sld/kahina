@@ -27,6 +27,7 @@ public class TulipaRunner extends KahinaRunner
         dm.registerDataType(KahinaSourceCodeLocation.class);
         dm.registerDataType(KahinaSourceFileModel.class);
         dm.registerDataType(KahinaTextModel.class);
+        dm.registerDataType(TulipaStep.class);
         // *slaps himself for the following code* TODO think of a more elegant and general solution for such switches.
         if (dm instanceof DbDataManager)
         {

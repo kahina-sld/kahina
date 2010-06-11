@@ -324,4 +324,16 @@ public class KahinaMemDAG extends KahinaDAG
     {
         startNodes.put(edgeID, startNode);         
     }
+
+    @Override
+    public Iterable<Integer> getEdgeIDIterator()
+    {
+        return startNodes.keySet();
+    }
+
+    @Override
+    public Iterable<Integer> getNodeIDIterator()
+    {
+        return nodeCaptions.keySet();
+    }
 }

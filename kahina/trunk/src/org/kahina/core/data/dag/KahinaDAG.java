@@ -1,5 +1,6 @@
 package org.kahina.core.data.dag;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.kahina.core.data.KahinaObject;
@@ -60,6 +61,10 @@ public abstract class KahinaDAG extends KahinaObject
 
     public abstract int getSize();
     
+    public abstract Iterable<Integer> getNodeIDIterator();
+    
+    public abstract Iterable<Integer> getEdgeIDIterator();
+    
     public int getRootID()
     {
         return rootID;
@@ -79,5 +84,21 @@ public abstract class KahinaDAG extends KahinaObject
         {
             decollapse(nodeID);
         }
+    }
+    
+    public String exportXML()
+    {
+        StringBuilder b = new StringBuilder("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+        b.append("<kahinaDAG>\n");
+        for (Integer nodeID : getNodeIDIterator())
+        {
+            b.append("  <node id=\"" + nodeID + "\" caption=\"" + getNodeCaption(nodeID) + "\" status=\"" + getNodeStatus(nodeID) + "\"/>\n");
+        }
+        for (Integer edgeID : getEdgeIDIterator())
+        {
+            b.append("  <edge id=\"" + edgeID + "\" label=\"" + getEdgeLabel(edgeID) + "\" start=\"" + getStartNode(edgeID) + "\" end=\"" + getEndNode(edgeID) + "\"/>\n");
+        }
+        b.append("</kahinaDAG>\n");
+        return b.toString();
     }
 }
