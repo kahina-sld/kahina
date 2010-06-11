@@ -383,8 +383,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         ArrayList<Integer> descendants = new ArrayList<Integer>();
         // System.err.println("\t Actual children for node " + nodeID + ": " +
         // treeModel.getChildren(nodeID,treeLayer));
-        //TODO: implement special DAG collapsing behavior
-        //if (dagModel.isCollapsed(nodeID)) return descendants;
+        if (dagModel.isCollapsed(nodeID)) return descendants;
         List<Integer> outgoingEdges = dagModel.getOutgoingEdges(nodeID);
         for (int outgoing : outgoingEdges)
         {

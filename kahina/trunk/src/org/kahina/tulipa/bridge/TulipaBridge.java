@@ -38,12 +38,17 @@ public class TulipaBridge extends KahinaBridge
     
     TulipaState state;
     
+    int currentItem;
+    boolean currentItemWasProductive = true;
+    
     public TulipaBridge(TulipaState state)
     {
         super();
         this.state = state;
         bridgeState = 'n';
         itemIDConv = new HashMap<Integer, Integer>();
+        currentItemWasProductive = false;
+        currentItem = -1;
     }
     
     /**
@@ -146,6 +151,17 @@ public class TulipaBridge extends KahinaBridge
         }
     }
     
+    public void announceItemProcessing(int extID)
+    {
+        int stepID = convertItemID(extID);
+        if (!currentItemWasProductive)
+        {
+            KahinaRunner.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.UNPRODUCTIVE, currentItem));
+        }
+        currentItem = stepID;
+        currentItemWasProductive = false;
+    }
+    
     public void registerInitialItem(int newID)
     {
         try
@@ -173,6 +189,7 @@ public class TulipaBridge extends KahinaBridge
             int newStepID = convertItemID(newID);
             KahinaRunner.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SCAN_EPSILON, newStepID, ancStepID));
             currentID = newStepID;
+            currentItemWasProductive = true;
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerScanEpsilon(" + ancID + ",\"" + newID + "\")");
         } 
@@ -192,6 +209,7 @@ public class TulipaBridge extends KahinaBridge
             int newStepID = convertItemID(newID);
             KahinaRunner.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SCAN, newStepID, ancStepID));
             currentID = newStepID;
+            currentItemWasProductive = true;
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerScan(" + ancID + ",\"" + newID + "\")");
         } 
@@ -211,6 +229,7 @@ public class TulipaBridge extends KahinaBridge
             int newStepID = convertItemID(newID);
             KahinaRunner.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.PREDICT, newStepID, ancStepID));
             currentID = newStepID;
+            currentItemWasProductive = true;
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerPredict(" + ancID + ",\"" + newID + "\")");
         } 
@@ -231,6 +250,7 @@ public class TulipaBridge extends KahinaBridge
             int newStepID = convertItemID(newID);
             KahinaRunner.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SUSPEND, newStepID, anc1StepID, anc2StepID));
             currentID = newStepID;
+            currentItemWasProductive = true;
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerSuspend(" + anc1ID + ",\"" + anc2ID + ",\"" + newID + "\")");
         } 
@@ -251,6 +271,7 @@ public class TulipaBridge extends KahinaBridge
             int newStepID = convertItemID(newID);
             KahinaRunner.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.RESUME, newStepID, anc1StepID, anc2StepID));
             currentID = newStepID;
+            currentItemWasProductive = true;
             if (bridgeState == 'n') KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerResume(" + anc1ID + ",\"" + anc2ID + ",\"" + newID + "\")");
         } 
@@ -268,9 +289,9 @@ public class TulipaBridge extends KahinaBridge
             if (verbose) System.err.println("TulipaBridge.registerItemLabel(" + extID + ",\"" + label + "\")");
             int stepID = convertItemID(extID);
             TulipaStep step = TulipaStep.get(stepID);
-            step.setItemDesc(label);
+            step.setItemDesc(label.substring(0, label.indexOf("-->")));
             step.storeCaching();
-            KahinaRunner.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SET_ITEM_DESC, stepID, label));
+            KahinaRunner.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SET_ITEM_DESC, stepID, label.substring(0, label.indexOf("-->"))));
             currentID = stepID;
             if (verbose) System.err.println("//TulipaBridge.registerItemLabel(" + extID + ",\"" + label + "\")");
         } 

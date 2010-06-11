@@ -10,4 +10,5 @@ public class TulipaBridgeEventType
     public static final int SUSPEND = 5;
     public static final int INIT = 6;
     public static final int START = 7;
+    public static final int UNPRODUCTIVE = 8;
 }

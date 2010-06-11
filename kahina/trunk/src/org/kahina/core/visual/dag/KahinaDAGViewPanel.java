@@ -199,12 +199,30 @@ private static final long serialVersionUID = 6701252380309408342L;
                             canvas.drawLine(x1, y1, x2, y2);
                                     
                             //TODO: add this soon
-                            //printEdgeTag(canvas,nodes.get(j),edgyLines);
+                            printEdgeLabel(canvas,incomingEdges.get(j), x1, x2, y1, y2);
                             //printEdgeArrow(canvas, nodes.get(j));  
                         }
                     }
                 }
             }
+        }
+    }
+    
+    public void printEdgeLabel(Graphics canvas, int edgeID, int x1, int x2, int y1, int y2)
+    {
+        FontMetrics fm = canvas.getFontMetrics();
+        //TODO: better solution than using root font
+        canvas.setFont(view.getNodeFont(0));
+        String tag = view.getModel().getEdgeLabel(edgeID);
+        String[] stringParts = tag.split("\\\\n");   
+        canvas.setColor(Color.BLACK);
+        int x = (x1 + x2)/2;
+        int y = (y1 + y2)/2;
+        
+        for (String part : stringParts)
+        {
+            canvas.drawString(part, x, y); 
+            y += fm.getHeight();
         }
     }
     

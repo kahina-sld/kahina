@@ -6,6 +6,7 @@ import org.kahina.core.behavior.KahinaDAGBehavior;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.tulipa.TulipaStepStatus;
 import org.kahina.tulipa.event.TulipaBridgeEvent;
 import org.kahina.tulipa.event.TulipaBridgeEventType;
 
@@ -27,8 +28,7 @@ public class TulipaDAGBehavior extends KahinaDAGBehavior
     
     public void processItemInformation(int itemID, String label)
     {
-        //TODO: do something useful with item status
-        object.addNode(itemID, label, 0);
+        object.addNode(itemID, label, TulipaStepStatus.PRODUCTIVE);
         // if (verbose) System.err.println(object.exportXML());
     }
     
@@ -63,6 +63,36 @@ public class TulipaDAGBehavior extends KahinaDAGBehavior
     {
         object.addEdge(parent1ID, itemID, "resume");
         object.addEdge(parent2ID, itemID, "resume");
+    }
+    
+    public void processUnproductive(int itemID)
+    {
+        System.err.println("#####PROCESSING UNPRODUCTIVE");
+        object.setNodeStatus(itemID, TulipaStepStatus.UNPRODUCTIVE);
+        object.collapse(itemID);
+        //also set ancestors with only unproductive descendants to "unproductive"
+        for (int edgeID : object.getIncomingEdges(itemID))
+        {
+            int parentID = object.getStartNode(edgeID);
+            if (allChildrenAreUnproductive(parentID))
+            {
+                processUnproductive(parentID);
+            }
+        }
+    }
+    
+    private boolean allChildrenAreUnproductive(int itemID)
+    {
+        boolean unproductive = true;
+        for (int edgeID : object.getOutgoingEdges(itemID))
+        {
+            int childID = object.getEndNode(edgeID);
+            if (object.getNodeStatus(childID) == TulipaStepStatus.PRODUCTIVE)
+            {
+                unproductive = false;
+            }
+        }
+        return unproductive;
     }
     
     public void processEvent(KahinaEvent e)
@@ -117,6 +147,11 @@ public class TulipaDAGBehavior extends KahinaDAGBehavior
             case TulipaBridgeEventType.START:
             {
                 processStartItem(e.getID());
+                break;
+            }
+            case TulipaBridgeEventType.UNPRODUCTIVE:
+            {
+                processUnproductive(e.getID());
                 break;
             }
         }
