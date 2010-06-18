@@ -5,8 +5,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
@@ -34,14 +36,16 @@ public class TraleSLDVariableBindingSetViewPanel extends KahinaViewPanel<TraleSL
 		{
 			System.err.println("TraleSLDVariableBindingSetViewPanel()");
 		}
-		setLayout(new GridLayout(2, 1));
+		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		table = new JTable(tableModel);
 		table.getSelectionModel().addListSelectionListener(this);
 		JScrollPane tableScrollPane = new JScrollPane(table);
 		table.setFillsViewportHeight(true);
-		add(tableScrollPane);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+		splitPane.add(tableScrollPane);
 		innerPanel = new JPanel();
-		add(new JScrollPane(innerPanel));
+		splitPane.add(new JScrollPane(innerPanel));
+		add(splitPane);
 		if (verbose)
 		{
 			System.err.println("//TraleSLDVariableBindingSetViewPanel()");
