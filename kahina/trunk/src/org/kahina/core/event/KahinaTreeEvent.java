@@ -10,7 +10,7 @@ public class KahinaTreeEvent extends KahinaEvent
     
     public KahinaTreeEvent(int treeEventType, int firstID, int secondID)
     {
-        super("tree");
+        super(KahinaEventTypes.TREE);
         this.treeEventType = treeEventType;
         this.firstID = firstID;
         this.secondID = secondID;

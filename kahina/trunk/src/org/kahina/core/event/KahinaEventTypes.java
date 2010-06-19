@@ -7,5 +7,6 @@ public interface KahinaEventTypes
 	public static final String SELECTION = "select";
 	public static final String UPDATE = "update";
 	public static final String ABORT = "abort";
+	public static final String TREE = "tree";
 
 }

@@ -30,7 +30,7 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
-	public static final boolean verbose = true;
+	public static final boolean verbose = false;
 	
 	private static final Pattern NOW_PATTERN = Pattern.compile("now\\((\\d+)\\)");
 
