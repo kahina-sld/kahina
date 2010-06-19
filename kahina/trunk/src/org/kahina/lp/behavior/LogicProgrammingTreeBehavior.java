@@ -265,7 +265,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 * into tree called by the event processing routine for a KahinaTreeEvent of
 	 * type "new step"
 	 * 
-	 * @param externalID
+	 * @param stepID
 	 *            - the step ID in the monitored logic programming system
 	 * @param stepInfo
 	 *            - the step information to be associated with the step
@@ -284,7 +284,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	/**
 	 * register and react to an incoming redo operation
 	 * 
-	 * @param externalID
+	 * @param lastStepID
 	 *            - the ID of the step being redone in the monitored logic
 	 *            programming system
 	 */
@@ -350,7 +350,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	/**
 	 * register and react to an incoming exit operation
 	 * 
-	 * @param externalID
+	 * @param stepID
 	 *            - the ID of the step that exited in the monitored logic
 	 *            programming system
 	 * @param deterministic
@@ -373,7 +373,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	/**
 	 * registers and reacts to an incoming failed step
 	 * 
-	 * @param externalID
+	 * @param stepID
 	 *            - the ID of the step that failed in the monitored logic
 	 *            programming system
 	 */

@@ -96,11 +96,9 @@ public class DatabaseHandler
 	}
 
 	/**
-	 * Returns the result of a statement as a list of integers. <tt>NULL</tt>
-	 * values are represented as {@code null} values.
-	 * 
 	 * @param statement
-	 * @return
+	 * @return the result of a statement as a list of integers. <tt>NULL</tt>
+	 * values are represented as {@code null} values.
 	 */
 	public List<Integer> queryIntList(PreparedStatement statement)
 	{
@@ -126,12 +124,10 @@ public class DatabaseHandler
 		}
 	}
 
-	/**
-	 * Returns the result of a statement as a list of Strings. <tt>NULL</tt>
-	 * values are represented as {@code null} values.
-	 * 
+	/** 
 	 * @param statement
-	 * @return
+	 * @return the result of a statement as a list of Strings. <tt>NULL</tt>
+	 * values are represented as {@code null} values.
 	 */
 	public List<String> queryStringList(PreparedStatement statement)
 	{
@@ -152,11 +148,9 @@ public class DatabaseHandler
 	}
 
 	/**
-	 * Returns the result of a statement as a set of integers. <tt>NULL</tt>
-	 * values are omitted.
-	 * 
 	 * @param statement
-	 * @return
+	 * @return the result of a statement as a set of integers. <tt>NULL</tt>
+	 * values are omitted.
 	 */
 	public Set<Integer> queryIntSet(PreparedStatement statement)
 	{
@@ -282,9 +276,6 @@ public class DatabaseHandler
 	/**
 	 * Clients using this {@link DatabaseHandler} can use this method to quickly
 	 * determine if they already created the tables they need.
-	 * 
-	 * @param clientID
-	 * @return
 	 */
 	public boolean isRegistered(String clientID)
 	{

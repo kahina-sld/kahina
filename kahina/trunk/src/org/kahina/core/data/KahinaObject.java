@@ -21,9 +21,8 @@ public class KahinaObject
     private static int nextID = 1;
 
     /**
-     * Returns the ID of this object. If {@link #setID(int)} has not been called
+     * @return the ID of this object. If {@link #setID(int)} has not been called
      * before, this will set the ID of the object to the next available ID.
-     * @return
      */
     public final int getID()
     {

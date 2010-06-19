@@ -14,7 +14,7 @@ import org.kahina.core.io.database.DatabaseHandler;
 
 /**
  * A {@link DataManager} implementation using a database for storage,
- * {@link LightweightKahinaObjectDbDataStore}s as default data stores for
+ * {@link LightweightDbStore}s as default data stores for
  * {@link LightweightKahinaObject}s, and {@link KahinaObjectMemDataStore}s as
  * default data stores for other {@link KahinaObject}s.
  * 
@@ -134,10 +134,8 @@ public class DbDataManager extends DataManager
 	}
 
 	/**
-	 * Returns the internal numeric ID given to a data type by this manager.
-	 * 
 	 * @param type
-	 * @return
+	 * @return the internal numeric ID given to a data type by this manager.
 	 */
 	public int getTypeID(Class<? extends KahinaObject> type)
 	{

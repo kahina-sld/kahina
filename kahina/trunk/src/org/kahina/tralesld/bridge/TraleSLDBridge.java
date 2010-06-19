@@ -129,15 +129,11 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	}
 
 	/**
-	 * Called by {@link #registerRuleApplication(int, int, int, String, String)}
+	 * Called by {@link #registerRuleApplication(int, String, int, String)}
 	 * to register the first prospective edge of a rule application, and
 	 * directly via the Jasper interface to register any subsequent prospective
 	 * edge of that rule application.
 	 * 
-	 * @param left
-	 * @param right
-	 * @param ruleApplicationExtID
-	 * @param ruleName
 	 * @param leftmostDaughter pass {@code -1} to not register a leftmost daughter
 	 */
 	public void registerProspectiveEdge(int ruleApplicationExtID, String ruleName, int leftmostDaughter)

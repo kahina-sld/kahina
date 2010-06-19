@@ -7,7 +7,7 @@ import org.kahina.core.KahinaException;
  * information associated with debugger steps) in the form of
  * {@link KahinaObject}s. Such an object is uniquely identified by its data type
  * (i.e. its runtime class, i.e. some subclass of {@link KahinaObject}), and its
- * ID ({@link KahinaObject.getID()}).
+ * ID ({@link KahinaObject#getID()}).
  * 
  * Within a data manager, each data type has its own {@link DataStore}
  * responsible for storing and retrieving instances of that data type. For each
@@ -26,10 +26,8 @@ public abstract class DataManager
 	// Could then choose store smarter than the user asks for it.
 
 	/**
-	 * Returns the data store that is registered for a given data type.
-	 * 
 	 * @param type
-	 * @return
+	 * @return the data store that is registered the given data type.
 	 */
 	protected abstract DataStore getStoreForType(
 			Class<? extends KahinaObject> type);

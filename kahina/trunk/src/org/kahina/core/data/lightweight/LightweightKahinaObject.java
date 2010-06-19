@@ -9,7 +9,7 @@ package org.kahina.core.data.lightweight;
  * <code>KahinaObject[]</code>, <code>String</code>, <code>String[]</code>,
  * <code>Integer</code>, <code>Integer[]</code>, <code>int</code>, and
  * <code>int[]</code>. Only this information will be stored and retrieved by
- * default database stores like {@link LightweightKahinaObjectDbDataStore}.
+ * default database stores like {@link LightweightDbStore}.
  * <code>null</code> values of array fields are treated exactly like empty
  * arrays. In addition, concrete subclasses are required to provide a zero
  * argument constructor.

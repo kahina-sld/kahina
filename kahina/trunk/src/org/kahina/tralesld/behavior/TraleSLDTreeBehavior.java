@@ -88,7 +88,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     
     /**
      * registers and reacts to a finished step
-     * @param externalID - the ID of the step that was finished in the monitored logic programming system
+     * @param stepID - the ID of the step that was finished in the monitored logic programming system
      */
     public void processStepFinished(int stepID)
     {
