@@ -244,7 +244,7 @@ public class KahinaGUI implements KahinaListener
 		}
 	}
     
-    private void processEvent(KahinaDialogEvent e)
+    protected void processEvent(KahinaDialogEvent e)
     {
         switch (e.getDialogEventType())
         {
