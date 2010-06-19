@@ -290,9 +290,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	/**
 	 * Register message ends for local trees.
-	 * 
-	 * @param extID
-	 * @param type
 	 */
 	public void registerMessage(int extID, String key, String grisuMessage)
 	{

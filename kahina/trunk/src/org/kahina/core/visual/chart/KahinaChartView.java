@@ -531,9 +531,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     }
     
     /**
-     * returns highlight color for highlighted edges
      * @param edgeID
-     * @return
+     * @return highlight color for highlighted edges
      */
     public Color getEdgeColor(int edgeID)
     {
@@ -575,9 +574,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     }
     
     /**
-     * always returns highlight color, even if edge is not highlighted
      * @param edgeID
-     * @return
+     * @return always returns highlight color, even if edge is not highlighted
      */
     public Color getEdgeHighlightColor(int edgeID)
     {
