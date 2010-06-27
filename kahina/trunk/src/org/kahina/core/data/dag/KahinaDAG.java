@@ -36,7 +36,11 @@ public abstract class KahinaDAG extends KahinaObject
     
     public abstract List<Integer> getOutgoingEdges(int nodeID);
     
+    public abstract List<Integer> getVisibleParents(int nodeID);
+    
     public abstract List<Integer> getIncomingEdges(int nodeID);
+    
+    public abstract List<Integer> getVisibleChildren(int nodeID);
 
     public abstract int getNodeStatus(int nodeID);
 

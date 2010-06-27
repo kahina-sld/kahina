@@ -31,9 +31,7 @@ public class TulipaGUI extends KahinaGUI
         mainDAGView.setStatusColorEncoding(TulipaStepStatus.UNPRODUCTIVE, new Color(183,50,50));
         mainDAGView.setStatusColorEncoding(TulipaStepStatus.PREVENTED_PRODUCTION, Color.RED);
         mainDAGView.setVerticalDistance(6);
-        mainDAGView.setHorizontalDistance(20);
-        //TODO: build font color customization facilities into TreeView
-        //mainTreeView.setStatusFontColorEncoding(TraleSLDStepType.BLOCKED, Color.BLACK);
+        mainDAGView.setHorizontalDistance(2);
         
         getControlPanel().addControlButtonGroup("Control");
         getControlPanel().addControlButton("creep.png", "creep", "(C)ontinue to next step", "Control", KeyEvent.VK_C);

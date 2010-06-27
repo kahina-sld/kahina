@@ -40,7 +40,7 @@ private static final long serialVersionUID = 6701252380309408342L;
         {
             Thread.sleep(10);
             super.paintComponent(cnv);
-            if ( image == null ) 
+            if (image == null) 
             {
                 return;
             }
@@ -159,6 +159,7 @@ private static final long serialVersionUID = 6701252380309408342L;
     {
         FontMetrics fm = canvas.getFontMetrics();
         String tag = view.getModel().getNodeCaption(nodeID);
+        tag += nodeID;
         String[] stringParts = tag.split("\\\\n");   
         canvas.setColor(Color.BLACK);
         int x = view.getNodeX(nodeID);

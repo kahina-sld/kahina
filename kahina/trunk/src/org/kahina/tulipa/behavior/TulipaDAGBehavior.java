@@ -69,7 +69,8 @@ public class TulipaDAGBehavior extends KahinaDAGBehavior
     {
         System.err.println("#####PROCESSING UNPRODUCTIVE");
         object.setNodeStatus(itemID, TulipaStepStatus.UNPRODUCTIVE);
-        object.collapse(itemID);
+        //TODO: make sure "unproductive" items are not accessed via suspend or resume
+        //object.collapse(itemID);
         //also set ancestors with only unproductive descendants to "unproductive"
         for (int edgeID : object.getIncomingEdges(itemID))
         {

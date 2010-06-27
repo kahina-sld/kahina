@@ -135,6 +135,32 @@ public class KahinaMemDAG extends KahinaDAG
         }
         return incoming;
     }
+    
+    public List<Integer> getVisibleParents(int nodeID)
+    {
+    	ArrayList<Integer> ancestors = new ArrayList<Integer>();
+        // System.err.println("\t Actual children for node " + nodeID + ": " +
+        // treeModel.getChildren(nodeID,treeLayer));
+        List<Integer> incomingEdges = getIncomingEdges(nodeID);
+        for (int incoming : incomingEdges)
+        {
+            ancestors.add(getStartNode(incoming));
+        }
+        for (int i = 0; i < ancestors.size(); i++)
+        {
+            boolean nodeIsVisible = nodeIsVisible(ancestors.get(i));
+            if (!nodeIsVisible)
+            {
+                List<Integer> edges = getIncomingEdges(ancestors.remove(i));
+                for (int edge : edges)
+                {
+                    ancestors.add(getStartNode(edge));
+                }
+                i--;
+            }
+        }
+        return ancestors;
+    }
 
     @Override
     public String getNodeCaption(int nodeID)
@@ -174,6 +200,40 @@ public class KahinaMemDAG extends KahinaDAG
             outgoingEdges.put(nodeID, outgoing);
         }
         return outgoing;
+    }
+    
+    public ArrayList<Integer> getVisibleChildren(int nodeID)
+    {
+        ArrayList<Integer> descendants = new ArrayList<Integer>();
+        // System.err.println("\t Actual children for node " + nodeID + ": " +
+        // treeModel.getChildren(nodeID,treeLayer));
+        if (isCollapsed(nodeID)) return descendants;
+        List<Integer> outgoingEdges = getOutgoingEdges(nodeID);
+        for (int outgoing : outgoingEdges)
+        {
+            descendants.add(getEndNode(outgoing));
+        }
+        for (int i = 0; i < descendants.size(); i++)
+        {
+            boolean nodeIsVisible = nodeIsVisible(descendants.get(i));
+            if (!nodeIsVisible)
+            {
+                List<Integer> edges = getOutgoingEdges(descendants.remove(i));
+                for (int edge : edges)
+                {
+                    descendants.add(getEndNode(edge));
+                }
+                i--;
+            }
+        }
+        return descendants;
+    }
+    
+    public boolean nodeIsVisible(int nodeID)
+    {
+        // TODO: implement special DAG collapsing behavior
+        //if (model.hasCollapsedAncestor(nodeID)) return false;
+        return true;
     }
 
     @Override

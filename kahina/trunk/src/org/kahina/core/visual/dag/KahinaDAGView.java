@@ -11,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ import org.kahina.core.visual.tree.WidthVector;
 
 public class KahinaDAGView extends KahinaView<KahinaDAG>
 {
-    public static final boolean verbose = false;
+    public static final boolean verbose = true;
 
     // display options
     private int horizontalDistance = 5;
@@ -335,34 +336,79 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     
     private void createNodeLayers()
     {
-        if (verbose)
-            System.err.println("BEGIN: Create node layers");
+        if (verbose) System.err.println("BEGIN: Create node layers");
+        
+        //do a specialized variant of topological sort on nodes
+        HashMap<Integer, Integer> levelForNode = new HashMap<Integer, Integer>();
         int rootID = model.getRootID();
-        ArrayList<Integer> rootLevel = new ArrayList<Integer>();
-        if (rootID != -1)
+        levelForNode.put(rootID, 0);
+        LinkedList<Integer> nodeLevelAgenda = new LinkedList<Integer>();
+        nodeLevelAgenda.add(rootID);
+    	allNodes.add(rootID);
+        while (nodeLevelAgenda.size() > 0)
         {
-            rootLevel.add(rootID);
-            nodeLevels.add(rootLevel);
-            allNodes.addAll(rootLevel);
-            List<Integer> children = getVisibleVirtualDescendants(model, model.getRootID());
-            while (true)
-            {
-                if (verbose) System.err.println("children:" + children);
-                ArrayList<Integer> grandchildren = new ArrayList<Integer>();
-                for (int i = 0; i < children.size(); i++)
-                {
-                    grandchildren.addAll(getVisibleVirtualDescendants(model, children.get(i)));
-                }
-                nodeLevels.add(children);
-                allNodes.addAll(children);
-                children = grandchildren;
-                if (grandchildren.size() == 0)
-                {
-                    break;
-                }
-            }
+        	int nodeID = nodeLevelAgenda.remove(0);
+        	List<Integer> parents = model.getVisibleParents(nodeID);
+        	int maxParentLayer = -1;
+        	for (int parent : parents)
+        	{
+        		Integer parentLayer = levelForNode.get(parent);
+        		if (parentLayer == null)
+        		{
+        			maxParentLayer = -2;
+        			break;
+        		}
+        		else
+        		{
+        			if (parentLayer > maxParentLayer)
+        			{
+        				maxParentLayer = parentLayer;
+        			}
+        		}
+        	}
+        	if (maxParentLayer != -2)
+        	{
+        		//if all the parent layers were known, assign highest layer + 1 to node
+        		levelForNode.put(nodeID, maxParentLayer + 1);
+        		List<Integer> children = model.getVisibleChildren(nodeID);
+        		//since a node can be child of several nodes, check whether it is on the agenda already
+        		for (int child : children)
+        		{
+        			if (!allNodes.contains(child))
+        			{
+            			nodeLevelAgenda.add(child);
+            			allNodes.add(child);
+        			}
+        		}
+        	}
+        	else
+        	{
+        		//otherwise wait until all parent layers were computed
+        		nodeLevelAgenda.add(nodeID);
+        	}
         }
-        if (verbose) System.err.println("COMPLETE: Create node layers");
+
+        //assemble the layers from the node -> layer map
+        int maxLevel = -1;
+        for (int nodeID : levelForNode.keySet())
+        {
+        	int level = levelForNode.get(nodeID);
+        	if (level > maxLevel)
+        	{
+        		//make space for the additional layers
+        		maxLevel = level;
+        		while (nodeLevels.size() <= maxLevel)
+        		{
+        			nodeLevels.add(new ArrayList<Integer>());
+        		}
+        	}
+        	nodeLevels.get(level).add(nodeID);
+        }
+        
+        if (verbose) System.err.println("COMPLETE: Create node levels");
+        if (verbose) System.err.println("Levels:\n" + showLevels());
+        nodeLevels = BarycenterCrossingReduction.minimizeCrossings(model, nodeLevels);
+        if (verbose) System.err.println("COMPLETE: Cross reduction on node levels");
         if (verbose) System.err.println("Levels:\n" + showLevels());
     }
     
@@ -371,69 +417,23 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         return (nodeX.get(nodeID) != null);
     }
 
-    public boolean nodeIsVisible(int nodeID)
+    private WidthVector constructWidthVector(int node)
     {
-        // TODO: implement special DAG collapsing behavior
-        //if (model.hasCollapsedAncestor(nodeID)) return false;
-        return true;
-    }
-    
-    private ArrayList<Integer> getVisibleVirtualDescendants(KahinaDAG dagModel, int nodeID)
-    {
-        ArrayList<Integer> descendants = new ArrayList<Integer>();
-        // System.err.println("\t Actual children for node " + nodeID + ": " +
-        // treeModel.getChildren(nodeID,treeLayer));
-        if (dagModel.isCollapsed(nodeID)) return descendants;
-        List<Integer> outgoingEdges = dagModel.getOutgoingEdges(nodeID);
-        for (int outgoing : outgoingEdges)
-        {
-            descendants.add(dagModel.getEndNode(outgoing));
-        }
-        if (verbose)
-        {
-            System.err.println("Breadth-first search for visible descendants of " + nodeID + ":");
-        }
-        for (int i = 0; i < descendants.size(); i++)
-        {
-            boolean nodeIsVisible = nodeIsVisible(descendants.get(i));
-            if (verbose)
-            {
-                System.err.print(descendants.get(i));
-                System.err.print(nodeIsVisible ? "+" : "-");
-            }
-            if (!nodeIsVisible)
-            {
-                List<Integer> edges = dagModel.getOutgoingEdges(descendants.remove(i));
-                for (int edge : edges)
-                {
-                    descendants.add(dagModel.getEndNode(edge));
-                }
-                i--;
-            }
-        }
-        if (verbose)
-        {
-            System.err.println();
-            System.err.println("Virtual children for node " + nodeID + ": " + descendants);
-        }
-        return descendants;
-    }
-    
-
-    private WidthVector constructWidthVector(ArrayList<Integer> children)
-    {
+    	List<Integer> children = model.getVisibleChildren(node);
+    	int nodeWidth = nodeWidths.get(node);
+    	WidthVector sum = new WidthVector(nodeWidth / 2, nodeWidth / 2);
         if (children.size() > 0)
         {
-            WidthVector sum = subtreeWidths.get(children.get(0)).copy();
+            sum = subtreeWidths.get(children.get(0)).copy();
             for (int i = 1; i < children.size(); i++)
             {
                 sum = WidthVector.adjoin(sum, subtreeWidths.get(children.get(i)));
             }
-            sum.start.add(0, 1);
-            sum.end.add(0, 1);
-            return sum;
+            sum.start.add(0, nodeWidth / 2);
+            sum.end.add(0, nodeWidth / 2);
         }
-        return new WidthVector();
+        //System.err.println("Width vector for node " + node + ":\n" + sum.toString());
+        return sum;
     }
 
     public FontMetrics getFontMetrics(Font f, Stroke s, int fontSize)
@@ -596,21 +596,20 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
                     // System.err.println("labelWidth(" +
                     // getContentfulTreeModel().getNodeCaption(node) + ") = " +
                     // nodeLabelWidth);
-                    if (maxNodeWidth < nodeDimension.width) maxNodeWidth = nodeDimension.width;
-                    ArrayList<Integer> children = getVisibleVirtualDescendants(model, node);
-                    subtreeWidths.put(node, constructWidthVector(children));
-                    if (verbose)  System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
+                    if (maxNodeWidth < nodeDimension.width) maxNodeWidth = nodeDimension.width;               
+                    subtreeWidths.put(node, constructWidthVector(node));
+                    //if (verbose)  System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
                 }
             }
             if (verbose) System.err.println("COMPLETE: Calculate subtree widths");
             if (verbose) System.err.println("maxNodeWidth = " + maxNodeWidth);
-            nodeX.put(model.getRootID(), subtreeWidths.get(model.getRootID()).maximumLeftDistance() * horizontalDistance * fontSize / 2);
+            nodeX.put(model.getRootID(), subtreeWidths.get(model.getRootID()).maximumLeftDistance() + horizontalDistance * fontSize);
             for (int i = 0; i < nodeLevels.size(); i++)
             {
                 if (verbose) System.err.println("Node level: " + i);
                 List<Integer> nodes = nodeLevels.get(i);
                 int xOffset = 0;
-                if (nodes.size() > 0) xOffset = subtreeWidths.get(nodes.get(0)).maximumLeftDistance() * horizontalDistance * fontSize / 2;
+                if (nodes.size() > 0) xOffset = subtreeWidths.get(nodes.get(0)).maximumLeftDistance() + horizontalDistance * fontSize;
                 int parent = -1;
                 WidthVector subtreeWidth = new WidthVector();
                 WidthVector lastSubtreeWidth;
@@ -619,9 +618,9 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
                     if (verbose) System.err.print("  Node:" + node);
                     lastSubtreeWidth = subtreeWidth;
                     subtreeWidth = subtreeWidths.get(node);
-                    xOffset += WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth) * horizontalDistance * fontSize / 2;
+                    xOffset += WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth) + horizontalDistance * fontSize;
                     // switch to children of next parent node --> jump in x offset
-                    int newParent = getVisibleMiddleAntecedent(node);
+                    int newParent = getRelevantAntecedent(node);
                     if (verbose) System.err.print(" VisParent:" + newParent);
                     if (i > 0 && newParent != parent)
                     {
@@ -629,7 +628,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
                         if (verbose) System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
                         // old variant of xOffset computation
                         // xOffset = (int)((nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) * 0.5 - 0.5) * horizontalDistance * fontSize));
-                        xOffset = nodeX.get(parent) - subtreeWidths.get(parent).getStart(1) / 2 * horizontalDistance * fontSize / 2;
+                        xOffset = nodeX.get(parent)  + nodeWidths.get(parent) / 2 - subtreeWidths.get(parent).getStart(1); //- horizontalDistance * fontSize;
                     }
                     if (i > 0)
                     {
@@ -642,7 +641,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
                 // position of a node in any level)
                 if (nodes.size() > 0)
                 {
-                    int nodeLevelWidth = nodeX.get(nodes.get(nodes.size() - 1)) + horizontalDistance * fontSize;
+                    int nodeLevelWidth = nodeX.get(nodes.get(nodes.size() - 1)) + nodeWidths.get(nodes.get(nodes.size() - 1)) + horizontalDistance * fontSize;
                     if (nodeLevelWidth > totalTreeWidth)
                     {
                         totalTreeWidth = nodeLevelWidth;
@@ -667,12 +666,30 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         return new Dimension(maxWidth, stringParts.length * nodeHeight + 4);
     }
     
-    private int getVisibleMiddleAntecedent(int nodeID)
+    private int getRelevantAntecedent(int nodeID)
     {
-        List<Integer> antecedents = model.getIncomingEdges(nodeID);
+        List<Integer> antecedents = model.getVisibleParents(nodeID);
         if (antecedents.size() == 0) return -1;
-        int middleIndex = antecedents.size() / 2;
-        return model.getStartNode(middleIndex);
+        if (antecedents.size() == 1) return antecedents.get(0);
+        //get the leftmost direct antecedent
+        else
+        {
+        	int minAntID = antecedents.get(0);
+        	int minX = nodeX.get(minAntID);
+            for (int i = 1; i < antecedents.size(); i++)
+            {
+            	int antID = antecedents.get(i);
+            	int antX = nodeX.get(antID);
+            	if (antX < minX)
+            	{
+            		minAntID = antID;
+            		minX = antX;
+            	}
+            }
+            return minAntID;
+        }
+        //int middleIndex = antecedents.size() / 2;
+        //return antecedents.get(middleIndex);
     }
     
     protected void processEvent(KahinaUpdateEvent e)

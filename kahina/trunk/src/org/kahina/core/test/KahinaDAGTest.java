@@ -33,7 +33,9 @@ public class KahinaDAGTest
     public static void main(String[] args)
     {
         try
-        {        
+        {      
+        	KahinaRunner.initialize(KahinaDataHandlingMethod.MEMORY);
+        	
             File file = new File("src/org/kahina/core/test/test-dag.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -51,11 +53,8 @@ public class KahinaDAGTest
             v.setStatusColorEncoding(2,new Color(0,255,255));
             v.setStatusColorEncoding(3,new Color(255,255,255)); 
             
-            KahinaRunner.initialize(KahinaDataHandlingMethod.MEMORY);
             KahinaRunner.getControl().registerListener("select", v);
             KahinaRunner.getControl().registerListener("update", v);
-            
-            
             KahinaRunner.getControl().registerListener("redraw", v);
             
             KahinaDefaultWindow w = new KahinaDefaultWindow(v);

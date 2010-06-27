@@ -133,8 +133,8 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
             chooser.showSaveDialog(view);
             File outputFile = chooser.getSelectedFile();
 
-            Graphics outputCanvas = view.image.getGraphics();
-            view.paint(outputCanvas);
+            //Graphics outputCanvas = view.image.getGraphics();
+            //view.paintComponent(outputCanvas);
             try
             {
                 ImageIO.write(view.image,"png",outputFile);
