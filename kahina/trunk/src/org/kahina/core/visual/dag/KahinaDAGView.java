@@ -79,6 +79,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     private int totalTreeHeight;
     private int totalTreeWidth;
     private HashMap<Integer, WidthVector> subtreeWidths;
+    private HashMap<Integer, Integer> drawingParents;
     private int maxNodeWidth;
     
     public KahinaDAGView()
@@ -332,6 +333,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         nodeHeights = new HashMap<Integer, Integer>();
 
         subtreeWidths = new HashMap<Integer, WidthVector>();
+        drawingParents = new HashMap<Integer, Integer>();
     }
     
     private void createNodeLayers()
@@ -350,12 +352,14 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         	int nodeID = nodeLevelAgenda.remove(0);
         	List<Integer> parents = model.getVisibleParents(nodeID);
         	int maxParentLayer = -1;
+        	int maxParent = -1;
         	for (int parent : parents)
         	{
         		Integer parentLayer = levelForNode.get(parent);
         		if (parentLayer == null)
         		{
         			maxParentLayer = -2;
+        			maxParent = -1;
         			break;
         		}
         		else
@@ -363,6 +367,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         			if (parentLayer > maxParentLayer)
         			{
         				maxParentLayer = parentLayer;
+        				maxParent = parent;
         			}
         		}
         	}
@@ -370,6 +375,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         	{
         		//if all the parent layers were known, assign highest layer + 1 to node
         		levelForNode.put(nodeID, maxParentLayer + 1);
+        		drawingParents.put(nodeID, maxParent);
         		List<Integer> children = model.getVisibleChildren(nodeID);
         		//since a node can be child of several nodes, check whether it is on the agenda already
         		for (int child : children)
@@ -377,7 +383,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         			if (!allNodes.contains(child))
         			{
             			nodeLevelAgenda.add(child);
-            			allNodes.add(child);
+            			allNodes.add(child);        			
         			}
         		}
         	}
@@ -419,8 +425,20 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
 
     private WidthVector constructWidthVector(int node)
     {
+    	System.err.println("--------------------------------------------");
+    	System.err.println("Width vector computation for node " + node);
     	List<Integer> children = model.getVisibleChildren(node);
-    	int nodeWidth = nodeWidths.get(node);
+    	System.err.println(" Candidate children: " + children);
+    	for (int i = 0; i < children.size(); i++)
+    	{
+        	System.err.println(" Child: " + children.get(i) + " Drawing Parent: " + drawingParents.get(children.get(i)));
+    		if (drawingParents.get(children.get(i)) != node)
+    		{
+    			children.remove(i);
+    			i--;
+    		}
+    	}
+    	int nodeWidth = nodeWidths.get(node) + horizontalDistance * fontSize;
     	WidthVector sum = new WidthVector(nodeWidth / 2, nodeWidth / 2);
         if (children.size() > 0)
         {
@@ -432,7 +450,8 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
             sum.start.add(0, nodeWidth / 2);
             sum.end.add(0, nodeWidth / 2);
         }
-        //System.err.println("Width vector for node " + node + ":\n" + sum.toString());
+        System.err.println("Width vector for node " + node + ": " + sum.toString());
+    	System.err.println("--------------------------------------------");
         return sum;
     }
 
@@ -618,9 +637,9 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
                     if (verbose) System.err.print("  Node:" + node);
                     lastSubtreeWidth = subtreeWidth;
                     subtreeWidth = subtreeWidths.get(node);
-                    xOffset += WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth) + horizontalDistance * fontSize;
+                    xOffset += WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth); //+ horizontalDistance * fontSize;
                     // switch to children of next parent node --> jump in x offset
-                    int newParent = getRelevantAntecedent(node);
+                    int newParent = drawingParents.get(node);
                     if (verbose) System.err.print(" VisParent:" + newParent);
                     if (i > 0 && newParent != parent)
                     {
@@ -628,7 +647,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
                         if (verbose) System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
                         // old variant of xOffset computation
                         // xOffset = (int)((nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) * 0.5 - 0.5) * horizontalDistance * fontSize));
-                        xOffset = nodeX.get(parent)  + nodeWidths.get(parent) / 2 - subtreeWidths.get(parent).getStart(1); //- horizontalDistance * fontSize;
+                        xOffset = nodeX.get(parent)  + nodeWidths.get(parent) / 2 - subtreeWidths.get(parent).getStart(1) + horizontalDistance * fontSize / 2;
                     }
                     if (i > 0)
                     {
