@@ -15,7 +15,9 @@ import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
 import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
 import org.kahina.tulipa.behavior.TulipaDAGBehavior;
 import org.kahina.tulipa.bridge.TulipaBridge;
+import org.kahina.tulipa.data.grammar.TulipaGrammar;
 import org.kahina.tulipa.gui.TulipaGUI;
+import org.kahina.tulipa.visual.grammar.TulipaGrammarView;
 
 public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, TulipaBridge>
 {
@@ -62,8 +64,9 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
         return bridge;
     }
 
-    protected void fillViewRegistry()
-    {
-        super.fillViewRegistry();
-    }
+	protected void fillViewRegistry()
+	{
+		super.fillViewRegistry();
+		KahinaViewRegistry.registerMapping(TulipaGrammar.class, TulipaGrammarView.class);
+	}
 }

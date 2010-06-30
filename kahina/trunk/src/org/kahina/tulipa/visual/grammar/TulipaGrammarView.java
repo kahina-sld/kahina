@@ -19,7 +19,7 @@ public class TulipaGrammarView extends KahinaView<TulipaGrammar>
         TulipaGrammarViewPanel panel = new TulipaGrammarViewPanel();
         KahinaRunner.getControl().registerListener("redraw", panel);
         panel.setView(this);
-        return new JScrollPane(panel);
+        return panel;
     }
     
     public List<Integer> getSelectedClauses()
@@ -29,6 +29,6 @@ public class TulipaGrammarView extends KahinaView<TulipaGrammar>
     	{
     		selectedClauses.add(selectedClause);
     	}
-    	return getSelectedClauses();
+    	return selectedClauses;
     }
 }

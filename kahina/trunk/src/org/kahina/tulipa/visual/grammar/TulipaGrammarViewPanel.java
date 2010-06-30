@@ -1,6 +1,5 @@
 package org.kahina.tulipa.visual.grammar;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -8,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -19,7 +17,7 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
 {
 	private static final long serialVersionUID = 8545282386910165013L;
 	
-	private static final boolean verbose = false;
+	private static final boolean verbose = true;
 
 	private final JList clauseList;
 	
@@ -61,7 +59,7 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
 		{
 			System.err.println("TulipaGrammarViewPanel.updateDisplay()");
 		}
-		//innerPanel.removeAll();
+		clauseListModel.setGrammar(view.getModel());
 		List<Integer> newSelectedRows = view.getSelectedClauses();
 		ListSelectionModel selectionModel = clauseList.getSelectionModel();
 		selectionModel.clearSelection();

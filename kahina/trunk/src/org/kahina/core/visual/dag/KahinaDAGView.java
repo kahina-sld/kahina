@@ -158,7 +158,8 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         if (horizontalDistance > 2)
         {
             horizontalDistance -= 1;
-        } else
+        } 
+        else
         {
             System.err.println("No horizontal distance values under 2 allowed!");
         }

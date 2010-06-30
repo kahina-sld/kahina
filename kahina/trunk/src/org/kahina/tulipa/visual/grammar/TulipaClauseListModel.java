@@ -6,11 +6,18 @@ import org.kahina.tulipa.data.grammar.TulipaGrammar;
 
 public class TulipaClauseListModel extends AbstractListModel
 {
+	private static final long serialVersionUID = -5222437359574027115L;
+	
 	TulipaGrammar grammar;
 	
 	public TulipaClauseListModel()
 	{
 		grammar = new TulipaGrammar();
+	}
+	
+	public void setGrammar(TulipaGrammar grammar)
+	{
+		this.grammar = grammar;
 	}
 
 	@Override
@@ -22,6 +29,7 @@ public class TulipaClauseListModel extends AbstractListModel
 	@Override
 	public int getSize() 
 	{
+		System.err.println("Grammar size: " + grammar.getSize());
 		return grammar.getSize();
 	}
 }

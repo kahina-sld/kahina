@@ -136,6 +136,12 @@ public class TulipaBridge extends KahinaBridge
         return TulipaBridgeCommand.DO_NOTHING;
     }
     
+    public void registerGrammarClause(int clauseID, String rcgClause)
+    {
+    	if (verbose) System.err.println("TulipaBridge.registerGrammarClause(" + clauseID + ",\"" + rcgClause + "\")");
+    	state.getGrammar().addClause(clauseID, rcgClause);
+    }
+    
     public void initializeParse()
     {
         try
