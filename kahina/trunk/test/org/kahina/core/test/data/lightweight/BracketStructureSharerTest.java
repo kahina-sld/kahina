@@ -35,14 +35,14 @@ public class BracketStructureSharerTest
 		{
 			String line = scanner.nextLine();
 			lines.add(line);
-			results.add(sharer.share(line));
+			results.add(sharer.pack(line));
 		}
 		String unbalanced = "bla(a)))";
 		lines.add(unbalanced);
-		results.add(sharer.share(unbalanced));
+		results.add(sharer.pack(unbalanced));
 		unbalanced = "(((a)alb";
 		lines.add(unbalanced);
-		results.add(sharer.share(unbalanced));
+		results.add(sharer.pack(unbalanced));
 		Iterator<StructureSharedString> resultsIterator = results.iterator();
 		for (String line : lines)
 		{

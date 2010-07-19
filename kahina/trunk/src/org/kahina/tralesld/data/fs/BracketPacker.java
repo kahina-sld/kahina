@@ -33,7 +33,7 @@ public class BracketPacker
 	/**
 	 * Returns a structure-shared representation of the given string.
 	 */
-	public synchronized StructureSharedString share(String string)
+	public synchronized StructureSharedString pack(String string)
 	{
 		this.string = string;
 		length = string.length();

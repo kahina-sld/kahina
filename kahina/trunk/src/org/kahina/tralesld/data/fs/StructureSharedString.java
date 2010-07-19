@@ -2,7 +2,7 @@ package org.kahina.tralesld.data.fs;
 
 import org.kahina.core.data.KahinaObject;
 
-public abstract class StructureSharedString extends KahinaObject
+public abstract class StructureSharedString extends KahinaObject  
 {
 	
 	@Override

@@ -6,7 +6,7 @@ import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
-import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
+import org.kahina.tralesld.data.fs.StructureSharedString;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 import org.kahina.tralesld.gui.TraleSLDGUI;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
@@ -61,7 +61,7 @@ public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI,
 	protected void fillViewRegistry()
 	{
 		super.fillViewRegistry();
-		KahinaViewRegistry.registerMapping(TraleSLDFeatureStructure.class, TraleSLDFeatureStructureView.class);
+		KahinaViewRegistry.registerMapping(StructureSharedString.class, TraleSLDFeatureStructureView.class); // TODO not nice
 		KahinaViewRegistry.registerMapping(TraleSLDVariableBindingSet.class, TraleSLDVariableBindingSetView.class);
 	}
 }

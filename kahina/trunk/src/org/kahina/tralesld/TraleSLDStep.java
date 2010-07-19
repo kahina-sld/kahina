@@ -2,13 +2,14 @@ package org.kahina.tralesld;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.lp.LogicProgrammingStep;
-import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
+import org.kahina.tralesld.data.fs.StructureSharedString;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 
 public class TraleSLDStep extends LogicProgrammingStep
 {
-    public TraleSLDFeatureStructure startFeatStruct;
-    public TraleSLDFeatureStructure endFeatStruct;
+	// TODO this does not support DB storage yet
+    public StructureSharedString startFeatStruct;
+    public StructureSharedString endFeatStruct;
     public TraleSLDVariableBindingSet startBindings = new TraleSLDVariableBindingSet();
     public TraleSLDVariableBindingSet endBindings = new TraleSLDVariableBindingSet();
     
@@ -23,26 +24,6 @@ public class TraleSLDStep extends LogicProgrammingStep
     	copy.startBindings = startBindings.copy();
     	copy.endBindings = endBindings.copy();
     	return copy;
-    }
-    
-    public TraleSLDFeatureStructure getStartFeatureStructure()
-    {
-        return startFeatStruct;
-    }
-    
-    public void setStartFeatureStructure(TraleSLDFeatureStructure startFeatStruct)
-    {
-        this.startFeatStruct = startFeatStruct;
-    }
-    
-    public TraleSLDFeatureStructure getEndFeatureStructure()
-    {
-        return endFeatStruct;
-    }
-    
-    public void setEndFeatureStructure(TraleSLDFeatureStructure endFeatStruct)
-    {
-        this.endFeatStruct = endFeatStruct;
     }
     
     public static TraleSLDStep get(int id)

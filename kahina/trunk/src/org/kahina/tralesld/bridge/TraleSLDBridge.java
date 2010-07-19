@@ -25,7 +25,7 @@ import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
-import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
+import org.kahina.tralesld.data.fs.BracketPacker;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
@@ -43,6 +43,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	Map<Integer, Integer> edgeIDConv;
 
 	int lastRegisteredChartEdge = -1;
+	
+	private final BracketPacker packer;
 
 	public TraleSLDBridge(TraleSLDState state)
 	{
@@ -50,6 +52,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		this.state = state;
 		prospectiveEdgeStack = new ArrayList<Integer>();
 		edgeIDConv = new HashMap<Integer, Integer>();
+		packer = new BracketPacker();
 	}
 
 	public void initializeParseTrace(String parsedSentenceList)
@@ -299,13 +302,12 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// System.err.println("registerMessageEnd(" + extID + ",\"" + key +
 			// "\"): " + grisuMessage);
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
-			TraleSLDFeatureStructure fs = new TraleSLDFeatureStructure(grisuMessage);
 			if ("start".equals(key))
 			{
-				step.startFeatStruct = fs;
+				step.startFeatStruct = packer.pack(grisuMessage);
 			} else if ("end".equals(key))
 			{
-				step.endFeatStruct = fs;
+				step.endFeatStruct = packer.pack(grisuMessage);
 			}
 			step.storeCaching();
 		} catch (Exception e)
