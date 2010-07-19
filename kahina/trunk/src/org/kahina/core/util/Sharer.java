@@ -11,7 +11,7 @@ import java.util.Map;
 public class Sharer<T>
 {
 	
-	private Map<T, T> objects = new HashMap<T, T>();
+	private final Map<T, T> objects = new HashMap<T, T>();
 	
 	public T share(T object)
 	{

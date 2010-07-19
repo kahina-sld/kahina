@@ -18,6 +18,7 @@ import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.util.PrologUtilities;
+import org.kahina.core.util.Sharer;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.tralesld.TraleSLDState;
@@ -45,6 +46,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	int lastRegisteredChartEdge = -1;
 
 	private final BracketPacker packer;
+	
+	private final Sharer<TraleSLDVariableBinding> bindingSharer;
 
 	public TraleSLDBridge(TraleSLDState state)
 	{
@@ -53,6 +56,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		prospectiveEdgeStack = new ArrayList<Integer>();
 		edgeIDConv = new HashMap<Integer, Integer>();
 		packer = new BracketPacker();
+		bindingSharer = new Sharer<TraleSLDVariableBinding>();
 	}
 
 	public void initializeParseTrace(String parsedSentenceList)
@@ -349,7 +353,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// varName + ",\"" + tag + ",\"" + type + "): " + grisuMessage);
 			// }
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
-			TraleSLDVariableBinding binding = new TraleSLDVariableBinding(varName, tag, type, packer.pack(grisuMessage));
+			TraleSLDVariableBinding binding = bindingSharer.share(new TraleSLDVariableBinding(varName, tag, type, packer.pack(grisuMessage)));
 			if ("start".equals(key))
 			{
 				step.startBindings.add(binding);
