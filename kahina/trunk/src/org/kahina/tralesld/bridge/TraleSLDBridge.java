@@ -31,7 +31,7 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
 	public static final boolean verbose = false;
-	
+
 	private static final Pattern NOW_PATTERN = Pattern.compile("now\\((\\d+)\\)");
 
 	TraleSLDState state;
@@ -43,7 +43,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	Map<Integer, Integer> edgeIDConv;
 
 	int lastRegisteredChartEdge = -1;
-	
+
 	private final BracketPacker packer;
 
 	public TraleSLDBridge(TraleSLDState state)
@@ -108,13 +108,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			Matcher matcher = NOW_PATTERN.matcher(nodeLabel);
 			if (matcher.matches())
 			{
-				/*if (verbose)
-				{
-					System.err.println("Matched! Current ID: " + currentID);
-				}
-				int blockingStepExtID = Integer.parseInt(matcher.group(1));
-				int blockingStepID = stepIDConv.get(blockingStepExtID);
-				state.linkNodes(currentID, blockingStepID); TODO little arrow*/
+				/*
+				 * if (verbose) { System.err.println("Matched! Current ID: " +
+				 * currentID); } int blockingStepExtID =
+				 * Integer.parseInt(matcher.group(1)); int blockingStepID =
+				 * stepIDConv.get(blockingStepExtID); state.linkNodes(currentID,
+				 * blockingStepID); TODO little arrow
+				 */
 			}
 			if (verbose)
 			{
@@ -132,12 +132,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	}
 
 	/**
-	 * Called by {@link #registerRuleApplication(int, String, int, String)}
-	 * to register the first prospective edge of a rule application, and
-	 * directly via the Jasper interface to register any subsequent prospective
-	 * edge of that rule application.
+	 * Called by {@link #registerRuleApplication(int, String, int, String)} to
+	 * register the first prospective edge of a rule application, and directly
+	 * via the Jasper interface to register any subsequent prospective edge of
+	 * that rule application.
 	 * 
-	 * @param leftmostDaughter pass {@code -1} to not register a leftmost daughter
+	 * @param leftmostDaughter
+	 *            pass {@code -1} to not register a leftmost daughter
 	 */
 	public void registerProspectiveEdge(int ruleApplicationExtID, String ruleName, int leftmostDaughter)
 	{
@@ -148,7 +149,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				System.err.println(this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + leftmostDaughter);
 			}
 			KahinaChart chart = state.getChart();
-			int newEdgeID = chart.addEdge(chart.getLeftBoundForEdge(edgeIDConv.get(leftmostDaughter)), chart.getRightBoundForEdge(edgeIDConv.get(leftmostDaughter)), ruleName, TraleSLDChartEdgeStatus.PROSPECTIVE);
+			int newEdgeID = chart.addEdge(chart.getLeftBoundForEdge(edgeIDConv.get(leftmostDaughter)), chart.getRightBoundForEdge(edgeIDConv.get(leftmostDaughter)), ruleName,
+					TraleSLDChartEdgeStatus.PROSPECTIVE);
 			if (leftmostDaughter != -1)
 			{
 				chart.addEdgeDependency(newEdgeID, edgeIDConv.get(leftmostDaughter));
@@ -188,7 +190,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				chart.setRightBoundForEdge(mother, chart.getRightBoundForEdge(daughter));
 			}
 			chart.addEdgeDependency(mother, daughter);
-			//lastRegisteredChartEdge = mother;
+			// lastRegisteredChartEdge = mother;
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(mother));
 			if (verbose)
 			{
@@ -347,7 +349,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// varName + ",\"" + tag + ",\"" + type + "): " + grisuMessage);
 			// }
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
-			TraleSLDVariableBinding binding = new TraleSLDVariableBinding(varName, tag, type, grisuMessage);
+			TraleSLDVariableBinding binding = new TraleSLDVariableBinding(varName, tag, type, packer.pack(grisuMessage));
 			if ("start".equals(key))
 			{
 				step.startBindings.add(binding);
@@ -401,7 +403,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				}
 				state.getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
 				state.linkEdgeToNode(currentEdge, stepID);
-				//lastRegisteredChartEdge = currentEdge;
+				// lastRegisteredChartEdge = currentEdge;
 				KahinaRunner.processEvent(new KahinaChartUpdateEvent(currentEdge));
 			}
 			if (TraleSLDStep.get(stepID).getGoalDesc().startsWith("rule("))

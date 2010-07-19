@@ -83,7 +83,7 @@ public class VariableBindingTableModel extends AbstractTableModel
 			{
 				variableNames[i] = binding.varName;
 				types[i] = binding.type;
-				grisuMessages[i] = binding.fs.grisuMessage;
+				grisuMessages[i] = binding.fs.toString();
 				if (oldSelectedVariableNames.contains(binding.varName))
 				{
 					newSelectedRows.add(i);
