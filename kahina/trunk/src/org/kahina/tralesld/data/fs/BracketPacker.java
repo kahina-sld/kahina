@@ -20,6 +20,8 @@ import java.util.Map;
  */
 public class BracketPacker
 {
+	private static final boolean VERBOSE = false;
+	
 	private Map<String, StructureSharedString> terminalByString = new HashMap<String, StructureSharedString>();
 
 	private Map<List<StructureSharedString>, StructureSharedString> nonTerminalByChildren = new HashMap<List<StructureSharedString>, StructureSharedString>();
@@ -140,6 +142,9 @@ public class BracketPacker
 			children = new ArrayList<StructureSharedString>(children);
 			result = new NonTerminalStructureSharedString(children);
 			nonTerminalByChildren.put(children, result);
+		} else if (VERBOSE)
+		{
+			System.err.println("Recognized non-terminal: " + result);
 		}
 		return result;
 	}
@@ -155,6 +160,9 @@ public class BracketPacker
 		{
 			result = new TerminalStructureSharedString(string);
 			terminalByString.put(string, result);
+		} else if (VERBOSE)
+		{
+			System.err.println("Recognized terminal: " + string);
 		}
 		return result;
 	}
