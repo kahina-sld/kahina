@@ -22,6 +22,12 @@ public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI,
 		//gui = new TraleSLDGUI(TraleSLDStep.class, this);
 		//bridge = new TraleSLDBridge(this, gui);
 	}
+	
+	public TraleSLDInstance(TraleSLDState state)
+	{
+		super(state);
+		// TODO create tree behavior (not persistable yet)
+	}
 
 	@Override
 	protected TraleSLDBridge createBridge()

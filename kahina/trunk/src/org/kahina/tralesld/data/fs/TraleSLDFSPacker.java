@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * A {@link TraleSLDFSPacker} can be used to reduce memory usage when
  * storing many strings with many shared substrings. This is achieved by

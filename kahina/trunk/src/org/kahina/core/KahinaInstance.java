@@ -16,15 +16,20 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     protected G gui;
     protected B bridge;
     
-    private int nextStepID;
-    
     public KahinaInstance()
     {   
         fillViewRegistry();
     	state = createState();
     	gui = createGUI();
     	bridge = createBridge();
-        nextStepID = 0;     
+    }
+    
+    public KahinaInstance(S state)
+    {
+    	fillViewRegistry();
+    	this.state = state;
+    	gui = createGUI();
+    	// TODO (re)create bridge (when adding support for resuming live sessions)
     }
     
     protected abstract S createState();
@@ -46,11 +51,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     public S getState()
     {
         return state;
-    }
-    
-    public int getNewStepID()
-    {
-        return nextStepID++;
     }
     
     /**
