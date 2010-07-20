@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * A {@link BracketPacker} can be used to reduce memory usage when
  * storing many strings with many shared substrings. This is achieved by
@@ -93,7 +92,20 @@ public class BracketPacker
 	 */
 	private StructureSharedString parseTerminal()
 	{
+		char first = string.charAt(index);
 		String terminalString;
+		if (first == '"')
+		{
+			terminalString = parseStringLiteral();
+		} else if (Character.isDigit(first))
+		{
+			terminalString = parseNumberLiteral();
+		} else
+		{
+			terminalString = parseOther();
+		}
+		
+		/*String terminalString;
 		if (index + 1 == length)
 		{
 			terminalString = string.substring(index);
@@ -115,8 +127,54 @@ public class BracketPacker
 				terminalString = string.substring(index);
 			}
 		}
-		index += terminalString.length();
+		index += terminalString.length();*/
 		return produceTerminal(terminalString);
+	}
+	
+	private String parseStringLiteral()
+	{
+		if (index == length - 1)
+		{
+			index++;
+			return string.substring(index);
+		}
+		int endIndex = string.indexOf("\"", index + 1);
+		if (endIndex == -1)
+		{
+			String terminalString = string.substring(index);
+			index = length;
+			return terminalString;
+		}
+		endIndex++; // catch closing quote
+		String terminalString = string.substring(index, endIndex);
+		index = endIndex;
+		return terminalString;
+	}
+	
+	private String parseNumberLiteral()
+	{
+		int startIndex = index;
+		do
+		{
+			index++;
+		} while (index < length && Character.isDigit(string.charAt(index)));
+		return string.substring(startIndex, index);
+	}
+	
+	private String parseOther()
+	{
+		int startIndex = index;
+		char character;
+		do
+		{
+			index++;
+			if (index >= length)
+			{
+				break;
+			}
+			character = string.charAt(index);
+		} while (index < length && !Character.isDigit(character) && character != '"' && character != ')' && character != '(');
+		return string.substring(startIndex, index);
 	}
 	
 	/**

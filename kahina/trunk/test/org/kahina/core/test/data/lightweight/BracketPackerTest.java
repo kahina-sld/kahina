@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.kahina.tralesld.data.fs.BracketPacker;
 import org.kahina.tralesld.data.fs.StructureSharedString;
 
-public class BracketStructureSharerTest
+public class BracketPackerTest
 {
 
 	private BracketPacker sharer;
@@ -41,6 +41,18 @@ public class BracketStructureSharerTest
 		lines.add(unbalanced);
 		results.add(sharer.pack(unbalanced));
 		unbalanced = "(((a)alb";
+		lines.add(unbalanced);
+		results.add(sharer.pack(unbalanced));
+		unbalanced = "a\"aa";
+		lines.add(unbalanced);
+		results.add(sharer.pack(unbalanced));
+		unbalanced = "\"\"";
+		lines.add(unbalanced);
+		results.add(sharer.pack(unbalanced));
+		unbalanced = "\"aaaaaaaaa";
+		lines.add(unbalanced);
+		results.add(sharer.pack(unbalanced));
+		unbalanced = "(\"))(\"";
 		lines.add(unbalanced);
 		results.add(sharer.pack(unbalanced));
 		Iterator<StructureSharedString> resultsIterator = results.iterator();
