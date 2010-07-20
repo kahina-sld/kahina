@@ -1,6 +1,5 @@
 package org.kahina.core.visual.dag;
 
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -13,12 +12,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.tree.KahinaTreeView;
-import org.kahina.core.visual.tree.KahinaTreeViewContextMenu;
-import org.kahina.core.visual.tree.KahinaTreeViewMarker;
-import org.kahina.core.visual.tree.KahinaTreeViewPanel;
 
 public class KahinaDAGViewListener extends MouseAdapter implements ActionListener
 {

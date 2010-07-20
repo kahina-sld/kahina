@@ -1,12 +1,13 @@
 package org.kahina.tralesld.data.fs;
 
 
-public class TerminalStructureSharedString extends StructureSharedString
+
+public class TraleSLDPackedFSTerminal extends TraleSLDPackedFS
 {
 
 	private String string;
 
-	public TerminalStructureSharedString(String string)
+	public TraleSLDPackedFSTerminal(String string)
 	{
 		this.string = string;
 	}

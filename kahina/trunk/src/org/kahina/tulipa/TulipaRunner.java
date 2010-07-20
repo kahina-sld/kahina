@@ -10,11 +10,6 @@ import org.kahina.core.data.source.KahinaSourceFileModel;
 import org.kahina.core.data.text.KahinaConstantDbTextStore;
 import org.kahina.core.data.text.KahinaText;
 import org.kahina.core.data.text.KahinaTextModel;
-import org.kahina.lp.LogicProgrammingStep;
-import org.kahina.tralesld.TraleSLDStep;
-import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
-import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
-import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 import org.kahina.tulipa.bridge.TulipaBridge;
 
 public class TulipaRunner extends KahinaRunner

@@ -26,7 +26,7 @@ import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
-import org.kahina.tralesld.data.fs.BracketPacker;
+import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
@@ -45,7 +45,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	int lastRegisteredChartEdge = -1;
 
-	private final BracketPacker packer;
+	private final TraleSLDFSPacker packer;
 	
 	private final Sharer<TraleSLDVariableBinding> bindingSharer;
 
@@ -55,7 +55,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		this.state = state;
 		prospectiveEdgeStack = new ArrayList<Integer>();
 		edgeIDConv = new HashMap<Integer, Integer>();
-		packer = new BracketPacker();
+		packer = new TraleSLDFSPacker();
 		bindingSharer = new Sharer<TraleSLDVariableBinding>();
 	}
 

@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kahina.core.data.tree.KahinaMemTree;
-import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.data.tree.LayerDecider;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

@@ -6,8 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * A {@link BracketPacker} can be used to reduce memory usage when
+ * A {@link TraleSLDFSPacker} can be used to reduce memory usage when
  * storing many strings with many shared substrings. This is achieved by
  * breaking strings down into smaller units and storing the full strings as
  * objects that recursively share substructures (a packed forest). The heuristic
@@ -17,13 +18,13 @@ import java.util.Map;
  * Note that strings stored using a bracket packer will not be garbage-collected
  * until the bracket packer itself is.
  */
-public class BracketPacker
+public class TraleSLDFSPacker
 {
 	private static final boolean VERBOSE = false;
 	
-	private Map<String, StructureSharedString> terminalByString = new HashMap<String, StructureSharedString>();
+	private Map<String, TraleSLDPackedFS> terminalByString = new HashMap<String, TraleSLDPackedFS>();
 
-	private Map<List<StructureSharedString>, StructureSharedString> nonTerminalByChildren = new HashMap<List<StructureSharedString>, StructureSharedString>();
+	private Map<List<TraleSLDPackedFS>, TraleSLDPackedFS> nonTerminalByChildren = new HashMap<List<TraleSLDPackedFS>, TraleSLDPackedFS>();
 
 	private String string;
 
@@ -34,12 +35,12 @@ public class BracketPacker
 	/**
 	 * Returns a structure-shared representation of the given string.
 	 */
-	public synchronized StructureSharedString pack(String string)
+	public synchronized TraleSLDPackedFS pack(String string)
 	{
 		this.string = string;
 		length = string.length();
 		index = 0;
-		List<StructureSharedString> rootChildren = new LinkedList<StructureSharedString>();
+		List<TraleSLDPackedFS> rootChildren = new LinkedList<TraleSLDPackedFS>();
 		while (index < length)
 		{
 			rootChildren.add(parseNode());
@@ -52,7 +53,7 @@ public class BracketPacker
 	 * {@code index}. This will typically be a non-terminal if there is an
 	 * opening bracket right ahead, a terminal otherwise.
 	 */
-	private StructureSharedString parseNode()
+	private TraleSLDPackedFS parseNode()
 	{
 		if (string.charAt(index) == '(')
 		{
@@ -69,9 +70,9 @@ public class BracketPacker
 	 * terminals and lastly, if the brackets in the string are properly
 	 * balanced, the closing bracket.
 	 */
-	private StructureSharedString parseNonTerminal()
+	private TraleSLDPackedFS parseNonTerminal()
 	{
-		List<StructureSharedString> children = new LinkedList<StructureSharedString>();
+		List<TraleSLDPackedFS> children = new LinkedList<TraleSLDPackedFS>();
 		children.add(parseTerminal());
 		while (index < length && string.charAt(index) != ')')
 		{
@@ -90,7 +91,7 @@ public class BracketPacker
 	 * and ending before the first opening or closing bracket after that, if
 	 * any.
 	 */
-	private StructureSharedString parseTerminal()
+	private TraleSLDPackedFS parseTerminal()
 	{
 		char first = string.charAt(index);
 		String terminalString;
@@ -183,7 +184,7 @@ public class BracketPacker
 	 * children is empty, returns the terminal representing the empty string. If
 	 * there ist just one child, returns that child.
 	 */
-	private StructureSharedString produceNode(List<StructureSharedString> children)
+	private TraleSLDPackedFS produceNode(List<TraleSLDPackedFS> children)
 	{
 		int size = children.size();
 		if (size == 1)
@@ -194,11 +195,11 @@ public class BracketPacker
 		{
 			return produceTerminal("");
 		}
-		StructureSharedString result = nonTerminalByChildren.get(children);
+		TraleSLDPackedFS result = nonTerminalByChildren.get(children);
 		if (result == null)
 		{
-			children = new ArrayList<StructureSharedString>(children);
-			result = new NonTerminalStructureSharedString(children);
+			children = new ArrayList<TraleSLDPackedFS>(children);
+			result = new TraleSLDPackedFSNonTerminal(children);
 			nonTerminalByChildren.put(children, result);
 		} else if (VERBOSE)
 		{
@@ -211,12 +212,12 @@ public class BracketPacker
 	 * Retrieves a terminal representing the given string if one is already
 	 * stored, otherwise creates and stores it.
 	 */
-	private StructureSharedString produceTerminal(String string)
+	private TraleSLDPackedFS produceTerminal(String string)
 	{
-		StructureSharedString result = terminalByString.get(string);
+		TraleSLDPackedFS result = terminalByString.get(string);
 		if (result == null)
 		{
-			result = new TerminalStructureSharedString(string);
+			result = new TraleSLDPackedFSTerminal(string);
 			terminalByString.put(string, result);
 		} else if (VERBOSE)
 		{

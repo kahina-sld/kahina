@@ -1,7 +1,6 @@
 package org.kahina.lp.data.text;
 
 import org.kahina.core.data.text.KahinaLineReference;
-import org.kahina.core.data.text.KahinaText;
 import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.lp.LogicProgrammingStepType;
 

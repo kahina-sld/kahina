@@ -2,14 +2,14 @@ package org.kahina.tralesld;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.lp.LogicProgrammingStep;
-import org.kahina.tralesld.data.fs.StructureSharedString;
+import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 
 public class TraleSLDStep extends LogicProgrammingStep
 {
 	// TODO this does not support DB storage yet
-    public StructureSharedString startFeatStruct;
-    public StructureSharedString endFeatStruct;
+    public TraleSLDPackedFS startFeatStruct;
+    public TraleSLDPackedFS endFeatStruct;
     public TraleSLDVariableBindingSet startBindings = new TraleSLDVariableBindingSet();
     public TraleSLDVariableBindingSet endBindings = new TraleSLDVariableBindingSet();
     

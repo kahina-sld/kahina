@@ -3,8 +3,8 @@ package org.kahina.tulipa.visual.grammar;
 import java.util.List;
 
 import javax.swing.BoxLayout;
-import javax.swing.JPanel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;

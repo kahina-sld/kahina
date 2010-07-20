@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.dag.KahinaDAGView;
-import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tulipa.TulipaInstance;
 import org.kahina.tulipa.TulipaStepStatus;
 import org.kahina.tulipa.visual.grammar.TulipaGrammarView;

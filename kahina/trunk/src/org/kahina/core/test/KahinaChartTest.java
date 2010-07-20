@@ -13,7 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.chart.KahinaChart;
-import org.kahina.core.io.database.DatabaseHandler;
 import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.core.visual.chart.KahinaChartViewPanel;
 import org.w3c.dom.Document;

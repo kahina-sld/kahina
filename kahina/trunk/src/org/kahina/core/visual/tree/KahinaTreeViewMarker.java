@@ -3,9 +3,7 @@ package org.kahina.core.visual.tree;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaTreeViewMarker
 {

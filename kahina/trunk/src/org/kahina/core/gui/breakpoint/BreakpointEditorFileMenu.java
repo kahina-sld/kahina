@@ -9,7 +9,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.event.KahinaSystemEvent;
 
 public class BreakpointEditorFileMenu extends JMenu implements ActionListener
 {

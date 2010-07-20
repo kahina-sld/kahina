@@ -2,7 +2,6 @@ package org.kahina.tulipa;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
-import org.kahina.lp.LogicProgrammingStep;
 
 public class TulipaStep extends KahinaStep
 {

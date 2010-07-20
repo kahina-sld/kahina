@@ -2,7 +2,12 @@ package org.kahina.tralesld.data.fs;
 
 import org.kahina.core.data.KahinaObject;
 
-public abstract class StructureSharedString extends KahinaObject  
+/**
+ * Represents a TraleSLD feature structure, stored in a packed format.
+ * @author ke
+ *
+ */
+public abstract class TraleSLDPackedFS extends KahinaObject  
 {
 	
 	@Override

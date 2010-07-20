@@ -1,6 +1,5 @@
 package org.kahina.tralesld.visual.fs;
 
-import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
 

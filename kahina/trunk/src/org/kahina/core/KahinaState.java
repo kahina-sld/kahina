@@ -1,19 +1,13 @@
 package org.kahina.core;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaTextModel;
-import org.kahina.core.data.tree.KahinaMemTree;
-import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaMessageEvent;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;

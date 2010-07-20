@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComponent;
-import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.visual.KahinaView;

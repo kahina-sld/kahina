@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.io.color.ColorIO;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

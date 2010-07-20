@@ -10,7 +10,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JScrollPane;
@@ -18,8 +17,6 @@ import javax.swing.JScrollPane;
 import org.kahina.core.util.SwingUtilities;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.core.visual.tree.KahinaTreeView;
-import org.kahina.core.visual.tree.KahinaTreeViewListener;
-import org.kahina.core.visual.tree.KahinaTreeViewMarker;
 
 public class KahinaDAGViewPanel extends KahinaViewPanel<KahinaDAGView>
 {

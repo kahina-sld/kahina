@@ -2,10 +2,7 @@ package org.kahina.core.data.source;
 
 import java.util.HashMap;
 
-import org.kahina.core.data.KahinaObject;
-import org.kahina.core.data.lightweight.LightweightKahinaObject;
 import org.kahina.core.data.text.KahinaLineReference;
-import org.kahina.core.data.text.KahinaText;
 
 public class KahinaSourceCodeLocation extends KahinaLineReference
 {    

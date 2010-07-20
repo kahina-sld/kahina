@@ -1,6 +1,5 @@
 package org.kahina.core.breakpoint;
 
-import org.kahina.core.io.color.ColorIO;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

@@ -21,13 +21,9 @@ import javax.swing.JScrollPane;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
-import org.kahina.core.data.tree.KahinaMemTree;
-import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.tree.KahinaTreeView;
-import org.kahina.core.visual.tree.KahinaTreeViewMarker;
-import org.kahina.core.visual.tree.KahinaTreeViewPanel;
 import org.kahina.core.visual.tree.WidthVector;
 
 public class KahinaDAGView extends KahinaView<KahinaDAG>

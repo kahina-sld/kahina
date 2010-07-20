@@ -13,7 +13,8 @@ import org.kahina.core.data.DataManager;
 import org.kahina.core.data.DbDataManager;
 import org.kahina.core.io.database.DatabaseHandler;
 import org.kahina.tralesld.TraleSLDStep;
-import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
+import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
+import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
 
 public class LightweightDbStoreTest
 {
@@ -21,25 +22,27 @@ public class LightweightDbStoreTest
 	private DataManager manager;
 	
 	private DatabaseHandler db;
+	
+	private TraleSLDFSPacker packer;
 
 	@Before
 	public void setUp() throws Exception
 	{
 		db = new DatabaseHandler();
 		manager = new DbDataManager(db);
-		manager.registerDataType(TraleSLDFeatureStructure.class);
+		manager.registerDataType(TraleSLDPackedFS.class);
 		manager.registerDataType(TraleSLDStep.class);
 		manager.registerDataType(TestKahinaObject.class);
+		packer = new TraleSLDFSPacker();
 	}
 	
 	@Test
 	public void storeAndRetrieveKahinaFS()
 	{
-		TraleSLDFeatureStructure fs = new TraleSLDFeatureStructure();
-		fs.grisuMessage = "Hallo Welt!";
+		TraleSLDPackedFS fs = packer.pack("Hallo Welt!");
 		manager.store(fs);
-		fs = manager.retrieve(TraleSLDFeatureStructure.class, fs.getID());
-		Assert.assertEquals("Hallo Welt!", fs.grisuMessage);
+		fs = manager.retrieve(TraleSLDPackedFS.class, fs.getID());
+		Assert.assertEquals("Hallo Welt!", fs.toString());
 	}
 	
 	@Test

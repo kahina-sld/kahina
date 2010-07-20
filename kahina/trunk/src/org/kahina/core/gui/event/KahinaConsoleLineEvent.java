@@ -1,6 +1,5 @@
 package org.kahina.core.gui.event;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.kahina.core.data.text.KahinaLineReference;

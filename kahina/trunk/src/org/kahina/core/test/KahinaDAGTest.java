@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -15,16 +13,8 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
-import org.kahina.core.data.tree.KahinaDbTree;
-import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.data.tree.LayerDecider;
 import org.kahina.core.gui.KahinaDefaultWindow;
-import org.kahina.core.io.database.DatabaseHandler;
 import org.kahina.core.visual.dag.KahinaDAGView;
-import org.kahina.core.visual.dag.KahinaDAGViewPanel;
-import org.kahina.core.visual.tree.KahinaTreeView;
-import org.kahina.core.visual.tree.KahinaTreeViewMarker;
-import org.kahina.core.visual.tree.KahinaTreeViewPanel;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

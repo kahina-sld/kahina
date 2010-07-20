@@ -12,7 +12,7 @@ import org.kahina.core.data.text.KahinaText;
 import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
-import org.kahina.tralesld.data.fs.TraleSLDFeatureStructure;
+import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 
@@ -66,7 +66,7 @@ public class TraleSLDRunner extends KahinaRunner
 		dm.registerDataType(KahinaStep.class);
 		dm.registerDataType(LogicProgrammingStep.class);
 		dm.registerDataType(TraleSLDStep.class);
-		dm.registerDataType(TraleSLDFeatureStructure.class);
+		dm.registerDataType(TraleSLDPackedFS.class);
 		dm.registerDataType(KahinaSourceCodeLocation.class);
 		dm.registerDataType(KahinaSourceFileModel.class);
 		dm.registerDataType(TraleSLDVariableBinding.class);
@@ -81,11 +81,6 @@ public class TraleSLDRunner extends KahinaRunner
 		{
 			dm.registerDataType(KahinaText.class);
 		}
-		/*
-		 * dm.registerDataType(KahinaLineReference.class);
-		 * dm.registerDataType(LogicProgrammingLineReference.class);
-		 * dm.registerDataType(KahinaText.class);
-		 */
 	}
 
 	public static TraleSLDBridge runAndGetBridge()

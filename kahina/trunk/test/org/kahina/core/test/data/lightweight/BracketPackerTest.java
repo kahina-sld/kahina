@@ -11,18 +11,18 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.kahina.tralesld.data.fs.BracketPacker;
-import org.kahina.tralesld.data.fs.StructureSharedString;
+import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
+import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
 
 public class BracketPackerTest
 {
 
-	private BracketPacker sharer;
+	private TraleSLDFSPacker sharer;
 
 	@Before
 	public void setUp() throws Exception
 	{
-		sharer = new BracketPacker();
+		sharer = new TraleSLDFSPacker();
 	}
 
 	@Test
@@ -30,7 +30,7 @@ public class BracketPackerTest
 	{
 		Scanner scanner = new Scanner(Main.class.getResourceAsStream("/gralej/resource/sample.GRALE"));
 		List<String> lines = new ArrayList<String>();
-		List<StructureSharedString> results = new ArrayList<StructureSharedString>();
+		List<TraleSLDPackedFS> results = new ArrayList<TraleSLDPackedFS>();
 		while (scanner.hasNextLine())
 		{
 			String line = scanner.nextLine();
@@ -55,7 +55,7 @@ public class BracketPackerTest
 		unbalanced = "(\"))(\"";
 		lines.add(unbalanced);
 		results.add(sharer.pack(unbalanced));
-		Iterator<StructureSharedString> resultsIterator = results.iterator();
+		Iterator<TraleSLDPackedFS> resultsIterator = results.iterator();
 		for (String line : lines)
 		{
 			Assert.assertEquals(line, resultsIterator.next().toString());

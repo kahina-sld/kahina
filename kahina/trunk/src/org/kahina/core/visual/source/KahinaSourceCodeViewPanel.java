@@ -1,17 +1,5 @@
 package org.kahina.core.visual.source;
 
-import java.awt.Color;
-import java.util.HashMap;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
-
-import org.kahina.core.data.source.KahinaSourceCodeLocation;
-import org.kahina.core.data.source.KahinaSourceFileModel;
-import org.kahina.core.data.text.KahinaTextWithMarking;
-import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.core.visual.text.KahinaTextViewPanel;
 
 public class KahinaSourceCodeViewPanel extends KahinaTextViewPanel

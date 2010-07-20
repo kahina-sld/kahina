@@ -21,21 +21,17 @@ import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
-import org.kahina.core.breakpoint.KahinaBreakpointType;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
-import org.kahina.core.gui.breakpoint.BreakpointEditorWindow;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.text.KahinaTextView;
-import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 
 public class KahinaGUI implements KahinaListener
 {

@@ -1,6 +1,5 @@
 package org.kahina.core.data.dag;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.kahina.core.data.KahinaObject;

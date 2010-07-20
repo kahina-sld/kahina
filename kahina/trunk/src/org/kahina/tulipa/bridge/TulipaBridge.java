@@ -1,17 +1,11 @@
 package org.kahina.tulipa.bridge;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
-import org.kahina.lp.LogicProgrammingStep;
-import org.kahina.lp.LogicProgrammingStepType;
-import org.kahina.lp.event.LogicProgrammingBridgeEvent;
-import org.kahina.lp.event.LogicProgrammingBridgeEventType;
-import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tulipa.TulipaState;
 import org.kahina.tulipa.TulipaStep;
 import org.kahina.tulipa.event.TulipaBridgeEvent;

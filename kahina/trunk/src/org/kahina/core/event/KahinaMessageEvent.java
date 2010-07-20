@@ -1,7 +1,5 @@
 package org.kahina.core.event;
 
-import java.io.File;
-
 import org.kahina.core.data.text.KahinaLineReference;
 
 public class KahinaMessageEvent extends KahinaEvent

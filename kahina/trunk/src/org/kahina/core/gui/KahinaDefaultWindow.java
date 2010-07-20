@@ -1,7 +1,6 @@
 package org.kahina.core.gui;
 
 import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaDefaultWindow extends KahinaWindow
 {

@@ -1,18 +1,9 @@
 package org.kahina.core.breakpoint;
 
 import java.awt.Color;
-import java.io.File;
 
-import org.kahina.core.data.KahinaDataHandlingMethod;
-import org.kahina.core.data.chart.KahinaChart;
-import org.kahina.core.data.chart.KahinaDbChart;
-import org.kahina.core.data.chart.KahinaMemChart;
 import org.kahina.core.io.color.ColorIO;
-import org.kahina.core.io.database.DatabaseHandler;
-import org.kahina.core.io.util.XMLUtilities;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 public class KahinaBreakpoint
 {

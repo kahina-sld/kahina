@@ -1,10 +1,7 @@
 package org.kahina.core.gui;
 
-import java.awt.event.KeyEvent;
-
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.KeyStroke;
 
 import org.kahina.core.gui.icons.IconUtil;
 
