@@ -5,13 +5,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaTextModel;
-import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaMessageEvent;
-import org.kahina.core.gui.event.KahinaConsoleLineEvent;
-import org.kahina.core.gui.event.KahinaUpdateEvent;
 
 /**
  * The current state of a Kahina instance.
@@ -23,7 +19,7 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
  *  @author jdellert
  */
 
-public class KahinaState implements KahinaListener
+public class KahinaState
 {   
     //the messages that will be stored in the console
     protected KahinaTextModel consoleMessages;
@@ -57,17 +53,8 @@ public class KahinaState implements KahinaListener
         return consoleMessages;
     }
     
-    public void processEvent(KahinaEvent e)
+    public Set<KahinaLineReference> getLineReferencesForStep(int stepID)
     {
-        if (e instanceof KahinaUpdateEvent)
-        {
-            processEvent((KahinaUpdateEvent) e);
-        }
-    }
-    
-    public void processEvent(KahinaUpdateEvent e)
-    {
-        Set<KahinaLineReference> refs = consoleLines.get(e.getSelectedStep());
-        if (refs != null) KahinaRunner.processEvent(new KahinaConsoleLineEvent(refs));
+    	return consoleLines.get(stepID);
     }
 }

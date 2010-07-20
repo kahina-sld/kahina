@@ -3,7 +3,12 @@ package org.kahina.tralesld;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.KahinaDataHandlingMethod;
+import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.KahinaViewRegistry;
+import org.kahina.core.gui.event.KahinaChartUpdateEvent;
+import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
@@ -19,13 +24,17 @@ public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI,
 	{
 		// TODO: this reeks a wee bit of Bad Software Design
 		new TraleSLDTreeBehavior(state.getStepTree(), this, state.getSecondaryStepTree());
-		//gui = new TraleSLDGUI(TraleSLDStep.class, this);
-		//bridge = new TraleSLDBridge(this, gui);
+		// gui = new TraleSLDGUI(TraleSLDStep.class, this);
+		// bridge = new TraleSLDBridge(this, gui);
+        KahinaRunner.getControl().registerListener("edge select", this);
+        KahinaRunner.getControl().registerListener("update", this);
 	}
-	
+
 	public TraleSLDInstance(TraleSLDState state)
 	{
 		super(state);
+        KahinaRunner.getControl().registerListener("edge select", this);
+        KahinaRunner.getControl().registerListener("update", this);
 		// TODO create tree behavior (not persistable yet)
 	}
 
@@ -69,5 +78,36 @@ public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI,
 		super.fillViewRegistry();
 		KahinaViewRegistry.registerMapping(TraleSLDPackedFS.class, TraleSLDFeatureStructureView.class);
 		KahinaViewRegistry.registerMapping(TraleSLDVariableBindingSet.class, TraleSLDVariableBindingSetView.class);
+	}
+
+	@Override
+	public void processEvent(KahinaEvent e)
+	{
+		super.processEvent(e);
+		if (e instanceof KahinaEdgeSelectionEvent)
+		{
+			processEdgeSelectionEvent((KahinaEdgeSelectionEvent) e);
+		} else if (e instanceof KahinaUpdateEvent)
+		{
+			processUpdateEvent((KahinaUpdateEvent) e);
+		}
+	}
+
+	private void processEdgeSelectionEvent(KahinaEdgeSelectionEvent e)
+	{
+		int nodeID = state.getNodeForEdge(e.getSelectedEdge());
+		if (nodeID != -1)
+		{
+			KahinaRunner.processEvent(new KahinaSelectionEvent(nodeID));
+		}
+	}
+
+	private void processUpdateEvent(KahinaUpdateEvent e)
+	{
+		int edgeID = state.getEdgeForNode(e.getSelectedStep());
+		if (edgeID != -1)
+		{
+			KahinaRunner.processEvent(new KahinaChartUpdateEvent(edgeID));
+		}
 	}
 }

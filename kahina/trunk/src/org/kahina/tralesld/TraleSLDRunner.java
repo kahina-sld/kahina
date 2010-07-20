@@ -12,7 +12,6 @@ import org.kahina.core.data.text.KahinaText;
 import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
-import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
 import org.kahina.tralesld.data.fs.TraleSLDPackedFSNonTerminal;
 import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
