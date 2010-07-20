@@ -6,7 +6,11 @@ import java.util.List;
 public class TraleSLDPackedFSNonTerminal extends TraleSLDPackedFS
 {
 	
-	private List<TraleSLDPackedFS> children;
+	public List<TraleSLDPackedFS> children;
+	
+	public TraleSLDPackedFSNonTerminal()
+	{	
+	}
 	
 	public TraleSLDPackedFSNonTerminal(List<TraleSLDPackedFS> children)
 	{
@@ -14,7 +18,7 @@ public class TraleSLDPackedFSNonTerminal extends TraleSLDPackedFS
 	}
 	
 	@Override
-	public void toString(StringBuilder builder)
+	protected void toString(StringBuilder builder)
 	{
 		for (TraleSLDPackedFS child : children)
 		{

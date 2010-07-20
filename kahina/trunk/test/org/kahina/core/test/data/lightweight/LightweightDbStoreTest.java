@@ -15,6 +15,10 @@ import org.kahina.core.io.database.DatabaseHandler;
 import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
+import org.kahina.tralesld.data.fs.TraleSLDPackedFSNonTerminal;
+import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
+import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
+import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 
 public class LightweightDbStoreTest
 {
@@ -30,7 +34,10 @@ public class LightweightDbStoreTest
 	{
 		db = new DatabaseHandler();
 		manager = new DbDataManager(db);
-		manager.registerDataType(TraleSLDPackedFS.class);
+		manager.registerDataType(TraleSLDPackedFSTerminal.class);
+		manager.registerDataType(TraleSLDPackedFSNonTerminal.class);
+		manager.registerDataType(TraleSLDVariableBinding.class);
+		manager.registerDataType(TraleSLDVariableBindingSet.class);
 		manager.registerDataType(TraleSLDStep.class);
 		manager.registerDataType(TestKahinaObject.class);
 		packer = new TraleSLDFSPacker();

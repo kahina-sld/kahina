@@ -1,11 +1,13 @@
 package org.kahina.tralesld.data.fs;
 
-
-
 public class TraleSLDPackedFSTerminal extends TraleSLDPackedFS
 {
 
-	private String string;
+	public String string;
+	
+	public TraleSLDPackedFSTerminal()
+	{
+	}
 
 	public TraleSLDPackedFSTerminal(String string)
 	{
@@ -13,7 +15,7 @@ public class TraleSLDPackedFSTerminal extends TraleSLDPackedFS
 	}
 	
 	@Override
-	public void toString(StringBuilder builder)
+	protected void toString(StringBuilder builder)
 	{
 		builder.append(string);
 	}

@@ -22,7 +22,7 @@ import javax.swing.SwingWorker;
  */
 public class VisualizationUtility
 {
-	private static final boolean verbose = false;
+	private static final boolean verbose = true;
 
 	private static VisualizationUtility def;
 

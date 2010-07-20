@@ -13,6 +13,8 @@ import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
+import org.kahina.tralesld.data.fs.TraleSLDPackedFSNonTerminal;
+import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 
@@ -66,7 +68,8 @@ public class TraleSLDRunner extends KahinaRunner
 		dm.registerDataType(KahinaStep.class);
 		dm.registerDataType(LogicProgrammingStep.class);
 		dm.registerDataType(TraleSLDStep.class);
-		dm.registerDataType(TraleSLDPackedFS.class);
+		dm.registerDataType(TraleSLDPackedFSNonTerminal.class);
+		dm.registerDataType(TraleSLDPackedFSTerminal.class);
 		dm.registerDataType(KahinaSourceCodeLocation.class);
 		dm.registerDataType(KahinaSourceFileModel.class);
 		dm.registerDataType(TraleSLDVariableBinding.class);

@@ -67,7 +67,7 @@ public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI,
 	protected void fillViewRegistry()
 	{
 		super.fillViewRegistry();
-		KahinaViewRegistry.registerMapping(TraleSLDPackedFS.class, TraleSLDFeatureStructureView.class); // TODO not nice
+		KahinaViewRegistry.registerMapping(TraleSLDPackedFS.class, TraleSLDFeatureStructureView.class);
 		KahinaViewRegistry.registerMapping(TraleSLDVariableBindingSet.class, TraleSLDVariableBindingSetView.class);
 	}
 }
