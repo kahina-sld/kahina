@@ -1,8 +1,6 @@
 package org.kahina.tulipa;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.tulipa.behavior.TulipaDAGBehavior;
 import org.kahina.tulipa.bridge.TulipaBridge;
@@ -35,14 +33,7 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
     @Override
     protected TulipaState createState()
     {
-
-        if (KahinaRunner.getDatabaseHandler() != null)
-        {
-            return new TulipaState(this, KahinaDataHandlingMethod.DATABASE);
-        } else
-        {
-            return new TulipaState(this, KahinaDataHandlingMethod.MEMORY);
-        }
+    	return new TulipaState(this);
     }
 
     public TulipaState getState()

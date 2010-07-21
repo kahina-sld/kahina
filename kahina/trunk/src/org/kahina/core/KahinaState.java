@@ -26,12 +26,10 @@ public class KahinaState
     //map from stepIDs to lines in console
     protected Map<Integer,Set<KahinaLineReference>> consoleLines;
     
-    public KahinaState(KahinaInstance<?, ?, ?> kahina, int dataHandlingMethod)
+    public KahinaState(KahinaInstance<?, ?, ?> kahina)
     {
         consoleMessages = new KahinaTextModel();
         consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
-        
-        
     }
     
     public void consoleMessage(int stepID, String message)

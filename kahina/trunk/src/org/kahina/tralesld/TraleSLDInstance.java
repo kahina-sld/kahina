@@ -2,7 +2,6 @@ package org.kahina.tralesld;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
@@ -53,14 +52,7 @@ public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI,
 	@Override
 	protected TraleSLDState createState()
 	{
-
-		if (KahinaRunner.getDatabaseHandler() != null)
-		{
-			return new TraleSLDState(this, KahinaDataHandlingMethod.DATABASE);
-		} else
-		{
-			return new TraleSLDState(this, KahinaDataHandlingMethod.MEMORY);
-		}
+		return new TraleSLDState(this);
 	}
 
 	public TraleSLDState getState()
