@@ -155,7 +155,7 @@ public class LightweightDbStore extends DbDataStore
 		db.createTable(FIELD_VALUES_LONG_VARCHAR_TABLE_NAME, "object_id INT",
 				"field_id INT", "value LONG VARCHAR",
 				"PRIMARY KEY (object_id, field_id)");
-		db.createTable(COLLECTION_ELEMENTS_TABLE_NAME, "collection_id INT",
+		db.createTable(COLLECTION_ELEMENTS_TABLE_NAME, "collection_id INT", "index INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
 				"element INT");
 		db.createIndex(COLLECTION_ELEMENTS_TABLE_NAME, "_collection_id",
 				"collection_id");
@@ -193,7 +193,7 @@ public class LightweightDbStore extends DbDataStore
 						+ FIELD_VALUES_LONG_VARCHAR_TABLE_NAME
 						+ " (object_id, field_id, value) VALUES (?, ?, ?)");
 		selectCollectionStatement = db.prepareStatement("SELECT element FROM "
-				+ COLLECTION_ELEMENTS_TABLE_NAME + " WHERE collection_id = ?");
+				+ COLLECTION_ELEMENTS_TABLE_NAME + " WHERE collection_id = ? ORDER BY index");
 		selectReferenceValueLongVarcharStatement = db
 				.prepareStatement("SELECT value FROM "
 						+ REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME
