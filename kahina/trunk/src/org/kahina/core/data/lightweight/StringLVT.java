@@ -1,12 +1,10 @@
 package org.kahina.core.data.lightweight;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 import org.kahina.core.data.DataManager;
-import org.kahina.core.data.KahinaObject;
 
-public class StringLVT extends LVT
+public class StringLVT extends AbstractStringLVT<String>
 {
 	private StringLVT(LightweightDbStore store, DataManager manager)
 	{
@@ -24,41 +22,15 @@ public class StringLVT extends LVT
 	}
 
 	@Override
-	void retrieveFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object) throws IllegalAccessException
+	protected String serialize(String value)
 	{
-		field.set(object, store.retrieveLongVarchar(objectID, fieldID));
+		return value;
 	}
 
 	@Override
-	Object retrieveReferenceValue(Integer reference)
+	protected String unserialize(String serialized)
 	{
-		return store.retrieveReferenceValueLongVarchar(reference);
-	}
-
-	@Override
-	void storeFieldValue(int objectID, int fieldID, Field field,
-			KahinaObject object) throws IllegalAccessException
-	{
-		store.storeLongVarchar(objectID, fieldID, (String) field.get(object));
-	}
-
-	@Override
-	Integer storeAsReferenceValue(Object element)
-	{
-		return store.storeAsReferenceValueLongVarchar((String) element);
-	}
-
-	@Override
-	void deleteReferenceValue(Integer reference)
-	{
-		store.deleteLongVarchar(reference);
-	}
-
-	@Override
-	boolean deletes()
-	{
-		return true;
+		return serialized;
 	}
 
 }

@@ -48,6 +48,11 @@ public abstract class LVT
 			return result;
 		}
 		result = MapLVT.createMapLVT(type, store, manager);
+		if (result != null)
+		{
+			return result;
+		}
+		result = PatternLVT.createPatternLVT(type, store, manager);
 		return result;
 	}
 
