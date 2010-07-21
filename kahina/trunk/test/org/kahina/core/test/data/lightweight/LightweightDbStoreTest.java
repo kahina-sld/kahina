@@ -147,6 +147,31 @@ public class LightweightDbStoreTest
 		object = manager.retrieve(TestKahinaObject.class, object.getID());
 		Assert.assertEquals(map, object.integerByInteger);
 	}
+	
+	@Test
+	public void storeAndRetrieveIntIntListMap()
+	{
+		Map<Integer, List<Integer>> map = new HashMap<Integer, List<Integer>>();
+		List<Integer> list = new ArrayList<Integer>();
+		list.add(2);
+		list.add(3);
+		list.add(5);
+		list.add(7);
+		map.put(1, list);
+		list = new ArrayList<Integer>();
+		list.add(1);
+		list.add(1);
+		list.add(2);
+		list.add(3);
+		list.add(5);
+		list.add(8);
+		map.put(17, list);
+		TestKahinaObject object = new TestKahinaObject();
+		object.integersByInteger = map;
+		manager.store(object);
+		object = manager.retrieve(TestKahinaObject.class, object.getID());
+		Assert.assertEquals(map, object.integersByInteger);
+	}
 
 	@After
 	public void tearDown() throws Exception

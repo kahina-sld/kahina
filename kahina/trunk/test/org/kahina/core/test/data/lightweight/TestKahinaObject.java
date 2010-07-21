@@ -19,6 +19,10 @@ public class TestKahinaObject extends KahinaObject implements
 	public List<List<Integer>> intLists;
 	
 	public Map<Integer, Integer> integerByInteger;
+
+	public Map<Integer, List<Integer>> integersByInteger;
+
+	public Map<List<Integer>, String> stringByIntegers;
 	
 	public TestKahinaObject()
 	{
