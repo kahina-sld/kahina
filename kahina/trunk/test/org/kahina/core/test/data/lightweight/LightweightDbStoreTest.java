@@ -32,7 +32,7 @@ public class LightweightDbStoreTest
 	@Before
 	public void setUp() throws Exception
 	{
-		db = new DatabaseHandler();
+		db = new DatabaseHandler(DatabaseHandler.DatabaseType.DERBY);
 		manager = new DbDataManager(db);
 		manager.registerDataType(TraleSLDPackedFSTerminal.class);
 		manager.registerDataType(TraleSLDPackedFSNonTerminal.class);

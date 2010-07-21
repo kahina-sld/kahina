@@ -30,7 +30,7 @@ public class BracketPackerTest
 	@Test
 	public void dbTest()
 	{
-		DatabaseHandler db = new DatabaseHandler();
+		DatabaseHandler db = new DatabaseHandler(DatabaseHandler.DatabaseType.DERBY);
 		DataManager dm = new DbDataManager(db);
 		dm.registerDataType(TraleSLDPackedFSNonTerminal.class);
 		dm.registerDataType(TraleSLDPackedFSTerminal.class);
@@ -58,7 +58,6 @@ public class BracketPackerTest
 		for (String original : lines)
 		{
 			String result = dm.retrieve(resultsIterator.next()).toString();
-			System.err.println(result);
 			Assert.assertEquals(original, result);
 		}
 	}

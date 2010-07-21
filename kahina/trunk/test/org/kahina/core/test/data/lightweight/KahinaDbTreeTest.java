@@ -19,7 +19,7 @@ public class KahinaDbTreeTest
 	@Before
 	public void setUp() throws Exception
 	{
-		db = new DatabaseHandler(); 
+		db = new DatabaseHandler(DatabaseHandler.DatabaseType.DERBY); 
 		tree = new KahinaDbTree(db);
 	}
 	

@@ -23,7 +23,7 @@ public class KahinaRunner
         }
         else 
         {
-            setDataManager(new CachingDbDataManager(new DatabaseHandler()));
+            setDataManager(new CachingDbDataManager(new DatabaseHandler(DatabaseHandler.DatabaseType.DERBY)));
         }
     }
     

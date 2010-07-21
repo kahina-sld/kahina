@@ -90,7 +90,7 @@ public class TraleSLDRunner extends KahinaRunner
 		try
 		{
 			System.err.println("Starting TraleSLD instance...");
-			initialize(KahinaDataHandlingMethod.DATABASE);
+			initialize(KahinaDataHandlingMethod.MEMORY);
 			TraleSLDInstance kahina = new TraleSLDInstance();
 			kahina.getGUI().prepare();
 			kahina.getGUI().buildAndShow();

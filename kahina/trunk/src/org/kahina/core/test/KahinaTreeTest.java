@@ -30,7 +30,7 @@ public class KahinaTreeTest
         try
         {
         	LayerDecider decider = new TestLayerDecider();
-        	DatabaseHandler data = new DatabaseHandler();
+        	DatabaseHandler data = new DatabaseHandler(DatabaseHandler.DatabaseType.DERBY);
         	
             File file = new File("src/org/kahina/core/test/trale-tree.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

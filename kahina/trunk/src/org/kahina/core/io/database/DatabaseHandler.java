@@ -17,9 +17,16 @@ import org.kahina.core.KahinaException;
 
 public class DatabaseHandler
 {
+	
+	private static final boolean VERBOSE = false;
 
 	// TODO should support persisting a state by closing the connection and then
 	// copying the temporary directory to a user-specified location
+
+	public enum DatabaseType
+	{
+		DERBY, MYSQL;
+	}
 
 	private static final String TABLE_NAME_PREFIX = DatabaseHandler.class.getSimpleName() + "_";
 
@@ -33,11 +40,14 @@ public class DatabaseHandler
 
 	private Connection connection;
 
+	private DatabaseType type;
+
 	/**
 	 * Creates a database handler with an empty database.
 	 */
-	public DatabaseHandler() throws KahinaException
+	public DatabaseHandler(DatabaseType type) throws KahinaException
 	{
+		this.type = type;
 		createTemporaryDatabaseDirectory();
 		startDatabase();
 		createTables();
@@ -57,8 +67,17 @@ public class DatabaseHandler
 		prepareStatements();
 	}
 
+	public DatabaseType getDatabaseType()
+	{
+		return type;
+	}
+
 	public void execute(String sqlString)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".execute(" + sqlString + ")");
+		}
 		try
 		{
 			Statement statement = connection.createStatement();
@@ -98,7 +117,7 @@ public class DatabaseHandler
 	/**
 	 * @param statement
 	 * @return the result of a statement as a list of integers. <tt>NULL</tt>
-	 * values are represented as {@code null} values.
+	 *         values are represented as {@code null} values.
 	 */
 	public List<Integer> queryIntList(PreparedStatement statement)
 	{
@@ -124,10 +143,10 @@ public class DatabaseHandler
 		}
 	}
 
-	/** 
+	/**
 	 * @param statement
 	 * @return the result of a statement as a list of Strings. <tt>NULL</tt>
-	 * values are represented as {@code null} values.
+	 *         values are represented as {@code null} values.
 	 */
 	public List<String> queryStringList(PreparedStatement statement)
 	{
@@ -150,7 +169,7 @@ public class DatabaseHandler
 	/**
 	 * @param statement
 	 * @return the result of a statement as a set of integers. <tt>NULL</tt>
-	 * values are omitted.
+	 *         values are omitted.
 	 */
 	public Set<Integer> queryIntSet(PreparedStatement statement)
 	{
@@ -217,9 +236,13 @@ public class DatabaseHandler
 		System.setProperty("derby.system.durability", "test");
 		try
 		{
-			// TODO Dynamically switch between Derby/MySQL SQL dialects. ARGH!
-			//connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/kahina", "kahina", "kahina");
-			connection = DriverManager.getConnection("jdbc:derby:" + dbDirectory.getPath() + ";create=true");
+			if (type == DatabaseType.MYSQL)
+			{
+				connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/kahina", "kahina", "kahina");
+			} else
+			{
+				connection = DriverManager.getConnection("jdbc:derby:" + dbDirectory.getPath() + ";create=true");
+			}
 		} catch (SQLException e)
 		{
 			throw new KahinaException("Failed to establish a database connection.", e);

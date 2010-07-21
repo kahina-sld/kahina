@@ -155,19 +155,28 @@ public class LightweightDbStore extends DbDataStore
 		db.createTable(FIELD_VALUES_LONG_VARCHAR_TABLE_NAME, "object_id INT",
 				"field_id INT", "value LONG VARCHAR",
 				"PRIMARY KEY (object_id, field_id)");
-		db.createTable(COLLECTION_ELEMENTS_TABLE_NAME, "collection_id INT", "index INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
-				"element INT");
+		db.createTable(COLLECTION_ELEMENTS_TABLE_NAME, "id INT " + autoIncrementString(), "collection_id INT",
+				"element INT", "PRIMARY KEY (id)");
 		db.createIndex(COLLECTION_ELEMENTS_TABLE_NAME, "_collection_id",
 				"collection_id");
-		db.createTable(MAP_ENTRIES_TABLE_NAME, "map_id INT", "\"key\" INT",
-				"value INT", "PRIMARY KEY (map_id,  \"key\")");
+		db.createTable(MAP_ENTRIES_TABLE_NAME, "map_id INT", "mapkey INT",
+				"value INT", "PRIMARY KEY (map_id,  mapkey)");
 		db.createIndex(MAP_ENTRIES_TABLE_NAME, "_values", "value");
 		db
 				.createTable(
 						REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME,
-						"value_id INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)",
+						"value_id INT NOT NULL " + autoIncrementString(),
 						"value LONG VARCHAR", "PRIMARY KEY (value_id)");
 		db.register(CLIENT_ID);
+	}
+	
+	private String autoIncrementString()
+	{
+		if (db.getDatabaseType() == DatabaseHandler.DatabaseType.MYSQL)
+		{
+			return "AUTO_INCREMENT";
+		}
+		return "GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)";
 	}
 
 	private void prepareStatements()
@@ -193,7 +202,7 @@ public class LightweightDbStore extends DbDataStore
 						+ FIELD_VALUES_LONG_VARCHAR_TABLE_NAME
 						+ " (object_id, field_id, value) VALUES (?, ?, ?)");
 		selectCollectionStatement = db.prepareStatement("SELECT element FROM "
-				+ COLLECTION_ELEMENTS_TABLE_NAME + " WHERE collection_id = ? ORDER BY index");
+				+ COLLECTION_ELEMENTS_TABLE_NAME + " WHERE collection_id = ? ORDER BY id");
 		selectReferenceValueLongVarcharStatement = db
 				.prepareStatement("SELECT value FROM "
 						+ REFERENCE_VALUES_LONG_VARCHAR_TABLE_NAME
@@ -217,11 +226,11 @@ public class LightweightDbStore extends DbDataStore
 						+ MAP_ENTRIES_TABLE_NAME + " WHERE map_id = ?");
 		deleteMapStatement = db.prepareStatement("DELETE FROM "
 				+ MAP_ENTRIES_TABLE_NAME + " WHERE map_id = ?");
-		selectMapStatement = db.prepareStatement("SELECT \"key\", value FROM "
+		selectMapStatement = db.prepareStatement("SELECT mapkey, value FROM "
 				+ MAP_ENTRIES_TABLE_NAME + " WHERE map_id = ?");
 		insertMapEntryStatement = db.prepareStatement("INSERT INTO "
 				+ MAP_ENTRIES_TABLE_NAME
-				+ " (map_id, \"key\", value) VALUES (?, ?, ?)");
+				+ " (map_id, mapkey, value) VALUES (?, ?, ?)");
 	}
 
 	@Override
