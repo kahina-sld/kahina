@@ -1,6 +1,7 @@
 package org.kahina.core.test.data.lightweight;
 
 import java.util.List;
+import java.util.Map;
 
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.lightweight.LightweightKahinaObject;
@@ -16,6 +17,8 @@ public class TestKahinaObject extends KahinaObject implements
 	public List<TestKahinaObject> objects;
 	
 	public List<List<Integer>> intLists;
+	
+	public Map<Integer, Integer> integerByInteger;
 	
 	public TestKahinaObject()
 	{

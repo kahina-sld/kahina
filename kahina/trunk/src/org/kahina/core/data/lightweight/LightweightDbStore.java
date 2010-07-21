@@ -90,7 +90,7 @@ public class LightweightDbStore extends DbDataStore
 
 	private Map<Integer, KahinaObject> currentlyBeingRetrieved = new HashMap<Integer, KahinaObject>();
 
-	// TODO this is ugly
+	// TODO persist
 	private static int nextCollectionReference;
 
 	public LightweightDbStore(Class<? extends KahinaObject> datatype,
@@ -393,7 +393,7 @@ public class LightweightDbStore extends DbDataStore
 			ResultSet resultSet = selectMapStatement.executeQuery();
 			while (resultSet.next())
 			{
-				result.put(resultSet.getInt(1), resultSet.getInt(1));
+				result.put(resultSet.getInt(1), resultSet.getInt(2));
 			}
 			return result;
 		} catch (SQLException e)

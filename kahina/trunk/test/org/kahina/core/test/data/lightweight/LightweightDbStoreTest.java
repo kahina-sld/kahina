@@ -1,7 +1,9 @@
 package org.kahina.core.test.data.lightweight;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
@@ -128,6 +130,22 @@ public class LightweightDbStoreTest
 		manager.store(object);
 		object = manager.retrieve(TestKahinaObject.class, object.getID());
 		Assert.assertEquals(list, object.objects);
+	}
+	
+	@Test
+	public void storeAndRetrieveIntIntMap()
+	{
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+		map.put(2, 1);
+		map.put(3, 1);
+		map.put(5, 2);
+		map.put(7, 3);
+		map.put(11, 5);
+		TestKahinaObject object = new TestKahinaObject();
+		object.integerByInteger = map;
+		manager.store(object);
+		object = manager.retrieve(TestKahinaObject.class, object.getID());
+		Assert.assertEquals(map, object.integerByInteger);
 	}
 
 	@After

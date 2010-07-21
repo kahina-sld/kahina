@@ -43,11 +43,11 @@ public abstract class LVT
 			return result;
 		}
 		result = CollectionLVT.createListLVT(type, store, manager);
-		/*if (result != null) TODO uncomment when MapLVT is operational
+		if (result != null)
 		{
 			return result;
 		}
-		result = MapLVT.createMapLVT(type, store, manager);*/
+		result = MapLVT.createMapLVT(type, store, manager);
 		return result;
 	}
 
