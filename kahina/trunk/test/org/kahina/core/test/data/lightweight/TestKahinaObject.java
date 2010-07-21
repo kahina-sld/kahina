@@ -2,6 +2,7 @@ package org.kahina.core.test.data.lightweight;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.lightweight.LightweightKahinaObject;
@@ -23,6 +24,8 @@ public class TestKahinaObject extends KahinaObject implements
 	public Map<Integer, List<Integer>> integersByInteger;
 
 	public Map<List<Integer>, String> stringByIntegers;
+	
+	public Pattern pattern;
 	
 	public TestKahinaObject()
 	{

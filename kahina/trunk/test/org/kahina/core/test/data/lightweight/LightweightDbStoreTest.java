@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
@@ -171,6 +172,17 @@ public class LightweightDbStoreTest
 		manager.store(object);
 		object = manager.retrieve(TestKahinaObject.class, object.getID());
 		Assert.assertEquals(map, object.integersByInteger);
+	}
+	
+	@Test
+	public void storeAndRetrievePattern()
+	{
+		Pattern pattern = Pattern.compile("[A-ZÄÖÜ]{1,3}-[A-Z]{2}\\s*[1-9][0-9]{1,3}");
+		TestKahinaObject object = new TestKahinaObject();
+		object.pattern = pattern;
+		manager.store(object);
+		object = manager.retrieve(TestKahinaObject.class, object.getID());
+		Assert.assertEquals(pattern.toString(), object.pattern.toString());
 	}
 
 	@After
