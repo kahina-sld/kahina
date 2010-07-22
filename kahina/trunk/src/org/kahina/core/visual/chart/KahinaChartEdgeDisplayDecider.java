@@ -42,7 +42,11 @@ public class KahinaChartEdgeDisplayDecider
     {
         for (int edgeID : view.getModel().getEdgeIDs())
         {
-            possibleEdgeLabels.add(view.getEdgeCaption(edgeID));
+        	String edgeCaption = view.getEdgeCaption(edgeID);
+            if (possibleEdgeLabels.add(edgeCaption))
+            {
+            	hiddenEdgeLabels.add(edgeCaption);
+            }
         }
     }
     
@@ -108,7 +112,7 @@ public class KahinaChartEdgeDisplayDecider
                 } 
             }
         }
-        return (decision >= 0);
+        return (decision > 0);
     }
 }
 

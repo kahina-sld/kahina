@@ -41,7 +41,7 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         
         addSeparator();
         
-        JMenu edgeLabelDisplayPolicySubmenu = new JMenu("Show edges with label");
+        JMenu edgeLabelDisplayPolicySubmenu = new JMenu("Show \"failed\" edges with label");
         v.displayDecider.updatePossibleEdgeLabels();
         for (String edgeLabel : v.displayDecider.getPossibleEdgeLabels())
         {
