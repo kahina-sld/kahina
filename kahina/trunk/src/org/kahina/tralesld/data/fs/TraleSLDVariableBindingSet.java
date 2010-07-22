@@ -1,12 +1,18 @@
 package org.kahina.tralesld.data.fs;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.TreeMap;
 
 import org.kahina.core.data.KahinaObject;
 
-public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable<TraleSLDVariableBinding>
+public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable<TraleSLDVariableBinding>, Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2345044311794474844L;
+
 	// declared as TreeSet, so lightweight store will construct it as such
 	public TreeMap<String, TraleSLDVariableBinding> bindings = new TreeMap<String, TraleSLDVariableBinding>();
 

@@ -6,7 +6,11 @@ import org.kahina.core.data.text.KahinaLineReference;
 
 public class KahinaSourceCodeLocation extends KahinaLineReference
 {    
-    static HashMap<String,KahinaSourceFileModel> codeFiles = new HashMap<String,KahinaSourceFileModel>();
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7682559851347891007L;
+	static HashMap<String,KahinaSourceFileModel> codeFiles = new HashMap<String,KahinaSourceFileModel>();
     
     public KahinaSourceCodeLocation()
     {

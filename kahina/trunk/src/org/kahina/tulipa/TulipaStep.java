@@ -5,7 +5,11 @@ import org.kahina.core.KahinaStep;
 
 public class TulipaStep extends KahinaStep
 {
-    //the item description associated with that step
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3677954377223379901L;
+	//the item description associated with that step
     public String itemDesc; 
     //the item ID used by the surveyed TuLiPa instance
     public int externalID;

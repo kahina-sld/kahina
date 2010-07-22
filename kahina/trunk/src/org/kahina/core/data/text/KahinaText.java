@@ -2,6 +2,7 @@ package org.kahina.core.data.text;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -9,9 +10,13 @@ import java.util.Scanner;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.lightweight.LightweightKahinaObject;
 
-public class KahinaText extends KahinaObject implements LightweightKahinaObject
+public class KahinaText extends KahinaObject implements LightweightKahinaObject, Serializable
 {
-    public List<String> lines;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5142487008379123698L;
+	public List<String> lines;
     
     public KahinaText()
     {

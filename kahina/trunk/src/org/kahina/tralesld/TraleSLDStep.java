@@ -7,6 +7,10 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 
 public class TraleSLDStep extends LogicProgrammingStep
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -43108052730328464L;
 	// TODO this does not support DB storage yet
     public TraleSLDPackedFS startFeatStruct;
     public TraleSLDPackedFS endFeatStruct;

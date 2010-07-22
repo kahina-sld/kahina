@@ -14,7 +14,7 @@ import org.kahina.tulipa.bridge.TulipaBridge;
 
 public class TulipaRunner extends KahinaRunner
 {
-    public static void initialize(int dataHandlingType)
+    public static void initialize(KahinaDataHandlingMethod dataHandlingType)
     {
         KahinaRunner.initialize(dataHandlingType);
         DataManager dm = KahinaRunner.getDataManager();

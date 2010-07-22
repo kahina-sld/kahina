@@ -1,12 +1,18 @@
 package org.kahina.tralesld.data.fs;
 
+import java.io.Serializable;
+
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.lightweight.LightweightKahinaObject;
 import org.kahina.core.util.Utilities;
 
-public class TraleSLDVariableBinding extends KahinaObject implements LightweightKahinaObject
+public class TraleSLDVariableBinding extends KahinaObject implements LightweightKahinaObject, Serializable
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1606728351152682772L;
 	public String varName;
 	public String tag;
 	public String type;

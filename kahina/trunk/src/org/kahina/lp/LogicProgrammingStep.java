@@ -7,7 +7,11 @@ import org.kahina.core.data.source.KahinaSourceCodeLocation;
 
 public class LogicProgrammingStep extends KahinaStep implements LightweightKahinaObject
 {    
-    //the goal description
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7522398040719763248L;
+	//the goal description
     public String goalDesc;    
     //the step ID used by the surveyed logic programming system
     public int externalID;

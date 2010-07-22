@@ -1,8 +1,14 @@
 package org.kahina.tralesld.data.fs;
 
-public class TraleSLDPackedFSTerminal extends TraleSLDPackedFS
+import java.io.Serializable;
+
+public class TraleSLDPackedFSTerminal extends TraleSLDPackedFS implements Serializable
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8146983630905086694L;
 	public String string;
 	
 	public TraleSLDPackedFSTerminal()

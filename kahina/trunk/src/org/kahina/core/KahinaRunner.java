@@ -5,6 +5,7 @@ import org.kahina.core.data.CachingDbDataManager;
 import org.kahina.core.data.DataManager;
 import org.kahina.core.data.DbDataManager;
 import org.kahina.core.data.KahinaDataHandlingMethod;
+import org.kahina.core.data.MagazineDataManager;
 import org.kahina.core.data.MemDataManager;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.io.database.DatabaseHandler;
@@ -14,16 +15,19 @@ public class KahinaRunner
     static DataManager dm;
     static KahinaController control;
     
-    public static void initialize(int dataHandlingType)
+    public static void initialize(KahinaDataHandlingMethod dataHandlingType)
     {
     	control = new KahinaController();
         if (dataHandlingType == KahinaDataHandlingMethod.MEMORY)
         {
             setDataManager(new MemDataManager());
         }
-        else 
+        else if (dataHandlingType == KahinaDataHandlingMethod.DATABASE)
         {
             setDataManager(new CachingDbDataManager(new DatabaseHandler(DatabaseHandler.DatabaseType.DERBY)));
+        } else
+        {
+        	setDataManager(new MagazineDataManager());
         }
     }
     

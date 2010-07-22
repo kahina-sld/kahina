@@ -16,7 +16,8 @@ import org.kahina.core.KahinaRunner;
  */
 public class KahinaObject
 {
-    private int id;
+
+	private int id;
 
     private static int nextID = 1;
 

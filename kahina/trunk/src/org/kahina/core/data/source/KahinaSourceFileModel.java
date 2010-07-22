@@ -4,7 +4,11 @@ import org.kahina.core.data.text.KahinaTextModel;
 
 public class KahinaSourceFileModel extends KahinaTextModel
 {
-    public String absolutePathName;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7203132120383015898L;
+	public String absolutePathName;
     
     public KahinaSourceFileModel()
     {

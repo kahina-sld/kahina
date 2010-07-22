@@ -11,6 +11,7 @@ import org.w3c.dom.NodeList;
 
 public abstract class KahinaChart extends KahinaObject
 {
+
 	private static final boolean verbose = false;
 	
 	// not used by KahinaDbChart
@@ -128,15 +129,15 @@ public abstract class KahinaChart extends KahinaObject
 		return b.toString();
 	}
 
-	public static KahinaChart importXML(Document dom, int dataHandlingMethod, DatabaseHandler db)
+	public static KahinaChart importXML(Document dom, KahinaDataHandlingMethod dataHandlingMethod, DatabaseHandler db)
 	{
 		KahinaChart m;
-		if (dataHandlingMethod == KahinaDataHandlingMethod.MEMORY)
-		{
-			m = new KahinaMemChart();
-		} else
+		if (dataHandlingMethod == KahinaDataHandlingMethod.DATABASE)
 		{
 			m = new KahinaDbChart();
+		} else
+		{
+			m = new KahinaMemChart();
 		}
 		NodeList segments = dom.getElementsByTagName("segment");
 		for (int i = 0; i < segments.getLength(); i++)

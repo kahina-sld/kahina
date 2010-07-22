@@ -60,7 +60,7 @@ public class TraleSLDRunner extends KahinaRunner
 		bridge.registerStepLocation(10, 9);
 	}
 
-	public static void initialize(int dataHandlingType)
+	public static void initialize(KahinaDataHandlingMethod dataHandlingType)
 	{
 		KahinaRunner.initialize(dataHandlingType);
 		DataManager dm = KahinaRunner.getDataManager();
@@ -90,7 +90,7 @@ public class TraleSLDRunner extends KahinaRunner
 		try
 		{
 			System.err.println("Starting TraleSLD instance...");
-			initialize(KahinaDataHandlingMethod.MEMORY);
+			initialize(KahinaDataHandlingMethod.MAGAZINE);
 			TraleSLDInstance kahina = new TraleSLDInstance();
 			kahina.getGUI().prepare();
 			kahina.getGUI().buildAndShow();

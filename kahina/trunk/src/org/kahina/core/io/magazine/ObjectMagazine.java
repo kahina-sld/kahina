@@ -1,0 +1,210 @@
+package org.kahina.core.io.magazine;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Properties;
+
+import org.kahina.core.KahinaException;
+
+public class ObjectMagazine<S>
+{
+	private static final boolean VERBOSE = true;
+
+	private final File folder;
+
+	private final int blockSize;
+
+	private final float lowerBound;
+
+	private final float upperBound;
+
+	private final Map<Integer, Object[]> loadedBlocksByBlockNumber = new HashMap<Integer, Object[]>();
+
+	private final Deque<Integer> blockNumbersUnloadQueue = new LinkedList<Integer>();
+
+	private final Runtime runtime = Runtime.getRuntime();
+
+	private ObjectMagazine(File folder, int blockSize, float lowerBound, float upperBound)
+	{
+		this.folder = folder;
+		this.blockSize = blockSize;
+		this.lowerBound = lowerBound;
+		this.upperBound = upperBound;
+	}
+
+	private Object[] loadOrCreateBlock(int blockNumber)
+	{
+		blockNumbersUnloadQueue.addLast(blockNumber);
+		Object[] block;
+		File file = new File(folder, Integer.toString(blockNumber));
+		if (file.exists())
+		{
+			try
+			{
+				ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+				block = (Object[]) in.readObject();
+				in.close();
+			} catch (IOException e)
+			{
+				throw new KahinaException("Error reading block " + blockNumber + " in folder " + folder + ".");
+			} catch (ClassNotFoundException e)
+			{
+				throw new KahinaException("Error reading block " + blockNumber + " in folder " + folder + ".");
+			}
+		} else
+		{
+			block = new Object[blockSize];
+		}
+		loadedBlocksByBlockNumber.put(blockNumber, block);
+		if (VERBOSE)
+		{
+			System.err.println("Loaded or created block " + blockNumber + ", loaded blocks: " + blockNumbersUnloadQueue);
+		}
+		return block; // mere convenience
+	}
+
+	private void unloadBlock(int blockNumber)
+	{
+		Object[] block = loadedBlocksByBlockNumber.remove(blockNumber);
+		try
+		{
+			ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File(folder, Integer.toString(blockNumber)))));
+			out.writeObject(block);
+			out.close();
+		} catch (IOException e)
+		{
+			throw new KahinaException("Error writing block " + blockNumber + " in folder " + folder + ".", e);
+		}
+	}
+
+	private void reduceMemoryUsage()
+	{
+		if (memoryRatio() > upperBound)
+		{
+			long ns;
+			if (VERBOSE)
+			{
+				System.err.println("Reducing memory usage. Loaded blocks: " + blockNumbersUnloadQueue);
+				ns = System.nanoTime();
+			}
+			while (blockNumbersUnloadQueue.size() > 1 && memoryRatio() > lowerBound)
+			{
+				unloadBlock(blockNumbersUnloadQueue.removeFirst());
+			}
+			if (VERBOSE)
+			{
+				ns = System.nanoTime() - ns;
+				System.err.println("Reduced memory usage, took " + ns + " ns. Loaded blocks: " + blockNumbersUnloadQueue);
+			}
+		}
+	}
+
+	private float memoryRatio()
+	{
+		return ((float) runtime.totalMemory()) / Math.min(runtime.maxMemory(), runtime.freeMemory());
+	}
+
+	public void persist()
+	{
+		for (int blockNumber : loadedBlocksByBlockNumber.keySet())
+		{
+			unloadBlock(blockNumber);
+		}
+	}
+
+	public S retrieve(int index)
+	{
+		return cast(getBlockForIndex(index)[index % blockSize]);
+	}
+
+	public void store(int index, S object)
+	{
+		getBlockForIndex(index)[index % blockSize] = object;
+	}
+
+	private Object[] getBlockForIndex(int index)
+	{
+		int blockNumber = index / blockSize;
+		Object[] block = loadedBlocksByBlockNumber.get(blockNumber);
+		if (block == null)
+		{
+			reduceMemoryUsage();
+			block = loadOrCreateBlock(blockNumber);
+		}
+		return block;
+	}
+
+	@SuppressWarnings("unchecked")
+	private S cast(Object object)
+	{
+		return (S) object;
+	}
+
+	public static <S> ObjectMagazine<S> load(File folder)
+	{
+		Properties properties = readPropertiesFile(folder);
+		return new ObjectMagazine<S>(folder, Integer.parseInt(properties.getProperty("blockSize")), Long.parseLong(properties.getProperty("lowerBound")), Long.parseLong(properties
+				.getProperty("upperBound")));
+	}
+
+	public static <S> ObjectMagazine<S> create(File folder)
+	{
+		return create(folder, 1000, 0.2F, 0.6F);
+	}
+
+	public static <S> ObjectMagazine<S> create(File folder, int blockSize, float lowerBound, float upperBound)
+	{
+		if (folder.exists())
+		{
+			throw new KahinaException("Cannot create magazine, file " + folder + " already exists.");
+		}
+		if (!folder.mkdir())
+		{
+			throw new KahinaException("Could not create folder " + folder + " for magazine.");
+		}
+		writePropertiesFile(folder, blockSize, lowerBound, upperBound);
+		return new ObjectMagazine<S>(folder, blockSize, lowerBound, upperBound);
+	}
+
+	private static Properties readPropertiesFile(File folder)
+	{
+		Properties properties = new Properties();
+		try
+		{
+			properties.load(new BufferedReader(new InputStreamReader(new FileInputStream(new File(folder, "magazine.properties")), "UTF-8")));
+		} catch (IOException e)
+		{
+			throw new KahinaException("I/O error reading magazine properties file.", e);
+		}
+		return properties;
+	}
+
+	private static void writePropertiesFile(File folder, int blockSize, float lowerBound, float upperBound)
+	{
+		Properties properties = new Properties();
+		properties.setProperty("blockSize", Integer.toString(blockSize));
+		properties.setProperty("lowerBound", Float.toString(lowerBound));
+		properties.setProperty("upperBound", Float.toString(upperBound));
+		try
+		{
+			properties.store(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(folder, "magazine.properties")), "UTF-8")), null);
+		} catch (IOException e)
+		{
+			throw new KahinaException("I/O error creating magazine properties file.", e);
+		}
+	}
+}

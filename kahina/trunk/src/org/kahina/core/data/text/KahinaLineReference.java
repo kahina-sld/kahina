@@ -1,11 +1,17 @@
 package org.kahina.core.data.text;
 
+import java.io.Serializable;
+
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.lightweight.LightweightKahinaObject;
 
-public class KahinaLineReference extends KahinaObject implements LightweightKahinaObject
+public class KahinaLineReference extends KahinaObject implements LightweightKahinaObject, Serializable
 {
-    public KahinaTextModel text;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7344672902839311198L;
+	public KahinaTextModel text;
     public int line;
     
     public int step;
