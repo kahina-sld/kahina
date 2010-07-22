@@ -12,11 +12,13 @@ import org.kahina.core.io.database.DatabaseHandler;
 
 public class KahinaRunner
 {
-    static DataManager dm;
-    static KahinaController control;
+    private static DataManager dm;
+    private static KahinaController control;
+    private static KahinaDataHandlingMethod dataHandlingMethod;
     
     public static void initialize(KahinaDataHandlingMethod dataHandlingType)
     {
+    	dataHandlingMethod = dataHandlingType;
     	control = new KahinaController();
         if (dataHandlingType == KahinaDataHandlingMethod.MEMORY)
         {
@@ -63,4 +65,9 @@ public class KahinaRunner
     {
         return control;
     }
+
+	public static KahinaDataHandlingMethod getDataHandlingMethod()
+	{
+		return dataHandlingMethod;
+	}
 }

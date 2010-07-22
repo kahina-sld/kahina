@@ -5,9 +5,9 @@ import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
+import org.kahina.tralesld.data.fs.TraleSLDFS;
 
-public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDPackedFS> // TODO not nice
+public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS> // TODO not nice
 {
     public JComponent wrapInPanel()
     {

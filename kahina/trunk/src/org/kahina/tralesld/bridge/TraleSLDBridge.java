@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
@@ -26,6 +27,7 @@ import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
+import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
@@ -45,9 +47,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	int lastRegisteredChartEdge = -1;
 
-	private final TraleSLDFSPacker packer;
-	
-	private final Sharer<TraleSLDVariableBinding> bindingSharer;
+	private TraleSLDFSPacker packer;
+
+	private int lastStepIDWithFreshPacker = 0;
+
+	private Sharer<TraleSLDVariableBinding> bindingSharer;
+
+	private int lastStepIDWithFreshSharer = 0;
 
 	public TraleSLDBridge(TraleSLDState state)
 	{
@@ -310,10 +316,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
 			if ("start".equals(key))
 			{
-				step.startFeatStruct = packer.pack(grisuMessage);
+				step.startFeatStruct = createFSObject(grisuMessage, step.getID());
 			} else if ("end".equals(key))
 			{
-				step.endFeatStruct = packer.pack(grisuMessage);
+				step.endFeatStruct = createFSObject(grisuMessage, step.getID());
 			}
 			step.storeCaching();
 		} catch (Exception e)
@@ -322,6 +328,34 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			System.exit(1);
 		}
 	}
+
+	private TraleSLDFS createFSObject(String grisuMessage, int stepID)
+	{
+		if (KahinaRunner.getDataHandlingMethod() == KahinaDataHandlingMethod.MAGAZINE)
+		{
+			// YUCK!
+			if (stepID - lastStepIDWithFreshPacker >= 1000)
+			{
+				packer = new TraleSLDFSPacker();
+				lastStepIDWithFreshPacker = stepID;
+			}
+		}
+		return packer.pack(grisuMessage);
+	}
+
+	private TraleSLDVariableBinding createBindingObject(TraleSLDVariableBinding traleSLDVariableBinding, int stepID)
+	{
+		if (KahinaRunner.getDataHandlingMethod() == KahinaDataHandlingMethod.MAGAZINE)
+		{
+			if (stepID - lastStepIDWithFreshSharer >= 1000)
+			{
+				bindingSharer = new Sharer<TraleSLDVariableBinding>();
+				lastStepIDWithFreshSharer = stepID;
+			}
+		}
+		return bindingSharer.share(traleSLDVariableBinding);
+	}
+
 
 	public void registerMessage(int extID, String key, String varName, String type, String grisuMessage)
 	{
@@ -353,7 +387,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// varName + ",\"" + tag + ",\"" + type + "): " + grisuMessage);
 			// }
 			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
-			TraleSLDVariableBinding binding = bindingSharer.share(new TraleSLDVariableBinding(varName, tag, type, packer.pack(grisuMessage)));
+			int id = step.getID();
+			TraleSLDVariableBinding binding = createBindingObject(new TraleSLDVariableBinding(varName, tag, type, createFSObject(grisuMessage, id)), id);
 			if ("start".equals(key))
 			{
 				step.startBindings.add(binding);
@@ -367,7 +402,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			System.exit(1);
 		}
 	}
-
 	public void registerParseEnd()
 	{
 		try

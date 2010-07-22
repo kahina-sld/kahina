@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import org.kahina.core.KahinaException;
 
+// TODO clean interface for saving, restoring, closing
 public class ObjectMagazine<S>
 {
 	private static final boolean VERBOSE = true;

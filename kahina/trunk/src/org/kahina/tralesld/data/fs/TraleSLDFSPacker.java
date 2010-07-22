@@ -21,9 +21,9 @@ public class TraleSLDFSPacker
 {
 	private static final boolean VERBOSE = false;
 	
-	private Map<String, TraleSLDPackedFS> terminalByString = new HashMap<String, TraleSLDPackedFS>();
+	private Map<String, TraleSLDFS> terminalByString = new HashMap<String, TraleSLDFS>();
 
-	private Map<List<TraleSLDPackedFS>, TraleSLDPackedFS> nonTerminalByChildren = new HashMap<List<TraleSLDPackedFS>, TraleSLDPackedFS>();
+	private Map<List<TraleSLDFS>, TraleSLDFS> nonTerminalByChildren = new HashMap<List<TraleSLDFS>, TraleSLDFS>();
 
 	private String string;
 
@@ -34,12 +34,12 @@ public class TraleSLDFSPacker
 	/**
 	 * Returns a structure-shared representation of the given string.
 	 */
-	public synchronized TraleSLDPackedFS pack(String string)
+	public synchronized TraleSLDFS pack(String string)
 	{
 		this.string = string;
 		length = string.length();
 		index = 0;
-		List<TraleSLDPackedFS> rootChildren = new LinkedList<TraleSLDPackedFS>();
+		List<TraleSLDFS> rootChildren = new LinkedList<TraleSLDFS>();
 		while (index < length)
 		{
 			rootChildren.add(parseNode());
@@ -52,7 +52,7 @@ public class TraleSLDFSPacker
 	 * {@code index}. This will typically be a non-terminal if there is an
 	 * opening bracket right ahead, a terminal otherwise.
 	 */
-	private TraleSLDPackedFS parseNode()
+	private TraleSLDFS parseNode()
 	{
 		if (string.charAt(index) == '(')
 		{
@@ -69,9 +69,9 @@ public class TraleSLDFSPacker
 	 * terminals and lastly, if the brackets in the string are properly
 	 * balanced, the closing bracket.
 	 */
-	private TraleSLDPackedFS parseNonTerminal()
+	private TraleSLDFS parseNonTerminal()
 	{
-		List<TraleSLDPackedFS> children = new LinkedList<TraleSLDPackedFS>();
+		List<TraleSLDFS> children = new LinkedList<TraleSLDFS>();
 		children.add(parseTerminal());
 		while (index < length && string.charAt(index) != ')')
 		{
@@ -90,7 +90,7 @@ public class TraleSLDFSPacker
 	 * and ending before the first opening or closing bracket after that, if
 	 * any.
 	 */
-	private TraleSLDPackedFS parseTerminal()
+	private TraleSLDFS parseTerminal()
 	{
 		char first = string.charAt(index);
 		String terminalString;
@@ -183,7 +183,7 @@ public class TraleSLDFSPacker
 	 * children is empty, returns the terminal representing the empty string. If
 	 * there ist just one child, returns that child.
 	 */
-	private TraleSLDPackedFS produceNode(List<TraleSLDPackedFS> children)
+	private TraleSLDFS produceNode(List<TraleSLDFS> children)
 	{
 		int size = children.size();
 		if (size == 1)
@@ -194,10 +194,10 @@ public class TraleSLDFSPacker
 		{
 			return produceTerminal("");
 		}
-		TraleSLDPackedFS result = nonTerminalByChildren.get(children);
+		TraleSLDFS result = nonTerminalByChildren.get(children);
 		if (result == null)
 		{
-			children = new ArrayList<TraleSLDPackedFS>(children);
+			children = new ArrayList<TraleSLDFS>(children);
 			result = new TraleSLDPackedFSNonTerminal(children);
 			nonTerminalByChildren.put(children, result);
 		} else if (VERBOSE)
@@ -211,9 +211,9 @@ public class TraleSLDFSPacker
 	 * Retrieves a terminal representing the given string if one is already
 	 * stored, otherwise creates and stores it.
 	 */
-	private TraleSLDPackedFS produceTerminal(String string)
+	private TraleSLDFS produceTerminal(String string)
 	{
-		TraleSLDPackedFS result = terminalByString.get(string);
+		TraleSLDFS result = terminalByString.get(string);
 		if (result == null)
 		{
 			result = new TraleSLDPackedFSTerminal(string);

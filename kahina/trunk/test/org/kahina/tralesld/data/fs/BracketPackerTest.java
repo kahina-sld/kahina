@@ -64,7 +64,7 @@ public class BracketPackerTest
 	
 	private void packAndStore(String original, DataManager dm, List<String> originals, List<Integer> packedObjectIDs, TraleSLDFSPacker packer)
 	{
-		TraleSLDPackedFS fs = packer.pack(original);
+		TraleSLDFS fs = packer.pack(original);
 		dm.store(fs);
 		originals.add(original);
 		packedObjectIDs.add(fs.getID());

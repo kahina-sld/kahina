@@ -2,7 +2,7 @@ package org.kahina.tralesld.data.fs;
 
 import java.io.Serializable;
 
-public class TraleSLDPackedFSTerminal extends TraleSLDPackedFS implements Serializable
+public class TraleSLDPackedFSTerminal extends TraleSLDFS implements Serializable
 {
 
 	/**
@@ -24,6 +24,12 @@ public class TraleSLDPackedFSTerminal extends TraleSLDPackedFS implements Serial
 	protected void toString(StringBuilder builder)
 	{
 		builder.append(string);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return string;
 	}
 
 }

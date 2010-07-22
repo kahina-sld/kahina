@@ -17,7 +17,7 @@ import org.kahina.core.data.DbDataManager;
 import org.kahina.core.io.database.DatabaseHandler;
 import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
-import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
+import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDPackedFSNonTerminal;
 import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
@@ -49,9 +49,9 @@ public class LightweightDbStoreTest
 	@Test
 	public void storeAndRetrieveKahinaFS()
 	{
-		TraleSLDPackedFS fs = packer.pack("Hallo Welt!");
+		TraleSLDFS fs = packer.pack("Hallo Welt!");
 		manager.store(fs);
-		fs = manager.retrieve(TraleSLDPackedFS.class, fs.getID());
+		fs = manager.retrieve(TraleSLDFS.class, fs.getID());
 		Assert.assertEquals("Hallo Welt!", fs.toString());
 	}
 	

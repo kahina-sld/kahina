@@ -8,7 +8,7 @@ import org.kahina.core.data.lightweight.LightweightKahinaObject;
  * @author ke
  *
  */
-public abstract class TraleSLDPackedFS extends KahinaObject implements LightweightKahinaObject
+public abstract class TraleSLDFS extends KahinaObject implements LightweightKahinaObject
 {
 	
 	@Override

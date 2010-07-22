@@ -4,20 +4,20 @@ import java.io.Serializable;
 import java.util.List;
 
 
-public class TraleSLDPackedFSNonTerminal extends TraleSLDPackedFS implements Serializable
+public class TraleSLDPackedFSNonTerminal extends TraleSLDFS implements Serializable
 {
 	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4488083322946006628L;
-	public List<TraleSLDPackedFS> children;
+	public List<TraleSLDFS> children;
 	
 	public TraleSLDPackedFSNonTerminal()
 	{	
 	}
 	
-	public TraleSLDPackedFSNonTerminal(List<TraleSLDPackedFS> children)
+	public TraleSLDPackedFSNonTerminal(List<TraleSLDFS> children)
 	{
 		this.children = children;
 	}
@@ -25,7 +25,7 @@ public class TraleSLDPackedFSNonTerminal extends TraleSLDPackedFS implements Ser
 	@Override
 	protected void toString(StringBuilder builder)
 	{
-		for (TraleSLDPackedFS child : children)
+		for (TraleSLDFS child : children)
 		{
 			child.toString(builder);
 		}

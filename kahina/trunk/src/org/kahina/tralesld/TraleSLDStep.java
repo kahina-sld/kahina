@@ -2,7 +2,7 @@ package org.kahina.tralesld;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.lp.LogicProgrammingStep;
-import org.kahina.tralesld.data.fs.TraleSLDPackedFS;
+import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 
 public class TraleSLDStep extends LogicProgrammingStep
@@ -12,8 +12,8 @@ public class TraleSLDStep extends LogicProgrammingStep
 	 */
 	private static final long serialVersionUID = -43108052730328464L;
 	// TODO this does not support DB storage yet
-    public TraleSLDPackedFS startFeatStruct;
-    public TraleSLDPackedFS endFeatStruct;
+    public TraleSLDFS startFeatStruct;
+    public TraleSLDFS endFeatStruct;
     public TraleSLDVariableBindingSet startBindings = new TraleSLDVariableBindingSet();
     public TraleSLDVariableBindingSet endBindings = new TraleSLDVariableBindingSet();
     
