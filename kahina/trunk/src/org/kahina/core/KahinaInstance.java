@@ -22,8 +22,9 @@ import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.core.util.FileUtilities;
 import org.kahina.core.util.ProgressMonitorWrapper;
-import org.kahina.core.util.Utilities;
+import org.kahina.core.util.SwingUtilities;
 import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.source.KahinaSourceCodeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
@@ -118,7 +119,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			{
 				return;
 			}
-			if (!Utilities.deleteRecursively(folder))
+			if (!FileUtilities.deleteRecursively(folder))
 			{
 				gui.showMessageDialog("Failed to overwrite " + folder + ". State not saved.", "Error", JOptionPane.ERROR_MESSAGE);
 				return;
@@ -149,7 +150,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		} catch (Exception e)
 		{
 			monitor.close();
-			gui.showMessageDialog("State could not be saved due to the following problem: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog(SwingUtilities.visualError("State could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 		} finally
 		{
 			if (out != null)
@@ -159,7 +160,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 					out.close();
 				} catch (IOException e)
 				{
-					gui.showMessageDialog("State could not be saved due to the following problem: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+					gui.showMessageDialog(SwingUtilities.visualError("State could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}

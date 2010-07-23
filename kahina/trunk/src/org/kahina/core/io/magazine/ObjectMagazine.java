@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.kahina.core.KahinaException;
+import org.kahina.core.util.FileUtilities;
 import org.kahina.core.util.ProgressMonitorWrapper;
-import org.kahina.core.util.Utilities;
 
 // TODO clean interface for saving, restoring, closing
 public class ObjectMagazine<S>
@@ -235,7 +235,7 @@ public class ObjectMagazine<S>
 		{
 			try
 			{
-				Utilities.copy(file, new File(destinationFolder, file.getName()));
+				FileUtilities.copy(file, new File(destinationFolder, file.getName()));
 				monitor.increment();
 			} catch (IOException e)
 			{
@@ -246,6 +246,6 @@ public class ObjectMagazine<S>
 	
 	public void close()
 	{
-		Utilities.deleteRecursively(folder);
+		FileUtilities.deleteRecursively(folder);
 	}
 }

@@ -1,13 +1,8 @@
 package org.kahina.core.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Utilities
 {
@@ -41,53 +36,24 @@ public class Utilities
 		return object.hashCode();
 	}
 
-	public static boolean deleteRecursively(File file)
+	public static List<String> portrayStackTrace(Throwable t)
 	{
-		if (file.isDirectory())
+		List<String> result = new ArrayList<String>();
+		result.add(t.toString());
+		for (StackTraceElement element : t.getStackTrace())
 		{
-			for (File child : file.listFiles())
-			{
-				if (!deleteRecursively(child))
-				{
-					return false;
-				}
-			}
+			result.add("        at " + element);
 		}
-		return file.delete();
-	}
-
-	public static void copy(File source, File destination) throws IOException
-	{
-		InputStream in = null;
-		OutputStream out = null;
-		byte[] buffer = new byte[4096];
-		int length;
-		try
+		t = t.getCause();
+		while (t != null)
 		{
-			try
+			result.add("Caused by: " + t);
+			for (StackTraceElement element : t.getStackTrace())
 			{
-				in = new BufferedInputStream(new FileInputStream(source));
-				out = new BufferedOutputStream(new FileOutputStream(destination));
-				while ((length = in.read(buffer)) != 0)
-				{
-					out.write(buffer, 0, length);
-				}
-			} catch (IOException e)
-			{
-				throw e;
-			} finally
-			{
-				if (in != null)
-				{
-					in.close();
-				}
+				result.add("        at " + element);
 			}
-		} finally
-		{
-			if (out != null)
-			{
-				out.close();
-			}
-		} // Java is absurd.
+			t = t.getCause();
+		}
+		return result;
 	}
 }

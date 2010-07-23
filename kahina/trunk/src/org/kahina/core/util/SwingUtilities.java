@@ -2,6 +2,7 @@ package org.kahina.core.util;
 
 import java.awt.Point;
 
+import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
 
@@ -29,4 +30,9 @@ public class SwingUtilities
             System.err.println("Problems adapting scroll pane position: crash prevented.");
         }
     }
+
+	public static Object visualError(String message, Throwable t)
+	{
+		return new Object[] { message, new JScrollPane(new JList(Utilities.portrayStackTrace(t).toArray())) };
+	}
 }
