@@ -45,7 +45,7 @@ public class KahinaStateMenu extends JMenu implements ActionListener
         {
             JFileChooser chooser = new JFileChooser(new File("."));
             chooser.setDialogTitle("Restore state");
-            chooser.showSaveDialog(this);
+            chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
             if (dataFile != null) KahinaRunner.processEvent(new KahinaStateEvent(KahinaStateEvent.LOAD_STATE, dataFile));
         }

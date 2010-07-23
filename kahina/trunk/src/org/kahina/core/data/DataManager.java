@@ -1,6 +1,9 @@
 package org.kahina.core.data;
 
+import java.io.File;
+
 import org.kahina.core.KahinaException;
+import org.kahina.core.util.ProgressMonitorWrapper;
 
 /**
  * A data manager allows clients to store and retrieve pieces of data (e.g.
@@ -29,8 +32,7 @@ public abstract class DataManager
 	 * @param type
 	 * @return the data store that is registered the given data type.
 	 */
-	protected abstract DataStore getStoreForType(
-			Class<? extends KahinaObject> type);
+	protected abstract DataStore getStoreForType(Class<? extends KahinaObject> type);
 
 	protected abstract DataStore getStoreForID(int id);
 
@@ -44,8 +46,7 @@ public abstract class DataManager
 	 * @param type
 	 * @param store
 	 */
-	public abstract void registerDataType(Class<? extends KahinaObject> type,
-			DataStore store);
+	public abstract void registerDataType(Class<? extends KahinaObject> type, DataStore store);
 
 	/**
 	 * Registers a data type and let the data manager pick a data store. Clients
@@ -71,16 +72,18 @@ public abstract class DataManager
 		{
 			throw new KahinaException("Attempted to store object with unregistered type " + clazz);
 		}
-		//System.err.println("storing object " + id + " of type " + object.getClass() + " in " + store);
+		// System.err.println("storing object " + id + " of type " +
+		// object.getClass() + " in " + store);
 		setStoreForID(id, store);
 		store.store(object);
 	}
-	
+
 	/**
 	 * Behaves like {@link #store(KahinaObject)}, but if this data manager
 	 * implements a caching strategy, then this object is not directly written
 	 * to the backend storage (such as a database), but cached instead. Use this
 	 * if this object is likely to be retrieved soon.
+	 * 
 	 * @param object
 	 */
 	public void storeCaching(KahinaObject object)
@@ -115,7 +118,7 @@ public abstract class DataManager
 		}
 		return store.retrieve(id);
 	}
-	
+
 	public void initialize()
 	{
 		KahinaObject.setNextID(1);
@@ -123,13 +126,24 @@ public abstract class DataManager
 
 	/**
 	 * This method must be called to persist the stored objects across runtimes.
-	 * 
+	 * @param file 
+	 * @param monitor may be {@code null}
 	 * @throws UnsupportedOperationException
 	 *             if this data manager does not support persistence.
 	 */
-	public void persist()
+	public void persist(File file, ProgressMonitorWrapper monitor)
 	{
-		throw new UnsupportedOperationException(
-				"This data manager does not support persistence.");
+		throw new UnsupportedOperationException("This data manager does not support persistence.");
+	}
+
+	/**
+	 * @return The number of times this data manager would increase the progress
+	 *         on the progress monitor if {@link #persist()} was called right
+	 *         now. Can be used as an estimated value for setting up the
+	 *         progress monitor.
+	 */
+	public int persistSteps()
+	{
+		throw new UnsupportedOperationException("This data manager does not support persistence.");
 	}
 }

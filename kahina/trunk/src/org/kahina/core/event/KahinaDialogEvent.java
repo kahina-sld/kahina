@@ -15,7 +15,7 @@ public class KahinaDialogEvent extends KahinaEvent
     
     public KahinaDialogEvent(int dialogEventType)
     {
-        super("dialog");
+        super(KahinaEventTypes.DIALOG);
         this.dialogEventType = dialogEventType;
     }
     

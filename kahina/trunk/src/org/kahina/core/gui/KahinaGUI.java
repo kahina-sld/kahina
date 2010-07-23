@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.kahina.core.KahinaException;
@@ -30,6 +31,7 @@ import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.core.util.ProgressMonitorWrapper;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.text.KahinaTextView;
 
@@ -288,5 +290,20 @@ public class KahinaGUI implements KahinaListener
           });
           setSize(250, 150);
         }
+    }
+    
+    public ProgressMonitorWrapper createProgressMonitorWrapper(String message, String note, int min, int max)
+    {
+    	return new ProgressMonitorWrapper(controlPanel, message, note, min, max);
+    }
+    
+    public int showConfirmDialog(Object message, String title, int optionType)
+    {
+    	return JOptionPane.showConfirmDialog(controlPanel, message, title, optionType);
+    }
+    
+    public void showMessageDialog(Object message, String title, int messageType)
+    {
+    	JOptionPane.showMessageDialog(controlPanel, message, title, messageType);
     }
 }

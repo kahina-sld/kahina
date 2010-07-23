@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.kahina.core.KahinaException;
 import org.kahina.core.io.magazine.ObjectMagazine;
+import org.kahina.core.util.ProgressMonitorWrapper;
 
 public class MagazineDataStore extends DataStore
 {
@@ -34,6 +35,17 @@ public class MagazineDataStore extends DataStore
 	public void store(KahinaObject object, int id)
 	{
 		magazine.store(id, object);
+	}
+
+	public int persistSteps()
+	{
+		return magazine.persistSteps();
+	}
+	
+	@Override
+	public void persist(File file, ProgressMonitorWrapper monitor)
+	{
+		magazine.persist(file, monitor);
 	}
 
 }

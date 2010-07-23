@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.kahina.core.KahinaException;
+import org.kahina.core.util.ProgressMonitorWrapper;
+import org.kahina.core.util.Utilities;
 
 // TODO clean interface for saving, restoring, closing
 public class ObjectMagazine<S>
@@ -38,13 +40,16 @@ public class ObjectMagazine<S>
 	private final Deque<Integer> blockNumbersUnloadQueue = new LinkedList<Integer>();
 
 	private final Runtime runtime = Runtime.getRuntime();
+	
+	private int fileCount;
 
-	private ObjectMagazine(File folder, int blockSize, float lowerBound, float upperBound)
+	private ObjectMagazine(File folder, int blockSize, float lowerBound, float upperBound, int fileCount)
 	{
 		this.folder = folder;
 		this.blockSize = blockSize;
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
+		this.fileCount = fileCount;
 	}
 
 	private Object[] loadOrCreateBlock(int blockNumber)
@@ -69,6 +74,7 @@ public class ObjectMagazine<S>
 		} else
 		{
 			block = new Object[blockSize];
+			fileCount++;
 		}
 		loadedBlocksByBlockNumber.put(blockNumber, block);
 		if (VERBOSE)
@@ -81,14 +87,26 @@ public class ObjectMagazine<S>
 	private void unloadBlock(int blockNumber)
 	{
 		Object[] block = loadedBlocksByBlockNumber.remove(blockNumber);
+		ObjectOutputStream out = null;
 		try
 		{
-			ObjectOutputStream out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File(folder, Integer.toString(blockNumber)))));
+			out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File(folder, Integer.toString(blockNumber)))));
 			out.writeObject(block);
-			out.close();
 		} catch (IOException e)
 		{
 			throw new KahinaException("Error writing block " + blockNumber + " in folder " + folder + ".", e);
+		} finally
+		{
+			if (out != null)
+			{
+				try
+				{
+					out.close();
+				} catch (IOException e)
+				{
+					throw new KahinaException("Error writing block " + blockNumber + " in folder " + folder + ".", e);
+				}
+			}
 		}
 	}
 
@@ -117,14 +135,6 @@ public class ObjectMagazine<S>
 	private float memoryRatio()
 	{
 		return ((float) runtime.totalMemory()) / Math.min(runtime.maxMemory(), runtime.freeMemory());
-	}
-
-	public void persist()
-	{
-		for (int blockNumber : loadedBlocksByBlockNumber.keySet())
-		{
-			unloadBlock(blockNumber);
-		}
 	}
 
 	public S retrieve(int index)
@@ -159,7 +169,7 @@ public class ObjectMagazine<S>
 	{
 		Properties properties = readPropertiesFile(folder);
 		return new ObjectMagazine<S>(folder, Integer.parseInt(properties.getProperty("blockSize")), Long.parseLong(properties.getProperty("lowerBound")), Long.parseLong(properties
-				.getProperty("upperBound")));
+				.getProperty("upperBound")), folder.list().length);
 	}
 
 	public static <S> ObjectMagazine<S> create(File folder)
@@ -178,7 +188,7 @@ public class ObjectMagazine<S>
 			throw new KahinaException("Could not create folder " + folder + " for magazine.");
 		}
 		writePropertiesFile(folder, blockSize, lowerBound, upperBound);
-		return new ObjectMagazine<S>(folder, blockSize, lowerBound, upperBound);
+		return new ObjectMagazine<S>(folder, blockSize, lowerBound, upperBound, 1);
 	}
 
 	private static Properties readPropertiesFile(File folder)
@@ -207,5 +217,35 @@ public class ObjectMagazine<S>
 		{
 			throw new KahinaException("I/O error creating magazine properties file.", e);
 		}
+	}
+
+	public int persistSteps()
+	{
+		return blockNumbersUnloadQueue.size() + fileCount;
+	}
+
+	public void persist(File destinationFolder, ProgressMonitorWrapper monitor)
+	{
+		for (int blockNumber : loadedBlocksByBlockNumber.keySet())
+		{
+			unloadBlock(blockNumber);
+			monitor.increment();
+		}
+		for (File file : folder.listFiles())
+		{
+			try
+			{
+				Utilities.copy(file, new File(destinationFolder, file.getName()));
+				monitor.increment();
+			} catch (IOException e)
+			{
+				throw new KahinaException("I/O error while saving object magazine.", e);
+			}
+		}
+	}
+	
+	public void close()
+	{
+		Utilities.deleteRecursively(folder);
 	}
 }

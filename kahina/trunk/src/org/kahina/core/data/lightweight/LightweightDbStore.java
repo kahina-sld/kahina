@@ -465,15 +465,6 @@ public class LightweightDbStore extends DbDataStore
 
 	}
 
-	@Override
-	public void persist()
-	{
-		// do nothing
-		// TODO garbage-collect objects to which there are no more references
-		// and which have not been stored from outside, as soon as we have a
-		// way to know that
-	}
-
 	int getNewCollectionReference()
 	{
 		return nextCollectionReference++;

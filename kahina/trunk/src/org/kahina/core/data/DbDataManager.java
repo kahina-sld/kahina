@@ -83,16 +83,6 @@ public class DbDataManager extends DataManager
 	}
 
 	@Override
-	public void persist()
-	{
-		for (DataStore store : storeByStoreID)
-		{
-			store.persist();
-		}
-		// TODO persist KahinaObject.getNextID()!
-	}
-
-	@Override
 	protected DataStore getStoreForType(Class<? extends KahinaObject> clazz)
 	{
 		return storeByStoreID.get(storeIDByType.get(clazz));
