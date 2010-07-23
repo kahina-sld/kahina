@@ -122,34 +122,33 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		}
 	}
 
-	private void saveStateAs(File folder)
+	private void saveStateAs(File zipFile)
 	{
-		if (folder.exists())
+		File directory;
+		try
 		{
-			int answer = gui.showConfirmDialog("File " + folder + " exists. Overwrite it?", "Confirm overwrite", JOptionPane.YES_NO_OPTION);
+			directory = FileUtilities.createTemporaryDirectory();
+		} catch (IOException e)
+		{
+			gui.showMessageDialog(SwingUtilities.visualError("State could not be saved due to the following problem:", e), "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		if (zipFile.exists())
+		{
+			int answer = gui.showConfirmDialog("File " + zipFile + " exists. Overwrite it?", "Confirm overwrite", JOptionPane.YES_NO_OPTION);
 			if (answer != JOptionPane.YES_OPTION)
 			{
 				return;
 			}
-			if (!FileUtilities.deleteRecursively(folder))
-			{
-				gui.showMessageDialog("Failed to overwrite " + folder + ". State not saved.", "Error", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
 		}
-		if (!folder.mkdir())
-		{
-			gui.showMessageDialog("Failed to create directory " + folder + ". State not saved.", "Error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		File stepFolder = new File(folder, "steps");
+		File stepFolder = new File(directory, "steps");
 		if (!stepFolder.mkdir())
 		{
-			gui.showMessageDialog("Failed to create directory " + folder + ". State not saved.", "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog("Failed to create directory " + directory + ". State not saved.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		DataManager dm = KahinaRunner.getDataManager();
-		ProgressMonitorWrapper monitor = gui.createProgressMonitorWrapper("Saving state", null, 0, dm.persistSteps() + 1);
+		ProgressMonitorWrapper monitor = gui.createProgressMonitorWrapper("Saving state", null, 0, dm.persistSteps() * 2 + 2);
 		ObjectOutputStream out = null;
 		try
 		{
@@ -159,10 +158,12 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			}
 			synchronized (state)
 			{
-				out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File(folder, "state"))));
+				out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File(directory, "state"))));
 				out.writeObject(state);
-
+				monitor.increment();
 			}
+			FileUtilities.zipDirectory(directory, zipFile, monitor);
+			FileUtilities.deleteRecursively(directory);
 			monitor.close();
 		} catch (Exception e)
 		{

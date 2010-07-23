@@ -40,7 +40,7 @@ public class ObjectMagazine<S>
 	private final Deque<Integer> blockNumbersUnloadQueue = new LinkedList<Integer>();
 
 	private final Runtime runtime = Runtime.getRuntime();
-	
+
 	private int fileCount;
 
 	private ObjectMagazine(File folder, int blockSize, float lowerBound, float upperBound, int fileCount)
@@ -242,14 +242,17 @@ public class ObjectMagazine<S>
 			try
 			{
 				FileUtilities.copy(file, new File(destinationFolder, file.getName()));
-				monitor.increment();
+				if (monitor != null)
+				{
+					monitor.increment();
+				}
 			} catch (IOException e)
 			{
 				throw new KahinaException("I/O error while saving object magazine.", e);
 			}
 		}
 	}
-	
+
 	public void close()
 	{
 		FileUtilities.deleteRecursively(folder);
