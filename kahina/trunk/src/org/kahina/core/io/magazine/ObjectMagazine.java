@@ -102,6 +102,10 @@ public class ObjectMagazine<S>
 				try
 				{
 					out.close();
+					if (VERBOSE)
+					{
+						System.err.println("Wrote block " + blockNumber + " (" + block + "), length " + block.length + ").");
+					}
 				} catch (IOException e)
 				{
 					throw new KahinaException("Error writing block " + blockNumber + " in folder " + folder + ".", e);
@@ -224,13 +228,15 @@ public class ObjectMagazine<S>
 		return blockNumbersUnloadQueue.size() + fileCount;
 	}
 
+	// TODO canceling via progress monitor
 	public void persist(File destinationFolder, ProgressMonitorWrapper monitor)
 	{
-		for (int blockNumber : loadedBlocksByBlockNumber.keySet())
+		for (int blockNumber : blockNumbersUnloadQueue)
 		{
 			unloadBlock(blockNumber);
 			monitor.increment();
 		}
+		blockNumbersUnloadQueue.clear();
 		for (File file : folder.listFiles())
 		{
 			try

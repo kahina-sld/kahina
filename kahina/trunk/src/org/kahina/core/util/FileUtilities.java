@@ -24,7 +24,7 @@ public class FileUtilities
 			{
 				in = new BufferedInputStream(new FileInputStream(source));
 				out = new BufferedOutputStream(new FileOutputStream(destination));
-				while ((length = in.read(buffer)) != -1)
+				while ((length = in.read(buffer)) > 0)
 				{
 					out.write(buffer, 0, length);
 				}
