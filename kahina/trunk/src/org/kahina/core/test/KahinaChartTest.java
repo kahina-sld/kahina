@@ -30,7 +30,7 @@ public class KahinaChartTest
             Document dom = db.parse(file);
             //DatabaseHandler data = new DatabaseHandler(new File("otoka.dat"));
             //KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.DATABASE, data);
-            KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.MEMORY, null);
+            KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.MEMORY);
             KahinaChartView v = new KahinaChartView();
             v.display(m);       
 

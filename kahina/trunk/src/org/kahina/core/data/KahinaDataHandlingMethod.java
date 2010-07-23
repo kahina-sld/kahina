@@ -2,5 +2,5 @@ package org.kahina.core.data;
 
 public enum KahinaDataHandlingMethod
 {
-    MEMORY, DATABASE, MAGAZINE;
+    MEMORY, MAGAZINE;
 }

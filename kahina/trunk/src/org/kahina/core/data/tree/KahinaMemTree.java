@@ -109,9 +109,10 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
 		return chi;
 	}
 
-	public static KahinaTree importXML(Document dom)
+	public static KahinaTree importXML(Document dom, LayerDecider decider)
 	{
 		KahinaMemTree m = new KahinaMemTree();
+		m.decider = decider;
 		Element treeElement = dom.getDocumentElement();
 		NodeList childNodes = treeElement.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); i++)

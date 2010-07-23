@@ -4,9 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.data.lightweight.LightweightKahinaObject;
 
-public class KahinaSourceFileRegistry extends KahinaObject implements LightweightKahinaObject
+public class KahinaSourceFileRegistry extends KahinaObject
 {
     //map from full source file names to source file models
     public Map<String, KahinaSourceFileModel> models;

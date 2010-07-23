@@ -3,9 +3,8 @@ package org.kahina.core.data.text;
 import java.io.Serializable;
 
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.data.lightweight.LightweightKahinaObject;
 
-public class KahinaLineReference extends KahinaObject implements LightweightKahinaObject, Serializable
+public class KahinaLineReference extends KahinaObject implements Serializable
 {
     /**
 	 * 

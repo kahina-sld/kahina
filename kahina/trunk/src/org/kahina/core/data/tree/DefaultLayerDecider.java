@@ -1,8 +1,6 @@
 package org.kahina.core.data.tree;
 
-import org.kahina.core.data.lightweight.LightweightKahinaObject;
-
-public class DefaultLayerDecider extends LayerDecider implements LightweightKahinaObject
+public class DefaultLayerDecider extends LayerDecider
 {
 	/**
 	 * 

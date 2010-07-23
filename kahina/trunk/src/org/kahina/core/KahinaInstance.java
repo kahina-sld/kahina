@@ -122,7 +122,16 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		if (type == KahinaSessionEvent.SAVE_SESSION)
 		{
 			saveSessionAs(e.getFile());
+		} else if (type == KahinaSessionEvent.LOAD_SESSION)
+		{
+			loadSession(e.getFile());
 		}
+	}
+
+	private void loadSession(File file)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 
 	private void saveSessionAs(File zipFile)

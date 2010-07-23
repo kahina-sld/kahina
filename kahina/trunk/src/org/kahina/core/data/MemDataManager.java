@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.ProgressMonitor;
-
 import org.kahina.core.KahinaException;
 import org.kahina.core.util.ProgressMonitorWrapper;
 

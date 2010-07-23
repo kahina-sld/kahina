@@ -13,10 +13,9 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.KahinaDataHandlingMethod;
-import org.kahina.core.data.tree.KahinaDbTree;
+import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.LayerDecider;
-import org.kahina.core.io.database.DatabaseHandler;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.core.visual.tree.KahinaTreeViewMarker;
 import org.kahina.core.visual.tree.KahinaTreeViewPanel;
@@ -30,14 +29,13 @@ public class KahinaTreeTest
         try
         {
         	LayerDecider decider = new TestLayerDecider();
-        	DatabaseHandler data = new DatabaseHandler(DatabaseHandler.DatabaseType.DERBY);
         	
             File file = new File("src/org/kahina/core/test/trale-tree.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
             //TestLayeredTree m1 = TestLayeredTree.importXML(dom);
-            KahinaTree m1 = KahinaDbTree.importXML(dom, decider, data, null);
+            KahinaTree m1 = KahinaMemTree.importXML(dom, decider);
             
             file = new File("src/org/kahina/core/test/trale-tree2.xml");
             dbf = DocumentBuilderFactory.newInstance();

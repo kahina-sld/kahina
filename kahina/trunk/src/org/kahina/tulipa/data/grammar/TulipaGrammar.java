@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.data.lightweight.LightweightKahinaObject;
 
-public class TulipaGrammar extends KahinaObject implements LightweightKahinaObject, Serializable
+public class TulipaGrammar extends KahinaObject implements Serializable
 {
 	/**
 	 * 

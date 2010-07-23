@@ -8,9 +8,8 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.data.lightweight.LightweightKahinaObject;
 
-public class KahinaText extends KahinaObject implements LightweightKahinaObject, Serializable
+public class KahinaText extends KahinaObject implements Serializable
 {
     /**
 	 * 

@@ -4,7 +4,6 @@ import java.util.Set;
 
 import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.io.database.DatabaseHandler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -129,16 +128,9 @@ public abstract class KahinaChart extends KahinaObject
 		return b.toString();
 	}
 
-	public static KahinaChart importXML(Document dom, KahinaDataHandlingMethod dataHandlingMethod, DatabaseHandler db)
+	public static KahinaChart importXML(Document dom, KahinaDataHandlingMethod dataHandlingMethod)
 	{
-		KahinaChart m;
-		if (dataHandlingMethod == KahinaDataHandlingMethod.DATABASE)
-		{
-			m = new KahinaDbChart();
-		} else
-		{
-			m = new KahinaMemChart();
-		}
+		KahinaChart m = new KahinaMemChart();
 		NodeList segments = dom.getElementsByTagName("segment");
 		for (int i = 0; i < segments.getLength(); i++)
 		{

@@ -11,9 +11,7 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.kahina.core.data.DataManager;
-import org.kahina.core.data.DbDataManager;
 import org.kahina.core.data.MemDataManager;
-import org.kahina.core.io.database.DatabaseHandler;
 
 public class BracketPackerTest
 {
@@ -25,17 +23,6 @@ public class BracketPackerTest
 		dm.registerDataType(TraleSLDPackedFSNonTerminal.class);
 		dm.registerDataType(TraleSLDPackedFSTerminal.class);
 		test(dm);
-	}
-	
-	@Test
-	public void dbTest()
-	{
-		DatabaseHandler db = new DatabaseHandler(DatabaseHandler.DatabaseType.DERBY);
-		DataManager dm = new DbDataManager(db);
-		dm.registerDataType(TraleSLDPackedFSNonTerminal.class);
-		dm.registerDataType(TraleSLDPackedFSTerminal.class);
-		test(dm);
-		db.close();
 	}
 	
 	public void test(DataManager dm)

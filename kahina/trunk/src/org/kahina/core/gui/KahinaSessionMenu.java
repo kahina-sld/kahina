@@ -38,6 +38,7 @@ public class KahinaSessionMenu extends JMenu implements ActionListener
         this.add(quitItem);
     }
     
+    @Override
     public void actionPerformed(ActionEvent e)
     {
         String s = e.getActionCommand();
