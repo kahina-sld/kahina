@@ -146,4 +146,16 @@ public abstract class DataManager
 	{
 		throw new UnsupportedOperationException("This data manager does not support persistence.");
 	}
+	
+	/**
+	 * Indicates that this data manager will no longer be used and all data can
+	 * be disposed of. Extending classes should override this method to do their
+	 * cleanup.
+	 * 
+	 * This default implementation does nothing.
+	 */
+	public void close()
+	{
+		// do nothing
+	}
 }

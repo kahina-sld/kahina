@@ -8,7 +8,7 @@ import javax.swing.JMenuBar;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.event.KahinaAbortEvent;
+import org.kahina.core.event.KahinaCloseEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaTreeEvent;
@@ -63,7 +63,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 					System.err.println("Main windows closed.");
 				}
 				disposeAllWindows();
-				KahinaRunner.processEvent(new KahinaAbortEvent());
+				KahinaRunner.processEvent(new KahinaCloseEvent());
 			}
 
 		});

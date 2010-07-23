@@ -109,4 +109,10 @@ public class KahinaConstantDbTextStore extends DbDataStore
 			throw new KahinaException("SQL error.", e);
 		}
 	}
+	
+	@Override
+	public void close()
+	{
+		// TODO
+	}
 }

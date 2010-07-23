@@ -87,4 +87,16 @@ public class MemDataManager extends DataManager
 	{
 		throw new UnsupportedOperationException("This data manager does not support persistence.");
 	}
+	
+	/**
+	 * Closes all registered data stores.
+	 */
+	@Override
+	public void close()
+	{
+		for (DataStore store : storeByClass.values())
+		{
+			store.close();
+		}
+	}
 }

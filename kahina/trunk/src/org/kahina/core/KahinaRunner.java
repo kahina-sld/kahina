@@ -12,6 +12,8 @@ import org.kahina.core.io.database.DatabaseHandler;
 
 public class KahinaRunner
 {
+	private static final boolean VERBOSE = false;
+	
     private static DataManager dm;
     private static KahinaController control;
     private static KahinaDataHandlingMethod dataHandlingMethod;
@@ -32,6 +34,18 @@ public class KahinaRunner
         	setDataManager(new MagazineDataManager());
         }
     }
+
+	public static void deinitialize()
+	{
+		if (VERBOSE)
+		{
+			System.err.println("KahinaRunner ist deinitializing.");
+		}
+		dm.close();
+		dm = null;
+		control = null;
+		dataHandlingMethod = null;
+	}
     
     public static DataManager getDataManager()
     {

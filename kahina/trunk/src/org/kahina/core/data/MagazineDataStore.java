@@ -47,5 +47,11 @@ public class MagazineDataStore extends DataStore
 	{
 		magazine.persist(file, monitor);
 	}
+	
+	@Override
+	public void close()
+	{
+		magazine.close();
+	}
 
 }

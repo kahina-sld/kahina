@@ -16,7 +16,9 @@ import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.event.KahinaCloseEvent;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaStateEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaViewRegistry;
@@ -41,8 +43,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		state = createState();
 		gui = createGUI();
 		bridge = createBridge();
-		KahinaRunner.getControl().registerListener("update", this);
-		KahinaRunner.getControl().registerListener("state", this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.STATE, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.CLOSE, this);
 	}
 
 	public KahinaInstance(S state)
@@ -52,8 +55,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		gui = createGUI();
 		// TODO (re)create bridge (when adding support for resuming live
 		// sessions)
-		KahinaRunner.getControl().registerListener("update", this);
-		KahinaRunner.getControl().registerListener("state", this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.STATE, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.CLOSE, this);
 	}
 
 	protected abstract S createState();
@@ -98,7 +102,15 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		} else if (e instanceof KahinaStateEvent)
 		{
 			processStateEvent((KahinaStateEvent) e);
+		} else if (e instanceof KahinaCloseEvent)
+		{
+			processCloseEvent((KahinaCloseEvent) e);
 		}
+	}
+
+	private void processCloseEvent(KahinaCloseEvent e)
+	{
+		KahinaRunner.deinitialize();
 	}
 
 	private void processStateEvent(KahinaStateEvent e)

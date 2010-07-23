@@ -19,4 +19,5 @@ public abstract class DbDataStore extends DataStore
 		this.manager = manager;
 		this.db = db;
 	}
+	
 }

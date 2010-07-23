@@ -6,7 +6,7 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
-import org.kahina.core.event.KahinaAbortEvent;
+import org.kahina.core.event.KahinaCloseEvent;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaTreeEvent;
@@ -49,7 +49,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		super();
 		this.state = state;
 		stepIDConv = new HashMap<Integer, Integer>();
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.ABORT, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.CLOSE, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
 		if (verbose)
 			System.err.println("new LogicProgrammingBridge()");
@@ -359,7 +359,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	}
 
 	@Override
-	protected void processEvent(KahinaAbortEvent e)
+	protected void processEvent(KahinaCloseEvent e)
 	{
 		bridgeState = 'a';
 	}

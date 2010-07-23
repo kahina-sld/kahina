@@ -35,4 +35,16 @@ public abstract class DataStore
     {
         throw new UnsupportedOperationException("This data store does not support persistence.");
     }
+
+    /**
+     * Indicates that this store will no longer be used and all data can be
+     * disposed of. Extending classes should override this method to do their
+     * cleanup.
+     * 
+     * This default implementation does nothing.
+     */
+	public void close()
+	{
+		// do nothing
+	}
 }
