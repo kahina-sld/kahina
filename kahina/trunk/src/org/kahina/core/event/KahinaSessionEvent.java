@@ -2,18 +2,18 @@ package org.kahina.core.event;
 
 import java.io.File;
 
-public class KahinaStateEvent extends KahinaEvent
+public class KahinaSessionEvent extends KahinaEvent
 {
     File file;
-    int stateEventType;
+    int sessionEventType;
     
-    public static final int SAVE_STATE = 0;
-    public static final int LOAD_STATE = 1;
+    public static final int SAVE_SESSION = 0;
+    public static final int LOAD_SESSION = 1;
     
-    public KahinaStateEvent(int stateEventType, File file)
+    public KahinaSessionEvent(int stateEventType, File file)
     {
         super("state");
-        this.stateEventType = stateEventType;
+        this.sessionEventType = stateEventType;
         this.file = file;
     }
     
@@ -22,19 +22,19 @@ public class KahinaStateEvent extends KahinaEvent
         return file;
     }
     
-    public int getStateEventType()
+    public int getSessionEventType()
     {
-        return stateEventType;
+        return sessionEventType;
     }
     
     public String toString()
     {
         String s = "state: ";
-        if (stateEventType == SAVE_STATE)
+        if (sessionEventType == SAVE_SESSION)
         {
             s += "save -> "; 
         }
-        else if (stateEventType == LOAD_STATE)
+        else if (sessionEventType == LOAD_SESSION)
         {
             s += "restore <- "; 
         }

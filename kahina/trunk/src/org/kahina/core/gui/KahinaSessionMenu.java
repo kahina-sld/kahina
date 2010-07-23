@@ -9,26 +9,26 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.event.KahinaStateEvent;
+import org.kahina.core.event.KahinaSessionEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 
-public class KahinaStateMenu extends JMenu implements ActionListener
+public class KahinaSessionMenu extends JMenu implements ActionListener
 {
 	private static final long serialVersionUID = -3140345218228195395L;
     
-    public KahinaStateMenu()
+    public KahinaSessionMenu()
     {
-        super("State");
-            
-        JMenuItem saveStateItem = new JMenuItem("Save...");
-        saveStateItem.setActionCommand("saveState");
-        saveStateItem.addActionListener(this);
-        this.add(saveStateItem);
+        super("Session");
         
-        JMenuItem loadStateItem = new JMenuItem("Restore...");
-        loadStateItem.setActionCommand("loadState");
-        loadStateItem.addActionListener(this);
-        this.add(loadStateItem);
+        JMenuItem loadSessionItem = new JMenuItem("Load...");
+        loadSessionItem.setActionCommand("loadSession");
+        loadSessionItem.addActionListener(this);
+        this.add(loadSessionItem);
+            
+        JMenuItem saveSessionItem = new JMenuItem("Save As...");
+        saveSessionItem.setActionCommand("saveSessionAs");
+        saveSessionItem.addActionListener(this);
+        this.add(saveSessionItem);
         
         this.addSeparator();
         
@@ -41,21 +41,21 @@ public class KahinaStateMenu extends JMenu implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         String s = e.getActionCommand();
-        if (s.equals("loadState"))
+        if (s.equals("loadSession"))
         {
             JFileChooser chooser = new JFileChooser(new File("."));
-            chooser.setDialogTitle("Restore state");
+            chooser.setDialogTitle("Load Session");
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) KahinaRunner.processEvent(new KahinaStateEvent(KahinaStateEvent.LOAD_STATE, dataFile));
+            if (dataFile != null) KahinaRunner.processEvent(new KahinaSessionEvent(KahinaSessionEvent.LOAD_SESSION, dataFile));
         }
-        else if (s.equals("saveState"))
+        else if (s.equals("saveSessionAs"))
         {
             JFileChooser chooser = new JFileChooser(new File("."));
-            chooser.setDialogTitle("Save current state");
+            chooser.setDialogTitle("Save Session As");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null)  KahinaRunner.processEvent(new KahinaStateEvent(KahinaStateEvent.SAVE_STATE, dataFile));
+            if (dataFile != null)  KahinaRunner.processEvent(new KahinaSessionEvent(KahinaSessionEvent.SAVE_SESSION, dataFile));
         }
         else if (s.equals("quit"))
         {

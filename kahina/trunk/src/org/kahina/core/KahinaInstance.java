@@ -19,7 +19,7 @@ import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaCloseEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
-import org.kahina.core.event.KahinaStateEvent;
+import org.kahina.core.event.KahinaSessionEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
@@ -99,9 +99,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		if (e instanceof KahinaUpdateEvent)
 		{
 			processUpdateEvent((KahinaUpdateEvent) e);
-		} else if (e instanceof KahinaStateEvent)
+		} else if (e instanceof KahinaSessionEvent)
 		{
-			processStateEvent((KahinaStateEvent) e);
+			processSessionEvent((KahinaSessionEvent) e);
 		} else if (e instanceof KahinaCloseEvent)
 		{
 			processCloseEvent((KahinaCloseEvent) e);
@@ -113,16 +113,16 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		KahinaRunner.deinitialize();
 	}
 
-	private void processStateEvent(KahinaStateEvent e)
+	private void processSessionEvent(KahinaSessionEvent e)
 	{
-		int type = e.getStateEventType();
-		if (type == KahinaStateEvent.SAVE_STATE)
+		int type = e.getSessionEventType();
+		if (type == KahinaSessionEvent.SAVE_SESSION)
 		{
-			saveStateAs(e.getFile());
+			saveSessionAs(e.getFile());
 		}
 	}
 
-	private void saveStateAs(File zipFile)
+	private void saveSessionAs(File zipFile)
 	{
 		File directory;
 		try

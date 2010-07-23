@@ -35,7 +35,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		// Uncomment this in order to be able to profile using JRat.
 
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(new KahinaStateMenu());
+		menuBar.add(new KahinaSessionMenu());
 		menuBar.add(new KahinaParseMenu());
 		menuBar.add(new KahinaBreakpointMenu());
 		menuBar.add(new KahinaHelpMenu());
