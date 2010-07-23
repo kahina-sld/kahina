@@ -1,6 +1,7 @@
 package org.kahina.core.util;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -55,5 +56,21 @@ public class Utilities
 			t = t.getCause();
 		}
 		return result;
+	}
+	
+	public static String join(String glue, Iterable<?> pieces)
+	{
+		StringBuilder result = new StringBuilder();
+		Iterator<?> it = pieces.iterator();
+		if (it.hasNext())
+		{
+			result.append(it.next());
+		}
+		while (it.hasNext())
+		{
+			result.append(glue);
+			result.append(it.next());
+		}
+		return result.toString();
 	}
 }

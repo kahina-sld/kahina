@@ -131,6 +131,11 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			return;
 		}
 		File stepFolder = new File(folder, "steps");
+		if (!stepFolder.mkdir())
+		{
+			gui.showMessageDialog("Failed to create directory " + folder + ". State not saved.", "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		DataManager dm = KahinaRunner.getDataManager();
 		ProgressMonitorWrapper monitor = gui.createProgressMonitorWrapper("Saving state", null, 0, dm.persistSteps() + 1);
 		ObjectOutputStream out = null;

@@ -1,14 +1,20 @@
 package org.kahina.core.breakpoint;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class TreePatternNode
+public class TreePatternNode implements Serializable
 {
-    private TreeNodePattern pattern;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 8431727196172467206L;
+
+	private TreeNodePattern pattern;
     
     private TreePatternNode parent;
     private List<TreePatternNode> children;  

@@ -1,13 +1,19 @@
 package org.kahina.core.data.chart;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class KahinaMemChart extends KahinaChart
+public class KahinaMemChart extends KahinaChart implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8981755950162448512L;
+
 	private static final boolean verbose = false;
 	
     //the chart is divided up into cells (vertical segments) that the edges can range over

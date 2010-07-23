@@ -2,8 +2,8 @@ package org.kahina.core.util;
 
 import java.awt.Point;
 
-import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JViewport;
 
 public class SwingUtilities
@@ -33,6 +33,6 @@ public class SwingUtilities
 
 	public static Object visualError(String message, Throwable t)
 	{
-		return new Object[] { message, new JScrollPane(new JList(Utilities.portrayStackTrace(t).toArray())) };
+		return new Object[] { message, new JScrollPane(new JTextArea(Utilities.join(System.getProperty("line.separator"), Utilities.portrayStackTrace(t)), 20, 80)) };
 	}
 }

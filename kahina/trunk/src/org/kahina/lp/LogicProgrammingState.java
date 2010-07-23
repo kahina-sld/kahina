@@ -20,7 +20,11 @@ import org.kahina.lp.data.text.LogicProgrammingLineReference;
 
 public class LogicProgrammingState extends KahinaState
 {  
-    KahinaTree stepTree;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2604998343572966299L;
+	KahinaTree stepTree;
     KahinaTree secondaryStepTree;
     
     // A kind of tertiary tree structure defined by links between nodes:

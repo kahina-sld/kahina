@@ -1,13 +1,18 @@
 package org.kahina.core.breakpoint;
 
 import java.awt.Color;
+import java.io.Serializable;
 
 import org.kahina.core.io.color.ColorIO;
 import org.w3c.dom.Element;
 
-public class KahinaBreakpoint
+public class KahinaBreakpoint implements Serializable
 {
-    static int number = 0;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6754119800163857876L;
+	static int number = 0;
     private String name;
     private boolean active;
     private Color signalColor;

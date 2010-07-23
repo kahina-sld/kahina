@@ -5,6 +5,11 @@ import org.kahina.core.data.tree.LayerDecider;
 
 public class TestLayerDecider extends LayerDecider
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2227151963480031811L;
+
 	@Override
 	public int decideOnLayer(int nodeID, KahinaTree tree)
 	{

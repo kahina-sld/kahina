@@ -1,5 +1,6 @@
 package org.kahina.core.breakpoint;
 
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -25,9 +26,14 @@ import org.w3c.dom.NodeList;
  * @author johannes
  *
  */
-public class TreeNodePattern
+public class TreeNodePattern implements Serializable
 {
-    //define the type of the match (0 is reserved for "always matching")
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6187900905267803870L;
+
+	//define the type of the match (0 is reserved for "always matching")
     private int type = 0;
     
     //define the relation for this match (0 is reserved for (token) identity, i.e. Java ==)

@@ -10,6 +10,10 @@ import org.w3c.dom.NodeList;
 
 public class KahinaMemTree extends KahinaUnlayeredMemTree
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -721535790620674355L;
 	public static final boolean verbose = false;
 
 	public KahinaMemTree()

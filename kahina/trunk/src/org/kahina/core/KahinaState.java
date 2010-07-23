@@ -1,5 +1,6 @@
 package org.kahina.core;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,9 +20,13 @@ import org.kahina.core.event.KahinaMessageEvent;
  *  @author jdellert
  */
 
-public class KahinaState
+public class KahinaState implements Serializable
 {   
-    //the messages that will be stored in the console
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1884751676781509811L;
+	//the messages that will be stored in the console
     protected KahinaTextModel consoleMessages;
     //map from stepIDs to lines in console
     protected Map<Integer,Set<KahinaLineReference>> consoleLines;

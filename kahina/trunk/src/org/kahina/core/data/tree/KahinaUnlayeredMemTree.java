@@ -1,5 +1,6 @@
 package org.kahina.core.data.tree;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,9 +18,13 @@ import org.w3c.dom.NodeList;
 /**
  * A simple Kahina tree implementation which does not support layers.
  */
-public class KahinaUnlayeredMemTree extends KahinaTree
+public class KahinaUnlayeredMemTree extends KahinaTree implements Serializable
 {    
-    //encode properties of individual nodes
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2918960685520857350L;
+	//encode properties of individual nodes
     protected Map<Integer, Integer> parents;
     protected Map<Integer, List<Integer>> children;
     protected Map<Integer, String> nodeCaptions; //captions are displayed on the nodes

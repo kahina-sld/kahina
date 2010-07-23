@@ -7,6 +7,11 @@ import org.kahina.core.data.tree.KahinaTree;
 
 public class TraleSLDLayerDecider extends DefaultLayerDecider
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4552616211113705690L;
+
 	private static final boolean verbose = false;
 	
 	private static final Pattern LEVEL0_PATTERN = Pattern.compile("\\d+ (rule|lexicon).*");
