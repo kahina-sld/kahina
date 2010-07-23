@@ -10,10 +10,10 @@ public class KahinaSessionEvent extends KahinaEvent
     public static final int SAVE_SESSION = 0;
     public static final int LOAD_SESSION = 1;
     
-    public KahinaSessionEvent(int stateEventType, File file)
+    public KahinaSessionEvent(int sessionEventType, File file)
     {
-        super("state");
-        this.sessionEventType = stateEventType;
+        super(KahinaEventTypes.SESSION);
+        this.sessionEventType = sessionEventType;
         this.file = file;
     }
     

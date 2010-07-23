@@ -6,9 +6,9 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
-import org.kahina.core.event.KahinaCloseEvent;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
@@ -49,7 +49,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		super();
 		this.state = state;
 		stepIDConv = new HashMap<Integer, Integer>();
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.CLOSE, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
 		if (verbose)
 			System.err.println("new LogicProgrammingBridge()");
@@ -359,9 +359,12 @@ public class LogicProgrammingBridge extends KahinaBridge
 	}
 
 	@Override
-	protected void processEvent(KahinaCloseEvent e)
+	protected void processSystemEvent(KahinaSystemEvent e)
 	{
-		bridgeState = 'a';
+		if (e.getSystemEventType() == KahinaSystemEvent.QUIT)
+		{
+			bridgeState = 'a';
+		}
 	}
 
 	@Override
@@ -374,42 +377,35 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (bridgeState == 'n')
 			{
 				bridgeState = 'c';
-			} 
-            else if (bridgeState == 'p')
+			} else if (bridgeState == 'p')
 			{
 				skipID = -1;
 				bridgeState = 'c';
-			} 
-            else if (bridgeState == 'q')
+			} else if (bridgeState == 'q')
 			{
 				skipID = -1;
 				bridgeState = 'c';
-			} 
-            else if (bridgeState == 'l')
+			} else if (bridgeState == 'l')
 			{
 				skipID = -1;
 				bridgeState = 'n';
 			}
-		} 
-        else if (command.equals("stop"))
+		} else if (command.equals("stop"))
 		{
 			if (bridgeState == 'p')
 			{
 				skipID = -1;
 				bridgeState = 'c';
-			} 
-            else if (bridgeState == 'q')
+			} else if (bridgeState == 'q')
 			{
 				skipID = -1;
 				bridgeState = 'c';
-			} 
-            else if (bridgeState == 'l')
+			} else if (bridgeState == 'l')
 			{
 				skipID = -1;
 				bridgeState = 'n';
 			}
-		} 
-        else if (command.equals("fail"))
+		} else if (command.equals("fail"))
 		{
 			if (bridgeState == 'n')
 			{
@@ -423,8 +419,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				skipID = -1;
 				bridgeState = 'f';
 			}
-		} 
-        else if (command.equals("auto-complete"))
+		} else if (command.equals("auto-complete"))
 		{
 			if (bridgeState == 'n')
 			{
@@ -432,27 +427,22 @@ public class LogicProgrammingBridge extends KahinaBridge
 				if (selectedID == -1)
 				{
 					skipID = currentID;
-				} 
-                else
+				} else
 				{
 					skipID = selectedID;
 				}
-			} 
-            else if (bridgeState == 'p')
+			} else if (bridgeState == 'p')
 			{
 				bridgeState = 't';
-			} 
-            else if (bridgeState == 'q')
+			} else if (bridgeState == 'q')
 			{
 				bridgeState = 't';
 				skipID = currentID;
-			}        
-		} 
-        else if (command.equals("skip"))
-        {
-            skipFlag = true;
-        } 
-        else if (command.equals("leap"))
+			}
+		} else if (command.equals("skip"))
+		{
+			skipFlag = true;
+		} else if (command.equals("leap"))
 		{
 			if (bridgeState == 'n')
 			{
@@ -501,21 +491,22 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		skipFlag = true;
 	}
-    
-    protected void processCreepPointMatch(int nodeID, KahinaBreakpoint bp)
-    {
-        //no change if we are in leap or skip mode anyway
-        if (bridgeState != 's' && bridgeState != 't' && bridgeState != 'l')
-        {
-            bridgeState = 'c';
-        }
-    }
-    
-    protected void processFailPointMatch(int nodeID, KahinaBreakpoint bp)
-    {
-        //TODO: handle this more elegantly if in skip or leap mode (possibly additional state)
-        bridgeState = 'f';
-    }
+
+	protected void processCreepPointMatch(int nodeID, KahinaBreakpoint bp)
+	{
+		// no change if we are in leap or skip mode anyway
+		if (bridgeState != 's' && bridgeState != 't' && bridgeState != 'l')
+		{
+			bridgeState = 'c';
+		}
+	}
+
+	protected void processFailPointMatch(int nodeID, KahinaBreakpoint bp)
+	{
+		// TODO: handle this more elegantly if in skip or leap mode (possibly
+		// additional state)
+		bridgeState = 'f';
+	}
 
 	protected void processBreakPointMatch(int nodeID, KahinaBreakpoint bp)
 	{

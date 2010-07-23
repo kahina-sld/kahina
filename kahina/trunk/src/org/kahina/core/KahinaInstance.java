@@ -16,10 +16,10 @@ import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.event.KahinaCloseEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaSessionEvent;
+import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
@@ -44,8 +44,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		gui = createGUI();
 		bridge = createBridge();
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.STATE, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.CLOSE, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.SESSION, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 	}
 
 	public KahinaInstance(S state)
@@ -56,8 +56,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		// TODO (re)create bridge (when adding support for resuming live
 		// sessions)
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.STATE, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.CLOSE, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.SESSION, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 	}
 
 	protected abstract S createState();
@@ -102,15 +102,18 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		} else if (e instanceof KahinaSessionEvent)
 		{
 			processSessionEvent((KahinaSessionEvent) e);
-		} else if (e instanceof KahinaCloseEvent)
+		} else if (e instanceof KahinaSystemEvent)
 		{
-			processCloseEvent((KahinaCloseEvent) e);
+			processSystemEvent((KahinaSystemEvent) e);
 		}
 	}
 
-	private void processCloseEvent(KahinaCloseEvent e)
+	private void processSystemEvent(KahinaSystemEvent e)
 	{
-		KahinaRunner.deinitialize();
+		if (e.getSystemEventType() == KahinaSystemEvent.QUIT)
+		{
+			KahinaRunner.deinitialize();
+		}
 	}
 
 	private void processSessionEvent(KahinaSessionEvent e)

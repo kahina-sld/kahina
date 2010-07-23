@@ -5,9 +5,9 @@ import org.kahina.core.KahinaStep;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.event.KahinaCloseEvent;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeMatchEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
@@ -41,9 +41,9 @@ public class KahinaBridge implements KahinaListener
     	} else if (e instanceof KahinaControlEvent)
         {
             processEvent((KahinaControlEvent) e);
-        } else if (e instanceof KahinaCloseEvent)
+        } else if (e instanceof KahinaSystemEvent)
         {
-        	processEvent((KahinaCloseEvent) e);
+        	processSystemEvent((KahinaSystemEvent) e);
         }
         else if (e instanceof KahinaTreeMatchEvent)
         {
@@ -53,11 +53,6 @@ public class KahinaBridge implements KahinaListener
     
     //method stub to prevent infinite recursion; implemented by specialized bridges
     protected void processEvent(KahinaControlEvent e)
-    {
-        
-    }
-    
-    protected void processEvent(KahinaCloseEvent e)
     {
         
     }
@@ -127,4 +122,8 @@ public class KahinaBridge implements KahinaListener
     {
         
     }
+
+	protected void processSystemEvent(KahinaSystemEvent e)
+	{
+	}
 }

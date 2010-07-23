@@ -8,9 +8,9 @@ import javax.swing.JMenuBar;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.event.KahinaCloseEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
 
@@ -53,17 +53,13 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		this.validate();
 
+		KahinaRunner.getControl().registerListener("system", this);
 		this.addWindowListener(new WindowAdapter()
 		{
 			@Override
 			public void windowClosing(WindowEvent e)
 			{
-				if (verbose)
-				{
-					System.err.println("Main windows closed.");
-				}
-				disposeAllWindows();
-				KahinaRunner.processEvent(new KahinaCloseEvent());
+				KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 			}
 
 		});
@@ -85,6 +81,17 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 			{
 				incrementStepCount();
 			}
+		} else if (event instanceof KahinaSystemEvent)
+		{
+			processSystemEvent((KahinaSystemEvent) event);
+		}
+	}
+
+	private void processSystemEvent(KahinaSystemEvent event)
+	{
+		if (event.getSystemEventType() == KahinaSystemEvent.QUIT)
+		{
+			disposeAllWindows();
 		}
 	}
 
