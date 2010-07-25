@@ -20,10 +20,9 @@ public class FileUtilities
 
 	public static void copy(File source, File destination) throws IOException
 	{
-		OutputStream out = null;
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(destination));
 		try
 		{
-			out = new BufferedOutputStream(new FileOutputStream(destination));
 			copy(source, out);
 		} catch (IOException e)
 		{
@@ -37,9 +36,9 @@ public class FileUtilities
 		}
 	}
 
-	private static void copy(File sourcee, OutputStream out) throws IOException
+	private static void copy(File source, OutputStream out) throws IOException
 	{
-		InputStream in = new BufferedInputStream(new FileInputStream(sourcee));
+		InputStream in = new BufferedInputStream(new FileInputStream(source));
 		try
 		{
 			copy(in, out);
@@ -124,6 +123,7 @@ public class FileUtilities
 		{
 			out.putNextEntry(new ZipEntry(toZip.getCanonicalPath().substring(rootPathLength)));
 			copy(toZip, out);
+			out.closeEntry();
 		}
 	}
 

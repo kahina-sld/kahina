@@ -220,6 +220,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 				out.writeObject(state);
 				monitor.increment();
 			}
+			out.flush();
 			FileUtilities.zipDirectory(directory, zipFile, monitor);
 			FileUtilities.deleteRecursively(directory);
 			monitor.close();

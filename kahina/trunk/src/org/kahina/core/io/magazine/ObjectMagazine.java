@@ -172,7 +172,7 @@ public class ObjectMagazine<S>
 	public static <S> ObjectMagazine<S> load(File folder, Class<S> objectType)
 	{
 		Properties properties = readPropertiesFile(folder);
-		return new ObjectMagazine<S>(folder, Integer.parseInt(properties.getProperty("blockSize")), Long.parseLong(properties.getProperty("lowerBound")), Long.parseLong(properties
+		return new ObjectMagazine<S>(folder, Integer.parseInt(properties.getProperty("blockSize")), Float.parseFloat(properties.getProperty("lowerBound")), Float.parseFloat(properties
 				.getProperty("upperBound")), folder.list().length);
 	}
 
