@@ -158,4 +158,9 @@ public abstract class DataManager
 	{
 		// do nothing
 	}
+
+	public void load(File directory)
+	{
+		throw new UnsupportedOperationException("This data manager does not support persistence.");
+	}
 }

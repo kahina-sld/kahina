@@ -49,11 +49,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	private TraleSLDFSPacker packer;
 
-	private int lastStepIDWithFreshPacker = 0;
-
 	private Sharer<TraleSLDVariableBinding> bindingSharer;
-
-	private int lastStepIDWithFreshSharer = 0;
 
 	public TraleSLDBridge(TraleSLDState state)
 	{
@@ -331,7 +327,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	private TraleSLDFS createFSObject(String grisuMessage, int stepID)
 	{
-		if (KahinaRunner.getDataHandlingMethod() == KahinaDataHandlingMethod.MAGAZINE)
+		/*if (KahinaRunner.getDataHandlingMethod() == KahinaDataHandlingMethod.MAGAZINE)
 		{
 			// YUCK!
 			if (stepID - lastStepIDWithFreshPacker >= 1000)
@@ -339,20 +335,20 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				packer = new TraleSLDFSPacker();
 				lastStepIDWithFreshPacker = stepID;
 			}
-		}
+		}*/
 		return packer.pack(grisuMessage);
 	}
 
 	private TraleSLDVariableBinding createBindingObject(TraleSLDVariableBinding traleSLDVariableBinding, int stepID)
 	{
-		if (KahinaRunner.getDataHandlingMethod() == KahinaDataHandlingMethod.MAGAZINE)
+		/*if (KahinaRunner.getDataHandlingMethod() == KahinaDataHandlingMethod.MAGAZINE)
 		{
 			if (stepID - lastStepIDWithFreshSharer >= 1000)
 			{
 				bindingSharer = new Sharer<TraleSLDVariableBinding>();
 				lastStepIDWithFreshSharer = stepID;
 			}
-		}
+		}*/
 		return bindingSharer.share(traleSLDVariableBinding);
 	}
 

@@ -4,8 +4,11 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Set;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import javax.swing.JOptionPane;
 
@@ -130,8 +133,39 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	private void loadSession(File file)
 	{
-		// TODO Auto-generated method stub
-		
+		ZipFile zipFile = null;
+		try
+		{
+			zipFile = new ZipFile(file);
+			ObjectInputStream in = new ObjectInputStream(zipFile.getInputStream(zipFile.getEntry("state")));
+			state = castToStateType(in.readObject());
+			in.close();
+			File directory = FileUtilities.createTemporaryDirectory();
+			FileUtilities.unzipToDirectory(zipFile, directory, "steps/");
+			// TODO load steps into magazine
+		} catch (Exception e)
+		{
+			gui.showMessageDialog(SwingUtilities.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+			return;
+		} finally
+		{
+			if (zipFile != null)
+			{
+				try
+				{
+					zipFile.close();
+				} catch (IOException e)
+				{
+					gui.showMessageDialog(SwingUtilities.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private S castToStateType(Object object)
+	{
+		return (S) object;
 	}
 
 	private void saveSessionAs(File zipFile)
@@ -142,7 +176,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			directory = FileUtilities.createTemporaryDirectory();
 		} catch (IOException e)
 		{
-			gui.showMessageDialog(SwingUtilities.visualError("State could not be saved due to the following problem:", e), "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog(SwingUtilities.visualError("Session could not be saved due to the following problem:", e), "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		if (zipFile.exists())
@@ -156,11 +190,11 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		File stepFolder = new File(directory, "steps");
 		if (!stepFolder.mkdir())
 		{
-			gui.showMessageDialog("Failed to create directory " + directory + ". State not saved.", "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog("Failed to create directory " + directory + ". Session not saved.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		DataManager dm = KahinaRunner.getDataManager();
-		ProgressMonitorWrapper monitor = gui.createProgressMonitorWrapper("Saving state", null, 0, dm.persistSteps() * 2 + 2);
+		ProgressMonitorWrapper monitor = gui.createProgressMonitorWrapper("Saving session", null, 0, dm.persistSteps() * 2 + 2);
 		ObjectOutputStream out = null;
 		try
 		{
@@ -180,7 +214,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		} catch (Exception e)
 		{
 			monitor.close();
-			gui.showMessageDialog(SwingUtilities.visualError("State could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog(SwingUtilities.visualError("Session could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 		} finally
 		{
 			if (out != null)
@@ -190,7 +224,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 					out.close();
 				} catch (IOException e)
 				{
-					gui.showMessageDialog(SwingUtilities.visualError("State could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+					gui.showMessageDialog(SwingUtilities.visualError("Session could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
