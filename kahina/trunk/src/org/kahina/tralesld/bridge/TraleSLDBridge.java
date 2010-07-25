@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;

@@ -34,5 +34,11 @@ public class MagazineDataManager extends MemDataManager
 	{
 		return defaultStore.persistSteps();
 	}
+	
+	@Override
+	public void load(File directory)
+	{
+		defaultStore = MagazineDataStore.load(directory);
+	}
 
 }

@@ -52,7 +52,7 @@ public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI,
 	@Override
 	protected TraleSLDState createState()
 	{
-		return new TraleSLDState(this);
+		return new TraleSLDState();
 	}
 
 	public TraleSLDState getState()

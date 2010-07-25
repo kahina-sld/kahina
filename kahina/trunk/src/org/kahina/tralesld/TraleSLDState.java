@@ -8,15 +8,20 @@ import org.kahina.lp.LogicProgrammingState;
 
 public class TraleSLDState extends LogicProgrammingState
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6388044339949017641L;
+
 	KahinaChart chart;
 
 	// coordination between tree and chart
 	HashMap<Integer, Integer> edgeToNode;
 	HashMap<Integer, Integer> nodeToEdge;
 
-	public TraleSLDState(TraleSLDInstance kahina)
+	public TraleSLDState()
 	{
-		super(kahina);
+		super();
 		chart = new KahinaMemChart();
 		edgeToNode = new HashMap<Integer, Integer>();
 		nodeToEdge = new HashMap<Integer, Integer>();

@@ -33,7 +33,7 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
     @Override
     protected TulipaState createState()
     {
-    	return new TulipaState(this);
+    	return new TulipaState();
     }
 
     public TulipaState getState()

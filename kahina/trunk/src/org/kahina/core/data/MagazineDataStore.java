@@ -24,6 +24,11 @@ public class MagazineDataStore extends DataStore
 			throw new KahinaException("I/O error creating magazine data store.", e);
 		}
 	}
+	
+	public MagazineDataStore(ObjectMagazine<KahinaObject> magazine)
+	{
+		this.magazine = magazine;
+	}
 
 	@Override
 	public KahinaObject retrieve(int id)
@@ -52,6 +57,11 @@ public class MagazineDataStore extends DataStore
 	public void close()
 	{
 		magazine.close();
+	}
+
+	public static MagazineDataStore load(File directory)
+	{
+		return new MagazineDataStore(ObjectMagazine.load(directory, KahinaObject.class));
 	}
 
 }

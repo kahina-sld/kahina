@@ -6,9 +6,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaTextModel;
+import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaMessageEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 /**
  * The current state of a Kahina instance.
@@ -20,7 +23,7 @@ import org.kahina.core.event.KahinaMessageEvent;
  *  @author jdellert
  */
 
-public class KahinaState implements Serializable
+public class KahinaState implements Serializable, KahinaListener
 {   
     /**
 	 * 
@@ -31,13 +34,34 @@ public class KahinaState implements Serializable
     //map from stepIDs to lines in console
     protected Map<Integer,Set<KahinaLineReference>> consoleLines;
     
-    public KahinaState(KahinaInstance<?, ?, ?> kahina)
+    private int selectedStepID = -1;
+    
+    public KahinaState()
     {
         consoleMessages = new KahinaTextModel();
         consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
+        KahinaRunner.getControl().registerListener("select", this);
     }
     
-    public void consoleMessage(int stepID, String message)
+    public void processEvent(KahinaEvent event)
+    {
+    	if (event instanceof KahinaSelectionEvent)
+    	{
+    		processSelectionEvent((KahinaSelectionEvent) event);
+    	}
+    }
+    
+    private void processSelectionEvent(KahinaSelectionEvent event)
+	{
+		selectedStepID = event.getSelectedStep();
+	}
+    
+    public int getSelectedStepID()
+    {
+    	return selectedStepID;
+    }
+
+	public void consoleMessage(int stepID, String message)
     {
         int lineID = consoleMessages.text.addLine(message);
         KahinaLineReference ref = new KahinaLineReference(consoleMessages,lineID,stepID);

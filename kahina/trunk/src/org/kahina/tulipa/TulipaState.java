@@ -10,9 +10,9 @@ public class TulipaState extends KahinaState
     KahinaDAG dag;
     TulipaGrammar grammar;
     
-    public TulipaState(TulipaInstance kahina)
+    public TulipaState()
     {
-        super(kahina);
+        super();
         dag = new KahinaMemDAG();
         grammar = new TulipaGrammar();
     }

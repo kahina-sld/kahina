@@ -38,9 +38,9 @@ public class LogicProgrammingState extends KahinaState
     protected List<KahinaBreakpoint> creepPoints;
     protected List<KahinaBreakpoint> failPoints;
     
-    public LogicProgrammingState(KahinaInstance<? extends LogicProgrammingState, ?, ?> kahina)
+    public LogicProgrammingState()
     {
-        super(kahina);
+        super();
         stepTree = new KahinaMemTree();
         secondaryStepTree = new KahinaMemTree();
         anchorsByTarget = new HashMap<Integer, List<Integer>>();

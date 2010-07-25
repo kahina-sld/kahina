@@ -145,9 +145,10 @@ public class FileUtilities
 	 * @param zipFile
 	 * @param directory
 	 * @param prefix
+	 * @param monitor 
 	 * @throws IOException
 	 */
-	public static void unzipToDirectory(ZipFile zipFile, File directory, String prefix) throws IOException
+	public static void unzipToDirectory(ZipFile zipFile, File directory, String prefix, ProgressMonitorWrapper monitor) throws IOException
 	{
 		int length = prefix.length();
 		Enumeration<? extends ZipEntry> entries = zipFile.entries();
@@ -173,6 +174,10 @@ public class FileUtilities
 						in.close();
 					}
 				}
+			}
+			if (monitor != null)
+			{
+				monitor.increment();
 			}
 		}
 	}

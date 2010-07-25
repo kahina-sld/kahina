@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Set;
-import java.util.zip.ZipException;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import javax.swing.JOptionPane;
@@ -26,6 +26,7 @@ import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.util.FileUtilities;
 import org.kahina.core.util.ProgressMonitorWrapper;
@@ -36,6 +37,8 @@ import org.kahina.core.visual.tree.KahinaTreeView;
 
 public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge> implements KahinaListener
 {
+	private static final boolean VERBOSE = true;
+	
 	protected S state;
 	protected G gui;
 	protected B bridge;
@@ -134,15 +137,23 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	private void loadSession(File file)
 	{
 		ZipFile zipFile = null;
+		ProgressMonitorWrapper monitor = null;
 		try
 		{
 			zipFile = new ZipFile(file);
-			ObjectInputStream in = new ObjectInputStream(zipFile.getInputStream(zipFile.getEntry("state")));
+			ZipEntry entry = zipFile.getEntry("state");
+			if (VERBOSE)
+			{
+				System.err.println(entry);
+			}
+			ObjectInputStream in = new ObjectInputStream(zipFile.getInputStream(entry));
 			state = castToStateType(in.readObject());
 			in.close();
 			File directory = FileUtilities.createTemporaryDirectory();
-			FileUtilities.unzipToDirectory(zipFile, directory, "steps/");
-			// TODO load steps into magazine
+			monitor = gui.createProgressMonitorWrapper("Loading session", null, 0, zipFile.size());
+			FileUtilities.unzipToDirectory(zipFile, directory, "steps/", monitor);
+			KahinaRunner.getDataManager().load(directory);
+			KahinaRunner.processEvent(new KahinaSelectionEvent(state.getSelectedStepID()));
 		} catch (Exception e)
 		{
 			gui.showMessageDialog(SwingUtilities.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
@@ -153,6 +164,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			{
 				try
 				{
+					monitor.close();
 					zipFile.close();
 				} catch (IOException e)
 				{
