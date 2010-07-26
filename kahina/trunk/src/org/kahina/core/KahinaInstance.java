@@ -34,6 +34,8 @@ import org.kahina.core.util.SwingUtilities;
 import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.source.KahinaSourceCodeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
+import org.kahina.tralesld.TraleSLDState;
+import org.kahina.tralesld.TraleSLDStep;
 
 public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge> implements KahinaListener
 {
@@ -148,6 +150,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			}
 			ObjectInputStream in = new ObjectInputStream(zipFile.getInputStream(entry));
 			state = castToStateType(in.readObject());
+			if (VERBOSE)
+			{
+				System.err.println(((TraleSLDState) state).getStepTree().getLayerDecider());
+			}
 			in.close();
 			File directory = FileUtilities.createTemporaryDirectory();
 			monitor = gui.createProgressMonitorWrapper("Loading session", null, 0, zipFile.size());

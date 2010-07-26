@@ -18,7 +18,7 @@ import org.w3c.dom.NodeList;
 /**
  * A simple Kahina tree implementation which does not support layers.
  */
-public class KahinaUnlayeredMemTree extends KahinaTree implements Serializable
+public class KahinaUnlayeredMemTree extends KahinaTree
 {    
     /**
 	 * 

@@ -1,13 +1,19 @@
 package org.kahina.core.data.tree;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.kahina.core.data.KahinaObject;
 
-public abstract class KahinaTree extends KahinaObject
+public abstract class KahinaTree extends KahinaObject implements Serializable
 {
-    protected LayerDecider decider;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7193259910680733711L;
+
+	protected LayerDecider decider;
 
     private KahinaTree primaryModel;
 
