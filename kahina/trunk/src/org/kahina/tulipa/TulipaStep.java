@@ -36,6 +36,6 @@ public class TulipaStep extends KahinaStep
     
     public static TulipaStep get(int id)
     {
-        return KahinaRunner.getDataManager().retrieve(TulipaStep.class, id);
+        return KahinaRunner.retrieve(TulipaStep.class, id);
     }
 }

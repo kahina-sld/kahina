@@ -14,7 +14,6 @@ import javax.swing.JOptionPane;
 
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.data.DataManager;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.text.KahinaLineReference;
@@ -28,6 +27,7 @@ import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.core.io.magazine.ObjectMagazine;
 import org.kahina.core.util.FileUtilities;
 import org.kahina.core.util.ProgressMonitorWrapper;
 import org.kahina.core.util.SwingUtilities;
@@ -152,7 +152,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			File directory = FileUtilities.createTemporaryDirectory();
 			monitor = gui.createProgressMonitorWrapper("Loading session", null, 0, zipFile.size());
 			FileUtilities.unzipToDirectory(zipFile, directory, "steps/", monitor);
-			KahinaRunner.getDataManager().load(directory);
+			KahinaRunner.loadSteps(directory);
 			KahinaRunner.processEvent(new KahinaSelectionEvent(state.getSelectedStepID()));
 		} catch (Exception e)
 		{
@@ -205,14 +205,14 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			gui.showMessageDialog("Failed to create directory " + directory + ". Session not saved.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		DataManager dm = KahinaRunner.getDataManager();
-		ProgressMonitorWrapper monitor = gui.createProgressMonitorWrapper("Saving session", null, 0, dm.persistSteps() * 2 + 2);
+		ObjectMagazine<KahinaStep> steps = KahinaRunner.getSteps();
+		ProgressMonitorWrapper monitor = gui.createProgressMonitorWrapper("Saving session", null, 0, steps.persistSteps() * 2 + 2);
 		ObjectOutputStream out = null;
 		try
 		{
-			synchronized (dm)
+			synchronized (steps)
 			{
-				dm.persist(stepFolder, monitor);
+				steps.persist(stepFolder, monitor);
 			}
 			synchronized (state)
 			{

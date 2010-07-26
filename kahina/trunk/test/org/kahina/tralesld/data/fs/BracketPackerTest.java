@@ -10,51 +10,40 @@ import java.util.Scanner;
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.kahina.core.data.DataManager;
-import org.kahina.core.data.MemDataManager;
 
 public class BracketPackerTest
 {
 	
 	@Test
-	public void memTest()
-	{
-		DataManager dm = new MemDataManager();
-		dm.registerDataType(TraleSLDPackedFSNonTerminal.class);
-		dm.registerDataType(TraleSLDPackedFSTerminal.class);
-		test(dm);
-	}
-	
-	public void test(DataManager dm)
+	public void test1()
 	{
 		TraleSLDFSPacker packer = new TraleSLDFSPacker();
 		Scanner scanner = new Scanner(Main.class.getResourceAsStream("/gralej/resource/sample.GRALE"));
 		List<String> lines = new ArrayList<String>();
-		List<Integer> results = new ArrayList<Integer>();
+		List<TraleSLDFS> results = new ArrayList<TraleSLDFS>();
 		while (scanner.hasNextLine())
 		{
-			packAndStore(scanner.nextLine(), dm, lines, results, packer);
+			pack(scanner.nextLine(), lines, results, packer);
 		}
-		packAndStore("bla(a)))", dm, lines, results, packer);
-		packAndStore("a\"aa", dm, lines, results, packer);
-		packAndStore("\"\"", dm, lines, results, packer);
-		packAndStore("\"aaaaaaaaa", dm, lines, results, packer);
-		packAndStore("(\"))(\"", dm, lines, results, packer);
-		packAndStore("(((a)alb", dm, lines, results, packer);
-		Iterator<Integer> resultsIterator = results.iterator();
+		pack("bla(a)))", lines, results, packer);
+		pack("a\"aa", lines, results, packer);
+		pack("\"\"", lines, results, packer);
+		pack("\"aaaaaaaaa", lines, results, packer);
+		pack("(\"))(\"", lines, results, packer);
+		pack("(((a)alb", lines, results, packer);
+		Iterator<TraleSLDFS> resultsIterator = results.iterator();
 		for (String original : lines)
 		{
-			String result = dm.retrieve(resultsIterator.next()).toString();
+			String result = resultsIterator.next().toString();
 			Assert.assertEquals(original, result);
 		}
 	}
 	
-	private void packAndStore(String original, DataManager dm, List<String> originals, List<Integer> packedObjectIDs, TraleSLDFSPacker packer)
+	private void pack(String original, List<String> originals, List<TraleSLDFS> fss, TraleSLDFSPacker packer)
 	{
 		TraleSLDFS fs = packer.pack(original);
-		dm.store(fs);
 		originals.add(original);
-		packedObjectIDs.add(fs.getID());
+		fss.add(fs);
 	}
 
 }

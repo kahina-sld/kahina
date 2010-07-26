@@ -11,7 +11,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.core.visual.chart.KahinaChartViewPanel;
@@ -30,7 +29,7 @@ public class KahinaChartTest
             Document dom = db.parse(file);
             //DatabaseHandler data = new DatabaseHandler(new File("otoka.dat"));
             //KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.DATABASE, data);
-            KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.MEMORY);
+            KahinaChart m = KahinaChart.importXML(dom);
             KahinaChartView v = new KahinaChartView();
             v.display(m);       
 

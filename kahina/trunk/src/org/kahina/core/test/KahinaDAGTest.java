@@ -10,7 +10,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
 import org.kahina.core.gui.KahinaDefaultWindow;
@@ -24,7 +23,7 @@ public class KahinaDAGTest
     {
         try
         {      
-        	KahinaRunner.initialize(KahinaDataHandlingMethod.MEMORY);
+        	KahinaRunner.initialize();
         	
             File file = new File("src/org/kahina/core/test/test-dag.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();

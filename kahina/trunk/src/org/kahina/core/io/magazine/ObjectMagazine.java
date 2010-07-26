@@ -22,7 +22,6 @@ import org.kahina.core.KahinaException;
 import org.kahina.core.util.FileUtilities;
 import org.kahina.core.util.ProgressMonitorWrapper;
 
-// TODO clean interface for saving, restoring, closing
 public class ObjectMagazine<S>
 {
 	private static final boolean VERBOSE = true;
@@ -176,23 +175,23 @@ public class ObjectMagazine<S>
 				.getProperty("upperBound")), folder.list().length);
 	}
 
-	public static <S> ObjectMagazine<S> create(File folder)
+	public static <S> ObjectMagazine<S> create()
 	{
-		return create(folder, 1000, 0.2F, 0.6F);
+		return create(1000, 0.2F, 0.6F);
 	}
 
-	public static <S> ObjectMagazine<S> create(File folder, int blockSize, float lowerBound, float upperBound)
+	private static <S> ObjectMagazine<S> create(int blockSize, float lowerBound, float upperBound)
 	{
-		if (folder.exists())
+		File directory;
+		try
 		{
-			throw new KahinaException("Cannot create magazine, file " + folder + " already exists.");
-		}
-		if (!folder.mkdir())
+			directory = FileUtilities.createTemporaryDirectory();
+		} catch (IOException e)
 		{
-			throw new KahinaException("Could not create folder " + folder + " for magazine.");
+			throw new KahinaException("Failed to create magazine.", e);
 		}
-		writePropertiesFile(folder, blockSize, lowerBound, upperBound);
-		return new ObjectMagazine<S>(folder, blockSize, lowerBound, upperBound, 1);
+		writePropertiesFile(directory, blockSize, lowerBound, upperBound);
+		return new ObjectMagazine<S>(directory, blockSize, lowerBound, upperBound, 1);
 	}
 
 	private static Properties readPropertiesFile(File folder)

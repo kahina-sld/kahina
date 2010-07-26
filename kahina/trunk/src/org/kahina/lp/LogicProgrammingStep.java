@@ -58,6 +58,6 @@ public class LogicProgrammingStep extends KahinaStep
     
     public static LogicProgrammingStep get(int id)
     {
-        return KahinaRunner.getDataManager().retrieve(LogicProgrammingStep.class, id);
+        return KahinaRunner.retrieve(LogicProgrammingStep.class, id);
     }
 }

@@ -64,13 +64,15 @@ public class KahinaObject
         KahinaObject.nextID = nextID;
     }
     
+    @Deprecated
     public void store()
     {
-        KahinaRunner.getDataManager().store(this);
+        KahinaRunner.store(this);
     }
     
+    @Deprecated
     public void storeCaching()
     {
-    	KahinaRunner.getDataManager().storeCaching(this);
+    	store();
     }
 }

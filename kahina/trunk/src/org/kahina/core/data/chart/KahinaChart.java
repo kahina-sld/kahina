@@ -2,7 +2,6 @@ package org.kahina.core.data.chart;
 
 import java.util.Set;
 
-import org.kahina.core.data.KahinaDataHandlingMethod;
 import org.kahina.core.data.KahinaObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -128,7 +127,7 @@ public abstract class KahinaChart extends KahinaObject
 		return b.toString();
 	}
 
-	public static KahinaChart importXML(Document dom, KahinaDataHandlingMethod dataHandlingMethod)
+	public static KahinaChart importXML(Document dom)
 	{
 		KahinaChart m = new KahinaMemChart();
 		NodeList segments = dom.getElementsByTagName("segment");

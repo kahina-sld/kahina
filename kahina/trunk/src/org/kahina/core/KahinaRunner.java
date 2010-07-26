@@ -1,31 +1,24 @@
 package org.kahina.core;
 
+import java.io.File;
+
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.data.DataManager;
-import org.kahina.core.data.KahinaDataHandlingMethod;
-import org.kahina.core.data.MagazineDataManager;
-import org.kahina.core.data.MemDataManager;
+import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.io.magazine.ObjectMagazine;
+import org.kahina.lp.LogicProgrammingStep;
 
 public class KahinaRunner
 {
 	private static final boolean VERBOSE = false;
 	
-    private static DataManager dm;
+    private static ObjectMagazine<KahinaStep> steps;
     private static KahinaController control;
-    private static KahinaDataHandlingMethod dataHandlingMethod;
     
-    public static void initialize(KahinaDataHandlingMethod dataHandlingType)
+    public static void initialize()
     {
-    	dataHandlingMethod = dataHandlingType;
     	control = new KahinaController();
-        if (dataHandlingType == KahinaDataHandlingMethod.MEMORY)
-        {
-            setDataManager(new MemDataManager());
-        } else
-        {
-        	setDataManager(new MagazineDataManager());
-        }
+    	steps = ObjectMagazine.create();
     }
 
 	public static void deinitialize()
@@ -34,22 +27,10 @@ public class KahinaRunner
 		{
 			System.err.println("KahinaRunner ist deinitializing.");
 		}
-		dm.close();
-		dm = null;
+		steps.close();
+		steps = null;
 		control = null;
-		dataHandlingMethod = null;
 	}
-    
-    public static DataManager getDataManager()
-    {
-        return dm;
-    }
-    
-    private static void setDataManager(DataManager dm)
-    {
-    	dm.initialize();
-        KahinaRunner.dm = dm;
-    }
     
     public static void processEvent(KahinaEvent e)
     {
@@ -61,8 +42,26 @@ public class KahinaRunner
         return control;
     }
 
-	public static KahinaDataHandlingMethod getDataHandlingMethod()
+	public static void store(KahinaObject object)
 	{
-		return dataHandlingMethod;
+		// TODO we want to do this differently
+		steps.store(object.getID(), (KahinaStep) object);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T extends KahinaObject> T retrieve(Class<T> type, int stepID)
+	{
+		// TODO we want to do this differently
+		return (T) steps.retrieve(stepID);
+	}
+
+	public static ObjectMagazine<KahinaStep> getSteps()
+	{
+		return steps;
+	}
+
+	public static void loadSteps(File directory)
+	{
+		steps = ObjectMagazine.load(directory, KahinaStep.class);
 	}
 }

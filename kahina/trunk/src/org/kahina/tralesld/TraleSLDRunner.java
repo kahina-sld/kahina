@@ -1,19 +1,7 @@
 package org.kahina.tralesld;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.KahinaStep;
-import org.kahina.core.data.DataManager;
-import org.kahina.core.data.KahinaDataHandlingMethod;
-import org.kahina.core.data.source.KahinaSourceCodeLocation;
-import org.kahina.core.data.source.KahinaSourceFileModel;
-import org.kahina.core.data.text.KahinaText;
-import org.kahina.core.data.text.KahinaTextModel;
-import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
-import org.kahina.tralesld.data.fs.TraleSLDPackedFSNonTerminal;
-import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
-import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
-import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 
 public class TraleSLDRunner extends KahinaRunner
 {
@@ -58,28 +46,16 @@ public class TraleSLDRunner extends KahinaRunner
 		bridge.registerStepLocation(10, 9);
 	}
 
-	public static void initialize(KahinaDataHandlingMethod dataHandlingType)
+	public static void initialize()
 	{
-		KahinaRunner.initialize(dataHandlingType);
-		DataManager dm = KahinaRunner.getDataManager();
-		dm.registerDataType(KahinaStep.class);
-		dm.registerDataType(LogicProgrammingStep.class);
-		dm.registerDataType(TraleSLDStep.class);
-		dm.registerDataType(TraleSLDPackedFSNonTerminal.class);
-		dm.registerDataType(TraleSLDPackedFSTerminal.class);
-		dm.registerDataType(KahinaSourceCodeLocation.class);
-		dm.registerDataType(KahinaSourceFileModel.class);
-		dm.registerDataType(TraleSLDVariableBinding.class);
-		dm.registerDataType(TraleSLDVariableBindingSet.class);
-		dm.registerDataType(KahinaTextModel.class);
-		dm.registerDataType(KahinaText.class);
+		KahinaRunner.initialize();
 	}
 
 	public static TraleSLDBridge runAndGetBridge()
 	{
 		try
 		{
-			initialize(KahinaDataHandlingMethod.MAGAZINE);
+			initialize();
 			TraleSLDInstance kahina = new TraleSLDInstance();
 			kahina.getGUI().prepare();
 			kahina.getGUI().buildAndShow();

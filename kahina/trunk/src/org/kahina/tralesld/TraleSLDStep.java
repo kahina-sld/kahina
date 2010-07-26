@@ -32,6 +32,6 @@ public class TraleSLDStep extends LogicProgrammingStep
     
     public static TraleSLDStep get(int id)
     {
-        return KahinaRunner.getDataManager().retrieve(TraleSLDStep.class, id);
+        return KahinaRunner.retrieve(TraleSLDStep.class, id);
     }
 }
