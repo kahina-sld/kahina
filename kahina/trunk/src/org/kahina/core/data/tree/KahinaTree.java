@@ -7,33 +7,13 @@ import org.kahina.core.data.KahinaObject;
 
 public abstract class KahinaTree extends KahinaObject
 {
-    /**
-     * Public just to be lightweight. Do not be tempted to directly access
-     * this field.
-     */
-    public LayerDecider decider;
+    protected LayerDecider decider;
 
-    /**
-     * Public just to be lightweight. Do not be tempted to directly access
-     * this field.
-     */
-    public KahinaTree primaryModel;
+    private KahinaTree primaryModel;
 
-    /**
-     * Only temporary meaning, does not need to be persisted.
-     */
     private int referenceNode;
 
-    /**
-     * Public just to be lightweight. Do not be tempted to directly access
-     * this field.
-     */
-    public int rootID;
-
-    public KahinaTree()
-    {
-        // need no-arg constructor for lightweight subclasses
-    }
+    private int rootID;
 
     public KahinaTree(LayerDecider decider)
     {

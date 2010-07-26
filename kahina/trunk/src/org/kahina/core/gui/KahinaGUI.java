@@ -37,7 +37,7 @@ import org.kahina.core.visual.text.KahinaTextView;
 
 public class KahinaGUI implements KahinaListener
 {
-	private static final boolean verbose = false;
+	private static final boolean verbose = true;
 
 	protected KahinaInstance<?, ?, ?> kahina;
     
@@ -222,14 +222,19 @@ public class KahinaGUI implements KahinaListener
 
 	private void processEvent(KahinaSelectionEvent e)
 	{
+		displayMainViews();
 		if (e.getPanel() == null || livingViews.contains(e.getPanel().view))
 		{
             //ignore selections that would lead to an empty current node
-            if (e.getSelectedStep() != -1)
+			int stepID = e.getSelectedStep();
+            if (stepID != -1)
             {
-                int selectedStep = e.getSelectedStep();
-                displayStepContent(selectedStep);
-                KahinaRunner.processEvent(new KahinaUpdateEvent(selectedStep));
+            	if (verbose)
+            	{
+            		System.err.println("Updating selection to step " + stepID);
+            	}
+                displayStepContent(stepID);
+                KahinaRunner.processEvent(new KahinaUpdateEvent(stepID));
                 KahinaRunner.processEvent(new KahinaRedrawEvent());
             }
 		}

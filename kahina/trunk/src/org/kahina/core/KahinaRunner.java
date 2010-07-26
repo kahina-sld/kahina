@@ -6,7 +6,6 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.io.magazine.ObjectMagazine;
-import org.kahina.lp.LogicProgrammingStep;
 
 public class KahinaRunner
 {
