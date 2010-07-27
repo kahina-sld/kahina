@@ -26,7 +26,6 @@ import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
-import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
@@ -75,14 +74,14 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			TraleSLDStep newStep = generateStep();
 			newStep.setGoalDesc("init");
 			newStep.setExternalID(0);
-			stepIDConv.put(0, newStep.getID());
-			newStep.storeCaching();
-			int id = newStep.getID();
-			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, id, wordList.toString()));
-			KahinaRunner.processEvent(new KahinaSelectionEvent(id));
-			currentID = newStep.getID();
+			int newStepID = state.nextStepID();
+			stepIDConv.put(0, newStepID);
+			KahinaRunner.store(newStepID, newStep);
+			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStepID, wordList.toString()));
+			KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
+			currentID = newStepID;
 
-			state.consoleMessage(newStep.getID(), 0, LogicProgrammingStepType.CALL, "initialising parse: " + parsedSentenceList);
+			state.consoleMessage(newStepID, 0, LogicProgrammingStepType.CALL, "initialising parse: " + parsedSentenceList);
 			// if (bridgeState == 'n') KahinaRunner.processEvent(new
 			// KahinaSelectionEvent(newStep.getID()));
 		} catch (Exception e)
@@ -216,35 +215,36 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + ",\"" + ruleName + "," + leftmostDaughter + "\")");
 			}
-			TraleSLDStep newStep = generateStep();
+			final TraleSLDStep newStep = generateStep();
 			newStep.setGoalDesc("rule(" + ruleName + ")");
 			newStep.setExternalID(extID);
-			stepIDConv.put(extID, newStep.getID());
+			int newStepID = state.nextStepID();
+			stepIDConv.put(extID, newStepID);
 			registerProspectiveEdge(extID, ruleName, leftmostDaughter);
 			if (verbose)
 			{
 				System.err.println("Storing new step.");
 			}
-			newStep.storeCaching();
+			KahinaRunner.store(newStepID, newStep);
 			if (verbose)
 			{
 				System.err.println("Firing rule application event.");
 			}
 			// let TraleSLDTreeBehavior do the rest
-			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStep.getID(), ruleName, extID));
+			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStepID, ruleName, extID));
 			if (verbose)
 			{
 				System.err.println("Creating console message.");
 			}
 			// experimental: message for console
-			state.consoleMessage(newStep.getID(), extID, LogicProgrammingStepType.CALL, consoleMessage);
+			state.consoleMessage(newStepID, extID, LogicProgrammingStepType.CALL, consoleMessage);
 			if (verbose)
 			{
 				System.err.println("Firing selection event.");
 			}
 			// if (bridgeState == 'n')
 			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(newStep.getID()));
+				KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
 			}
 			// the following two actions and the structures they operate on seem
 			// to
@@ -305,52 +305,22 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			// if (verbose)
-			// System.err.println("registerMessageEnd(" + extID + ",\"" + key +
-			// "\"): " + grisuMessage);
-			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
+			int stepID = stepIDConv.get(extID);
+			final TraleSLDStep step = TraleSLDStep.get(stepID);
 			if ("start".equals(key))
 			{
-				step.startFeatStruct = createFSObject(grisuMessage, step.getID());
+				step.startFeatStruct = packer.pack(grisuMessage);
 			} else if ("end".equals(key))
 			{
-				step.endFeatStruct = createFSObject(grisuMessage, step.getID());
+				step.endFeatStruct = packer.pack(grisuMessage);
 			}
-			step.storeCaching();
+			KahinaRunner.store(stepID, step);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
 		}
 	}
-
-	private TraleSLDFS createFSObject(String grisuMessage, int stepID)
-	{
-		/*if (KahinaRunner.getDataHandlingMethod() == KahinaDataHandlingMethod.MAGAZINE)
-		{
-			// YUCK!
-			if (stepID - lastStepIDWithFreshPacker >= 1000)
-			{
-				packer = new TraleSLDFSPacker();
-				lastStepIDWithFreshPacker = stepID;
-			}
-		}*/
-		return packer.pack(grisuMessage);
-	}
-
-	private TraleSLDVariableBinding createBindingObject(TraleSLDVariableBinding traleSLDVariableBinding, int stepID)
-	{
-		/*if (KahinaRunner.getDataHandlingMethod() == KahinaDataHandlingMethod.MAGAZINE)
-		{
-			if (stepID - lastStepIDWithFreshSharer >= 1000)
-			{
-				bindingSharer = new Sharer<TraleSLDVariableBinding>();
-				lastStepIDWithFreshSharer = stepID;
-			}
-		}*/
-		return bindingSharer.share(traleSLDVariableBinding);
-	}
-
 
 	public void registerMessage(int extID, String key, String varName, String type, String grisuMessage)
 	{
@@ -376,14 +346,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			// if (verbose)
-			// {
-			// System.err.println("registerMessageEnd(" + extID + ",\"" +
-			// varName + ",\"" + tag + ",\"" + type + "): " + grisuMessage);
-			// }
-			TraleSLDStep step = TraleSLDStep.get(stepIDConv.get(extID));
-			int id = step.getID();
-			TraleSLDVariableBinding binding = createBindingObject(new TraleSLDVariableBinding(varName, tag, type, createFSObject(grisuMessage, id)), id);
+			int id = stepIDConv.get(extID);
+			TraleSLDStep step = TraleSLDStep.get(id);
+			TraleSLDVariableBinding binding = bindingSharer.share(new TraleSLDVariableBinding(varName, tag, type, packer.pack(grisuMessage)));
 			if ("start".equals(key))
 			{
 				step.startBindings.add(binding);

@@ -36,11 +36,18 @@ public class KahinaState implements Serializable, KahinaListener
     
     private int selectedStepID = -1;
     
+    private int nextStepID = 1;
+    
     public KahinaState()
     {
         consoleMessages = new KahinaTextModel();
         consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
         KahinaRunner.getControl().registerListener("select", this);
+    }
+    
+    public int nextStepID()
+    {
+    	return nextStepID++;
     }
     
     public void processEvent(KahinaEvent event)

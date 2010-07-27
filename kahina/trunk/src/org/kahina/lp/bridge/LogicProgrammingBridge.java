@@ -70,9 +70,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 		if (intID == null)
 		{
 			LogicProgrammingStep newStep = generateStep();
-			intID = newStep.getID();
+			intID = state.nextStepID();
 			newStep.setExternalID(extID);
-			newStep.storeCaching();
+			KahinaRunner.store(intID, newStep);
 			stepIDConv.put(extID, intID);
 		}
 		if (verbose)
@@ -90,7 +90,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
 			step.setGoalDesc(nodeLabel);
 			step.setSourceCodeLocation(LogicProgrammingStep.get(currentID).getSourceCodeLocation());
-			step.storeCaching();
+			KahinaRunner.store(stepID, step);
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, nodeLabel));
 			currentID = stepID;
 
@@ -114,7 +114,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
 			step.setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1, stepID));
 			currentID = stepID;
-			step.storeCaching();
+			KahinaRunner.store(stepID, step);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -155,8 +155,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			int lastStepID = convertStepID(extID);
 			LogicProgrammingStep lastStep = LogicProgrammingStep.get(lastStepID);
 			LogicProgrammingStep newStep = lastStep.copy();
-			newStep.storeCaching();
-			int newStepID = newStep.getID();
+			int newStepID = state.nextStepID();
+			KahinaRunner.store(newStepID, newStep);
 			stepIDConv.put(extID, newStepID);
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
 			currentID = newStepID;
