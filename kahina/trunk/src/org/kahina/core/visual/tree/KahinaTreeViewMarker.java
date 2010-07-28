@@ -7,10 +7,11 @@ import org.kahina.core.data.tree.KahinaTree;
 
 public class KahinaTreeViewMarker
 {
-    int markedNode = -1;
-    KahinaTree model;
-    KahinaTree secondaryModel;
-    Set<KahinaTreeViewPanel> views;
+    private KahinaTree model;
+    
+    private KahinaTree secondaryModel;
+    
+    private Set<KahinaTreeViewPanel> views;
     
     public KahinaTreeViewMarker(KahinaTree m)
     {
@@ -28,6 +29,16 @@ public class KahinaTreeViewMarker
     public void registerTreeView(KahinaTreeViewPanel view)
     {
         views.add(view);
+    }
+    
+    public void setModel(KahinaTree model)
+    {
+    	this.model = model;
+    }
+    
+    public void setSecondaryModel(KahinaTree secondaryModel)
+    {
+    	this.secondaryModel = secondaryModel;
     }
     
     public void markNode(int nodeID)

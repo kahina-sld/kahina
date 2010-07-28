@@ -46,11 +46,27 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 	@Override
 	public void doDisplay()
 	{
+		if (marker != null)
+		{
+			marker.setModel(model);
+		}
 		int rootID = model.getRootID();
 		for (int i = 0; i < views.length; i++)
 		{
 			views[i].display(model, layers[i], rootID);
-			views[i].display(model, layers[i], rootID);
+		}
+	}
+
+	public void displaySecondaryTree(KahinaTree treeModel)
+	{
+		if (marker != null)
+		{
+			marker.setSecondaryModel(treeModel);
+		}
+		this.secondaryModel = treeModel;
+		for (int i = 0; i < views.length; i++)
+		{
+			views[i].displaySecondaryTree(treeModel);
 		}
 	}
 
@@ -65,21 +81,11 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		return views[0].secondaryTreeModel;
 	}
 
-	public void displaySecondaryTree(KahinaTree treeModel)
-	{
-		this.secondaryModel = treeModel;
-		for (int i = 0; i < views.length; i++)
-		{
-			views[i].displaySecondaryTree(treeModel);
-			views[i].displaySecondaryTree(treeModel);
-		}
-	}
-
 	@Override
 	public JComponent wrapInPanel()
 	{
 		marker = new KahinaTreeViewMarker(model, secondaryModel);
-		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(model, secondaryModel, views.length, marker);
+		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(views.length, marker);
 		KahinaRunner.getControl().registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;

@@ -7,7 +7,6 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
-import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTreeView>
@@ -16,7 +15,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 
 	private KahinaTreeViewPanel[] panels;
 
-	public KahinaLayeredTreeViewPanel(KahinaTree model, KahinaTree secondaryModel, int layers, KahinaTreeViewMarker marker)
+	public KahinaLayeredTreeViewPanel(int layers, KahinaTreeViewMarker marker)
 	{
 		panels = new KahinaTreeViewPanel[layers];
 		for (int i = 0; i < panels.length; i++)
