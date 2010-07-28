@@ -37,7 +37,7 @@ import org.kahina.core.visual.text.KahinaTextView;
 
 public class KahinaGUI implements KahinaListener
 {
-	private static final boolean verbose = true;
+	private static final boolean VERBOSE = false;
 
 	protected KahinaInstance<?, ?, ?> kahina;
     
@@ -61,7 +61,7 @@ public class KahinaGUI implements KahinaListener
 
 	public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
 	{
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println("creating Kahina GUI...");
 		}
@@ -101,13 +101,13 @@ public class KahinaGUI implements KahinaListener
 	 */
 	protected void fillFieldToView(Class<? extends KahinaStep> stepType)
 	{
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println("Generating views for step fields:");
 		}
 		for (Field field : stepType.getFields())
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("\tfield: " + field.getName() + "\n\t\tclass: " + field.getType());
 			}
@@ -115,7 +115,7 @@ public class KahinaGUI implements KahinaListener
 			{
 				KahinaView<?> newView = KahinaViewRegistry.generateViewFor(field.getType());
 				KahinaRunner.getControl().registerListener("update", newView);
-				if (verbose)
+				if (VERBOSE)
 				{
 					System.err.println("\t\tview: " + newView);
 				}
@@ -229,7 +229,7 @@ public class KahinaGUI implements KahinaListener
 			int stepID = e.getSelectedStep();
             if (stepID != -1)
             {
-            	if (verbose)
+            	if (VERBOSE)
             	{
             		System.err.println("Updating selection to step " + stepID);
             	}

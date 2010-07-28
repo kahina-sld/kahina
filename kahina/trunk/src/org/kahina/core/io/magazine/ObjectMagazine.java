@@ -24,7 +24,7 @@ import org.kahina.core.util.ProgressMonitorWrapper;
 
 public class ObjectMagazine<S>
 {
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 
 	private final File folder;
 
