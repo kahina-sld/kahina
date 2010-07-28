@@ -41,15 +41,12 @@ public class KahinaRunner
         return control;
     }
 
-    @Deprecated
 	public static void store(int id, KahinaObject object)
 	{
-		// TODO we want to do this differently
 		steps.store(id, (KahinaStep) object);
 	}
 
 	@SuppressWarnings("unchecked")
-	@Deprecated
 	public static <T extends KahinaObject> T retrieve(Class<T> type, int stepID)
 	{
 		// TODO we want to do this differently
