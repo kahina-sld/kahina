@@ -1,13 +1,12 @@
 package org.kahina.core.data.chart;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-public class KahinaMemChart extends KahinaChart implements Serializable
+public class KahinaMemChart extends KahinaChart
 {
 	/**
 	 * 

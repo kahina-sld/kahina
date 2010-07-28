@@ -1,12 +1,11 @@
 package org.kahina.tralesld.data.fs;
 
-import java.io.Serializable;
 import java.util.Iterator;
 import java.util.TreeMap;
 
 import org.kahina.core.data.KahinaObject;
 
-public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable<TraleSLDVariableBinding>, Serializable
+public class TraleSLDVariableBindingSet extends KahinaObject implements Iterable<TraleSLDVariableBinding>
 {
 	/**
 	 * 

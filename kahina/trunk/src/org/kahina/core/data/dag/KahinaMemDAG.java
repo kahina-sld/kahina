@@ -14,7 +14,11 @@ import org.w3c.dom.NodeList;
 
 public class KahinaMemDAG extends KahinaDAG
 {
-    //encode properties of individual nodes
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7505557494606184493L;
+	//encode properties of individual nodes
     protected Map<Integer, List<Integer>> incomingEdges;
     protected Map<Integer, List<Integer>> outgoingEdges;
     protected Map<Integer, String> nodeCaptions; //captions are displayed on the nodes

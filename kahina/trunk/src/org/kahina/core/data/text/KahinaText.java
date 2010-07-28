@@ -2,14 +2,13 @@ package org.kahina.core.data.text;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import org.kahina.core.data.KahinaObject;
 
-public class KahinaText extends KahinaObject implements Serializable
+public class KahinaText extends KahinaObject
 {
     /**
 	 * 

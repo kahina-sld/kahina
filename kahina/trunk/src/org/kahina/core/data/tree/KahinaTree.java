@@ -1,12 +1,11 @@
 package org.kahina.core.data.tree;
 
-import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.kahina.core.data.KahinaObject;
 
-public abstract class KahinaTree extends KahinaObject implements Serializable
+public abstract class KahinaTree extends KahinaObject
 {
     /**
 	 * 

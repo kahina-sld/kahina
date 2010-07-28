@@ -10,9 +10,13 @@ import org.w3c.dom.NodeList;
 public abstract class KahinaChart extends KahinaObject
 {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5878453631395737334L;
+
 	private static final boolean verbose = false;
 	
-	// not used by KahinaDbChart
 	private int nextEdgeID = 0;
 
 	public void initialize()

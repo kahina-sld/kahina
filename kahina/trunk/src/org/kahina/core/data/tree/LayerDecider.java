@@ -1,10 +1,8 @@
 package org.kahina.core.data.tree;
 
-import java.io.Serializable;
-
 import org.kahina.core.data.KahinaObject;
 
-public abstract class LayerDecider extends KahinaObject implements Serializable
+public abstract class LayerDecider extends KahinaObject
 {
 	/**
 	 * 

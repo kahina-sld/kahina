@@ -1,11 +1,10 @@
 package org.kahina.tulipa.data.grammar;
 
-import java.io.Serializable;
 import java.util.HashMap;
 
 import org.kahina.core.data.KahinaObject;
 
-public class TulipaGrammar extends KahinaObject implements Serializable
+public class TulipaGrammar extends KahinaObject
 {
 	/**
 	 * 

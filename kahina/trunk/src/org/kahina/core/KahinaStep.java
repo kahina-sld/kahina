@@ -1,10 +1,8 @@
 package org.kahina.core;
 
-import java.io.Serializable;
-
 import org.kahina.core.data.KahinaObject;
 
-public class KahinaStep extends KahinaObject implements Serializable
+public class KahinaStep extends KahinaObject
 {
     /**
 	 * 

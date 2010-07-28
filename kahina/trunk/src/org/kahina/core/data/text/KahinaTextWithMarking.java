@@ -4,7 +4,11 @@ import org.kahina.core.data.KahinaObject;
 
 public class KahinaTextWithMarking extends KahinaObject
 {
-    public String text;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7564505921829272199L;
+	public String text;
     public int beginIndex;
     public int endIndex;
     public int caretIndex;

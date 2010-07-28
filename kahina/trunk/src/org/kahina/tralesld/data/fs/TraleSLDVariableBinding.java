@@ -1,11 +1,9 @@
 package org.kahina.tralesld.data.fs;
 
-import java.io.Serializable;
-
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.util.Utilities;
 
-public class TraleSLDVariableBinding extends KahinaObject implements Serializable
+public class TraleSLDVariableBinding extends KahinaObject
 {
 
 	/**

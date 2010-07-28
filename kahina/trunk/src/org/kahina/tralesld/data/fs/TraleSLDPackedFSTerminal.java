@@ -1,8 +1,7 @@
 package org.kahina.tralesld.data.fs;
 
-import java.io.Serializable;
 
-public class TraleSLDPackedFSTerminal extends TraleSLDFS implements Serializable
+public class TraleSLDPackedFSTerminal extends TraleSLDFS
 {
 
 	/**

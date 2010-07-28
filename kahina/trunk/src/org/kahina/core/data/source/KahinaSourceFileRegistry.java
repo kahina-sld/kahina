@@ -7,7 +7,11 @@ import org.kahina.core.data.KahinaObject;
 
 public class KahinaSourceFileRegistry extends KahinaObject
 {
-    //map from full source file names to source file models
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6178519108143817440L;
+	//map from full source file names to source file models
     public Map<String, KahinaSourceFileModel> models;
     
     public KahinaSourceFileRegistry()

@@ -1,10 +1,8 @@
 package org.kahina.core.data.text;
 
-import java.io.Serializable;
-
 import org.kahina.core.data.KahinaObject;
 
-public class KahinaTextModel extends KahinaObject implements Serializable
+public class KahinaTextModel extends KahinaObject
 {
 	/**
 	 * 

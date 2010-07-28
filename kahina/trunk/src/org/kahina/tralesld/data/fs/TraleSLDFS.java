@@ -10,6 +10,11 @@ import org.kahina.core.data.KahinaObject;
 public abstract class TraleSLDFS extends KahinaObject
 {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4364052716085296822L;
+
 	@Override
 	public String toString()
 	{

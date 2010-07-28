@@ -93,7 +93,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 			KahinaRunner.store(stepID, step);
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, nodeLabel));
 			currentID = stepID;
-
 			state.consoleMessage(stepID, extID, LogicProgrammingStepType.CALL, consoleMessage);
 			if (verbose)
 				System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + nodeLabel + "\")");

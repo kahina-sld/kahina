@@ -7,6 +7,10 @@ import org.kahina.core.data.KahinaObject;
 public abstract class KahinaDAG extends KahinaObject
 {
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4477263548864006864L;
+	/**
      * Public just to be lightweight. Do not be tempted to directly access
      * this field.
      */
