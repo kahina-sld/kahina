@@ -10,6 +10,7 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.event.KahinaSessionEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
@@ -21,7 +22,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	public static boolean verbose = false;
 
 	public KahinaWindowManager windowManager;
-	
+
 	private int stepCount = 0;
 
 	public KahinaMainWindow(KahinaWindowManager windowManager)
@@ -53,7 +54,8 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		this.validate();
 
-		KahinaRunner.getControl().registerListener("system", this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.SESSION, this);
 		this.addWindowListener(new WindowAdapter()
 		{
 			@Override
@@ -75,15 +77,33 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	{
 		if (event instanceof KahinaTreeEvent)
 		{
-			KahinaTreeEvent treeEvent = (KahinaTreeEvent) event;
-
-			if (treeEvent.getTreeEventType() == KahinaTreeEventType.NEW_NODE)
-			{
-				incrementStepCount();
-			}
+			processTreeEvent((KahinaTreeEvent) event);
 		} else if (event instanceof KahinaSystemEvent)
 		{
 			processSystemEvent((KahinaSystemEvent) event);
+		} else if (event instanceof KahinaSessionEvent)
+		{
+			processSessionEvent((KahinaSessionEvent) event);
+		}
+	}
+
+	private void processSessionEvent(KahinaSessionEvent event)
+	{
+		if (event.getSessionEventType() == KahinaSessionEvent.LOAD_SESSION)
+		{
+			// TODO This is a kludge, see below.
+			setTitle("Kahina");
+		}
+	}
+
+	private void processTreeEvent(KahinaTreeEvent event)
+	{
+		if (event.getTreeEventType() == KahinaTreeEventType.NEW_NODE)
+		{
+			// TODO This is a kludge, we should synchronize the step
+			// count with the state. But first, the architecture needs to be
+			// changed to allow access to the state.
+			setTitle("Kahina (" + event.getFirstID() + ")");
 		}
 	}
 
@@ -93,11 +113,5 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		{
 			disposeAllWindows();
 		}
-	}
-
-	private void incrementStepCount()
-	{
-		stepCount++;
-		setTitle("Kahina (" + stepCount + ")");
 	}
 }
