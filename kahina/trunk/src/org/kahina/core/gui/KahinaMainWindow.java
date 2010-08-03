@@ -23,8 +23,6 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 	public KahinaWindowManager windowManager;
 
-	private int stepCount = 0;
-
 	public KahinaMainWindow(KahinaWindowManager windowManager)
 	{
 		this.windowManager = windowManager;

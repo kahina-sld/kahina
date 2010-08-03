@@ -275,6 +275,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			edgeIDConv.put(externalEdgeID, internalEdgeID);
 			lastRegisteredChartEdge = internalEdgeID;
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(internalEdgeID));
+			if (verbose)
+			{
+				System.err.println("//TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
+			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
