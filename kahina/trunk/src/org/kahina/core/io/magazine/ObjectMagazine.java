@@ -22,9 +22,17 @@ import org.kahina.core.KahinaException;
 import org.kahina.core.util.FileUtilities;
 import org.kahina.core.util.ProgressMonitorWrapper;
 
+/**
+ * Stores objects in memory by default, but serializes them away to disk in
+ * blocks when memory usage exceeds a specified threshold. The idea is from
+ * {@url http://forums.sun.com/thread.jspa?messageID=10949277#10949277}.
+ * @author ke
+ *
+ * @param <S>
+ */
 public class ObjectMagazine<S>
 {
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 
 	private final File folder;
 
@@ -123,6 +131,10 @@ public class ObjectMagazine<S>
 				System.err.println("Reducing memory usage. Loaded blocks: " + blockNumbersUnloadQueue);
 				ns = System.nanoTime();
 			}
+			// TODO Comparing memory usage to the lower bound doesn't really
+			// make sense, the VM will keep all the garbage lying around. Maybe
+			// just reduce to a fixed number of blocks (like 10) and explicitly
+			// garbage-collect then.
 			while (blockNumbersUnloadQueue.size() > 1 && memoryRatio() > lowerBound)
 			{
 				unloadBlock(blockNumbersUnloadQueue.removeFirst());
@@ -137,7 +149,14 @@ public class ObjectMagazine<S>
 
 	private float memoryRatio()
 	{
-		return ((float) runtime.totalMemory()) / Math.min(runtime.maxMemory(), runtime.freeMemory());
+		if (VERBOSE)
+		{
+			System.err.println("Total memory: " + runtime.totalMemory());
+			System.err.println("Max memory:   " + runtime.maxMemory());
+			System.err.println("Free memory:  " + runtime.freeMemory());
+			System.err.println("Ratio: " + ((float) (runtime.totalMemory() - runtime.freeMemory())) / runtime.maxMemory());
+		}
+		return ((float) (runtime.totalMemory() - runtime.freeMemory())) / runtime.maxMemory();
 	}
 
 	public S retrieve(int index)
