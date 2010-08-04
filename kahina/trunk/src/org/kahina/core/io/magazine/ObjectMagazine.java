@@ -33,12 +33,14 @@ import org.kahina.core.util.ProgressMonitorWrapper;
 public class ObjectMagazine<S>
 {
 	private static final boolean VERBOSE = true;
+	
+	private static final int MIN_BLOCKS = 10; // TODO make configurable
 
 	private final File folder;
 
 	private final int blockSize;
 
-	private final float lowerBound;
+	private final float lowerBound; // TODO use or abolish
 
 	private final float upperBound;
 
@@ -131,14 +133,11 @@ public class ObjectMagazine<S>
 				System.err.println("Reducing memory usage. Loaded blocks: " + blockNumbersUnloadQueue);
 				ns = System.nanoTime();
 			}
-			// TODO Comparing memory usage to the lower bound doesn't really
-			// make sense, the VM will keep all the garbage lying around. Maybe
-			// just reduce to a fixed number of blocks (like 10) and explicitly
-			// garbage-collect then.
-			while (blockNumbersUnloadQueue.size() > 1 && memoryRatio() > lowerBound)
+			while (blockNumbersUnloadQueue.size() > MIN_BLOCKS)
 			{
 				unloadBlock(blockNumbersUnloadQueue.removeFirst());
 			}
+			System.gc();
 			if (VERBOSE)
 			{
 				ns = System.nanoTime() - ns;
