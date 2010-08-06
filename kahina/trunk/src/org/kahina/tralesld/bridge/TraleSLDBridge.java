@@ -31,7 +31,7 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
-	public static final boolean verbose = false;
+	public static final boolean VERBOSE = false;
 
 	private static final Pattern NOW_PATTERN = Pattern.compile("now\\((\\d+)\\)");
 
@@ -63,7 +63,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("TraleSLDBridgeinitializeParseTrace(\"" + parsedSentenceList + "\")");
 			List<String> wordList = PrologUtilities.parsePrologStringList(parsedSentenceList);
 			KahinaChart chart = state.getChart();
@@ -96,7 +96,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println(this + ".registerStepInformation(" + extID + "," + nodeLabel + "," + consoleMessage + ")");
 			}
@@ -105,7 +105,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				state.linkEdgeToNode(lastRegisteredChartEdge, currentID);
 			}
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("Matching...");
 			}
@@ -120,11 +120,11 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				 * blockingStepID); TODO little arrow
 				 */
 			}
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("Done matching.");
 			}
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("//" + this + ".registerStepInformation(" + extID + "," + nodeLabel + "," + consoleMessage + ")");
 			}
@@ -148,7 +148,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println(this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + leftmostDaughter);
 			}
@@ -163,7 +163,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			prospectiveEdgeCanFail = true;
 			state.linkEdgeToNode(newEdgeID, stepIDConv.get(ruleApplicationExtID));
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(newEdgeID));
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("//" + this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + leftmostDaughter);
 			}
@@ -178,7 +178,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println(this + "registerEdgeRetrieval(" + daughterID + ")");
 			}
@@ -187,7 +187,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			KahinaChart chart = state.getChart();
 			if (!chart.getDaughterEdgesForEdge(mother).contains(daughter))
 			{
-				if (verbose)
+				if (VERBOSE)
 				{
 					System.err.println("Setting right bound for " + mother + " to that of" + daughter);
 				}
@@ -196,7 +196,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			chart.addEdgeDependency(mother, daughter);
 			// lastRegisteredChartEdge = mother;
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(mother));
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("//" + this + ".registerEdgeRetrieval(" + daughterID + ")");
 			}
@@ -211,7 +211,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("TraleSLDBridge.registerRuleApplication(" + extID + ",\"" + ruleName + "," + leftmostDaughter + "\")");
 			}
@@ -221,24 +221,24 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			int newStepID = state.nextStepID();
 			stepIDConv.put(extID, newStepID);
 			registerProspectiveEdge(extID, ruleName, leftmostDaughter);
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("Storing new step.");
 			}
 			KahinaRunner.store(newStepID, newStep);
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("Firing rule application event.");
 			}
 			// let TraleSLDTreeBehavior do the rest
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStepID, ruleName, extID));
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("Creating console message.");
 			}
 			// experimental: message for console
 			state.consoleMessage(newStepID, extID, LogicProgrammingStepType.CALL, consoleMessage);
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("Firing selection event.");
 			}
@@ -250,7 +250,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// to
 			// be superfluous
 			// lastEdge = currentEdge;
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("//TraleSLDBridge.registerRuleApplication(" + extID + ",\"" + ruleName + "," + leftmostDaughter + "\")");
 			}
@@ -265,17 +265,17 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
 			}
 			int internalEdgeID = state.getChart().addEdge(left, right, ruleName, TraleSLDChartEdgeStatus.SUCCESSFUL);
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("Internal edge ID: " + internalEdgeID);
 			edgeIDConv.put(externalEdgeID, internalEdgeID);
 			lastRegisteredChartEdge = internalEdgeID;
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(internalEdgeID));
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("//TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
 			}
@@ -290,7 +290,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("TraleSLDBridge.registerEdgeDependency(" + motherID + "," + daughterID + ")");
 			}
@@ -370,7 +370,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("registerParseEnd()");
 			bridgeState = 'n';
 			KahinaRunner.processEvent(new KahinaSelectionEvent(stepIDConv.get(0)));
@@ -389,7 +389,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		// selection events.
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("registerStepFailure(" + externalStepID + ")");
 			}
@@ -399,7 +399,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				int currentEdge = prospectiveEdgeStack.remove(0);
 				prospectiveEdgeCanFail = false;
-				if (verbose)
+				if (VERBOSE)
 				{
 					System.err.println("Prospective edge " + currentEdge + " failed.");
 				}
@@ -413,7 +413,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				prospectiveEdgeCanFail = true;
 			}
 			currentID = stepID;
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("Bridge state after chart edge was marked as failed: " + bridgeState);
 			}
@@ -432,7 +432,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("LogicProgrammingBridge.registerStepFailure(" + extID + ")");
 			}

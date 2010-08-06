@@ -21,7 +21,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingBridge extends KahinaBridge
 {
-	private static final boolean verbose = false;
+	private static final boolean VERBOSE = false;
 
 	// a dynamic map from external step IDs to most recent corresponding tree
 	// nodes
@@ -51,7 +51,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		stepIDConv = new HashMap<Integer, Integer>();
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("new LogicProgrammingBridge()");
 	}
 
@@ -64,7 +64,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 */
 	public int convertStepID(int extID)
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ")");
 		Integer intID = stepIDConv.get(extID);
 		if (intID == null)
@@ -75,7 +75,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			KahinaRunner.store(intID, newStep);
 			stepIDConv.put(extID, intID);
 		}
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ") = " + intID);
 		return intID;
 	}
@@ -84,7 +84,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + nodeLabel + "\")");
 			int stepID = convertStepID(extID);
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
@@ -94,7 +94,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, nodeLabel));
 			currentID = stepID;
 			state.consoleMessage(stepID, extID, LogicProgrammingStepType.CALL, consoleMessage);
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + nodeLabel + "\")");
 		} catch (Exception e)
 		{
@@ -107,7 +107,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepSourceCodeLocation(" + extID + ",\"" + absolutePath + "\"," + lineNumber + ")");
 			int stepID = convertStepID(extID);
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
@@ -125,12 +125,12 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepLocation(" + extID + "," + parentID + ")");
 			int stepID = convertStepID(extID);
 			KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, convertStepID(parentID)));
 			currentID = stepID;
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("Bridge state: " + bridgeState);
 			}
@@ -149,7 +149,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepRedo(" + extID + ")");
 			int lastStepID = convertStepID(extID);
 			LogicProgrammingStep lastStep = LogicProgrammingStep.get(lastStepID);
@@ -177,7 +177,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepExit(" + extID + "," + deterministic + ")");
 			int stepID = convertStepID(extID);
 			if (deterministic)
@@ -211,7 +211,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepFailure(" + extID + ")");
 			int stepID = convertStepID(extID);
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
@@ -230,7 +230,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	public LogicProgrammingStep generateStep()
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("LogicProgrammingBridge.generateStep()");
 		return new LogicProgrammingStep();
 	}
@@ -241,7 +241,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		{
 			if (skipFlag)
 			{
-				if (verbose)
+				if (VERBOSE)
 				{
 					System.err.println("Bridge state/pressed button: " + bridgeState + "/s");
 				}
@@ -252,7 +252,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				case 'n':
 				{
-					if (verbose)
+					if (VERBOSE)
 					{
 						// System.err.println("Bridge state/pressed button: n/n");
 					}
@@ -260,7 +260,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				}
 				case 'p':
 				{
-					if (verbose)
+					if (VERBOSE)
 					{
 						System.err.println("Bridge state/pressed button: p/n");
 					}
@@ -268,7 +268,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				}
 				case 'q':
 				{
-					if (verbose)
+					if (VERBOSE)
 					{
 						System.err.println("Bridge state/pressed button: q/n");
 					}
@@ -276,7 +276,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				}
 				case 'c':
 				{
-					if (verbose)
+					if (VERBOSE)
 					{
 						System.err.println("Bridge state/pressed button: c/c");
 					}
@@ -285,7 +285,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				}
 				case 'f':
 				{
-					if (verbose)
+					if (VERBOSE)
 					{
 						System.err.println("Bridge state/pressed button: f/f");
 					}
@@ -294,7 +294,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				}
 				case 'l':
 				{
-					if (verbose)
+					if (VERBOSE)
 					{
 						System.err.println("Bridge state/pressed button: l/c");
 					}
@@ -303,7 +303,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				}
 				case 't':
 				{
-					if (verbose)
+					if (VERBOSE)
 					{
 						System.err.println("Bridge state/pressed button: t/c");
 					}
@@ -314,7 +314,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					if (skipID == currentID)
 					{
-						if (verbose)
+						if (VERBOSE)
 						{
 							System.err.println("Bridge state/pressed button: s/n");
 						}
@@ -324,7 +324,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 						return 'n';
 					} else
 					{
-						if (verbose)
+						if (VERBOSE)
 						{
 							System.err.println("Bridge state/pressed button: s/c");
 						}
@@ -333,7 +333,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				}
 				case 'a':
 				{
-					if (verbose)
+					if (VERBOSE)
 					{
 						System.err.println("Bridge state/pressed button: a/a");
 					}
@@ -341,7 +341,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				}
 				default:
 				{
-					if (verbose)
+					if (VERBOSE)
 					{
 						System.err.println("Bridge state/pressed button: " + bridgeState + "/n");
 					}
