@@ -11,7 +11,6 @@ public class KahinaTreeBehavior extends KahinaBehavior<KahinaTree> implements Ka
     public KahinaTreeBehavior(KahinaTree tree, KahinaInstance kahina)
     {
         super(tree, kahina);
-        KahinaRunner.getControl().registerListener("tree", this);
     }
     
     public void processEvent(KahinaEvent e)

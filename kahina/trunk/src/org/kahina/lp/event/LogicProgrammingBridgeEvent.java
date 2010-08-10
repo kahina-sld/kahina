@@ -14,33 +14,33 @@ public class LogicProgrammingBridgeEvent extends KahinaEvent
     private String strContent;
     private int intContent;
     
-    public LogicProgrammingBridgeEvent(int eventType, int externalID)
+    public LogicProgrammingBridgeEvent(int eventType, int internalID)
     {
         super("logic programming bridge");
-        this.id = externalID;
+        this.id = internalID;
         this.eventType = eventType;
     }
     
-    public LogicProgrammingBridgeEvent(int eventType, int externalID, String strContent)
+    public LogicProgrammingBridgeEvent(int eventType, int internalID, String strContent)
     {
         super("logic programming bridge");
-        this.id = externalID;
+        this.id = internalID;
         this.eventType = eventType;
         this.strContent = strContent;
     }
     
-    public LogicProgrammingBridgeEvent(int eventType, int externalID, int intContent)
+    public LogicProgrammingBridgeEvent(int eventType, int internalID, int intContent)
     {
         super("logic programming bridge");
-        this.id = externalID;
+        this.id = internalID;
         this.eventType = eventType;
         this.intContent = intContent;
     }
     
-    public LogicProgrammingBridgeEvent(int eventType, int externalID, String strContent, int intContent)
+    public LogicProgrammingBridgeEvent(int eventType, int internalID, String strContent, int intContent)
     {
         super("logic programming bridge");
-        this.id = externalID;
+        this.id = internalID;
         this.eventType = eventType;
         this.strContent = strContent;
         this.intContent = intContent;

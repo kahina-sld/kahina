@@ -128,7 +128,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepLocation(" + extID + "," + parentID + ")");
 			int stepID = convertStepID(extID);
-			KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, convertStepID(parentID)));
+			int internalParentID = convertStepID(parentID);
+			// used by tree behavior:
+			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, internalParentID));
+			// used by node counter:
+			KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, internalParentID));
 			currentID = stepID;
 			if (VERBOSE)
 			{

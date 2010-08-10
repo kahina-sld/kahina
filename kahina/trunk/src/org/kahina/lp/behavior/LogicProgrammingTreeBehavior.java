@@ -16,8 +16,6 @@ import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaSystemEvent;
-import org.kahina.core.event.KahinaTreeEvent;
-import org.kahina.core.event.KahinaTreeEventType;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
@@ -392,10 +390,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	{
 		if (verbose)
 			System.err.println("LogicProgrammingTreeBehavior.processEvent(" + e + ")");
-		if (e instanceof KahinaTreeEvent)
-		{
-			processEvent((KahinaTreeEvent) e);
-		} else if (e instanceof LogicProgrammingBridgeEvent)
+		if (e instanceof LogicProgrammingBridgeEvent)
 		{
 			processEvent((LogicProgrammingBridgeEvent) e);
 		} else if (e instanceof KahinaSystemEvent)
@@ -404,22 +399,15 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		}
 	}
 
-	public void processEvent(KahinaTreeEvent e)
-	{
-		switch (e.getTreeEventType())
-		{
-			case KahinaTreeEventType.NEW_NODE:
-			{
-				integrateIncomingNode(e.getFirstID(), e.getSecondID());
-				break;
-			}
-		}
-	}
-
 	public void processEvent(LogicProgrammingBridgeEvent e)
 	{
 		switch (e.getEventType())
 		{
+			case LogicProgrammingBridgeEventType.STEP_CALL:
+			{
+				integrateIncomingNode(e.getID(), e.getIntContent());
+				break;
+			}
 			case LogicProgrammingBridgeEventType.SET_GOAL_DESC:
 			{
 				processStepInformation(e.getID(), e.getStrContent());
