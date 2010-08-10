@@ -16,7 +16,7 @@ public class VariableBindingTableModel extends AbstractTableModel
 
 	private static final long serialVersionUID = 3379369094266283475L;
 
-	private static final String[] columnNames = new String[] { "Variable", "Type" };
+	private static final String[] COLUMN_NAMES = new String[] { "Variable", "Type" };
 
 	private String[] variableNames = new String[0];
 
@@ -27,7 +27,7 @@ public class VariableBindingTableModel extends AbstractTableModel
 	@Override
 	public String getColumnName(int columnIndex)
 	{
-		return columnNames[columnIndex];
+		return COLUMN_NAMES[columnIndex];
 	}
 
 	@Override

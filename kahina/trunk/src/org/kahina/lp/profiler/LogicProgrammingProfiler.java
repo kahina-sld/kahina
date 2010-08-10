@@ -17,6 +17,8 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 public class LogicProgrammingProfiler implements KahinaListener
 {
 	
+	private static final boolean VERBOSE = true;
+	
 	private final Mapper<String, ProfileEntry> mapper;
 	
 	private final LogicProgrammingProfile profile;
@@ -90,6 +92,10 @@ public class LogicProgrammingProfiler implements KahinaListener
 
 	public LogicProgrammingProfile profileSubtree(KahinaTree tree, int subtreeRootID)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".profileSubtree(" + tree + ", " + subtreeRootID + ")");
+		}
 		LogicProgrammingProfile result = new LogicProgrammingProfile();
 		profileSubtree(tree, subtreeRootID, result, new HashSet<Integer>());
 		return result;
@@ -116,7 +122,7 @@ public class LogicProgrammingProfiler implements KahinaListener
 		profileNode(entry, step, tree, stepID, profile, externalIDs);
 	}
 
-	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile2, Set<Integer> externalIDs)
+	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile, Set<Integer> externalIDs)
 	{
 		if (step.isRedone())
 		{

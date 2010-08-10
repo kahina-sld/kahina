@@ -51,7 +51,7 @@ public class TraleSLDProfiler extends LogicProgrammingProfiler
 	@Override
 	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile, Set<Integer> externalIDs)
 	{
-		super.profileNode(step, tree, stepID, profile, externalIDs);
+		super.profileNode(entry, step, tree, stepID, profile, externalIDs);
 		if (tree.getNodeStatus(stepID) == TraleSLDStepType.FINISHED)
 		{
 			profile.fail(entry);
