@@ -3,18 +3,25 @@ package org.kahina.lp.gui;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JFrame;
+
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
+import org.kahina.core.LogicProgrammingInstance;
 import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.breakpoint.BreakpointEditorWindow;
+import org.kahina.core.profiler.DefaultProfileEntryMapper;
+import org.kahina.core.profiler.ProfileEntry;
+import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStepType;
+import org.kahina.lp.gui.profiler.LogicProgrammingProfileWindow;
 
 public class LogicProgrammingGUI extends KahinaGUI
 {
@@ -107,6 +114,34 @@ public class LogicProgrammingGUI extends KahinaGUI
 				breakpointEditor.setVisible(true);
 				break;
 			}
+			case KahinaDialogEvent.FULL_PROFILE:
+			{
+				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingState) kahina.getState()).getFullProfile());
+				window.setTitle("Full profile");
+				window.setVisible(true);
+				break;
+			}
+			case KahinaDialogEvent.CALL_SUBTREE_PROFILE:
+			{
+				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
+				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?>) kahina).getProfiler().profileSubtree(state.getSecondaryStepTree(), state.getSelectedStepID()));
+				window.setTitle("Call subtree profile");
+				window.setVisible(true);
+				break;
+			}
+			case KahinaDialogEvent.SEARCH_SUBTREE_PROFILE:
+			{
+				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
+				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?>) kahina).getProfiler().profileSubtree(state.getStepTree(), state.getSelectedStepID()));
+				window.setTitle("Search subtree profile");
+				window.setVisible(true);
+				break;
+			}
 		}
+	}
+
+	protected Mapper<String, ProfileEntry> getProfileEntryMapper()
+	{
+		return new DefaultProfileEntryMapper();
 	}
 }

@@ -4,12 +4,15 @@ import java.awt.Color;
 
 import org.kahina.core.KahinaStep;
 import org.kahina.core.gui.KahinaViewIntegrationType;
+import org.kahina.core.profiler.ProfileEntry;
+import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
+import org.kahina.tralesld.profiler.TraleSLDProfileEntryMapper;
 import org.kahina.tralesld.visual.chart.TraleSLDChartEdgeDisplayDecider;
 
 public class TraleSLDGUI extends LogicProgrammingGUI
@@ -71,4 +74,10 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         getWindowForVarName("chart").setSize(400, 400);
         getWindowForVarName("chart").setLocation(0, 150);
     }
+
+    @Override
+	protected Mapper<String, ProfileEntry> getProfileEntryMapper()
+	{
+		return new TraleSLDProfileEntryMapper();
+	}
 }

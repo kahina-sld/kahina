@@ -89,6 +89,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			int stepID = convertStepID(extID);
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
 			step.setGoalDesc(nodeLabel);
+			step.setRedone(false);
 			step.setSourceCodeLocation(LogicProgrammingStep.get(currentID).getSourceCodeLocation());
 			KahinaRunner.store(stepID, step);
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, nodeLabel));
@@ -158,6 +159,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			int lastStepID = convertStepID(extID);
 			LogicProgrammingStep lastStep = LogicProgrammingStep.get(lastStepID);
 			LogicProgrammingStep newStep = lastStep.copy();
+			newStep.setRedone(true);
 			int newStepID = state.nextStepID();
 			KahinaRunner.store(newStepID, newStep);
 			stepIDConv.put(extID, newStepID);

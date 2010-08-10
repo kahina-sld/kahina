@@ -16,6 +16,7 @@ import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaMessageEvent;
 import org.kahina.lp.data.text.LogicProgrammingLineReference;
+import org.kahina.lp.profiler.LogicProgrammingProfile;
 
 public class LogicProgrammingState extends KahinaState
 {  
@@ -37,6 +38,8 @@ public class LogicProgrammingState extends KahinaState
     protected List<KahinaBreakpoint> creepPoints;
     protected List<KahinaBreakpoint> failPoints;
     
+    protected LogicProgrammingProfile profile;
+    
     public LogicProgrammingState()
     {
         super();
@@ -51,22 +54,7 @@ public class LogicProgrammingState extends KahinaState
         creepPoints = new ArrayList<KahinaBreakpoint>();
         failPoints = new ArrayList<KahinaBreakpoint>();
         
-        //database variant turned out to be too slow
-        /* switch (dataHandlingMethod)
-        {
-            case KahinaDataHandlingMethod.DATABASE:
-            {
-                stepTree = new KahinaDbTree(KahinaRunner.getDatabaseHandler());
-                secondaryStepTree = new KahinaDbTree(KahinaRunner.getDatabaseHandler());
-                break;
-            }
-            case KahinaDataHandlingMethod.MEMORY:
-            {
-                stepTree = new KahinaMemTree();
-                secondaryStepTree = new KahinaMemTree();
-                break;
-            }
-        }*/
+        profile = new LogicProgrammingProfile();
     }
     
     public void breakpointConsoleMessage(int stepID, String message)
@@ -87,7 +75,6 @@ public class LogicProgrammingState extends KahinaState
             consoleLines.put(stepID, refs);
         }
         refs.add(ref);
-        //ref.store();
         KahinaRunner.processEvent(new KahinaMessageEvent(ref));
     }
     
@@ -172,5 +159,10 @@ public class LogicProgrammingState extends KahinaState
         }
         return Collections.unmodifiableList(result);
     }
+
+	public LogicProgrammingProfile getFullProfile()
+	{
+		return profile;
+	}
     
 }

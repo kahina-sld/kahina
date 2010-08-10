@@ -1,28 +1,33 @@
 package org.kahina.tralesld;
 
-import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.LogicProgrammingInstance;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 import org.kahina.tralesld.gui.TraleSLDGUI;
+import org.kahina.tralesld.profiler.TraleSLDProfiler;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
 import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
 
-public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
+public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
+	
+	private final TraleSLDProfiler profiler; 
 
 	public TraleSLDInstance()
 	{
 		// TODO: this reeks a wee bit of Bad Software Design
 		new TraleSLDTreeBehavior(state.getStepTree(), this, state.getSecondaryStepTree());
+		profiler = new TraleSLDProfiler(state.getFullProfile());
 		// gui = new TraleSLDGUI(TraleSLDStep.class, this);
 		// bridge = new TraleSLDBridge(this, gui);
         KahinaRunner.getControl().registerListener("edge select", this);
@@ -32,6 +37,7 @@ public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI,
 	public TraleSLDInstance(TraleSLDState state)
 	{
 		super(state);
+		profiler = new TraleSLDProfiler(state.getFullProfile());
         KahinaRunner.getControl().registerListener("edge select", this);
         KahinaRunner.getControl().registerListener("update", this);
 		// TODO create tree behavior (not persistable yet)
@@ -101,5 +107,11 @@ public class TraleSLDInstance extends KahinaInstance<TraleSLDState, TraleSLDGUI,
 		{
 			KahinaRunner.processEvent(new KahinaChartUpdateEvent(edgeID));
 		}
+	}
+
+	@Override
+	public LogicProgrammingProfiler getProfiler()
+	{
+		return profiler;
 	}
 }

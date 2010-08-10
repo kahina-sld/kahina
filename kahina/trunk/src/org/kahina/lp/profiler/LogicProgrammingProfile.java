@@ -1,12 +1,18 @@
 package org.kahina.lp.profiler;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.kahina.core.profiler.ProfileEntry;
 
-public class LogicProgrammingProfile
+public class LogicProgrammingProfile implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4869556554829662187L;
+
 	private final  Map<ProfileEntry, Integer> callsByEntry = new HashMap<ProfileEntry, Integer>();
 	
 	private final  Map<ProfileEntry, Integer> failsByEntry = new HashMap<ProfileEntry, Integer>();

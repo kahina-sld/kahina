@@ -12,6 +12,10 @@ public class KahinaDialogEvent extends KahinaEvent
     public static final int SKIP_POINTS = 6;
     public static final int CREEP_POINTS = 7;
     public static final int FAIL_POINTS = 8;
+	public static final int FULL_PROFILE = 9;
+	public static final int CALL_SUBTREE_PROFILE = 10;
+	public static final int SEARCH_SUBTREE_PROFILE = 11;
+	public static final int EDIT_WARNINGS = 12;
     
     public KahinaDialogEvent(int dialogEventType)
     {

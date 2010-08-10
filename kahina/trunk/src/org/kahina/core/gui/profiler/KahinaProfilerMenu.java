@@ -5,6 +5,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 
+import org.kahina.core.KahinaRunner;
+import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.util.KahinaSwingUtilities;
 
 public class KahinaProfilerMenu extends JMenu implements ActionListener
@@ -25,8 +27,20 @@ public class KahinaProfilerMenu extends JMenu implements ActionListener
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{
-		// TODO Auto-generated method stub
-		
+		String command = e.getActionCommand();
+		if (command.equals("fullProfile"))
+		{
+			KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.FULL_PROFILE));
+		} else if (command.equals("callSubtreeProfile"))
+		{
+			KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.CALL_SUBTREE_PROFILE));
+		} else if (command.equals("searchSubtreeProfile"))
+		{
+			KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.SEARCH_SUBTREE_PROFILE));
+		} else if (command.equals("editWarnings"))
+		{
+			KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.EDIT_WARNINGS));
+		}
 	}
 
 }

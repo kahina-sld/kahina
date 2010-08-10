@@ -105,6 +105,7 @@ public class KahinaGUI implements KahinaListener
 		{
 			System.err.println("Generating views for step fields:");
 		}
+		Field[] fields = stepType.getFields();
 		for (Field field : stepType.getFields())
 		{
 			if (VERBOSE)
@@ -149,7 +150,7 @@ public class KahinaGUI implements KahinaListener
         KahinaView<?> view2 = varNameToView.get(var2);
         if (view1 == null || view2 == null)
         {
-            System.err.println("Error integrating views: " + var1 + " and " + var2);
+            throw new RuntimeException("Error integrating views: " + var1 + " and " + var2);
         }
         else
         {

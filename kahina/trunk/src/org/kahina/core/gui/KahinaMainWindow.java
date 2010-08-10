@@ -36,9 +36,12 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(new KahinaSessionMenu());
+		
+		// TODO these three menus are specific to logic programming or TraleSLD, should be added dynamically
 		menuBar.add(new KahinaParseMenu());
 		menuBar.add(new KahinaBreakpointMenu());
 		menuBar.add(new KahinaProfilerMenu());
+		
 		menuBar.add(new KahinaHelpMenu());
 		this.setJMenuBar(menuBar);
 
