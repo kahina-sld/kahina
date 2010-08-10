@@ -125,6 +125,16 @@ public class LogicProgrammingProfile implements Serializable
 				return COLUMN_NAMES[columnIndex];
 			}
 			
+			@Override
+			public Class<?> getColumnClass(int columnIndex)
+			{
+				if (columnIndex > 1)
+				{
+					return Integer.class;
+				}
+				return String.class;
+			}
+			
 		};
 	}
 
