@@ -1,12 +1,14 @@
 package org.kahina.core.util;
 
 import java.awt.Point;
+import java.awt.event.ActionListener;
 
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
 
-public class SwingUtilities
+public class KahinaSwingUtilities
 {
     public static void scrollToCenter(JScrollPane scrollPane, int x, int y)
     {
@@ -34,5 +36,13 @@ public class SwingUtilities
 	public static Object visualError(String message, Throwable t)
 	{
 		return new Object[] { message, new JScrollPane(new JTextArea(Utilities.join(System.getProperty("line.separator"), Utilities.portrayStackTrace(t)), 20, 80)) };
+	}
+
+	public static JMenuItem createMenuItem(String text, String actionCommand, ActionListener actionListener)
+	{
+		JMenuItem result = new JMenuItem(text);
+		result.setActionCommand(actionCommand);
+		result.addActionListener(actionListener);
+		return result;
 	}
 }

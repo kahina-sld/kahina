@@ -14,6 +14,7 @@ import org.kahina.core.event.KahinaSessionEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
+import org.kahina.core.gui.profiler.KahinaProfilerMenu;
 
 public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 {
@@ -37,6 +38,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		menuBar.add(new KahinaSessionMenu());
 		menuBar.add(new KahinaParseMenu());
 		menuBar.add(new KahinaBreakpointMenu());
+		menuBar.add(new KahinaProfilerMenu());
 		menuBar.add(new KahinaHelpMenu());
 		this.setJMenuBar(menuBar);
 

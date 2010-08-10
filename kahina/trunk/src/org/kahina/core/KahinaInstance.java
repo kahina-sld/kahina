@@ -30,7 +30,7 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.magazine.ObjectMagazine;
 import org.kahina.core.util.FileUtilities;
 import org.kahina.core.util.ProgressMonitorWrapper;
-import org.kahina.core.util.SwingUtilities;
+import org.kahina.core.util.KahinaSwingUtilities;
 import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.source.KahinaSourceCodeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
@@ -161,7 +161,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			KahinaRunner.processEvent(new KahinaSelectionEvent(state.getSelectedStepID()));
 		} catch (Exception e)
 		{
-			gui.showMessageDialog(SwingUtilities.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		} finally
 		{
@@ -173,7 +173,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 					zipFile.close();
 				} catch (IOException e)
 				{
-					gui.showMessageDialog(SwingUtilities.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+					gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
@@ -193,7 +193,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			directory = FileUtilities.createTemporaryDirectory();
 		} catch (IOException e)
 		{
-			gui.showMessageDialog(SwingUtilities.visualError("Session could not be saved due to the following problem:", e), "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be saved due to the following problem:", e), "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		if (zipFile.exists())
@@ -232,7 +232,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		} catch (Exception e)
 		{
 			monitor.close();
-			gui.showMessageDialog(SwingUtilities.visualError("Session could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 		} finally
 		{
 			if (out != null)
@@ -242,7 +242,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 					out.close();
 				} catch (IOException e)
 				{
-					gui.showMessageDialog(SwingUtilities.visualError("Session could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+					gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}

@@ -14,7 +14,7 @@ import java.util.List;
 
 import javax.swing.JScrollPane;
 
-import org.kahina.core.util.SwingUtilities;
+import org.kahina.core.util.KahinaSwingUtilities;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.core.visual.tree.KahinaTreeView;
 
@@ -323,7 +323,7 @@ private static final long serialVersionUID = 6701252380309408342L;
             }
             else
             {
-                SwingUtilities.scrollToCenter((JScrollPane) parent, view.getNodeX(nodeID), view.getNodeY(nodeID));
+                KahinaSwingUtilities.scrollToCenter((JScrollPane) parent, view.getNodeX(nodeID), view.getNodeY(nodeID));
             }
         }
     }
