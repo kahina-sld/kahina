@@ -1,19 +1,29 @@
 :- module(kahinaswi,[]).
 
+:- use_module(actions,[map_action/3,fix_action/3]).
 :- use_module(library(jpl)).
 
 :- dynamic bridge/1.
 
-start :-
+start(Bridge) :-
   jpl_call(class([org,kahina,prolog],['PrologDebuggerRunner']),runAndGetBridge,
       [],Bridge),
   assert(bridge(Bridge)).
 
-user:prolog_trace_interception(Port,Frame,_Choice,continue) :-
+get_bridge(Bridge) :-
   bridge(Bridge),
+  !.
+get_bridge(Bridge) :-
+  start(Bridge).
+
+user:prolog_trace_interception(Port,Frame,_Choice,Action) :-
+  % TODO check if is Kahina-SWI is switched on, there should be some flag.
+  get_bridge(Bridge),
   !,
-  act(Port,Frame,Bridge).
-user:prolog_trace_interception(_,_,_,_).
+  act(Port,Frame,Bridge),
+  get_gui_action(Bridge,GUIAction),
+  fix_action(Port,GUIAction,FixedGUIAction),
+  map_action(FixedGUIAction,_,Action).
 
 act(call,Frame,Bridge) :-
   prolog_frame_attribute(Frame,parent,ParentFrame),
@@ -31,7 +41,18 @@ act(redo,Frame,Bridge) :-
   jpl_call(Bridge,redo,[Frame]).
 % TODO exception handling
 
-% TODO receive commands from GUI
+get_gui_action(Bridge,GUIAction) :-
+  repeat,
+  jpl_call(Bridge,getAction,[],Char),
+  char_command(Char,GUIAction)
+  -> !
+   ; (sleep(0.1),
+      fail).
 
 not(true,false).
 not(false,true).
+
+char_command(s,skip).
+char_command(c,creep).
+char_command(f,fail).
+char_command(a,abort).
