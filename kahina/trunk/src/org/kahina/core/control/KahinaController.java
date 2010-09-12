@@ -27,9 +27,6 @@ public class KahinaController
         registry = new HashMap<String,List<KahinaListener>>();
     }
     
-    /*
-     * WARNING! does not check whether a listener was registered twice!
-     */
     public void registerListener(String type, KahinaListener listener)
     {
         List<KahinaListener> listenersForType = registry.get(type);
@@ -37,6 +34,9 @@ public class KahinaController
         {
             listenersForType = new LinkedList<KahinaListener>();
             registry.put(type, listenersForType);
+        } else if (listenersForType.contains(listener))
+        {
+        	return;
         }
         listenersForType.add(listener);
     }
