@@ -91,8 +91,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 
-	@Override
-	public void registerStepInformation(int extID, String nodeLabel, String consoleMessage)
+	public void step(int extID, String nodeLabel, String consoleMessage)
 	{
 		try
 		{
@@ -100,7 +99,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				System.err.println(this + ".registerStepInformation(" + extID + "," + nodeLabel + "," + consoleMessage + ")");
 			}
-			super.registerStepInformation(extID, nodeLabel, consoleMessage);
+			super.step(extID, nodeLabel);
+			state.consoleMessage(convertStepID(extID), extID, LogicProgrammingStepType.CALL, consoleMessage);
 			if (nodeLabel.startsWith("rule_close") && lastRegisteredChartEdge != -1)
 			{
 				state.linkEdgeToNode(lastRegisteredChartEdge, currentID);
@@ -383,7 +383,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	}
 
 	@Override
-	public void registerStepFailure(int externalStepID)
+	public void fail(int externalStepID)
 	{
 		// TODO It would be better to have a TraleSLDChartBehavior listening to
 		// KahinaBridge events. For example, we wouldn't have to fire two
@@ -394,7 +394,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				System.err.println("registerStepFailure(" + externalStepID + ")");
 			}
-			super.registerStepFailure(externalStepID);
+			super.fail(externalStepID);
 			int stepID = convertStepID(externalStepID);
 			if (prospectiveEdgeCanFail && !prospectiveEdgeStack.isEmpty())
 			{
@@ -429,7 +429,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 
-	public void registerStepFinished(int extID)
+	public void finished(int extID)
 	{
 		try
 		{

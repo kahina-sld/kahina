@@ -80,7 +80,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		return intID;
 	}
 
-	public void registerStepInformation(int extID, String nodeLabel, String consoleMessage)
+	public void step(int extID, String nodeLabel)
 	{
 		try
 		{
@@ -94,7 +94,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 			KahinaRunner.store(stepID, step);
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, nodeLabel));
 			currentID = stepID;
-			state.consoleMessage(stepID, extID, LogicProgrammingStepType.CALL, consoleMessage);
 			if (VERBOSE)
 				System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + nodeLabel + "\")");
 		} catch (Exception e)
@@ -122,7 +121,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	public void registerStepLocation(int extID, int parentID)
+	public void call(int extID, int parentID)
 	{
 		try
 		{
@@ -150,7 +149,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	public void registerStepRedo(int extID)
+	public void redo(int extID)
 	{
 		try
 		{
@@ -179,7 +178,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	public void registerStepExit(int extID, boolean deterministic)
+	public void exit(int extID, boolean deterministic)
 	{
 		try
 		{
@@ -213,7 +212,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	public void registerStepFailure(int extID)
+	public void fail(int extID)
 	{
 		try
 		{
