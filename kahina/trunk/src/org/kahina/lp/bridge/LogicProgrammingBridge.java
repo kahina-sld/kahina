@@ -240,7 +240,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 		return new LogicProgrammingStep();
 	}
 
-	public char getPressedButton()
+	/**
+	 * @return the action command for the tracer. Currently supported are:
+	 * {@code 'c'} for creep, {@code 's'} for skip, {@code 'f'} for fail,
+	 * {@code 'a'} for abort and {@code 'n'} if there is no action available
+	 * yet, e.g. because the user hasn't clicked a button yet. In this case,
+	 * clients should wait a few milliseconds and call this method again.
+	 */
+	public char getAction()
 	{
 		try
 		{
