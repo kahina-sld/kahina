@@ -22,14 +22,9 @@ user:prolog_trace_interception(Port,Frame,_Choice,Action) :-
   get_bridge(Bridge),
   !,
   act(Port,Frame,Bridge),
-  write('ACTED'),nl,
   get_gui_action(Bridge,GUIAction),
-  write('GOTACTION:'),write(GUIAction),nl,
   fix_action(Port,GUIAction,FixedGUIAction),
-  write('FIXEDACTION:'),write(FixedGUIAction),nl,
-  map_action(FixedGUIAction,_,Action),
-  write('MAPPEDACTION:'),write(Action),nl,
-  write('SUCCESSSSSSSSSSSSSSSSSS!'),nl.
+  map_action(FixedGUIAction,_,Action).
 
 act(call,Frame,Bridge) :-
   % TODO use own, nicer IDs
