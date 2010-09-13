@@ -49,14 +49,16 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?> kahina, KahinaTree secondaryTree)
 	{
 		super(tree, kahina);
+		if (VERBOSE)
+		{
+			System.err.println("new LogicProgrammingTreeBehavior(" + tree + "," + kahina + "," + secondaryTree + ")");
+		}
 		this.secondaryTree = secondaryTree;
 		this.lastActiveID = -1;
 		deterministicallyExited = new HashSet<Integer>();
 		nonDetermBecauseOfRedo = new HashSet<Integer>();
 		KahinaRunner.getControl().registerListener("logic programming bridge", this);
 		KahinaRunner.getControl().registerListener("system", this);
-		if (VERBOSE)
-			System.err.println("new LogicProgrammingTreeBehavior(" + tree + "," + "," + kahina + "," + secondaryTree + ")");
 		primaryBreakpoints = new ArrayList<TreeAutomaton>();
 		initializePrimaryBreakpoints();
 		compilePrimaryBreakpoints();
@@ -248,13 +250,18 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		if (VERBOSE)
 			System.err.println("\t object.addChild(" + lastActiveID + "," + stepID + ")");
 		stepBeingRedone = -1;
-		if (ancestorID == -1)
+		if (lastActiveID == -1)
 		{
 			object.setRootID(stepID);
-			secondaryTree.setRootID(stepID);
 		} else
 		{
 			object.addChild(lastActiveID, stepID);
+		}
+		if (ancestorID == -1)
+		{
+			secondaryTree.setRootID(stepID);
+		} else
+		{
 			secondaryTree.addChild(ancestorID, stepID);
 		}
 		if (VERBOSE)

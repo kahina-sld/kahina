@@ -204,16 +204,18 @@ public class LogicProgrammingBridge extends KahinaBridge
 			currentID = stepID;
 			if (bridgeState == 'n')
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
-
-			LogicProgrammingLineReference ref = null;
-			if (deterministic)
-				ref = state.getConsoleLineRefForStep(stepID).generatePortVariant(LogicProgrammingStepType.DET_EXIT);
-			else
+			
+			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
+			if (reference != null)
 			{
-				ref = state.getConsoleLineRefForStep(stepID).generatePortVariant(LogicProgrammingStepType.EXIT);
+				if (deterministic)
+				{
+					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.DET_EXIT));
+				} else
+				{
+					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.EXIT));
+				}
 			}
-			// ref.store();
-			state.consoleMessage(ref);
 		} catch (Exception e)
 		{
 			e.printStackTrace();

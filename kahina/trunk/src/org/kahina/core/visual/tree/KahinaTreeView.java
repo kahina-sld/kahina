@@ -27,7 +27,7 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaTreeView extends KahinaView<KahinaTree>
 {
-	public static final boolean verbose = false;
+	public static final boolean VERBOSE = false;
 
 	// display options
 	private int horizontalDistance = 5;
@@ -523,6 +523,10 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 
 	public int getNodeX(int nodeID)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".getNodeX(" + nodeID + ")");
+		}
 		return nodeX.get(nodeID);
 	}
 
@@ -585,7 +589,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 
 	public void calculateCoordinates()
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("BEGIN: Calculate coordinates for layer " + treeLayer);
 		// node height determined by font size
 		FontMetrics fm = getFontMetrics(new Font(Font.SANS_SERIF, Font.PLAIN, fontSize), new BasicStroke(1), fontSize);
@@ -600,7 +604,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 
 		if (model.getRootID(treeLayer) != -1)
 		{
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("BEGIN: Calculate subtree widths for layer " + treeLayer);
 			// calculate (maximum) subtree width for each node bottom-up
 			if (terminalsPolicy != NO_SPECIAL_TREATMENT)
@@ -612,7 +616,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 			}
 			for (int i = nodeLevels.size() - 1; i >= 0; i--)
 			{
-				if (verbose)
+				if (VERBOSE)
 					System.err.println("Node level: " + i);
 				for (int node : nodeLevels.get(i))
 				{
@@ -624,13 +628,13 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 						maxNodeWidth = nodeLabelWidth;
 					ArrayList<Integer> children = getVisibleVirtualChildren(model, node);
 					subtreeWidths.put(node, constructWidthVector(children));
-					if (verbose)
+					if (VERBOSE)
 						System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
 				}
 			}
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("COMPLETE: Calculate subtree widths for layer " + treeLayer);
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("maxNodeWidth = " + maxNodeWidth);
 			nodeX.put(model.getRootID(treeLayer), subtreeWidths.get(model.getRootID(treeLayer)).maximumLeftDistance() * horizontalDistance * fontSize / 2);
 			// Nodes in this view whose secondary parent is not in this view.
@@ -638,7 +642,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 			ArrayList<Integer> indentAgenda = new ArrayList<Integer>();
 			for (int i = 0; i < nodeLevels.size(); i++)
 			{
-				if (verbose)
+				if (VERBOSE)
 					System.err.println("Node level: " + i);
 				List<Integer> nodes = nodeLevels.get(i);
 				int xOffset = 0;
@@ -658,18 +662,18 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 				WidthVector lastSubtreeWidth;
 				for (int node : nodes)
 				{
-					if (verbose) System.err.print("  Node:" + node);
+					if (VERBOSE) System.err.print("  Node:" + node);
 					lastSubtreeWidth = subtreeWidth;
 					subtreeWidth = subtreeWidths.get(node);
 					xOffset += WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth) * horizontalDistance * fontSize / 2;
 					// switch to children of next parent node --> jump in x offset
 					int newParent = getVisibleParent(node);
-					if (verbose)
+					if (VERBOSE)
 						System.err.print(" VisParent:" + newParent);
 					if (i > 0 && newParent != parent)
 					{
 						parent = newParent;
-						if (verbose)
+						if (VERBOSE)
 							System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
 						// old variant of xOffset computation
 						// xOffset = (int)((nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) * 0.5 - 0.5) * horizontalDistance * fontSize));
@@ -680,22 +684,22 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 						nodeX.put(node, xOffset);
 					}
 					nodeY.put(node, verticalDistance * fontSize * i + fontSize * 3);
-					if (verbose)
+					if (VERBOSE)
 						System.err.println(" X:" + nodeX.get(node) + " Y:" + nodeY.get(node));
-					if (verbose)
+					if (VERBOSE)
 					{
 						System.err.print("indent from " + node + "?");
 					}
 					// Fill indent agenda:
 					if (displaySecondDimension && secondaryTreeModel != null && !allNodes.contains(getVisibleSecondaryParent(node)))
 					{
-						if (verbose)
+						if (VERBOSE)
 						{
 							System.err.print(" yes");
 						}
 						indentAgenda.add(node);
 					}
-					if (verbose)
+					if (VERBOSE)
 					{
 						System.err.println();
 					}
@@ -722,12 +726,12 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 			// policy
 			if (secondaryTreeModel != null && displaySecondDimension)
 			{
-				if (verbose)
+				if (VERBOSE)
 					System.err.println("BEGIN: adapt X values to secondary tree model");
 				int depth = 0;
-				if (verbose)
+				if (VERBOSE)
 					System.err.println("\tvirtual root id: " + secondaryTreeModel.getRootID(treeLayer));
-				if (verbose)
+				if (VERBOSE)
 				{
 					System.err.println("Indent agenda: " + indentAgenda);
 				}
@@ -747,31 +751,31 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 
 								nodeX.put(nodeID, nodeX.get(nodeID) + depth * fontSize);
 							}
-							if (verbose)
+							if (VERBOSE)
 								System.err.println("\t Shifting node " + nodeID + " by " + depth);
 							// System.err.println(" depth(" + nodeID + ") = " +
 							// depth);
 							indentAgenda.addAll(secondaryTreeModel.getChildren(nodeID, treeLayer, false));
-							if (verbose)
+							if (VERBOSE)
 								System.err.println("\t Agenda: " + indentAgenda);
 						}
 					}
 					depth++;
 				}
-				if (verbose)
+				if (VERBOSE)
 					System.err.println("COMPLETE: adapt X values to secondary tree model");
 				// need to adapt tree width; otherwise nodes will protrude over
 				// the edge of the tree
 				totalTreeWidth += depth * fontSize;
 			}
 		}
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("COMPLETE: Calculate coordinates for layer " + treeLayer);
 	}
 
 	private void createNodeLayers()
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("BEGIN: Create node layers for layer " + treeLayer);
 		terminalLayer = new ArrayList<Integer>();
 		int rootID = model.getRootID(treeLayer);
@@ -784,7 +788,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 			List<Integer> children = getVisibleVirtualChildren(model, model.getRootID(treeLayer));
 			while (true)
 			{
-				if (verbose) System.err.println("children:" + children);
+				if (VERBOSE) System.err.println("children:" + children);
 				ArrayList<Integer> grandchildren = new ArrayList<Integer>();
 				for (int i = 0; i < children.size(); i++)
 				{
@@ -808,8 +812,8 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 				}
 			}
 		}
-		if (verbose) System.err.println("COMPLETE: Create node layers for layer " + treeLayer);
-		if (verbose) System.err.println("Levels:\n" + showLevels());
+		if (VERBOSE) System.err.println("COMPLETE: Create node layers for layer " + treeLayer);
+		if (VERBOSE) System.err.println("Levels:\n" + showLevels());
 	}
 
 	public boolean displaysNode(int nodeID)
@@ -868,14 +872,14 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		if (treeModel.isCollapsed(nodeID) && collapsePolicy == COLLAPSE_PRIMARY)
 			return descendants;
 		descendants.addAll(treeModel.getChildren(nodeID, treeLayer, true));
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println("Breadth-first search for visible descendants of " + nodeID + ":");
 		}
 		for (int i = 0; i < descendants.size(); i++)
 		{
 			boolean nodeIsVisible = nodeIsVisible(descendants.get(i));
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.print(descendants.get(i));
 				System.err.print(nodeIsVisible ? "+" : "-");
@@ -887,7 +891,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 				i--;
 			}
 		}
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println();
 			System.err.println("Virtual children for node " + nodeID + ": " + descendants);

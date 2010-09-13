@@ -18,12 +18,18 @@ get_bridge(Bridge) :-
 
 user:prolog_trace_interception(Port,Frame,_Choice,Action) :-
   % TODO check if is Kahina-SWI is switched on, there should be some flag.
+  % TODO what's with notrace/1?
   get_bridge(Bridge),
   !,
   act(Port,Frame,Bridge),
+  write('ACTED'),nl,
   get_gui_action(Bridge,GUIAction),
+  write('GOTACTION:'),write(GUIAction),nl,
   fix_action(Port,GUIAction,FixedGUIAction),
-  map_action(FixedGUIAction,_,Action).
+  write('FIXEDACTION:'),write(FixedGUIAction),nl,
+  map_action(FixedGUIAction,_,Action),
+  write('MAPPEDACTION:'),write(Action),nl,
+  write('SUCCESSSSSSSSSSSSSSSSSS!'),nl.
 
 act(call,Frame,Bridge) :-
   % TODO use own, nicer IDs
@@ -50,15 +56,15 @@ get_parent_id(_,-1).
 get_gui_action(Bridge,GUIAction) :-
   repeat,
   jpl_call(Bridge,getAction,[],Char),
-  char_command(Char,GUIAction)
+  (char_command(Char,GUIAction)
   -> !
    ; (sleep(0.1),
-      fail).
+      fail)).
 
 not(true,false).
 not(false,true).
 
-char_command(s,skip).
-char_command(c,creep).
-char_command(f,fail).
-char_command(a,abort).
+char_command(115,skip). % s
+char_command(99,creep). % c
+char_command(102,fail). % f
+char_command(97,abort). % a
