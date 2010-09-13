@@ -12,10 +12,14 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
 {
     public TulipaInstance()
     {
-        // TODO: this reeks a wee bit of Bad Software Design
-        new TulipaDAGBehavior(state.getDAG(), this);
         //gui = new TraleSLDGUI(TraleSLDStep.class, this);
         //bridge = new TraleSLDBridge(this, gui);
+    }
+    
+    @Override
+    protected void createTreeBehavior()
+    {
+        new TulipaDAGBehavior(state.getDAG(), this);
     }
 
     @Override

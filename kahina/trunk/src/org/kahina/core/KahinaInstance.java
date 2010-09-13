@@ -53,6 +53,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SESSION, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
+		createTreeBehavior();
 	}
 
 	public KahinaInstance(S state)
@@ -65,7 +66,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SESSION, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
+		// TODO create tree behavior (not persistable yet)
 	}
+	
+	protected abstract void createTreeBehavior();
 
 	protected abstract S createState();
 

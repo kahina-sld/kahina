@@ -17,7 +17,7 @@ import org.kahina.core.event.KahinaEvent;
 
 public class KahinaController
 {
-	private static final boolean verbose = false;
+	private static final boolean VERBOSE = false;
 	
     //map from types to interested listeners
     HashMap<String,List<KahinaListener>> registry;
@@ -56,7 +56,7 @@ public class KahinaController
     
     public void processEvent(KahinaEvent event)
     {
-        if (verbose)
+        if (VERBOSE)
         {
         	System.err.println("Controller processing event: " + event);
         }
@@ -64,9 +64,13 @@ public class KahinaController
         List<KahinaListener> listenersForType = registry.get(type);
         if (listenersForType != null)
         {
-            for (int i = 0; i < listenersForType.size(); i++)
+            for (KahinaListener listener : listenersForType)
             {
-                listenersForType.get(i).processEvent(event);
+            	if (VERBOSE)
+            	{
+            		System.err.println("Sending to listener: " + listener);
+            	}
+                listener.processEvent(event);
             }
         }
     }

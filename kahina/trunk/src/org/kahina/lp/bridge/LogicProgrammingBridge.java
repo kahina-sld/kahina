@@ -149,6 +149,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 			}
+			if (VERBOSE)
+				System.err.println("//LogicProgrammingBridge.registerStepLocation(" + extID + "," + parentID + ")");
 		} catch (Exception e)
 		{
 			e.printStackTrace();

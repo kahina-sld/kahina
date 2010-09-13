@@ -25,8 +25,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	public TraleSLDInstance()
 	{
-		// TODO: this reeks a wee bit of Bad Software Design
-		new TraleSLDTreeBehavior(state.getStepTree(), this, state.getSecondaryStepTree());
+		super();
 		profiler = new TraleSLDProfiler(state.getFullProfile());
 		// gui = new TraleSLDGUI(TraleSLDStep.class, this);
 		// bridge = new TraleSLDBridge(this, gui);
@@ -40,7 +39,12 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		profiler = new TraleSLDProfiler(state.getFullProfile());
         KahinaRunner.getControl().registerListener("edge select", this);
         KahinaRunner.getControl().registerListener("update", this);
-		// TODO create tree behavior (not persistable yet)
+	}
+	
+	@Override
+	protected void createTreeBehavior()
+	{
+		new TraleSLDTreeBehavior(state.getStepTree(), this, state.getSecondaryStepTree());
 	}
 
 	@Override

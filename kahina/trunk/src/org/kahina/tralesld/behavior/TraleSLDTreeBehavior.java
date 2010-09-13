@@ -99,6 +99,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         lastActiveID = object.getParent(stepID);
     }
     
+    @Override
     public void processEvent(KahinaEvent e)
     {
         super.processEvent(e);

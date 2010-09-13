@@ -24,7 +24,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 {
-	private static final boolean verbose = false;
+	private static final boolean VERBOSE = false;
 
 	// call dimension is always stored in a secondary tree structure
 	protected KahinaTree secondaryTree;
@@ -33,8 +33,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	protected int lastActiveID;
 
 	// store information whether steps exited or failed deterministically
-	// TODO: this information must later be accessible to the drawing routine
-	// somehow
 	protected Set<Integer> deterministicallyExited;
 	protected Set<Integer> nonDetermBecauseOfRedo;
 
@@ -57,7 +55,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		nonDetermBecauseOfRedo = new HashSet<Integer>();
 		KahinaRunner.getControl().registerListener("logic programming bridge", this);
 		KahinaRunner.getControl().registerListener("system", this);
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("new LogicProgrammingTreeBehavior(" + tree + "," + "," + kahina + "," + secondaryTree + ")");
 		primaryBreakpoints = new ArrayList<TreeAutomaton>();
 		initializePrimaryBreakpoints();
@@ -245,9 +243,9 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 */
 	public void integrateIncomingNode(int stepID, int ancestorID)
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.integratingIncomingNode(" + stepID + "," + ancestorID + ")");
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("\t object.addChild(" + lastActiveID + "," + stepID + ")");
 		stepBeingRedone = -1;
 		if (ancestorID == -1)
@@ -258,6 +256,11 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			object.addChild(lastActiveID, stepID);
 			secondaryTree.addChild(ancestorID, stepID);
+		}
+		if (VERBOSE)
+		{
+			System.err.println("Tree: " + object);
+			System.err.println("Secondary tree: " + secondaryTree);
 		}
 		lastActiveID = stepID;
 		breakpointCheck(stepID);
@@ -275,7 +278,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 */
 	public void processStepInformation(int stepID, String stepInfo)
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.processStepInformation(" + stepID + ",\"" + stepInfo + "\")");
 		String caption = LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo;
 		object.addNode(stepID, caption, "", LogicProgrammingStepType.CALL);
@@ -293,7 +296,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 */
 	public void processStepRedo(int lastStepID)
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.processStepRedo(" + lastStepID + ")");
 
 		nonDetermBecauseOfRedo.add(lastStepID);
@@ -308,14 +311,14 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 
 		// adapt call dimension
 		int secondaryParentID = secondaryTree.getParent(lastStepID);
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println("Secondary parent for " + newStepID + " (copy of " + lastStepID + "): " + secondaryParentID);
 		}
 		while (newStepIDByLastStepID.containsKey(secondaryParentID))
 		{
 			secondaryParentID = newStepIDByLastStepID.get(secondaryParentID);
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("Correction, secondary parent for " + newStepID + " (copy of " + lastStepID + "): " + secondaryParentID);
 			}
@@ -326,20 +329,20 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		int primaryParentID;
 		if (stepBeingRedone == -1)
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("non-cascading redo");
 			}
 			primaryParentID = object.getParent(lastStepID);
 		} else
 		{
-			if (verbose)
+			if (VERBOSE)
 			{
 				System.err.println("cascading redo");
 			}
 			primaryParentID = stepBeingRedone;
 		}
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println("Primary parent for " + newStepID + " (copy of " + lastStepID + "): " + primaryParentID);
 		}
@@ -382,7 +385,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 */
 	public void processStepFail(int stepID)
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.processStepFail(" + stepID + ")");
 		stepBeingRedone = -1;
 		deterministicallyExited.add(stepID);
@@ -393,7 +396,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 
 	public void processEvent(KahinaEvent e)
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.processEvent(" + e + ")");
 		if (e instanceof LogicProgrammingBridgeEvent)
 		{

@@ -335,4 +335,11 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 		setNodeStatus(id, nodeStatus);
 		nextID = Math.max(id + 1, nextID);
 	}
+	
+	@Override
+	public String toString()
+	{
+		// ad-hoc
+		return nodeCaptions.toString();
+	}
 }

@@ -12,6 +12,8 @@ public abstract class KahinaTree extends KahinaObject
 	 */
 	private static final long serialVersionUID = -7193259910680733711L;
 
+	// TODO Move layer decider to tree view. Trees having deciders is a legacy
+	// of the dark age of KahinaDbTrees.
 	protected LayerDecider decider;
 
     private KahinaTree primaryModel;
