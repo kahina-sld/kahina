@@ -42,11 +42,11 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	protected List<TreeAutomaton> primaryBreakpoints;
 	protected List<TreeAutomaton> secondaryBreakpoints;
 	protected List<TreeAutomaton> skipPoints;
-    protected List<TreeAutomaton> creepPoints;
-    protected List<TreeAutomaton> failPoints;
-    
-    protected int stepBeingRedone = -1;
-    protected Map<Integer, Integer> newStepIDByLastStepID = new HashMap<Integer, Integer>();
+	protected List<TreeAutomaton> creepPoints;
+	protected List<TreeAutomaton> failPoints;
+
+	protected int stepBeingRedone = -1;
+	protected Map<Integer, Integer> newStepIDByLastStepID = new HashMap<Integer, Integer>();
 
 	public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?> kahina, KahinaTree secondaryTree)
 	{
@@ -68,12 +68,12 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		skipPoints = new ArrayList<TreeAutomaton>();
 		initializeSkipPoints();
 		compileSkipPoints();
-        creepPoints = new ArrayList<TreeAutomaton>();
-        initializeCreepPoints();
-        compileCreepPoints();
-        failPoints = new ArrayList<TreeAutomaton>();
-        initializeFailPoints();
-        compileFailPoints();
+		creepPoints = new ArrayList<TreeAutomaton>();
+		initializeCreepPoints();
+		compileCreepPoints();
+		failPoints = new ArrayList<TreeAutomaton>();
+		initializeFailPoints();
+		compileFailPoints();
 	}
 
 	/**
@@ -105,26 +105,26 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	{
 
 	}
-    
-    /**
-     * overwrite this to fill the creepPoints list with node patterns describing
-     * for which nodes the bridge is to automatically hand over a creep command to the logic
-     * programming system
-     */
-    public void initializeCreepPoints()
-    {
 
-    }
-    
-    /**
-     * overwrite this to fill the failPoints list with node patterns describing
-     * for which nodes the bridge is to automatically hand over a fail command to the logic
-     * programming system
-     */
-    public void initializeFailPoints()
-    {
+	/**
+	 * overwrite this to fill the creepPoints list with node patterns describing
+	 * for which nodes the bridge is to automatically hand over a creep command
+	 * to the logic programming system
+	 */
+	public void initializeCreepPoints()
+	{
 
-    }
+	}
+
+	/**
+	 * overwrite this to fill the failPoints list with node patterns describing
+	 * for which nodes the bridge is to automatically hand over a fail command
+	 * to the logic programming system
+	 */
+	public void initializeFailPoints()
+	{
+
+	}
 
 	public void compilePrimaryBreakpoints()
 	{
@@ -164,32 +164,32 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			this.skipPoints.add(aut);
 		}
 	}
-    
-    public void compileCreepPoints()
-    {
-        this.creepPoints.clear();
-        for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getCreepPoints())
-        {
-            TreeAutomaton aut = bp.compile();
-            aut.setTree(secondaryTree);
-            aut.setController(KahinaRunner.getControl());
-            aut.setConstellationMatch(true);
-            this.creepPoints.add(aut);
-        }
-    }
-    
-    public void compileFailPoints()
-    {
-        this.failPoints.clear();
-        for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getFailPoints())
-        {
-            TreeAutomaton aut = bp.compile();
-            aut.setTree(secondaryTree);
-            aut.setController(KahinaRunner.getControl());
-            aut.setConstellationMatch(true);
-            this.failPoints.add(aut);
-        }
-    }
+
+	public void compileCreepPoints()
+	{
+		this.creepPoints.clear();
+		for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getCreepPoints())
+		{
+			TreeAutomaton aut = bp.compile();
+			aut.setTree(secondaryTree);
+			aut.setController(KahinaRunner.getControl());
+			aut.setConstellationMatch(true);
+			this.creepPoints.add(aut);
+		}
+	}
+
+	public void compileFailPoints()
+	{
+		this.failPoints.clear();
+		for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getFailPoints())
+		{
+			TreeAutomaton aut = bp.compile();
+			aut.setTree(secondaryTree);
+			aut.setController(KahinaRunner.getControl());
+			aut.setConstellationMatch(true);
+			this.failPoints.add(aut);
+		}
+	}
 
 	/**
 	 * checks for breakpoint matches caused by adding or modifying the step at
@@ -209,35 +209,35 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			aut.process(stepID);
 		}
-        for (TreeAutomaton aut : creepPoints)
-        {
-            aut.process(stepID);
-        }
-        for (TreeAutomaton aut : failPoints)
-        {
-            aut.process(stepID);
-        }
+		for (TreeAutomaton aut : creepPoints)
+		{
+			aut.process(stepID);
+		}
+		for (TreeAutomaton aut : failPoints)
+		{
+			aut.process(stepID);
+		}
 	}
-    
-    /**
-     * checks for breakpoint matches caused by failure of the step at
-     * stepID; causes events to be fired in the case of matches
-     */
-    public void failureBreakpointCheck(int stepID)
-    {
-        for (TreeAutomaton aut : primaryBreakpoints)
-        {
-            aut.process(stepID);
-        }
-        for (TreeAutomaton aut : secondaryBreakpoints)
-        {
-            aut.process(stepID);
-        }
-        for (TreeAutomaton aut : creepPoints)
-        {
-            aut.process(stepID);
-        }
-    }
+
+	/**
+	 * checks for breakpoint matches caused by failure of the step at stepID;
+	 * causes events to be fired in the case of matches
+	 */
+	public void failureBreakpointCheck(int stepID)
+	{
+		for (TreeAutomaton aut : primaryBreakpoints)
+		{
+			aut.process(stepID);
+		}
+		for (TreeAutomaton aut : secondaryBreakpoints)
+		{
+			aut.process(stepID);
+		}
+		for (TreeAutomaton aut : creepPoints)
+		{
+			aut.process(stepID);
+		}
+	}
 
 	/**
 	 * contains the logic by which the tree is formed out of callstacks called
@@ -250,11 +250,16 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		if (verbose)
 			System.err.println("\t object.addChild(" + lastActiveID + "," + stepID + ")");
 		stepBeingRedone = -1;
-		object.addChild(lastActiveID, stepID);
-		// if (verbose) System.err.println(object.exportXML());
+		if (ancestorID == -1)
+		{
+			object.setRootID(stepID);
+			secondaryTree.setRootID(stepID);
+		} else
+		{
+			object.addChild(lastActiveID, stepID);
+			secondaryTree.addChild(ancestorID, stepID);
+		}
 		lastActiveID = stepID;
-		secondaryTree.addChild(ancestorID, stepID);
-		// if (verbose) System.err.println(secondaryTree.exportXML());
 		breakpointCheck(stepID);
 	}
 
@@ -383,7 +388,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		deterministicallyExited.add(stepID);
 		object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);
 		lastActiveID = object.getParent(stepID);
-        failureBreakpointCheck(stepID);
+		failureBreakpointCheck(stepID);
 	}
 
 	public void processEvent(KahinaEvent e)
@@ -457,16 +462,16 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 					compileSkipPoints();
 					break;
 				}
-                case KahinaBreakpointType.CREEP_POINT:
-                {
-                    compileCreepPoints();
-                    break;
-                }
-                case KahinaBreakpointType.FAIL_POINT:
-                {
-                    compileFailPoints();
-                    break;
-                }
+				case KahinaBreakpointType.CREEP_POINT:
+				{
+					compileCreepPoints();
+					break;
+				}
+				case KahinaBreakpointType.FAIL_POINT:
+				{
+					compileFailPoints();
+					break;
+				}
 			}
 		}
 	}

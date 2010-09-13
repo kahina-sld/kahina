@@ -66,6 +66,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		if (VERBOSE)
 			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ")");
+		if (extID == -1)
+		{
+			return -1;
+		}
 		Integer intID = stepIDConv.get(extID);
 		if (intID == null)
 		{
@@ -90,7 +94,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
 			step.setGoalDesc(nodeLabel);
 			step.setRedone(false);
-			step.setSourceCodeLocation(LogicProgrammingStep.get(currentID).getSourceCodeLocation());
+			if (currentID != -1)
+			{
+				step.setSourceCodeLocation(LogicProgrammingStep.get(currentID).getSourceCodeLocation());
+			}
 			KahinaRunner.store(stepID, step);
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, nodeLabel));
 			currentID = stepID;
@@ -129,7 +136,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				System.err.println("LogicProgrammingBridge.registerStepLocation(" + extID + "," + parentID + ")");
 			int stepID = convertStepID(extID);
 			int internalParentID = convertStepID(parentID);
-			// used by tree behavior:
+			// used by tree behavior and profiler:
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, internalParentID));
 			// used by node counter:
 			KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, internalParentID));
@@ -242,10 +249,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	/**
 	 * @return the action command for the tracer. Currently supported are:
-	 * {@code 'c'} for creep, {@code 's'} for skip, {@code 'f'} for fail,
-	 * {@code 'a'} for abort and {@code 'n'} if there is no action available
-	 * yet, e.g. because the user hasn't clicked a button yet. In this case,
-	 * clients should wait a few milliseconds and call this method again.
+	 *         {@code 'c'} for creep, {@code 's'} for skip, {@code 'f'} for
+	 *         fail, {@code 'a'} for abort and {@code 'n'} if there is no action
+	 *         available yet, e.g. because the user hasn't clicked a button yet.
+	 *         In this case, clients should wait a few milliseconds and call
+	 *         this method again.
 	 */
 	public char getAction()
 	{

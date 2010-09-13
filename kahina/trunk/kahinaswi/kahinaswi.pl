@@ -26,11 +26,12 @@ user:prolog_trace_interception(Port,Frame,_Choice,Action) :-
   map_action(FixedGUIAction,_,Action).
 
 act(call,Frame,Bridge) :-
-  prolog_frame_attribute(Frame,parent,ParentFrame),
+  % TODO use own, nicer IDs
+  get_parent_id(Frame,ParentID),
   prolog_frame_attribute(Frame,goal,Goal),
   term_to_atom(Goal,GoalAtom), % TODO shorten, extra view for full goals
   jpl_call(Bridge,step,[Frame,GoalAtom],_),
-  jpl_call(Bridge,call,[Frame,ParentFrame],_).
+  jpl_call(Bridge,call,[Frame,ParentID],_).
 act(fail,Frame,Bridge) :-
   jpl_call(Bridge,fail,[Frame],_).
 act(exit,Frame,Bridge) :-
@@ -40,6 +41,11 @@ act(exit,Frame,Bridge) :-
 act(redo,Frame,Bridge) :-
   jpl_call(Bridge,redo,[Frame]).
 % TODO exception handling
+
+get_parent_id(Frame,ParentID) :-
+  prolog_frame_attribute(Frame,parent,ParentID),
+  !.
+get_parent_id(_,-1).
 
 get_gui_action(Bridge,GUIAction) :-
   repeat,
