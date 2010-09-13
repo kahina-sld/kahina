@@ -21,8 +21,10 @@ import org.kahina.core.util.PrologUtilities;
 import org.kahina.core.util.Sharer;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
+import org.kahina.lp.data.text.LogicProgrammingLineReference;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.TraleSLDStep;
+import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
 import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
@@ -444,6 +446,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 			}
+
+			// TODO update a TraleSLDLineReference (that class doesn't exist
+			// yet) or rewrite the whole thing – why are console messages line
+			// references?
 		} catch (Exception e)
 		{
 			e.printStackTrace();
