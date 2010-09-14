@@ -61,7 +61,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 	
 	protected KahinaLayeredTreeView generateTreeView()
 	{
-		return new KahinaLayeredTreeView(0);
+		return new KahinaLayeredTreeView(true, 0);
 	}
 
 	@Override

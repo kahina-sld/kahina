@@ -23,6 +23,11 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 
 	public KahinaLayeredTreeView(int... layers)
 	{
+		this(false, layers);
+	}
+
+	public KahinaLayeredTreeView(boolean displaySecondDimensionInTopLayer, int... layers)
+	{
 		if (verbose)
 		{
 			System.out.println("Constructing " + this);
@@ -30,12 +35,17 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		this.layers = layers;
 		views = new KahinaTreeView[layers.length];
 		views[0] = new KahinaTreeView();
-		views[0].setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
-		views[0].setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
-		views[0].setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
-		views[0].toggleSecondDimensionDisplay();
-		views[0].setVerticalDistance(3);
-		views[0].setHorizontalDistance(18);
+
+		if (!displaySecondDimensionInTopLayer)
+		{
+			views[0].setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
+			views[0].setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
+			views[0].setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
+			views[0].toggleSecondDimensionDisplay();
+			views[0].setVerticalDistance(3);
+			views[0].setHorizontalDistance(18);
+		}
+
 		for (int i = 1; i < views.length; i++)
 		{
 			views[i] = new KahinaTreeView();
