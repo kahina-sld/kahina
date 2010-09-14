@@ -29,6 +29,9 @@ public class KahinaState implements Serializable, KahinaListener
 	 * 
 	 */
 	private static final long serialVersionUID = -1884751676781509811L;
+	
+	private static final boolean VERBOSE = false;
+	
 	//the messages that will be stored in the console
     protected KahinaTextModel consoleMessages;
     //map from stepIDs to lines in console
@@ -47,6 +50,10 @@ public class KahinaState implements Serializable, KahinaListener
     
     public int nextStepID()
     {
+    	if (VERBOSE)
+    	{
+    		System.err.println(this + ".nextStepID() = " + nextStepID);
+    	}
     	return nextStepID++;
     }
     

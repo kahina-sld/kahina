@@ -49,8 +49,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 		index++;
 		if (index + 1 == panels.length)
 		{
-			bottom = new JScrollPane(panels[index]);
-			((JScrollPane) bottom).getViewport().setBackground(Color.WHITE);
+			bottom = createPane(panels[index]);
 		} else
 		{
 			bottom = createSplitPane(index);

@@ -62,7 +62,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 * 
 	 * @return an internal step ID corresponding to the external ID
 	 */
-	public int convertStepID(int extID)
+	protected int convertStepID(int extID)
 	{
 		if (VERBOSE)
 			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ")");
@@ -82,6 +82,16 @@ public class LogicProgrammingBridge extends KahinaBridge
 		if (VERBOSE)
 			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ") = " + intID);
 		return intID;
+	}
+	
+	protected int convertExistingStepID(int extID)
+	{
+		Integer result = stepIDConv.get(extID);
+		if (result == null)
+		{
+			return -1;
+		}
+		return result;
 	}
 
 	public void step(int extID, String nodeLabel)
@@ -134,8 +144,16 @@ public class LogicProgrammingBridge extends KahinaBridge
 		{
 			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepLocation(" + extID + "," + parentID + ")");
+			if (VERBOSE)
+			{
+				System.err.println("Converting step ID...");
+			}
 			int stepID = convertStepID(extID);
-			int internalParentID = convertStepID(parentID);
+			if (VERBOSE)
+			{
+				System.err.println("Convertig parent ID...");
+			}
+			int internalParentID = convertExistingStepID(parentID);
 			// used by tree behavior and profiler:
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, internalParentID));
 			// used by node counter:
