@@ -32,7 +32,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
 	{
 		super(stepType, kahina);
-		mainTreeView = new KahinaLayeredTreeView(0, 1, 2);
+		mainTreeView = generateTreeView();
 		mainTreeView.setTitle("Control flow tree");
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, mainTreeView);
 		views.add(mainTreeView);
@@ -58,13 +58,20 @@ public class LogicProgrammingGUI extends KahinaGUI
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.FAIL, new Color(183, 50, 50));
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.REDO, new Color(204, 102, 0));
 	}
+	
+	protected KahinaLayeredTreeView generateTreeView()
+	{
+		return new KahinaLayeredTreeView(0);
+	}
 
+	@Override
 	protected void displayMainViews()
 	{
 		mainTreeView.display(((LogicProgrammingState) kahina.getState()).getStepTree());
 		mainTreeView.displaySecondaryTree(((LogicProgrammingState) kahina.getState()).getSecondaryStepTree());
 	}
 
+	@Override
 	protected void processEvent(KahinaDialogEvent e)
 	{
 		super.processEvent(e);

@@ -7,6 +7,7 @@ import org.kahina.core.gui.KahinaViewIntegrationType;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.chart.KahinaChartView;
+import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStepType;
@@ -45,6 +46,12 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.FAILED, Color.RED);
         mainChartView.setDisplayDecider(new TraleSLDChartEdgeDisplayDecider());
     }
+	
+    @Override
+	protected KahinaLayeredTreeView generateTreeView()
+	{
+		return new KahinaLayeredTreeView(0, 1, 2);
+	}
     
     @Override
     protected void displayMainViews()
