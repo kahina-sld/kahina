@@ -29,8 +29,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	// always contains the internal ID of the most recent step
 	protected int currentID = -1;
+	
+	// always contains the internal ID of the step which, if a call occurs, will be the parent of the new step
+	protected int parentCandidateID = -1;
 
-	// always contains the interal ID of the selected step
+	// always contains the internal ID of the selected step
 	protected int selectedID = -1;
 
 	// store the state of the bridge, determining the next result of
@@ -138,6 +141,44 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
+	public void call(int extID)
+	{
+		try
+		{
+			if (VERBOSE)
+				System.err.println("LogicProgrammingBridge.call(" + extID + ")");
+			if (VERBOSE)
+			{
+				System.err.println("Converting step ID...");
+			}
+			int stepID = convertStepID(extID);
+			if (VERBOSE)
+			{
+				System.err.println("Convertig parent ID...");
+			}
+			// used by tree behavior and profiler:
+			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, parentCandidateID));
+			// used by node counter:
+			KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, parentCandidateID));
+			currentID = stepID;
+			parentCandidateID = stepID;
+			if (VERBOSE)
+			{
+				System.err.println("Bridge state: " + bridgeState);
+			}
+			if (bridgeState == 'n')
+			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+			}
+			if (VERBOSE)
+				System.err.println("//LogicProgrammingBridge.call(" + extID + ")");
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
 	public void call(int extID, int parentID)
 	{
 		try
@@ -159,6 +200,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// used by node counter:
 			KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, internalParentID));
 			currentID = stepID;
+			parentCandidateID = stepID;
 			if (VERBOSE)
 			{
 				System.err.println("Bridge state: " + bridgeState);
@@ -191,6 +233,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			stepIDConv.put(extID, newStepID);
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
 			currentID = newStepID;
+			parentCandidateID = newStepID;
 			if (bridgeState == 'n')
 				KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
 
@@ -221,6 +264,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_NONDET_EXIT, stepID));
 			}
 			currentID = stepID;
+			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
 			if (bridgeState == 'n')
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 
@@ -251,6 +295,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			int stepID = convertStepID(extID);
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
 			currentID = stepID;
+			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
 			if (bridgeState == 'n')
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 

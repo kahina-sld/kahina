@@ -413,7 +413,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				prospectiveEdgeCanFail = true;
 			}
-			currentID = stepID;
 			if (VERBOSE)
 			{
 				System.err.println("Bridge state after chart edge was marked as failed: " + bridgeState);
@@ -440,6 +439,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			int stepID = convertStepID(extID);
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
 			currentID = stepID;
+			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
 			if (bridgeState == 'n')
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));

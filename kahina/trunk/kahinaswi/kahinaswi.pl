@@ -33,11 +33,10 @@ act(call,Frame,Bridge) :-
   %log(call,Frame),
   get_next_step(Step),
   assert(frame_step(Frame,Step)),
-  get_parent_step(Frame,ParentStep),
   prolog_frame_attribute(Frame,goal,Goal),
   term_to_atom(Goal,GoalAtom), % TODO shorten, extra view for full goals
   jpl_call(Bridge,step,[Step,GoalAtom],_),
-  jpl_call(Bridge,call,[Step,ParentStep],_).
+  jpl_call(Bridge,call,[Step],_).
 act(fail,Frame,Bridge) :-
   %log(fail,Frame),
   retract(frame_step(Frame,Step)),
@@ -60,12 +59,6 @@ get_next_step(Step) :-
   retract(next_step(Step)),
   NewStep is Step + 1,
   assert(next_step(NewStep)).
-
-get_parent_step(Frame,ParentStep) :-
-  prolog_frame_attribute(Frame,parent,ParentFrame),
-  frame_step(ParentFrame,ParentStep),
-  !.
-get_parent_step(_,-1).
 
 get_gui_action(Bridge,GUIAction) :-
   repeat,
