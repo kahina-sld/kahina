@@ -41,13 +41,15 @@ act(call,Frame,Bridge) :-
 act(fail,Frame,Bridge) :-
   %log(fail,Frame),
   retract(frame_step(Frame,Step)),
-  jpl_call(Bridge,fail,[Step],_).
+  jpl_call(Bridge,fail,[Step],_),
+  end(Step,Bridge).
 act(exit,Frame,Bridge) :-
   %log(exit,Frame),
   frame_step(Frame,Step),
   prolog_frame_attribute(Frame,has_alternatives,HasAlternatives),
   not(HasAlternatives,Deterministic),
-  jpl_call(Bridge,exit,[Step,@(Deterministic)],_).
+  jpl_call(Bridge,exit,[Step,@(Deterministic)],_),
+  end(Step,Bridge).
 act(redo,Frame,Bridge) :-
   %log(redo,Frame),
   frame_step(Frame,Step),
@@ -72,6 +74,13 @@ get_gui_action(Bridge,GUIAction) :-
   -> !
    ; (sleep(0.1),
       fail)).
+
+end(1,Bridge) :-
+  !,
+  jpl_call(Bridge,end,[1],_).
+end(_,_).
+
+% TODO how to present user with solution, option to request another solution, etc.?
 
 not(true,false).
 not(false,true).

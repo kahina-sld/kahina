@@ -265,6 +265,25 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 		}
 	}
+	
+	/**
+	 * Call this to indicate that the top query succeeded or failed, providing
+	 * the step ID of the top query. The bridge will then go back into creep
+	 * mode.
+	 */
+	public void end(int extID)
+	{
+		try
+		{
+			bridgeState = 'n';
+			KahinaRunner.processEvent(new KahinaSelectionEvent(currentID));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
 
 	public LogicProgrammingStep generateStep()
 	{
