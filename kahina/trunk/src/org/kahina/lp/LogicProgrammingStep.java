@@ -19,14 +19,21 @@ public class LogicProgrammingStep extends KahinaStep
     
     public boolean redone;
     
-    public LogicProgrammingStep copy()
+    public LogicProgrammingStep()
     {
-    	LogicProgrammingStep copy = new LogicProgrammingStep();
-    	copy.goalDesc = goalDesc;
-    	copy.externalID = externalID;
-    	copy.codeLocation = codeLocation;
-    	copy.redone = redone;
-    	return copy;
+    }
+    
+    public LogicProgrammingStep(LogicProgrammingStep original)
+	{
+    	goalDesc = original.goalDesc;
+    	externalID = original.externalID;
+    	codeLocation = original.codeLocation;
+    	redone = original.redone;
+	}
+
+	public LogicProgrammingStep copy()
+    {
+    	return new LogicProgrammingStep(this);
     }
     
     public String getGoalDesc()

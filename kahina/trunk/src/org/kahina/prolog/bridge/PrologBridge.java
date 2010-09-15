@@ -1,5 +1,7 @@
 package org.kahina.prolog.bridge;
 
+import org.kahina.core.KahinaRunner;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.prolog.PrologState;
 import org.kahina.prolog.PrologStep;
@@ -16,6 +18,34 @@ public class PrologBridge extends LogicProgrammingBridge
 	protected PrologStep generateStep()
 	{
 		return new PrologStep();
+	}
+	
+	/**
+	 * 
+	 * @param externalStepID
+	 * @param direction any string, normally either {@code "in"} (for call, redo) or {@code "out"} (for exit)
+	 * @param keys argument numbers or variable names
+	 * @param values string representations of Prolog terms
+	 */
+	public void registerBindings(int externalStepID, String direction, String[] keys, String[] values)
+	{
+		try
+		{
+			int internalStepID = convertStepID(externalStepID);
+			PrologStep step = KahinaRunner.retrieve(PrologStep.class, internalStepID);
+			step.setKeys(direction, keys);
+			step.setValues(direction, values);			
+			KahinaRunner.store(internalStepID, step);
+
+			if (bridgeState == 'n')
+			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(internalStepID));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 }

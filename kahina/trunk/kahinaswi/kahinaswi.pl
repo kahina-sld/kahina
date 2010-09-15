@@ -24,7 +24,7 @@
 
 :- use_module(actions,[map_action/3,
                        fix_action/3]).
-:- use_module(library(jpl),[jpl_call/4]).
+:- use_module(library(jpl)).
 :- use_module(pce_prolog_clause,[clear_clause_info_cache/0,
                                  pce_clause_info/4]).
 
@@ -63,6 +63,7 @@ act(call,Frame,Bridge) :-
   prolog_frame_attribute(Frame,goal,Goal),
   term_to_atom(Goal,GoalAtom), % TODO shorten, extra view for full goals
   jpl_call(Bridge,step,[Step,GoalAtom],_),
+  send_bindings(Step,in,Frame,Bridge),
   jpl_call(Bridge,call,[Step],_).
 act(fail,Frame,Bridge) :-
   %log(fail,Frame),
@@ -72,6 +73,7 @@ act(fail,Frame,Bridge) :-
 act(exit,Frame,Bridge) :-
   %log(exit,Frame),
   frame_step(Frame,Step),
+  send_bindings(Step,out,Frame,Bridge),
   prolog_frame_attribute(Frame,has_alternatives,HasAlternatives),
   not(HasAlternatives,Deterministic),
   jpl_call(Bridge,exit,[Step,@(Deterministic)],_),
@@ -79,8 +81,11 @@ act(exit,Frame,Bridge) :-
 act(redo,Frame,Bridge) :-
   %log(redo,Frame),
   frame_step(Frame,Step),
-  jpl_call(Bridge,redo,[Step],_).
-% TODO exception handling
+  jpl_call(Bridge,redo,[Step],_),
+  send_bindings(Step,in,Frame,Bridge).
+% TODO exception ports
+% TODO unify ports?
+% TODO foreign ports? (are these ports?)
 
 get_next_step(Step) :-
   retract(next_step(Step)),
@@ -100,7 +105,56 @@ end(1,Bridge) :-
   jpl_call(Bridge,end,[1],_).
 end(_,_).
 
-% TODO how to present user with solution, option to request another solution, etc.?
+send_bindings(Step,Direction,Frame,Bridge) :-
+  get_bindings(Frame,KeyList,ValueList),
+  KeyList \== [],
+  !,
+  jpl_datums_to_array(KeyList,KeyArray),
+  jpl_datums_to_array(ValueList,ValueArray),
+  jpl_call(Bridge,registerBindings,[Step,Direction,KeyArray,ValueArray],_),
+send_bindings(_,_,_,_).
+
+% Credits for the following to XPCE's trace.pl...
+
+get_bindings(Frame,VarNameList,ValueList) :-
+  frame_bindings(Frame,VarNameList,ValueList),
+  !.
+get_bindings(Frame,ArgNumList,ValueList) :-
+  frame_arguments(Frame,ArgNumList,ValueList).
+
+frame_bindings(Frame,VarNameList,ValueList) :-
+  prolog_frame_attribute(Frame,clause,Clause),
+  pce_clause_info(Clause,_,_,VarNames),
+  functor(VarNames,_,N),
+  frame_bindings(0,N,VarNames,Frame,VarNameList,ValueList).
+
+frame_bindings(N,N,_,_,[],[]) :-
+  !.
+frame_bindings(I,N,VarNames,Frame,[VarName|VarNameList],[ValueAtom|ValueList]) :-
+  J is I + 1,
+  arg(J,VarNames,VarName),
+  VarName \== '_',
+  !,
+  prolog_frame_attribute(Frame,argument(J),Value),
+  term_to_atom(Value,ValueAtom),
+  frame_bindings(J,N,VarNames,Frame,VarNameList,ValueList).
+frame_bindings(I,N,VarNames,Frame,VarNameList,ValueList) :-
+  J is I + 1,
+  frame_bindings(J,N,VarNames,Frame,VarNameList,ValueList).
+
+frame_arguments(Frame,ArgNumList,ValueList) :-
+  prolog_frame_attribute(Frame,goal,Goal),
+  functor(Goal,_,N),
+  frame_arguments(0,N,Frame,ArgNumList,ValueList).
+
+frame_arguments(N,N,_,[],[]) :-
+  !.
+frame_arguments(I,N,Frame,[ArgNumAtom|ArgNumList],[ValueAtom|ValueList]) :-
+  J is I + 1,
+  term_to_atom(J,ArgNumAtom),
+  prolog_frame_attribute(Frame,argument(J),Value),
+  term_to_atom(Value,ValueAtom),
+  frame_arguments(J,N,Frame,ArgNumList,ValueList).
 
 not(true,false).
 not(false,true).

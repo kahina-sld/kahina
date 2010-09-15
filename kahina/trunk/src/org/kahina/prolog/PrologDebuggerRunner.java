@@ -4,7 +4,7 @@ import java.io.File;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.event.KahinaSessionEvent;
-import org.kahina.lp.bridge.LogicProgrammingBridge;
+import org.kahina.prolog.bridge.PrologBridge;
 
 public class PrologDebuggerRunner extends KahinaRunner
 {
@@ -14,7 +14,7 @@ public class PrologDebuggerRunner extends KahinaRunner
 		KahinaRunner.initialize();
 	}
 
-	public static LogicProgrammingBridge runAndGetBridge()
+	public static PrologBridge runAndGetBridge()
 	{
 		try
 		{

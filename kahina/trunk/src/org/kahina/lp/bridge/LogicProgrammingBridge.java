@@ -326,6 +326,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
+	@Override
 	protected LogicProgrammingStep generateStep()
 	{
 		if (VERBOSE)
