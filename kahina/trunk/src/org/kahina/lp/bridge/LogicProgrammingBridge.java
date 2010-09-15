@@ -179,45 +179,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	public void call(int extID, int parentID)
-	{
-		try
-		{
-			if (VERBOSE)
-				System.err.println("LogicProgrammingBridge.registerStepLocation(" + extID + "," + parentID + ")");
-			if (VERBOSE)
-			{
-				System.err.println("Converting step ID...");
-			}
-			int stepID = convertStepID(extID);
-			if (VERBOSE)
-			{
-				System.err.println("Convertig parent ID...");
-			}
-			int internalParentID = convertExistingStepID(parentID);
-			// used by tree behavior and profiler:
-			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, internalParentID));
-			// used by node counter:
-			KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, internalParentID));
-			currentID = stepID;
-			parentCandidateID = stepID;
-			if (VERBOSE)
-			{
-				System.err.println("Bridge state: " + bridgeState);
-			}
-			if (bridgeState == 'n')
-			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
-			}
-			if (VERBOSE)
-				System.err.println("//LogicProgrammingBridge.registerStepLocation(" + extID + "," + parentID + ")");
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-
 	public void redo(int extID)
 	{
 		try
