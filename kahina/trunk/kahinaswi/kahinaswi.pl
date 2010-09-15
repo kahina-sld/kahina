@@ -111,16 +111,16 @@ send_bindings(Step,Direction,Frame,Bridge) :-
   !,
   jpl_datums_to_array(KeyList,KeyArray),
   jpl_datums_to_array(ValueList,ValueArray),
-  jpl_call(Bridge,registerBindings,[Step,Direction,KeyArray,ValueArray],_),
+  jpl_call(Bridge,registerBindings,[Step,Direction,KeyArray,ValueArray],_).
 send_bindings(_,_,_,_).
 
 % Credits for the following to XPCE's trace.pl...
 
-get_bindings(Frame,VarNameList,ValueList) :-
-  frame_bindings(Frame,VarNameList,ValueList),
+get_bindings(Frame,VarNameList,ValueList) :-write(d),
+  frame_bindings(Frame,VarNameList,ValueList),write(a),
   !.
-get_bindings(Frame,ArgNumList,ValueList) :-
-  frame_arguments(Frame,ArgNumList,ValueList).
+get_bindings(Frame,ArgNumList,ValueList) :-write(b),
+  frame_arguments(Frame,ArgNumList,ValueList),write(c).
 
 frame_bindings(Frame,VarNameList,ValueList) :-
   prolog_frame_attribute(Frame,clause,Clause),
