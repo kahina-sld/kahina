@@ -1,11 +1,14 @@
 package org.kahina.lp.bridge;
 
 import java.util.HashMap;
+import java.util.Stack;
 
+import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
+import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaSystemEvent;
@@ -21,7 +24,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingBridge extends KahinaBridge
 {
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 
 	// a dynamic map from external step IDs to most recent corresponding tree
 	// nodes
@@ -29,9 +32,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	// always contains the internal ID of the most recent step
 	protected int currentID = -1;
-	
-	// always contains the internal ID of the step which, if a call occurs, will be the parent of the new step
-	// TODO we can move this to the tree behavior so bridge doesn't have to access the tree
+
+	// always contains the internal ID of the step which, if a call occurs, will
+	// be the parent of the new step
+	// TODO we can move this to the tree behavior so bridge doesn't have to
+	// access the tree
 	protected int parentCandidateID = -1;
 
 	// always contains the internal ID of the selected step
@@ -88,7 +93,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 		return intID;
 	}
 
-	// TODO merge with call, the separation is really obsolete now
 	public void step(int extID, String nodeLabel)
 	{
 		try
@@ -176,20 +180,60 @@ public class LogicProgrammingBridge extends KahinaBridge
 		try
 		{
 			if (VERBOSE)
+			{
 				System.err.println("LogicProgrammingBridge.registerStepRedo(" + extID + ")");
+			}
+
 			int lastStepID = convertStepID(extID);
-			LogicProgrammingStep lastStep = LogicProgrammingStep.get(lastStepID);
-			LogicProgrammingStep newStep = lastStep.copy();
-			newStep.setRedone(true);
-			int newStepID = state.nextStepID();
-			KahinaRunner.store(newStepID, newStep);
-			stepIDConv.put(extID, newStepID);
-			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, lastStepID));
+			int id = lastStepID;
+			Stack<Integer> redoStack = new Stack<Integer>();
+			KahinaTree callTree = state.getSecondaryStepTree();
+
+			// Collect the steps we need to backtrack into, from the one being
+			// redone up until (and excluding) the current parent candidate:
+			do
+			{
+				if (VERBOSE)
+				{
+					System.err.println("Pushing " + id + " onto redo stack.");
+				}
+				
+				redoStack.push(id);
+				// Get the internal ID of the parent, or that of its copy if it already has one:
+				id = stepIDConv.get(LogicProgrammingStep.get(callTree.getParent(id)).getExternalID());
+
+				if (id == -1)
+				{
+					throw new KahinaException("Unexpected redo of " + lastStepID + " under " + parentCandidateID + ".");
+				}
+			} while (id != parentCandidateID);
+
+			int newStepID = -1;
+
+			// Create alternative copies of those steps to reflect backtracking,
+			// working top-down:
+			while (!redoStack.isEmpty())
+			{
+				id = redoStack.pop();
+				LogicProgrammingStep lastStep = LogicProgrammingStep.get(id);
+				LogicProgrammingStep newStep = lastStep.copy();
+				newStep.setRedone(true);
+				newStepID = state.nextStepID();
+				KahinaRunner.store(newStepID, newStep);
+				stepIDConv.put(lastStep.getExternalID(), newStepID);
+				KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, id));
+			}
+
 			currentID = newStepID;
 			parentCandidateID = newStepID;
-			if (bridgeState == 'n')
-				KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
 
+			if (bridgeState == 'n')
+			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
+			}
+
+			// TODO Do we also want console messages for each "virtual redo"? If
+			// so, move this into loop above.
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(lastStepID);
 			if (reference != null)
 			{
@@ -263,7 +307,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 		}
 	}
-	
+
 	/**
 	 * Call this to indicate that the top query succeeded or failed, providing
 	 * the step ID of the top query. The bridge will then go back into creep
@@ -275,8 +319,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		{
 			bridgeState = 'n';
 			KahinaRunner.processEvent(new KahinaSelectionEvent(currentID));
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
