@@ -33,8 +33,7 @@ public class PrologBridge extends LogicProgrammingBridge
 		{
 			int internalStepID = convertStepID(externalStepID);
 			PrologStep step = KahinaRunner.retrieve(PrologStep.class, internalStepID);
-			step.setKeys(direction, keys);
-			step.setValues(direction, values);			
+			step.setBindings(direction, keys, values);	
 			KahinaRunner.store(internalStepID, step);
 
 			if (bridgeState == 'n')
