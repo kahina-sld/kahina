@@ -32,6 +32,7 @@ user:prolog_trace_interception(Port,Frame,_Choice,Action) :-
 act(call,Frame,Bridge) :-
   %log(call,Frame),
   get_next_step(Step),
+  retractall(frame_step(Frame,_)),
   assert(frame_step(Frame,Step)),
   prolog_frame_attribute(Frame,goal,Goal),
   term_to_atom(Goal,GoalAtom), % TODO shorten, extra view for full goals
