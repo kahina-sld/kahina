@@ -11,7 +11,7 @@ public class TraleSLDStep extends LogicProgrammingStep
 	 * 
 	 */
 	private static final long serialVersionUID = -43108052730328464L;
-	// TODO this does not support DB storage yet
+
     public TraleSLDFS startFeatStruct;
     public TraleSLDFS endFeatStruct;
     public TraleSLDVariableBindingSet startBindings = new TraleSLDVariableBindingSet();

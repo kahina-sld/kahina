@@ -1,10 +1,11 @@
 package org.kahina.prolog.data.bindings;
 
-import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PrologVariableBindingSet implements Serializable
+import org.kahina.core.data.KahinaObject;
+
+public class PrologVariableBindingSet extends KahinaObject
 {
 
 	private static final long serialVersionUID = 9032602517905562761L;

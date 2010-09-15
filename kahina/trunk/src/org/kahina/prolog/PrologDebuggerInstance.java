@@ -1,10 +1,13 @@
 package org.kahina.prolog;
 
 import org.kahina.core.LogicProgrammingInstance;
+import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.prolog.bridge.PrologBridge;
+import org.kahina.prolog.data.bindings.PrologVariableBindingSet;
 import org.kahina.prolog.gui.PrologGUI;
 import org.kahina.prolog.profiler.PrologProfiler;
+import org.kahina.prolog.visual.bindings.PrologVariableBindingSetView;
 
 public class PrologDebuggerInstance extends LogicProgrammingInstance<PrologState, PrologGUI, PrologBridge>
 {
@@ -38,6 +41,13 @@ public class PrologDebuggerInstance extends LogicProgrammingInstance<PrologState
 	protected PrologState createState()
 	{
 		return new PrologState();
+	}
+	
+	@Override
+	protected void fillViewRegistry()
+	{
+		super.fillViewRegistry();
+		KahinaViewRegistry.registerMapping(PrologVariableBindingSet.class, PrologVariableBindingSetView.class);
 	}
 
 }
