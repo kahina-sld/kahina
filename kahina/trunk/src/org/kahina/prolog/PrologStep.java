@@ -8,7 +8,9 @@ public class PrologStep extends LogicProgrammingStep
 
 	private static final long serialVersionUID = -119683692028732745L;
 	
-	public PrologVariableBindingSet bindings = new PrologVariableBindingSet();
+	public PrologVariableBindingSet inBindings = new PrologVariableBindingSet();
+	
+	public PrologVariableBindingSet outBindings = new PrologVariableBindingSet();
 	
 	public PrologStep()
 	{
@@ -17,7 +19,8 @@ public class PrologStep extends LogicProgrammingStep
 	public PrologStep(PrologStep original)
 	{
 		super(original);
-		bindings = new PrologVariableBindingSet(original.bindings);
+		inBindings = new PrologVariableBindingSet(original.inBindings);
+		outBindings = new PrologVariableBindingSet(original.outBindings);
 	}
 	
 	@Override
@@ -26,10 +29,16 @@ public class PrologStep extends LogicProgrammingStep
 		return new PrologStep(this);
 	}
 
-	public void setBindings(String direction, String[] keys, String[] values)
+	public void setInBindings(String[] keys, String[] values)
 	{
-		bindings.setKeys(direction, keys);
-		bindings.setValues(direction, values);
+		inBindings.setKeys(keys);
+		inBindings.setValues(values);
+	}
+
+	public void setOutBindings(String[] keys, String[] values)
+	{
+		outBindings.setKeys(keys);
+		outBindings.setValues(values);
 	}
 
 }

@@ -156,6 +156,8 @@ frame_arguments(I,N,Frame,[ArgNumAtom|ArgNumList],[ValueAtom|ValueList]) :-
   term_to_atom(Value,ValueAtom),
   frame_arguments(J,N,Frame,ArgNumList,ValueList).
 
+% TODO get variable names to show up instead of _G393 and friends
+
 not(true,false).
 not(false,true).
 

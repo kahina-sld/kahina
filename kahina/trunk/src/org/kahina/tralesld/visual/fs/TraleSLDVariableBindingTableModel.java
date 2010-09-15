@@ -11,7 +11,7 @@ import javax.swing.table.AbstractTableModel;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 
-public class VariableBindingTableModel extends AbstractTableModel
+public class TraleSLDVariableBindingTableModel extends AbstractTableModel
 {
 
 	private static final long serialVersionUID = 3379369094266283475L;

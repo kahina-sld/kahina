@@ -1,8 +1,5 @@
 package org.kahina.prolog.data.bindings;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.kahina.core.data.KahinaObject;
 
 public class PrologVariableBindingSet extends KahinaObject
@@ -10,9 +7,9 @@ public class PrologVariableBindingSet extends KahinaObject
 
 	private static final long serialVersionUID = 9032602517905562761L;
 
-	private Map<String, String[]> keysByDirection = null;
+	private String[] keys = {};
 
-	private Map<String, String[]> valuesByDirection = null;
+	private String[] values = {};
 	
 	public PrologVariableBindingSet()
 	{
@@ -20,38 +17,28 @@ public class PrologVariableBindingSet extends KahinaObject
 
 	public PrologVariableBindingSet(PrologVariableBindingSet original)
 	{
-		keysByDirection = new HashMap<String, String[]>(original.keysByDirection);
-		valuesByDirection = new HashMap<String, String[]>(original.valuesByDirection);
+		keys = original.keys;
+		values = original.values;
 	}
 
-	public void setKeys(String direction, String[] keys)
+	public void setKeys(String[] keys)
 	{
-		if (keysByDirection == null)
-		{
-			keysByDirection = new HashMap<String, String[]>();
-		}
-
-		keysByDirection.put(direction, keys);
+		this.keys = keys;
 	}
 
-	public void setValues(String direction, String[] values)
+	public void setValues(String[] values)
 	{
-		if (valuesByDirection == null)
-		{
-			valuesByDirection = new HashMap<String, String[]>();
-		}
-
-		valuesByDirection.put(direction, values);
+		this.values = values;
 	}
 	
-	public String[] getKeys(String direction)
+	public String[] getKeys()
 	{
-		return keysByDirection.get(direction);
+		return keys;
 	}
 	
-	public String[] getValues(String direction)
+	public String[] getValues()
 	{
-		return valuesByDirection.get(direction);
+		return values;
 	}
 
 }

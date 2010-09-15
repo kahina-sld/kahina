@@ -1,0 +1,44 @@
+package org.kahina.prolog.visual.bindings;
+
+import javax.swing.table.AbstractTableModel;
+
+public class PrologVariableBindingTableModel extends AbstractTableModel
+{
+
+	private static final long serialVersionUID = 2591048016192505705L;
+	
+	private static final boolean VERBOSE = false;
+
+	private String[][] data = { {}, {} };
+
+	public void setBindings(String[] keys, String[] values)
+	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".setBingings(" + keys + ", " + values + ")");
+		}
+		data = new String[][] { keys, values };
+	}
+
+	@Override
+	public int getColumnCount()
+	{
+		return 2;
+	}
+
+	@Override
+	public int getRowCount()
+	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".getRowCount() = " + data[0].length);
+		}
+		return data[0].length;
+	}
+
+	@Override
+	public Object getValueAt(int rowIndex, int columnIndex)
+	{
+		return data[columnIndex][rowIndex];
+	}
+}

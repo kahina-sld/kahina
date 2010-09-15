@@ -8,7 +8,10 @@ import javax.swing.border.TitledBorder;
 
 public class KahinaHorizontallySplitWindow extends KahinaWindow
 {
-    KahinaWindow leftWindow;
+
+	private static final long serialVersionUID = 7735328776548607273L;
+	
+	KahinaWindow leftWindow;
     KahinaWindow rightWindow;
     
     JPanel leftPanel;

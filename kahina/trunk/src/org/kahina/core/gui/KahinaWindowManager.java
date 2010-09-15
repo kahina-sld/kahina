@@ -44,7 +44,7 @@ public class KahinaWindowManager
                 yPos = maxY + 20;
                 maxY = 0;
             }
-            height = view.getTitle().length() * 6;       
+            height = view.getTitle().length() * 12;       
             if (height > maxY)
             {
                 maxY = height;
@@ -63,7 +63,7 @@ public class KahinaWindowManager
         mainWindow.dispose();
     }
     
-    public KahinaWindow integrateInDefaultWindow(KahinaView view)
+    public KahinaWindow integrateInDefaultWindow(KahinaView<?> view)
     {
         KahinaWindow viewWindow = new KahinaDefaultWindow(view);
         contentWindows.put(view,viewWindow);
@@ -71,7 +71,7 @@ public class KahinaWindowManager
         return viewWindow;
     }
     
-    public void integrateInVerticallySplitWindow(KahinaView v1, KahinaView v2, String newTitle)
+    public void integrateInVerticallySplitWindow(KahinaView<?> v1, KahinaView<?> v2, String newTitle)
     {
         KahinaWindow wrapperWindow1 = topLevelWindows.get(v1);
         if (wrapperWindow1 == null)
@@ -91,7 +91,7 @@ public class KahinaWindowManager
         topLevelWindows.put(v2,splitWindow);
     }
     
-    public void integrateInHorizontallySplitWindow(KahinaView v1, KahinaView v2, String newTitle)
+    public void integrateInHorizontallySplitWindow(KahinaView<?> v1, KahinaView<?> v2, String newTitle)
     {
         KahinaWindow wrapperWindow1 = topLevelWindows.get(v1);
         if (wrapperWindow1 == null)
