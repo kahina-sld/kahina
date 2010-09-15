@@ -31,6 +31,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	protected int currentID = -1;
 	
 	// always contains the internal ID of the step which, if a call occurs, will be the parent of the new step
+	// TODO we can move this to the tree behavior so bridge doesn't have to access the tree
 	protected int parentCandidateID = -1;
 
 	// always contains the internal ID of the selected step
@@ -86,17 +87,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ") = " + intID);
 		return intID;
 	}
-	
-	protected int convertExistingStepID(int extID)
-	{
-		Integer result = stepIDConv.get(extID);
-		if (result == null)
-		{
-			return -1;
-		}
-		return result;
-	}
 
+	// TODO merge with call, the separation is really obsolete now
 	public void step(int extID, String nodeLabel)
 	{
 		try
