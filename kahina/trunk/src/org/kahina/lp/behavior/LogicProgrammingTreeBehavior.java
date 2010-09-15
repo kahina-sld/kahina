@@ -314,6 +314,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		// TODO: make this unnecessary if possible
 		secondaryTree.addNode(object.getNodeCaption(lastStepID), "", LogicProgrammingStepType.REDO);
 
+		// TODO Do we really want to do this? Pro: no bright green steps
+		// flashing where there is no open choicepoint. Contra: while
+		// exploring the history, no clear indication of what steps were the
+		// cause for backtracking.
 		object.setNodeStatus(lastStepID, LogicProgrammingStepType.DET_EXIT);
 
 		// adapt call dimension

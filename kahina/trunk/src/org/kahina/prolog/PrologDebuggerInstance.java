@@ -1,14 +1,12 @@
 package org.kahina.prolog;
 
 import org.kahina.core.LogicProgrammingInstance;
-import org.kahina.lp.LogicProgrammingState;
-import org.kahina.lp.LogicProgrammingStep;
-import org.kahina.lp.bridge.LogicProgrammingBridge;
-import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
+import org.kahina.prolog.bridge.PrologBridge;
+import org.kahina.prolog.gui.PrologGUI;
 import org.kahina.prolog.profiler.PrologProfiler;
 
-public class PrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, LogicProgrammingGUI, LogicProgrammingBridge>
+public class PrologDebuggerInstance extends LogicProgrammingInstance<PrologState, PrologGUI, PrologBridge>
 {
 	
 	PrologProfiler profiler;
@@ -25,21 +23,21 @@ public class PrologDebuggerInstance extends LogicProgrammingInstance<LogicProgra
 	}
 
 	@Override
-	protected LogicProgrammingBridge createBridge()
+	protected PrologBridge createBridge()
 	{
-		return new LogicProgrammingBridge(state);
+		return new PrologBridge(state);
 	}
 
 	@Override
-	protected LogicProgrammingGUI createGUI()
+	protected PrologGUI createGUI()
 	{
-		return new LogicProgrammingGUI(LogicProgrammingStep.class, this);
+		return new PrologGUI(PrologStep.class, this);
 	}
 
 	@Override
-	protected LogicProgrammingState createState()
+	protected PrologState createState()
 	{
-		return new LogicProgrammingState();
+		return new PrologState();
 	}
 
 }

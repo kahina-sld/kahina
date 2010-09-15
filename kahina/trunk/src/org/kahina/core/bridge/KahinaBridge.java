@@ -27,7 +27,7 @@ public class KahinaBridge implements KahinaListener
         KahinaRunner.getControl().registerListener("treeMatch", this);
     }
     
-    public KahinaStep generateStep()
+    protected KahinaStep generateStep()
     {
     	if (verbose) System.err.println("KahinaBridge.generateStep()");
         return new KahinaStep();

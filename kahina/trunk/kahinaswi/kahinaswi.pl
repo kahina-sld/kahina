@@ -1,7 +1,32 @@
+/*  This file is part of Kahina-SWI, a proof-of-concept graphical tracer
+    for SWI-Prolog in the Kahina framework.
+
+    Author:        Kilian Evang
+    E-mail:        kevang ät sfs döt uni-tuebingen döt de
+    WWW:           http://kahina.org
+
+    This program is free software; you can redistribute it and/or
+    modify it under the terms of the GNU General Public License
+    as published by the Free Software Foundation; either version 3
+    of the License, or (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public
+    License along with this library; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 :- module(kahinaswi,[]).
 
-:- use_module(actions,[map_action/3,fix_action/3]).
-:- use_module(library(jpl)).
+:- use_module(actions,[map_action/3,
+                       fix_action/3]).
+:- use_module(library(jpl),[jpl_call/4]).
+:- use_module(pce_prolog_clause,[clear_clause_info_cache/0,
+                                 pce_clause_info/4]).
 
 :- dynamic bridge/1.
 :- dynamic frame_step/2.
@@ -12,16 +37,17 @@ start(Bridge) :-
       [],Bridge),
   assert(bridge(Bridge)),
   retractall(next_step(_)), % TODO more systematic cleanup
+  clear_clause_info_cache,
   assert(next_step(1)).
 
 get_bridge(Bridge) :-
-  bridge(Bridge),
+  bridge(Bridge), % TODO if that bridge is old, we must create a new one or clear it
   !.
 get_bridge(Bridge) :-
   start(Bridge).
 
 user:prolog_trace_interception(Port,Frame,_Choice,Action) :-
-  % TODO check if is Kahina-SWI is switched on, there should be some flag.
+  % TODO check if Kahina-SWI is switched on, there should be some flag.
   % TODO what's with notrace?
   notrace((get_bridge(Bridge),
   act(Port,Frame,Bridge),
