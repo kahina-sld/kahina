@@ -116,31 +116,65 @@ send_bindings(_,_,_,_).
 
 % Credits for the following to XPCE's trace.pl...
 
-get_bindings(Frame,VarNameList,ValueList) :-write(d),
-  frame_bindings(Frame,VarNameList,ValueList),write(a),
+get_bindings(Frame,VarNameList,ValueList) :-
+  frame_bindings(Frame,VarNameList,ValueList),
   !.
-get_bindings(Frame,ArgNumList,ValueList) :-write(b),
-  frame_arguments(Frame,ArgNumList,ValueList),write(c).
+get_bindings(Frame,ArgNumList,ValueList) :-
+  frame_arguments(Frame,ArgNumList,ValueList).
 
 frame_bindings(Frame,VarNameList,ValueList) :-
   prolog_frame_attribute(Frame,clause,Clause),
   pce_clause_info(Clause,_,_,VarNames),
   functor(VarNames,_,N),
-  frame_bindings(0,N,VarNames,Frame,VarNameList,ValueList).
+  frame_bindings(0,N,VarNames,Frame,Bindings),
+  bindings_lists(Bindings,Bindings,VarNameList,ValueList).
 
-frame_bindings(N,N,_,_,[],[]) :-
+frame_bindings(N,N,_,_,[]) :-
   !.
-frame_bindings(I,N,VarNames,Frame,[VarName|VarNameList],[ValueAtom|ValueList]) :-
+frame_bindings(I,N,VarNames,Frame,[VarName:Value|Bindings]) :-
   J is I + 1,
   arg(J,VarNames,VarName),
   VarName \== '_',
   !,
   prolog_frame_attribute(Frame,argument(J),Value),
-  term_to_atom(Value,ValueAtom),
-  frame_bindings(J,N,VarNames,Frame,VarNameList,ValueList).
-frame_bindings(I,N,VarNames,Frame,VarNameList,ValueList) :-
+  frame_bindings(J,N,VarNames,Frame,Bindings).
+frame_bindings(I,N,VarNames,Frame,Bindings) :-
   J is I + 1,
-  frame_bindings(J,N,VarNames,Frame,VarNameList,ValueList).
+  frame_bindings(J,N,VarNames,Frame,Bindings).
+
+bindings_lists([],_,[],[]).
+bindings_lists([_:Value|BindingsRest],Bindings,VarNames,ValueAtoms) :-
+  var(Value),
+  !,
+  bindings_lists(BindingsRest,Bindings,VarNames,ValueAtoms).
+bindings_lists([VarName:Value|BindingsRest],Bindings,[VarName|VarNames],[ValueAtom|ValueAtoms]) :-
+  insert_varnames(Value,Bindings,Value1),
+  with_output_to(atom(ValueAtom),write_term(Value1,[numbervars(true)])),
+  bindings_lists(BindingsRest,Bindings,VarNames,ValueAtoms).
+
+insert_varnames(Term,Bindings,Result) :-
+  var(Term),
+  !,
+  insert_varnames_var(Term,Bindings,Result).
+insert_varnames(Term,Bindings,Result) :-
+  functor(Term,Functor,N),
+  functor(Result,Functor,N),
+  insert_varnames(0,N,Term,Bindings,Result).
+
+insert_varnames(N,N,_,_,_) :-
+  !.
+insert_varnames(I,N,Term,Bindings,Result) :-
+  J is I + 1,
+  arg(J,Term,Argument),
+  arg(J,Result,ResultArgument),
+  insert_varnames(Argument,Bindings,ResultArgument),
+  insert_varnames(J,N,Term,Bindings,Result).
+
+insert_varnames_var(Var,Bindings,'$VAR'(VarName)) :- % for write_term/2
+  member(VarName:Var2,Bindings),
+  Var == Var2,
+  !.
+insert_varnames_var(Var,Bindings,Var).
 
 frame_arguments(Frame,ArgNumList,ValueList) :-
   prolog_frame_attribute(Frame,goal,Goal),
