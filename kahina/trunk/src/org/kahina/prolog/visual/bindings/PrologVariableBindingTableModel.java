@@ -20,8 +20,6 @@ public class PrologVariableBindingTableModel extends AbstractTableModel
 			System.err.println(this + ".setBingings(" + keys + ", " + values + ")");
 		}
 		data = new String[][] { keys, values };
-		if (keys.length > 0)
-		System.err.println("~" + keys[0].charAt(0));
 		if (keys.length > 0 && Character.isDigit(keys[0].charAt(0)))
 		{
 			columnNames[0] = "Argument";

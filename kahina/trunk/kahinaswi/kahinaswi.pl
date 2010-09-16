@@ -63,6 +63,7 @@ act(call,Frame,Bridge) :-
   prolog_frame_attribute(Frame,goal,Goal),
   term_to_atom(Goal,GoalAtom), % TODO shorten, extra view for full goals
   jpl_call(Bridge,step,[Step,GoalAtom],_),
+  send_location(Step,Frame,Bridge),
   send_bindings(Step,in,Frame,Bridge),
   jpl_call(Bridge,call,[Step],_).
 act(fail,Frame,Bridge) :-
@@ -83,9 +84,7 @@ act(redo,Frame,Bridge) :-
   frame_step(Frame,Step),
   jpl_call(Bridge,redo,[Step],_),
   send_bindings(Step,in,Frame,Bridge).
-% TODO exception ports
-% TODO unify ports?
-% TODO foreign ports? (are these ports?)
+% TODO ports: exception/1, unify/0, break/1, cut_call/1, cut_exit/1
 
 get_next_step(Step) :-
   retract(next_step(Step)),
@@ -104,6 +103,18 @@ end(1,Bridge) :-
   !,
   jpl_call(Bridge,end,[1],_).
 end(_,_).
+
+send_location(Step,Frame,Bridge) :-
+  get_location(Frame,File,Line),
+  !,
+  jpl_call(Bridge,registerStepSourceCodeLocation,[Step,File,Line],_).
+send_location(_,_,_).
+
+% TODO clauses, subgoals, ranges, dynamic source buffer...
+get_location(Frame,File,Line) :-
+  prolog_frame_attribute(Frame,goal,Goal),
+  predicate_property(Goal, file(File)),
+  predicate_property(Goal, line_count(Line)).
 
 send_bindings(Step,Direction,Frame,Bridge) :-
   get_bindings(Frame,KeyList,ValueList),
