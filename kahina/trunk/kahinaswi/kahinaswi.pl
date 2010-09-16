@@ -142,6 +142,20 @@ frame_bindings(I,N,VarNames,Frame,Bindings) :-
   J is I + 1,
   frame_bindings(J,N,VarNames,Frame,Bindings).
 
+frame_arguments(Frame,ArgNumList,ValueList) :-
+  prolog_frame_attribute(Frame,goal,Goal),
+  functor(Goal,_,N),
+  frame_arguments(0,N,Frame,ArgNumList,ValueList).
+
+frame_arguments(N,N,_,[],[]) :-
+  !.
+frame_arguments(I,N,Frame,[ArgNumAtom|ArgNumList],[ValueAtom|ValueList]) :-
+  J is I + 1,
+  term_to_atom(J,ArgNumAtom),
+  prolog_frame_attribute(Frame,argument(J),Value),
+  term_to_atom(Value,ValueAtom),
+  frame_arguments(J,N,Frame,ArgNumList,ValueList).
+
 bindings_lists([],_,[],[]).
 bindings_lists([_:Value|BindingsRest],Bindings,VarNames,ValueAtoms) :-
   var(Value),
@@ -159,38 +173,22 @@ insert_varnames(Term,Bindings,Result) :-
 insert_varnames(Term,Bindings,Result) :-
   functor(Term,Functor,N),
   functor(Result,Functor,N),
-  insert_varnames(0,N,Term,Bindings,Result).
+  insert_varnames_args(0,N,Term,Bindings,Result).
 
-insert_varnames(N,N,_,_,_) :-
+insert_varnames_args(N,N,_,_,_) :-
   !.
-insert_varnames(I,N,Term,Bindings,Result) :-
+insert_varnames_args(I,N,Term,Bindings,Result) :-
   J is I + 1,
   arg(J,Term,Argument),
   arg(J,Result,ResultArgument),
   insert_varnames(Argument,Bindings,ResultArgument),
-  insert_varnames(J,N,Term,Bindings,Result).
+  insert_varnames_args(J,N,Term,Bindings,Result).
 
 insert_varnames_var(Var,Bindings,'$VAR'(VarName)) :- % for write_term/2
   member(VarName:Var2,Bindings),
   Var == Var2,
   !.
-insert_varnames_var(Var,Bindings,Var).
-
-frame_arguments(Frame,ArgNumList,ValueList) :-
-  prolog_frame_attribute(Frame,goal,Goal),
-  functor(Goal,_,N),
-  frame_arguments(0,N,Frame,ArgNumList,ValueList).
-
-frame_arguments(N,N,_,[],[]) :-
-  !.
-frame_arguments(I,N,Frame,[ArgNumAtom|ArgNumList],[ValueAtom|ValueList]) :-
-  J is I + 1,
-  term_to_atom(J,ArgNumAtom),
-  prolog_frame_attribute(Frame,argument(J),Value),
-  term_to_atom(Value,ValueAtom),
-  frame_arguments(J,N,Frame,ArgNumList,ValueList).
-
-% TODO get variable names to show up instead of _G393 and friends
+insert_varnames_var(Var,_,Var).
 
 not(true,false).
 not(false,true).

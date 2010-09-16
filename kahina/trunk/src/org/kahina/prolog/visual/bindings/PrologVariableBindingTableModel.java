@@ -6,10 +6,12 @@ public class PrologVariableBindingTableModel extends AbstractTableModel
 {
 
 	private static final long serialVersionUID = 2591048016192505705L;
-	
+
 	private static final boolean VERBOSE = false;
 
 	private String[][] data = { {}, {} };
+
+	private String[] columnNames = { "Variable", "Value" };
 
 	public void setBindings(String[] keys, String[] values)
 	{
@@ -18,6 +20,22 @@ public class PrologVariableBindingTableModel extends AbstractTableModel
 			System.err.println(this + ".setBingings(" + keys + ", " + values + ")");
 		}
 		data = new String[][] { keys, values };
+		if (keys.length > 0)
+		System.err.println("~" + keys[0].charAt(0));
+		if (keys.length > 0 && Character.isDigit(keys[0].charAt(0)))
+		{
+			columnNames[0] = "Argument";
+		} else
+		{
+			columnNames[0] = "Variable";
+		}
+		fireTableStructureChanged();
+	}
+
+	@Override
+	public String getColumnName(int columnIndex)
+	{
+		return columnNames[columnIndex];
 	}
 
 	@Override
