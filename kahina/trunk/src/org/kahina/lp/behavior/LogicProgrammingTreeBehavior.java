@@ -243,13 +243,14 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 * contains the logic by which the tree is formed out of callstacks called
 	 * by the event processing routine for a KahinaTreeEvent of type "new step"
 	 */
-	public void integrateIncomingNode(int stepID, int ancestorID)
+	protected void integrateIncomingNode(int stepID, int ancestorID)
 	{
 		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.integratingIncomingNode(" + stepID + "," + ancestorID + ")");
 		if (VERBOSE)
 			System.err.println("\t object.addChild(" + lastActiveID + "," + stepID + ")");
 		stepBeingRedone = -1;
+		
 		if (lastActiveID == -1)
 		{
 			object.setRootID(stepID);
@@ -257,6 +258,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			object.addChild(lastActiveID, stepID);
 		}
+		
 		if (ancestorID == -1)
 		{
 			secondaryTree.setRootID(stepID);
@@ -264,6 +266,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			secondaryTree.addChild(ancestorID, stepID);
 		}
+		
 		if (VERBOSE)
 		{
 			System.err.println("Tree: " + object);

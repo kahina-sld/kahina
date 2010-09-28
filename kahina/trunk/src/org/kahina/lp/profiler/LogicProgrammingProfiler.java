@@ -14,7 +14,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 public class LogicProgrammingProfiler implements KahinaListener
 {
 	
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 	
 	private final Mapper<String, ProfileEntry> mapper;
 	

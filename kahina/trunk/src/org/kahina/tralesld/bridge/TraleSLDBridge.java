@@ -76,6 +76,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			newStep.setExternalID(0);
 			int newStepID = state.nextStepID();
 			stepIDConv.put(0, newStepID);
+			parentCandidateID = newStepID;
 			KahinaRunner.store(newStepID, newStep);
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.INIT, newStepID, wordList.toString()));
 			KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
