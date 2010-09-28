@@ -1,8 +1,5 @@
 package org.kahina.lp.profiler;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.tree.KahinaTree;
@@ -97,32 +94,36 @@ public class LogicProgrammingProfiler implements KahinaListener
 			System.err.println(this + ".profileSubtree(" + tree + ", " + subtreeRootID + ")");
 		}
 		LogicProgrammingProfile result = new LogicProgrammingProfile();
-		profileSubtree(tree, subtreeRootID, result, new HashSet<Integer>());
+		profileSubtree(tree, subtreeRootID, result);
 		return result;
 	}
 
-	private void profileSubtree(KahinaTree tree, int stepID, LogicProgrammingProfile profile, Set<Integer> externalIDs)
+	private void profileSubtree(KahinaTree tree, int stepID, LogicProgrammingProfile profile)
 	{
-		profileNode(tree, stepID, profile, externalIDs);
+		if (VERBOSE)
+		{
+			System.err.println(this + ".profileSubtree(" + tree + ", " + stepID + ", " + profile + ")");
+		}
+		profileNode(tree, stepID, profile);
 		for (int childID : tree.getChildren(stepID))
 		{
-			profileSubtree(tree, childID, profile, externalIDs);
+			profileSubtree(tree, childID, profile);
 		}
 	}
 
-	protected void profileNode(KahinaTree tree, int stepID, LogicProgrammingProfile profile, Set<Integer> externalIDs)
+	protected void profileNode(KahinaTree tree, int stepID, LogicProgrammingProfile profile)
 	{
 		LogicProgrammingStep step = KahinaRunner.retrieve(LogicProgrammingStep.class, stepID);
-		profileNode(step, tree, stepID, profile, externalIDs);
+		profileNode(step, tree, stepID, profile);
 	}
 
-	protected void profileNode(LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile, Set<Integer> externalIDs)
+	protected void profileNode(LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile)
 	{
 		ProfileEntry entry = mapper.map(step.getGoalDesc());
-		profileNode(entry, step, tree, stepID, profile, externalIDs);
+		profileNode(entry, step, tree, stepID, profile);
 	}
 
-	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile, Set<Integer> externalIDs)
+	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile)
 	{
 		if (step.isRedone())
 		{

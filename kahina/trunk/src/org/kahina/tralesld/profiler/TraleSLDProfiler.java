@@ -1,7 +1,5 @@
 package org.kahina.tralesld.profiler;
 
-import java.util.Set;
-
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
@@ -42,16 +40,16 @@ public class TraleSLDProfiler extends LogicProgrammingProfiler
 	}
 	
 	@Override
-	protected void profileNode(KahinaTree tree, int stepID, LogicProgrammingProfile profile, Set<Integer> externalIDs)
+	protected void profileNode(KahinaTree tree, int stepID, LogicProgrammingProfile profile)
 	{
 		TraleSLDStep step = KahinaRunner.retrieve(TraleSLDStep.class, stepID);
-		profileNode(step, tree, stepID, profile, externalIDs);
+		profileNode(step, tree, stepID, profile);
 	}
 	
 	@Override
-	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile, Set<Integer> externalIDs)
+	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile)
 	{
-		super.profileNode(entry, step, tree, stepID, profile, externalIDs);
+		super.profileNode(entry, step, tree, stepID, profile);
 		if (tree.getNodeStatus(stepID) == TraleSLDStepType.FINISHED)
 		{
 			profile.fail(entry);
