@@ -25,7 +25,9 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
         rightPanel = new JPanel();
         rightPanel.setBorder(BorderFactory.createTitledBorder("Drag window 2 here!"));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        getContentPane().add(new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel));
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
+        splitPane.setResizeWeight(.5);
+        getContentPane().add(splitPane);
     }
     
     public void setLeftWindow(KahinaWindow w)

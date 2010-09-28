@@ -83,7 +83,7 @@ public class KahinaWindowManager
         {
             wrapperWindow2 = integrateInDefaultWindow(v2);
         }
-        KahinaDiagonallySplitWindow splitWindow = new KahinaDiagonallySplitWindow();
+        KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow();
         splitWindow.setTitle(newTitle);
         splitWindow.setUpperWindow(wrapperWindow1);
         splitWindow.setLowerWindow(wrapperWindow2);
