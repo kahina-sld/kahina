@@ -42,10 +42,6 @@ public class TraleSLDFeatureStructureViewPanel extends KahinaViewPanel<TraleSLDF
 		} else
 		{
 			innerPanel.add(util.visualize(grisuMessage));
-			// TODO should use the asynchronous method instead, but currently
-			// leads to weird behavior - some updates then happen only on the
-			// second click
-			// util.visualize(grisuMessage, innerPanel);
 		}
 		innerPanel.repaint();
 	}
