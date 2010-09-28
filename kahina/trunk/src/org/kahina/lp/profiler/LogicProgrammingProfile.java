@@ -20,6 +20,8 @@ public class LogicProgrammingProfile implements Serializable
 	
 	private static final String[] COLUMN_NAMES = {"Category", "Name", "Calls", "Redos", "Exits", "Fails"};
 
+	private static final boolean VERBOSE = false;
+
 	private final Map<ProfileEntry, Integer> callsByEntry = new HashMap<ProfileEntry, Integer>();
 	
 	private final Map<ProfileEntry, Integer> failsByEntry = new HashMap<ProfileEntry, Integer>();
@@ -51,6 +53,10 @@ public class LogicProgrammingProfile implements Serializable
 
 	public void fail(ProfileEntry entry)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".fail(" + entry + ")");
+		}
 		count(entry, failsByEntry);
 	}
 
@@ -88,9 +94,6 @@ public class LogicProgrammingProfile implements Serializable
 		return new AbstractTableModel()
 		{
 
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = -8811999723282268512L;
 
 			@Override

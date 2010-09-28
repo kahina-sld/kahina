@@ -38,18 +38,18 @@ public class TraleSLDProfiler extends LogicProgrammingProfiler
 			fail(event.getInternalID());
 		}
 	}
-	
+
 	@Override
-	protected void profileNode(KahinaTree tree, int stepID, LogicProgrammingProfile profile)
+	protected void profileNode(KahinaTree tree, KahinaTree contentfulTree, int stepID, LogicProgrammingProfile profile)
 	{
 		TraleSLDStep step = KahinaRunner.retrieve(TraleSLDStep.class, stepID);
-		profileNode(step, tree, stepID, profile);
+		profileNode(step, tree, contentfulTree, stepID, profile);
 	}
-	
+
 	@Override
-	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile)
+	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, KahinaTree contentfulTree, int stepID, LogicProgrammingProfile profile)
 	{
-		super.profileNode(entry, step, tree, stepID, profile);
+		super.profileNode(entry, step, tree, contentfulTree, stepID, profile);
 		if (tree.getNodeStatus(stepID) == TraleSLDStepType.FINISHED)
 		{
 			profile.fail(entry);

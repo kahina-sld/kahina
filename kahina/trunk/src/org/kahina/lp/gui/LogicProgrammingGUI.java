@@ -26,7 +26,7 @@ import org.kahina.lp.gui.profiler.LogicProgrammingProfileWindow;
 public class LogicProgrammingGUI extends KahinaGUI
 {
 	private static final boolean verbose = false;
-	
+
 	protected KahinaLayeredTreeView mainTreeView;
 
 	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
@@ -58,7 +58,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.FAIL, new Color(183, 50, 50));
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.REDO, new Color(204, 102, 0));
 	}
-	
+
 	protected KahinaLayeredTreeView generateTreeView()
 	{
 		return new KahinaLayeredTreeView(true, 0);
@@ -131,7 +131,8 @@ public class LogicProgrammingGUI extends KahinaGUI
 			case KahinaDialogEvent.CALL_SUBTREE_PROFILE:
 			{
 				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
-				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?>) kahina).getProfiler().profileSubtree(state.getSecondaryStepTree(), state.getSelectedStepID()));
+				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?>) kahina).getProfiler().profileSubtree(state.getSecondaryStepTree(), state.getStepTree(),
+						state.getSelectedStepID()));
 				window.setTitle("Call subtree profile");
 				window.setVisible(true);
 				break;
@@ -139,7 +140,8 @@ public class LogicProgrammingGUI extends KahinaGUI
 			case KahinaDialogEvent.SEARCH_SUBTREE_PROFILE:
 			{
 				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
-				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?>) kahina).getProfiler().profileSubtree(state.getStepTree(), state.getSelectedStepID()));
+				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?>) kahina).getProfiler().profileSubtree(state.getStepTree(), state.getStepTree(),
+						state.getSelectedStepID()));
 				window.setTitle("Search subtree profile");
 				window.setVisible(true);
 				break;

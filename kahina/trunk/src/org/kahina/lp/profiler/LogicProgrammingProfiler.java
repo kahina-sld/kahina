@@ -13,13 +13,13 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingProfiler implements KahinaListener
 {
-	
+
 	private static final boolean VERBOSE = false;
-	
+
 	private final Mapper<String, ProfileEntry> mapper;
-	
+
 	private final LogicProgrammingProfile profile;
-	
+
 	public LogicProgrammingProfiler(Mapper<String, ProfileEntry> mapper, LogicProgrammingProfile profile)
 	{
 		this.mapper = mapper;
@@ -56,22 +56,22 @@ public class LogicProgrammingProfiler implements KahinaListener
 			redo(event.getID());
 		}
 	}
-	
+
 	protected void call(int id)
 	{
 		profile.call(getProfileEntryForStepID(id));
 	}
-	
+
 	protected void fail(int id)
 	{
 		profile.fail(getProfileEntryForStepID(id));
 	}
-	
+
 	protected void exit(int id)
 	{
 		profile.exit(getProfileEntryForStepID(id));
 	}
-	
+
 	protected void redo(int id)
 	{
 		profile.redo(getProfileEntryForStepID(id));
@@ -81,50 +81,71 @@ public class LogicProgrammingProfiler implements KahinaListener
 	{
 		return mapper.map(KahinaRunner.retrieve(LogicProgrammingStep.class, stepID).getGoalDesc());
 	}
-	
+
 	public LogicProgrammingProfile getProfile()
 	{
 		return profile;
 	}
 
-	public LogicProgrammingProfile profileSubtree(KahinaTree tree, int subtreeRootID)
+	/**
+	 * Creates a profile for the subtree rooted in a given node.
+	 * 
+	 * @param tree
+	 *            The tree object used for determining the descendants of the
+	 *            node given as subtree node. This can either be the primary or
+	 *            the secondary tree.
+	 * @param contentfulTree
+	 *            The tree object used for determinining the status of nodes.
+	 *            This usually needs to be the primary tree, as in the current
+	 *            architecture, node statuses and labels are only stored in the
+	 *            primary tree.
+	 * @param subtreeRootID
+	 *            The (internal) ID of the root of the subtree the caller wants
+	 *            to profile.
+	 * @return A profile for the specified subtree.
+	 */
+	public LogicProgrammingProfile profileSubtree(KahinaTree tree, KahinaTree contentfulTree, int subtreeRootID)
 	{
 		if (VERBOSE)
 		{
 			System.err.println(this + ".profileSubtree(" + tree + ", " + subtreeRootID + ")");
 		}
 		LogicProgrammingProfile result = new LogicProgrammingProfile();
-		profileSubtree(tree, subtreeRootID, result);
+		profileSubtree(tree, contentfulTree, subtreeRootID, result);
 		return result;
 	}
 
-	private void profileSubtree(KahinaTree tree, int stepID, LogicProgrammingProfile profile)
+	private void profileSubtree(KahinaTree tree, KahinaTree contentfulTree, int stepID, LogicProgrammingProfile profile)
 	{
 		if (VERBOSE)
 		{
 			System.err.println(this + ".profileSubtree(" + tree + ", " + stepID + ", " + profile + ")");
 		}
-		profileNode(tree, stepID, profile);
+		profileNode(tree, contentfulTree, stepID, profile);
 		for (int childID : tree.getChildren(stepID))
 		{
-			profileSubtree(tree, childID, profile);
+			profileSubtree(tree, contentfulTree, childID, profile);
 		}
 	}
 
-	protected void profileNode(KahinaTree tree, int stepID, LogicProgrammingProfile profile)
+	protected void profileNode(KahinaTree tree, KahinaTree contentfulTree, int stepID, LogicProgrammingProfile profile)
 	{
 		LogicProgrammingStep step = KahinaRunner.retrieve(LogicProgrammingStep.class, stepID);
-		profileNode(step, tree, stepID, profile);
+		profileNode(step, tree, contentfulTree, stepID, profile);
 	}
 
-	protected void profileNode(LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile)
+	protected void profileNode(LogicProgrammingStep step, KahinaTree tree, KahinaTree contentfulTree, int stepID, LogicProgrammingProfile profile)
 	{
 		ProfileEntry entry = mapper.map(step.getGoalDesc());
-		profileNode(entry, step, tree, stepID, profile);
+		profileNode(entry, step, tree, contentfulTree, stepID, profile);
 	}
 
-	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, int stepID, LogicProgrammingProfile profile)
+	protected void profileNode(ProfileEntry entry, LogicProgrammingStep step, KahinaTree tree, KahinaTree contentfulTree, int stepID, LogicProgrammingProfile profile)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".profileNode(" + entry + ", " + step + ", " + tree + ", " + stepID + ", " + profile + ")");
+		}
 		if (step.isRedone())
 		{
 			profile.redo(entry);
@@ -132,12 +153,26 @@ public class LogicProgrammingProfiler implements KahinaListener
 		{
 			profile.call(entry);
 		}
-		int status = tree.getNodeStatus(stepID);
+
+		int status = contentfulTree.getNodeStatus(stepID);
+		if (VERBOSE)
+		{
+			System.err.println("Status: " + status);
+		}
+
 		if (status == LogicProgrammingStepType.DET_EXIT || status == LogicProgrammingStepType.EXIT)
 		{
+			if (VERBOSE)
+			{
+				System.err.println("Exited.");
+			}
 			profile.exit(entry);
 		} else if (status == LogicProgrammingStepType.FAIL)
 		{
+			if (VERBOSE)
+			{
+				System.err.println("Failed.");
+			}
 			profile.fail(entry);
 		}
 	}
