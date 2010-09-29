@@ -155,7 +155,8 @@ frame_bindings(I,N,VarNames,Frame,Bindings) :-
 
 frame_arguments(Frame,ArgNumList,ValueList) :-
   prolog_frame_attribute(Frame,goal,Goal),
-  functor(Goal,_,N),
+  local_goal(Goal,LocalGoal),
+  functor(LocalGoal,Functor,N),
   frame_arguments(0,N,Frame,ArgNumList,ValueList).
 
 frame_arguments(N,N,_,[],[]) :-
@@ -166,6 +167,10 @@ frame_arguments(I,N,Frame,[ArgNumAtom|ArgNumList],[ValueAtom|ValueList]) :-
   prolog_frame_attribute(Frame,argument(J),Value),
   term_to_atom(Value,ValueAtom),
   frame_arguments(J,N,Frame,ArgNumList,ValueList).
+
+local_goal(_Module:Goal,Goal) :-
+  !.
+local_goal(Goal,Goal).
 
 bindings_lists([],_,[],[]).
 bindings_lists([_:Value|BindingsRest],Bindings,VarNames,ValueAtoms) :-
