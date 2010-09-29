@@ -1,10 +1,14 @@
 package org.kahina.core.profiler;
 
+import java.io.Serializable;
+
 import org.kahina.core.util.Utilities;
 
-public class ProfileEntry
+public class ProfileEntry implements Serializable
 {
 	
+	private static final long serialVersionUID = -8785694535266108407L;
+
 	private final String name;
 	
 	private final String category;
