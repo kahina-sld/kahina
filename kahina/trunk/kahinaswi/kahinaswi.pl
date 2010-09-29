@@ -60,9 +60,9 @@ act(call,Frame,Bridge) :-
   get_next_step(Step),
   retractall(frame_step(Frame,_)),
   assert(frame_step(Frame,Step)),
-  prolog_frame_attribute(Frame,goal,Goal),
-  term_to_atom(Goal,GoalAtom), % TODO shorten, extra view for full goals
-  jpl_call(Bridge,step,[Step,GoalAtom],_),
+  prolog_frame_attribute(Frame,predicate_indicator,PredicateIndicator),
+  term_to_atom(PredicateIndicator,PredicateIndicatorAtom),
+  jpl_call(Bridge,step,[Step,PredicateIndicatorAtom],_),
   send_location(Step,Frame,Bridge),
   send_bindings(Step,in,Frame,Bridge),
   jpl_call(Bridge,call,[Step],_).
