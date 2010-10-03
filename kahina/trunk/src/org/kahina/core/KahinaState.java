@@ -10,6 +10,7 @@ import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaMessageEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
@@ -45,7 +46,7 @@ public class KahinaState implements Serializable, KahinaListener
     {
         consoleMessages = new KahinaTextModel();
         consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
-        KahinaRunner.getControl().registerListener("select", this);
+        KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
     }
     
     public int nextStepID()

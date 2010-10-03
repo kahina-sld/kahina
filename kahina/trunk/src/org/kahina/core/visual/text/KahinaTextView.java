@@ -53,6 +53,7 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
     
     public void processEvent(KahinaEvent e)
     {
+    	System.err.println(this + " has " + model);
         if (e instanceof KahinaMessageEvent)
         {
             processEvent((KahinaMessageEvent) e);

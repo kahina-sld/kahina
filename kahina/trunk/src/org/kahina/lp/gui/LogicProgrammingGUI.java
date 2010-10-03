@@ -67,8 +67,10 @@ public class LogicProgrammingGUI extends KahinaGUI
 	@Override
 	protected void displayMainViews()
 	{
-		mainTreeView.display(((LogicProgrammingState) kahina.getState()).getStepTree());
-		mainTreeView.displaySecondaryTree(((LogicProgrammingState) kahina.getState()).getSecondaryStepTree());
+		LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
+		mainTreeView.display(state.getStepTree());
+		mainTreeView.displaySecondaryTree(state.getSecondaryStepTree());
+		messageConsoleView.display(state.getConsoleMessages());
 	}
 
 	@Override
