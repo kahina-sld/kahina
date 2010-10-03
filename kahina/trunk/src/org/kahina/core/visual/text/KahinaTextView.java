@@ -27,6 +27,13 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
         selectionModel = new DefaultListSelectionModel();
     }
     
+    @Override
+    public void doDisplay()
+    {
+    	// FIXME create listModel and selectionModel from existing model, e.g.
+    	// when a stored session is loaded.
+    }
+    
     public void registerNewLineReference(KahinaLineReference ref)
     {
         listModel.addElement(ref);
@@ -53,7 +60,6 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
     
     public void processEvent(KahinaEvent e)
     {
-    	System.err.println(this + " has " + model);
         if (e instanceof KahinaMessageEvent)
         {
             processEvent((KahinaMessageEvent) e);

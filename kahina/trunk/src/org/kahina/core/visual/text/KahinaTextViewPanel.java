@@ -45,7 +45,8 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView<?>>
     
     @Override
     public void updateDisplay()
-    {   
+    {
+    	// FIXME The view's model may have changed, e.g. when loading a stored session.
         Integer leadIndex = view.getSelectionModel().getLeadSelectionIndex();  
         if (leadIndex != null)
         {
@@ -56,6 +57,7 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView<?>>
                 startIndex = 0;
                 endIndex -= startIndex;
             }
+            
             if (endIndex >= list.getModel().getSize())
             {
                 endIndex = list.getModel().getSize() - 1;
