@@ -218,7 +218,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			final TraleSLDStep newStep = generateStep();
 			newStep.setGoalDesc("rule(" + ruleName + ")");
-			newStep.setRedone(false);
 			newStep.setExternalID(extID);
 			int newStepID = state.nextStepID();
 			stepIDConv.put(extID, newStepID);

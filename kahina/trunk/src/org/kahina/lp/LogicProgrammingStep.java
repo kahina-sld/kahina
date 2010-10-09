@@ -17,7 +17,7 @@ public class LogicProgrammingStep extends KahinaStep
     //the source code location associated with this step
     public KahinaSourceCodeLocation codeLocation;
     
-    public boolean redone;
+    public int redone;
     
     public LogicProgrammingStep()
     {
@@ -71,13 +71,18 @@ public class LogicProgrammingStep extends KahinaStep
         return KahinaRunner.retrieve(LogicProgrammingStep.class, id);
     }
     
-    public void setRedone(boolean redone)
+    public int getRedone()
     {
-    	this.redone = redone;
+    	return redone;
     }
-
-	public boolean isRedone()
-	{
-		return redone;
-	}
+    
+    public void incrementRedone()
+    {
+    	redone++;
+    }
+    
+    public boolean isRedone()
+    {
+    	return redone > 0;
+    }
 }
