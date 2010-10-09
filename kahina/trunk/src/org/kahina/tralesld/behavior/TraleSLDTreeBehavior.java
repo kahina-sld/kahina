@@ -44,16 +44,6 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         bp.setName("unify/featval/type Skip");
         bp.setPattern(pat);
         ((LogicProgrammingState) kahina.getState()).getSkipPoints().add(bp);
-        //System.err.println(aut.toString());
-        TreePattern pat2 = new TreePattern();
-        TreePatternNode rootNode2 = new TreePatternNode();
-        TreeNodePattern rootPattern2 = new TreeNodePattern(TreeNodePattern.CAPTION, TreeNodePattern.MATCHING, "[0-9]* lex\\(.*");    
-        rootNode2.setPattern(rootPattern2);
-        pat2.setRoot(rootNode2);
-        KahinaBreakpoint bp2 = new KahinaBreakpoint(KahinaBreakpointType.SKIP_POINT);
-        bp2.setName("Lex Detail Skip");
-        bp2.setPattern(pat2);
-        ((LogicProgrammingState) kahina.getState()).getSkipPoints().add(bp2);
     }
     
     public void initializeCreepPoints()
