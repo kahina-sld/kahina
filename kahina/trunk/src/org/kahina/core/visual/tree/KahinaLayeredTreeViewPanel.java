@@ -61,6 +61,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 	private JComponent createPane(JComponent panel)
 	{
 		JScrollPane result = new JScrollPane(panel);
+		result.getVerticalScrollBar().setUnitIncrement(16);
 		result.getViewport().setBackground(Color.WHITE);
 		return result;
 	}
