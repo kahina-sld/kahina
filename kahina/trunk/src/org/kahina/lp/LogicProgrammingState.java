@@ -31,6 +31,8 @@ public class LogicProgrammingState extends KahinaState
     Map<Integer, List<Integer>> anchorsByTarget;
     Map<Integer, Integer> targetByAnchor;
     
+    Set<Integer> hiddenSteps;
+    
     //store the three types of breakpoints
     protected List<KahinaBreakpoint> primaryBreakpoints;
     protected List<KahinaBreakpoint> secondaryBreakpoints;
@@ -47,13 +49,12 @@ public class LogicProgrammingState extends KahinaState
         secondaryStepTree = new KahinaMemTree();
         anchorsByTarget = new HashMap<Integer, List<Integer>>();
         targetByAnchor = new HashMap<Integer, Integer>();
-        
+        hiddenSteps = new HashSet<Integer>();
         primaryBreakpoints = new ArrayList<KahinaBreakpoint>();
         secondaryBreakpoints = new ArrayList<KahinaBreakpoint>();
         skipPoints = new ArrayList<KahinaBreakpoint>();
         creepPoints = new ArrayList<KahinaBreakpoint>();
         failPoints = new ArrayList<KahinaBreakpoint>();
-        
         profile = new LogicProgrammingProfile();
     }
     
@@ -163,6 +164,27 @@ public class LogicProgrammingState extends KahinaState
 	public LogicProgrammingProfile getFullProfile()
 	{
 		return profile;
+	}
+
+	/**
+	 * Calling this method indicates that a step should be hidden in the main
+	 * tree view because it was skipped over and nevertheless reported by the
+	 * logic programming system because it is "unskippable".
+	 * @param stepID
+	 */
+	public void hideStep(int stepID)
+	{
+		hiddenSteps.add(stepID);
+	}
+	
+	/**
+	 * @return The IDs of the steps that should be hidden in the main tree view
+	 * because they were skipped over and nevertheless reported by the logic
+	 * programming system because they are "unskippable".
+	 */
+	public Set<Integer> getHiddenSteps()
+	{
+		return Collections.unmodifiableSet(hiddenSteps);
 	}
     
 }

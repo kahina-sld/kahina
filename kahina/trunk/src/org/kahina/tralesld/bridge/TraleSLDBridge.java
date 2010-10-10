@@ -49,7 +49,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	private Sharer<TraleSLDVariableBinding> bindingSharer;
 
-	public TraleSLDBridge(TraleSLDState state)
+	public TraleSLDBridge(final TraleSLDState state)
 	{
 		super(state);
 		this.state = state;
@@ -113,13 +113,15 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			Matcher matcher = NOW_PATTERN.matcher(nodeLabel);
 			if (matcher.matches())
 			{
-				/*
-				 * if (verbose) { System.err.println("Matched! Current ID: " +
-				 * currentID); } int blockingStepExtID =
-				 * Integer.parseInt(matcher.group(1)); int blockingStepID =
-				 * stepIDConv.get(blockingStepExtID); state.linkNodes(currentID,
-				 * blockingStepID); TODO little arrow
-				 */
+
+				if (VERBOSE)
+				{
+					System.err.println("Matched! Current ID: " + currentID);
+				}
+				int blockingStepExtID = Integer.parseInt(matcher.group(1));
+				int blockingStepID = stepIDConv.get(blockingStepExtID);
+				state.linkNodes(currentID, blockingStepID);
+
 			}
 			if (VERBOSE)
 			{
@@ -367,6 +369,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			System.exit(1);
 		}
 	}
+
 	public void registerParseEnd()
 	{
 		try
@@ -437,6 +440,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				System.err.println("LogicProgrammingBridge.registerStepFailure(" + extID + ")");
 			}
 			int stepID = convertStepID(extID);
+			if (stepID == waitingForReturnFromSkip)
+			{
+				waitingForReturnFromSkip = -1;
+			}
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);

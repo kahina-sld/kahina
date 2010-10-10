@@ -47,6 +47,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	protected char bridgeState = 'n';
 	// used to hand on skip commands to the logic programming system
 	protected boolean skipFlag = false;
+	protected int waitingForReturnFromSkip = -1;
 
 	// in skip mode, this is the internal step ID of the step we are skipping
 	int skipID = -1;
@@ -102,6 +103,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 			int stepID = convertStepID(extID);
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
 			step.setGoalDesc(nodeLabel);
+			if (waitingForReturnFromSkip != -1)
+			{
+				state.hideStep(stepID);
+			}
 			if (currentID != -1)
 			{
 				step.setSourceCodeLocation(LogicProgrammingStep.get(currentID).getSourceCodeLocation());
@@ -252,6 +257,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepExit(" + extID + "," + deterministic + ")");
 			int stepID = convertStepID(extID);
+			if (stepID == waitingForReturnFromSkip)
+			{
+				waitingForReturnFromSkip = -1;
+			}
 			if (deterministic)
 			{
 				KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_DET_EXIT, stepID));
@@ -289,6 +298,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepFailure(" + extID + ")");
 			int stepID = convertStepID(extID);
+			if (stepID == waitingForReturnFromSkip)
+			{
+				waitingForReturnFromSkip = -1;
+			}
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
@@ -352,6 +365,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 					System.err.println("Bridge state/pressed button: " + bridgeState + "/s");
 				}
 				skipFlag = false;
+				waitingForReturnFromSkip = currentID;
 				return 's';
 			}
 			switch (bridgeState)
