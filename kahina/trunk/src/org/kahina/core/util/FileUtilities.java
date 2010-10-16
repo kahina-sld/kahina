@@ -4,10 +4,16 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -145,7 +151,7 @@ public class FileUtilities
 	 * @param zipFile
 	 * @param directory
 	 * @param prefix
-	 * @param monitor 
+	 * @param monitor
 	 * @throws IOException
 	 */
 	public static void unzipToDirectory(ZipFile zipFile, File directory, String prefix, ProgressMonitorWrapper monitor) throws IOException
@@ -180,6 +186,34 @@ public class FileUtilities
 				monitor.increment();
 			}
 		}
+	}
+
+	/**
+	 * Reads a whole file into a string.
+	 * @param file
+	 * @return The contents of the file as a string.
+	 * @throws IOException
+	 */
+	public static String read(File file) throws IOException
+	{
+		StringBuilder result = new StringBuilder();
+		Reader reader = new InputStreamReader(new BufferedInputStream(new FileInputStream(file)));
+		char[] buffer = new char[4096];
+		int read;
+		
+		while ((read = reader.read(buffer)) != -1)
+		{
+			result.append(buffer, 0, read);
+		}
+		
+		return result.toString();
+	}
+
+	public static void write(String text, File file) throws IOException
+	{
+		Writer writer = new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(file)));
+		writer.append(text);
+		writer.close();
 	}
 
 }
