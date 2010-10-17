@@ -23,6 +23,8 @@ public class KahinaJEditPanel extends JPanel
 {
 	
 	// TODO fix layout
+	
+	// TODO add shortcut for saving
 
 	private static final long serialVersionUID = 2807203309357135993L;
 	
@@ -79,7 +81,7 @@ public class KahinaJEditPanel extends JPanel
 
 	private Component createTextArea() throws IOException
 	{
-		TextArea result = StandaloneTextArea.createTextArea();
+		TextArea result = new StandaloneTextArea(new KahinaJEditPropertyManager());
 		buffer = result.getBuffer();
 		buffer.insert(0, FileUtilities.read(file)); // TODO encoding support
 		buffer.addBufferListener(new BufferAdapter() {
