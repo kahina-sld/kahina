@@ -32,7 +32,7 @@ import org.kahina.core.util.FileUtilities;
 import org.kahina.core.util.KahinaSwingUtilities;
 import org.kahina.core.util.ProgressMonitorWrapper;
 import org.kahina.core.visual.KahinaDefaultView;
-import org.kahina.core.visual.source.KahinaSourceCodeView;
+import org.kahina.core.visual.source.KahinaJEditSourceCodeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.tralesld.TraleSLDState;
 
@@ -101,7 +101,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
 		KahinaViewRegistry.registerMapping(KahinaObject.class, KahinaDefaultView.class);
 		KahinaViewRegistry.registerMapping(KahinaTree.class, KahinaTreeView.class);
-		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, KahinaSourceCodeView.class);
+		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, KahinaJEditSourceCodeView.class);
 	}
 
 	@Override

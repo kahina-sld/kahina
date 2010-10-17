@@ -1,36 +1,42 @@
 package org.kahina.core.data.source;
 
 import java.util.HashMap;
+import java.util.Map;
 
-import org.kahina.core.data.text.KahinaLineReference;
+import org.kahina.core.data.KahinaObject;
 
-public class KahinaSourceCodeLocation extends KahinaLineReference
+public class KahinaSourceCodeLocation extends KahinaObject
 {    
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -7682559851347891007L;
-	static HashMap<String,KahinaSourceFileModel> codeFiles = new HashMap<String,KahinaSourceFileModel>();
+
+	private static final long serialVersionUID = 2916702640971956581L;
+
+	private static final Map<String, String> ABSOLUTE_PATHS = new HashMap<String, String>();
+	
+	private String absolutePath;
+	
+	private int lineNumber;
     
-    public KahinaSourceCodeLocation()
+    public KahinaSourceCodeLocation(String absolutePath, int lineNumber)
     {
-        super();
+    	// use old String object if equal
+    	String oldAbsolutePath = ABSOLUTE_PATHS.get(absolutePath);
+    	if (oldAbsolutePath == null)
+    	{
+    		ABSOLUTE_PATHS.put(absolutePath, absolutePath);
+    		oldAbsolutePath = absolutePath;
+    	}
+    	this.absolutePath = oldAbsolutePath;
+    	this.lineNumber = lineNumber;
     }
     
-    public KahinaSourceCodeLocation(String absolutePath, int lineNumber, int stepID)
+    public String getAbsolutePath()
     {
-        super(lineNumber, stepID);
-        KahinaSourceFileModel file = codeFiles.get(absolutePath);
-        if (file == null)
-        {
-            file = new KahinaSourceFileModel(absolutePath);
-            codeFiles.put(absolutePath, file);
-        }
-        this.text = file;
+    	return absolutePath;
     }
     
-    public KahinaSourceFileModel getText()
+    public int getLineNumber()
     {
-        return (KahinaSourceFileModel) text;
+    	return lineNumber;
     }
+    
 }
