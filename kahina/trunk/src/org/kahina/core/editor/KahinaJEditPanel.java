@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.gjt.sp.jedit.buffer.BufferAdapter;
 import org.gjt.sp.jedit.buffer.JEditBuffer;
 import org.gjt.sp.jedit.textarea.StandaloneTextArea;
 import org.gjt.sp.jedit.textarea.TextArea;
@@ -22,6 +23,8 @@ public class KahinaJEditPanel extends JPanel
 {
 
 	private static final long serialVersionUID = 2807203309357135993L;
+	
+	public static final String PROPERTY_DIRTY = "dirty";
 
 	// jEdit thankfully provides its text area and buffer classes as
 	// independently usable components. Things get more complicated if
@@ -39,6 +42,8 @@ public class KahinaJEditPanel extends JPanel
 	private JEditBuffer buffer;
 
 	private File file;
+	
+	private boolean dirty = false;
 
 	// TODO retain last modified date when opening/saving file and warn user if
 	// it's modified by another application
@@ -73,21 +78,55 @@ public class KahinaJEditPanel extends JPanel
 	private Component createTextArea() throws IOException
 	{
 		TextArea result = new StandaloneTextArea(new KahinaJEditPropertyManager());
-		result.setBuffer(createBuffer());
+		buffer = result.getBuffer();
+		buffer.insert(0, FileUtilities.read(file)); // TODO encoding support
+		buffer.addBufferListener(new BufferAdapter() {
+			
+			@Override
+			public void contentInserted(JEditBuffer buffer2, int startLine, int offset, int numLines, int length)
+			{
+				updateDirty();
+			}
+			
+			@Override
+			public void contentRemoved(JEditBuffer buffer2, int startLine, int offset, int numLines, int length)
+			{
+				updateDirty();
+			}
+			
+			@Override
+			public void transactionComplete(JEditBuffer buffer2)
+			{
+				// This method is called e.g. after an undo operation. An undo
+				// operation may have cleaned the buffer rather than making it
+				// dirty.
+				updateDirty();
+			}
+			
+		});
 		return result;
+	}
+	
+	private void updateDirty()
+	{
+		setDirty(buffer.isDirty());
+	}
+	
+	private void setDirty(boolean newValue)
+	{
+		boolean oldValue = dirty;
+		
+		if (oldValue != newValue)
+		{
+			dirty = newValue;
+			firePropertyChange(PROPERTY_DIRTY, oldValue, newValue);
+			saveButton.setEnabled(newValue);
+		}
 	}
 
 	private Component createErrorPanel(Exception e)
 	{
 		return new JLabel(e.getMessage());
-	}
-
-	private JEditBuffer createBuffer() throws IOException
-	{
-		JEditBuffer result = new JEditBuffer();
-		result.insert(0, FileUtilities.read(file)); // TODO proper character
-													// encoding support
-		return result;
 	}
 
 	private Component createSaveButton()
@@ -120,8 +159,7 @@ public class KahinaJEditPanel extends JPanel
 	public void save() throws IOException
 	{
 		FileUtilities.write(buffer.getText(), file);
-		saveButton.setEnabled(false);
-		// TODO how do we notice buffer has changed?
+		setDirty(false);
 	}
 
 }
