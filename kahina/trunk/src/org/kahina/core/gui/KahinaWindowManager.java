@@ -44,7 +44,7 @@ public class KahinaWindowManager
                 yPos = maxY + 20;
                 maxY = 0;
             }
-            height = view.getTitle().length() * 12;       
+            height = view.getTitle().length() * 24;       
             if (height > maxY)
             {
                 maxY = height;

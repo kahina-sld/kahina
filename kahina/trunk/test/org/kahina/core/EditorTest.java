@@ -20,8 +20,9 @@ public class EditorTest extends JFrame
 
 	EditorTest()
 	{
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		KahinaJEditPanel editPanel = new KahinaJEditPanel(new File("/home/ke/trale/test_gram/theory3.pl"));
-		add(editPanel);
+		setContentPane(editPanel);
 		this.setSize(800, 600);
 		setVisible(true);
 		editPanel.showLine(24);

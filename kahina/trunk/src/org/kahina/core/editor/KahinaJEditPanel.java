@@ -1,11 +1,13 @@
 package org.kahina.core.editor;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -21,15 +23,15 @@ import org.kahina.core.util.KahinaSwingUtilities;
 
 public class KahinaJEditPanel extends JPanel
 {
-	
+
 	// TODO fix layout
-	
+
 	// TODO add shortcut for saving
 
 	private static final long serialVersionUID = 2807203309357135993L;
-	
+
 	private static final boolean VERBOSE = false;
-	
+
 	public static final String PROPERTY_DIRTY = "dirty";
 
 	// jEdit thankfully provides its text area and buffer classes as
@@ -43,14 +45,16 @@ public class KahinaJEditPanel extends JPanel
 	// embed a view in another Swing window. We would need something
 	// that is like View, but is not a window.
 
+	private static final Dimension SPACE = new Dimension(8, 8);
+
 	private JButton saveButton;
-	
+
 	private TextArea textArea;
 
 	private JEditBuffer buffer;
 
 	private File file;
-	
+
 	private boolean dirty = false;
 
 	// TODO retain last modified date when opening/saving file and warn user if
@@ -64,7 +68,9 @@ public class KahinaJEditPanel extends JPanel
 	{
 		this.file = file;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		add(Box.createRigidArea(SPACE));
 		add(createControlPanel());
+		add(Box.createRigidArea(SPACE));
 		try
 		{
 			add(createTextArea());
@@ -76,54 +82,63 @@ public class KahinaJEditPanel extends JPanel
 
 	private Component createControlPanel()
 	{
-		JPanel result = new JPanel();
-		result.setLayout(new BoxLayout(result, BoxLayout.X_AXIS));
-		result.add(createSaveButton());
-		// TODO buttons for buffer.undo(), buffer.redo()
-		return result;
+		JPanel controlPanel = new JPanel();
+		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
+		// controlPanel.add(Box.createRigidArea(SPACE));
+		controlPanel.add(createSaveButton());
+		controlPanel.add(Box.createHorizontalGlue());
+		controlPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		return controlPanel;
 	}
 
 	private Component createTextArea() throws IOException
 	{
 		textArea = new StandaloneTextArea(new KahinaJEditPropertyManager());
+		textArea.setSize(100, 100);
+		if (VERBOSE)
+		{
+			System.err.println("Created text area: " + textArea);
+		}
 		buffer = textArea.getBuffer();
 		buffer.insert(0, FileUtilities.read(file)); // TODO encoding support
-		buffer.addBufferListener(new BufferAdapter() {
-			
+		buffer.addBufferListener(new BufferAdapter()
+		{
+
 			@Override
 			public void contentInserted(JEditBuffer buffer2, int startLine, int offset, int numLines, int length)
 			{
 				updateDirty();
 			}
-			
+
 			@Override
 			public void contentRemoved(JEditBuffer buffer2, int startLine, int offset, int numLines, int length)
 			{
 				updateDirty();
 			}
-			
+
 			@Override
 			public void transactionComplete(JEditBuffer buffer2)
 			{
 				// This method is called e.g. after an undo operation. An undo
 				// operation may have cleaned the buffer rather than making it
-				// dirty.
+				// dirty. UndoManager doesn't seem to respect this, though.
 				updateDirty();
 			}
-			
+
 		});
+		textArea.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return textArea;
 	}
-	
+
 	private void updateDirty()
 	{
 		setDirty(buffer.isDirty());
 	}
-	
+
 	private void setDirty(boolean newValue)
 	{
 		boolean oldValue = dirty;
-		
+
 		if (oldValue != newValue)
 		{
 			dirty = newValue;
@@ -139,10 +154,8 @@ public class KahinaJEditPanel extends JPanel
 
 	private Component createSaveButton()
 	{
-		saveButton = new JButton();
-		saveButton.setText("Save");
 		final Component gui = this;
-		saveButton.setAction(new AbstractAction()
+		saveButton = new JButton((new AbstractAction("Save")
 		{
 
 			private static final long serialVersionUID = 233207225613043398L;
@@ -159,7 +172,7 @@ public class KahinaJEditPanel extends JPanel
 				}
 			}
 
-		});
+		}));
 		saveButton.setEnabled(false);
 		return saveButton;
 	}
@@ -176,11 +189,15 @@ public class KahinaJEditPanel extends JPanel
 		{
 			System.err.println(this + ".showLine(" + lineNumber + ")");
 		}
-		textArea.setCaretPosition(buffer.getLineStartOffset(lineNumber));
-		textArea.scrollToCaret(true);
-		// No idea what "electric scrolling" is, but switching it off results in
-		// extremely erratic an manifold errors.
-		textArea.selectLine();
+		try
+		{
+			textArea.setCaretPosition(buffer.getLineStartOffset(lineNumber));
+			textArea.scrollToCaret(true);
+			textArea.selectLine();
+		} catch (Exception e)
+		{
+			// This happens randomly. Hopefully harmless.
+		}
 	}
 
 }
