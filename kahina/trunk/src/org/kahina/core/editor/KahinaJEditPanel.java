@@ -28,6 +28,8 @@ public class KahinaJEditPanel extends JPanel
 
 	private static final long serialVersionUID = 2807203309357135993L;
 	
+	private static final boolean VERBOSE = false;
+	
 	public static final String PROPERTY_DIRTY = "dirty";
 
 	// jEdit thankfully provides its text area and buffer classes as
@@ -42,6 +44,8 @@ public class KahinaJEditPanel extends JPanel
 	// that is like View, but is not a window.
 
 	private JButton saveButton;
+	
+	private TextArea textArea;
 
 	private JEditBuffer buffer;
 
@@ -81,8 +85,8 @@ public class KahinaJEditPanel extends JPanel
 
 	private Component createTextArea() throws IOException
 	{
-		TextArea result = new StandaloneTextArea(new KahinaJEditPropertyManager());
-		buffer = result.getBuffer();
+		textArea = new StandaloneTextArea(new KahinaJEditPropertyManager());
+		buffer = textArea.getBuffer();
 		buffer.insert(0, FileUtilities.read(file)); // TODO encoding support
 		buffer.addBufferListener(new BufferAdapter() {
 			
@@ -108,7 +112,7 @@ public class KahinaJEditPanel extends JPanel
 			}
 			
 		});
-		return result;
+		return textArea;
 	}
 	
 	private void updateDirty()
@@ -164,6 +168,19 @@ public class KahinaJEditPanel extends JPanel
 	{
 		FileUtilities.write(buffer.getText(), file);
 		setDirty(false);
+	}
+
+	public void showLine(int lineNumber)
+	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".showLine(" + lineNumber + ")");
+		}
+		textArea.setCaretPosition(buffer.getLineStartOffset(lineNumber));
+		textArea.scrollToCaret(true);
+		// No idea what "electric scrolling" is, but switching it off results in
+		// extremely erratic an manifold errors.
+		textArea.selectLine();
 	}
 
 }

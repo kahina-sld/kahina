@@ -35,7 +35,7 @@ public class KahinaJEditSourceCodeViewPanel extends KahinaViewPanel<KahinaJEditS
 		if (location != null)
 		{
 			editPanel.open(new File(location.getAbsolutePath()));
-			// TODO jump to line
+			editPanel.showLine(location.getLineNumber());
 		}
 	}
 

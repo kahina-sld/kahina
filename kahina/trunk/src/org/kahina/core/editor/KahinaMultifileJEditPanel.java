@@ -85,4 +85,9 @@ public class KahinaMultifileJEditPanel extends JPanel
 		}
 	}
 
+	public void showLine(int lineNumber)
+	{
+		((KahinaJEditPanel) tabbedPane.getSelectedComponent()).showLine(lineNumber);
+	}
+
 }
