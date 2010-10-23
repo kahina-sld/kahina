@@ -1,6 +1,7 @@
 package org.kahina.core.editor;
 
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -86,6 +87,8 @@ public class KahinaJEditPanel extends JPanel
 		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
 		// controlPanel.add(Box.createRigidArea(SPACE));
 		controlPanel.add(createSaveButton());
+		controlPanel.add(Box.createRigidArea(SPACE));
+		controlPanel.add(createHelpButton());
 		controlPanel.add(Box.createHorizontalGlue());
 		controlPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return controlPanel;
@@ -175,6 +178,36 @@ public class KahinaJEditPanel extends JPanel
 		}));
 		saveButton.setEnabled(false);
 		return saveButton;
+	}
+
+	private Component createHelpButton()
+	{
+		final Component gui = this;
+		return new JButton(new AbstractAction("Help")
+		{
+
+			private static final long serialVersionUID = -6814197816082607385L;
+
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				try
+				{
+					showHelp();
+				} catch (IOException e1)
+				{
+					JOptionPane.showMessageDialog(gui, KahinaSwingUtilities.visualError(
+							"An error occured while trying to show the jEdit keyboard shortcuts in your browser. You can find them at http://www.jedit.org/users-guide/shortcuts.html#id2573783", e1),
+							"Error", JOptionPane.ERROR_MESSAGE);
+				}
+			}
+
+		});
+	}
+
+	protected void showHelp() throws IOException
+	{
+		Desktop.getDesktop().browse(java.net.URI.create("http://www.jedit.org/users-guide/shortcuts.html#id2573783"));
 	}
 
 	public void save() throws IOException
