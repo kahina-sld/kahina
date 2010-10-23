@@ -2,6 +2,7 @@ package org.kahina.tralesld;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.LogicProgrammingInstance;
+import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
@@ -9,6 +10,7 @@ import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
+import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
@@ -80,6 +82,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		super.fillViewRegistry();
 		KahinaViewRegistry.registerMapping(TraleSLDFS.class, TraleSLDFeatureStructureView.class);
 		KahinaViewRegistry.registerMapping(TraleSLDVariableBindingSet.class, TraleSLDVariableBindingSetView.class);
+		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, PrologJEditSourceCodeView.class);
 	}
 
 	@Override

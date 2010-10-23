@@ -39,16 +39,16 @@ public class KahinaMultifileJEditPanel extends JPanel
 		KahinaJEditPanel panel = panelByFile.get(file);
 		if (panel == null)
 		{
-			panel = createPanel(file);
+			panel = createPanel2(file);
 			panelByFile.put(file, panel);
 			tabbedPane.addTab(file.getName(), panel);
 		}
 		tabbedPane.setSelectedComponent(panel);
 	}
 
-	private KahinaJEditPanel createPanel(File file)
+	private KahinaJEditPanel createPanel2(File file)
 	{
-		KahinaJEditPanel result = new KahinaJEditPanel(file);
+		KahinaJEditPanel result = createPanel(file);
 		result.addPropertyChangeListener(new PropertyChangeListener()
 		{
 			
@@ -72,6 +72,11 @@ public class KahinaMultifileJEditPanel extends JPanel
 			
 		});
 		return result;
+	}
+	
+	protected KahinaJEditPanel createPanel(File file)
+	{
+		return new KahinaJEditPanel(file);
 	}
 
 	private void updateDirty(int index, boolean dirty)

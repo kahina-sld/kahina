@@ -11,16 +11,16 @@ import javax.swing.AbstractAction;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 
 import org.gjt.sp.jedit.buffer.BufferAdapter;
 import org.gjt.sp.jedit.buffer.JEditBuffer;
 import org.gjt.sp.jedit.textarea.StandaloneTextArea;
-import org.gjt.sp.jedit.textarea.TextArea;
 import org.kahina.core.util.FileUtilities;
 import org.kahina.core.util.KahinaSwingUtilities;
+import org.kahina.core.util.Utilities;
 
 public class KahinaJEditPanel extends JPanel
 {
@@ -50,7 +50,7 @@ public class KahinaJEditPanel extends JPanel
 
 	private JButton saveButton;
 
-	private TextArea textArea;
+	private StandaloneTextArea textArea;
 
 	private JEditBuffer buffer;
 
@@ -75,7 +75,7 @@ public class KahinaJEditPanel extends JPanel
 		try
 		{
 			add(createTextArea());
-		} catch (IOException e)
+		} catch (Exception e)
 		{
 			add(createErrorPanel(e));
 		}
@@ -94,7 +94,7 @@ public class KahinaJEditPanel extends JPanel
 		return controlPanel;
 	}
 
-	private Component createTextArea() throws IOException
+	private Component createTextArea() throws Exception
 	{
 		textArea = new StandaloneTextArea(new KahinaJEditPropertyManager());
 		textArea.setSize(100, 100);
@@ -103,6 +103,7 @@ public class KahinaJEditPanel extends JPanel
 			System.err.println("Created text area: " + textArea);
 		}
 		buffer = textArea.getBuffer();
+		configureBuffer(buffer);		
 		buffer.insert(0, FileUtilities.read(file)); // TODO encoding support
 		buffer.addBufferListener(new BufferAdapter()
 		{
@@ -132,6 +133,16 @@ public class KahinaJEditPanel extends JPanel
 		textArea.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return textArea;
 	}
+	
+	/**
+	 * Override this method to configure the buffer, e.g. for code highlighting.
+	 * This default implementation does nothing.
+	 * @param buffer
+	 * @throws Exception
+	 */
+	protected void configureBuffer(JEditBuffer buffer) throws Exception
+	{
+	}
 
 	private void updateDirty()
 	{
@@ -152,7 +163,7 @@ public class KahinaJEditPanel extends JPanel
 
 	private Component createErrorPanel(Exception e)
 	{
-		return new JLabel(e.getMessage());
+		return new JTextArea(Utilities.join("\n", Utilities.portrayStackTrace(e)));
 	}
 
 	private Component createSaveButton()

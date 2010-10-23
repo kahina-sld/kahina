@@ -1,8 +1,10 @@
 package org.kahina.prolog;
 
 import org.kahina.core.LogicProgrammingInstance;
+import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
+import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.prolog.bridge.PrologBridge;
 import org.kahina.prolog.data.bindings.PrologVariableBindingSet;
 import org.kahina.prolog.gui.PrologGUI;
@@ -48,6 +50,7 @@ public class PrologDebuggerInstance extends LogicProgrammingInstance<PrologState
 	{
 		super.fillViewRegistry();
 		KahinaViewRegistry.registerMapping(PrologVariableBindingSet.class, PrologVariableBindingSetView.class);
+		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, PrologJEditSourceCodeView.class);
 	}
 
 }

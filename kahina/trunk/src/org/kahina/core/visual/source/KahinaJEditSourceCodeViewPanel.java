@@ -19,13 +19,18 @@ public class KahinaJEditSourceCodeViewPanel extends KahinaViewPanel<KahinaJEditS
 	public KahinaJEditSourceCodeViewPanel()
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		add(createEditPanel());
+		add(createEditPanel2());
 	}
 
-	private Component createEditPanel()
+	private Component createEditPanel2()
 	{
-		editPanel = new KahinaMultifileJEditPanel();
+		editPanel = createEditPanel();
 		return editPanel;
+	}
+	
+	protected KahinaMultifileJEditPanel createEditPanel()
+	{
+		return new KahinaMultifileJEditPanel();
 	}
 
 	@Override

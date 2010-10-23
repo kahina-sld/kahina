@@ -214,4 +214,13 @@ public class FileUtilities
 		writer.close();
 	}
 
+	public static File resourceAsTempFile(Class<?> clazz, String name) throws IOException
+	{
+		File tempFile = File.createTempFile("resource", null);
+		InputStream in = new BufferedInputStream(clazz.getResourceAsStream(name));
+		copy(in, tempFile);
+		in.close();
+		return tempFile;
+	}
+
 }

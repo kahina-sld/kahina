@@ -12,10 +12,15 @@ public class KahinaJEditSourceCodeView extends KahinaView<KahinaSourceCodeLocati
 	@Override
 	public JComponent wrapInPanel()
 	{
-		KahinaJEditSourceCodeViewPanel panel = new KahinaJEditSourceCodeViewPanel();
+		KahinaJEditSourceCodeViewPanel panel = createPanel();
         KahinaRunner.getControl().registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;
+	}
+
+	protected KahinaJEditSourceCodeViewPanel createPanel()
+	{
+		return new KahinaJEditSourceCodeViewPanel();
 	}
 
 }
