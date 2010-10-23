@@ -21,7 +21,7 @@ public class TraleSLDRunner extends KahinaRunner
 			initialize();
 			TraleSLDInstance kahina = new TraleSLDInstance();
 			kahina.getGUI().prepare();
-			kahina.getGUI().buildAndShow();
+			kahina.getGUI().show();
 			return kahina.getBridge();
 		} catch (Exception e)
 		{
@@ -38,7 +38,7 @@ public class TraleSLDRunner extends KahinaRunner
 			initialize();
 			TraleSLDInstance kahina = new TraleSLDInstance();
 			kahina.getGUI().prepare();
-			kahina.getGUI().buildAndShow();
+			kahina.getGUI().show();
 			if (savedSession != null)
 			{
 				KahinaRunner.processEvent(new KahinaSessionEvent(KahinaSessionEvent.LOAD_SESSION, savedSession));

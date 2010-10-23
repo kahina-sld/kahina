@@ -180,7 +180,7 @@ public class KahinaGUI implements KahinaListener
         windowManager = new KahinaWindowManager(this);
 	}
     
-    public final void buildAndShow()
+    public final void show()
     {
         windowManager.displayWindows();
     }

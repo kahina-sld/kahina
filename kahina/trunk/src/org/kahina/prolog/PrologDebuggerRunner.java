@@ -21,7 +21,7 @@ public class PrologDebuggerRunner extends KahinaRunner
 			initialize();
 			PrologDebuggerInstance instance = new PrologDebuggerInstance();
 			instance.getGUI().prepare();
-			instance.getGUI().buildAndShow();
+			instance.getGUI().show();
 			return instance.getBridge();
 		} catch (Exception e)
 		{
@@ -38,7 +38,7 @@ public class PrologDebuggerRunner extends KahinaRunner
 			initialize();
 			PrologDebuggerInstance instance = new PrologDebuggerInstance();
 			instance.getGUI().prepare();
-			instance.getGUI().buildAndShow();
+			instance.getGUI().show();
 			if (savedSession != null)
 			{
 				KahinaRunner.processEvent(new KahinaSessionEvent(KahinaSessionEvent.LOAD_SESSION, savedSession));
