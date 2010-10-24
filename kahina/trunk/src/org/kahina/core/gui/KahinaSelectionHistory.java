@@ -3,6 +3,7 @@ package org.kahina.core.gui;
 import java.util.LinkedList;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
@@ -12,17 +13,19 @@ public class KahinaSelectionHistory implements KahinaListener
 {
     public static boolean verbose = false;
     
+    // TODO move history from GUI to state?
+    
     LinkedList<Integer> selectionHistory;
     int pointInHistory;
     
     private boolean selectionCausedByHistory;
     
-    public KahinaSelectionHistory()
+    public KahinaSelectionHistory(KahinaController control)
     {
         selectionHistory = new LinkedList<Integer>();
         pointInHistory = -1;
         selectionCausedByHistory = false;
-        KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
+        control.registerListener(KahinaEventTypes.SELECTION, this);
     }
     
     public boolean canMoveToPrevious()

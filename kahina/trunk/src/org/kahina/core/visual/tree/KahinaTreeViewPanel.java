@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.swing.JScrollPane;
 
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.util.KahinaSwingUtilities;
 import org.kahina.core.visual.KahinaViewPanel;
 
@@ -23,16 +24,16 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
 	
 	BufferedImage image;
     
-    public KahinaTreeViewPanel()
+    public KahinaTreeViewPanel(KahinaController control)
     {       
-        view = new KahinaTreeView();
+        view = new KahinaTreeView(control);
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaTreeViewListener(this));
     }
     
-    public KahinaTreeViewPanel(KahinaTreeViewMarker marker)
+    public KahinaTreeViewPanel(KahinaTreeViewMarker marker, KahinaController control)
     {       
-        view = new KahinaTreeView();
+        view = new KahinaTreeView(control);
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaTreeViewListener(this, marker));
     }

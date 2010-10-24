@@ -8,7 +8,7 @@ import javax.swing.JComponent;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
-import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.event.KahinaEvent;
@@ -21,8 +21,9 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
     protected DefaultListModel listModel;
     protected ListSelectionModel selectionModel;
     
-    public KahinaTextView()
+    public KahinaTextView(KahinaController control)
     {
+    	super(control);
         listModel = new DefaultListModel();
         selectionModel = new DefaultListSelectionModel();
     }
@@ -50,10 +51,10 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
     }
     
     @Override
-    public JComponent wrapInPanel()
+    public JComponent wrapInPanel(KahinaController control)
     {
         KahinaTextViewPanel panel = new KahinaTextViewPanel();
-        KahinaRunner.getControl().registerListener("redraw", panel);
+        control.registerListener("redraw", panel);
         panel.setView(this);
         return panel;
     }

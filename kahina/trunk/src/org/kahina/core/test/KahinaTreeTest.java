@@ -43,7 +43,7 @@ public class KahinaTreeTest
             TestLayeredTree m2 = TestLayeredTree.importXML(dom);
             //KahinaTree m2 = KahinaDbTree.importXML(dom, decider, data, m1);
             
-            KahinaTreeView v0 = new KahinaTreeView();
+            KahinaTreeView v0 = new KahinaTreeView(KahinaRunner.getControl());
             v0.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
             v0.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
             v0.setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
@@ -62,7 +62,7 @@ public class KahinaTreeTest
             KahinaRunner.getControl().registerListener("select", v0);
             KahinaRunner.getControl().registerListener("update", v0);
             
-            KahinaTreeView v1 = new KahinaTreeView();
+            KahinaTreeView v1 = new KahinaTreeView(KahinaRunner.getControl());
             v1.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
             v1.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
             v1.setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
@@ -80,7 +80,7 @@ public class KahinaTreeTest
             KahinaRunner.getControl().registerListener("select", v1);
             KahinaRunner.getControl().registerListener("update", v1);
             
-            KahinaTreeView v2 = new KahinaTreeView();
+            KahinaTreeView v2 = new KahinaTreeView(KahinaRunner.getControl());
             v2.setHorizontalDistance(15);
             v2.display(m1,2,17);
             v2.displaySecondaryTree(m2);
@@ -94,17 +94,17 @@ public class KahinaTreeTest
             KahinaRunner.getControl().registerListener("update", v2);
 
             KahinaTreeViewMarker treeMarker = new KahinaTreeViewMarker(m1,m2);
-            KahinaTreeViewPanel vp0 = new KahinaTreeViewPanel(treeMarker);
+            KahinaTreeViewPanel vp0 = new KahinaTreeViewPanel(treeMarker, KahinaRunner.getControl());
             JScrollPane vp0pane = new JScrollPane(vp0);
             vp0pane.setBounds(0, 30, 500, 200);
             JLabel vp0label = new JLabel("Layer 0 (Rule applications)");
             vp0label.setBounds(0, 10, 500, 15);
-            KahinaTreeViewPanel vp1 = new KahinaTreeViewPanel(treeMarker);
+            KahinaTreeViewPanel vp1 = new KahinaTreeViewPanel(treeMarker, KahinaRunner.getControl());
             JScrollPane vp1pane = new JScrollPane(vp1);
             vp1pane.setBounds(0, 260, 500, 200);
             JLabel vp1label = new JLabel("Layer 1 (Goal calls)");
             vp1label.setBounds(0, 240, 500, 15);
-            KahinaTreeViewPanel vp2 = new KahinaTreeViewPanel(treeMarker);
+            KahinaTreeViewPanel vp2 = new KahinaTreeViewPanel(treeMarker, KahinaRunner.getControl());
             JScrollPane vp2pane = new JScrollPane(vp2);
             vp2pane.setBounds(0, 490, 500, 200);
             JLabel vp2label = new JLabel("Layer 2 (Detail View)");

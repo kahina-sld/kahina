@@ -22,6 +22,7 @@ import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaControlEvent;
@@ -59,7 +60,7 @@ public class KahinaGUI implements KahinaListener
 
 	Class<? extends KahinaStep> stepType;
 
-	public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
+	public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina, KahinaController control)
 	{
 		if (VERBOSE)
 		{
@@ -67,12 +68,12 @@ public class KahinaGUI implements KahinaListener
 		}
 		this.stepType = stepType;
 		this.kahina = kahina;
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.STEP_FOCUS, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
-        KahinaRunner.getControl().registerListener("dialog", this);
-        KahinaRunner.getControl().registerListener("control", this);
+		control.registerListener(KahinaEventTypes.STEP_FOCUS, this);
+		control.registerListener(KahinaEventTypes.SELECTION, this);
+        control.registerListener("dialog", this);
+        control.registerListener("control", this);
         
-        this.selectionHistory = new KahinaSelectionHistory();
+        this.selectionHistory = new KahinaSelectionHistory(control);
 
 		this.controlPanel = new KahinaControlPanel();
 
@@ -82,12 +83,12 @@ public class KahinaGUI implements KahinaListener
 		this.livingViews = new HashSet<KahinaView<?>>();
 		this.fieldToView = new HashMap<Field, KahinaView<? extends KahinaObject>>();
         this.varNameToView = new HashMap<String, KahinaView<? extends KahinaObject>>();
-		fillFieldToView(stepType);
+		fillFieldToView(stepType, control);
         
-        messageConsoleView = new KahinaTextView();
+        messageConsoleView = new KahinaTextView(control);
         messageConsoleView.setTitle("Message console");
-        KahinaRunner.getControl().registerListener("message", messageConsoleView);
-        KahinaRunner.getControl().registerListener("console line", messageConsoleView);
+        control.registerListener("message", messageConsoleView);
+        control.registerListener("console line", messageConsoleView);
         views.add(messageConsoleView);
         livingViews.add(messageConsoleView);
         varNameToView.put("messageConsole", messageConsoleView);
@@ -99,13 +100,12 @@ public class KahinaGUI implements KahinaListener
 	 * 
 	 * @param stepType
 	 */
-	protected void fillFieldToView(Class<? extends KahinaStep> stepType)
+	protected void fillFieldToView(Class<? extends KahinaStep> stepType, KahinaController control)
 	{
 		if (VERBOSE)
 		{
 			System.err.println("Generating views for step fields:");
 		}
-		Field[] fields = stepType.getFields();
 		for (Field field : stepType.getFields())
 		{
 			if (VERBOSE)
@@ -114,8 +114,8 @@ public class KahinaGUI implements KahinaListener
 			}
 			if (KahinaObject.class.isAssignableFrom(field.getType()))
 			{
-				KahinaView<?> newView = KahinaViewRegistry.generateViewFor(field.getType());
-				KahinaRunner.getControl().registerListener("update", newView);
+				KahinaView<?> newView = KahinaViewRegistry.generateViewFor(field.getType(), control);
+				control.registerListener("update", newView);
 				if (VERBOSE)
 				{
 					System.err.println("\t\tview: " + newView);
@@ -144,7 +144,7 @@ public class KahinaGUI implements KahinaListener
         return null;
     }
     
-    public void integrateVariableDisplays(int integrationType, String var1, String var2, String newTitle)
+    public void integrateVariableDisplays(int integrationType, String var1, String var2, String newTitle, KahinaController control)
     {
         KahinaView<?> view1 = varNameToView.get(var1);
         KahinaView<?> view2 = varNameToView.get(var2);
@@ -158,12 +158,12 @@ public class KahinaGUI implements KahinaListener
             {
                 case KahinaViewIntegrationType.VERTICAL:
                 {
-                    windowManager.integrateInVerticallySplitWindow(view1, view2, newTitle);
+                    windowManager.integrateInVerticallySplitWindow(view1, view2, newTitle, control);
                     break;
                 }
                 case KahinaViewIntegrationType.HORIZONTAL:
                 {
-                    windowManager.integrateInHorizontallySplitWindow(view1, view2, newTitle);
+                    windowManager.integrateInHorizontallySplitWindow(view1, view2, newTitle, control);
                     break;
                 }
                 case KahinaViewIntegrationType.TABBED:
@@ -174,10 +174,10 @@ public class KahinaGUI implements KahinaListener
         }
     }
 
-	public void prepare()
+	public void prepare(KahinaController control)
 	{
         displayMainViews();
-        windowManager = new KahinaWindowManager(this);
+        windowManager = new KahinaWindowManager(this, control);
 	}
     
     public final void show()

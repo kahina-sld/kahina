@@ -3,6 +3,7 @@ package org.kahina.core.visual;
 import javax.swing.JComponent;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
@@ -18,6 +19,11 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
     private String title = "Unnamed View";
     
     protected T model;
+    
+    public KahinaView(KahinaController control)
+    {
+    	// do nothing
+    }
     
     public void processEvent(KahinaEvent e)
     {
@@ -75,7 +81,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
         
     }
     
-    public abstract JComponent wrapInPanel();
+    public abstract JComponent wrapInPanel(KahinaController control);
     
     public String getTitle()
     {

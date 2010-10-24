@@ -15,7 +15,7 @@ public class TulipaRunner extends KahinaRunner
         System.err.println("Starting Kahina.TuLiPa instance...");
         initialize();
         TulipaInstance kahina = new TulipaInstance();
-        kahina.getGUI().prepare();
+        kahina.getGUI().prepare(getControl());
         kahina.getGUI().show();
         return kahina.getBridge();
     }

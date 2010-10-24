@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaWindowManager
@@ -16,13 +17,13 @@ public class KahinaWindowManager
     
     KahinaGUI gui;
     
-    public KahinaWindowManager(KahinaGUI gui)
+    public KahinaWindowManager(KahinaGUI gui, KahinaController control)
     {
         this.gui = gui;     
         this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         this.topLevelWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         
-        mainWindow = new KahinaMainWindow(this);
+        mainWindow = new KahinaMainWindow(this, control);
         
         int width = gui.getControlPanel().getWidth();
         int height = 100;
@@ -35,7 +36,7 @@ public class KahinaWindowManager
         //create windows for all the other registered views
         for (KahinaView<?> view : gui.views)
         {
-            KahinaWindow viewWindow = integrateInDefaultWindow(view);
+            KahinaWindow viewWindow = integrateInDefaultWindow(view, control);
             xPos += width + 20;
             width = view.getTitle().length() * 12 + 50;
             if (xPos + width > screenWidth)
@@ -63,25 +64,25 @@ public class KahinaWindowManager
         mainWindow.dispose();
     }
     
-    public KahinaWindow integrateInDefaultWindow(KahinaView<?> view)
+    public KahinaWindow integrateInDefaultWindow(KahinaView<?> view, KahinaController control)
     {
-        KahinaWindow viewWindow = new KahinaDefaultWindow(view);
+        KahinaWindow viewWindow = new KahinaDefaultWindow(view, control);
         contentWindows.put(view,viewWindow);
         topLevelWindows.put(view,viewWindow);
         return viewWindow;
     }
     
-    public void integrateInVerticallySplitWindow(KahinaView<?> v1, KahinaView<?> v2, String newTitle)
+    public void integrateInVerticallySplitWindow(KahinaView<?> v1, KahinaView<?> v2, String newTitle, KahinaController control)
     {
         KahinaWindow wrapperWindow1 = topLevelWindows.get(v1);
         if (wrapperWindow1 == null)
         {
-            wrapperWindow1 = integrateInDefaultWindow(v1);
+            wrapperWindow1 = integrateInDefaultWindow(v1, control);
         }
         KahinaWindow wrapperWindow2 = topLevelWindows.get(v2);
         if (wrapperWindow2 == null)
         {
-            wrapperWindow2 = integrateInDefaultWindow(v2);
+            wrapperWindow2 = integrateInDefaultWindow(v2, control);
         }
         KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow();
         splitWindow.setTitle(newTitle);
@@ -91,17 +92,17 @@ public class KahinaWindowManager
         topLevelWindows.put(v2,splitWindow);
     }
     
-    public void integrateInHorizontallySplitWindow(KahinaView<?> v1, KahinaView<?> v2, String newTitle)
+    public void integrateInHorizontallySplitWindow(KahinaView<?> v1, KahinaView<?> v2, String newTitle, KahinaController control)
     {
         KahinaWindow wrapperWindow1 = topLevelWindows.get(v1);
         if (wrapperWindow1 == null)
         {
-            wrapperWindow1 = integrateInDefaultWindow(v1);
+            wrapperWindow1 = integrateInDefaultWindow(v1, control);
         }
         KahinaWindow wrapperWindow2 = topLevelWindows.get(v2);
         if (wrapperWindow2 == null)
         {
-            wrapperWindow2 = integrateInDefaultWindow(v2);
+            wrapperWindow2 = integrateInDefaultWindow(v2, control);
         }
         KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow();
         splitWindow.setTitle(newTitle);

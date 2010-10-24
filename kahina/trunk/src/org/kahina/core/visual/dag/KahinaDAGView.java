@@ -18,7 +18,7 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
@@ -78,8 +78,9 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     private HashMap<Integer, Integer> drawingParents;
     private int maxNodeWidth;
     
-    public KahinaDAGView()
+    public KahinaDAGView(KahinaController control)
     {
+    	super(control);
         model = new KahinaMemDAG();
         resetAllStructures();
         nodeBorderColor = new HashMap<Integer, Color>();
@@ -97,7 +98,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
 
         maxNodeWidth = 1;
         
-        KahinaRunner.getControl().registerListener("update", this);
+        control.registerListener("update", this);
     }
     
     public void display(KahinaDAG dagModel)
@@ -566,16 +567,18 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         return model;
     }
 
-    public JComponent wrapInPanel()
+    @Override
+    public JComponent wrapInPanel(KahinaController control)
     {
-        KahinaDAGViewPanel panel = new KahinaDAGViewPanel();
-        KahinaRunner.getControl().registerListener("redraw", panel);
+        KahinaDAGViewPanel panel = new KahinaDAGViewPanel(control);
+        control.registerListener("redraw", panel);
         panel.setView(this);
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getViewport().setBackground(bgColor);
         return scrollPane;
     }
 
+    @Override
     public void recalculate()
     {
         resetAllStructures();

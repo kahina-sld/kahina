@@ -3,6 +3,7 @@ package org.kahina.tralesld.gui;
 import java.awt.Color;
 
 import org.kahina.core.KahinaStep;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaViewIntegrationType;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
@@ -22,12 +23,12 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	
 	protected KahinaChartView mainChartView;
 	
-    public TraleSLDGUI(Class<? extends KahinaStep> stepType, TraleSLDInstance instance)
+    public TraleSLDGUI(Class<? extends KahinaStep> stepType, TraleSLDInstance instance, KahinaController control)
     {
-        super(stepType, instance);
+        super(stepType, instance, control);
         this.instance = instance;      
         
-        mainChartView = new KahinaChartView();
+        mainChartView = new KahinaChartView(control);
         mainChartView.setTitle("Chart");
         views.add(mainChartView);
         livingViews.add(mainChartView); 
@@ -48,9 +49,9 @@ public class TraleSLDGUI extends LogicProgrammingGUI
     }
 	
     @Override
-	protected KahinaLayeredTreeView generateTreeView()
+	protected KahinaLayeredTreeView generateTreeView(KahinaController control)
 	{
-		return new KahinaLayeredTreeView(0, 1, 2);
+		return new KahinaLayeredTreeView(control, 0, 1, 2);
 	}
     
     @Override
@@ -63,12 +64,13 @@ public class TraleSLDGUI extends LogicProgrammingGUI
         mainChartView.display(instance.getState().getChart());  
     }
     
-    public void prepare()
+    @Override
+    public void prepare(KahinaController control)
     {
-        super.prepare();
-        integrateVariableDisplays(KahinaViewIntegrationType.VERTICAL, "startBindings", "endBindings", "Variable bindings");
-        integrateVariableDisplays(KahinaViewIntegrationType.VERTICAL, "codeLocation", "messageConsole", "Source & Console");
-        integrateVariableDisplays(KahinaViewIntegrationType.HORIZONTAL, "startFeatStruct", "endFeatStruct", "Feature Structures");
+        super.prepare(control);
+        integrateVariableDisplays(KahinaViewIntegrationType.VERTICAL, "startBindings", "endBindings", "Variable bindings", control);
+        integrateVariableDisplays(KahinaViewIntegrationType.VERTICAL, "codeLocation", "messageConsole", "Source & Console", control);
+        integrateVariableDisplays(KahinaViewIntegrationType.HORIZONTAL, "startFeatStruct", "endFeatStruct", "Feature Structures", control);
         //slightly hacky: allow direct manipulation of view components
         getWindowForVarName("codeLocation").setSize(400, 500);
         getWindowForVarName("codeLocation").setLocation(400, 0);

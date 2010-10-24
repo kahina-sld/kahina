@@ -58,7 +58,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	@Override
 	protected TraleSLDGUI createGUI()
 	{
-		return new TraleSLDGUI(TraleSLDStep.class, this);
+		return new TraleSLDGUI(TraleSLDStep.class, this, KahinaRunner.getControl());
 	}
 
 	@Override

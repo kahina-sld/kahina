@@ -20,7 +20,7 @@ public class PrologDebuggerRunner extends KahinaRunner
 		{
 			initialize();
 			PrologDebuggerInstance instance = new PrologDebuggerInstance();
-			instance.getGUI().prepare();
+			instance.getGUI().prepare(KahinaRunner.getControl());
 			instance.getGUI().show();
 			return instance.getBridge();
 		} catch (Exception e)
@@ -37,7 +37,7 @@ public class PrologDebuggerRunner extends KahinaRunner
 		{
 			initialize();
 			PrologDebuggerInstance instance = new PrologDebuggerInstance();
-			instance.getGUI().prepare();
+			instance.getGUI().prepare(KahinaRunner.getControl());
 			instance.getGUI().show();
 			if (savedSession != null)
 			{

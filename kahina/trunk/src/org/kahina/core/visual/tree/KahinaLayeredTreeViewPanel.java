@@ -7,6 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTreeView>
@@ -17,7 +18,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 
 	private KahinaTreeViewPanel[] panels;
 
-	public KahinaLayeredTreeViewPanel(int layers, KahinaTreeViewMarker marker)
+	public KahinaLayeredTreeViewPanel(int layers, KahinaTreeViewMarker marker, KahinaController control)
 	{
 		if (VERBOSE)
 		{
@@ -26,7 +27,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 		panels = new KahinaTreeViewPanel[layers];
 		for (int i = 0; i < panels.length; i++)
 		{
-			panels[i] = new KahinaTreeViewPanel(marker);
+			panels[i] = new KahinaTreeViewPanel(marker, control);
 		}
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		if (layers > 1)

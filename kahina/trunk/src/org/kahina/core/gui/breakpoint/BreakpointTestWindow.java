@@ -68,7 +68,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         hintPanel = new BreakpointEditorHintPanel();
         mainPanel.add(hintPanel);
         
-        view = new KahinaTreeView();
+        view = new KahinaTreeView(control);
         view.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
         view.setVerticalDistance(4);
         view.setHorizontalDistance(10);
@@ -76,7 +76,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         view.display(model);
         
         KahinaTreeViewMarker treeMarker = new KahinaTreeViewMarker(model);
-        viewPanel = new KahinaTreeViewPanel(treeMarker);
+        viewPanel = new KahinaTreeViewPanel(treeMarker, control);
         JScrollPane viewScrollPane = new JScrollPane(viewPanel);
         
         mainPanel.add(viewScrollPane);

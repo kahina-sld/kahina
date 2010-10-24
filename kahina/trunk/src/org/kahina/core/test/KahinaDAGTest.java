@@ -32,7 +32,7 @@ public class KahinaDAGTest
             //TestLayeredTree m1 = TestLayeredTree.importXML(dom);
             KahinaDAG dag = KahinaMemDAG.importXML(dom);       
             
-            KahinaDAGView v = new KahinaDAGView();
+            KahinaDAGView v = new KahinaDAGView(KahinaRunner.getControl());
             v.setTitle("Kahina DAGView Demo");
             v.setVerticalDistance(5);
             v.setHorizontalDistance(30);
@@ -46,7 +46,7 @@ public class KahinaDAGTest
             KahinaRunner.getControl().registerListener("update", v);
             KahinaRunner.getControl().registerListener("redraw", v);
             
-            KahinaDefaultWindow w = new KahinaDefaultWindow(v);
+            KahinaDefaultWindow w = new KahinaDefaultWindow(v, KahinaRunner.getControl());
             w.setSize(510, 720);
             w.setVisible(true);
             w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -18,7 +18,7 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
@@ -104,8 +104,9 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     HashMap<Integer,Integer> segmentOffsets = new HashMap<Integer,Integer>();
     int chartWidth;
     
-    public KahinaChartView()
+    public KahinaChartView(KahinaController control)
     {
+    	super(control);
         g = null;
         resetAllStructures();
         statusColorEncoding = new HashMap<Integer, Color>();
@@ -119,12 +120,12 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         cellHeight = 14;
         displayDecider = new KahinaChartEdgeDisplayDecider();
         displayDecider.setChartView(this);
-        KahinaRunner.getControl().registerListener("chart update", this);
+        control.registerListener("chart update", this);
     }
     
-    public KahinaChartView(KahinaChart chartModel)
+    public KahinaChartView(KahinaChart chartModel, KahinaController control)
     {
-        this();
+        this(control);
         display(chartModel);
     }
     
@@ -976,16 +977,18 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         return result;
     }
     
-    public JComponent wrapInPanel()
+    @Override
+    public JComponent wrapInPanel(KahinaController control)
     {
         KahinaChartViewPanel panel = new KahinaChartViewPanel();
-        KahinaRunner.getControl().registerListener("redraw", panel);
+        control.registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
     }
     
     //not interested in selection events or update events
     //because they always contain step information, not edge IDs
+    @Override
     public void processEvent(KahinaEvent e)
     {
         if (e instanceof KahinaChartUpdateEvent)

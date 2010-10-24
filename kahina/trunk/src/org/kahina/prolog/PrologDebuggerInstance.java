@@ -1,5 +1,6 @@
 package org.kahina.prolog;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.LogicProgrammingInstance;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaViewRegistry;
@@ -36,7 +37,7 @@ public class PrologDebuggerInstance extends LogicProgrammingInstance<PrologState
 	@Override
 	protected PrologGUI createGUI()
 	{
-		return new PrologGUI(PrologStep.class, this);
+		return new PrologGUI(PrologStep.class, this, KahinaRunner.getControl());
 	}
 
 	@Override

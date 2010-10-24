@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JMenuBar;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
@@ -24,12 +25,12 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 	public KahinaWindowManager windowManager;
 
-	public KahinaMainWindow(KahinaWindowManager windowManager)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control)
 	{
 		this.windowManager = windowManager;
 
 		this.setTitle("Kahina");
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.TREE, this);
+		control.registerListener(KahinaEventTypes.TREE, this);
 		this.setLayout(new BorderLayout());
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Uncomment this in order to be able to profile using JRat.
@@ -57,8 +58,8 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		this.validate();
 
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.SESSION, this);
+		control.registerListener(KahinaEventTypes.SYSTEM, this);
+		control.registerListener(KahinaEventTypes.SESSION, this);
 		this.addWindowListener(new WindowAdapter()
 		{
 			@Override

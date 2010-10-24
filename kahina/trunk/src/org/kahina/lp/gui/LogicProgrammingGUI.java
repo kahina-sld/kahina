@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.LogicProgrammingInstance;
 import org.kahina.core.breakpoint.KahinaBreakpointType;
@@ -29,12 +28,12 @@ public class LogicProgrammingGUI extends KahinaGUI
 
 	protected KahinaLayeredTreeView mainTreeView;
 
-	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
+	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina, KahinaController control)
 	{
-		super(stepType, kahina);
-		mainTreeView = generateTreeView();
+		super(stepType, kahina, control);
+		mainTreeView = generateTreeView(control);
 		mainTreeView.setTitle("Control flow tree");
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, mainTreeView);
+		control.registerListener(KahinaEventTypes.UPDATE, mainTreeView);
 		views.add(mainTreeView);
 		livingViews.add(mainTreeView);
 		varNameToView.put("controlFlowTree", mainTreeView);
@@ -59,9 +58,9 @@ public class LogicProgrammingGUI extends KahinaGUI
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.REDO, new Color(220, 110, 0));
 	}
 
-	protected KahinaLayeredTreeView generateTreeView()
+	protected KahinaLayeredTreeView generateTreeView(KahinaController control)
 	{
-		return new KahinaLayeredTreeView(true, 0);
+		return new KahinaLayeredTreeView(true, control, 0);
 	}
 
 	@Override

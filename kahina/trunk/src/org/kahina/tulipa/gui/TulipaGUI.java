@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import org.kahina.core.KahinaStep;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.dag.KahinaDAGView;
 import org.kahina.tulipa.TulipaInstance;
@@ -17,12 +18,12 @@ public class TulipaGUI extends KahinaGUI
     protected KahinaDAGView mainDAGView;
     protected TulipaGrammarView grammarView;
     
-    public TulipaGUI(Class<? extends KahinaStep> stepType, TulipaInstance instance)
+    public TulipaGUI(Class<? extends KahinaStep> stepType, TulipaInstance instance, KahinaController control)
     {
-        super(stepType, instance);
+        super(stepType, instance, control);
         this.instance = instance;      
         
-        mainDAGView = new KahinaDAGView();
+        mainDAGView = new KahinaDAGView(control);
         mainDAGView.setTitle("Item Graph");
         views.add(mainDAGView);
         livingViews.add(mainDAGView); 
@@ -34,7 +35,7 @@ public class TulipaGUI extends KahinaGUI
         mainDAGView.setVerticalDistance(6);
         mainDAGView.setHorizontalDistance(2);
         
-        grammarView = new TulipaGrammarView();
+        grammarView = new TulipaGrammarView(control);
         grammarView.setTitle("RCG grammar");
         views.add(grammarView);
         livingViews.add(grammarView);
@@ -59,9 +60,9 @@ public class TulipaGUI extends KahinaGUI
         grammarView.display(instance.getState().getGrammar()); 
     }
     
-    public void prepare()
+    public void prepare(KahinaController control)
     {
-        super.prepare();
+        super.prepare(control);
         getWindowForVarName("dag").setSize(800, 500);
         getWindowForVarName("dag").setLocation(0, 150);
         getWindowForVarName("grammar").setSize(800, 100);

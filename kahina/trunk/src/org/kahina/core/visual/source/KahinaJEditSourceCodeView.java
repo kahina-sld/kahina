@@ -2,18 +2,23 @@ package org.kahina.core.visual.source;
 
 import javax.swing.JComponent;
 
-import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaJEditSourceCodeView extends KahinaView<KahinaSourceCodeLocation>
 {
 
+	public KahinaJEditSourceCodeView(KahinaController control)
+	{
+		super(control);
+	}
+
 	@Override
-	public JComponent wrapInPanel()
+	public JComponent wrapInPanel(KahinaController control)
 	{
 		KahinaJEditSourceCodeViewPanel panel = createPanel();
-        KahinaRunner.getControl().registerListener("redraw", panel);
+        control.registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;
 	}

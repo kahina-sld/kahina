@@ -16,7 +16,7 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaView;
@@ -139,8 +139,9 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 	private ArrayList<Integer> terminalLayer;
 	private int maxNodeWidth;
 
-	public KahinaTreeView()
+	public KahinaTreeView(KahinaController control)
 	{
+		super(control);
 		model = new KahinaMemTree();
 		treeLayer = 0;
 		secondaryTreeModel = null;
@@ -1108,21 +1109,10 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		}
 	}
 
-	public JComponent wrapInPanel()
+	public JComponent wrapInPanel(KahinaController control)
 	{
-		KahinaTreeViewPanel panel = new KahinaTreeViewPanel();
-		KahinaRunner.getControl().registerListener("redraw", panel);
-		panel.setView(this);
-		JScrollPane scrollPane = new JScrollPane(panel);
-		scrollPane.getViewport().setBackground(bgColor);
-		return scrollPane;
-	}
-
-	public JComponent wrapInPanel(KahinaTreeViewMarker marker)
-	{
-		KahinaTreeViewPanel panel = new KahinaTreeViewPanel(marker);
-		panel.setBackground(new Color(255, 255, 255));
-		KahinaRunner.getControl().registerListener("redraw", panel);
+		KahinaTreeViewPanel panel = new KahinaTreeViewPanel(control);
+		control.registerListener("redraw", panel);
 		panel.setView(this);
 		JScrollPane scrollPane = new JScrollPane(panel);
 		scrollPane.getViewport().setBackground(bgColor);
