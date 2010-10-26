@@ -27,7 +27,8 @@ public class KahinaSessionEvent extends KahinaEvent
         return sessionEventType;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String s = "state: ";
         if (sessionEventType == SAVE_SESSION)

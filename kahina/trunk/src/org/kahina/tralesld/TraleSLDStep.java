@@ -17,7 +17,8 @@ public class TraleSLDStep extends LogicProgrammingStep
     public TraleSLDVariableBindingSet startBindings = new TraleSLDVariableBindingSet();
     public TraleSLDVariableBindingSet endBindings = new TraleSLDVariableBindingSet();
     
-    public TraleSLDStep copy()
+    @Override
+	public TraleSLDStep copy()
     {
     	TraleSLDStep copy = new TraleSLDStep();
     	copy.goalDesc = goalDesc;

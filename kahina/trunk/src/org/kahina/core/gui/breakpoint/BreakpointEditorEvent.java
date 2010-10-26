@@ -70,7 +70,8 @@ public class BreakpointEditorEvent extends KahinaEvent
         return goalID;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String s = "breakpoint: ";
         if (editorEventType == NEW_BREAKPOINT)

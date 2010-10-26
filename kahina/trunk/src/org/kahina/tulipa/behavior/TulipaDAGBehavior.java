@@ -96,7 +96,8 @@ public class TulipaDAGBehavior extends KahinaDAGBehavior
         return unproductive;
     }
     
-    public void processEvent(KahinaEvent e)
+    @Override
+	public void processEvent(KahinaEvent e)
     {
         if (verbose)
             System.err.println("TulipaDAGBehavior.processEvent(" + e + ")");

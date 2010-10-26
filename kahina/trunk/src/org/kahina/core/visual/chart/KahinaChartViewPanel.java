@@ -25,7 +25,8 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         this.addMouseListener(new KahinaChartViewListener(this));
     }
     
-    public void paintComponent(Graphics canvas)
+    @Override
+	public void paintComponent(Graphics canvas)
     {
         try
         {
@@ -43,7 +44,8 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         }    
     }
     
-    public void updateDisplay()
+    @Override
+	public void updateDisplay()
     {
         if (view == null) return;
         image = new BufferedImage(view.getDisplayWidth() + 8, view.getDisplayHeight() + 5 + 2 * view.getZoomLevel(), BufferedImage.TYPE_4BYTE_ABGR);

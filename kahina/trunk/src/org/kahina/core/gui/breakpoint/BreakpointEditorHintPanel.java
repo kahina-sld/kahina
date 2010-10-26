@@ -31,7 +31,8 @@ public class BreakpointEditorHintPanel extends JPanel
         hintLabel.setText(hint);
     }
     
-    public void setEnabled(boolean enabled)
+    @Override
+	public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
         hintLabel.setEnabled(enabled);

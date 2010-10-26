@@ -746,7 +746,8 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         }
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return getRootPattern().toString();
     }

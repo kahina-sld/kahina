@@ -20,7 +20,8 @@ public class KahinaConsoleLineEvent extends KahinaEvent
         return consoleLines;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "console: lines " + consoleLines;
     }

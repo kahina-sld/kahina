@@ -11,7 +11,8 @@ public class PatternFormatException extends Exception
         this.badString = badString;
     }
     
-    public String getMessage()
+    @Override
+	public String getMessage()
     {
         return "Invalid input: " + badString + " is not a value of type " + desiredType + ".";
     }

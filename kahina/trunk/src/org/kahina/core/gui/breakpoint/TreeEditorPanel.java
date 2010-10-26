@@ -175,7 +175,8 @@ public class TreeEditorPanel extends JPanel
         node.setBounds(x.get(node) + insets.left , y.get(node) + insets.top, size.width, size.height);
     }
     
-    public void paint(Graphics g)
+    @Override
+	public void paint(Graphics g)
     {
         Insets insets = getInsets();
         super.paint(g);

@@ -2,6 +2,7 @@ package org.kahina.tralesld;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.LogicProgrammingInstance;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.KahinaViewRegistry;
@@ -23,24 +24,16 @@ import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
 	
-	private final TraleSLDProfiler profiler; 
-
-	public TraleSLDInstance()
+	private TraleSLDProfiler profiler;
+	
+	@Override
+	public TraleSLDBridge startNewSession()
 	{
-		super();
+		super.startNewSession();
 		profiler = new TraleSLDProfiler(state.getFullProfile());
-		// gui = new TraleSLDGUI(TraleSLDStep.class, this);
-		// bridge = new TraleSLDBridge(this, gui);
-        KahinaRunner.getControl().registerListener("edge select", this);
-        KahinaRunner.getControl().registerListener("update", this);
-	}
-
-	public TraleSLDInstance(TraleSLDState state)
-	{
-		super(state);
-		profiler = new TraleSLDProfiler(state.getFullProfile());
-        KahinaRunner.getControl().registerListener("edge select", this);
-        KahinaRunner.getControl().registerListener("update", this);
+        controller.registerListener("edge select", this);
+        controller.registerListener("update", this);
+        return bridge;
 	}
 	
 	@Override
@@ -56,9 +49,9 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	}
 
 	@Override
-	protected TraleSLDGUI createGUI()
+	protected TraleSLDGUI createGUI(KahinaController guiController)
 	{
-		return new TraleSLDGUI(TraleSLDStep.class, this, KahinaRunner.getControl());
+		return new TraleSLDGUI(TraleSLDStep.class, this, guiController);
 	}
 
 	@Override
@@ -67,16 +60,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		return new TraleSLDState();
 	}
 
-	public TraleSLDState getState()
-	{
-		return state;
-	}
-
-	public TraleSLDBridge getBridge()
-	{
-		return bridge;
-	}
-
+	@Override
 	protected void fillViewRegistry()
 	{
 		super.fillViewRegistry();
@@ -121,4 +105,10 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	{
 		return profiler;
 	}
+	
+	public static void main(String[] args)
+	{
+		(new TraleSLDInstance()).start(args);
+	}
+	
 }

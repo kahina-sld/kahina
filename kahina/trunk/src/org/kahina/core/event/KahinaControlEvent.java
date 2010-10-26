@@ -15,7 +15,8 @@ public class KahinaControlEvent extends KahinaEvent
         return command;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "control: " + command;
     }

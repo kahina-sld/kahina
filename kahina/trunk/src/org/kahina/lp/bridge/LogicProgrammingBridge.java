@@ -606,11 +606,13 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
+	@Override
 	protected void processSkipPointMatch(int nodeID, KahinaBreakpoint bp)
 	{
 		skipFlag = true;
 	}
 
+	@Override
 	protected void processCreepPointMatch(int nodeID, KahinaBreakpoint bp)
 	{
 		// no change if we are in leap or skip mode anyway
@@ -620,6 +622,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
+	@Override
 	protected void processFailPointMatch(int nodeID, KahinaBreakpoint bp)
 	{
 		// TODO: handle this more elegantly if in skip or leap mode (possibly
@@ -627,6 +630,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		bridgeState = 'f';
 	}
 
+	@Override
 	protected void processBreakPointMatch(int nodeID, KahinaBreakpoint bp)
 	{
 		// TODO: temporarily mark matching node in the breakpoint's signal color

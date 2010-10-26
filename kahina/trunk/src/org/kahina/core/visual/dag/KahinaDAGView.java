@@ -459,7 +459,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         if (g == null)
         {
             BufferedImage bufferedImage = new BufferedImage(2, 2, BufferedImage.TYPE_4BYTE_ABGR_PRE);
-            g = (Graphics2D) bufferedImage.createGraphics();
+            g = bufferedImage.createGraphics();
         }
         g.setFont(new Font(f.getFontName(), f.getStyle(), fontSize));
         g.setStroke(s);
@@ -711,7 +711,8 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         //return antecedents.get(middleIndex);
     }
     
-    protected void processEvent(KahinaUpdateEvent e)
+    @Override
+	protected void processEvent(KahinaUpdateEvent e)
     {
         // recalculation is implicitly part of this (via marker)
         markedNode = e.getSelectedStep();

@@ -25,7 +25,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
     public KahinaTreeViewListener(KahinaTreeViewPanel view)
     {
         this.view = view;
-        this.marker = new KahinaTreeViewMarker((KahinaTree) view.view.getTreeModel());
+        this.marker = new KahinaTreeViewMarker(view.view.getTreeModel());
         marker.registerTreeView(view);
         this.lastMouseEvent = null;
     }
@@ -38,7 +38,8 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         this.lastMouseEvent = null;
     }
     
-    public void mouseClicked(MouseEvent e)
+    @Override
+	public void mouseClicked(MouseEvent e)
     {
         int clickedNode = view.view.nodeAtCoordinates(e.getX(), e.getY());
         if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
@@ -62,12 +63,14 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         }
     }
     
-    public void mousePressed(MouseEvent e) 
+    @Override
+	public void mousePressed(MouseEvent e) 
     {
         maybeShowPopup(e);
     }
 
-    public void mouseReleased(MouseEvent e) 
+    @Override
+	public void mouseReleased(MouseEvent e) 
     {
         maybeShowPopup(e);
     }

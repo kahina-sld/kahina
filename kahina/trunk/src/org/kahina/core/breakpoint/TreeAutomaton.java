@@ -210,7 +210,8 @@ public class TreeAutomaton
         }
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String str = "TreeAutomaton\n";
         str += "   states: " + states + "\n";

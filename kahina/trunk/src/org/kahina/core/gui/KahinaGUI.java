@@ -176,7 +176,7 @@ public class KahinaGUI implements KahinaListener
 
 	public void prepare(KahinaController control)
 	{
-        displayMainViews();
+		displayMainViews();
         windowManager = new KahinaWindowManager(this, control);
 	}
     
@@ -185,7 +185,7 @@ public class KahinaGUI implements KahinaListener
         windowManager.displayWindows();
     }
 
-	protected void displayMainViews()
+	public void displayMainViews()
 	{
 	}
 

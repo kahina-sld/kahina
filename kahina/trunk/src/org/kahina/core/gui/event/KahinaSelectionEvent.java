@@ -38,7 +38,8 @@ public class KahinaSelectionEvent extends KahinaEvent
         return panel;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return  "select node " + selectedStep;
     }

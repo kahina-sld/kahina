@@ -33,7 +33,8 @@ public class TreePattern implements Serializable
         this.root = root;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return root.toString();
     }

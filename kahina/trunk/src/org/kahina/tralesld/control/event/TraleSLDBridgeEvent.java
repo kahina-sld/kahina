@@ -58,7 +58,8 @@ public class TraleSLDBridgeEvent extends KahinaEvent
         return intContent;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String s = "tralesld bridge: ";
         switch (eventType)

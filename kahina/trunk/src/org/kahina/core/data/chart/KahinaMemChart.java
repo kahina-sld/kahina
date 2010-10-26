@@ -49,47 +49,56 @@ public class KahinaMemChart extends KahinaChart
         daughterEdges = new HashMap<Integer, Set<Integer>>();
     }
     
-    public int getLeftBound()
+    @Override
+	public int getLeftBound()
     {
         return leftBound;
     }
 
-    public void setLeftBound(int leftBound)
+    @Override
+	public void setLeftBound(int leftBound)
     {
         this.leftBound = leftBound;
     }
 
-    public int getRightBound()
+    @Override
+	public int getRightBound()
     {
         return rightBound;
     }
 
-    public void setRightBound(int rightBound)
+    @Override
+	public void setRightBound(int rightBound)
     {
         this.rightBound = rightBound;
     }
 
-    public int getLeftmostCovered()
+    @Override
+	public int getLeftmostCovered()
     {
         return leftmostCovered;
     }
     
-    public void setLeftmostCovered(int leftmostCovered)
+    @Override
+	public void setLeftmostCovered(int leftmostCovered)
     {
         this.leftmostCovered = leftmostCovered;
     }
 
-    public int getRightmostCovered()
+    @Override
+	public int getRightmostCovered()
     {
         return rightmostCovered;
     }
     
-    public void setRightmostCovered(int rightmostCovered)
+    @Override
+	public void setRightmostCovered(int rightmostCovered)
     {
         this.rightmostCovered = rightmostCovered;
     }
     
-    public void removeEdge(int edgeID)
+    @Override
+	public void removeEdge(int edgeID)
     {
         leftBounds.remove(edgeID);
         rightBounds.remove(edgeID);
@@ -97,7 +106,8 @@ public class KahinaMemChart extends KahinaChart
         status.remove(edgeID);
     }
     
-    public int getLeftBoundForEdge(int edgeID)
+    @Override
+	public int getLeftBoundForEdge(int edgeID)
     {
         Integer leftBound = leftBounds.get(edgeID);
         if (leftBound == null)
@@ -110,12 +120,14 @@ public class KahinaMemChart extends KahinaChart
         }
     }
     
-    public void setLeftBoundForEdge(int edgeID, int leftBound)
+    @Override
+	public void setLeftBoundForEdge(int edgeID, int leftBound)
     {
         leftBounds.put(edgeID, leftBound);
     }
     
-    public int getRightBoundForEdge(int edgeID)
+    @Override
+	public int getRightBoundForEdge(int edgeID)
     {
         Integer rightBound = rightBounds.get(edgeID);
         if (rightBound == null)
@@ -128,7 +140,8 @@ public class KahinaMemChart extends KahinaChart
         }
     }
     
-    public void setRightBoundForEdge(int edgeID, int rightBound)
+    @Override
+	public void setRightBoundForEdge(int edgeID, int rightBound)
     {
     	if (verbose)
     	{
@@ -141,7 +154,8 @@ public class KahinaMemChart extends KahinaChart
     	}
     }
     
-    public int getEdgeStatus(int edgeID)
+    @Override
+	public int getEdgeStatus(int edgeID)
     {
         Integer edgeStatus = status.get(edgeID);
         if (edgeStatus == null)
@@ -154,12 +168,14 @@ public class KahinaMemChart extends KahinaChart
         }
     }
     
-    public void setEdgeStatus(int edgeID, int status)
+    @Override
+	public void setEdgeStatus(int edgeID, int status)
     {
         this.status.put(edgeID, status);
     }
     
-    public String getEdgeCaption(int edgeID)
+    @Override
+	public String getEdgeCaption(int edgeID)
     {
         String edgeCaption = edgeCaptions.get(edgeID);
         if (edgeCaption == null)
@@ -172,12 +188,14 @@ public class KahinaMemChart extends KahinaChart
         }
     }
     
-    public void setEdgeCaption(int edgeID, String edgeCaption)
+    @Override
+	public void setEdgeCaption(int edgeID, String edgeCaption)
     {
         edgeCaptions.put(edgeID, edgeCaption);
     }
     
-    public String getSegmentCaption(int segmentID)
+    @Override
+	public String getSegmentCaption(int segmentID)
     {
         String segmentCaption = segmentCaptions.get(segmentID);
         if (segmentCaption == null)
@@ -190,17 +208,20 @@ public class KahinaMemChart extends KahinaChart
         }
     }
     
-    public void setSegmentCaption(int segmentID, String segmentCaption)
+    @Override
+	public void setSegmentCaption(int segmentID, String segmentCaption)
     {
         segmentCaptions.put(segmentID, segmentCaption);
     }
     
-    public Set<Integer> getSegmentsWithCaption()
+    @Override
+	public Set<Integer> getSegmentsWithCaption()
     {
         return segmentCaptions.keySet();
     }
     
-    public Iterable<Integer> getEdgeIDs()
+    @Override
+	public Iterable<Integer> getEdgeIDs()
     {
         ArrayList<Integer> idList = new ArrayList<Integer>();
         idList.addAll(leftBounds.keySet());
@@ -208,13 +229,15 @@ public class KahinaMemChart extends KahinaChart
         return idList;
     }
     
-    public boolean segmentHasCaption(int id)
+    @Override
+	public boolean segmentHasCaption(int id)
     {
         String segmentCaption = segmentCaptions.get(id);
         return (segmentCaption != null);
     }
     
-    public void addEdgeDependency(int motherID, int daughterID)
+    @Override
+	public void addEdgeDependency(int motherID, int daughterID)
     {
     	if (verbose)
     	{
@@ -237,7 +260,8 @@ public class KahinaMemChart extends KahinaChart
         mothers.add(motherID);
     }
     
-    public Set<Integer> getMotherEdgesForEdge(int daughterID)
+    @Override
+	public Set<Integer> getMotherEdgesForEdge(int daughterID)
     {
     	if (verbose)
     	{
@@ -252,7 +276,8 @@ public class KahinaMemChart extends KahinaChart
         return mothers;
     }
     
-    public Set<Integer> getDaughterEdgesForEdge(int motherID)
+    @Override
+	public Set<Integer> getDaughterEdgesForEdge(int motherID)
     {
     	if (verbose)
     	{

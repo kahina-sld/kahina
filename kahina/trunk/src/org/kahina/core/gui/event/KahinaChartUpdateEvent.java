@@ -17,7 +17,8 @@ public class KahinaChartUpdateEvent extends KahinaEvent
         return selectedEdge;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "update: edge " + selectedEdge;
     }

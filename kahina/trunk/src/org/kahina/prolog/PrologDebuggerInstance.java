@@ -1,7 +1,7 @@
 package org.kahina.prolog;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.LogicProgrammingInstance;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
@@ -17,9 +17,12 @@ public class PrologDebuggerInstance extends LogicProgrammingInstance<PrologState
 	
 	PrologProfiler profiler;
 	
-	public PrologDebuggerInstance()
+	@Override
+	public PrologBridge startNewSession()
 	{
+		super.startNewSession();
 		profiler = new PrologProfiler(state.getFullProfile());
+		return bridge;
 	}
 
 	@Override
@@ -35,9 +38,9 @@ public class PrologDebuggerInstance extends LogicProgrammingInstance<PrologState
 	}
 
 	@Override
-	protected PrologGUI createGUI()
+	protected PrologGUI createGUI(KahinaController guiController)
 	{
-		return new PrologGUI(PrologStep.class, this, KahinaRunner.getControl());
+		return new PrologGUI(PrologStep.class, this, guiController);
 	}
 
 	@Override
@@ -52,6 +55,11 @@ public class PrologDebuggerInstance extends LogicProgrammingInstance<PrologState
 		super.fillViewRegistry();
 		KahinaViewRegistry.registerMapping(PrologVariableBindingSet.class, PrologVariableBindingSetView.class);
 		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, PrologJEditSourceCodeView.class);
+	}
+	
+	public static void main(String[] args)
+	{
+		(new PrologDebuggerInstance()).start(args);
 	}
 
 }

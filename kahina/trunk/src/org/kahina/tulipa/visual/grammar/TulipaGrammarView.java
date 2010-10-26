@@ -18,7 +18,8 @@ public class TulipaGrammarView extends KahinaView<TulipaGrammar>
 
 	int selectedClause;
 	
-    public JComponent wrapInPanel(KahinaController control)
+    @Override
+	public JComponent wrapInPanel(KahinaController control)
     {
         TulipaGrammarViewPanel panel = new TulipaGrammarViewPanel();
         control.registerListener("redraw", panel);

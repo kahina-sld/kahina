@@ -50,7 +50,8 @@ public class TreeAutomatonRule
         return false;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String str = assignedLabel + " <- ";
         str += requiredChildAnnotations + ", ";

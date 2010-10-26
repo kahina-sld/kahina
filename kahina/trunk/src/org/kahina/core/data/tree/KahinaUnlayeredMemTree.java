@@ -181,7 +181,8 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         }
     }
     
-    public List<Integer> getLeaves()
+    @Override
+	public List<Integer> getLeaves()
     {
         List<Integer> leaves = new LinkedList<Integer>();
         collectLeaves(getRootID(), leaves);

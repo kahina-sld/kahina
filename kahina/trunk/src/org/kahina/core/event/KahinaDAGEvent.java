@@ -31,7 +31,8 @@ public class KahinaDAGEvent extends KahinaEvent
         return secondID;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String s = "tree - ";
         switch (dagEventType)

@@ -28,7 +28,8 @@ public class KahinaDialogEvent extends KahinaEvent
         return dialogEventType;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String s = "dialog: ";
         if (dialogEventType == PARSE_OPTIONS)

@@ -1,7 +1,7 @@
 package org.kahina.tulipa;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.tulipa.behavior.TulipaDAGBehavior;
 import org.kahina.tulipa.bridge.TulipaBridge;
@@ -11,11 +11,6 @@ import org.kahina.tulipa.visual.grammar.TulipaGrammarView;
 
 public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, TulipaBridge>
 {
-    public TulipaInstance()
-    {
-        //gui = new TraleSLDGUI(TraleSLDStep.class, this);
-        //bridge = new TraleSLDBridge(this, gui);
-    }
     
     @Override
     protected void createTreeBehavior()
@@ -30,9 +25,9 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
     }
 
     @Override
-    protected TulipaGUI createGUI()
+    protected TulipaGUI createGUI(KahinaController guiController)
     {
-        return new TulipaGUI(TulipaStep.class, this, KahinaRunner.getControl());
+        return new TulipaGUI(TulipaStep.class, this, guiController);
     }
 
     @Override
@@ -41,16 +36,13 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
     	return new TulipaState();
     }
 
+    @Override
     public TulipaState getState()
     {
         return state;
     }
 
-    public TulipaBridge getBridge()
-    {
-        return bridge;
-    }
-
+    @Override
 	protected void fillViewRegistry()
 	{
 		super.fillViewRegistry();

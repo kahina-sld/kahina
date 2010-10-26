@@ -54,10 +54,6 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		int height = 120;
 		this.setSize(width, height);
 
-		setVisible(true);
-
-		this.validate();
-
 		control.registerListener(KahinaEventTypes.SYSTEM, this);
 		control.registerListener(KahinaEventTypes.SESSION, this);
 		this.addWindowListener(new WindowAdapter()

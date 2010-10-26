@@ -26,7 +26,8 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
         this.lastMouseEvent = null;
     }
     
-    public void mouseClicked(MouseEvent e)
+    @Override
+	public void mouseClicked(MouseEvent e)
     {
         int clickedNode = view.view.nodeAtCoordinates(e.getX(), e.getY());
         if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
@@ -43,12 +44,14 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
         }
     }
     
-    public void mousePressed(MouseEvent e) 
+    @Override
+	public void mousePressed(MouseEvent e) 
     {
         maybeShowPopup(e);
     }
 
-    public void mouseReleased(MouseEvent e) 
+    @Override
+	public void mouseReleased(MouseEvent e) 
     {
         maybeShowPopup(e);
     }

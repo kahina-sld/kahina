@@ -139,7 +139,8 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
         this.markedPattern = markedPattern;
     }
     
-    public void paintComponent(Graphics canvas)
+    @Override
+	public void paintComponent(Graphics canvas)
     {
         Graphics2D cnv = (Graphics2D) canvas;
         cnv.setRenderingHint(RenderingHints.KEY_ANTIALIASING,

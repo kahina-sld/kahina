@@ -21,7 +21,8 @@ public class KahinaTextWithMarking extends KahinaObject
         this.caretIndex = caretIndex;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "begin: " + beginIndex + " end: " + endIndex + " caret: " + caretIndex;
     }

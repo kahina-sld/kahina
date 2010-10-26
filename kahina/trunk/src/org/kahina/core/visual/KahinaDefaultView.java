@@ -14,6 +14,7 @@ public class KahinaDefaultView extends KahinaView<KahinaObject>
 		super(control);
 	}
 
+	@Override
 	public JComponent wrapInPanel(KahinaController control)
     {
         KahinaDefaultViewPanel panel = new KahinaDefaultViewPanel();

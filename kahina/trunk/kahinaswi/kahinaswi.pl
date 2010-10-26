@@ -28,20 +28,29 @@
 :- use_module(pce_prolog_clause,[clear_clause_info_cache/0,
                                  pce_clause_info/4]).
 
+:- dynamic kahina_instance/1.
 :- dynamic bridge/1.
 :- dynamic frame_step/2.
 :- dynamic next_step/1.
 
 start(Bridge) :-
-  jpl_call(class([org,kahina,prolog],['PrologDebuggerRunner']),runAndGetBridge,
-      [],Bridge),
+  get_kahina_instance(Instance),
+  jpl_call(Instance,startNewSession,[],Bridge),
+  retractall(bridge(_)),
   assert(bridge(Bridge)),
   retractall(next_step(_)), % TODO more systematic cleanup
   clear_clause_info_cache,
   assert(next_step(1)).
 
+get_kahina_instance(Instance) :-
+  kahina_instance(Instance),
+  !.
+get_kahina_instance(Instance) :-
+  jpl_new('org.kahina.prolog.PrologDebuggerInstance',[],Instance),
+  assert(kahina_instance(Instance)).
+
 get_bridge(Bridge) :-
-  bridge(Bridge), % TODO if that bridge is old, we must create a new one or clear it
+  bridge(Bridge), % TODO if that bridge is old, we must create a new one
   !.
 get_bridge(Bridge) :-
   start(Bridge).

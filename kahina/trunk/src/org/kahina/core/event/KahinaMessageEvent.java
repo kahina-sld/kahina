@@ -18,7 +18,8 @@ public class KahinaMessageEvent extends KahinaEvent
     }
     
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return "message: " + line.toString();
     }

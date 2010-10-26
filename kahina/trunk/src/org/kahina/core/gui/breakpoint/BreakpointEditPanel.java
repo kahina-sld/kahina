@@ -164,7 +164,8 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         breakpoint.setPattern(treeFragmentPanel.getTreePattern());
     }
     
-    public void setEnabled(boolean enabled)
+    @Override
+	public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
         if (enabled)

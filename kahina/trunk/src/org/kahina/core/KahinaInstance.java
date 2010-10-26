@@ -13,6 +13,7 @@ import java.util.zip.ZipFile;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.bridge.KahinaBridge;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
@@ -40,52 +41,66 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 {
 	private static final boolean VERBOSE = false;
 	
-	protected S state;
 	protected G gui;
+	
+	// TODO maybe group state, bridge, profiler etc. under a new Session type
+	
+	protected S state;
+	
 	protected B bridge;
+	
+	protected KahinaController controller;
+	
+	protected ObjectMagazine<KahinaStep> steps;
+	
+	protected final KahinaController guiController;
 
 	public KahinaInstance()
-	{
+	{		
 		fillViewRegistry();
-		state = createState();
-		gui = createGUI();
-		bridge = createBridge();
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.SESSION, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
-		createTreeBehavior();
+		
+		initializeNewSession(); // dummy session so views have something (empty) to show
+		
+		guiController = new KahinaController();
+		KahinaRunner.setGUIController(guiController); // TODO get rid of KahinaRunner
+		gui = createGUI(guiController);
+		
+		gui.prepare(guiController);
 	}
-
-	public KahinaInstance(S state)
+	
+	public B startNewSession()
 	{
-		fillViewRegistry();
-		this.state = state;
-		gui = createGUI();
-		// TODO (re)create bridge (when adding support for resuming live
-		// sessions)
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.SESSION, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
-		// TODO create tree behavior (not persistable yet)
+		initializeNewSession();
+		gui.displayMainViews();
+		gui.show();
+		return bridge;
+	}
+	
+	protected void initializeNewSession()
+	{
+		if (steps != null)
+		{
+			steps.close();
+		}
+		steps = ObjectMagazine.create();
+		KahinaRunner.setSteps(steps); // TODO get rid of KahinaRunner
+		controller = new KahinaController();
+		KahinaRunner.setControl(controller); // TODO get rid of KahinaRunner
+		controller.registerListener(KahinaEventTypes.UPDATE, this);
+		controller.registerListener(KahinaEventTypes.SESSION, this);
+		controller.registerListener(KahinaEventTypes.SYSTEM, this);
+		state = createState();
+		bridge = createBridge();
+		createTreeBehavior();
 	}
 	
 	protected abstract void createTreeBehavior();
 
 	protected abstract S createState();
 
-	protected abstract G createGUI();
+	protected abstract G createGUI(KahinaController guiController);
 
 	protected abstract B createBridge();
-
-	public G getGUI()
-	{
-		return gui;
-	}
-
-	public B getBridge()
-	{
-		return bridge;
-	}
 
 	public S getState()
 	{
@@ -191,6 +206,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	private void saveSessionAs(File zipFile)
 	{
+		// TODO deal with bridge, subclasses need to deal with profiler...
 		File directory;
 		try
 		{
@@ -260,4 +276,21 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			KahinaRunner.processEvent(new KahinaConsoleLineEvent(refs));
 		}
 	}
+	
+	/**
+	 * Writing a main method for a Kahina-based debugging environment is simple:
+	 * just create an instance of your KahinaInstance subclass and pass its
+	 * start method the arguments.
+	 * @param args
+	 */
+	public void start(String[] args)
+	{
+		startNewSession();
+		
+		if (args.length > 0)
+		{
+			loadSession(new File(args[0]));
+		}
+	}
+	
 }

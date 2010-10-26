@@ -38,7 +38,8 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         this.addMouseListener(new KahinaTreeViewListener(this, marker));
     }
     
-    public void paintComponent(Graphics cnv)
+    @Override
+	public void paintComponent(Graphics cnv)
     {
         try
         {
@@ -56,7 +57,8 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         }    
     }
     
-    public void updateDisplay()
+    @Override
+	public void updateDisplay()
     {      
         BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = newImage.getGraphics();

@@ -123,6 +123,7 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		}
 	}
 
+	@Override
 	protected void processEvent(KahinaUpdateEvent e)
 	{
 		// recalculation is implicitly part of this (via marker)

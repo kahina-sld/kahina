@@ -22,9 +22,7 @@ public class KahinaDAGTest
     public static void main(String[] args)
     {
         try
-        {      
-        	KahinaRunner.initialize();
-        	
+        {	
             File file = new File("src/org/kahina/core/test/test-dag.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();

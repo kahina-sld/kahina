@@ -25,19 +25,22 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
         this.view = view;
     }
     
-    public void mouseClicked(MouseEvent e)
+    @Override
+	public void mouseClicked(MouseEvent e)
     {
         int clickedEdge = view.view.edgeAtCoordinates(e.getX() - 5, e.getY() - 5);
         //marking and redrawing happens indirectly
         KahinaRunner.processEvent(new KahinaEdgeSelectionEvent(clickedEdge));
     }
     
-    public void mousePressed(MouseEvent e) 
+    @Override
+	public void mousePressed(MouseEvent e) 
     {
         maybeShowPopup(e);
     }
 
-    public void mouseReleased(MouseEvent e) 
+    @Override
+	public void mouseReleased(MouseEvent e) 
     {
         maybeShowPopup(e);
     }

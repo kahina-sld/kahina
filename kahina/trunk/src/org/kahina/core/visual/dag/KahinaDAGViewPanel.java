@@ -32,7 +32,8 @@ private static final long serialVersionUID = 6701252380309408342L;
         this.addMouseListener(new KahinaDAGViewListener(this));
     }
     
-    public void paintComponent(Graphics cnv)
+    @Override
+	public void paintComponent(Graphics cnv)
     {
         try
         {
@@ -50,7 +51,8 @@ private static final long serialVersionUID = 6701252380309408342L;
         }    
     }
     
-    public void updateDisplay()
+    @Override
+	public void updateDisplay()
     {      
         BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = newImage.getGraphics();

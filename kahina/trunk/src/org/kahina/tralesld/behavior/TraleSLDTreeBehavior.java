@@ -33,7 +33,8 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         KahinaRunner.getControl().registerListener("traleSLD bridge", this);
     }
     
-    public void initializeSkipPoints()
+    @Override
+	public void initializeSkipPoints()
     {
         TreePattern pat = new TreePattern();
         TreePatternNode rootNode = new TreePatternNode();
@@ -46,7 +47,8 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         ((LogicProgrammingState) kahina.getState()).getSkipPoints().add(bp);
     }
     
-    public void initializeCreepPoints()
+    @Override
+	public void initializeCreepPoints()
     {
         TreePattern pat = new TreePattern();
         TreePatternNode rootNode = new TreePatternNode();

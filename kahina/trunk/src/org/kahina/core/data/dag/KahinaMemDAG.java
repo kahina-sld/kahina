@@ -137,7 +137,8 @@ public class KahinaMemDAG extends KahinaDAG
         return incoming;
     }
     
-    public List<Integer> getVisibleParents(int nodeID)
+    @Override
+	public List<Integer> getVisibleParents(int nodeID)
     {
     	ArrayList<Integer> ancestors = new ArrayList<Integer>();
         // System.err.println("\t Actual children for node " + nodeID + ": " +
@@ -203,7 +204,8 @@ public class KahinaMemDAG extends KahinaDAG
         return outgoing;
     }
     
-    public ArrayList<Integer> getVisibleChildren(int nodeID)
+    @Override
+	public ArrayList<Integer> getVisibleChildren(int nodeID)
     {
         ArrayList<Integer> descendants = new ArrayList<Integer>();
         // System.err.println("\t Actual children for node " + nodeID + ": " +

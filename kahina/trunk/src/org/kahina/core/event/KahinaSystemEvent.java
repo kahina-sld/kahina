@@ -33,7 +33,8 @@ public class KahinaSystemEvent extends KahinaEvent
         return intContent;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String s = "system: ";
         if (systemEventType == QUIT)

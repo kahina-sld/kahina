@@ -135,7 +135,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         recalculate(); // TODO is this necessary?
     }
     
-    public void recalculate()
+    @Override
+	public void recalculate()
     {
         resetAllStructures();
         calculateCoordinates();
@@ -704,7 +705,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         if ( g == null)
         {
             BufferedImage bufferedImage = new BufferedImage(2,2,BufferedImage.TYPE_4BYTE_ABGR_PRE);
-            g =  (Graphics2D) bufferedImage.createGraphics();
+            g =  bufferedImage.createGraphics();
         }
         g.setFont(new Font(f.getFontName(), f.getStyle(), fontSize));
         g.setStroke(s);

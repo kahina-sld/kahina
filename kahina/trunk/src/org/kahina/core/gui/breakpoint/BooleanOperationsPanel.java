@@ -46,7 +46,8 @@ public class BooleanOperationsPanel extends JPanel
         add(Box.createRigidArea(new Dimension(10,0)));
     }
     
-    public void setEnabled(boolean enabled)
+    @Override
+	public void setEnabled(boolean enabled)
     {
         if (enabled)
         {

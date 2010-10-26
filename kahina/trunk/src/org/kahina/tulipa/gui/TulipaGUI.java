@@ -53,13 +53,15 @@ public class TulipaGUI extends KahinaGUI
         getControlPanel().addControlButton("forward.png", "forwardInHistory", "Forward (W)",  "History", KeyEvent.VK_W);
     }
     
-    protected void displayMainViews()
+    @Override
+    public void displayMainViews()
     {
         super.displayMainViews();
         mainDAGView.display(instance.getState().getDAG());  
         grammarView.display(instance.getState().getGrammar()); 
     }
     
+    @Override
     public void prepare(KahinaController control)
     {
         super.prepare(control);

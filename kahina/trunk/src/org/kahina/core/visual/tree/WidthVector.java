@@ -139,7 +139,8 @@ public class WidthVector
         return copy;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         int size = start.size();
         String str = "";

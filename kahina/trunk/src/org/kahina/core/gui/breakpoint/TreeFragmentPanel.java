@@ -236,7 +236,8 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         hintPanel.hint(hint,color);
     }
     
-    public void setEnabled(boolean enabled)
+    @Override
+	public void setEnabled(boolean enabled)
     {
         if (enabled)
         {

@@ -408,6 +408,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		failureBreakpointCheck(stepID);
 	}
 
+	@Override
 	public void processEvent(KahinaEvent e)
 	{
 		if (VERBOSE)

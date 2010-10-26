@@ -66,7 +66,8 @@ public class LogicProgrammingBridgeEvent extends KahinaEvent
         return intContent;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String s = "lp bridge: ";
         switch (eventType)

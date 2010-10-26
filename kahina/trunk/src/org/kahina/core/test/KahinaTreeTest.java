@@ -58,7 +58,6 @@ public class KahinaTreeTest
             v0.setStatusColorEncoding(2,new Color(0,255,255));
             v0.setStatusColorEncoding(3,new Color(255,255,255)); 
             
-            KahinaRunner.initialize();
             KahinaRunner.getControl().registerListener("select", v0);
             KahinaRunner.getControl().registerListener("update", v0);
             

@@ -114,6 +114,7 @@ public class KahinaWindowManager
     
     public void displayWindows()
     {
+    	mainWindow.setVisible(true);
         for (KahinaWindow window : topLevelWindows.values())
         {
             //window.computeGoodSize();

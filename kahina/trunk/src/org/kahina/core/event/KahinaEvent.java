@@ -14,7 +14,8 @@ public class KahinaEvent
         return type;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return type;
     }

@@ -74,7 +74,8 @@ public class TulipaBridgeEvent  extends KahinaEvent
         return intContent2;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String s = "tulipa bridge: ";
         switch (eventType)

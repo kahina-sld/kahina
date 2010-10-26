@@ -19,6 +19,7 @@ import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -62,7 +63,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         control.registerListener("breakpoint_editor", this);
         this.setTitle("Kahina Breakpoint Editor");
         this.setSize(800,600);
-        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
        
         breakpoints = new ArrayList<KahinaBreakpoint>();
         compiledBreakpoints = new ArrayList<TreeAutomaton>();

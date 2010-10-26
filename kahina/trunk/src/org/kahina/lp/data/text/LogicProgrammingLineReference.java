@@ -29,7 +29,8 @@ public class LogicProgrammingLineReference extends KahinaLineReference
         return new LogicProgrammingLineReference(text, line, step, extID, newPort);
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String portString = "";
         switch (port)

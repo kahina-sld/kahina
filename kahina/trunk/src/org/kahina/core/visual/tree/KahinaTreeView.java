@@ -174,7 +174,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 	public void displaySecondaryTree(KahinaTree treeModel)
 	{
 		this.secondaryTreeModel = treeModel;
-		((KahinaTree) this.secondaryTreeModel).setReferenceNode(model.getReferenceNode());
+		(this.secondaryTreeModel).setReferenceNode(model.getReferenceNode());
 		this.secondaryTreeModel.setPrimaryModel(model);
 		nodeBorderColor = new HashMap<Integer, Color>();
 		recalculate(); // TODO is this necessary?
@@ -934,7 +934,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		if (g == null)
 		{
 			BufferedImage bufferedImage = new BufferedImage(2, 2, BufferedImage.TYPE_4BYTE_ABGR_PRE);
-			g = (Graphics2D) bufferedImage.createGraphics();
+			g = bufferedImage.createGraphics();
 		}
 		g.setFont(new Font(f.getFontName(), f.getStyle(), fontSize));
 		g.setStroke(s);
@@ -1109,6 +1109,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		}
 	}
 
+	@Override
 	public JComponent wrapInPanel(KahinaController control)
 	{
 		KahinaTreeViewPanel panel = new KahinaTreeViewPanel(control);
@@ -1119,6 +1120,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		return scrollPane;
 	}
 
+	@Override
 	public void recalculate()
 	{
 		resetAllStructures();

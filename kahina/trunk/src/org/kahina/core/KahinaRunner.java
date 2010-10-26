@@ -7,18 +7,13 @@ import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.io.magazine.ObjectMagazine;
 
-public class KahinaRunner
+public class KahinaRunner // TODO get rid of this class, make everything non-static
 {
 	private static final boolean VERBOSE = false;
 	
     private static ObjectMagazine<KahinaStep> steps;
-    private static KahinaController control;
-    
-    public static void initialize()
-    {
-    	control = new KahinaController();
-    	steps = ObjectMagazine.create();
-    }
+    private static KahinaController control = new KahinaController();
+    private static KahinaController guiController;
 
 	public static void deinitialize()
 	{
@@ -33,6 +28,7 @@ public class KahinaRunner
     
     public static void processEvent(KahinaEvent e)
     {
+    	guiController.processEvent(e);
         control.processEvent(e);
     }
     
@@ -40,7 +36,17 @@ public class KahinaRunner
     {
         return control;
     }
+    
+    public static void setControl(KahinaController control)
+    {
+    	KahinaRunner.control = control;
+    }
 
+    public static void setSteps(ObjectMagazine<KahinaStep> steps)
+    {
+    	KahinaRunner.steps = steps;
+    }
+    
 	public static void store(int id, KahinaObject object)
 	{
 		steps.store(id, (KahinaStep) object);
@@ -61,5 +67,10 @@ public class KahinaRunner
 	public static void loadSteps(File directory)
 	{
 		steps = ObjectMagazine.load(directory, KahinaStep.class);
+	}
+
+	public static void setGUIController(KahinaController guiController)
+	{
+		KahinaRunner.guiController = guiController;
 	}
 }

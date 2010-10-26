@@ -6,6 +6,7 @@ public class KahinaDefaultViewPanel extends KahinaViewPanel<KahinaDefaultView>
 {
 	private static final long serialVersionUID = -5117530919344443714L;
 
+	@Override
 	public void paintComponent(Graphics canvas)
     {
         String displayString;

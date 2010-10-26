@@ -15,6 +15,7 @@ public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS>
 		super(control);
 	}
 
+	@Override
 	public JComponent wrapInPanel(KahinaController control)
     {
         TraleSLDFeatureStructureViewPanel panel = new TraleSLDFeatureStructureViewPanel();

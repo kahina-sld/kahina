@@ -69,7 +69,8 @@ public class TreePatternNode implements Serializable
         this.pattern = pattern;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         StringBuilder str = new StringBuilder(pattern.toString());
         if (!children.isEmpty())

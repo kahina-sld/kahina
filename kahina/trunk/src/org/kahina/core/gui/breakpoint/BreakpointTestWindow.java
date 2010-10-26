@@ -100,7 +100,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
             }
             else
             {
-                String caption = (String) JOptionPane.showInputDialog(this,"Node caption:", "New node",JOptionPane.PLAIN_MESSAGE);
+                String caption = JOptionPane.showInputDialog(this,"Node caption:", "New node",JOptionPane.PLAIN_MESSAGE);
                 addNode(parentNode, caption);
                 view.resetAllStructures();
                 view.calculateCoordinates();

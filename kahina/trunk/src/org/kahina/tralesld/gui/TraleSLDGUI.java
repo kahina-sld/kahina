@@ -55,7 +55,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	}
     
     @Override
-    protected void displayMainViews()
+    public void displayMainViews()
     {
     	super.displayMainViews();
         //set deciders here because the trees are generated generically by the KahinaState

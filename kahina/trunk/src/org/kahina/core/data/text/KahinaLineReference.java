@@ -34,7 +34,8 @@ public class KahinaLineReference extends KahinaObject
         this.step = step;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         return text.text.getLine(line);
     }

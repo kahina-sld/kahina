@@ -68,7 +68,8 @@ public class TulipaBridge extends KahinaBridge
         return intID;
     }
     
-    public TulipaStep generateStep()
+    @Override
+	public TulipaStep generateStep()
     {
         if (verbose) System.err.println("TulipaBridge.generateStep()");
         return new TulipaStep();
@@ -302,7 +303,8 @@ public class TulipaBridge extends KahinaBridge
         }
     }
     
-    protected void processEvent(KahinaControlEvent e)
+    @Override
+	protected void processEvent(KahinaControlEvent e)
     {
         String command = e.getCommand();
         if (command.equals("creep"))

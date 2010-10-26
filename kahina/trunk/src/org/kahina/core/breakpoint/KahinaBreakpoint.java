@@ -88,7 +88,8 @@ public class KahinaBreakpoint implements Serializable
         this.signalColor = signalColor;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         if (active)
         {

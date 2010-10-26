@@ -59,7 +59,8 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
         return panel;
     }
     
-    public void processEvent(KahinaEvent e)
+    @Override
+	public void processEvent(KahinaEvent e)
     {
         if (e instanceof KahinaMessageEvent)
         {
