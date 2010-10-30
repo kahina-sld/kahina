@@ -59,7 +59,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		bindingSharer = new Sharer<TraleSLDVariableBinding>();
 	}
 	
-	// TODO call where appropriate
 	private void initializeChart(String parsedSentenceList)
 	{
 		List<String> wordList = PrologUtilities.parsePrologStringList(parsedSentenceList);
@@ -83,9 +82,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			if (nodeLabel.startsWith("rule_close") && lastRegisteredChartEdge != -1)
 			{
 				state.linkEdgeToNode(lastRegisteredChartEdge, currentID);
-			} else if (nodeLabel.startsWith("rec(") && nodeLabel.endsWith(")"))
+			} else if (nodeLabel.startsWith("rec["))
 			{
-				initializeChart(nodeLabel.substring(4, nodeLabel.length() - 1));
+				initializeChart(nodeLabel.substring(3, nodeLabel.length()));
 			}
 			if (VERBOSE)
 			{
