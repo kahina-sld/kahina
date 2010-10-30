@@ -69,11 +69,6 @@ public class TraleSLDBridgeEvent extends KahinaEvent
                 s += "ruleApplication(" + internalID + ",\"" + strContent + "\")";
                 break;
             }
-            case TraleSLDBridgeEventType.INIT:
-            {
-                s += "init(" + strContent + ")";
-                break;
-            }
             case TraleSLDBridgeEventType.STEP_FINISHED:
             {
                 s += "stepFinished (" + internalID + ")";

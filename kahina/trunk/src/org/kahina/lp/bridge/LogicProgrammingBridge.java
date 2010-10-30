@@ -81,6 +81,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 			return -1;
 		}
 		Integer intID = stepIDConv.get(extID);
+		if (VERBOSE)
+		{
+			System.err.println("stepIDConv.get(" + extID + ")=" + intID);
+		}
 		if (intID == null)
 		{
 			LogicProgrammingStep newStep = generateStep();
@@ -166,10 +170,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				System.err.println("Bridge state: " + bridgeState);
 			}
-			if (bridgeState == 'n')
-			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
-			}
+			selectIfPaused(stepID);
 			if (VERBOSE)
 				System.err.println("//LogicProgrammingBridge.call(" + extID + ")");
 		} catch (Exception e)
@@ -231,10 +232,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			currentID = newStepID;
 			parentCandidateID = newStepID;
 
-			if (bridgeState == 'n')
-			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
-			}
+			selectIfPaused(newStepID);
 
 			// TODO Do we also want console messages for each "virtual redo"? If
 			// so, move this into loop above.
@@ -270,9 +268,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
-			if (bridgeState == 'n')
-				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
-
+			
+			// stop autocomplete/leap when we're done
+			if (deterministic && stepID == state.getStepTree().getRootID() && bridgeState != 'n')
+			{
+				bridgeState = 'c';
+			}
+			
+			selectIfPaused(stepID);
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
 			if (reference != null)
 			{
@@ -305,9 +308,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
-			if (bridgeState == 'n')
-				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
-
+			
+			// stop autocomplete/leap when we're done
+			if (stepID == state.getStepTree().getRootID() && bridgeState != 'n')
+			{
+				bridgeState = 'c';
+			}
+			
+			selectIfPaused(stepID);
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
 			if (reference != null)
 			{
@@ -317,6 +325,18 @@ public class LogicProgrammingBridge extends KahinaBridge
 		{
 			e.printStackTrace();
 			System.exit(1);
+		}
+	}
+	
+	/**
+	 * Selects the given step and updates the GUI if the debugger is not
+	 * currently leaping or autocompleting.
+	 */
+	protected void selectIfPaused(int stepID)
+	{
+		if (bridgeState == 'n')
+		{
+			KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 		}
 	}
 
@@ -487,7 +507,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	}
 
 	@Override
-	protected void processEvent(KahinaControlEvent e)
+	protected synchronized void processEvent(KahinaControlEvent e)
 	{
 		// TODO update chart when exiting leap/skip. Gah.
 		String command = e.getCommand();

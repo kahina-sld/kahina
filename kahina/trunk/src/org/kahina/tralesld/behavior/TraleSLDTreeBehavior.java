@@ -1,12 +1,12 @@
 package org.kahina.tralesld.behavior;
 
+import java.util.List;
+
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
+import org.kahina.core.breakpoint.KahinaBreakpointFactory;
 import org.kahina.core.breakpoint.KahinaBreakpointType;
-import org.kahina.core.breakpoint.TreeNodePattern;
-import org.kahina.core.breakpoint.TreePattern;
-import org.kahina.core.breakpoint.TreePatternNode;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.lp.LogicProgrammingState;
@@ -25,7 +25,7 @@ import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 
 public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
 {   
-	private static final boolean verbose = false;
+	private static final boolean VERBOSE = false;
 	
     public TraleSLDTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?> kahina, KahinaTree secondaryTree)
     {
@@ -36,39 +36,17 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     @Override
 	public void initializeSkipPoints()
     {
-        TreePattern pat = new TreePattern();
-        TreePatternNode rootNode = new TreePatternNode();
-        TreeNodePattern rootPattern = new TreeNodePattern(TreeNodePattern.CAPTION, TreeNodePattern.MATCHING, "[0-9]* (unify|featval|type).*");    
-        rootNode.setPattern(rootPattern);
-        pat.setRoot(rootNode);
-        KahinaBreakpoint bp = new KahinaBreakpoint(KahinaBreakpointType.SKIP_POINT);
-        bp.setName("unify/featval/type Skip");
-        bp.setPattern(pat);
-        ((LogicProgrammingState) kahina.getState()).getSkipPoints().add(bp);
+        List<KahinaBreakpoint> skipPoints = ((LogicProgrammingState) kahina.getState()).getSkipPoints();
+        skipPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("skip unification", "[0-9]* (unify|featval|type).*", KahinaBreakpointType.SKIP_POINT));
+        skipPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("skip EFD closure", "[0-9]* empty_close", KahinaBreakpointType.SKIP_POINT));
     }
     
     @Override
 	public void initializeCreepPoints()
     {
-        TreePattern pat = new TreePattern();
-        TreePatternNode rootNode = new TreePatternNode();
-        TreeNodePattern rootPattern = new TreeNodePattern(TreeNodePattern.CAPTION, TreeNodePattern.MATCHING, "[0-9]* lex\\(.*");    
-        rootNode.setPattern(rootPattern);
-        pat.setRoot(rootNode);
-        KahinaBreakpoint bp = new KahinaBreakpoint(KahinaBreakpointType.CREEP_POINT);
-        bp.setName("Failed Lex Creep");
-        bp.setPattern(pat);
-        ((LogicProgrammingState) kahina.getState()).getCreepPoints().add(bp);
-        //System.err.println(aut.toString());
-    }
-    
-    public void initializeParseTree(int stepID, String parsedSentence)
-    {
-        object.setRootID(stepID);
-        object.addNode(stepID, "parsing " + parsedSentence, "", TraleSLDStepStatus.PROGRESS);
-        secondaryTree.setRootID(stepID);
-        secondaryTree.addNode(stepID, "parsing " + parsedSentence, "", TraleSLDStepStatus.PROGRESS);
-        lastActiveID = stepID;
+    	List<KahinaBreakpoint> creepPoints = ((LogicProgrammingState) kahina.getState()).getCreepPoints();
+    	creepPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("creep over lexical lookup", "[0-9]* lex\\(.*", KahinaBreakpointType.CREEP_POINT));
+    	creepPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("creep away from EFD closure", "[0-9]* empty_close", KahinaBreakpointType.CREEP_POINT));
     }
     
     public void processRuleApplication(int stepID, int externalID, String ruleName)
@@ -84,7 +62,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
      */
     public void processStepFinished(int stepID)
     {
-        if (verbose) System.err.println("TraleSLDTreeBehavior.processStepFinished(" + stepID + ")");
+        if (VERBOSE) System.err.println("TraleSLDTreeBehavior.processStepFinished(" + stepID + ")");
         stepBeingRedone = -1;
         deterministicallyExited.add(stepID);
         object.setNodeStatus(stepID,TraleSLDStepType.FINISHED);
@@ -108,11 +86,6 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
             case TraleSLDBridgeEventType.RULE_APP:
             {
                 processRuleApplication(e.getInternalID(), e.getIntContent(), e.getStrContent());
-                break;
-            }
-            case TraleSLDBridgeEventType.INIT:
-            {
-                initializeParseTree(e.getInternalID(), e.getStrContent());
                 break;
             }
             case TraleSLDBridgeEventType.STEP_FINISHED:

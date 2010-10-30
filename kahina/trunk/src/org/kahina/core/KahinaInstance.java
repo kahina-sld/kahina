@@ -73,6 +73,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		initializeNewSession();
 		gui.displayMainViews();
 		gui.show();
+		if (VERBOSE)
+		{
+			System.err.println(this + ".startNewSession()=" + bridge);
+		}
 		return bridge;
 	}
 	

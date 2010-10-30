@@ -19,7 +19,7 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
  */
 public class KahinaBridge implements KahinaListener
 {
-	private static final boolean verbose = false;
+	private static final boolean VERBOSE = false;
     
     public KahinaBridge()
     {
@@ -29,7 +29,7 @@ public class KahinaBridge implements KahinaListener
     
     protected KahinaStep generateStep()
     {
-    	if (verbose) System.err.println("KahinaBridge.generateStep()");
+    	if (VERBOSE) System.err.println("KahinaBridge.generateStep()");
         return new KahinaStep();
     }
     
@@ -64,15 +64,27 @@ public class KahinaBridge implements KahinaListener
     
     protected void processEvent(KahinaTreeMatchEvent e)
     {
+    	if (VERBOSE)
+    	{
+    		System.err.println(this + ".processEvent(" + e + ")");
+    	}
         switch (e.getBreakpoint().getType())
         {
             case KahinaBreakpointType.SKIP_POINT:
             {
+            	if (VERBOSE)
+            	{
+            		System.err.println("It's a skip point!");
+            	}
                 processSkipPointMatch(e.getNodeID(), e.getBreakpoint());
                 break;
             }
             case KahinaBreakpointType.CREEP_POINT:
             {
+            	if (VERBOSE)
+            	{
+            		System.err.println("It's a creep point!");
+            	}
                 processCreepPointMatch(e.getNodeID(), e.getBreakpoint());
                 break;
             }
