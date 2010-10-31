@@ -6,11 +6,13 @@
 	<property name="prop.message" value="must be defined, preferably in the file build.properties"/>
 	<fail message="gralej.path ${prop.message}" unless="gralej.path"/>
 	<fail message="jedit-textArea.path ${prop.message}" unless="jedit-textArea.path"/>
+	<!--<fail message="jasper.path ${prop.message}" unless="jasper.path"/>-->
 	<target name="compile" depends="init">
 		<javac srcdir="${src}" destdir="${bin}" source="1.6" target="1.6" compiler="javac1.6">
 			<classpath>
 				<pathelement location="${gralej.path}"/>
 				<pathelement location="${jedit-textArea.path}"/>
+				<!--<pathelement location="${jasper.path}"/>-->
 			</classpath>
 		</javac>
 		<copy todir="${bin}">

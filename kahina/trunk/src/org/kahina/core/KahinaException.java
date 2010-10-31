@@ -10,7 +10,7 @@ public class KahinaException extends RuntimeException
 		super(message);
 	}
 
-	public KahinaException(String message, Exception cause)
+	public KahinaException(String message, Throwable cause)
 	{
 		super(message, cause);
 	}

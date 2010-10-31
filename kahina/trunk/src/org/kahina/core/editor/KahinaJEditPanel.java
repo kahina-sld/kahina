@@ -111,13 +111,13 @@ public class KahinaJEditPanel extends JPanel
 			@Override
 			public void contentInserted(JEditBuffer buffer2, int startLine, int offset, int numLines, int length)
 			{
-				updateDirty();
+				setDirty(true);
 			}
 
 			@Override
 			public void contentRemoved(JEditBuffer buffer2, int startLine, int offset, int numLines, int length)
 			{
-				updateDirty();
+				setDirty(true);
 			}
 
 			@Override
@@ -126,7 +126,7 @@ public class KahinaJEditPanel extends JPanel
 				// This method is called e.g. after an undo operation. An undo
 				// operation may have cleaned the buffer rather than making it
 				// dirty. UndoManager doesn't seem to respect this, though.
-				updateDirty();
+				setDirty(buffer.isDirty());
 			}
 
 		});
@@ -142,11 +142,6 @@ public class KahinaJEditPanel extends JPanel
 	 */
 	protected void configureBuffer(JEditBuffer buffer) throws Exception
 	{
-	}
-
-	private void updateDirty()
-	{
-		setDirty(buffer.isDirty());
 	}
 
 	private void setDirty(boolean newValue)

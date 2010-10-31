@@ -24,7 +24,14 @@ import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
 	
+	//private final KahinaPrologInterface prologInterface;
+	
 	private TraleSLDProfiler profiler;
+	
+	public TraleSLDInstance()
+	{
+		//prologInterface = KahinaPrologInterfaceFactory.create();
+	}
 	
 	@Override
 	public TraleSLDBridge startNewSession()
