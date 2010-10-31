@@ -267,6 +267,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         if (newPolicy >= 0 && newPolicy <= 3)
         {
             dependencyDisplayPolicy = newPolicy;
+            updateHighlightings();
         }
         else
         {
@@ -299,6 +300,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     public void swapAncestorTransitivity()
     {
         transitiveAncestors = !transitiveAncestors;
+        updateHighlightings();
     }
     
     public boolean getDescendantTransitivity()
@@ -309,6 +311,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     public void swapDescendantTransitivity()
     {
         transitiveDescendants = !transitiveDescendants;
+        updateHighlightings();
     }
     
     private void resetAllStructures()
