@@ -29,7 +29,7 @@ public class TulipaClauseListModel extends AbstractListModel
 	@Override
 	public int getSize() 
 	{
-		System.err.println("Grammar size: " + grammar.getSize());
+		//System.err.println("Grammar size: " + grammar.getSize());
 		return grammar.getSize();
 	}
 }

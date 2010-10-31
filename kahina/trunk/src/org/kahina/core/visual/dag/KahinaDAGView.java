@@ -28,7 +28,7 @@ import org.kahina.core.visual.tree.WidthVector;
 
 public class KahinaDAGView extends KahinaView<KahinaDAG>
 {
-    public static final boolean verbose = true;
+    public static final boolean verbose = false;
 
     // display options
     private int horizontalDistance = 5;
@@ -423,13 +423,13 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
 
     private WidthVector constructWidthVector(int node)
     {
-    	System.err.println("--------------------------------------------");
-    	System.err.println("Width vector computation for node " + node);
+    	if (verbose) System.err.println("--------------------------------------------");
+    	if (verbose) System.err.println("Width vector computation for node " + node);
     	List<Integer> children = model.getVisibleChildren(node);
-    	System.err.println(" Candidate children: " + children);
+    	if (verbose) System.err.println(" Candidate children: " + children);
     	for (int i = 0; i < children.size(); i++)
     	{
-        	System.err.println(" Child: " + children.get(i) + " Drawing Parent: " + drawingParents.get(children.get(i)));
+    		if (verbose) System.err.println(" Child: " + children.get(i) + " Drawing Parent: " + drawingParents.get(children.get(i)));
     		if (drawingParents.get(children.get(i)) != node)
     		{
     			children.remove(i);
@@ -448,8 +448,8 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
             sum.start.add(0, nodeWidth / 2);
             sum.end.add(0, nodeWidth / 2);
         }
-        System.err.println("Width vector for node " + node + ": " + sum.toString());
-    	System.err.println("--------------------------------------------");
+        if (verbose) System.err.println("Width vector for node " + node + ": " + sum.toString());
+        if (verbose) System.err.println("--------------------------------------------");
         return sum;
     }
 

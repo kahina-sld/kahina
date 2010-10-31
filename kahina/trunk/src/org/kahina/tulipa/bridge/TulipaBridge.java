@@ -13,7 +13,7 @@ import org.kahina.tulipa.event.TulipaBridgeEventType;
 
 public class TulipaBridge extends KahinaBridge
 {
-    public static final boolean verbose = true;
+    public static final boolean verbose = false;
     
     //a dynamic map from external item IDs to latest corresponding dag nodes
     protected HashMap<Integer, Integer> itemIDConv;

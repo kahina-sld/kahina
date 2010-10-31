@@ -12,6 +12,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.kahina.core.visual.KahinaViewPanel;
+import org.kahina.core.visual.text.KahinaTextView;
 
 public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> implements ListSelectionListener
 {
@@ -29,7 +30,7 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
 	{
 		if (verbose)
 		{
-			System.err.println("TulipaGrammarViewPanel()");
+			System.err.println("TulipaGrammarViewPanel" + this.hashCode() + "()");
 		}
 		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		clauseList = new JList(clauseListModel);
@@ -42,9 +43,18 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
 		add(splitPane);
 		if (verbose)
 		{
-			System.err.println("//TulipaGrammarViewPanel()");
+			System.err.println("//TulipaGrammarViewPanel" + this.hashCode() + "()");
 		}
 	}
+	
+    public void setView(TulipaGrammarView view)
+    {
+        this.view = view;
+        //clauseList.setModel(view.getListModel());
+        //clauseList.setSelectionModel(view.getSelectionModel());
+        revalidate();
+        updateDisplay();
+    }
 	
 	@Override
 	public void valueChanged(ListSelectionEvent e)
@@ -57,10 +67,11 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
 	{
 		if (verbose)
 		{
-			System.err.println("TulipaGrammarViewPanel.updateDisplay()");
+			System.err.println("TulipaGrammarViewPanel" + this.hashCode() + ".updateDisplay()");
 		}
 		clauseListModel.setGrammar(view.getModel());
 		List<Integer> newSelectedRows = view.getSelectedClauses();
+		if (verbose) System.err.println("newSelectedRows = " + newSelectedRows);
 		ListSelectionModel selectionModel = clauseList.getSelectionModel();
 		selectionModel.clearSelection();
 		for (int rowIndex : newSelectedRows)
@@ -69,7 +80,7 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
 		}
 		if (verbose)
 		{
-			System.err.println("//TulipaGrammarViewPanel.updateDisplay()");
+			System.err.println("//TulipaGrammarViewPanel" + this.hashCode() + ".updateDisplay()");
 		}
 	}
 }

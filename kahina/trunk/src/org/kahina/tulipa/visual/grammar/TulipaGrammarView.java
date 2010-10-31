@@ -3,10 +3,15 @@ package org.kahina.tulipa.visual.grammar;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaView;
+import org.kahina.core.visual.text.KahinaTextView;
 import org.kahina.tulipa.data.grammar.TulipaGrammar;
 
 public class TulipaGrammarView extends KahinaView<TulipaGrammar>
