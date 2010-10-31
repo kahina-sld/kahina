@@ -10,5 +10,6 @@ public interface KahinaEventTypes
 	public static final String DIALOG = "dialog";
 	public static final String SYSTEM = "system";
 	public static final String SESSION = "session";
+	public static final String CONTROL = "control";
 
 }
