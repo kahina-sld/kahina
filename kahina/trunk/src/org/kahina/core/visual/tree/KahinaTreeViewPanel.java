@@ -296,63 +296,64 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
                 List<Integer> nodes = view.nodeLevels.get(i);
                 for (int node : nodes)
                 {
-                    if (view.getMarkedNode() == node)
+                    printSecondaryTreeEdgeForNode(node, canvas);
+                } 
+            }
+            //print edge for marked node last, making sure it is highlighted well
+            canvas.setColor(Color.BLACK);
+            ((Graphics2D) canvas).setStroke(new BasicStroke(2));
+            printSecondaryTreeEdgeForNode(view.getMarkedNode(), canvas);
+        }
+    }
+    
+    protected void printSecondaryTreeEdgeForNode(int node, Graphics canvas)
+    {
+    	int parent = view.secondaryTreeModel.getParent(node, view.treeLayer);
+        if (parent != -1 && view.displaysNode(parent))
+        {
+            switch (view.getSecondaryLineShapePolicy())
+            {
+                case KahinaTreeView.EDGY_LINES:
+                {
+                    int x1 = view.getNodeX(parent);
+                    int x2 = view.getNodeX(node);
+                    int y1 = view.getNodeY(parent);
+                    int y2 = view.getNodeY(node);
+                    int zoomLevel = view.getZoomLevel();
+                    if (view.getDisplayOrientation() == KahinaTreeView.BOTTOM_UP_DISPLAY)
                     {
-                        canvas.setColor(Color.BLACK);
+                        y2 += zoomLevel / 2;
+                        y1 -= zoomLevel / 2;
                     }
-                    else
+                    if (view.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
                     {
-                        canvas.setColor(Color.GRAY);
+                        int x3 = x1;
+                        if (x2 <= x1) x3 = x2;
+                        canvas.drawLine(x3 - zoomLevel, y1, x1, y1);
+                        canvas.drawLine(x3 - zoomLevel, y1, x3 - zoomLevel, y2 - zoomLevel / 2);
+                        canvas.drawLine(x3 - zoomLevel, y2 - zoomLevel / 2, x2, y2 - zoomLevel / 2);
                     }
-                    int parent = view.secondaryTreeModel.getParent(node, view.treeLayer);
-                    if (parent != -1 && view.displaysNode(parent))
+                    else if (view.getNodePositionPolicy() == KahinaTreeView.CENTERED_NODES)
                     {
-                        switch (view.getSecondaryLineShapePolicy())
-                        {
-                            case KahinaTreeView.EDGY_LINES:
-                            {
-                                int x1 = view.getNodeX(parent);
-                                int x2 = view.getNodeX(node);
-                                int y1 = view.getNodeY(parent);
-                                int y2 = view.getNodeY(node);
-                                int zoomLevel = view.getZoomLevel();
-                                if (view.getDisplayOrientation() == KahinaTreeView.BOTTOM_UP_DISPLAY)
-                                {
-                                    y2 += zoomLevel / 2;
-                                    y1 -= zoomLevel / 2;
-                                }
-                                if (view.getNodePositionPolicy() == KahinaTreeView.LEFT_ALIGNED_NODES)
-                                {
-                                    int x3 = x1;
-                                    if (x2 <= x1) x3 = x2;
-                                    canvas.drawLine(x3 - zoomLevel, y1, x1, y1);
-                                    canvas.drawLine(x3 - zoomLevel, y1, x3 - zoomLevel, y2 - zoomLevel / 2);
-                                    canvas.drawLine(x3 - zoomLevel, y2 - zoomLevel / 2, x2, y2 - zoomLevel / 2);
-                                }
-                                else if (view.getNodePositionPolicy() == KahinaTreeView.CENTERED_NODES)
-                                {
-                                    int parentWidth = canvas.getFontMetrics().stringWidth(view.getContentfulTreeModel().getNodeCaption(parent));
-                                    int nodeWidth = canvas.getFontMetrics().stringWidth(view.getContentfulTreeModel().getNodeCaption(node));
-                                    x1 -= parentWidth / 2;
-                                    x2 -= nodeWidth / 2;
-                                    int x3 = x1;
-                                    if (x2 <= x1) x3 = x2;
-                                    canvas.drawLine(x3 - zoomLevel, y1, x1, y1);
-                                    canvas.drawLine(x3 - zoomLevel, y1, x3 - zoomLevel, y2 - zoomLevel / 2);
-                                    canvas.drawLine(x3 - zoomLevel, y2 - zoomLevel / 2, x2, y2 - zoomLevel / 2);
-                                }
-                                else if (view.getNodePositionPolicy() == KahinaTreeView.RIGHT_ALIGNED_NODES)
-                                {
-                                    int x3 = x1;
-                                    if (x2 > x1) x3 = x2;
-                                    canvas.drawLine(x3 + zoomLevel, y1, x1, y1);
-                                    canvas.drawLine(x3 + zoomLevel, y1, x3 + zoomLevel, y2 - zoomLevel / 2);
-                                    canvas.drawLine(x3 + zoomLevel, y2 - zoomLevel / 2, x2, y2 - zoomLevel / 2);
-                                }
-                                break;
-                            }
-                        }
+                        int parentWidth = canvas.getFontMetrics().stringWidth(view.getContentfulTreeModel().getNodeCaption(parent));
+                        int nodeWidth = canvas.getFontMetrics().stringWidth(view.getContentfulTreeModel().getNodeCaption(node));
+                        x1 -= parentWidth / 2;
+                        x2 -= nodeWidth / 2;
+                        int x3 = x1;
+                        if (x2 <= x1) x3 = x2;
+                        canvas.drawLine(x3 - zoomLevel, y1, x1, y1);
+                        canvas.drawLine(x3 - zoomLevel, y1, x3 - zoomLevel, y2 - zoomLevel / 2);
+                        canvas.drawLine(x3 - zoomLevel, y2 - zoomLevel / 2, x2, y2 - zoomLevel / 2);
                     }
+                    else if (view.getNodePositionPolicy() == KahinaTreeView.RIGHT_ALIGNED_NODES)
+                    {
+                        int x3 = x1;
+                        if (x2 > x1) x3 = x2;
+                        canvas.drawLine(x3 + zoomLevel, y1, x1, y1);
+                        canvas.drawLine(x3 + zoomLevel, y1, x3 + zoomLevel, y2 - zoomLevel / 2);
+                        canvas.drawLine(x3 + zoomLevel, y2 - zoomLevel / 2, x2, y2 - zoomLevel / 2);
+                    }
+                    break;
                 }
             }
         }
