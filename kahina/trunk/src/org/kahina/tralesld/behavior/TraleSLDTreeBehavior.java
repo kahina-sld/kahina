@@ -38,7 +38,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     {
         List<KahinaBreakpoint> skipPoints = ((LogicProgrammingState) kahina.getState()).getSkipPoints();
         skipPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("skip unification", "[0-9]* (unify|featval|type).*", KahinaBreakpointType.SKIP_POINT));
-        skipPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("skip EFD closure", "[0-9]* empty_close", KahinaBreakpointType.SKIP_POINT));
+        skipPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("skip compilation", "[0-9]* compile_gram.*", KahinaBreakpointType.SKIP_POINT));
     }
     
     @Override
@@ -46,7 +46,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     {
     	List<KahinaBreakpoint> creepPoints = ((LogicProgrammingState) kahina.getState()).getCreepPoints();
     	creepPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("creep over lexical lookup", "[0-9]* lex\\(.*", KahinaBreakpointType.CREEP_POINT));
-    	creepPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("creep away from EFD closure", "[0-9]* empty_close", KahinaBreakpointType.CREEP_POINT));
+    	creepPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("creep away from compilation", "[0-9]* compile_gram.*", KahinaBreakpointType.CREEP_POINT));
     }
     
     public void processRuleApplication(int stepID, int externalID, String ruleName)
