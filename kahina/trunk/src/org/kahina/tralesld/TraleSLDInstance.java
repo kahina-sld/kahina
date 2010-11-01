@@ -13,14 +13,13 @@ import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
-import org.kahina.core.interfaces.KahinaPrologInterface;
-import org.kahina.core.interfaces.KahinaPrologInterfaceFactory;
 import org.kahina.core.util.PrologUtilities;
 import org.kahina.core.util.Utilities;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
@@ -37,8 +36,12 @@ import org.tralesld.core.event.TraleSLDControlEventCommands;
 
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
-	
+
 	private static final boolean VERBOSE = false;
+
+	private String traleCommand = "";
+	
+	private boolean commanding = false;
 
 	// TODO disable if there's no Prolog interface
 	public final Action COMPILE_ACTION = new AbstractAction("Compile")
@@ -80,8 +83,6 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	};
 
-	private final KahinaPrologInterface prologInterface;
-
 	private TraleSLDProfiler profiler;
 
 	private String grammar;
@@ -90,7 +91,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	public TraleSLDInstance()
 	{
-		prologInterface = KahinaPrologInterfaceFactory.create();
+		COMPILE_ACTION.setEnabled(false);
 		PARSE_ACTION.setEnabled(false); // need grammar first
 		RESTART_ACTION.setEnabled(false); // need grammar and sentence first
 	}
@@ -102,13 +103,30 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		profiler = new TraleSLDProfiler(state.getFullProfile());
 		controller.registerListener("edge select", this);
 		controller.registerListener("update", this);
-
-		if (prologInterface != null)
-		{
-			controller.registerListener("control", this);
-		}
-
+		controller.registerListener(KahinaEventTypes.SYSTEM, this);
+		controller.registerListener(KahinaEventTypes.CONTROL, this);
 		return bridge;
+	}
+	
+	public synchronized String getCommand()
+	{
+		setCommanding(!"quit".equals(traleCommand));
+		String result = traleCommand;
+		traleCommand = "";
+		return result;
+	}
+	
+	private void setCommanding(boolean commanding)
+	{
+		if (!this.commanding && commanding)
+		{
+			// TODO show compile? parse? dialog
+		}
+		
+		this.commanding = commanding;
+		COMPILE_ACTION.setEnabled(commanding);
+		PARSE_ACTION.setEnabled(commanding && grammar != null);
+		RESTART_ACTION.setEnabled(commanding && grammar != null && sentence != null);
 	}
 
 	@Override
@@ -157,10 +175,21 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		} else if (e instanceof KahinaControlEvent)
 		{
 			processControlEvent((KahinaControlEvent) e);
+		} else if (e instanceof KahinaSystemEvent)
+		{
+			processSystemEvent((KahinaSystemEvent) e);
 		}
 	}
 
-	private void processControlEvent(KahinaControlEvent event)
+	private void processSystemEvent(KahinaSystemEvent e)
+	{
+		if (e.getSystemEventType() == KahinaSystemEvent.QUIT)
+		{
+			traleCommand = "quit";
+		}
+	}
+
+	private synchronized void processControlEvent(KahinaControlEvent event)
 	{
 		String command = event.getCommand();
 
@@ -174,7 +203,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		} else if (TraleSLDControlEventCommands.REGISTER_GRAMMAR.equals(command))
 		{
 			grammar = (String) event.getArguments()[0];
-			PARSE_ACTION.setEnabled(true);
+			PARSE_ACTION.setEnabled(commanding);
 			if (sentence != null)
 			{
 				RESTART_ACTION.setEnabled(true);
@@ -202,7 +231,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 				parse(castToStringList(event.getArguments()[0]));
 			}
-		} else if (TraleSLDControlEventCommands.RESTART.equals(command))
+		} else if (commanding && TraleSLDControlEventCommands.RESTART.equals(command))
 		{
 			// HACK: see above
 			bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
@@ -223,39 +252,12 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			System.err.println(this + ".compile(" + absolutePath + ")");
 		}
-		spawnPrologQuery("write('Hallo Welt'),nl,dcompile_gram(" + PrologUtilities.stringToAtomLiteral(absolutePath) + "),write('Tschuess Welt'),nl");
+		traleCommand = "query dcompile_gram(" + PrologUtilities.stringToAtomLiteral(absolutePath) + ").";
 	}
 
 	protected void parse(List<String> words)
 	{
-		spawnPrologQuery("drec[" + Utilities.join(",", words) + "]");
-	}
-
-	protected void spawnPrologQuery(final String query)
-	{
-		// Queries must run in parallel to the GUI thread so we see the results
-		// in the GUI, but they must not run in parallel to each other - that
-		// would result in chaos. So: spawn a thread, but synchronize on the
-		// Prolog interface.
-		new Thread()
-		{
-
-			public void run()
-			{
-				synchronized (prologInterface)
-				{
-					try
-					{
-						prologInterface.executeQuery(query);
-					} catch (Exception e)
-					{
-						e.printStackTrace();
-						System.exit(1);
-					}
-				}
-			}
-
-		}.start();
+		traleCommand = "query drec[" + Utilities.join(",", words) + "].";
 	}
 
 	private void processEdgeSelectionEvent(KahinaEdgeSelectionEvent e)
