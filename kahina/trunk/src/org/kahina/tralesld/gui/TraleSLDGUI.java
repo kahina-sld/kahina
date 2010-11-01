@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.Arrays;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
@@ -140,6 +141,16 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 			if (grammar != null)
 			{
 				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE, new Object[] { grammar.getAbsolutePath() }));
+			}
+		} else if (type == KahinaDialogEvent.PARSE)
+		{
+			// TODO offer recent parses in a ComboBox
+			String sentence = (String) JOptionPane.showInputDialog(windowManager.mainWindow, "Enter a sentence to parse, with the words separated by spaces.", "Parse sentence",
+					JOptionPane.QUESTION_MESSAGE, null, null, e.getArguments()[0]);
+
+			if (sentence != null)
+			{
+				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.PARSE, new Object[] { Arrays.asList(sentence.split(" +")) }));
 			}
 		}
 	}

@@ -213,7 +213,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { sentence }));
+				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { Utilities.join(" ", sentence) }));
 			} else
 			{
 				// HACK: see above
