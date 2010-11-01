@@ -7,15 +7,15 @@ import se.sics.jasper.SICStus;
 
 public class KahinaCallingSicstusInterface implements KahinaPrologInterface
 {
-	
+
 	private static final boolean VERBOSE = false;
-	
+
 	private final Prolog caller;
-	
+
 	public KahinaCallingSicstusInterface() throws KahinaInterfaceNotAvailableException
-	{		
+	{
 		caller = SICStus.getCaller();
-		
+
 		if (caller == null)
 		{
 			if (VERBOSE)
@@ -27,7 +27,7 @@ public class KahinaCallingSicstusInterface implements KahinaPrologInterface
 	}
 
 	@Override
-	public void executeQuery(String prologQuery) throws KahinaException
+	public void executeQuery(final String prologQuery) throws KahinaException
 	{
 		try
 		{

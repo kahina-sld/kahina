@@ -1,9 +1,16 @@
 package org.kahina.tralesld;
 
+import java.awt.event.ActionEvent;
+import java.util.List;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.LogicProgrammingInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
+import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
@@ -12,6 +19,7 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.interfaces.KahinaPrologInterface;
 import org.kahina.core.interfaces.KahinaPrologInterfaceFactory;
+import org.kahina.core.util.PrologUtilities;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
@@ -22,36 +30,79 @@ import org.kahina.tralesld.gui.TraleSLDGUI;
 import org.kahina.tralesld.profiler.TraleSLDProfiler;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
 import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
+import org.tralesld.core.event.TraleSLDControlEventCommands;
 
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
 	
+	public static final Action COMPILE_ACTION = new AbstractAction("Compile")
+	{
+		
+		private static final long serialVersionUID = -3829326193202814557L;
+
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE));
+		}
+		
+	};
+	
+	public static final Action PARSE_ACTION = new AbstractAction("Parse")
+	{
+		
+		private static final long serialVersionUID = -3829326193202814557L;
+
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.PARSE));
+		}
+		
+	};
+	
+	public static final Action RESTART_ACTION = new AbstractAction("Restart")
+	{
+		
+		private static final long serialVersionUID = -3829326193202814557L;
+
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.RESTART));
+		}
+		
+	};
+
 	private final KahinaPrologInterface prologInterface;
-	
+
 	private TraleSLDProfiler profiler;
-	
+
+	private String grammar;
+
+	private List<String> sentence;
+
 	public TraleSLDInstance()
 	{
 		prologInterface = KahinaPrologInterfaceFactory.create();
-		if (prologInterface != null)
-		{
-			prologInterface.executeQuery("write('Hallo Welt!'),nl.");
-		} else
-		{
-			System.out.println("No Prolog interface. :-(");
-		}
 	}
-	
+
 	@Override
 	public TraleSLDBridge startNewSession()
 	{
 		super.startNewSession();
 		profiler = new TraleSLDProfiler(state.getFullProfile());
-        controller.registerListener("edge select", this);
-        controller.registerListener("update", this);
-        return bridge;
+		controller.registerListener("edge select", this);
+		controller.registerListener("update", this);
+
+		if (prologInterface != null)
+		{
+			controller.registerListener("control", this);
+		}
+
+		return bridge;
 	}
-	
+
 	@Override
 	protected void createTreeBehavior()
 	{
@@ -95,7 +146,34 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		} else if (e instanceof KahinaUpdateEvent)
 		{
 			processUpdateEvent((KahinaUpdateEvent) e);
+		} else if (e instanceof KahinaControlEvent)
+		{
+			processControlEvent((KahinaControlEvent) e);
 		}
+	}
+
+	private void processControlEvent(KahinaControlEvent event)
+	{
+		String command = event.getCommand();
+
+		if (TraleSLDControlEventCommands.REGISTER_SENTENCE.equals(command))
+		{
+			sentence = PrologUtilities.parsePrologStringList(event.getArguments()[0]);
+		} else if (TraleSLDControlEventCommands.COMPILE.equals(command))
+		{
+			// TODO
+		} else if (TraleSLDControlEventCommands.PARSE.equals(command))
+		{
+			// TODO
+		} else if (TraleSLDControlEventCommands.RESTART.equals(command))
+		{
+			// TODO
+		}
+	}
+
+	public void registerGrammar(String absolutePath)
+	{
+		grammar = absolutePath;
 	}
 
 	private void processEdgeSelectionEvent(KahinaEdgeSelectionEvent e)
@@ -121,10 +199,10 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	{
 		return profiler;
 	}
-	
+
 	public static void main(String[] args)
 	{
 		(new TraleSLDInstance()).start(args);
 	}
-	
+
 }

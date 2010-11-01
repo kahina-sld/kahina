@@ -6,7 +6,6 @@ public class KahinaSystemEvent extends KahinaEvent
     int intContent;
     
     public static final int QUIT = 0;
-    public static final int RESTART = 1;
     public static final int APPLY_BREAKPOINTS = 1;
     
     public KahinaSystemEvent(int systemEventType)
@@ -40,10 +39,6 @@ public class KahinaSystemEvent extends KahinaEvent
         if (systemEventType == QUIT)
         {
             s += "quit"; 
-        }
-        else if (systemEventType == RESTART)
-        {
-            s += "restart parse"; 
         }
         else if (systemEventType == APPLY_BREAKPOINTS)
         {

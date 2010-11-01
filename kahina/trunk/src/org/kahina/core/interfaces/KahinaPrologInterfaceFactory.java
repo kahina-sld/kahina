@@ -3,7 +3,7 @@ package org.kahina.core.interfaces;
 public class KahinaPrologInterfaceFactory
 {
 	
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 	
 	public static KahinaPrologInterface create()
 	{

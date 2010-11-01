@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.util.PrologUtilities;
@@ -28,6 +29,7 @@ import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
+import org.tralesld.core.event.TraleSLDControlEventCommands;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
@@ -58,7 +60,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		packer = new TraleSLDFSPacker();
 		bindingSharer = new Sharer<TraleSLDVariableBinding>();
 	}
-	
+
 	private void initializeChart(String parsedSentenceList)
 	{
 		List<String> wordList = PrologUtilities.parsePrologStringList(parsedSentenceList);
@@ -84,7 +86,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				state.linkEdgeToNode(lastRegisteredChartEdge, currentID);
 			} else if (nodeLabel.startsWith("rec["))
 			{
-				initializeChart(nodeLabel.substring(3, nodeLabel.length()));
+				String sentence = nodeLabel.substring(3, nodeLabel.length());
+				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_SENTENCE, new String[] { sentence }));
+				initializeChart(sentence);
 			}
 			if (VERBOSE)
 			{
@@ -327,12 +331,12 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				System.err.println(this + ".registerMessage(" + extID + "," + key + "," + varName + "," + tag + "," + type + "," + grisuMessage);
 			}
-			
+
 			int id = stepIDConv.get(extID);
 			TraleSLDStep step = TraleSLDStep.get(id);
-			TraleSLDVariableBinding binding = bindingSharer.share(new TraleSLDVariableBinding(varName, tag, type, packer.pack(grisuMessage)));			
+			TraleSLDVariableBinding binding = bindingSharer.share(new TraleSLDVariableBinding(varName, tag, type, packer.pack(grisuMessage)));
 			selectIfPaused(currentID);
-			
+
 			if ("start".equals(key))
 			{
 				step.startBindings.add(binding);
@@ -374,17 +378,17 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				// lastRegisteredChartEdge = currentEdge;
 				KahinaRunner.processEvent(new KahinaChartUpdateEvent(currentEdge));
 			}
-			
+
 			if (TraleSLDStep.get(stepID).getGoalDesc().startsWith("rule("))
 			{
 				prospectiveEdgeCanFail = true;
 			}
-			
+
 			if (VERBOSE)
 			{
 				System.err.println("Bridge state after chart edge was marked as failed: " + bridgeState);
 			}
-			
+
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
@@ -409,13 +413,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
-			
+
 			// stop autocomplete/leap when we're done
 			if (stepID == state.getStepTree().getRootID() && bridgeState != 'n')
 			{
 				bridgeState = 'c';
 			}
-			
+
 			if (bridgeState == 'n')
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));

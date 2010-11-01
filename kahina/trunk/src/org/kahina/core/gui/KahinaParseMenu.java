@@ -8,7 +8,7 @@ import javax.swing.JMenuItem;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.event.KahinaDialogEvent;
-import org.kahina.core.event.KahinaSystemEvent;
+import org.kahina.tralesld.TraleSLDInstance;
 
 public class KahinaParseMenu extends JMenu implements ActionListener
 {
@@ -16,12 +16,12 @@ public class KahinaParseMenu extends JMenu implements ActionListener
 
 	public KahinaParseMenu()
     {
-        super("Parse");
-            
-        JMenuItem restartItem = new JMenuItem("Restart");
-        restartItem.setActionCommand("restartParse");
-        restartItem.addActionListener(this);
-        this.add(restartItem);
+        super("Parse");  
+        
+        // FIXME http://kahina.org/trac/ticket/50
+        this.add(new JMenuItem(TraleSLDInstance.COMPILE_ACTION));
+        this.add(new JMenuItem(TraleSLDInstance.PARSE_ACTION));
+        this.add(new JMenuItem(TraleSLDInstance.RESTART_ACTION));
         
         this.addSeparator();
              
@@ -34,11 +34,7 @@ public class KahinaParseMenu extends JMenu implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         String s = e.getActionCommand();
-        if (s.equals("restartParse"))
-        {
-            KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.RESTART));
-        }
-        else if (s.equals("parseOptions"))
+        if (s.equals("parseOptions"))
         {
             KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE_OPTIONS));
         }

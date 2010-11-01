@@ -52,4 +52,23 @@ public class PrologUtilities
         }
         return result;
     }
+    
+    public static String stringToAtomLiteral(String string)
+    {
+    	StringBuffer result = new StringBuffer("'");
+    	char[] characters = string.toCharArray();
+    	
+    	for (char character : characters)
+    	{
+    		if (character == '\'' || character == '\\')
+    		{
+    			result.append('\\');
+    		}
+    		
+    		result.append(character);
+    	}
+    	
+    	result.append("'");
+    	return result.toString();
+    }
 }
