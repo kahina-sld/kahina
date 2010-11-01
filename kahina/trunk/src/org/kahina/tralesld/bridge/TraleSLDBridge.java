@@ -89,6 +89,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				String sentence = nodeLabel.substring(3, nodeLabel.length());
 				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_SENTENCE, new String[] { sentence }));
 				initializeChart(sentence);
+			} else if (nodeLabel.startsWith("compile_gram("))
+			{
+				String absolutePath = PrologUtilities.atomLiteralToString(nodeLabel.substring(13, nodeLabel.length() - 1));
+				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_GRAMMAR, new String[] { absolutePath }));
 			}
 			if (VERBOSE)
 			{

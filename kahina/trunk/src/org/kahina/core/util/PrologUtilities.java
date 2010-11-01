@@ -71,4 +71,14 @@ public class PrologUtilities
     	result.append("'");
     	return result.toString();
     }
+
+	public static String atomLiteralToString(String literal)
+	{
+		if (literal.startsWith("'"))
+		{
+			return literal.substring(1, literal.length() - 1);
+		}
+		
+		return literal;
+	}
 }

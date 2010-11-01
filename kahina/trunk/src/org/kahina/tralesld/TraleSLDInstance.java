@@ -159,6 +159,9 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		if (TraleSLDControlEventCommands.REGISTER_SENTENCE.equals(command))
 		{
 			sentence = PrologUtilities.parsePrologStringList(event.getArguments()[0]);
+		} else if (TraleSLDControlEventCommands.REGISTER_GRAMMAR.equals(command))
+		{
+			grammar = event.getArguments()[0];
 		} else if (TraleSLDControlEventCommands.COMPILE.equals(command))
 		{
 			// TODO
@@ -169,11 +172,6 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			// TODO
 		}
-	}
-
-	public void registerGrammar(String absolutePath)
-	{
-		grammar = absolutePath;
 	}
 
 	private void processEdgeSelectionEvent(KahinaEdgeSelectionEvent e)
