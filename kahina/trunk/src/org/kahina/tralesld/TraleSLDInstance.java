@@ -10,6 +10,8 @@ import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.core.interfaces.KahinaPrologInterface;
+import org.kahina.core.interfaces.KahinaPrologInterfaceFactory;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
@@ -24,13 +26,20 @@ import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
 	
-	//private final KahinaPrologInterface prologInterface;
+	private final KahinaPrologInterface prologInterface;
 	
 	private TraleSLDProfiler profiler;
 	
 	public TraleSLDInstance()
 	{
-		//prologInterface = KahinaPrologInterfaceFactory.create();
+		prologInterface = KahinaPrologInterfaceFactory.create();
+		if (prologInterface != null)
+		{
+			prologInterface.executeQuery("write('Hallo Welt!'),nl.");
+		} else
+		{
+			System.out.println("No Prolog interface. :-(");
+		}
 	}
 	
 	@Override

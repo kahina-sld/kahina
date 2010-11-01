@@ -2,8 +2,8 @@ package org.kahina.core.interfaces;
 
 import org.kahina.core.KahinaException;
 
-import se.sics.jasper.Jasper;
 import se.sics.jasper.Prolog;
+import se.sics.jasper.SICStus;
 
 public class KahinaCallingSicstusInterface implements KahinaPrologInterface
 {
@@ -13,16 +13,8 @@ public class KahinaCallingSicstusInterface implements KahinaPrologInterface
 	private final Prolog caller;
 	
 	public KahinaCallingSicstusInterface() throws KahinaInterfaceNotAvailableException
-	{
-		try
-		{
-			Jasper.newProlog().query("true.", null);
-		} catch (Exception e)
-		{
-			throw new KahinaInterfaceNotAvailableException(e);
-		}
-		
-		caller = Jasper.getCaller();
+	{		
+		caller = SICStus.getCaller();
 		
 		if (caller == null)
 		{
