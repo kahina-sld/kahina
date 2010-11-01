@@ -110,20 +110,15 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	
 	public synchronized String getCommand()
 	{
-		setCommanding(!"quit".equals(traleCommand));
+		commanding = !"quit".equals(traleCommand);
+		updateActions();
 		String result = traleCommand;
 		traleCommand = "";
 		return result;
 	}
 	
-	private void setCommanding(boolean commanding)
+	private void updateActions()
 	{
-		if (!this.commanding && commanding)
-		{
-			// TODO show compile? parse? dialog
-		}
-		
-		this.commanding = commanding;
 		COMPILE_ACTION.setEnabled(commanding);
 		PARSE_ACTION.setEnabled(commanding && grammar != null);
 		RESTART_ACTION.setEnabled(commanding && grammar != null && sentence != null);
@@ -196,18 +191,12 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		if (TraleSLDControlEventCommands.REGISTER_SENTENCE.equals(command))
 		{
 			sentence = castToStringList(event.getArguments()[0]);
-			if (grammar != null)
-			{
-				RESTART_ACTION.setEnabled(true);
-			}
+			updateActions();
 		} else if (TraleSLDControlEventCommands.REGISTER_GRAMMAR.equals(command))
 		{
 			grammar = (String) event.getArguments()[0];
 			PARSE_ACTION.setEnabled(commanding);
-			if (sentence != null)
-			{
-				RESTART_ACTION.setEnabled(true);
-			}
+			updateActions();
 		} else if (TraleSLDControlEventCommands.COMPILE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
@@ -231,7 +220,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 				parse(castToStringList(event.getArguments()[0]));
 			}
-		} else if (commanding && TraleSLDControlEventCommands.RESTART.equals(command))
+		} else if (TraleSLDControlEventCommands.RESTART.equals(command))
 		{
 			// HACK: see above
 			bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
