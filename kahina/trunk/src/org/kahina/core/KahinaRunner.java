@@ -19,7 +19,7 @@ public class KahinaRunner // TODO get rid of this class, make everything non-sta
 	{
 		if (VERBOSE)
 		{
-			System.err.println("KahinaRunner ist deinitializing.");
+			System.err.println("KahinaRunner is deinitializing.");
 		}
 		steps.close();
 		steps = null;
@@ -28,6 +28,10 @@ public class KahinaRunner // TODO get rid of this class, make everything non-sta
     
     public static void processEvent(KahinaEvent e)
     {
+    	if (VERBOSE)
+    	{
+    		System.err.println("KahinaRunner.processEvent(" + e + ")");
+    	}
     	guiController.processEvent(e);
         control.processEvent(e);
     }

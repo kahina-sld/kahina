@@ -37,6 +37,8 @@ import org.tralesld.core.event.TraleSLDControlEventCommands;
 
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
+	
+	private static final boolean VERBOSE = false;
 
 	// TODO disable if there's no Prolog interface
 	public final Action COMPILE_ACTION = new AbstractAction("Compile")
@@ -184,7 +186,9 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
 			} else
 			{
-				KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
+				// HACK: set bridge to abort - if we go through the controller,
+				// KahinaRunner will deinitialize and thwart subsequent eventing
+				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 				compile((String) event.getArguments()[0]);
 			}
 		} else if (TraleSLDControlEventCommands.PARSE.equals(command))
@@ -194,12 +198,14 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { sentence }));
 			} else
 			{
-				KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
+				// HACK: see above
+				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 				parse(castToStringList(event.getArguments()[0]));
 			}
 		} else if (TraleSLDControlEventCommands.RESTART.equals(command))
 		{
-			KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
+			// HACK: see above
+			bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 			compile(grammar);
 			parse(sentence);
 		}
@@ -213,7 +219,11 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	protected void compile(String absolutePath)
 	{
-		spawnPrologQuery("dcompile_gram(" + PrologUtilities.stringToAtomLiteral(absolutePath) + ")");
+		if (VERBOSE)
+		{
+			System.err.println(this + ".compile(" + absolutePath + ")");
+		}
+		spawnPrologQuery("write('Hallo Welt'),nl,dcompile_gram(" + PrologUtilities.stringToAtomLiteral(absolutePath) + "),write('Tschuess Welt'),nl");
 	}
 
 	protected void parse(List<String> words)
@@ -234,7 +244,14 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			{
 				synchronized (prologInterface)
 				{
-					prologInterface.executeQuery(query);
+					try
+					{
+						prologInterface.executeQuery(query);
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+						System.exit(1);
+					}
 				}
 			}
 
