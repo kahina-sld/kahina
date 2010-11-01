@@ -18,8 +18,8 @@ public class KahinaProfilerMenu extends JMenu implements ActionListener
 	{
 		super("Profiler");
 		add(KahinaSwingUtilities.createMenuItem("Full profile", "fullProfile", this));
-		add(KahinaSwingUtilities.createMenuItem("Call subtree profile", "callSubtreeProfile", this));
-		add(KahinaSwingUtilities.createMenuItem("Search subtree profile", "searchSubtreeProfile", this));
+		add(KahinaSwingUtilities.createMenuItem("Profile call subtree", "callSubtreeProfile", this));
+		add(KahinaSwingUtilities.createMenuItem("Profile search subtree", "searchSubtreeProfile", this));
 		addSeparator();
 		add(KahinaSwingUtilities.createMenuItem("Edit warnings", "editWarnings", this));
 	}
