@@ -219,19 +219,18 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		// in the GUI, but they must not run in parallel to each other - that
 		// would result in chaos. So: spawn a thread, but synchronize on the
 		// Prolog interface.
-
-		synchronized (prologInterface)
+		new Thread()
 		{
-			new Thread()
-			{
 
-				public void run()
+			public void run()
+			{
+				synchronized (prologInterface)
 				{
 					prologInterface.executeQuery(query);
 				}
+			}
 
-			}.start();
-		}
+		}.start();
 	}
 
 	private void processEdgeSelectionEvent(KahinaEdgeSelectionEvent e)
