@@ -10,13 +10,19 @@ public class KahinaCallingSicstusInterface implements KahinaPrologInterface
 
 	private static final boolean VERBOSE = false;
 
-	private final Prolog caller;
+	private final Prolog prolog;
 
 	public KahinaCallingSicstusInterface() throws KahinaInterfaceNotAvailableException
 	{
-		caller = SICStus.getCaller();
+		try
+		{
+			prolog = SICStus.getCaller().newProlog();
+		} catch (InterruptedException e)
+		{
+			throw new KahinaInterfaceNotAvailableException(e);
+		}
 
-		if (caller == null)
+		if (prolog == null)
 		{
 			if (VERBOSE)
 			{
@@ -31,7 +37,7 @@ public class KahinaCallingSicstusInterface implements KahinaPrologInterface
 	{
 		try
 		{
-			caller.query(prologQuery, null);
+			prolog.query(prologQuery, null);
 		} catch (Exception e)
 		{
 			throw new KahinaException("Error in executing Prolog query", e);
