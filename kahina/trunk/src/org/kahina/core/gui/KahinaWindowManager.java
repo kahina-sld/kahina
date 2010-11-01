@@ -10,7 +10,7 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaWindowManager
 {
-    KahinaMainWindow mainWindow;
+    public KahinaMainWindow mainWindow;
     
     HashMap<KahinaView<?>, KahinaWindow> contentWindows;
     HashMap<KahinaView<?>, KahinaWindow> topLevelWindows;
