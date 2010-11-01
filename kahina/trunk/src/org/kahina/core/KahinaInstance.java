@@ -54,22 +54,35 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	protected ObjectMagazine<KahinaStep> steps;
 	
 	protected final KahinaController guiController;
+	
+	private boolean guiStarted = false;
 
 	public KahinaInstance()
 	{		
 		fillViewRegistry();
-		
 		initializeNewSession(); // dummy session so views have something (empty) to show
-		
 		guiController = new KahinaController();
+	}
+	
+	/**
+	 * This code used to live in the constructor, but that caused problems with
+	 * subclass fields that need to be initialized before the GUI is created.
+	 * Now the GUI is created lazily from startNewSession().
+	 */
+	private void startGUI()
+	{
 		KahinaRunner.setGUIController(guiController); // TODO get rid of KahinaRunner
 		gui = createGUI(guiController);
-		
 		gui.prepare(guiController);
+		guiStarted = true;
 	}
 	
 	public B startNewSession()
 	{
+		if (!guiStarted)
+		{
+			startGUI();
+		}
 		initializeNewSession();
 		gui.displayMainViews();
 		gui.show();

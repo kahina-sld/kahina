@@ -177,7 +177,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			}
 		} else if (TraleSLDControlEventCommands.COMPILE.equals(command))
 		{
-			if (event.getArguments() == null)
+			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
 				gui.showCompileDialog(grammar);
 			} else
@@ -187,7 +187,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			}
 		} else if (TraleSLDControlEventCommands.PARSE.equals(command))
 		{
-			if (event.getArguments() == null)
+			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
 				gui.showParseDialog(sentence);
 			} else
