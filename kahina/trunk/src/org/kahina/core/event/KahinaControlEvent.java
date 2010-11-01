@@ -4,16 +4,16 @@ public class KahinaControlEvent extends KahinaEvent
 {
     private String command;
     
-    private String[] arguments;
+    private Object[] arguments;
     
-    private static final String[] NOARGS = new String[0];
+    private static final Object[] NOARGS = new Object[0];
     
     public KahinaControlEvent(String command)
     {
     	this(command, NOARGS);
     }
     
-    public KahinaControlEvent(String command, String[] arguments)
+    public KahinaControlEvent(String command, Object[] arguments)
     {
         super(KahinaEventTypes.CONTROL);
         this.command = command;
@@ -25,7 +25,7 @@ public class KahinaControlEvent extends KahinaEvent
         return command;
     }
     
-    public String[] getArguments()
+    public Object[] getArguments()
     {
     	return arguments;
     }

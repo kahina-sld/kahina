@@ -11,6 +11,7 @@ import org.kahina.core.LogicProgrammingInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.event.KahinaControlEvent;
+import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaViewRegistry;
@@ -37,6 +38,7 @@ import org.tralesld.core.event.TraleSLDControlEventCommands;
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
 
+	// TODO disable if there's no Prolog interface
 	public final Action COMPILE_ACTION = new AbstractAction("Compile")
 	{
 
@@ -63,7 +65,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	};
 
-	public final Action RESTART_ACTION = new AbstractAction("Restart")
+	public final Action RESTART_ACTION = new AbstractAction("Restart parse")
 	{
 
 		private static final long serialVersionUID = -3829326193202814557L;
@@ -162,14 +164,14 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 		if (TraleSLDControlEventCommands.REGISTER_SENTENCE.equals(command))
 		{
-			sentence = PrologUtilities.parsePrologStringList(event.getArguments()[0]);
+			sentence = castToStringList(event.getArguments()[0]);
 			if (grammar != null)
 			{
 				RESTART_ACTION.setEnabled(true);
 			}
 		} else if (TraleSLDControlEventCommands.REGISTER_GRAMMAR.equals(command))
 		{
-			grammar = event.getArguments()[0];
+			grammar = (String) event.getArguments()[0];
 			PARSE_ACTION.setEnabled(true);
 			if (sentence != null)
 			{
@@ -179,21 +181,21 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				gui.showCompileDialog(grammar);
+				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
 			} else
 			{
 				KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
-				compile(event.getArguments()[0]);
+				compile((String) event.getArguments()[0]);
 			}
 		} else if (TraleSLDControlEventCommands.PARSE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				gui.showParseDialog(sentence);
+				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { sentence }));
 			} else
 			{
 				KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
-				parse(PrologUtilities.parsePrologStringList(event.getArguments()[0]));
+				parse(castToStringList(event.getArguments()[0]));
 			}
 		} else if (TraleSLDControlEventCommands.RESTART.equals(command))
 		{
@@ -201,6 +203,12 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			compile(grammar);
 			parse(sentence);
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<String> castToStringList(Object object)
+	{
+		return (List<String>) object;
 	}
 
 	protected void compile(String absolutePath)

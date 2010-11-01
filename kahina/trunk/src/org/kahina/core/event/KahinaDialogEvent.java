@@ -2,7 +2,6 @@ package org.kahina.core.event;
 
 public class KahinaDialogEvent extends KahinaEvent
 {
-    int dialogEventType;
     
     public static final int PARSE_OPTIONS = 1;
     public static final int HELP = 2;
@@ -18,16 +17,33 @@ public class KahinaDialogEvent extends KahinaEvent
 	public static final int EDIT_WARNINGS = 12;
 	public static final int PARSE = 13;
 	public static final int COMPILE = 14;
+	
+	private static final Object[] NOARGS = new Object[0];
+	
+    private int dialogEventType;
+    
+    private Object[] arguments;
     
     public KahinaDialogEvent(int dialogEventType)
     {
+    	this(dialogEventType, NOARGS);
+    }
+    
+    public KahinaDialogEvent(int dialogEventType, Object[] arguments)
+    {
         super(KahinaEventTypes.DIALOG);
         this.dialogEventType = dialogEventType;
+        this.arguments = arguments;
     }
     
     public int getDialogEventType()
     {
         return dialogEventType;
+    }
+    
+    public Object[] getArguments()
+    {
+    	return arguments;
     }
     
     @Override
