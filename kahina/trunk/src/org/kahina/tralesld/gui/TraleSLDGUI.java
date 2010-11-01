@@ -1,6 +1,7 @@
 package org.kahina.tralesld.gui;
 
 import java.awt.Color;
+import java.util.List;
 
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaController;
@@ -88,5 +89,17 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	protected Mapper<String, ProfileEntry> getProfileEntryMapper()
 	{
 		return new TraleSLDProfileEntryMapper();
+	}
+
+	public void showCompileDialog(String grammar)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void showParseDialog(List<String> sentence)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

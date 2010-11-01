@@ -6,6 +6,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JMenuBar;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
@@ -25,7 +26,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 	public KahinaWindowManager windowManager;
 
-	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance kahina)
 	{
 		this.windowManager = windowManager;
 
@@ -39,7 +40,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		menuBar.add(new KahinaSessionMenu());
 		
 		// TODO these three menus are specific to logic programming or TraleSLD, should be added dynamically
-		menuBar.add(new KahinaParseMenu());
+		menuBar.add(new KahinaParseMenu(kahina));
 		menuBar.add(new KahinaBreakpointMenu());
 		menuBar.add(new KahinaProfilerMenu());
 		

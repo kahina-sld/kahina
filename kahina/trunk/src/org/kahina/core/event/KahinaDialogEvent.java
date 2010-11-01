@@ -16,6 +16,8 @@ public class KahinaDialogEvent extends KahinaEvent
 	public static final int CALL_SUBTREE_PROFILE = 10;
 	public static final int SEARCH_SUBTREE_PROFILE = 11;
 	public static final int EDIT_WARNINGS = 12;
+	public static final int PARSE = 13;
+	public static final int COMPILE = 14;
     
     public KahinaDialogEvent(int dialogEventType)
     {

@@ -23,7 +23,7 @@ public class KahinaWindowManager
         this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         this.topLevelWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         
-        mainWindow = new KahinaMainWindow(this, control);
+        mainWindow = new KahinaMainWindow(this, control, gui.kahina);
         
         int width = gui.getControlPanel().getWidth();
         int height = 100;
