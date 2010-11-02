@@ -135,12 +135,15 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 			}
 
 			chooser.setDialogTitle("Compile grammar");
-			chooser.showOpenDialog(windowManager.mainWindow);
-			File grammar = chooser.getSelectedFile();
 
-			if (grammar != null)
+			if (chooser.showOpenDialog(windowManager.mainWindow) == JFileChooser.APPROVE_OPTION)
 			{
-				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE, new Object[] { grammar.getAbsolutePath() }));
+				File grammar = chooser.getSelectedFile();
+
+				if (grammar != null)
+				{
+					KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE, new Object[] { grammar.getAbsolutePath() }));
+				}
 			}
 		} else if (type == KahinaDialogEvent.PARSE)
 		{
