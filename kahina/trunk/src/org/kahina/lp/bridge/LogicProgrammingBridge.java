@@ -272,6 +272,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// stop autocomplete/leap when we're done
 			if (deterministic && stepID == state.getStepTree().getRootID() && bridgeState != 'n')
 			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
 			
@@ -312,6 +313,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// stop autocomplete/leap when we're done
 			if (stepID == state.getStepTree().getRootID() && bridgeState != 'n')
 			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
 			

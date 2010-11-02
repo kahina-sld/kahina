@@ -1,7 +1,10 @@
 package org.kahina.tralesld;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -39,8 +42,8 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	private static final boolean VERBOSE = false;
 
-	private String traleCommand = "";
-	
+	Queue<String> traleCommands = new ArrayDeque<String>();
+
 	private boolean commanding = false;
 
 	// TODO disable if there's no Prolog interface
@@ -87,7 +90,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	private String grammar;
 
-	private List<String> sentence;
+	private List<String> sentence = Collections.emptyList();
 
 	public TraleSLDInstance()
 	{
@@ -107,21 +110,30 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		controller.registerListener(KahinaEventTypes.CONTROL, this);
 		return bridge;
 	}
-	
-	public synchronized String getCommand()
+
+	public String getCommand()
 	{
-		commanding = !"quit".equals(traleCommand);
-		updateActions();
-		String result = traleCommand;
-		traleCommand = "";
-		return result;
+		synchronized (traleCommands)
+		{
+			if (traleCommands.isEmpty())
+			{
+				commanding = true;
+				updateActions();
+				return "";
+			}
+
+			String traleCommand = traleCommands.remove();
+			commanding = !"quit".equals(traleCommand);
+			updateActions();
+			return traleCommand;
+		}
 	}
-	
+
 	private void updateActions()
 	{
 		COMPILE_ACTION.setEnabled(commanding);
 		PARSE_ACTION.setEnabled(commanding && grammar != null);
-		RESTART_ACTION.setEnabled(commanding && grammar != null && sentence != null);
+		RESTART_ACTION.setEnabled(commanding && grammar != null && !sentence.isEmpty());
 	}
 
 	@Override
@@ -180,11 +192,14 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	{
 		if (e.getSystemEventType() == KahinaSystemEvent.QUIT)
 		{
-			traleCommand = "quit";
+			synchronized (traleCommands)
+			{
+				traleCommands.add("quit");
+			}
 		}
 	}
 
-	private synchronized void processControlEvent(KahinaControlEvent event)
+	private void processControlEvent(KahinaControlEvent event)
 	{
 		String command = event.getCommand();
 
@@ -204,7 +219,8 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
 			} else
 			{
-				// HACK: set bridge to abort - if we go through the controller,
+				// Lazy hack: set bridge to abort - if we go through the
+				// controller,
 				// KahinaRunner will deinitialize and thwart subsequent eventing
 				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 				compile((String) event.getArguments()[0]);
@@ -216,13 +232,13 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { Utilities.join(" ", sentence) }));
 			} else
 			{
-				// HACK: see above
+				// Lazy hack: see above
 				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 				parse(castToStringList(event.getArguments()[0]));
 			}
 		} else if (TraleSLDControlEventCommands.RESTART.equals(command))
 		{
-			// HACK: see above
+			// Lazy hack: see above
 			bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 			compile(grammar);
 			parse(sentence);
@@ -241,12 +257,18 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			System.err.println(this + ".compile(" + absolutePath + ")");
 		}
-		traleCommand = "query dcompile_gram(" + PrologUtilities.stringToAtomLiteral(absolutePath) + ").";
+		synchronized (traleCommands)
+		{
+			traleCommands.add("query dcompile_gram(" + PrologUtilities.stringToAtomLiteral(absolutePath) + ").");
+		}
 	}
 
 	protected void parse(List<String> words)
 	{
-		traleCommand = "query drec[" + Utilities.join(",", words) + "].";
+		synchronized (traleCommands)
+		{
+			traleCommands.add("query drec[" + Utilities.join(",", words) + "].");
+		}
 	}
 
 	private void processEdgeSelectionEvent(KahinaEdgeSelectionEvent e)

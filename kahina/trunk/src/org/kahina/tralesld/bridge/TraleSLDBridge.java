@@ -421,6 +421,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// stop autocomplete/leap when we're done
 			if (stepID == state.getStepTree().getRootID() && bridgeState != 'n')
 			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
 
