@@ -466,7 +466,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
             Integer y = view.getNodeY(nodeID);
             if (x == null || y == null)
             {
-                System.err.println("Could not find scroll coordinates for node " + nodeID);
+                System.err.println("KahinaTreeView: Could not find scroll coordinates for node " + nodeID + "!");
             }
             else
             {

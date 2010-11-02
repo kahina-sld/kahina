@@ -522,7 +522,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		return COMPLETE_LINES;
 	}
 
-	public int getNodeX(int nodeID)
+	public Integer getNodeX(int nodeID)
 	{
 		if (VERBOSE)
 		{
@@ -531,7 +531,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		return nodeX.get(nodeID);
 	}
 
-	public int getNodeY(int nodeID)
+	public Integer getNodeY(int nodeID)
 	{
 		if (displayOrientation == BOTTOM_UP_DISPLAY)
 		{
@@ -625,8 +625,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 					// System.err.println("labelWidth(" +
 					// getContentfulTreeModel().getNodeCaption(node) + ") = " +
 					// nodeLabelWidth);
-					if (maxNodeWidth < nodeLabelWidth)
-						maxNodeWidth = nodeLabelWidth;
+					if (maxNodeWidth < nodeLabelWidth) maxNodeWidth = nodeLabelWidth;
 					ArrayList<Integer> children = getVisibleVirtualChildren(model, node);
 					subtreeWidths.put(node, constructWidthVector(children));
 					if (VERBOSE)
@@ -824,23 +823,17 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 
 	public boolean nodeIsVisible(int nodeID)
 	{
-		// TODO: process conditional option, allow user-definable decision
-		// function
-		if (nodeDisplayPolicy == KahinaTreeView.ALWAYS)
-			return true;
-		if (nodeDisplayPolicy == KahinaTreeView.NEVER)
-			return false;
-		if (secondaryTreeModel != null && collapsePolicy == COLLAPSE_SECONDARY && secondaryTreeModel.hasCollapsedAncestor(nodeID))
-			return false;
+		// TODO: process conditional option, allow user-definable decision function
+		if (nodeDisplayPolicy == KahinaTreeView.ALWAYS) return true;
+		if (nodeDisplayPolicy == KahinaTreeView.NEVER) return false;
+		if (secondaryTreeModel != null && collapsePolicy == COLLAPSE_SECONDARY && secondaryTreeModel.hasCollapsedAncestor(nodeID)) return false;
 		int status = getContentfulTreeModel().getNodeStatus(nodeID);
 		Boolean decision = statusVisibilityEncoding.get(status);
 		if (decision == null)
 		{
 			// default values decide
-			if (nodeDisplayPolicy == KahinaTreeView.STATUS_DEFAULT_YES)
-				return true;
-			if (nodeDisplayPolicy == KahinaTreeView.STATUS_DEFAULT_NO)
-				return false;
+			if (nodeDisplayPolicy == KahinaTreeView.STATUS_DEFAULT_YES) return true;
+			if (nodeDisplayPolicy == KahinaTreeView.STATUS_DEFAULT_NO) return false;
 		}
 		return decision;
 	}
@@ -980,8 +973,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		int middleBound = nodeY.get(nodeLevels.get(middleIndex).get(0)) + 2;
 		if (bottomUpVariant)
 			middleBound += getNodeHeight(nodeLevels.get(middleIndex).get(0));
-		if (upperIndex != 0) // simply take the only existing level if there is
-								// only one
+		if (upperIndex != 0) // simply take the only existing level if there is only one
 		{
 			while (lowerIndex + 1 < upperIndex)
 			{
@@ -990,17 +982,16 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 				if (middleBound >= y)
 				{
 					upperIndex = middleIndex;
-				} else
+				} 
+				else
 				{
 					lowerIndex = middleIndex;
 				}
 				middleIndex = (lowerIndex + upperIndex) / 2;
 				middleBound = nodeY.get(nodeLevels.get(middleIndex).get(0)) + 2;
-				if (bottomUpVariant)
-					middleBound += getNodeHeight(nodeLevels.get(middleIndex).get(0));
+				if (bottomUpVariant) middleBound += getNodeHeight(nodeLevels.get(middleIndex).get(0));
 			}
-			if (y < middleBound)
-				upperIndex--;
+			if (y < middleBound) upperIndex--;
 		}
 		// System.err.println("Node Level: " + upperIndex);
 
@@ -1010,7 +1001,8 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		if (selectedLevel.size() == 1)
 		{
 			candidateNode = selectedLevel.get(0);
-		} else
+		} 
+		else
 		{
 			lowerIndex = 0;
 			upperIndex = selectedLevel.size() - 1;
@@ -1042,15 +1034,15 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 				if (nodePositionPolicy == KahinaTreeView.LEFT_ALIGNED_NODES)
 				{
 					middleBound += width / 2;
-				} else if (nodePositionPolicy == KahinaTreeView.RIGHT_ALIGNED_NODES)
+				} 
+				else if (nodePositionPolicy == KahinaTreeView.RIGHT_ALIGNED_NODES)
 				{
 					middleBound -= width / 2;
 				}
 				// System.err.println("lower: " + lowerIndex + " upper: " +
 				// upperIndex + " middle bound: " + middleBound + " x: " + x);
 			}
-			if (x < middleBound)
-				upperIndex--;
+			if (x < middleBound) upperIndex--;
 			candidateNode = selectedLevel.get(upperIndex);
 		}
 		// System.err.println("Potentially clicked node: " + candidateNode);
@@ -1062,7 +1054,8 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		if (nodePositionPolicy == KahinaTreeView.LEFT_ALIGNED_NODES)
 		{
 			xLeft += width / 2;
-		} else if (nodePositionPolicy == KahinaTreeView.RIGHT_ALIGNED_NODES)
+		} 
+		else if (nodePositionPolicy == KahinaTreeView.RIGHT_ALIGNED_NODES)
 		{
 			xLeft -= width / 2;
 		}
@@ -1085,7 +1078,8 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		if (xLeft <= x && x <= xRight && yTop <= y && y <= yBottom)
 		{
 			// System.err.println("Click on node: " + candidateNode);
-		} else
+		} 
+		else
 		{
 			// System.err.println("No node found!");
 			return -1;
