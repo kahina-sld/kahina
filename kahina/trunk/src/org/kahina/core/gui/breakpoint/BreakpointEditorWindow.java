@@ -234,6 +234,13 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
             }
             case BreakpointEditorEvent.APPLY_QUIT:
             {
+                //compile the most recently edited breakpoint once more
+                if (curID != -1)
+                {
+                    editPanel.updateBreakpointPattern();
+                    TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
+                    compiledBreakpoints.set(curID, compiledBreakpoint);
+                }
                 KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.APPLY_BREAKPOINTS, breakpointType));
                 this.setVisible(false);
                 this.dispose();
