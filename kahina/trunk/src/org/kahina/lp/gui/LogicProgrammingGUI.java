@@ -19,6 +19,7 @@ import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.lp.LogicProgrammingState;
+import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.gui.profiler.LogicProgrammingProfileWindow;
 
@@ -132,18 +133,20 @@ public class LogicProgrammingGUI extends KahinaGUI
 			case KahinaDialogEvent.CALL_SUBTREE_PROFILE:
 			{
 				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
+				int stepID = state.getSelectedStepID();
 				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?>) kahina).getProfiler().profileSubtree(state.getSecondaryStepTree(), state.getStepTree(),
-						state.getSelectedStepID()));
-				window.setTitle("Call subtree profile");
+						stepID));
+				window.setTitle("Profile of call subtree at " + LogicProgrammingStep.get(stepID));
 				window.setVisible(true);
 				break;
 			}
 			case KahinaDialogEvent.SEARCH_SUBTREE_PROFILE:
 			{
 				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
+				int stepID = state.getSelectedStepID();
 				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?>) kahina).getProfiler().profileSubtree(state.getStepTree(), state.getStepTree(),
-						state.getSelectedStepID()));
-				window.setTitle("Search subtree profile");
+						stepID));
+				window.setTitle("Profile of search subtree at " + LogicProgrammingStep.get(stepID));
 				window.setVisible(true);
 				break;
 			}

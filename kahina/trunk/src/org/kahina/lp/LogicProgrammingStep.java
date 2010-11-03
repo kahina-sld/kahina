@@ -85,4 +85,15 @@ public class LogicProgrammingStep extends KahinaStep
     {
     	return redone > 0;
     }
+    
+    @Override
+    public String toString()
+    {
+    	String result = "step " + externalID;
+    	if (redone != 0)
+    	{
+    		result += " (redo " + redone + ")";
+    	}
+    	return result;
+    }
 }
