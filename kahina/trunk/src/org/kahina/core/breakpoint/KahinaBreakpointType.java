@@ -8,5 +8,6 @@ public class KahinaBreakpointType
     public static final int PROFILE_POINT = 3;
     public static final int CREEP_POINT = 4;
     public static final int FAIL_POINT = 5;
-    public static final int WARN_POINT = 6;
+	public static final int PRIMARY_WARN_POINT = 7;
+	public static final int SECONDARY_WARN_POINT = 8;
 }

@@ -36,6 +36,8 @@ public class LogicProgrammingState extends KahinaState
     //store the three types of breakpoints
     protected List<KahinaBreakpoint> primaryBreakpoints;
     protected List<KahinaBreakpoint> secondaryBreakpoints;
+    protected List<KahinaBreakpoint> primaryWarnPoints;
+    protected List<KahinaBreakpoint> secondaryWarnPoints;
     protected List<KahinaBreakpoint> skipPoints;
     protected List<KahinaBreakpoint> creepPoints;
     protected List<KahinaBreakpoint> failPoints;
@@ -52,6 +54,8 @@ public class LogicProgrammingState extends KahinaState
         hiddenSteps = new HashSet<Integer>();
         primaryBreakpoints = new ArrayList<KahinaBreakpoint>();
         secondaryBreakpoints = new ArrayList<KahinaBreakpoint>();
+        primaryWarnPoints = new ArrayList<KahinaBreakpoint>();
+        secondaryWarnPoints = new ArrayList<KahinaBreakpoint>();
         skipPoints = new ArrayList<KahinaBreakpoint>();
         creepPoints = new ArrayList<KahinaBreakpoint>();
         failPoints = new ArrayList<KahinaBreakpoint>();
@@ -117,6 +121,16 @@ public class LogicProgrammingState extends KahinaState
     public List<KahinaBreakpoint> getSecondaryBreakpoints()
     {
         return secondaryBreakpoints;
+    }
+    
+    public List<KahinaBreakpoint> getPrimaryWarnPoints()
+    {
+        return primaryWarnPoints;
+    }
+    
+    public List<KahinaBreakpoint> getSecondaryWarnPoints()
+    {
+        return secondaryWarnPoints;
     }
     
     public List<KahinaBreakpoint> getSkipPoints()

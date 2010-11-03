@@ -99,6 +99,26 @@ public class LogicProgrammingGUI extends KahinaGUI
 				breakpointEditor.setVisible(true);
 				break;
 			}
+			case KahinaDialogEvent.PRIMARY_WARN_POINTS:
+			{
+				if (verbose)
+				{
+					System.err.println(this + " received primary warnpoints event.");
+				}
+				BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.PRIMARY_WARN_POINT);
+				breakpointEditor.setTitle("Edit primary warn points");
+				breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getPrimaryWarnPoints());
+				breakpointEditor.setVisible(true);
+				break;
+			}
+			case KahinaDialogEvent.SECONDARY_WARN_POINTS:
+			{
+				BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.SECONDARY_WARN_POINT);
+				breakpointEditor.setTitle("Edit secondary warn ppoints");
+				breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getSecondaryWarnPoints());
+				breakpointEditor.setVisible(true);
+				break;
+			}
 			case KahinaDialogEvent.SKIP_POINTS:
 			{
 				BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.SKIP_POINT);

@@ -39,6 +39,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	// this stores the different breakpoint automata
 	protected List<TreeAutomaton> primaryBreakpoints;
 	protected List<TreeAutomaton> secondaryBreakpoints;
+	protected List<TreeAutomaton> primaryWarnPoints;
+	protected List<TreeAutomaton> secondaryWarnPoints;
 	protected List<TreeAutomaton> skipPoints;
 	protected List<TreeAutomaton> creepPoints;
 	protected List<TreeAutomaton> failPoints;
@@ -65,6 +67,12 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		secondaryBreakpoints = new ArrayList<TreeAutomaton>();
 		initializeSecondaryBreakpoints();
 		compileSecondaryBreakpoints();
+		primaryWarnPoints = new ArrayList<TreeAutomaton>();
+		initializePrimaryWarnPoints();
+		compilePrimaryWarnPoints();
+		secondaryWarnPoints = new ArrayList<TreeAutomaton>();
+		initializeSecondaryWarnPoints();
+		compileSecondaryWarnPoints();
 		skipPoints = new ArrayList<TreeAutomaton>();
 		initializeSkipPoints();
 		compileSkipPoints();
@@ -92,6 +100,16 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 * the bridge is to pause leaping or skipping
 	 */
 	public void initializeSecondaryBreakpoints()
+	{
+
+	}
+
+	public void initializePrimaryWarnPoints()
+	{
+
+	}
+
+	public void initializeSecondaryWarnPoints()
 	{
 
 	}
@@ -149,6 +167,32 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			aut.setController(KahinaRunner.getControl());
 			aut.setConstellationMatch(false);
 			this.secondaryBreakpoints.add(aut);
+		}
+	}
+
+	public void compilePrimaryWarnPoints()
+	{
+		this.primaryWarnPoints.clear();
+		for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getPrimaryWarnPoints())
+		{
+			TreeAutomaton aut = bp.compile();
+			aut.setTree(object);
+			aut.setController(KahinaRunner.getControl());
+			aut.setConstellationMatch(false);
+			this.primaryWarnPoints.add(aut);
+		}
+	}
+
+	public void compileSecondaryWarnPoints()
+	{
+		this.secondaryWarnPoints.clear();
+		for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getSecondaryWarnPoints())
+		{
+			TreeAutomaton aut = bp.compile();
+			aut.setTree(secondaryTree);
+			aut.setController(KahinaRunner.getControl());
+			aut.setConstellationMatch(false);
+			this.secondaryWarnPoints.add(aut);
 		}
 	}
 
@@ -473,6 +517,16 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 				case KahinaBreakpointType.SECONDARY_BREAKPOINT:
 				{
 					compileSecondaryBreakpoints();
+					break;
+				}
+				case KahinaBreakpointType.PRIMARY_WARN_POINT:
+				{
+					compilePrimaryWarnPoints();
+					break;
+				}
+				case KahinaBreakpointType.SECONDARY_WARN_POINT:
+				{
+					compileSecondaryWarnPoints();
 					break;
 				}
 				case KahinaBreakpointType.SKIP_POINT:

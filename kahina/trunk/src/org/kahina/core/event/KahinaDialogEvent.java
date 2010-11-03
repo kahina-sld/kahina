@@ -17,6 +17,8 @@ public class KahinaDialogEvent extends KahinaEvent
 	public static final int EDIT_WARNINGS = 12;
 	public static final int PARSE = 13;
 	public static final int COMPILE = 14;
+	public static final int PRIMARY_WARN_POINTS = 15;
+	public static final int SECONDARY_WARN_POINTS = 16;
 	
 	private static final Object[] NOARGS = new Object[0];
 	
