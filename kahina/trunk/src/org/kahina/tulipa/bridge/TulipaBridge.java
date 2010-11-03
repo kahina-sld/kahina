@@ -304,7 +304,7 @@ public class TulipaBridge extends KahinaBridge
     }
     
     @Override
-	protected void processEvent(KahinaControlEvent e)
+	protected void processControlEvent(KahinaControlEvent e)
     {
         String command = e.getCommand();
         if (command.equals("creep"))

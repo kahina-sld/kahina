@@ -14,6 +14,7 @@ import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
+import org.kahina.core.event.KahinaWarnEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
@@ -507,9 +508,15 @@ public class LogicProgrammingBridge extends KahinaBridge
 			bridgeState = 'a';
 		}
 	}
+	
+	@Override
+	protected void processWarnEvent(KahinaWarnEvent e)
+	{
+		bridgeState = 'n';
+	}
 
 	@Override
-	protected synchronized void processEvent(KahinaControlEvent e)
+	protected synchronized void processControlEvent(KahinaControlEvent e)
 	{
 		// TODO update chart when exiting leap/skip. Gah.
 		String command = e.getCommand();
@@ -616,7 +623,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	}
 
 	@Override
-	protected void processEvent(KahinaSelectionEvent e)
+	protected void processSelectionEvent(KahinaSelectionEvent e)
 	{
 		selectedID = e.getSelectedStep();
 		Integer linkTarget = state.getLinkTarget(selectedID);

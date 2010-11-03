@@ -10,6 +10,7 @@ import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeMatchEvent;
+import org.kahina.core.event.KahinaWarnEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 /**
@@ -38,10 +39,10 @@ public class KahinaBridge implements KahinaListener
     {
     	if (e instanceof KahinaSelectionEvent)
     	{
-    		processEvent((KahinaSelectionEvent) e);
+    		processSelectionEvent((KahinaSelectionEvent) e);
     	} else if (e instanceof KahinaControlEvent)
         {
-            processEvent((KahinaControlEvent) e);
+            processControlEvent((KahinaControlEvent) e);
         } else if (e instanceof KahinaSystemEvent)
         {
         	processSystemEvent((KahinaSystemEvent) e);
@@ -49,16 +50,19 @@ public class KahinaBridge implements KahinaListener
         else if (e instanceof KahinaTreeMatchEvent)
         {
             processEvent((KahinaTreeMatchEvent) e);
+        } else if (e instanceof KahinaWarnEvent)
+        {
+        	processWarnEvent((KahinaWarnEvent) e);
         }
     }
     
     //method stub to prevent infinite recursion; implemented by specialized bridges
-    protected void processEvent(KahinaControlEvent e)
+    protected void processControlEvent(KahinaControlEvent e)
     {
         
     }
     
-    protected void processEvent(KahinaSelectionEvent e)
+    protected void processSelectionEvent(KahinaSelectionEvent e)
     {
     	
     }
@@ -137,6 +141,10 @@ public class KahinaBridge implements KahinaListener
     }
 
 	protected void processSystemEvent(KahinaSystemEvent e)
+	{
+	}
+	
+	protected void processWarnEvent(KahinaWarnEvent e)
 	{
 	}
 }
