@@ -9,7 +9,7 @@ public class KahinaTreeMatchEvent extends KahinaEvent
     
     public KahinaTreeMatchEvent(KahinaBreakpoint bp, int nodeID)
     {
-        super("treeMatch");
+        super(KahinaEventTypes.TREE_MATCH);
         this.bp = bp;
         this.nodeID = nodeID;
     }

@@ -7,6 +7,7 @@ import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeMatchEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
@@ -23,8 +24,8 @@ public class KahinaBridge implements KahinaListener
     
     public KahinaBridge()
     {
-        KahinaRunner.getControl().registerListener("control", this);
-        KahinaRunner.getControl().registerListener("treeMatch", this);
+        KahinaRunner.getControl().registerListener(KahinaEventTypes.CONTROL, this);
+        KahinaRunner.getControl().registerListener(KahinaEventTypes.TREE_MATCH, this);
     }
     
     protected KahinaStep generateStep()

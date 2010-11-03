@@ -11,5 +11,7 @@ public interface KahinaEventTypes
 	public static final String SYSTEM = "system";
 	public static final String SESSION = "session";
 	public static final String CONTROL = "control";
+	public static final String TREE_MATCH = "treeMatch";
+	public static final String WARN = "warn";
 
 }

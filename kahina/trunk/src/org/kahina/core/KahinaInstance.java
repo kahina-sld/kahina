@@ -29,6 +29,7 @@ import org.kahina.core.gui.event.KahinaConsoleLineEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.magazine.ObjectMagazine;
+import org.kahina.core.profiler.KahinaWarner;
 import org.kahina.core.util.FileUtilities;
 import org.kahina.core.util.KahinaSwingUtilities;
 import org.kahina.core.util.ProgressMonitorWrapper;
@@ -56,6 +57,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	protected final KahinaController guiController;
 	
 	private boolean guiStarted = false;
+	
+	private KahinaWarner warner;
 
 	public KahinaInstance()
 	{		
@@ -110,9 +113,15 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		state = createState();
 		bridge = createBridge();
 		createTreeBehavior();
+		warner = createWarner();
 	}
 	
 	protected abstract void createTreeBehavior();
+	
+	private KahinaWarner createWarner()
+	{
+		return new KahinaWarner(this);
+	}
 
 	protected abstract S createState();
 

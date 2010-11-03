@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaTextModel;
@@ -19,7 +20,7 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
  * 
  * Implicitly contains all the information on the current run of Kahina.
  * 
- * Can be saved to and loaded from a database file, allowing to interrupt and continue runs.
+ * Can be serialized and deserialized, allowing to interrupt and continue runs.
  * 
  *  @author jdellert
  */
@@ -34,9 +35,13 @@ public class KahinaState implements Serializable, KahinaListener
 	private static final boolean VERBOSE = false;
 	
 	//the messages that will be stored in the console
-    protected KahinaTextModel consoleMessages;
+    protected final KahinaTextModel consoleMessages;
     //map from stepIDs to lines in console
-    protected Map<Integer,Set<KahinaLineReference>> consoleLines;
+    protected final Map<Integer,Set<KahinaLineReference>> consoleLines;
+    
+    protected final Map<KahinaBreakpoint, Integer> warnThresholdByBreakpoint;
+    
+    protected final Map<KahinaBreakpoint, Integer> matchCountByBreakpoint;
     
     private int selectedStepID = -1;
     
@@ -46,6 +51,8 @@ public class KahinaState implements Serializable, KahinaListener
     {
         consoleMessages = new KahinaTextModel();
         consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
+        warnThresholdByBreakpoint = new HashMap<KahinaBreakpoint, Integer>();
+        matchCountByBreakpoint = new HashMap<KahinaBreakpoint, Integer>();
         KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
     }
     
@@ -98,5 +105,15 @@ public class KahinaState implements Serializable, KahinaListener
     public Set<KahinaLineReference> getLineReferencesForStep(int stepID)
     {
     	return consoleLines.get(stepID);
+    }
+    
+    public Map<KahinaBreakpoint, Integer> getMatchCountByBreakpoint()
+    {
+    	return matchCountByBreakpoint;
+    }
+    
+    public Map<KahinaBreakpoint, Integer> getWarnThresholdByBreakpoint()
+    {
+    	return warnThresholdByBreakpoint;
     }
 }
