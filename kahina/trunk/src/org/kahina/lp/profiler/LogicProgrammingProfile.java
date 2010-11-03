@@ -72,7 +72,7 @@ public class LogicProgrammingProfile implements Serializable
 		entrySet.addAll(redosByEntry.keySet());
 		entrySet.addAll(exitsByEntry.keySet());
 		entrySet.addAll(failsByEntry.keySet());
-		final int size = entrySet.size();
+		final int size = entrySet.size() + 1; // additional sum row
 		final String[] category = new String[size];
 		final String[] name = new String[size];
 		int[] calls = new int[size];
@@ -80,16 +80,26 @@ public class LogicProgrammingProfile implements Serializable
 		int[] exits = new int[size];
 		int[] fails = new int[size];
 		int i = 0;
+		int callSum = 0;
+		int redoSum = 0;
+		int exitSum = 0;
+		int failSum = 0;
 		for (ProfileEntry entry : entrySet)
 		{
 			category[i] = entry.getCategory();
 			name[i] = entry.getName();
-			calls[i] = nullToZero(callsByEntry.get(entry));
-			redos[i] = nullToZero(redosByEntry.get(entry));
-			exits[i] = nullToZero(exitsByEntry.get(entry));
-			fails[i] = nullToZero(failsByEntry.get(entry));
+			callSum += calls[i] = nullToZero(callsByEntry.get(entry));
+			redoSum += redos[i] = nullToZero(redosByEntry.get(entry));
+			exitSum += exits[i] = nullToZero(exitsByEntry.get(entry));
+			failSum += fails[i] = nullToZero(failsByEntry.get(entry));
 			i++;
 		}
+		category[i] = "Total";
+		name[i] = "";
+		calls[i] = callSum;
+		redos[i] = redoSum;
+		exits[i] = exitSum;
+		fails[i] = failSum;
 		final int[][] numbers = new int[][] {null, null, calls, redos, exits, fails};
 		return new AbstractTableModel()
 		{
