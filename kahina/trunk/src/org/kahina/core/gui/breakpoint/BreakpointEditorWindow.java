@@ -37,7 +37,10 @@ import org.w3c.dom.NodeList;
 
 public class BreakpointEditorWindow extends JFrame implements ActionListener, KahinaListener, ListSelectionListener
 {
-    KahinaController control;
+	
+	private static final long serialVersionUID = -2695961972605190759L;
+
+	KahinaController control;
     
     JButton newBreakpointButton;
     JButton activateBreakpointButton;
@@ -144,7 +147,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
         return breakpointListPanel;
     }
     
-    private JPanel buildRightPanel()
+    protected JPanel buildRightPanel()
     {
         editPanel = new BreakpointEditPanel(control);
         return editPanel;       
@@ -218,9 +221,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
                 //compile the currently opened breakpoint once more
                 if (curID != -1)
                 {
-                    editPanel.updateBreakpointPattern();
-                    TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
-                    compiledBreakpoints.set(curID, compiledBreakpoint);
+                	compileCurrentlyOpenedBreakpoint();
                 }
                 BreakpointTestWindow w = new BreakpointTestWindow(compiledBreakpoints, control);
                 w.setVisible(true);
@@ -267,6 +268,13 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
                 break;
             }
         }
+    }
+    
+    protected void compileCurrentlyOpenedBreakpoint()
+    {
+        editPanel.updateBreakpointPattern();
+        TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
+        compiledBreakpoints.set(curID, compiledBreakpoint);
     }
     
     public void valueChanged(ListSelectionEvent e)

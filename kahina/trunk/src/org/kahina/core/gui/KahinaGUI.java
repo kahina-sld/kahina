@@ -29,6 +29,7 @@ import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.event.KahinaWarnEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
@@ -41,12 +42,12 @@ public class KahinaGUI implements KahinaListener
 	private static final boolean VERBOSE = false;
 
 	protected KahinaInstance<?, ?, ?> kahina;
-    
-    KahinaSelectionHistory selectionHistory;
+
+	KahinaSelectionHistory selectionHistory;
 
 	KahinaControlPanel controlPanel;
-    
-    protected KahinaTextView messageConsoleView;
+
+	protected KahinaTextView messageConsoleView;
 
 	protected List<KahinaView<?>> views;
 	// values as defined in KahinaViewVisibility
@@ -56,7 +57,7 @@ public class KahinaGUI implements KahinaListener
 	protected Set<KahinaView<?>> livingViews;
 
 	Map<Field, KahinaView<? extends KahinaObject>> fieldToView;
-    protected Map<String, KahinaView<? extends KahinaObject>> varNameToView;
+	protected Map<String, KahinaView<? extends KahinaObject>> varNameToView;
 
 	Class<? extends KahinaStep> stepType;
 
@@ -70,10 +71,11 @@ public class KahinaGUI implements KahinaListener
 		this.kahina = kahina;
 		control.registerListener(KahinaEventTypes.STEP_FOCUS, this);
 		control.registerListener(KahinaEventTypes.SELECTION, this);
-        control.registerListener("dialog", this);
-        control.registerListener("control", this);
-        
-        this.selectionHistory = new KahinaSelectionHistory(control);
+		control.registerListener(KahinaEventTypes.DIALOG, this);
+		control.registerListener(KahinaEventTypes.CONTROL, this);
+		control.registerListener(KahinaEventTypes.WARN, this);
+
+		this.selectionHistory = new KahinaSelectionHistory(control);
 
 		this.controlPanel = new KahinaControlPanel();
 
@@ -82,16 +84,16 @@ public class KahinaGUI implements KahinaListener
 
 		this.livingViews = new HashSet<KahinaView<?>>();
 		this.fieldToView = new HashMap<Field, KahinaView<? extends KahinaObject>>();
-        this.varNameToView = new HashMap<String, KahinaView<? extends KahinaObject>>();
+		this.varNameToView = new HashMap<String, KahinaView<? extends KahinaObject>>();
 		fillFieldToView(stepType, control);
-        
-        messageConsoleView = new KahinaTextView(control);
-        messageConsoleView.setTitle("Message console");
-        control.registerListener("message", messageConsoleView);
-        control.registerListener("console line", messageConsoleView);
-        views.add(messageConsoleView);
-        livingViews.add(messageConsoleView);
-        varNameToView.put("messageConsole", messageConsoleView);
+
+		messageConsoleView = new KahinaTextView(control);
+		messageConsoleView.setTitle("Message console");
+		control.registerListener("message", messageConsoleView);
+		control.registerListener("console line", messageConsoleView);
+		views.add(messageConsoleView);
+		livingViews.add(messageConsoleView);
+		varNameToView.put("messageConsole", messageConsoleView);
 	}
 
 	/**
@@ -122,7 +124,7 @@ public class KahinaGUI implements KahinaListener
 				}
 				newView.setTitle(field.getName());
 				fieldToView.put(field, newView);
-                varNameToView.put(field.getName(), newView);
+				varNameToView.put(field.getName(), newView);
 				views.add(newView);
 				livingViews.add(newView);
 			}
@@ -133,57 +135,56 @@ public class KahinaGUI implements KahinaListener
 	{
 		return controlPanel;
 	}
-    
-    public KahinaWindow getWindowForVarName(String varName)
-    {
-        KahinaView<?> view = varNameToView.get(varName);
-        if (view != null)
-        {
-            return windowManager.topLevelWindows.get(view);
-        }
-        return null;
-    }
-    
-    public void integrateVariableDisplays(int integrationType, String var1, String var2, String newTitle, KahinaController control)
-    {
-        KahinaView<?> view1 = varNameToView.get(var1);
-        KahinaView<?> view2 = varNameToView.get(var2);
-        if (view1 == null || view2 == null)
-        {
-            throw new RuntimeException("Error integrating views: " + var1 + " and " + var2);
-        }
-        else
-        {
-            switch (integrationType)
-            {
-                case KahinaViewIntegrationType.VERTICAL:
-                {
-                    windowManager.integrateInVerticallySplitWindow(view1, view2, newTitle, control);
-                    break;
-                }
-                case KahinaViewIntegrationType.HORIZONTAL:
-                {
-                    windowManager.integrateInHorizontallySplitWindow(view1, view2, newTitle, control);
-                    break;
-                }
-                case KahinaViewIntegrationType.TABBED:
-                {
-                    //TODO
-                }
-            }
-        }
-    }
+
+	public KahinaWindow getWindowForVarName(String varName)
+	{
+		KahinaView<?> view = varNameToView.get(varName);
+		if (view != null)
+		{
+			return windowManager.topLevelWindows.get(view);
+		}
+		return null;
+	}
+
+	public void integrateVariableDisplays(int integrationType, String var1, String var2, String newTitle, KahinaController control)
+	{
+		KahinaView<?> view1 = varNameToView.get(var1);
+		KahinaView<?> view2 = varNameToView.get(var2);
+		if (view1 == null || view2 == null)
+		{
+			throw new RuntimeException("Error integrating views: " + var1 + " and " + var2);
+		} else
+		{
+			switch (integrationType)
+			{
+				case KahinaViewIntegrationType.VERTICAL:
+				{
+					windowManager.integrateInVerticallySplitWindow(view1, view2, newTitle, control);
+					break;
+				}
+				case KahinaViewIntegrationType.HORIZONTAL:
+				{
+					windowManager.integrateInHorizontallySplitWindow(view1, view2, newTitle, control);
+					break;
+				}
+				case KahinaViewIntegrationType.TABBED:
+				{
+					// TODO
+				}
+			}
+		}
+	}
 
 	public void prepare(KahinaController control)
 	{
 		displayMainViews();
-        windowManager = new KahinaWindowManager(this, control);
+		windowManager = new KahinaWindowManager(this, control);
 	}
-    
-    public final void show()
-    {
-        windowManager.displayWindows();
-    }
+
+	public final void show()
+	{
+		windowManager.displayWindows();
+	}
 
 	public void displayMainViews()
 	{
@@ -210,15 +211,16 @@ public class KahinaGUI implements KahinaListener
 		if (e instanceof KahinaSelectionEvent)
 		{
 			processEvent((KahinaSelectionEvent) e);
+		} else if (e instanceof KahinaDialogEvent)
+		{
+			processEvent((KahinaDialogEvent) e);
+		} else if (e instanceof KahinaControlEvent)
+		{
+			processEvent((KahinaControlEvent) e);
+		} else if (e instanceof KahinaWarnEvent)
+		{
+			processEvent((KahinaWarnEvent) e);
 		}
-        else if (e instanceof KahinaDialogEvent)
-        {
-            processEvent((KahinaDialogEvent) e);
-        }
-        else if (e instanceof KahinaControlEvent)
-        {
-            processEvent((KahinaControlEvent) e);
-        }
 	}
 
 	private void processEvent(KahinaSelectionEvent e)
@@ -226,18 +228,18 @@ public class KahinaGUI implements KahinaListener
 		displayMainViews();
 		if (e.getPanel() == null || livingViews.contains(e.getPanel().view))
 		{
-            //ignore selections that would lead to an empty current node
+			// ignore selections that would lead to an empty current node
 			int stepID = e.getSelectedStep();
-            if (stepID != -1)
-            {
-            	if (VERBOSE)
-            	{
-            		System.err.println("Updating selection to step " + stepID);
-            	}
-                displayStepContent(stepID);
-                KahinaRunner.processEvent(new KahinaUpdateEvent(stepID));
-                KahinaRunner.processEvent(new KahinaRedrawEvent());
-            }
+			if (stepID != -1)
+			{
+				if (VERBOSE)
+				{
+					System.err.println("Updating selection to step " + stepID);
+				}
+				displayStepContent(stepID);
+				KahinaRunner.processEvent(new KahinaUpdateEvent(stepID));
+				KahinaRunner.processEvent(new KahinaRedrawEvent());
+			}
 		}
 		// for special case of isolated view components: there is no
 		// coordinating KahinaGUI
@@ -247,69 +249,75 @@ public class KahinaGUI implements KahinaListener
 			e.getPanel().processEvent(new KahinaRedrawEvent());
 		}
 	}
-    
-    protected void processEvent(KahinaDialogEvent e)
-    {
-        switch (e.getDialogEventType())
-        {
-            case KahinaDialogEvent.ABOUT:
-            {
-                new AboutDialog(windowManager.mainWindow).setVisible(true);        
-            }
-        }
-    }
-    
-    private void processEvent(KahinaControlEvent e)
-    {
-        String command = e.getCommand();
-        if (command.equals("backInHistory"))
-        {
-            selectionHistory.moveToPrevious();
-        }
-        else if (command.equals("forwardInHistory"))
-        {
-            selectionHistory.moveToNext();
-        }
-    }
-    
-    private class AboutDialog extends JDialog 
-    {
-        public AboutDialog(JFrame parent) 
-        {
-          super(parent, "About Kahina", false);
-          getContentPane().setLayout(new BoxLayout(getContentPane(),BoxLayout.Y_AXIS));
-          add(new JLabel("Kilian Evang, Johannes Dellert"));
-          add(new JLabel("Tuebingen University"));
-          add(new JLabel("(c) 2009-2010"));
 
-          JPanel p2 = new JPanel();
-          JButton ok = new JButton("Ok");
-          p2.add(ok);
-          getContentPane().add(p2, "South");
+	protected void processEvent(KahinaDialogEvent e)
+	{
+		switch (e.getDialogEventType())
+		{
+			case KahinaDialogEvent.ABOUT:
+			{
+				new AboutDialog(windowManager.mainWindow).setVisible(true);
+			}
+		}
+	}
 
-          ok.addActionListener(new ActionListener() 
-          {
-            public void actionPerformed(ActionEvent evt) 
-            {
-              setVisible(false);
-            }
-          });
-          setSize(250, 150);
-        }
-    }
-    
-    public ProgressMonitorWrapper createProgressMonitorWrapper(String message, String note, int min, int max)
-    {
-    	return new ProgressMonitorWrapper(controlPanel, message, note, min, max);
-    }
-    
-    public int showConfirmDialog(Object message, String title, int optionType)
-    {
-    	return JOptionPane.showConfirmDialog(controlPanel, message, title, optionType);
-    }
-    
-    public void showMessageDialog(Object message, String title, int messageType)
-    {
-    	JOptionPane.showMessageDialog(controlPanel, message, title, messageType);
-    }
+	private void processEvent(KahinaControlEvent e)
+	{
+		String command = e.getCommand();
+		if (command.equals("backInHistory"))
+		{
+			selectionHistory.moveToPrevious();
+		} else if (command.equals("forwardInHistory"))
+		{
+			selectionHistory.moveToNext();
+		}
+	}
+
+	private void processEvent(KahinaWarnEvent e)
+	{
+		JOptionPane.showMessageDialog(windowManager.mainWindow, "Warn point " + e.getBreakpoint() + " has matched " + e.getMatchCount() + " times.", "Warn point", JOptionPane.WARNING_MESSAGE);
+	}
+
+	private class AboutDialog extends JDialog
+	{
+		private static final long serialVersionUID = 1004459218135806816L;
+
+		public AboutDialog(JFrame parent)
+		{
+			super(parent, "About Kahina", false);
+			getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
+			add(new JLabel("Kilian Evang, Johannes Dellert"));
+			add(new JLabel("Tuebingen University"));
+			add(new JLabel("(c) 2009-2010"));
+
+			JPanel p2 = new JPanel();
+			JButton ok = new JButton("Ok");
+			p2.add(ok);
+			getContentPane().add(p2, "South");
+
+			ok.addActionListener(new ActionListener()
+			{
+				public void actionPerformed(ActionEvent evt)
+				{
+					setVisible(false);
+				}
+			});
+			setSize(250, 150);
+		}
+	}
+
+	public ProgressMonitorWrapper createProgressMonitorWrapper(String message, String note, int min, int max)
+	{
+		return new ProgressMonitorWrapper(controlPanel, message, note, min, max);
+	}
+
+	public int showConfirmDialog(Object message, String title, int optionType)
+	{
+		return JOptionPane.showConfirmDialog(controlPanel, message, title, optionType);
+	}
+
+	public void showMessageDialog(Object message, String title, int messageType)
+	{
+		JOptionPane.showMessageDialog(controlPanel, message, title, messageType);
+	}
 }

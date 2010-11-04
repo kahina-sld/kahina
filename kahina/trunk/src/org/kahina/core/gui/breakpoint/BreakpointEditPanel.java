@@ -25,7 +25,10 @@ import org.kahina.core.event.KahinaEvent;
 
 public class BreakpointEditPanel extends JPanel implements ActionListener, KahinaListener
 {
-    private KahinaController control;
+
+	private static final long serialVersionUID = 1696100673150672096L;
+
+	private KahinaController control;
     
     private JTabbedPane editTabs;  
     private NodeConstraintPanel nodeConstraintPanel;
@@ -38,7 +41,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
     private JButton showAutomatonButton;
     
     //the breakpoint this edit panel is operating on
-    private KahinaBreakpoint breakpoint;
+    protected KahinaBreakpoint breakpoint;
     
     //selection mode constants; used by BooleanConnectorPanels and NodeConstraintPanels to coordinate their states
     public static final int NO_PENDING_OPERATION = -1;
@@ -54,7 +57,14 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         setBorder(BorderFactory.createTitledBorder("Edit Breakpoint"));    
        
-        editTabs = new JTabbedPane();
+        addAllComponents();
+        
+        setBreakpoint(null);
+    }
+    
+    protected void addAllComponents()
+    {
+    	editTabs = new JTabbedPane();
         editTabs.add("Step Constraint", buildNodeConstraintPanel(control));
         editTabs.add("Decision Tree Pattern", buildTreeFragmentPanel(control));
         
@@ -98,8 +108,6 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         optionsPanel.add(Box.createRigidArea(new Dimension(10,0)));
         
         add(optionsPanel);
-        
-        setBreakpoint(null);
     }
     
     public void setBreakpoint(KahinaBreakpoint breakpoint)
@@ -178,7 +186,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         }
     }
     
-    private void activateAllComponents()
+    protected void activateAllComponents()
     {
         editTabs.setEnabled(true);  
         nodeConstraintPanel.setEnabled(true);
@@ -191,7 +199,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
         showAutomatonButton.setEnabled(true);
     }
     
-    private void deactivateAllComponents()
+    protected void deactivateAllComponents()
     {
         editTabs.setEnabled(false);  
         nodeConstraintPanel.setEnabled(false);

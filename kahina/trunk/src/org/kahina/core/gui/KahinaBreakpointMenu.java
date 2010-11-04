@@ -27,18 +27,6 @@ public class KahinaBreakpointMenu  extends JMenu implements ActionListener
         secondaryBreakpointsItem.addActionListener(this);
         this.add(secondaryBreakpointsItem);
         
-        this.addSeparator();       
-        
-        JMenuItem primaryWarnPointsItem = new JMenuItem("Warn points (search tree)");
-        primaryWarnPointsItem.setActionCommand("editPrimaryWarnPoints");
-        primaryWarnPointsItem.addActionListener(this);
-        this.add(primaryWarnPointsItem);
-        
-        JMenuItem secondaryWarnPointsItem = new JMenuItem("Warn points (call tree)");
-        secondaryWarnPointsItem.setActionCommand("editSecondaryWarnPpoints");
-        secondaryWarnPointsItem.addActionListener(this);
-        this.add(secondaryWarnPointsItem);
-        
         this.addSeparator();             
         
         JMenuItem creepPointsItem = new JMenuItem("Creep points (call tree)");
@@ -55,6 +43,18 @@ public class KahinaBreakpointMenu  extends JMenu implements ActionListener
         skipPointsItem.setActionCommand("editSkipPoints");
         skipPointsItem.addActionListener(this);
         this.add(skipPointsItem);
+        
+        this.addSeparator();       
+        
+        JMenuItem primaryWarnPointsItem = new JMenuItem("Warn points (search tree)");
+        primaryWarnPointsItem.setActionCommand("editPrimaryWarnPoints");
+        primaryWarnPointsItem.addActionListener(this);
+        this.add(primaryWarnPointsItem);
+        
+        JMenuItem secondaryWarnPointsItem = new JMenuItem("Warn points (call tree)");
+        secondaryWarnPointsItem.setActionCommand("editSecondaryWarnPpoints");
+        secondaryWarnPointsItem.addActionListener(this);
+        this.add(secondaryWarnPointsItem);
     }
     
     public void actionPerformed(ActionEvent e)
