@@ -219,10 +219,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
             case BreakpointEditorEvent.TEST_BREAKPOINTS:
             {
                 //compile the currently opened breakpoint once more
-                if (curID != -1)
-                {
-                	compileCurrentlyOpenedBreakpoint();
-                }
+               	compileCurrentlyOpenedBreakpoint();
                 BreakpointTestWindow w = new BreakpointTestWindow(compiledBreakpoints, control);
                 w.setVisible(true);
                 break;
@@ -235,13 +232,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
             }
             case BreakpointEditorEvent.APPLY_QUIT:
             {
-                //compile the most recently edited breakpoint once more
-                if (curID != -1)
-                {
-                    editPanel.updateBreakpointPattern();
-                    TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
-                    compiledBreakpoints.set(curID, compiledBreakpoint);
-                }
+                compileCurrentlyOpenedBreakpoint();
                 KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.APPLY_BREAKPOINTS, breakpointType));
                 this.setVisible(false);
                 this.dispose();
@@ -272,20 +263,17 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
     
     protected void compileCurrentlyOpenedBreakpoint()
     {
-        editPanel.updateBreakpointPattern();
-        TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
-        compiledBreakpoints.set(curID, compiledBreakpoint);
+    	if (curID != -1)
+    	{
+    		editPanel.updateBreakpointPattern();
+    		TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
+    		compiledBreakpoints.set(curID, compiledBreakpoint);
+        }
     }
     
     public void valueChanged(ListSelectionEvent e)
     {
-        //compile the most recently edited breakpoint once more
-        if (curID != -1)
-        {
-            editPanel.updateBreakpointPattern();
-            TreeAutomaton compiledBreakpoint = breakpoints.get(curID).compile();
-            compiledBreakpoints.set(curID, compiledBreakpoint);
-        }
+        compileCurrentlyOpenedBreakpoint();
         curID = breakpointList.getSelectedIndex();
         if (curID == -1)
         {

@@ -8,6 +8,8 @@ import org.kahina.lp.LogicProgrammingState;
 public class ThresholdedBreakpointEditorWindow extends BreakpointEditorWindow
 {
 
+	// TODO xml export/import support
+
 	private static final long serialVersionUID = -3420993187702603445L;
 
 	// Can't override fields, so additionally store thresholded edit panel in
@@ -33,7 +35,10 @@ public class ThresholdedBreakpointEditorWindow extends BreakpointEditorWindow
 	protected void compileCurrentlyOpenedBreakpoint()
 	{
 		super.compileCurrentlyOpenedBreakpoint();
-		state.getWarnThresholdByBreakpoint().put(breakpoints.get(curID), thresholdedEditPanel.getThreshold());
+		if (curID != -1)
+		{
+			state.getWarnThresholdByBreakpoint().put(breakpoints.get(curID), thresholdedEditPanel.getThreshold());
+		}
 	}
 
 	public void loadState(LogicProgrammingState state)

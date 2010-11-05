@@ -87,7 +87,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 					System.err.println(this + " received primary breakpoints event.");
 				}
 				BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.PRIMARY_BREAKPOINT);
-				breakpointEditor.setTitle("Edit primary breakpoints");
+				breakpointEditor.setTitle("Edit search tree breakpoints");
 				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
 				breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getPrimaryBreakpoints());
 				breakpointEditor.setVisible(true);
@@ -96,7 +96,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 			case KahinaDialogEvent.SECONDARY_BREAKPOINTS:
 			{
 				BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.SECONDARY_BREAKPOINT);
-				breakpointEditor.setTitle("Edit secondary breakpoints");
+				breakpointEditor.setTitle("Edit call tree breakpoints");
 				breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getSecondaryBreakpoints());
 				breakpointEditor.setVisible(true);
 				break;
@@ -108,7 +108,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 					System.err.println(this + " received primary warnpoints event.");
 				}
 				ThresholdedBreakpointEditorWindow breakpointEditor = new ThresholdedBreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.PRIMARY_WARN_POINT);
-				breakpointEditor.setTitle("Edit primary warn points");
+				breakpointEditor.setTitle("Edit search tree warn points");
 				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
 				breakpointEditor.loadBreakpointProfile(state.getPrimaryWarnPoints());
 				breakpointEditor.loadState(state);
@@ -118,7 +118,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 			case KahinaDialogEvent.SECONDARY_WARN_POINTS:
 			{
 				ThresholdedBreakpointEditorWindow breakpointEditor = new ThresholdedBreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.SECONDARY_WARN_POINT);
-				breakpointEditor.setTitle("Edit secondary warn ppoints");
+				breakpointEditor.setTitle("Edit call tree warn points");
 				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
 				breakpointEditor.loadBreakpointProfile(state.getSecondaryWarnPoints());
 				breakpointEditor.loadState(state);

@@ -52,7 +52,7 @@ public class KahinaBreakpointMenu  extends JMenu implements ActionListener
         this.add(primaryWarnPointsItem);
         
         JMenuItem secondaryWarnPointsItem = new JMenuItem("Warn points (call tree)");
-        secondaryWarnPointsItem.setActionCommand("editSecondaryWarnPpoints");
+        secondaryWarnPointsItem.setActionCommand("editSecondaryWarnPoints");
         secondaryWarnPointsItem.addActionListener(this);
         this.add(secondaryWarnPointsItem);
     }
