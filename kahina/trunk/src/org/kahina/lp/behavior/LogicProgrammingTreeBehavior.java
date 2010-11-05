@@ -261,6 +261,14 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			aut.process(stepID);
 		}
+		for (TreeAutomaton aut : primaryWarnPoints)
+		{
+			aut.process(stepID);
+		}
+		for (TreeAutomaton aut : secondaryWarnPoints)
+		{
+			aut.process(stepID);
+		}
 	}
 
 	/**

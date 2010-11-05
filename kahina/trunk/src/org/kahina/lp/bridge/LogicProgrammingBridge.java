@@ -62,6 +62,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		stepIDConv = new HashMap<Integer, Integer>();
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.WARN, this);
 		if (VERBOSE)
 			System.err.println("new LogicProgrammingBridge()");
 	}
@@ -513,6 +514,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	protected void processWarnEvent(KahinaWarnEvent e)
 	{
 		bridgeState = 'n';
+		selectIfPaused(currentID);
 	}
 
 	@Override

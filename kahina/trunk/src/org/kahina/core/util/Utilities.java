@@ -73,4 +73,13 @@ public class Utilities
 		}
 		return result.toString();
 	}
+
+	public static int nullToZero(Integer integer)
+	{
+		if (integer == null)
+		{
+			return 0;
+		}
+		return integer;
+	}
 }

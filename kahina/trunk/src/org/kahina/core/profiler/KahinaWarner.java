@@ -11,6 +11,7 @@ import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaTreeMatchEvent;
 import org.kahina.core.event.KahinaWarnEvent;
+import org.kahina.core.util.Utilities;
 
 public class KahinaWarner implements KahinaListener
 {
@@ -40,7 +41,7 @@ public class KahinaWarner implements KahinaListener
 		if (threshold != null)
 		{
 			Map<KahinaBreakpoint, Integer> matchCountByBreakpoint = state.getMatchCountByBreakpoint();
-			int newMatchCount = matchCountByBreakpoint.get(breakpoint) + 1;
+			int newMatchCount = Utilities.nullToZero(matchCountByBreakpoint.get(breakpoint)) + 1;
 			if (newMatchCount == threshold)
 			{
 				KahinaRunner.processEvent(new KahinaWarnEvent(breakpoint, newMatchCount));

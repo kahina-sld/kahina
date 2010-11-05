@@ -23,4 +23,10 @@ public class KahinaTreeMatchEvent extends KahinaEvent
     {
         return nodeID;
     }
+    
+    @Override
+    public String toString()
+    {
+    	return bp + " matched at node " + nodeID;
+    }
 }
