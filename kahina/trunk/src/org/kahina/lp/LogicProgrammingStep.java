@@ -10,6 +10,9 @@ public class LogicProgrammingStep extends KahinaStep
 	 * 
 	 */
 	private static final long serialVersionUID = -7522398040719763248L;
+	
+	private static final boolean VERBOSE = false;
+	
 	//the goal description
     public String goalDesc;    
     //the step ID used by the surveyed logic programming system
@@ -43,6 +46,10 @@ public class LogicProgrammingStep extends KahinaStep
     
     public void setGoalDesc(String goalDesc)
     {
+    	if (VERBOSE)
+    	{
+    		System.err.println(this + ".setGoalDesc(" + goalDesc + ")");
+    	}
         this.goalDesc = goalDesc;
     }
     

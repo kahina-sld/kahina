@@ -125,13 +125,14 @@ get_location(Frame,File,Line) :-
   predicate_property(Goal, file(File)),
   predicate_property(Goal, line_count(Line)).
 
-send_bindings(Step,Direction,Frame,Bridge) :-
+% TODO http://kahina.org/trac/ticket/59
+/*send_bindings(Step,Direction,Frame,Bridge) :-
   get_bindings(Frame,KeyList,ValueList),
   KeyList \== [],
   !,
-  jpl_new(array(class([java,lang],['String']),KeyList,KeyArray),
-  jpl_new(array(class([java,lang],['String']),ValueList,ValueArray),
-  jpl_call(Bridge,registerBindings,[Step,Direction,KeyArray,ValueArray],_).
+  jpl_new(array(class([java,lang],['String'])),KeyList,KeyArray),
+  jpl_new(array(class([java,lang],['String'])),ValueList,ValueArray),
+  jpl_call(Bridge,registerBindings,[Step,Direction,KeyArray,ValueArray],_).*/
 send_bindings(_,_,_,_).
 
 % Credits for the following to XPCE's trace.pl...
