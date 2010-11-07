@@ -1,4 +1,4 @@
-package org.tralesld.core.event;
+package org.kahina.tralesld.event;
 
 public interface TraleSLDControlEventCommands
 {

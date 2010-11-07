@@ -31,11 +31,11 @@ import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
+import org.kahina.tralesld.event.TraleSLDControlEventCommands;
 import org.kahina.tralesld.gui.TraleSLDGUI;
 import org.kahina.tralesld.profiler.TraleSLDProfiler;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
 import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
-import org.tralesld.core.event.TraleSLDControlEventCommands;
 
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {

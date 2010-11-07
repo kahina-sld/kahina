@@ -22,9 +22,9 @@ import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
+import org.kahina.tralesld.event.TraleSLDControlEventCommands;
 import org.kahina.tralesld.profiler.TraleSLDProfileEntryMapper;
 import org.kahina.tralesld.visual.chart.TraleSLDChartEdgeDisplayDecider;
-import org.tralesld.core.event.TraleSLDControlEventCommands;
 
 public class TraleSLDGUI extends LogicProgrammingGUI
 {

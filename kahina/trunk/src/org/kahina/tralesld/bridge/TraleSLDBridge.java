@@ -29,7 +29,7 @@ import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
-import org.tralesld.core.event.TraleSLDControlEventCommands;
+import org.kahina.tralesld.event.TraleSLDControlEventCommands;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {
