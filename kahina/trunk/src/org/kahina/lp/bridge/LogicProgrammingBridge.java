@@ -160,7 +160,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			int stepID = convertStepID(extID);
 			if (VERBOSE)
 			{
-				System.err.println("Convertig parent ID...");
+				System.err.println("Parent ID: " + parentCandidateID);
 			}
 			// used by tree behavior and profiler:
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, parentCandidateID));
@@ -195,6 +195,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 			int id = lastStepID;
 			Stack<Integer> redoStack = new Stack<Integer>();
 			KahinaTree callTree = state.getSecondaryStepTree();
+			
+			if (VERBOSE)
+			{
+				System.err.println("Current parent candidate: " + parentCandidateID);
+			}
 
 			// Collect the steps we need to backtrack into, from the one being
 			// redone up until (and excluding) the current parent candidate:
@@ -206,7 +211,17 @@ public class LogicProgrammingBridge extends KahinaBridge
 				}
 				
 				redoStack.push(id);
+				
+				if (id == parentCandidateID)
+				{
+					break;
+				}
+				
 				// Get the internal ID of the parent, or that of its copy if it already has one:
+				if (VERBOSE)
+				{
+					System.err.println("Looking up parent of " + id + " in " + callTree);
+				}
 				id = stepIDConv.get(LogicProgrammingStep.get(callTree.getParent(id)).getExternalID());
 
 				if (id == -1)

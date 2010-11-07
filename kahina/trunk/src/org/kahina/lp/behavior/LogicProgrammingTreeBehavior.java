@@ -295,10 +295,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 * contains the logic by which the tree is formed out of callstacks called
 	 * by the event processing routine for a KahinaTreeEvent of type "new step"
 	 */
-	protected void integrateIncomingNode(int stepID, int ancestorID)
+	protected void integrateIncomingNode(int stepID, int parentID)
 	{
 		if (VERBOSE)
-			System.err.println("LogicProgrammingTreeBehavior.integratingIncomingNode(" + stepID + "," + ancestorID + ")");
+			System.err.println("LogicProgrammingTreeBehavior.integratingIncomingNode(" + stepID + "," + parentID + ")");
 		if (VERBOSE)
 			System.err.println("\t object.addChild(" + lastActiveID + "," + stepID + ")");
 		stepBeingRedone = -1;
@@ -311,12 +311,16 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			object.addChild(lastActiveID, stepID);
 		}
 		
-		if (ancestorID == -1)
+		if (parentID == -1)
 		{
 			secondaryTree.setRootID(stepID);
 		} else
 		{
-			secondaryTree.addChild(ancestorID, stepID);
+			if (VERBOSE)
+			{
+				System.err.println("adding " + stepID + " as child of " + parentID + " in " + secondaryTree);
+			}
+			secondaryTree.addChild(parentID, stepID);
 		}
 		
 		if (VERBOSE)
@@ -373,7 +377,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		// flashing where there is no open choicepoint. Contra: while
 		// exploring the history, no clear indication of what steps were the
 		// cause for backtracking.
-		object.setNodeStatus(lastStepID, LogicProgrammingStepType.DET_EXIT);
+		if (object.getNodeStatus(lastStepID) == LogicProgrammingStepType.EXIT)
+		{
+			object.setNodeStatus(lastStepID, LogicProgrammingStepType.DET_EXIT);
+		}
 
 		// adapt call dimension
 		int secondaryParentID = secondaryTree.getParent(lastStepID);
