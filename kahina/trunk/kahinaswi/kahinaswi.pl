@@ -129,8 +129,8 @@ send_bindings(Step,Direction,Frame,Bridge) :-
   get_bindings(Frame,KeyList,ValueList),
   KeyList \== [],
   !,
-  jpl_datums_to_array(KeyList,KeyArray),
-  jpl_datums_to_array(ValueList,ValueArray),
+  jpl_new(array(class([java,lang],['String']),KeyList,KeyArray),
+  jpl_new(array(class([java,lang],['String']),ValueList,ValueArray),
   jpl_call(Bridge,registerBindings,[Step,Direction,KeyArray,ValueArray],_).
 send_bindings(_,_,_,_).
 
