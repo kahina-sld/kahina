@@ -86,11 +86,19 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				state.linkEdgeToNode(lastRegisteredChartEdge, currentID);
 			} else if (nodeLabel.startsWith("rec["))
 			{
+				if (VERBOSE)
+				{
+					System.err.println("Registering sentence...");
+				}
 				String sentence = nodeLabel.substring(3, nodeLabel.length());
 				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtilities.parsePrologStringList(sentence) }));
 				initializeChart(sentence);
 			} else if (nodeLabel.startsWith("compile_gram("))
 			{
+				if (VERBOSE)
+				{
+					System.err.println("Registering grammar...");
+				}
 				String absolutePath = PrologUtilities.atomLiteralToString(nodeLabel.substring(13, nodeLabel.length() - 1));
 				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_GRAMMAR, new Object[] { absolutePath }));
 			}

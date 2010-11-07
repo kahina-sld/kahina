@@ -57,8 +57,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	protected final KahinaController guiController;
 	
 	private boolean guiStarted = false;
-	
-	private KahinaWarner warner;
 
 	public KahinaInstance()
 	{		
@@ -113,7 +111,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		state = createState();
 		bridge = createBridge();
 		createTreeBehavior();
-		warner = createWarner();
+		createWarner();
 	}
 	
 	protected abstract void createTreeBehavior();

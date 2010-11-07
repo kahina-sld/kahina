@@ -106,7 +106,6 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		profiler = new TraleSLDProfiler(state.getFullProfile());
 		controller.registerListener("edge select", this);
 		controller.registerListener("update", this);
-		controller.registerListener(KahinaEventTypes.SYSTEM, this);
 		controller.registerListener(KahinaEventTypes.CONTROL, this);
 		return bridge;
 	}
@@ -125,6 +124,10 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			String traleCommand = traleCommands.remove();
 			commanding = !"quit".equals(traleCommand);
 			updateActions();
+			if (VERBOSE)
+			{
+				System.err.println(this + ".getCommand()=" + traleCommand + "(Queue: " + traleCommands + ")");
+			}
 			return traleCommand;
 		}
 	}
@@ -194,7 +197,10 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			synchronized (traleCommands)
 			{
-				traleCommands.add("quit");
+				if (commanding)
+				{
+					traleCommands.add("quit");
+				}
 			}
 		}
 	}
@@ -207,11 +213,19 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			sentence = castToStringList(event.getArguments()[0]);
 			updateActions();
+			if (VERBOSE)
+			{
+				System.err.println("Sentence registered.");
+			}
 		} else if (TraleSLDControlEventCommands.REGISTER_GRAMMAR.equals(command))
 		{
 			grammar = (String) event.getArguments()[0];
 			PARSE_ACTION.setEnabled(commanding);
 			updateActions();
+			if (VERBOSE)
+			{
+				System.err.println("Grammar registered.");
+			}
 		} else if (TraleSLDControlEventCommands.COMPILE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
