@@ -23,7 +23,7 @@ import org.w3c.dom.NodeList;
  * It is not recommended to use this for child pattern matching, because this breaks the tree automaton logic.
  * For such patterns, use the TreeAutomaton mechanism of node annotations.
  * 
- * @author johannes
+ * @author jd
  *
  */
 public class TreeNodePattern implements Serializable

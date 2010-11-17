@@ -15,7 +15,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 {  
 	private static final boolean verbose = false;
 	
-    //the title of the tab or window this view is displayed in
+    // the title of the tab or window this view is displayed in
     private String title = "Unnamed View";
     
     protected T model;
@@ -46,7 +46,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
         recalculate();
     }
     
-    //only listens to this in absence of KahinaGUI; do not register as listener in KahinaGUI case!!!
+    // only listens to this in absence of KahinaGUI; do not register as listener in KahinaGUI case!!!
     private void processEvent(KahinaSelectionEvent e)
     {
         KahinaRunner.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
@@ -75,7 +75,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
         return model;
     }
     
-    //override this method to define necessary operations after changes to the model (coordinate recomputations etc.)
+    // override this method to define necessary operations after changes to the model (coordinate recomputations etc.)
     protected void recalculate()
     {
         
