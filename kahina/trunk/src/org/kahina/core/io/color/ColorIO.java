@@ -22,4 +22,12 @@ public class ColorIO
     {
       return "#" + Integer.toHexString(color.getRGB()).substring(2).toUpperCase();
     }
+    
+    public static Color randomColor()
+    {
+        int r = (int) (Math.random() * 256);
+        int g = (255 - r) + (int) (Math.random() * r);
+        int b = 510 - r - g;
+        return new Color(r,g,b);
+    }
 }

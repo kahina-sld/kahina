@@ -101,7 +101,6 @@ public class TreePatternNode implements Serializable
     
     public static TreePatternNode importXML(Element treePatternNodeNode)
     {
-        //System.err.println("Importing TreePatternNode!");
         TreePatternNode newTreePatternNode = new TreePatternNode();
         newTreePatternNode.pattern = TreeNodePattern.importXML(treePatternNodeNode);
         NodeList childNodes = treePatternNodeNode.getChildNodes();
@@ -112,7 +111,6 @@ public class TreePatternNode implements Serializable
                 NodeList childPatternNodeNodes = childNodes.item(i).getChildNodes();
                 for (int j = 0; j < childPatternNodeNodes.getLength(); j++)
                 {
-                    //System.err.println("       Grandchild node of name: " + childPatternNodeNodes.item(i).getNodeName());
                     if (childPatternNodeNodes.item(j).getNodeName().equals("patternNode"))
                     {      
                         TreePatternNode childPatternNode = TreePatternNode.importXML((Element) childPatternNodeNodes.item(j));
