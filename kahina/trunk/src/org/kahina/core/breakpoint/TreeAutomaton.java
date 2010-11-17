@@ -10,21 +10,23 @@ import org.kahina.core.data.tree.KahinaUnlayeredMemTree;
 import org.kahina.core.event.KahinaTreeMatchEvent;
 
 /**
+ * Implements a tree automaton as used for tree pattern matching by Kahina's breakpoint system.
+ * <p>
  * This special kind of bottom-up tree automaton operates on a tree it is monitoring.
  * It does not only annotate a static tree to determine whether it matches the encoded pattern,
  * but is also able to adapt to changes to the tree without recalculating everything,
- * if the component controlling changes in the tree structure (usually TreeBehavior) announces the changes.
+ * if the component controlling changes in the tree structure (usually a subclass of {@link KahinaTreeBehavior}) announces the changes.
+ * <p>
+ * A tree automaton is usually compiled from a {@link KahinaBreakpoint}, which contains
+ * If the associated breakpoint is active, the automaton will dispatch a {@link KahinaTreeMatchEvent} to its <code>KahinaController</code> as soon as the encoded pattern is found in the tree it monitors.
  * 
- * Used by Kahinas breakpoint mechanism as the core device for defining breakpoints.
- * Will dispatch a KahinaTreeMatchEvent to a KahinaController as soon as the encoded pattern is found in the tree it monitors.
- * 
- * @author johannes
+ * @author jd
  *
  */
 
 public class TreeAutomaton
 {
-    public static boolean VERBOSE = false;
+    static boolean VERBOSE = false;
     
     /*logic of the tree automaton*/
     //also the possible annotations (no negative integers!)
@@ -45,10 +47,15 @@ public class TreeAutomaton
     //link to the breakpoint this automaton implements; contains more contextual info
     KahinaBreakpoint bp;
     
-    //flag do determine whether the automaton reports matches directly over new nodes twice
+    //flag do determine whether the automaton reports matches directly above new nodes twice
     //TODO: generalize for patterns of depth > 2
     boolean constellationMatch = false;
     
+    /**
+     * Class constructor specifying the breakpoint to be associated with the new automaton.
+     * The first thing to be called by a <code>KahinaBreakpoint</code> when compiled.
+     * @param bp the breakpoint object to be associated with the new automaton
+     */
     public TreeAutomaton(KahinaBreakpoint bp)
     {
         states = new HashSet<Integer>();
@@ -61,9 +68,9 @@ public class TreeAutomaton
     }
     
     /**
-     * set or change the tree this breakpoint is monitoring
-     * the automaton will silently recompute its annotations in bottom-up manner
-     * @param tree - the tree model this breakpoint is monitoring
+     * Sets or changes the tree this automaton is monitoring.
+     * The automaton will silently recompute its annotations in bottom-up manner.
+     * @param tree the tree model to be monitored by this automaton
      */
     public void setTree(KahinaTree tree)
     {
@@ -78,25 +85,39 @@ public class TreeAutomaton
         if (wasActive) this.bp.activate();
     }
     
+    /**
+     * Determine whether the automaton reports matches directly above new nodes twice.
+     * Default value: <code>false</code>, which is suitable in most contexts.
+     * @param constellationMatch <code>true</code> for extra reports, <code>false</code> to suppress them
+     */
     public void setConstellationMatch(boolean constellationMatch)
     {
         this.constellationMatch = constellationMatch;
     }
     
+    /**
+     * Gets the controller this automaton is informing about matches.
+     * @return the controller this automaton is informing about matches
+     */
     public KahinaController getController()
     {
         return ctrl;
     }
 
+    /**
+     * Sets the controller this automaton is to inform about matches.
+     * Default is <code>null</code>, a controller must be determined for the breakpoint system to work.
+     * @param ctrl the controller this automaton is to inform about matches
+     */
     public void setController(KahinaController ctrl)
     {
         this.ctrl = ctrl;
     }
 
     /**
-     * annotates a tree node with all possible labels according to the rules
-     * recursively reannotates parents if it triggers a change in annotation, 
-     * @param nodeID - the node to be (re)annotated by the automaton
+     * Annotates a tree node with all possible labels according to the rules and
+     * recursively reannotates parents if it triggers a change in annotation. 
+     * @param nodeID the node to be (re)annotated by the automaton
      */
     public void process(int nodeID)
     {
@@ -130,10 +151,10 @@ public class TreeAutomaton
     }
     
     /**
-     * annotates a single node in the tree
-     * @param nodeID - which node is to be annotated
-     * @param stateID - the annotation for the node
-     * @return whether this annotation changed something
+     * Annotates a single node in the tree with some state ID and checks whether this resulted in a change.
+     * @param nodeID the node to be annotated
+     * @param stateID the state ID the node is to be annotated with
+     * @return false if this annotation existed before, true if it was new
      */
     public boolean annotate(int nodeID, int stateID)
     {
@@ -164,8 +185,8 @@ public class TreeAutomaton
     }
     
     /**
-     * retrieves the current annotations for a single tree node
-     * @param nodeID - addresses the node whose annotations we want to get
+     * Retrieves the current annotations for a single tree node.
+     * @param nodeID addresses the node whose annotations we want to get
      * @return a set of stateIDs representing the annotations for the node
      */
     public Set<Integer> getAnnotations(int nodeID)
@@ -179,8 +200,8 @@ public class TreeAutomaton
     }
     
     /**
-     * retrieves the current annotations for all the children a single tree node
-     * @param nodeID - addresses the node whose children's annotations we want to get
+     * Retrieves the current annotations for all the children of a single tree node.
+     * @param nodeID addresses the node whose children's annotations we want to get
      * @return a set of stateIDs containing all the annotations for the children of the node
      */
     public Set<Integer> getChildAnnotations(int nodeID)
@@ -193,6 +214,7 @@ public class TreeAutomaton
         return childAnn;
     }
     
+    //the mechanism for informing the KahinaController about matches
     private void announcePatternMatch(int nodeID)
     {
         if (VERBOSE) System.err.println("Skip Point automaton matched at node " + nodeID);

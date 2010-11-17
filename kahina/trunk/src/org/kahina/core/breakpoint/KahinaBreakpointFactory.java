@@ -6,8 +6,14 @@ package org.kahina.core.breakpoint;
  *
  */
 public class KahinaBreakpointFactory
-{
-	
+{	
+	/**
+	 * Creates a breakpoint for nodes whose labels match a given regular expression.
+	 * @param name a user-readable name for this breakpoint
+	 * @param pattern the regular expression that node labels are to match
+	 * @param type one of the constant values in {@link KahinaBreakpointType}
+	 * @return a new breakpoint matching any tree node whose label matches the pattern
+	 */
 	public static KahinaBreakpoint createMatchingLabelBreakpoint(String name, String pattern, int type)
 	{
 		TreePattern pat = new TreePattern();
@@ -20,5 +26,4 @@ public class KahinaBreakpointFactory
         bp.setPattern(pat);
         return bp;
 	}
-
 }

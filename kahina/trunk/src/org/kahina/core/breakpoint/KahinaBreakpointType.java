@@ -1,5 +1,14 @@
 package org.kahina.core.breakpoint;
 
+/**
+ * A selection of constant symbols defining meaningful values for the <code>type</code> property of a {@link KahinaBreakpoint}.
+ * <p>
+ * Applications may define additional breakpoint types by inheriting from this class.
+ * To avoid the redefinition of existing types, user-defined extensions should not assign the integer values 0 through 8 to any constant.
+ * 
+ * @author jd
+ *
+ */
 public class KahinaBreakpointType
 {
     public static final int PRIMARY_BREAKPOINT = 0;

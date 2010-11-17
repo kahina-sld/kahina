@@ -9,11 +9,11 @@ import org.w3c.dom.Element;
 /**
  * A breakpoint based on a tree pattern as used by the Kahina breakpoint system.
  * <p>
- * The main purpose of this class is to combine a {@info TreePattern} with meta information such as a type, a signal color, a name and an activation status.
+ * The main purpose of this class is to combine a {@link TreePattern} with meta information such as a type, a signal color, a name and an activation status.
  * It constitutes the form in which breakpoints are most transparent and accessible to the user. 
  * The breakpoint editor as well as import and export formats build on breakpoints in this form.
  * <p>
- * Within the breakpoint system, a <code>KahinaBreakpoint</code> is compiled into a {@info TreeAutomaton} which is then used for pattern matching.
+ * Within the breakpoint system, a <code>KahinaBreakpoint</code> is compiled into a {@link TreeAutomaton} which is then used for pattern matching.
  * The resulting <code>TreeAutomaton</code> will however still contain a reference to this object for meta data access.
  * 
  * @author jd
@@ -70,11 +70,11 @@ public class KahinaBreakpoint implements Serializable
         int state = a.states.size();
         a.states.add(state);
         TreeAutomatonRule rule = new TreeAutomatonRule();
-        rule.assignedLabel = state;
-        rule.pattern = node.getPattern();
+        rule.setAssignedLabel(state);
+        rule.setPattern(node.getPattern());
         for (TreePatternNode child : node.getChildren())
         {
-            rule.requiredChildAnnotations.add(compileNode(a, child));
+            rule.getRequiredChildAnnotations().add(compileNode(a, child));
         }
         a.rules.add(rule);
         return state;
@@ -142,10 +142,11 @@ public class KahinaBreakpoint implements Serializable
         this.signalColor = signalColor;
     }
     
-    @Override
+
     /**
      * Returns the breakpoint's name, prefixed by '#' if it is inactive.
      */
+    @Override
 	public String toString()
     {
         if (active)
