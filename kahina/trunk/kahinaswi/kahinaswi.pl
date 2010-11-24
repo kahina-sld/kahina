@@ -69,9 +69,11 @@ act(call,Frame,Bridge) :-
   get_next_step(Step),
   retractall(frame_step(Frame,_)),
   assert(frame_step(Frame,Step)),
-  prolog_frame_attribute(Frame,predicate_indicator,PredicateIndicator),
-  term_to_atom(PredicateIndicator,PredicateIndicatorAtom),
-  jpl_call(Bridge,step,[Step,PredicateIndicatorAtom],_),
+  prolog_frame_attribute(Frame,goal,NodeLabel),
+  % TODO cut this to a reasonable max length
+  %prolog_frame_attribute(Frame,predicate_indicator,NodeLabel),
+  term_to_atom(NodeLabel,NodeLabelAtom),
+  jpl_call(Bridge,step,[Step,NodeLabelAtom],_),
   send_location(Step,Frame,Bridge),
   send_bindings(Step,in,Frame,Bridge),
   jpl_call(Bridge,call,[Step],_).
