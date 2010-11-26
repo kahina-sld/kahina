@@ -154,7 +154,8 @@ public class LogicProgrammingProfiler implements KahinaListener
 		if (step.isRedone())
 		{
 			profile.redo(entry);
-		} else
+		} 
+		else
 		{
 			profile.call(entry);
 		}
@@ -172,7 +173,8 @@ public class LogicProgrammingProfiler implements KahinaListener
 				System.err.println("Exited.");
 			}
 			profile.exit(entry);
-		} else if (status == LogicProgrammingStepType.FAIL)
+		} 
+		else if (status == LogicProgrammingStepType.FAIL)
 		{
 			if (VERBOSE)
 			{
