@@ -232,8 +232,9 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         {
             x -= width / 2;
         }
-        int y = view.getNodeY(nodeID);  
-        canvas.drawString(tag + " " + nodeID, x, y);
+        int y = view.getNodeY(nodeID);
+        canvas.drawString(tag, x, y);
+        //canvas.drawString(tag + " " + nodeID, x, y);
         canvas.setStroke(new BasicStroke(1));
         canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, view.getZoomLevel()));
     }

@@ -53,7 +53,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	// in skip mode, this is the internal step ID of the step we are skipping
 	int skipID = -1;
 
-	LogicProgrammingState state;
+	protected LogicProgrammingState state;
 
 	public LogicProgrammingBridge(LogicProgrammingState state)
 	{
@@ -300,7 +300,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 				if (deterministic)
 				{
 					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.DET_EXIT));
-				} else
+				} 
+				else
 				{
 					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.EXIT));
 				}
