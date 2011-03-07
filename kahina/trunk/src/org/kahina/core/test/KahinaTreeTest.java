@@ -17,6 +17,7 @@ import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.LayerDecider;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.core.visual.tree.KahinaTreeViewMarker;
+import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 import org.kahina.core.visual.tree.KahinaTreeViewPanel;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -44,14 +45,14 @@ public class KahinaTreeTest
             //KahinaTree m2 = KahinaDbTree.importXML(dom, decider, data, m1);
             
             KahinaTreeView v0 = new KahinaTreeView(KahinaRunner.getControl());
-            v0.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
-            v0.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
-            v0.setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
-            v0.setVerticalDistance(3);
-            v0.setHorizontalDistance(18);
+            v0.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
+            v0.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
+            v0.getConfig().setSecondaryLineShapePolicy(KahinaTreeViewOptions.INVISIBLE_LINES);
+            v0.getConfig().setVerticalDistance(3);
+            v0.getConfig().setHorizontalDistance(18);
             v0.display(m1,0,17);
             v0.displaySecondaryTree(m2);
-            v0.toggleSecondDimensionDisplay();
+            v0.getConfig().toggleSecondDimensionDisplay();
             
             v0.setStatusColorEncoding(0,new Color(0,255,0));
             v0.setStatusColorEncoding(1,new Color(255,0,0));
@@ -62,14 +63,14 @@ public class KahinaTreeTest
             KahinaRunner.getControl().registerListener("update", v0);
             
             KahinaTreeView v1 = new KahinaTreeView(KahinaRunner.getControl());
-            v1.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
-            v1.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
-            v1.setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
-            v1.setVerticalDistance(3);
-            v1.setHorizontalDistance(18);
+            v1.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
+            v1.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
+            v1.getConfig().setSecondaryLineShapePolicy(KahinaTreeViewOptions.INVISIBLE_LINES);
+            v1.getConfig().setVerticalDistance(3);
+            v1.getConfig().setHorizontalDistance(18);
             v1.display(m1,1,17);
             v1.displaySecondaryTree(m2);
-            v1.toggleSecondDimensionDisplay();
+            v1.getConfig().toggleSecondDimensionDisplay();
             
             v1.setStatusColorEncoding(0,new Color(0,255,0));
             v1.setStatusColorEncoding(1,new Color(255,0,0));
@@ -80,7 +81,7 @@ public class KahinaTreeTest
             KahinaRunner.getControl().registerListener("update", v1);
             
             KahinaTreeView v2 = new KahinaTreeView(KahinaRunner.getControl());
-            v2.setHorizontalDistance(15);
+            v2.getConfig().setHorizontalDistance(15);
             v2.display(m1,2,17);
             v2.displaySecondaryTree(m2);
             

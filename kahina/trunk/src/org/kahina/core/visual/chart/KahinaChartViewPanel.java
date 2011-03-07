@@ -10,7 +10,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.core.visual.tree.KahinaTreeView;
+import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 
 public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
 {
@@ -52,7 +52,7 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         Graphics canvas = image.getGraphics();
         Graphics2D cnv = (Graphics2D) canvas;
         
-        if (view.getAntialiasingPolicy() == KahinaTreeView.ANTIALIASING)
+        if (view.getAntialiasingPolicy() == KahinaTreeViewOptions.ANTIALIASING)
         {
             cnv.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }

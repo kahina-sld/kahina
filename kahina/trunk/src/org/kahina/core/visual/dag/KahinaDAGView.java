@@ -23,7 +23,7 @@ import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.tree.KahinaTreeView;
+import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 import org.kahina.core.visual.tree.WidthVector;
 
 public class KahinaDAGView extends KahinaView<KahinaDAG>
@@ -34,7 +34,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     private int horizontalDistance = 5;
     private int verticalDistance = 25;
     Color bgColor = Color.WHITE;
-    private int antialiasingPolicy = KahinaTreeView.ANTIALIASING;
+    private int antialiasingPolicy = KahinaTreeViewOptions.ANTIALIASING;
     
     private int fontSize; // also determines zoom factor
     private int nodeHeight; // do not implement a setter for this, but change it

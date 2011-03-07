@@ -20,6 +20,7 @@ import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaTreeMatchEvent;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.core.visual.tree.KahinaTreeViewMarker;
+import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 import org.kahina.core.visual.tree.KahinaTreeViewPanel;
 
 public class BreakpointTestWindow extends JFrame implements ActionListener, KahinaListener
@@ -69,10 +70,10 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         mainPanel.add(hintPanel);
         
         view = new KahinaTreeView(control);
-        view.setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
-        view.setVerticalDistance(4);
-        view.setHorizontalDistance(10);
-        view.setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
+        view.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
+        view.getConfig().setVerticalDistance(4);
+        view.getConfig().setHorizontalDistance(10);
+        view.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
         view.display(model);
         
         KahinaTreeViewMarker treeMarker = new KahinaTreeViewMarker(model);

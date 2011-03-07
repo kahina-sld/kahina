@@ -17,7 +17,7 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.util.KahinaSwingUtilities;
 import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.core.visual.tree.KahinaTreeView;
+import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 
 public class KahinaDAGViewPanel extends KahinaViewPanel<KahinaDAGView>
 {
@@ -57,7 +57,7 @@ private static final long serialVersionUID = 6701252380309408342L;
         BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = newImage.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;
-        if (view.getAntialiasingPolicy() == KahinaTreeView.ANTIALIASING)
+        if (view.getAntialiasingPolicy() == KahinaTreeViewOptions.ANTIALIASING)
         {
             canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }

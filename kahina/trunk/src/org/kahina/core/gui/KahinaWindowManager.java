@@ -12,6 +12,8 @@ public class KahinaWindowManager
 {
     public KahinaMainWindow mainWindow;
     
+    KahinaPerspective currentPerspective;
+    
     HashMap<KahinaView<?>, KahinaWindow> contentWindows;
     HashMap<KahinaView<?>, KahinaWindow> topLevelWindows;
     

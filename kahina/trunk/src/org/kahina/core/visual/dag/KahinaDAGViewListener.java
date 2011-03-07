@@ -13,7 +13,7 @@ import javax.swing.JOptionPane;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
-import org.kahina.core.visual.tree.KahinaTreeView;
+import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 
 public class KahinaDAGViewListener extends MouseAdapter implements ActionListener
 {
@@ -99,11 +99,11 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
         }
         else if (command.equals("Antialiasing On"))
         {
-            view.view.setAntialiasingPolicy(KahinaTreeView.ANTIALIASING);
+            view.view.setAntialiasingPolicy(KahinaTreeViewOptions.ANTIALIASING);
         }
         else if (command.equals("Antialiasing Off"))
         {
-            view.view.setAntialiasingPolicy(KahinaTreeView.NO_ANTIALIASING);
+            view.view.setAntialiasingPolicy(KahinaTreeViewOptions.NO_ANTIALIASING);
         }
         else if (command.endsWith("0 %"))
         {

@@ -28,78 +28,8 @@ import org.kahina.core.visual.KahinaView;
 public class KahinaTreeView extends KahinaView<KahinaTree>
 {
 	public static final boolean VERBOSE = false;
-
-	// display options
-	private int horizontalDistance = 5;
-	private int verticalDistance = 25;
-	Color bgColor = Color.WHITE;
-	private int nodeShapePolicy = KahinaTreeView.BOX_SHAPE;
-	private int edgeShapePolicy = KahinaTreeView.OVAL_SHAPE;
-	private int nodeDisplayPolicy = KahinaTreeView.STATUS_DEFAULT_YES;
-	private int collapsePolicy = KahinaTreeView.COLLAPSE_SECONDARY;
-	private int terminalsPolicy = KahinaTreeView.NO_SPECIAL_TREATMENT;
-	private int lineShapePolicy = KahinaTreeView.INVISIBLE_LINES;
-	private int secondaryLineShapePolicy = KahinaTreeView.EDGY_LINES;
-	private int nodePositionPolicy = KahinaTreeView.LEFT_ALIGNED_NODES;
-	private int antialiasingPolicy = KahinaTreeView.ANTIALIASING;
-	private int displayOrientation = KahinaTreeView.TOP_DOWN_DISPLAY;
-    private int cuttingPolicy = KahinaTreeView.SECONDARY_CUT;
-	private boolean displaySecondDimension = true;
-	HashMap<Integer, Boolean> statusDisplayed;
-	private int fontSize; // also determines zoom factor
-	private int nodeHeight; // do not implement a setter for this, but change it
-							// with font size
-
-	// DISPLAY CONSTANTS
-
-	// possible values for shape policies
-	public static final int BOX_SHAPE = 0;
-	public static final int OVAL_SHAPE = 1;
-
-	// possible values for node display policy
-	public static final int ALWAYS = 0;
-	public static final int STATUS_DEFAULT_YES = 1;
-	public static final int STATUS_DEFAULT_NO = 2;
-	public static final int NEVER = 3;
-	public static final int CONDITIONALLY = 4; // consults an additional
-												// user-definable function to
-												// decide
-
-	// possible values for collapsing policy
-	public static final int NO_COLLAPSING = 0;
-	public static final int COLLAPSE_PRIMARY = 1;
-	public static final int COLLAPSE_SECONDARY = 2;
-
-	// possible values for terminals policy
-	public static final int NO_SPECIAL_TREATMENT = 0;
-	public static final int ON_EXTRA_LEVEL = 1;
-	public static final int GRAPHICALLY_SEPARATED = 2;
-
-	// possible values for line display policy
-	public static final int STRAIGHT_LINES = 0;
-	public static final int EDGY_LINES = 1;
-	public static final int INVISIBLE_LINES = 2;
-
-	// possible values for displayOrientation
-	public static final int TOP_DOWN_DISPLAY = 0;
-	public static final int BOTTOM_UP_DISPLAY = 1;
-
-	// possible values for node position policy
-	public static final int CENTERED_NODES = 0;
-	public static final int LEFT_ALIGNED_NODES = 1;
-	public static final int RIGHT_ALIGNED_NODES = 2;
-
-	// possible values for antialiasing policy
-	public static final int ANTIALIASING = 0;
-	public static final int NO_ANTIALIASING = 1;
-
-	// possible values for line types
-	public static final int COMPLETE_LINES = 0;
-	public static final int DOTTED_LINES = 1;
-    
-    // possible values for cut policy (determines layering behavior)
-    public static final int PRIMARY_CUT = 0;
-    public static final int SECONDARY_CUT = 1;
+	
+	KahinaTreeViewConfiguration config;
 
 	int treeLayer = 0;
 	// layered structure for drawing; also used for reverse indexing
@@ -117,6 +47,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 
 	// special display properties for certain nodes
 	HashMap<Integer, Color> nodeBorderColor;
+	HashMap<Integer, Boolean> statusDisplayed;
 
 	// mapping from status values to display properties
 	HashMap<Integer, Color> statusNodeColorEncoding;
@@ -133,6 +64,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 	private Graphics2D g;
 
 	// private variables for internal calculations across functions
+	private int nodeHeight; // do not implement a setter for this, but change it with font size
 	private int totalTreeHeight;
 	private int totalTreeWidth;
 	private HashMap<Integer, WidthVector> subtreeWidths;
@@ -153,10 +85,8 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		statusStrokeEncoding = new HashMap<Integer, Stroke>();
 		statusFontEncoding = new HashMap<Integer, Font>();
 		statusVisibilityEncoding = new HashMap<Integer, Boolean>();
-		horizontalDistance = 10;
-		verticalDistance = 2;
-		fontSize = 10;
-		nodeHeight = 14;
+		
+		config = new KahinaTreeViewConfiguration();
 
 		markedNode = -1;
 
@@ -188,271 +118,15 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		nodeBorderColor = new HashMap<Integer, Color>();
 		recalculate();
 	}
-
-	public void zoomIn()
+	
+	public KahinaTreeViewConfiguration getConfig()
 	{
-		if (fontSize < 30)
-		{
-			fontSize += 1;
-		} else
-		{
-			System.err.println("No zoom levels beyond 30 allowed!");
-		}
+		return config;
 	}
-
-	public void zoomOut()
-	{
-		if (fontSize > 6)
-		{
-			fontSize -= 1;
-		} else
-		{
-			System.err.println("No zoom levels below 6 allowed!");
-		}
-	}
-
-	public void setZoomLevel(int level)
-	{
-		fontSize = level;
-	}
-
-	public int getZoomLevel()
-	{
-		return fontSize;
-	}
-
-	public int getHorizontalDistance()
-	{
-		return horizontalDistance;
-	}
-
-	public void setHorizontalDistance(int horizontalDistance)
-	{
-		this.horizontalDistance = horizontalDistance;
-	}
-
-	public void decreaseHorizontalDistance()
-	{
-		if (horizontalDistance > 2)
-		{
-			horizontalDistance -= 1;
-		} else
-		{
-			System.err.println("No horizontal distance values under 2 allowed!");
-		}
-	}
-
-	public void increaseHorizontalDistance()
-	{
-		if (horizontalDistance < 20)
-		{
-			horizontalDistance += 1;
-		} else
-		{
-			System.err.println("No horizontal distance values over 20 allowed!");
-		}
-	}
-
+	
 	public boolean isSecondDimensionDisplayed()
 	{
-		return displaySecondDimension && secondaryTreeModel != null;
-	}
-
-	public void toggleSecondDimensionDisplay()
-	{
-		displaySecondDimension = !displaySecondDimension;
-	}
-
-	public int getVerticalDistance()
-	{
-		return verticalDistance;
-	}
-
-	public void setVerticalDistance(int verticalDistance)
-	{
-		this.verticalDistance = verticalDistance;
-	}
-
-	public void decreaseVerticalDistance()
-	{
-		if (verticalDistance > 2)
-		{
-			verticalDistance -= 1;
-		} else
-		{
-			System.err.println("No vertical distance values under 2 allowed!");
-		}
-	}
-
-	public void increaseVerticalDistance()
-	{
-		if (verticalDistance < 20)
-		{
-			verticalDistance += 1;
-		} else
-		{
-			System.err.println("No vertical distance values over 20 allowed!");
-		}
-	}
-
-	public int getCollapsePolicy()
-	{
-		return collapsePolicy;
-	}
-
-	public void setCollapsePolicy(int collapsePolicy)
-	{
-		if (collapsePolicy >= 0 && collapsePolicy <= 2)
-		{
-			this.collapsePolicy = collapsePolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown collapse policy value " + collapsePolicy);
-		}
-	}
-
-	public int getDisplayOrientation()
-	{
-		return displayOrientation;
-	}
-
-	public void setDisplayOrientation(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 1)
-		{
-			displayOrientation = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown displayOrientation value " + newPolicy);
-		}
-	}
-
-	public int getEdgeShapePolicy()
-	{
-		return edgeShapePolicy;
-	}
-
-	public void setEdgeShapePolicy(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 1)
-		{
-			edgeShapePolicy = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown edge shape policy value " + newPolicy);
-		}
-	}
-
-	public int getAntialiasingPolicy()
-	{
-		return antialiasingPolicy;
-	}
-
-	public void setAntialiasingPolicy(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 1)
-		{
-			antialiasingPolicy = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown antialiasing policy value " + newPolicy);
-		}
-	}
-
-	public int getLineShapePolicy()
-	{
-		return lineShapePolicy;
-	}
-
-	public void setLineShapePolicy(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 2)
-		{
-			lineShapePolicy = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown line shape policy value " + newPolicy);
-		}
-	}
-
-	public int getSecondaryLineShapePolicy()
-	{
-		return secondaryLineShapePolicy;
-	}
-
-	public void setSecondaryLineShapePolicy(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 2)
-		{
-			secondaryLineShapePolicy = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown line shape policy value " + newPolicy);
-		}
-	}
-
-	public int getNodeDisplayPolicy()
-	{
-		return nodeDisplayPolicy;
-	}
-
-	public void setNodeDisplayPolicy(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 4)
-		{
-			nodeDisplayPolicy = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown node display policy value " + newPolicy);
-		}
-	}
-
-	public int getNodePositionPolicy()
-	{
-		return nodePositionPolicy;
-	}
-
-	public void setNodePositionPolicy(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 2)
-		{
-			nodePositionPolicy = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown node position policy value " + newPolicy);
-		}
-	}
-
-	public int getNodeShapePolicy()
-	{
-		return nodeShapePolicy;
-	}
-
-	public void setNodeShapePolicy(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 1)
-		{
-			nodeShapePolicy = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown node shape policy value " + newPolicy);
-		}
-	}
-
-	public int getTerminalsPolicy()
-	{
-		return terminalsPolicy;
-	}
-
-	public void setTerminalsPolicy(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 2)
-		{
-			terminalsPolicy = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown terminals policy value " + newPolicy);
-		}
+		return config.isSecondDimensionDisplayed() && secondaryTreeModel != null;
 	}
 
 	public int getDisplayWidth()
@@ -471,18 +145,18 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		Font fnt = statusFontEncoding.get(status);
 		if (fnt == null)
 		{
-			if (model.isCollapsed(nodeID) && collapsePolicy == COLLAPSE_PRIMARY)
+			if (model.isCollapsed(nodeID) && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_PRIMARY)
 			{
-				return new Font(Font.SANS_SERIF, Font.BOLD, fontSize);
+				return new Font(Font.SANS_SERIF, Font.BOLD, config.getZoomLevel());
 			}
-			if (secondaryTreeModel != null && secondaryTreeModel.isCollapsed(nodeID) && collapsePolicy == COLLAPSE_SECONDARY)
+			if (secondaryTreeModel != null && secondaryTreeModel.isCollapsed(nodeID) && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_SECONDARY)
 			{
-				return new Font(Font.SANS_SERIF, Font.BOLD, fontSize);
+				return new Font(Font.SANS_SERIF, Font.BOLD, config.getZoomLevel());
 			}
-			return new Font(Font.SANS_SERIF, Font.PLAIN, fontSize);
+			return new Font(Font.SANS_SERIF, Font.PLAIN, config.getZoomLevel());
 		} else
 		{
-			return new Font(fnt.getFamily(), fnt.getStyle(), fontSize);
+			return new Font(fnt.getFamily(), fnt.getStyle(), config.getZoomLevel());
 		}
 	}
 
@@ -516,10 +190,16 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 	{
 		return nodeBorderColor.get(nodeID);
 	}
-
+	
+	/**
+	 * Returns the edge style for the edge leading to a node.
+	 * At the moment, this is a constant since dotted lines are not yet implemented.
+	 * @param nodeID
+	 * @return KahinaTreeViewOptions.COMPLETE_LINES
+	 */
 	public int getEdgeStyle(int nodeID)
 	{
-		return COMPLETE_LINES;
+		return KahinaTreeViewOptions.COMPLETE_LINES;
 	}
 
 	public Integer getNodeX(int nodeID)
@@ -533,7 +213,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 
 	public Integer getNodeY(int nodeID)
 	{
-		if (displayOrientation == BOTTOM_UP_DISPLAY)
+		if (config.getDisplayOrientation() == KahinaTreeViewOptions.BOTTOM_UP_DISPLAY)
 		{
 			return totalTreeHeight - nodeY.get(nodeID);
 		}
@@ -590,6 +270,9 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 
 	public void calculateCoordinates()
 	{
+		int fontSize = config.getZoomLevel();
+		int verticalDistance = config.getVerticalDistance();
+		int horizontalDistance = config.getHorizontalDistance();
 		if (VERBOSE)
 			System.err.println("BEGIN: Calculate coordinates for layer " + treeLayer);
 		// node height determined by font size
@@ -608,7 +291,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 			if (VERBOSE)
 				System.err.println("BEGIN: Calculate subtree widths for layer " + treeLayer);
 			// calculate (maximum) subtree width for each node bottom-up
-			if (terminalsPolicy != NO_SPECIAL_TREATMENT)
+			if (config.getTerminalsPolicy() != KahinaTreeViewOptions.NO_SPECIAL_TREATMENT)
 			{
 				for (int node : terminalLayer)
 				{
@@ -649,11 +332,11 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 				if (nodes.size() > 0)
 					xOffset = subtreeWidths.get(nodes.get(0)).maximumLeftDistance() * horizontalDistance * fontSize / 2;
 				// TODO: find out why this does not seem to have any effect
-				if (nodePositionPolicy == CENTERED_NODES)
+				if (config.getNodePositionPolicy() == KahinaTreeViewOptions.CENTERED_NODES)
 				{
 					xOffset += maxNodeWidth;
 				}
-				if (nodePositionPolicy == RIGHT_ALIGNED_NODES)
+				if (config.getNodePositionPolicy() == KahinaTreeViewOptions.RIGHT_ALIGNED_NODES)
 				{
 					xOffset += maxNodeWidth;
 				}
@@ -691,7 +374,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 						System.err.print("indent from " + node + "?");
 					}
 					// Fill indent agenda:
-					if (displaySecondDimension && secondaryTreeModel != null && !allNodes.contains(getVisibleSecondaryParent(node)))
+					if (isSecondDimensionDisplayed() && !allNodes.contains(getVisibleSecondaryParent(node)))
 					{
 						if (VERBOSE)
 						{
@@ -722,9 +405,8 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 				nodeX.put(i, nodeX.get(model.getParent(i, treeLayer)));
 				nodeY.put(i, (nodeLevels.size() + 1) * verticalDistance * fontSize);
 			}
-			// move nodes around according to secondary tree structure and
-			// policy
-			if (secondaryTreeModel != null && displaySecondDimension)
+			// move nodes around according to secondary tree structure and policy
+			if (isSecondDimensionDisplayed())
 			{
 				if (VERBOSE)
 					System.err.println("BEGIN: adapt X values to secondary tree model");
@@ -743,18 +425,18 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 						int nodeID = indentAgenda.remove(0);
 						if (nodeX.get(nodeID) != null) // TODO can we really stop at every invisible node?
 						{
-							if (nodePositionPolicy == KahinaTreeView.RIGHT_ALIGNED_NODES)
+							if (config.getNodePositionPolicy() == KahinaTreeViewOptions.RIGHT_ALIGNED_NODES)
 							{
 								nodeX.put(nodeID, nodeX.get(nodeID) - depth * fontSize);
-							} else
+							} 
+							else
 							{
 
 								nodeX.put(nodeID, nodeX.get(nodeID) + depth * fontSize);
 							}
 							if (VERBOSE)
 								System.err.println("\t Shifting node " + nodeID + " by " + depth);
-							// System.err.println(" depth(" + nodeID + ") = " +
-							// depth);
+								// System.err.println(" depth(" + nodeID + ") = " + depth);
 							indentAgenda.addAll(secondaryTreeModel.getChildren(nodeID, treeLayer, false));
 							if (VERBOSE)
 								System.err.println("\t Agenda: " + indentAgenda);
@@ -793,7 +475,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 				for (int i = 0; i < children.size(); i++)
 				{
 					// terminal handling here
-					if (terminalsPolicy != NO_SPECIAL_TREATMENT && getVisibleVirtualChildren(model, children.get(i)).isEmpty())
+					if (config.getTerminalsPolicy() != KahinaTreeViewOptions.NO_SPECIAL_TREATMENT && getVisibleVirtualChildren(model, children.get(i)).isEmpty())
 					{
 						terminalLayer.add(children.remove(i));
 						i--;
@@ -824,16 +506,16 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 	public boolean nodeIsVisible(int nodeID)
 	{
 		// TODO: process conditional option, allow user-definable decision function
-		if (nodeDisplayPolicy == KahinaTreeView.ALWAYS) return true;
-		if (nodeDisplayPolicy == KahinaTreeView.NEVER) return false;
-		if (secondaryTreeModel != null && collapsePolicy == COLLAPSE_SECONDARY && secondaryTreeModel.hasCollapsedAncestor(nodeID)) return false;
+		if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.ALWAYS) return true;
+		if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.NEVER) return false;
+		if (secondaryTreeModel != null && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_SECONDARY && secondaryTreeModel.hasCollapsedAncestor(nodeID)) return false;
 		int status = getContentfulTreeModel().getNodeStatus(nodeID);
 		Boolean decision = statusVisibilityEncoding.get(status);
 		if (decision == null)
 		{
 			// default values decide
-			if (nodeDisplayPolicy == KahinaTreeView.STATUS_DEFAULT_YES) return true;
-			if (nodeDisplayPolicy == KahinaTreeView.STATUS_DEFAULT_NO) return false;
+			if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.STATUS_DEFAULT_YES) return true;
+			if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.STATUS_DEFAULT_NO) return false;
 		}
 		return decision;
 	}
@@ -863,7 +545,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		ArrayList<Integer> descendants = new ArrayList<Integer>();
 		// System.err.println("\t Actual children for node " + nodeID + ": " +
 		// treeModel.getChildren(nodeID,treeLayer));
-		if (treeModel.isCollapsed(nodeID) && collapsePolicy == COLLAPSE_PRIMARY)
+		if (treeModel.isCollapsed(nodeID) && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_PRIMARY)
 			return descendants;
 		descendants.addAll(treeModel.getChildren(nodeID, treeLayer, true));
 		if (VERBOSE)
@@ -958,13 +640,15 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 	// TODO: make this work also with bottom-up display orientation
 	public int nodeAtCoordinates(int x, int y)
 	{
+		int fontSize = config.getZoomLevel();
 		boolean bottomUpVariant = false;
 		// change display orientation locally to simplify computations
-		if (displayOrientation == BOTTOM_UP_DISPLAY)
+		int displayOrientation = config.getDisplayOrientation();
+		if (displayOrientation == KahinaTreeViewOptions.BOTTOM_UP_DISPLAY)
 		{
 			y = totalTreeHeight - y;
 			bottomUpVariant = true;
-			displayOrientation = TOP_DOWN_DISPLAY;
+			displayOrientation = KahinaTreeViewOptions.TOP_DOWN_DISPLAY;
 		}
 		// binary search over node levels to determine row
 		int lowerIndex = 0;
@@ -1010,10 +694,11 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 			FontMetrics fm = getFontMetrics(new Font(Font.SANS_SERIF, Font.PLAIN, fontSize), new BasicStroke(1), fontSize);
 			int width = fm.stringWidth(getContentfulTreeModel().getNodeCaption(selectedLevel.get(middleIndex)));
 			middleBound = nodeX.get(selectedLevel.get(middleIndex)) + width / 2 + 2;
-			if (nodePositionPolicy == KahinaTreeView.LEFT_ALIGNED_NODES)
+			if (config.getNodePositionPolicy() == KahinaTreeViewOptions.LEFT_ALIGNED_NODES)
 			{
 				middleBound += width / 2;
-			} else if (nodePositionPolicy == KahinaTreeView.RIGHT_ALIGNED_NODES)
+			} 
+			else if (config.getNodePositionPolicy() == KahinaTreeViewOptions.RIGHT_ALIGNED_NODES)
 			{
 				middleBound -= width / 2;
 			}
@@ -1031,11 +716,11 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 				middleIndex = (lowerIndex + upperIndex) / 2;
 				width = fm.stringWidth(getContentfulTreeModel().getNodeCaption(selectedLevel.get(middleIndex)));
 				middleBound = nodeX.get(selectedLevel.get(middleIndex)) + width / 2 - 2;
-				if (nodePositionPolicy == KahinaTreeView.LEFT_ALIGNED_NODES)
+				if (config.getNodePositionPolicy() == KahinaTreeViewOptions.LEFT_ALIGNED_NODES)
 				{
 					middleBound += width / 2;
 				} 
-				else if (nodePositionPolicy == KahinaTreeView.RIGHT_ALIGNED_NODES)
+				else if (config.getNodePositionPolicy() == KahinaTreeViewOptions.RIGHT_ALIGNED_NODES)
 				{
 					middleBound -= width / 2;
 				}
@@ -1051,11 +736,11 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		FontMetrics fm = getFontMetrics(new Font(Font.SANS_SERIF, Font.PLAIN, fontSize), new BasicStroke(1), fontSize);
 		int width = fm.stringWidth(getContentfulTreeModel().getNodeCaption(candidateNode));
 		int xLeft = getNodeX(candidateNode) - width / 2 - 2;
-		if (nodePositionPolicy == KahinaTreeView.LEFT_ALIGNED_NODES)
+		if (config.getNodePositionPolicy() == KahinaTreeViewOptions.LEFT_ALIGNED_NODES)
 		{
 			xLeft += width / 2;
 		} 
-		else if (nodePositionPolicy == KahinaTreeView.RIGHT_ALIGNED_NODES)
+		else if (config.getNodePositionPolicy() == KahinaTreeViewOptions.RIGHT_ALIGNED_NODES)
 		{
 			xLeft -= width / 2;
 		}
@@ -1066,12 +751,6 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		{
 			yTop = yBottom - 4;
 			yBottom = yTop + getNodeHeight(candidateNode);
-		}
-		// calculations with mirrored tree completed; return to correct mode for
-		// rendering
-		if (bottomUpVariant)
-		{
-			displayOrientation = BOTTOM_UP_DISPLAY;
 		}
 		// System.err.println("test: " + xLeft + " <= " + x + " <= " + xRight +
 		// "; " + yTop + " <= " + y + " <= " + yBottom);
@@ -1110,7 +789,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		control.registerListener("redraw", panel);
 		panel.setView(this);
 		JScrollPane scrollPane = new JScrollPane(panel);
-		scrollPane.getViewport().setBackground(bgColor);
+		scrollPane.getViewport().setBackground(config.getBackgroundColor());
 		return scrollPane;
 	}
 
@@ -1130,9 +809,9 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 	{
 		// stepwise increase of horizontal distance until all clashes are
 		// avoided
-		while (maxNodeWidth > horizontalDistance * fontSize / 2)
+		while (maxNodeWidth > config.getHorizontalDistance() * config.getZoomLevel() / 2)
 		{
-			horizontalDistance++;
+			config.setHorizontalDistance(config.getHorizontalDistance() + 1);
 		}
 		calculateCoordinates();
 	}

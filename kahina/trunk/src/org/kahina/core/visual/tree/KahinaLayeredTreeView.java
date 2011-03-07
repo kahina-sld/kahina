@@ -39,12 +39,12 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 
 		if (!displaySecondDimensionInTopLayer)
 		{
-			views[0].setLineShapePolicy(KahinaTreeView.STRAIGHT_LINES);
-			views[0].setNodePositionPolicy(KahinaTreeView.CENTERED_NODES);
-			views[0].setSecondaryLineShapePolicy(KahinaTreeView.INVISIBLE_LINES);
-			views[0].toggleSecondDimensionDisplay();
-			views[0].setVerticalDistance(3);
-			views[0].setHorizontalDistance(18);
+			views[0].getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
+			views[0].getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
+			views[0].getConfig().setSecondaryLineShapePolicy(KahinaTreeViewOptions.INVISIBLE_LINES);
+			views[0].getConfig().toggleSecondDimensionDisplay();
+			views[0].getConfig().setVerticalDistance(3);
+			views[0].getConfig().setHorizontalDistance(18);
 		}
 
 		for (int i = 1; i < views.length; i++)

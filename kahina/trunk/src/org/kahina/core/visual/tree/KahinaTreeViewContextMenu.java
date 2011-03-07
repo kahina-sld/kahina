@@ -32,7 +32,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         for (int i = 6; i <= 30; i += 1)
         {
             JRadioButtonMenuItem sizeItem = new JRadioButtonMenuItem(i + "0 %");
-            if (i == v.getZoomLevel()) sizeItem.setSelected(true);
+            if (i == v.getConfig().getZoomLevel()) sizeItem.setSelected(true);
             sizeItem.addActionListener(l);
             sizeGroup.add(sizeItem);
             zoomSubmenu.add(sizeItem);
@@ -55,7 +55,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         {
             JRadioButtonMenuItem distanceItem = new JRadioButtonMenuItem(i + " px");
             distanceItem.setActionCommand(i + " vertical distance");
-            if (i == v.getVerticalDistance()) distanceItem.setSelected(true);
+            if (i == v.getConfig().getVerticalDistance()) distanceItem.setSelected(true);
             distanceItem.addActionListener(l);
             verticalDistanceGroup.add(distanceItem);
             verticalDistanceSubmenu.add(distanceItem);
@@ -78,7 +78,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         {
             JRadioButtonMenuItem distanceItem = new JRadioButtonMenuItem(i + " px");
             distanceItem.setActionCommand(i + " horizontal distance");
-            if (i == v.getHorizontalDistance()) distanceItem.setSelected(true);
+            if (i == v.getConfig().getHorizontalDistance()) distanceItem.setSelected(true);
             distanceItem.addActionListener(l);
             horizontalDistanceGroup.add(distanceItem);
             horizontalDistanceSubmenu.add(distanceItem);
@@ -97,7 +97,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         bottomUpItem.addActionListener(l);
         displayOrientationGroup.add(bottomUpItem);
         displayOrientationSubmenu.add(bottomUpItem);
-        switch (v.getDisplayOrientation())
+        switch (v.getConfig().getDisplayOrientation())
         {
             case 0:
             {
@@ -124,7 +124,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         graphicallySeparatedItem.addActionListener(l);
         terminalsPolicyGroup.add(graphicallySeparatedItem);
         terminalsPolicySubmenu.add(graphicallySeparatedItem);
-        switch (v.getTerminalsPolicy())
+        switch (v.getConfig().getTerminalsPolicy())
         {
             case 0:
             {
@@ -165,7 +165,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         conditionalItem.addActionListener(l);
         nodeDisplayPolicyGroup.add(conditionalItem);
         nodeDisplayPolicySubmenu.add(conditionalItem);
-        switch (v.getNodeDisplayPolicy())
+        switch (v.getConfig().getNodeDisplayPolicy())
         {
             case 0:
             {
@@ -204,7 +204,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         collapsibleSecondaryItem.addActionListener(l);
         collapsePolicyGroup.add(collapsibleSecondaryItem);
         collapsePolicySubmenu.add(collapsibleSecondaryItem);
-        switch (v.getCollapsePolicy())
+        switch (v.getConfig().getCollapsePolicy())
         {
             case 0:
             {
@@ -233,7 +233,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         ovalShapeItem.addActionListener(l);
         nodeShapePolicyGroup.add(ovalShapeItem);
         nodeShapePolicySubmenu.add(ovalShapeItem);
-        switch (v.getNodeShapePolicy())
+        switch (v.getConfig().getNodeShapePolicy())
         {
             case 0:
             {
@@ -257,7 +257,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         ovalShapeItem.addActionListener(l);
         edgeShapePolicyGroup.add(ovalShapeItem);
         edgeShapePolicySubmenu.add(ovalShapeItem);
-        switch (v.getEdgeShapePolicy())
+        switch (v.getConfig().getEdgeShapePolicy())
         {
             case 0:
             {
@@ -285,7 +285,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         invisibleLinesItem.addActionListener(l);
         lineShapePolicyGroup.add(invisibleLinesItem);
         lineShapePolicySubmenu.add(invisibleLinesItem);
-        switch (v.getLineShapePolicy())
+        switch (v.getConfig().getLineShapePolicy())
         {
             case 0:
             {
@@ -316,7 +316,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         rightAlignedNodesItem.addActionListener(l);
         nodePositionPolicyGroup.add(rightAlignedNodesItem);
         nodePositionPolicySubmenu.add(rightAlignedNodesItem);
-        switch (v.getNodePositionPolicy())
+        switch (v.getConfig().getNodePositionPolicy())
         {
             case 0:
             {
@@ -345,7 +345,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         antialiasingOffItem.addActionListener(l);
         antialiasingGroup.add(antialiasingOffItem);
         antialiasingSubmenu.add(antialiasingOffItem);
-        switch (v.getAntialiasingPolicy())
+        switch (v.getConfig().getAntialiasingPolicy())
         {
             case 0:
             {
@@ -378,7 +378,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         invisibleSecondaryLinesItem.addActionListener(l);
         secondaryLineShapePolicyGroup.add(invisibleSecondaryLinesItem);
         secondaryLineShapePolicySubmenu.add(invisibleSecondaryLinesItem);
-        switch (v.getSecondaryLineShapePolicy())
+        switch (v.getConfig().getSecondaryLineShapePolicy())
         {
             case 0:
             {
