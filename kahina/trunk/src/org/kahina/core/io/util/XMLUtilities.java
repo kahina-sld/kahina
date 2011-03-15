@@ -16,6 +16,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -70,11 +72,33 @@ public class XMLUtilities
 		return null;
 	}
 	
-	public static void writeXML(Document document, String outfile, String dtd, boolean system) 
+	public static Document newEmptyDocument()
+	{
+		try
+		{
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+		
+			Document doc = builder.newDocument();
+			return doc;
+		}
+		catch (ParserConfigurationException e)
+		{
+			System.err.println("WARNING: Generation of empty XML document failed! Returning NULL!");
+			return null;
+		}
+	}
+	
+	/**
+	 * Generates an XML file at a specified path containing the contents of a DOM node
+	 * @param node - the DOM node whose content is output into the file
+	 * @param outfile - the path to the XML file that is to be generated
+	 */
+	public static void writeXML(Node node, String outfile) 
     {
 		try 
         {
-			DOMSource domSource = new DOMSource(document);
+			DOMSource domSource = new DOMSource(node);
 			StringWriter writer = new StringWriter();
 			StreamResult result = new StreamResult(writer);
 			TransformerFactory tf = TransformerFactory.newInstance();
@@ -82,14 +106,14 @@ public class XMLUtilities
 			
 			Transformer transformer = tf.newTransformer();
 			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			if (system) 
+			/**if (system) 
             {
 				transformer.setOutputProperty(OutputKeys.DOCTYPE_SYSTEM, dtd);
 			} 
             else 
             {
 				transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, dtd);
-			}
+			}**/
 			
 			transformer.transform(domSource, result);
 			String stringResult = writer.toString();

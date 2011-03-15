@@ -315,4 +315,15 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration<KahinaT
 			System.err.println("WARNING: unknown terminals policy value " + newPolicy);
 		}
 	}
+	
+	public static KahinaTreeViewConfiguration importFromXML()
+	{
+		KahinaTreeViewConfiguration config = new KahinaTreeViewConfiguration();
+		return config;
+	}
+	
+	public void exportToXML()
+	{
+		
+	}
 }

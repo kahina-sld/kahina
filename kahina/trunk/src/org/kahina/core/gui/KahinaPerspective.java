@@ -1,10 +1,13 @@
 package org.kahina.core.gui;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Storage of window configuration and display options for a Kahina instance.
@@ -26,6 +29,35 @@ import org.kahina.core.visual.KahinaViewConfiguration;
 
 public class KahinaPerspective 
 {
-	//views are indexed by string identifiers
+	//view options are indexed by string identifiers
 	Map<String,KahinaViewConfiguration<KahinaView<?>>> config;
+	//the arrangement, size and position of windows
+	KahinaArrangement arrangement;
+	
+	public KahinaPerspective()
+	{
+		config = new HashMap<String,KahinaViewConfiguration<KahinaView<?>>>();
+		arrangement = new KahinaArrangement();
+	}
+	
+	public static KahinaPerspective importXML(Element e)
+	{
+		KahinaPerspective perspective = new KahinaPerspective();
+		return perspective;
+	}
+	
+	public Element exportXML(Document dom)
+	{
+		Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:perspective");
+        el.appendChild(arrangement.exportXML(dom));
+        Element configsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:configurations");
+        for (String viewID : config.keySet())
+        {
+        	Element configEl = config.get(viewID).exportXML(dom);
+        	configEl.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:viewid", viewID);
+        	configsEl.appendChild(configEl);
+        }
+        el.appendChild(configsEl);
+        return el;
+	}
 }
