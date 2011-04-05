@@ -25,7 +25,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingBridge extends KahinaBridge
 {
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 
 	// a dynamic map from external step IDs to most recent corresponding tree
 	// nodes
@@ -99,16 +99,24 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ") = " + intID);
 		return intID;
 	}
-
-	public void step(int extID, String nodeLabel)
+	
+	/**
+	 * Alternative to {@link LogicProgrammingBridge#step(int, String)} that
+	 * makes it possible to specify both a predicate and a goal. The predicate
+	 * description will be used for profiler, the goal description for nodes.  
+	 * @param extID
+	 * @param predicate
+	 * @param goal
+	 */
+	public void step(int extID, String predicate, String goal)
 	{
 		try
 		{
 			if (VERBOSE)
-				System.err.println("LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + nodeLabel + "\")");
+				System.err.println("LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + predicate + ",\"" + goal + "\")");
 			int stepID = convertStepID(extID);
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
-			step.setGoalDesc(nodeLabel);
+			step.setGoalDesc(predicate); // TODO Also save goal in step in a separate field?
 			if (waitingForReturnFromSkip != -1)
 			{
 				state.hideStep(stepID);
@@ -118,15 +126,21 @@ public class LogicProgrammingBridge extends KahinaBridge
 				step.setSourceCodeLocation(LogicProgrammingStep.get(currentID).getSourceCodeLocation());
 			}
 			KahinaRunner.store(stepID, step);
-			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, nodeLabel));
+			// Set node label:
+			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, goal));
 			currentID = stepID;
 			if (VERBOSE)
-				System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + nodeLabel + "\")");
+				System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + predicate + ",\"" + goal + "\")");
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+
+	public void step(int extID, String nodeLabel)
+	{
+		step(extID, nodeLabel, nodeLabel);
 	}
 
 	public void registerStepSourceCodeLocation(int extID, String absolutePath, int lineNumber)

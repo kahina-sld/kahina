@@ -69,11 +69,13 @@ act(call,Frame,Bridge) :-
   get_next_step(Step),
   retractall(frame_step(Frame,_)),
   assert(frame_step(Frame,Step)),
-  prolog_frame_attribute(Frame,goal,NodeLabel),
+  prolog_frame_attribute(Frame,predicate_indicator,Predicate),
+  prolog_frame_attribute(Frame,goal,Goal),
   % TODO cut this to a reasonable max length
   %prolog_frame_attribute(Frame,predicate_indicator,NodeLabel),
-  term_to_atom(NodeLabel,NodeLabelAtom),
-  jpl_call(Bridge,step,[Step,NodeLabelAtom],_),
+  term_to_atom(Predicate,PredicateAtom),
+  term_to_atom(Goal,GoalAtom),
+  jpl_call(Bridge,step,[Step,PredicateAtom,GoalAtom],_),
   send_location(Step,Frame,Bridge),
   send_bindings(Step,in,Frame,Bridge),
   jpl_call(Bridge,call,[Step],_).
@@ -128,13 +130,13 @@ get_location(Frame,File,Line) :-
   predicate_property(Goal, line_count(Line)).
 
 % TODO http://kahina.org/trac/ticket/59
-/*send_bindings(Step,Direction,Frame,Bridge) :-
-  get_bindings(Frame,KeyList,ValueList),
-  KeyList \== [],
-  !,
-  jpl_new(array(class([java,lang],['String'])),KeyList,KeyArray),
-  jpl_new(array(class([java,lang],['String'])),ValueList,ValueArray),
-  jpl_call(Bridge,registerBindings,[Step,Direction,KeyArray,ValueArray],_).*/
+%send_bindings(Step,Direction,Frame,Bridge) :-
+%  get_bindings(Frame,KeyList,ValueList),
+%  KeyList \== [],
+%  !,
+%  jpl_new(array(class([java,lang],['String'])),KeyList,KeyArray),
+%  jpl_new(array(class([java,lang],['String'])),ValueList,ValueArray),
+%  jpl_call(Bridge,registerBindings,[Step,Direction,KeyArray,ValueArray],_).
 send_bindings(_,_,_,_).
 
 % Credits for the following to XPCE's trace.pl...
