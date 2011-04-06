@@ -17,7 +17,7 @@ user:breakpoint_expansion(kahina_breakpoint_action,[
           fail(Inv)
         ; true))]).
 
-kahina_breakpoint_action(Action) :-write(a),nl,
+kahina_breakpoint_action(Action) :-
   (execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
   -> true
    ; true),
