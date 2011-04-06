@@ -1,6 +1,6 @@
-package org.kahina.core;
+package org.kahina.lp;
 
-import org.kahina.lp.LogicProgrammingState;
+import org.kahina.core.KahinaInstance;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.lp.gui.LogicProgrammingGUI;

@@ -1,9 +1,9 @@
 package org.kahina.prolog;
 
-import org.kahina.core.LogicProgrammingInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaViewRegistry;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.prolog.bridge.PrologBridge;

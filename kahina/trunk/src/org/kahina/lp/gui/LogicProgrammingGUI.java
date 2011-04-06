@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaStep;
-import org.kahina.core.LogicProgrammingInstance;
 import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaDialogEvent;
@@ -19,6 +18,7 @@ import org.kahina.core.profiler.DefaultProfileEntryMapper;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.tree.KahinaLayeredTreeView;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;

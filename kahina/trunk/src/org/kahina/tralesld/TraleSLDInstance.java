@@ -10,7 +10,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.LogicProgrammingInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.event.KahinaControlEvent;
@@ -25,6 +24,7 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.util.PrologUtilities;
 import org.kahina.core.util.Utilities;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
