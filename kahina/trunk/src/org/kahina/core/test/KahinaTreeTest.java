@@ -15,6 +15,7 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.LayerDecider;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.core.visual.tree.KahinaTreeViewMarker;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
@@ -59,8 +60,8 @@ public class KahinaTreeTest
             v0.setStatusColorEncoding(2,new Color(0,255,255));
             v0.setStatusColorEncoding(3,new Color(255,255,255)); 
             
-            KahinaRunner.getControl().registerListener("select", v0);
-            KahinaRunner.getControl().registerListener("update", v0);
+            KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, v0);
+            KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, v0);
             
             KahinaTreeView v1 = new KahinaTreeView(KahinaRunner.getControl());
             v1.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
@@ -77,8 +78,8 @@ public class KahinaTreeTest
             v1.setStatusColorEncoding(2,new Color(0,255,255));
             v1.setStatusColorEncoding(3,new Color(255,255,255));  
             
-            KahinaRunner.getControl().registerListener("select", v1);
-            KahinaRunner.getControl().registerListener("update", v1);
+            KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, v1);
+            KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, v1);
             
             KahinaTreeView v2 = new KahinaTreeView(KahinaRunner.getControl());
             v2.getConfig().setHorizontalDistance(15);
@@ -90,8 +91,8 @@ public class KahinaTreeTest
             v2.setStatusColorEncoding(2,new Color(0,255,255));
             v2.setStatusColorEncoding(3,new Color(255,255,255));  
             
-            KahinaRunner.getControl().registerListener("select", v2);
-            KahinaRunner.getControl().registerListener("update", v2);
+            KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, v2);
+            KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, v2);
 
             KahinaTreeViewMarker treeMarker = new KahinaTreeViewMarker(m1,m2);
             KahinaTreeViewPanel vp0 = new KahinaTreeViewPanel(treeMarker, KahinaRunner.getControl());

@@ -98,7 +98,15 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		treeLayer = 0;
 		model = treeModel;
 		nodeBorderColor = new HashMap<Integer, Color>();
+		if (VERBOSE)
+		{
+			System.err.println("Recalculating...");
+		}
 		recalculate(); // TODO is this necessary?
+		if (VERBOSE)
+		{
+			System.err.println("Recalculated.");
+		}
 	}
 
 	public void displaySecondaryTree(KahinaTree treeModel)
@@ -505,9 +513,17 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 
 	public boolean nodeIsVisible(int nodeID)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".nodeIsVisible(" + nodeID + ")");
+		}
 		// TODO: process conditional option, allow user-definable decision function
 		if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.ALWAYS) return true;
 		if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.NEVER) return false;
+		if (VERBOSE)
+		{
+			System.err.println("Looking for collapsed ancestor...");
+		}
 		if (secondaryTreeModel != null && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_SECONDARY && secondaryTreeModel.hasCollapsedAncestor(nodeID)) return false;
 		int status = getContentfulTreeModel().getNodeStatus(nodeID);
 		Boolean decision = statusVisibilityEncoding.get(status);
@@ -516,6 +532,10 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 			// default values decide
 			if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.STATUS_DEFAULT_YES) return true;
 			if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.STATUS_DEFAULT_NO) return false;
+		}
+		if (VERBOSE)
+		{
+			System.err.println("//" + this + ".nodeIsVisible(" + nodeID + "): " + decision);
 		}
 		return decision;
 	}
@@ -554,6 +574,10 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		}
 		for (int i = 0; i < descendants.size(); i++)
 		{
+			if (VERBOSE)
+			{
+				System.err.println("i == " + i + ", descendants: " + descendants);
+			}
 			boolean nodeIsVisible = nodeIsVisible(descendants.get(i));
 			if (VERBOSE)
 			{

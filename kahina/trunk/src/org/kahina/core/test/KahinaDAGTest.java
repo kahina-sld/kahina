@@ -12,6 +12,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.KahinaDefaultWindow;
 import org.kahina.core.visual.dag.KahinaDAGView;
 import org.w3c.dom.Document;
@@ -40,9 +41,9 @@ public class KahinaDAGTest
             v.setStatusColorEncoding(2,new Color(0,255,255));
             v.setStatusColorEncoding(3,new Color(255,255,255)); 
             
-            KahinaRunner.getControl().registerListener("select", v);
-            KahinaRunner.getControl().registerListener("update", v);
-            KahinaRunner.getControl().registerListener("redraw", v);
+            KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, v);
+            KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, v);
+            KahinaRunner.getControl().registerListener(KahinaEventTypes.REDRAW, v);
             
             KahinaDefaultWindow w = new KahinaDefaultWindow(v, KahinaRunner.getControl());
             w.setSize(510, 720);

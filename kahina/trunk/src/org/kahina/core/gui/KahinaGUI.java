@@ -225,9 +225,21 @@ public class KahinaGUI implements KahinaListener
 
 	private void processEvent(KahinaSelectionEvent e)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".processEvent(" + e + ")");
+		}
 		displayMainViews();
+		if (VERBOSE)
+		{
+			System.err.println("Main views displayed");
+		}
 		if (e.getPanel() == null || livingViews.contains(e.getPanel().view))
 		{
+			if (VERBOSE)
+			{
+				System.err.println("Updating and redrawing...");
+			}
 			// ignore selections that would lead to an empty current node
 			int stepID = e.getSelectedStep();
 			if (stepID != -1)
@@ -245,6 +257,10 @@ public class KahinaGUI implements KahinaListener
 		// coordinating KahinaGUI
 		else
 		{
+			if (VERBOSE)
+			{
+				System.err.println("Updating and redrawing (isolated view component)...");
+			}
 			e.getPanel().view.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
 			e.getPanel().processEvent(new KahinaRedrawEvent());
 		}

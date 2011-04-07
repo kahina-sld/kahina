@@ -18,7 +18,7 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
 {
 	private static final long serialVersionUID = 8545282386910165013L;
 	
-	private static final boolean verbose = true;
+	private static final boolean VERBOSE = false;
 
 	private final JList clauseList;
 	
@@ -28,7 +28,7 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
 	
 	public TulipaGrammarViewPanel()
 	{
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println("TulipaGrammarViewPanel" + this.hashCode() + "()");
 		}
@@ -41,7 +41,7 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
 		innerPanel = new JPanel();
 		splitPane.add(new JScrollPane(innerPanel));
 		add(splitPane);
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println("//TulipaGrammarViewPanel" + this.hashCode() + "()");
 		}
@@ -65,20 +65,20 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
 	@Override
 	public void updateDisplay()
 	{
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println("TulipaGrammarViewPanel" + this.hashCode() + ".updateDisplay()");
 		}
 		clauseListModel.setGrammar(view.getModel());
 		List<Integer> newSelectedRows = view.getSelectedClauses();
-		if (verbose) System.err.println("newSelectedRows = " + newSelectedRows);
+		if (VERBOSE) System.err.println("newSelectedRows = " + newSelectedRows);
 		ListSelectionModel selectionModel = clauseList.getSelectionModel();
 		selectionModel.clearSelection();
 		for (int rowIndex : newSelectedRows)
 		{
 			selectionModel.addSelectionInterval(rowIndex, rowIndex);
 		}
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println("//TulipaGrammarViewPanel" + this.hashCode() + ".updateDisplay()");
 		}

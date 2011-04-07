@@ -2,11 +2,8 @@ package org.kahina.prolog.bridge;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
-import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
-import org.kahina.lp.event.LogicProgrammingBridgeEvent;
-import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 import org.kahina.prolog.PrologState;
 import org.kahina.prolog.PrologStep;
 
@@ -25,6 +22,7 @@ public class PrologBridge extends LogicProgrammingBridge
 	}
 	
 
+	@Override
 	public void step(int extID, String nodeLabel)
 	{
 		super.step(extID,nodeLabel);

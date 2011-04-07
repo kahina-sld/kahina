@@ -1,6 +1,7 @@
 package org.kahina.core.gui.event;
 
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.visual.chart.KahinaChartViewPanel;
 
 /**
@@ -23,7 +24,7 @@ public class KahinaEdgeSelectionEvent extends KahinaEvent
     
     public KahinaEdgeSelectionEvent(int selectedEdge, KahinaChartViewPanel panel)
     {
-        super("select");
+        super(KahinaEventTypes.SELECTION);
         this.selectedEdge = selectedEdge;
         this.panel = panel;
     }

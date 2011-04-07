@@ -11,7 +11,7 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 {
-	private static final boolean verbose = false;
+	private static final boolean VERBOSE = false;
 
 	private final int[] layers;
 
@@ -29,7 +29,7 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 	public KahinaLayeredTreeView(boolean displaySecondDimensionInTopLayer, KahinaController control, int... layers)
 	{
 		super(control);
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.out.println("Constructing " + this);
 		}
@@ -57,6 +57,10 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 	@Override
 	public void doDisplay()
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".doDisplay()");
+		}
 		if (marker != null)
 		{
 			marker.setModel(model);
@@ -64,15 +68,31 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		int rootID = model.getRootID();
 		for (int i = 0; i < views.length; i++)
 		{
+			if (VERBOSE)
+			{
+				System.err.println("Displaying layer #" + i);
+			}
 			views[i].display(model, layers[i], rootID);
+		}
+		if (VERBOSE)
+		{
+			System.err.println("//" + this + ".doDisplay()");
 		}
 	}
 
 	public void displaySecondaryTree(KahinaTree treeModel)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".displaySecondaryTree(" + treeModel + ")");
+		}
 		if (marker != null)
 		{
 			marker.setSecondaryModel(treeModel);
+		}
+		if (VERBOSE)
+		{
+			System.err.println("Secondary model set in marker.");
 		}
 		this.secondaryModel = treeModel;
 		for (int i = 0; i < views.length; i++)

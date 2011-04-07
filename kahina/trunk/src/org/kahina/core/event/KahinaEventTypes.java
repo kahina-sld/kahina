@@ -13,5 +13,6 @@ public interface KahinaEventTypes
 	public static final String CONTROL = "control";
 	public static final String TREE_MATCH = "treeMatch";
 	public static final String WARN = "warn";
+	public static final String REDRAW = "redraw";
 
 }

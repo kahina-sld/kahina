@@ -11,7 +11,7 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaSelectionHistory implements KahinaListener
 {
-    public static boolean verbose = false;
+    public static boolean VERBOSE = false;
     
     // TODO move history from GUI to state?
     
@@ -70,6 +70,10 @@ public class KahinaSelectionHistory implements KahinaListener
     
     private void processEvent(KahinaSelectionEvent e)
     {
+    	if (VERBOSE)
+    	{
+    		System.err.println(this + ".processEvent(" + e + ")");
+    	}
         if (!selectionCausedByHistory)
         {
             if (selectionHistory.size() > 0 && pointInHistory != -1)
@@ -78,7 +82,7 @@ public class KahinaSelectionHistory implements KahinaListener
             }
             selectionHistory.add(e.getSelectedStep());
             pointInHistory = selectionHistory.size() - 1;
-            if (verbose) System.err.println("Selection History: " + selectionHistory);
+            if (VERBOSE) System.err.println("Selection History: " + selectionHistory);
         }
     }
 }

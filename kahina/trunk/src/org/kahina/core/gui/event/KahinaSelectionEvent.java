@@ -1,6 +1,7 @@
 package org.kahina.core.gui.event;
 
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.visual.KahinaViewPanel;
 
 /**
@@ -16,14 +17,14 @@ public class KahinaSelectionEvent extends KahinaEvent
     
     public KahinaSelectionEvent(int selectedStep)
     {
-        super("select");
+        super(KahinaEventTypes.SELECTION);
         this.selectedStep = selectedStep;
         this.panel = null;
     }
     
     public KahinaSelectionEvent(int selectedStep, KahinaViewPanel<?> panel)
     {
-        super("select");
+        super(KahinaEventTypes.SELECTION);
         this.selectedStep = selectedStep;
         this.panel = panel;
     }

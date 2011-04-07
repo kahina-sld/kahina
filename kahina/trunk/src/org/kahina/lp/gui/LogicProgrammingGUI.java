@@ -26,7 +26,7 @@ import org.kahina.lp.gui.profiler.LogicProgrammingProfileWindow;
 
 public class LogicProgrammingGUI extends KahinaGUI
 {
-	private static final boolean verbose = false;
+	private static final boolean VERBOSE = false;
 
 	protected KahinaLayeredTreeView mainTreeView;
 
@@ -68,10 +68,30 @@ public class LogicProgrammingGUI extends KahinaGUI
 	@Override
 	public void displayMainViews()
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".displayMainViews()");
+		}
 		LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
+		if (VERBOSE)
+		{
+			System.err.println("Displaying tree...");
+		}
 		mainTreeView.display(state.getStepTree());
+		if (VERBOSE)
+		{
+			System.err.println("Displaying secondary tree...");
+		}
 		mainTreeView.displaySecondaryTree(state.getSecondaryStepTree());
+		if (VERBOSE)
+		{
+			System.err.println("Displaying console messages...");
+		}
 		messageConsoleView.display(state.getConsoleMessages());
+		if (VERBOSE)
+		{
+			System.err.println("//" + this + ".displayMainViews()");
+		}
 	}
 
 	@Override
@@ -82,7 +102,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 		{
 			case KahinaDialogEvent.PRIMARY_BREAKPOINTS:
 			{
-				if (verbose)
+				if (VERBOSE)
 				{
 					System.err.println(this + " received primary breakpoints event.");
 				}
@@ -103,7 +123,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 			}
 			case KahinaDialogEvent.PRIMARY_WARN_POINTS:
 			{
-				if (verbose)
+				if (VERBOSE)
 				{
 					System.err.println(this + " received primary warnpoints event.");
 				}

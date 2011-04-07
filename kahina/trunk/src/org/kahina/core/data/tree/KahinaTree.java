@@ -11,6 +11,8 @@ public abstract class KahinaTree extends KahinaObject
 	 * 
 	 */
 	private static final long serialVersionUID = -7193259910680733711L;
+	
+	private static final boolean VERBOSE = false;
 
 	// TODO Move layer decider to tree view. Trees having deciders is a legacy
 	// of the dark age of KahinaDbTrees.
@@ -158,6 +160,10 @@ public abstract class KahinaTree extends KahinaObject
         int parent = getParent(nodeID);
         while (parent != -1)
         {
+        	if (VERBOSE)
+        	{
+        		System.err.println("Parent: " + parent);
+        	}
             if (isCollapsed(parent))
             {
                 return true;

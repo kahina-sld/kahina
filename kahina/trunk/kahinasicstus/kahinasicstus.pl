@@ -1,34 +1,111 @@
 :- module(kahinasicstus,[]).
 
+:- use_module(library(charsio)).
 :- use_module(library(lists)).
 :- use_module(library(jasper)).
+:- use_module(library(system)).
 
 :- multifile user:breakpoint_expansion/2.
 
 user:breakpoint_expansion(kahina_breakpoint_action,[
     silent,
-    true(kahinasicstus:kahina_breakpoint_action(Action)),
+    inv(Inv),
+    true(kahinasicstus:kahina_breakpoint_action(Inv,Action)),
     (true(Action == s)
-    -> inv(Inv),
-       skip(Inv)
+    -> skip(Inv)
      ; (true(Action == f)
        -> \+ port(fail),
-          inv(Inv),
           fail(Inv)
-        ; true))]).
+        ; proceed))]).
 
-kahina_breakpoint_action(Action) :-
+kahina_breakpoint_action(Inv,Action) :-
   (execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
   -> true
    ; true),
-  execution_state(goal(Module:Goal)),	% Fails if Module:Goal is replaced with a single variable. See manual, Section 7.9.1, "Tests Related to the Current Goal".
   execution_state(port(Port)),
   get_bridge(Bridge),
-  % TODO Communicate with Kahina. Ports to consider: call, fail, redo, exit(det), exit(nondet), block, unblock; what about exception?
-  write(File),nl,write(Line),nl,write(Module),nl,write(Goal),nl,write(Port),nl.
+  act(Port,Inv,Bridge),
+  get_action(Bridge,Action).
+
+act(call,Inv,Bridge) :-
+  execution_state(pred(Module:Pred)),	% "module qualified goal template", see manual
+  write_to_chars(Module:Pred,PredChars),
+  act_step(Bridge,Inv,PredChars),
+  act_call(Bridge,Inv).
+act(fail,Inv,Bridge) :-
+  act_fail(Bridge,Inv).
+act(exit(nondet),Inv,Bridge) :-
+  !,
+  act_exit(Bridge,Inv,false).
+act(exit(det),Inv,Bridge) :-
+  act_exit(Bridge,Inv,true).
+act(redo,Inv,Bridge) :-
+  act_redo(Bridge,Inv).
+
+act_step(Bridge,Inv,PredChars) :-
+  get_jvm(JVM),
+  jasper_call(JVM,
+      method('org/kahina/prolog/bridge/PrologBridge','step',[instance]),
+      step(+object('org/kahina/prolog/bridge/PrologBridge'),+integer,+chars),
+      step(Bridge,Inv,PredChars)).
+
+act_call(Bridge,Inv) :-
+  get_jvm(JVM),
+  jasper_call(JVM,
+      method('org/kahina/prolog/bridge/PrologBridge','call',[instance]),
+      call(+object('org/kahina/prolog/bridge/PrologBridge'),+integer),
+      call(Bridge,Inv)).
+
+act_fail(Bridge,Inv) :-
+  get_jvm(JVM),
+  jasper_call(JVM,
+      method('org/kahina/prolog/bridge/PrologBridge','fail',[instance]),
+      fail(+object('org/kahina/prolog/bridge/PrologBridge'),+integer),
+      fail(Bridge,Inv)).
+
+act_exit(Bridge,Inv,Det) :-
+  get_jvm(JVM),
+  jasper_call(JVM,
+      method('org/kahina/prolog/bridge/PrologBridge','exit',[instance]),
+      exit(+object('org/kahina/prolog/bridge/PrologBridge'),+integer,+boolean),
+      exit(Bridge,Inv,Det)).
+
+act_redo(Bridge,Inv) :-
+  get_jvm(JVM),write(br),nl,
+  jasper_call(JVM,
+      method('org/kahina/prolog/bridge/PrologBridge','redo',[instance]),
+      redo(+object('org/kahina/prolog/bridge/PrologBridge'),+integer),
+      redo(Bridge,Inv)).
+
+% ------------------------------------------------------------------------------
+% CONTROL
+% ------------------------------------------------------------------------------
+
+get_action(Bridge,Action) :-
+  wait_for_action(Bridge,Action),
+  !.
+
+wait_for_action(Bridge,Action) :-
+  repeat,
+  get_action_from_bridge(Bridge,Action),
+  (Action == 110 % n
+  -> (sleep(0.1),
+      fail)
+   ; true).
+
+get_action_from_bridge(Bridge,Action) :-
+  get_jvm(JVM),
+  jasper_call(JVM,
+      method('org/kahina/prolog/bridge/PrologBridge','getAction',[instance]),
+      get_action(+object('org/kahina/prolog/bridge/PrologBridge'),[-char]),
+      get_action(Bridge,Action)).
+
+% ------------------------------------------------------------------------------
+% INSTANCE/SESSION/BRIDGE MANAGEMENT
+% ------------------------------------------------------------------------------
 
 get_bridge(Bridge) :-
-  es(kahina_bridge(Bridge)),
+  memory(kahina_bridge(Bridge)),
   ensure_bridge_exists(Bridge).
 
 ensure_bridge_exists(Bridge) :-
@@ -66,9 +143,9 @@ get_jvm(JVM) :-
   assert(jvm(JVM)).
 
 % ------------------------------------------------------------------------------
-% Utility predicate for storing data in the debugger trace
+% UTILITIES
 % ------------------------------------------------------------------------------
 
-es(Term) :-
+memory(Term) :-
   execution_state(private(P)),
   memberchk(Term,P).

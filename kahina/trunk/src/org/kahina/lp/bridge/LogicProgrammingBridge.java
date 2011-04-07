@@ -166,9 +166,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 		try
 		{
 			if (VERBOSE)
-				System.err.println("LogicProgrammingBridge.call(" + extID + ")");
-			if (VERBOSE)
 			{
+				System.err.println("LogicProgrammingBridge.call(" + extID + ")");
 				System.err.println("Converting step ID...");
 			}
 			int stepID = convertStepID(extID);
@@ -186,9 +185,15 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				System.err.println("Bridge state: " + bridgeState);
 			}
+			if (VERBOSE)
+			{
+				System.err.println("Selecting if paused...");
+			}
 			selectIfPaused(stepID);
 			if (VERBOSE)
+			{
 				System.err.println("//LogicProgrammingBridge.call(" + extID + ")");
+			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -368,6 +373,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 */
 	protected void selectIfPaused(int stepID)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".selectIfPaused(" + stepID + ")");
+		}
 		if (bridgeState == 'n')
 		{
 			KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
@@ -657,6 +666,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 	@Override
 	protected void processSelectionEvent(KahinaSelectionEvent e)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".processSelectionEvent(" + e + ")");
+		}
 		selectedID = e.getSelectedStep();
 		Integer linkTarget = state.getLinkTarget(selectedID);
 		if (linkTarget != null)

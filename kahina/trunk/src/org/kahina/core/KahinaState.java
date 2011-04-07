@@ -75,6 +75,10 @@ public class KahinaState implements Serializable, KahinaListener
     
     private void processSelectionEvent(KahinaSelectionEvent event)
 	{
+    	if (VERBOSE)
+    	{
+    		System.err.println(this + ".processSelectionEvent(" + event + ")");
+    	}
 		selectedStepID = event.getSelectedStep();
 	}
     

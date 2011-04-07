@@ -12,7 +12,7 @@ import org.kahina.tulipa.event.TulipaBridgeEventType;
 
 public class TulipaDAGBehavior extends KahinaDAGBehavior
 {
-    public static boolean verbose = true;
+    public static boolean VERBOSE = false;
     
     public TulipaDAGBehavior(KahinaDAG dag, KahinaInstance kahina)
     {
@@ -100,7 +100,7 @@ public class TulipaDAGBehavior extends KahinaDAGBehavior
     @Override
 	public void processEvent(KahinaEvent e)
     {
-        if (verbose)
+        if (VERBOSE)
             System.err.println("TulipaDAGBehavior.processEvent(" + e + ")");
         if (e instanceof TulipaBridgeEvent)
         {
