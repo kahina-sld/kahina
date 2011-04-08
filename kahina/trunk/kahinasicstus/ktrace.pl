@@ -7,7 +7,7 @@
 
 ktrace :-
   \+ kbreakpoint(_),
-  add_breakpoint([]-[kahina_breakpoint_action],Breakpoint), % TODO This isn't really it... creates a separate trace for every goal?
+  add_breakpoint([]-[kahina_breakpoint_action],Breakpoint),
   assert(kbreakpoint(Breakpoint)).
 
 noktrace :-

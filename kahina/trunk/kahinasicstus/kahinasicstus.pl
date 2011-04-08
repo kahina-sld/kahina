@@ -19,12 +19,13 @@ user:breakpoint_expansion(kahina_breakpoint_action,[
         ; proceed))]).
 
 kahina_breakpoint_action(Inv,Action) :-
-  (execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
-  -> true
-   ; true),
   execution_state(port(Port)),
   get_bridge(Bridge),
   act(Port,Inv,Bridge),
+  (execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
+  -> write_to_chars(File,FileChars),
+     register_source_code_location(Bridge,Inv,FileChars,Line)
+   ; true),
   get_action(Bridge,Action).
 
 act(call,Inv,Bridge) :-
@@ -71,11 +72,18 @@ act_exit(Bridge,Inv,Det) :-
       exit(Bridge,Inv,Det)).
 
 act_redo(Bridge,Inv) :-
-  get_jvm(JVM),write(br),nl,
+  get_jvm(JVM),
   jasper_call(JVM,
       method('org/kahina/prolog/bridge/PrologBridge','redo',[instance]),
       redo(+object('org/kahina/prolog/bridge/PrologBridge'),+integer),
       redo(Bridge,Inv)).
+
+register_source_code_location(Bridge,Inv,FileChars,Line) :-
+  get_jvm(JVM),
+  jasper_call(JVM,
+      method('org/kahina/prolog/bridge/PrologBridge','registerStepSourceCodeLocation',[instance]),
+      register_step_source_code_location(+object('org/kahina/prolog/bridge/PrologBridge'),+integer,+chars,+integer),
+      register_step_source_code_location(Bridge,Inv,FileChars,Line)).
 
 % ------------------------------------------------------------------------------
 % CONTROL
