@@ -1,7 +1,7 @@
 package org.kahina.lp.visual.source;
 
 import org.kahina.core.visual.source.KahinaJEditSourceCodeViewPanel;
-import org.kahina.lp.editor.PrologMultifileJEditPanel;
+import org.kahina.prolog.editor.PrologMultifileJEditPanel;
 
 public class PrologJEditSourceCodeViewPanel extends KahinaJEditSourceCodeViewPanel
 {

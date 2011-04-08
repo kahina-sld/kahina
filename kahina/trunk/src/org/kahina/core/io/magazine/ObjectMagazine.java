@@ -25,7 +25,7 @@ import org.kahina.core.util.ProgressMonitorWrapper;
 /**
  * Stores objects in memory by default, but serializes them away to disk in
  * blocks when memory usage exceeds a specified threshold. The idea is from
- * {@url http://forums.sun.com/thread.jspa?messageID=10949277#10949277}.
+ * {@link http://forums.sun.com/thread.jspa?messageID=10949277#10949277}.
  * @author ke
  *
  * @param <S>

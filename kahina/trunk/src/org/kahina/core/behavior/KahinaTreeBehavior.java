@@ -18,8 +18,6 @@ import org.kahina.core.event.KahinaEvent;
  * For that purpose, implementations should use the <code>KahinaRunner.getControl().registerListener</code> mechanism.
  * 
  * @author jd
- *
- * @param <T> a subclass of {@link KahinaObject}
  */
 public class KahinaTreeBehavior extends KahinaBehavior<KahinaTree>
 {   

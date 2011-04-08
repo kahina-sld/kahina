@@ -33,7 +33,6 @@ public abstract class KahinaViewConfiguration<T extends KahinaView<?>>
 	
 	/**
 	 * Default implementation creates an empty element without type specification
-	 * @return
 	 */
 	public Element exportXML(Document dom)
 	{

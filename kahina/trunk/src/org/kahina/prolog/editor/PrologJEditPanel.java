@@ -1,4 +1,4 @@
-package org.kahina.lp.editor;
+package org.kahina.prolog.editor;
 
 import java.io.File;
 import java.io.IOException;
