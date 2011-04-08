@@ -128,7 +128,10 @@ start_new_kahina_session(Bridge) :-
   jasper_call(JVM,
       method('org/kahina/prolog/PrologDebuggerInstance','startNewSession',[instance]),
       start_new_session(+object('org/kahina/prolog/PrologDebuggerInstance'),[-object('org/kahina/prolog/bridge/PrologBridge')]),
-      start_new_session(Instance,Bridge)).
+      start_new_session(Instance,Bridge)),
+  write_to_chars('[query]',RootLabelChars),
+  act_step(Bridge,0,RootLabelChars),
+  act_call(Bridge,0).
 
 :- dynamic kahina_instance/1.
 
