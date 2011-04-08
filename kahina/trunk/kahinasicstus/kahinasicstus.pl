@@ -42,6 +42,7 @@ act(exit(det),Inv,Bridge) :-
   act_exit(Bridge,Inv,true).
 act(redo,Inv,Bridge) :-
   act_redo(Bridge,Inv).
+% TODO handle exception ports
 
 act_step(Bridge,Inv,PredChars) :-
   get_jvm(JVM),

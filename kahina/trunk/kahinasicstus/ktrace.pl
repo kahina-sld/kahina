@@ -7,7 +7,7 @@
 
 ktrace :-
   \+ kbreakpoint(_),
-  add_breakpoint([]-[kahina_breakpoint_action],Breakpoint),
+  add_breakpoint([\+module(ktrace),\+pred(noktrace/0)]-[kahina_breakpoint_action],Breakpoint),
   assert(kbreakpoint(Breakpoint)).
 
 noktrace :-
