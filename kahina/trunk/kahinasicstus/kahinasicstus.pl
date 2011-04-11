@@ -17,7 +17,9 @@ user:breakpoint_expansion(kahina_breakpoint_action,[
      ; (true(Action == 102) % f(ail)
        -> \+ port(fail),
           fail(Inv)
-        ; proceed))]).
+        ; true(Action == 97) % a(bort)
+          -> abort
+           ; proceed))]).
 
 kahina_breakpoint_action(Inv,Action) :-
   execution_state(port(Port)),

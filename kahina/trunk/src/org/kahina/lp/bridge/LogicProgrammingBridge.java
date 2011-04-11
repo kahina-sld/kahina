@@ -398,7 +398,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	protected void disableAutoCompleteSkip()
 	{
 		autoCompleteSkipEnabled = false;
-		// TODO enable GUI buttons
+		// TODO disable GUI buttons
 	}
 
 	/**
