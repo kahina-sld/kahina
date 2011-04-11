@@ -441,6 +441,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// TODO update a TraleSLDLineReference (that class doesn't exist
 			// yet) or rewrite the whole thing – why are console messages line
 			// references?
+			
+			disableAutoCompleteSkip();
 		} catch (Exception e)
 		{
 			e.printStackTrace();

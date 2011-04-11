@@ -11,10 +11,10 @@ user:breakpoint_expansion(kahina_breakpoint_action,[
     silent,
     inv(Inv),
     true(kahinasicstus:kahina_breakpoint_action(Inv,Action)),
-    (true(Action == 115) % s
+    (true(Action == 115) % s(kip)
     -> skip(Inv),
        proceed
-     ; (true(Action == 102) % f
+     ; (true(Action == 102) % f(ail)
        -> \+ port(fail),
           fail(Inv)
         ; proceed))]).

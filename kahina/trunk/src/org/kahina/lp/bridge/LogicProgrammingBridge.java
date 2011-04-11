@@ -55,6 +55,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	protected LogicProgrammingState state;
 
+	private boolean autoCompleteSkipEnabled = false;
+
 	public LogicProgrammingBridge(LogicProgrammingState state)
 	{
 		super();
@@ -190,6 +192,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				System.err.println("Selecting if paused...");
 			}
 			selectIfPaused(stepID);
+			enableAutoCompleteSkip();
 			if (VERBOSE)
 			{
 				System.err.println("//LogicProgrammingBridge.call(" + extID + ")");
@@ -273,6 +276,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// TODO Do we also want console messages for each "virtual redo"? If
 			// so, move this into loop above.
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(lastStepID);
+			enableAutoCompleteSkip();
 			if (reference != null)
 			{
 				state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.REDO));
@@ -314,6 +318,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			
 			selectIfPaused(stepID);
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
+			disableAutoCompleteSkip();
 			if (reference != null)
 			{
 				if (deterministic)
@@ -360,6 +365,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.FAIL));
 			}
+			disableAutoCompleteSkip();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -381,6 +387,18 @@ public class LogicProgrammingBridge extends KahinaBridge
 		{
 			KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 		}
+	}
+	
+	protected void enableAutoCompleteSkip()
+	{
+		autoCompleteSkipEnabled = true;
+		// TODO enable GUI buttons
+	}
+	
+	protected void disableAutoCompleteSkip()
+	{
+		autoCompleteSkipEnabled = false;
+		// TODO enable GUI buttons
 	}
 
 	/**
@@ -610,27 +628,33 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 		} else if (command.equals("auto-complete"))
 		{
-			if (bridgeState == 'n')
+			if (autoCompleteSkipEnabled)
 			{
-				bridgeState = 't';
-				if (selectedID == -1)
+				if (bridgeState == 'n')
 				{
+					bridgeState = 't';
+					if (selectedID == -1)
+					{
+						skipID = currentID;
+					} else
+					{
+						skipID = selectedID;
+					}
+				} else if (bridgeState == 'p')
+				{
+					bridgeState = 't';
+				} else if (bridgeState == 'q')
+				{
+					bridgeState = 't';
 					skipID = currentID;
-				} else
-				{
-					skipID = selectedID;
 				}
-			} else if (bridgeState == 'p')
-			{
-				bridgeState = 't';
-			} else if (bridgeState == 'q')
-			{
-				bridgeState = 't';
-				skipID = currentID;
 			}
 		} else if (command.equals("skip"))
 		{
-			skipFlag = true;
+			if (autoCompleteSkipEnabled)
+			{
+				skipFlag = true;
+			}
 		} else if (command.equals("leap"))
 		{
 			if (bridgeState == 'n')
