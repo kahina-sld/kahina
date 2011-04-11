@@ -12,9 +12,8 @@ user:breakpoint_expansion(kahina_breakpoint_action,[
     inv(Inv),
     true(kahinasicstus:kahina_breakpoint_action(Inv,Action)),
     (true(Action == 115) % s
-    % TODO SICStus Prolog's debugger does NOT show the fail or exit port of a
-    % skipped box, so skipped nodes remain white at the moment.
-    -> skip(Inv)
+    -> skip(Inv),
+       proceed
      ; (true(Action == 102) % f
        -> \+ port(fail),
           fail(Inv)
