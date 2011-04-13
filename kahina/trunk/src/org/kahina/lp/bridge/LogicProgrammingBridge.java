@@ -32,14 +32,14 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
  * in Kahina terminology) and turn it into information that can be displayed by
  * Kahina's views.
  * 
- * Logic programming systems that have been connected to Kahina using
+ * <p>Logic programming systems that have been connected to Kahina using
  * specialized subclasses of {@link LogicProgrammingBridge} so far include TRALE
  * and, experimentally, SWI-Prolog and SICStus Prolog. The connection typically
  * involves some Prolog code that hooks into the tracer of the espective LP
  * system and calls Kahina's Java API via a Prolog/Java connection layer such as
  * Jasper or JPL.
  * 
- * A Kahina "session" corresponds to the execution of one query in a LP system.
+ * <p>A Kahina "session" corresponds to the execution of one query in a LP system.
  * A new bridge is created, and all views are cleared, when a new session is
  * started. A session is started by calling the
  * {@link KahinaInstance#startNewSession()} method of an instance of the
