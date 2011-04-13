@@ -109,15 +109,13 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			Matcher matcher = NOW_PATTERN.matcher(nodeLabel);
 			if (matcher.matches())
 			{
-
 				if (VERBOSE)
 				{
 					System.err.println("Matched! Current ID: " + currentID);
 				}
 				int blockingStepExtID = Integer.parseInt(matcher.group(1));
 				int blockingStepID = stepIDConv.get(blockingStepExtID);
-				state.linkNodes(currentID, blockingStepID);
-
+				linkNodes(currentID, blockingStepID);
 			}
 			if (VERBOSE)
 			{

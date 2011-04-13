@@ -30,7 +30,7 @@ public class PrologBridge extends LogicProgrammingBridge
 	}
 	
 	/**
-	 * 
+	 * Called to register variable bindings for a step.
 	 * @param externalStepID
 	 * @param direction any string, normally either {@code "in"} (for call, redo) or {@code "out"} (for exit)
 	 * @param keys argument numbers or variable names

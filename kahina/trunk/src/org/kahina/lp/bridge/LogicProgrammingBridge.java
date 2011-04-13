@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Stack;
 
 import org.kahina.core.KahinaException;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.bridge.KahinaBridge;
@@ -23,6 +24,29 @@ import org.kahina.lp.data.text.LogicProgrammingLineReference;
 import org.kahina.lp.event.LogicProgrammingBridgeEvent;
 import org.kahina.lp.event.LogicProgrammingBridgeEventType;
 
+/**
+ * The logic programming bridge is the most important object that you work with
+ * when you connect a logic programming system to Kahina that has tracing
+ * capabilities following the procedure box model. Its public methods take
+ * information about the control flow and properties of procedure boxes ("steps"
+ * in Kahina terminology) and turn it into information that can be displayed by
+ * Kahina's views.
+ * 
+ * Logic programming systems that have been connected to Kahina using
+ * specialized subclasses of {@link LogicProgrammingBridge} so far include TRALE
+ * and, experimentally, SWI-Prolog and SICStus Prolog. The connection typically
+ * involves some Prolog code that hooks into the tracer of the espective LP
+ * system and calls Kahina's Java API via a Prolog/Java connection layer such as
+ * Jasper or JPL.
+ * 
+ * A Kahina "session" corresponds to the execution of one query in a LP system.
+ * A new bridge is created, and all views are cleared, when a new session is
+ * started. A session is started by calling the
+ * {@link KahinaInstance#startNewSession()} method of an instance of the
+ * {@link KahinaInstance} subclass that is specialized for the respective LP
+ * system. This method returns the bridge for that session. The bridge is then
+ * used to transmit all tracing information about a query to Kahina.
+ */
 public class LogicProgrammingBridge extends KahinaBridge
 {
 	private static final boolean VERBOSE = false;
@@ -46,12 +70,13 @@ public class LogicProgrammingBridge extends KahinaBridge
 	// store the state of the bridge, determining the next result of
 	// getPressedButton()
 	protected char bridgeState = 'n';
+	
 	// used to hand on skip commands to the logic programming system
 	protected boolean skipFlag = false;
 	protected int waitingForReturnFromSkip = -1;
 
 	// in skip mode, this is the internal step ID of the step we are skipping
-	int skipID = -1;
+	protected int skipID = -1;
 
 	protected LogicProgrammingState state;
 
@@ -70,55 +95,25 @@ public class LogicProgrammingBridge extends KahinaBridge
 	}
 
 	/**
-	 * convert external step IDs to internal IDs corresponding to tree nodes
-	 * uses entries in stepIDConv table, extending it together with the tree if
-	 * no entry was found
-	 * 
-	 * @return an internal step ID corresponding to the external ID
-	 */
-	protected int convertStepID(int extID)
-	{
-		if (VERBOSE)
-			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ")");
-		if (extID == -1)
-		{
-			return -1;
-		}
-		Integer intID = stepIDConv.get(extID);
-		if (VERBOSE)
-		{
-			System.err.println("stepIDConv.get(" + extID + ")=" + intID);
-		}
-		if (intID == null)
-		{
-			LogicProgrammingStep newStep = generateStep();
-			intID = state.nextStepID();
-			newStep.setExternalID(extID);
-			KahinaRunner.store(intID, newStep);
-			stepIDConv.put(extID, intID);
-		}
-		if (VERBOSE)
-			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ") = " + intID);
-		return intID;
-	}
-	
-	/**
 	 * Alternative to {@link LogicProgrammingBridge#step(int, String)} that
-	 * makes it possible to specify both a predicate and a goal. The predicate
-	 * description will be used for profiler, the goal description for nodes.  
+	 * makes it possible to specify both a predicate and a node label. The
+	 * predicate description will be used for profiler, the goal description for
+	 * nodes.
+	 * 
 	 * @param extID
 	 * @param predicate
-	 * @param goal
+	 * @param nodeLabel
 	 */
-	public void step(int extID, String predicate, String goal)
+	public void step(int extID, String predicate, String nodeLabel)
 	{
 		try
 		{
 			if (VERBOSE)
-				System.err.println("LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + predicate + ",\"" + goal + "\")");
+				System.err.println("LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + predicate + ",\"" + nodeLabel + "\")");
 			int stepID = convertStepID(extID);
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
-			step.setGoalDesc(predicate); // TODO Also save goal in step in a separate field?
+			step.setGoalDesc(predicate); // TODO Also save goal in step in a
+											// separate field?
 			if (waitingForReturnFromSkip != -1)
 			{
 				state.hideStep(stepID);
@@ -129,10 +124,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			KahinaRunner.store(stepID, step);
 			// Set node label:
-			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, goal));
+			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, nodeLabel));
 			currentID = stepID;
 			if (VERBOSE)
-				System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + predicate + ",\"" + goal + "\")");
+				System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + predicate + ",\"" + nodeLabel + "\")");
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -140,11 +135,35 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
+	/**
+	 * For each new procedure box that is created, this method must first be
+	 * called. It is separate from {@link #call(int)} for historic reasons and
+	 * for flexibility, e.g. it can be overloaded with various arguments
+	 * representing all kinds of information about a step without touching the
+	 * call method. Note however that information about a step that is not
+	 * absolutely central, such as source code locations, should be sent to
+	 * Kahina using specialized methods following the call to the step method.
+	 * 
+	 * @param extID
+	 *            An ID identifying the procedure box uniquely.
+	 * @param nodeLabel
+	 *            The node label that will represent this procedure box in
+	 *            Kahina's control flow graph.
+	 */
 	public void step(int extID, String nodeLabel)
 	{
 		step(extID, nodeLabel, nodeLabel);
 	}
 
+	/**
+	 * Registers the source code location connected to a step for display in the
+	 * source code view. TODO: Different ports of a procedure box may have
+	 * different source code locations.
+	 * 
+	 * @param extID
+	 * @param absolutePath
+	 * @param lineNumber
+	 */
 	public void registerStepSourceCodeLocation(int extID, String absolutePath, int lineNumber)
 	{
 		try
@@ -163,6 +182,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
+	/**
+	 * Called, typically following a call to {@link #step(int, String)} very
+	 * soon, to indicate that the call port of the procedure box with the given
+	 * ID has been reached. This will cause the corresponding node to appear in
+	 * Kahina's control flow graph.
+	 * 
+	 * @param extID
+	 */
 	public void call(int extID)
 	{
 		try
@@ -204,6 +231,17 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
+	/**
+	 * Called to indicate that the redo port of the procedure box with the given
+	 * ID has been reached. This will create a copy of the original step in
+	 * Kahina's data model, and a new node in Kahina's control flow graph,
+	 * distinct from nodes created by previous calls and redos of the box, but
+	 * labeled with the same ID. Internally, Kahina uses a different set of IDs
+	 * to distinguish different "instantiations" of the same procedure box when
+	 * it is redone.
+	 * 
+	 * @param extID
+	 */
 	public void redo(int extID)
 	{
 		try
@@ -217,7 +255,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			int id = lastStepID;
 			Stack<Integer> redoStack = new Stack<Integer>();
 			KahinaTree callTree = state.getSecondaryStepTree();
-			
+
 			if (VERBOSE)
 			{
 				System.err.println("Current parent candidate: " + parentCandidateID);
@@ -231,15 +269,16 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					System.err.println("Pushing " + id + " onto redo stack.");
 				}
-				
+
 				redoStack.push(id);
-				
+
 				if (id == parentCandidateID)
 				{
 					break;
 				}
-				
-				// Get the internal ID of the parent, or that of its copy if it already has one:
+
+				// Get the internal ID of the parent, or that of its copy if it
+				// already has one:
 				if (VERBOSE)
 				{
 					System.err.println("Looking up parent of " + id + " in " + callTree);
@@ -288,6 +327,17 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
+	/**
+	 * Called to indicate that the exit port of the procedure box with the given
+	 * ID has been reached.
+	 * 
+	 * @param extID
+	 * @param deterministic
+	 *            {@code true} if the box has exited deterministically, i.e. is
+	 *            guaranteed never to be redone again. If you cannot get this
+	 *            information from your LP system, the recommended default is
+	 *            {@code false}.
+	 */
 	public void exit(int extID, boolean deterministic)
 	{
 		try
@@ -308,14 +358,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
-			
+
 			// stop autocomplete/leap when we're done
 			if (deterministic && stepID == state.getStepTree().getRootID() && bridgeState != 'n')
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
-			
+
 			selectIfPaused(stepID);
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
 			disableAutoCompleteSkip();
@@ -324,8 +374,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				if (deterministic)
 				{
 					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.DET_EXIT));
-				} 
-				else
+				} else
 				{
 					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.EXIT));
 				}
@@ -337,6 +386,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
+	/**
+	 * Called to indicate that the fail port of the procedure box with the given
+	 * ID has been reached.
+	 * @param extID
+	 */
 	public void fail(int extID)
 	{
 		try
@@ -351,14 +405,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
-			
+
 			// stop autocomplete/leap when we're done
 			if (stepID == state.getStepTree().getRootID() && bridgeState != 'n')
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
-			
+
 			selectIfPaused(stepID);
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
 			if (reference != null)
@@ -372,33 +426,18 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 		}
 	}
-	
+
 	/**
-	 * Selects the given step and updates the GUI if the debugger is not
-	 * currently leaping or autocompleting.
+	 * Introduces a "secondary edge" to the control flow tree, e.g. for marking
+	 * the corresponding blocking step (target) for a given unblocking step
+	 * (anchor).
+	 * 
+	 * @param anchor
+	 * @param target
 	 */
-	protected void selectIfPaused(int stepID)
+	public void linkNodes(int anchor, int target)
 	{
-		if (VERBOSE)
-		{
-			System.err.println(this + ".selectIfPaused(" + stepID + ")");
-		}
-		if (bridgeState == 'n')
-		{
-			KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
-		}
-	}
-	
-	protected void enableAutoCompleteSkip()
-	{
-		autoCompleteSkipEnabled = true;
-		// TODO enable GUI buttons
-	}
-	
-	protected void disableAutoCompleteSkip()
-	{
-		autoCompleteSkipEnabled = false;
-		// TODO disable GUI buttons
+		state.linkNodes(convertStepID(anchor), convertStepID(target));
 	}
 
 	/**
@@ -417,14 +456,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 			e.printStackTrace();
 			System.exit(1);
 		}
-	}
-
-	@Override
-	protected LogicProgrammingStep generateStep()
-	{
-		if (VERBOSE)
-			System.err.println("LogicProgrammingBridge.generateStep()");
-		return new LogicProgrammingStep();
 	}
 
 	/**
@@ -451,104 +482,104 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			switch (bridgeState)
 			{
-				case 'n':
+			case 'n':
+			{
+				if (VERBOSE)
 				{
-					if (VERBOSE)
-					{
-						// System.err.println("Bridge state/pressed button: n/n");
-					}
-					return 'n';
+					// System.err.println("Bridge state/pressed button: n/n");
 				}
-				case 'p':
+				return 'n';
+			}
+			case 'p':
+			{
+				if (VERBOSE)
 				{
-					if (VERBOSE)
-					{
-						System.err.println("Bridge state/pressed button: p/n");
-					}
-					return 'n';
+					System.err.println("Bridge state/pressed button: p/n");
 				}
-				case 'q':
+				return 'n';
+			}
+			case 'q':
+			{
+				if (VERBOSE)
 				{
-					if (VERBOSE)
-					{
-						System.err.println("Bridge state/pressed button: q/n");
-					}
-					return 'n';
+					System.err.println("Bridge state/pressed button: q/n");
 				}
-				case 'c':
+				return 'n';
+			}
+			case 'c':
+			{
+				if (VERBOSE)
+				{
+					System.err.println("Bridge state/pressed button: c/c");
+				}
+				bridgeState = 'n';
+				return 'c';
+			}
+			case 'f':
+			{
+				if (VERBOSE)
+				{
+					System.err.println("Bridge state/pressed button: f/f");
+				}
+				bridgeState = 'n';
+				return 'f';
+			}
+			case 'l':
+			{
+				if (VERBOSE)
+				{
+					System.err.println("Bridge state/pressed button: l/c");
+				}
+				bridgeState = 'l';
+				return 'c';
+			}
+			case 't':
+			{
+				if (VERBOSE)
+				{
+					System.err.println("Bridge state/pressed button: t/c");
+				}
+				bridgeState = 's';
+				return 'c';
+			}
+			case 's':
+			{
+				if (skipID == currentID)
 				{
 					if (VERBOSE)
 					{
-						System.err.println("Bridge state/pressed button: c/c");
+						System.err.println("Bridge state/pressed button: s/n");
 					}
+					skipID = -1;
 					bridgeState = 'n';
+					KahinaRunner.processEvent(new KahinaSelectionEvent(currentID));
+					return 'n';
+				} else
+				{
+					if (VERBOSE)
+					{
+						System.err.println("Bridge state/pressed button: s/c");
+					}
 					return 'c';
 				}
-				case 'f':
+			}
+			case 'a':
+			{
+				if (VERBOSE)
 				{
-					if (VERBOSE)
-					{
-						System.err.println("Bridge state/pressed button: f/f");
-					}
-					bridgeState = 'n';
-					return 'f';
+					System.err.println("Bridge state/pressed button: a/a");
 				}
-				case 'l':
+				return 'a';
+			}
+			default:
+			{
+				if (VERBOSE)
 				{
-					if (VERBOSE)
-					{
-						System.err.println("Bridge state/pressed button: l/c");
-					}
-					bridgeState = 'l';
-					return 'c';
+					System.err.println("Bridge state/pressed button: " + bridgeState + "/n");
 				}
-				case 't':
-				{
-					if (VERBOSE)
-					{
-						System.err.println("Bridge state/pressed button: t/c");
-					}
-					bridgeState = 's';
-					return 'c';
-				}
-				case 's':
-				{
-					if (skipID == currentID)
-					{
-						if (VERBOSE)
-						{
-							System.err.println("Bridge state/pressed button: s/n");
-						}
-						skipID = -1;
-						bridgeState = 'n';
-						KahinaRunner.processEvent(new KahinaSelectionEvent(currentID));
-						return 'n';
-					} else
-					{
-						if (VERBOSE)
-						{
-							System.err.println("Bridge state/pressed button: s/c");
-						}
-						return 'c';
-					}
-				}
-				case 'a':
-				{
-					if (VERBOSE)
-					{
-						System.err.println("Bridge state/pressed button: a/a");
-					}
-					return 'a';
-				}
-				default:
-				{
-					if (VERBOSE)
-					{
-						System.err.println("Bridge state/pressed button: " + bridgeState + "/n");
-					}
-					bridgeState = 'n';
-					return 'n';
-				}
+				bridgeState = 'n';
+				return 'n';
+			}
 			}
 		} catch (Exception e)
 		{
@@ -556,6 +587,75 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 			throw new RuntimeException(); // dummy
 		}
+	}
+
+	/**
+	 * convert external step IDs to internal IDs corresponding to tree nodes
+	 * uses entries in stepIDConv table, extending it together with the tree if
+	 * no entry was found
+	 * 
+	 * @return an internal step ID corresponding to the external ID
+	 */
+	protected int convertStepID(int extID)
+	{
+		if (VERBOSE)
+			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ")");
+		if (extID == -1)
+		{
+			return -1;
+		}
+		Integer intID = stepIDConv.get(extID);
+		if (VERBOSE)
+		{
+			System.err.println("stepIDConv.get(" + extID + ")=" + intID);
+		}
+		if (intID == null)
+		{
+			LogicProgrammingStep newStep = generateStep();
+			intID = state.nextStepID();
+			newStep.setExternalID(extID);
+			KahinaRunner.store(intID, newStep);
+			stepIDConv.put(extID, intID);
+		}
+		if (VERBOSE)
+			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ") = " + intID);
+		return intID;
+	}
+
+	/**
+	 * Selects the given step and updates the GUI if the debugger is not
+	 * currently leaping or autocompleting.
+	 */
+	protected void selectIfPaused(int stepID)
+	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".selectIfPaused(" + stepID + ")");
+		}
+		if (bridgeState == 'n')
+		{
+			KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+		}
+	}
+
+	protected void enableAutoCompleteSkip()
+	{
+		autoCompleteSkipEnabled = true;
+		// TODO enable GUI buttons
+	}
+
+	protected void disableAutoCompleteSkip()
+	{
+		autoCompleteSkipEnabled = false;
+		// TODO disable GUI buttons
+	}
+
+	@Override
+	protected LogicProgrammingStep generateStep()
+	{
+		if (VERBOSE)
+			System.err.println("LogicProgrammingBridge.generateStep()");
+		return new LogicProgrammingStep();
 	}
 
 	@Override
@@ -566,7 +666,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			bridgeState = 'a';
 		}
 	}
-	
+
 	@Override
 	protected void processWarnEvent(KahinaWarnEvent e)
 	{
