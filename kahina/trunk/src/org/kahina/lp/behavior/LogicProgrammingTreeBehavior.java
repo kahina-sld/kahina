@@ -346,7 +346,15 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	{
 		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.processStepInformation(" + stepID + ",\"" + stepInfo + "\")");
-		String caption = LogicProgrammingStep.get(stepID).getExternalID() + " " + stepInfo;
+		int extID = LogicProgrammingStep.get(stepID).getExternalID();
+		String caption;
+		if (extID >= 0)
+		{
+			caption = extID + " " + stepInfo;
+		} else
+		{
+			caption = stepInfo;
+		}
 		object.addNode(stepID, caption, "", LogicProgrammingStepType.CALL);
 		// TODO: make this unnecessary => new structure for secondary tree,
 		// perhaps not a full tree model?
