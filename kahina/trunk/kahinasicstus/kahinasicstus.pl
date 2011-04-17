@@ -257,7 +257,6 @@ remember_blocked_goal(Module:Goal,ID) :-
    ; true). % We will not be able to trace any unblock step back to this block step.
 
 reduce_goal(Goal,Module,Reduced) :-
-goal_behavior(Goal,Module,Behavior),
   goal_behavior(Goal,Module,call(Reduced)).
 
 % goal_behavior(+Goal,+Module,-Behavior)

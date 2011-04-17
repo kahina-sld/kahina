@@ -2,10 +2,8 @@ package org.kahina.lp.behavior;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
@@ -32,10 +30,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	// memory for construction of the primary tree
 	protected int lastActiveID;
 
-	// store information whether steps exited or failed deterministically
-	protected Set<Integer> deterministicallyExited;
-	protected Set<Integer> nonDetermBecauseOfRedo;
-
 	// this stores the different breakpoint automata
 	protected List<TreeAutomaton> primaryBreakpoints;
 	protected List<TreeAutomaton> secondaryBreakpoints;
@@ -57,8 +51,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		}
 		this.secondaryTree = secondaryTree;
 		this.lastActiveID = -1;
-		deterministicallyExited = new HashSet<Integer>();
-		nonDetermBecauseOfRedo = new HashSet<Integer>();
 		KahinaRunner.getControl().registerListener("logic programming bridge", this);
 		KahinaRunner.getControl().registerListener("system", this);
 		primaryBreakpoints = new ArrayList<TreeAutomaton>();
@@ -302,7 +294,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		if (VERBOSE)
 			System.err.println("\t object.addChild(" + lastActiveID + "," + stepID + ")");
 		stepBeingRedone = -1;
-		
+
 		if (lastActiveID == -1)
 		{
 			object.setRootID(stepID);
@@ -310,7 +302,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			object.addChild(lastActiveID, stepID);
 		}
-		
+
 		if (parentID == -1)
 		{
 			secondaryTree.setRootID(stepID);
@@ -322,7 +314,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			}
 			secondaryTree.addChild(parentID, stepID);
 		}
-		
+
 		if (VERBOSE)
 		{
 			System.err.println("Tree: " + object);
@@ -372,8 +364,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	{
 		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.processStepRedo(" + lastStepID + ")");
-
-		nonDetermBecauseOfRedo.add(lastStepID);
 
 		// generate a new node corresponding to the new internal step
 		int newStepID = object.addNode(object.getNodeCaption(lastStepID), "", LogicProgrammingStepType.REDO);
@@ -446,13 +436,22 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	public void processStepExit(int stepID, boolean deterministic)
 	{
 		stepBeingRedone = -1;
-		if (deterministic)
+		String caption = object.getNodeCaption(stepID);
+		if (caption.startsWith("block "))
 		{
-			deterministicallyExited.add(stepID);
-			object.setNodeStatus(stepID, LogicProgrammingStepType.DET_EXIT);
+			object.setNodeStatus(stepID, LogicProgrammingStepType.PSEUDO_BLOCKED);
+		} else if (caption.startsWith("unblock "))
+		{
+			object.setNodeStatus(stepID, LogicProgrammingStepType.PSEUDO_UNBLOCKED);
 		} else
 		{
-			object.setNodeStatus(stepID, LogicProgrammingStepType.EXIT);
+			if (deterministic)
+			{
+				object.setNodeStatus(stepID, LogicProgrammingStepType.DET_EXIT);
+			} else
+			{
+				object.setNodeStatus(stepID, LogicProgrammingStepType.EXIT);
+			}
 		}
 		// lastActiveID = stepID;
 	}
@@ -469,7 +468,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.processStepFail(" + stepID + ")");
 		stepBeingRedone = -1;
-		deterministicallyExited.add(stepID);
 		object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);
 		lastActiveID = object.getParent(stepID);
 		failureBreakpointCheck(stepID);
@@ -493,36 +491,36 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	{
 		switch (e.getEventType())
 		{
-			case LogicProgrammingBridgeEventType.STEP_CALL:
-			{
-				integrateIncomingNode(e.getID(), e.getIntContent());
-				break;
-			}
-			case LogicProgrammingBridgeEventType.SET_GOAL_DESC:
-			{
-				processStepInformation(e.getID(), e.getStrContent());
-				break;
-			}
-			case LogicProgrammingBridgeEventType.STEP_REDO:
-			{
-				processStepRedo(e.getID());
-				break;
-			}
-			case LogicProgrammingBridgeEventType.STEP_DET_EXIT:
-			{
-				processStepExit(e.getID(), true);
-				break;
-			}
-			case LogicProgrammingBridgeEventType.STEP_NONDET_EXIT:
-			{
-				processStepExit(e.getID(), false);
-				break;
-			}
-			case LogicProgrammingBridgeEventType.STEP_FAIL:
-			{
-				processStepFail(e.getID());
-				break;
-			}
+		case LogicProgrammingBridgeEventType.STEP_CALL:
+		{
+			integrateIncomingNode(e.getID(), e.getIntContent());
+			break;
+		}
+		case LogicProgrammingBridgeEventType.SET_GOAL_DESC:
+		{
+			processStepInformation(e.getID(), e.getStrContent());
+			break;
+		}
+		case LogicProgrammingBridgeEventType.STEP_REDO:
+		{
+			processStepRedo(e.getID());
+			break;
+		}
+		case LogicProgrammingBridgeEventType.STEP_DET_EXIT:
+		{
+			processStepExit(e.getID(), true);
+			break;
+		}
+		case LogicProgrammingBridgeEventType.STEP_NONDET_EXIT:
+		{
+			processStepExit(e.getID(), false);
+			break;
+		}
+		case LogicProgrammingBridgeEventType.STEP_FAIL:
+		{
+			processStepFail(e.getID());
+			break;
+		}
 		}
 	}
 
@@ -532,41 +530,41 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			switch (e.getIntContent())
 			{
-				case KahinaBreakpointType.PRIMARY_BREAKPOINT:
-				{
-					compilePrimaryBreakpoints();
-					break;
-				}
-				case KahinaBreakpointType.SECONDARY_BREAKPOINT:
-				{
-					compileSecondaryBreakpoints();
-					break;
-				}
-				case KahinaBreakpointType.PRIMARY_WARN_POINT:
-				{
-					compilePrimaryWarnPoints();
-					break;
-				}
-				case KahinaBreakpointType.SECONDARY_WARN_POINT:
-				{
-					compileSecondaryWarnPoints();
-					break;
-				}
-				case KahinaBreakpointType.SKIP_POINT:
-				{
-					compileSkipPoints();
-					break;
-				}
-				case KahinaBreakpointType.CREEP_POINT:
-				{
-					compileCreepPoints();
-					break;
-				}
-				case KahinaBreakpointType.FAIL_POINT:
-				{
-					compileFailPoints();
-					break;
-				}
+			case KahinaBreakpointType.PRIMARY_BREAKPOINT:
+			{
+				compilePrimaryBreakpoints();
+				break;
+			}
+			case KahinaBreakpointType.SECONDARY_BREAKPOINT:
+			{
+				compileSecondaryBreakpoints();
+				break;
+			}
+			case KahinaBreakpointType.PRIMARY_WARN_POINT:
+			{
+				compilePrimaryWarnPoints();
+				break;
+			}
+			case KahinaBreakpointType.SECONDARY_WARN_POINT:
+			{
+				compileSecondaryWarnPoints();
+				break;
+			}
+			case KahinaBreakpointType.SKIP_POINT:
+			{
+				compileSkipPoints();
+				break;
+			}
+			case KahinaBreakpointType.CREEP_POINT:
+			{
+				compileCreepPoints();
+				break;
+			}
+			case KahinaBreakpointType.FAIL_POINT:
+			{
+				compileFailPoints();
+				break;
+			}
 			}
 		}
 	}
