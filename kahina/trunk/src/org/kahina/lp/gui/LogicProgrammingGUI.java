@@ -110,7 +110,6 @@ public class LogicProgrammingGUI extends KahinaGUI
 				}
 				BreakpointEditorWindow breakpointEditor = new BreakpointEditorWindow(new KahinaController(), KahinaBreakpointType.PRIMARY_BREAKPOINT);
 				breakpointEditor.setTitle("Edit search tree breakpoints");
-				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
 				breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getPrimaryBreakpoints());
 				breakpointEditor.setVisible(true);
 				break;

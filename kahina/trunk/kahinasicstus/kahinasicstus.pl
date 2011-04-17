@@ -264,8 +264,10 @@ reduce_goal(Goal,Module,Reduced) :-
 % account the fact that the control predicates !/0, true/0, fail/0, ,/2, ->/2,
 % ;/2, if/3 and once/1 do not show up in the trace. Possible resulting values
 % for Behavior are:
-%   true - the goal will succeed without trace
-%   fail - the goal will fail without trace
+%   true(cut) - the goal will succeed without trace and contains a cut
+%   true(nocut) - the goal will succed without trace and contains no cut
+%   fail(cut) - the goal will fail without trace and contains a cut
+%   fail(nocut) - the goal will fail without trace and contains no cut
 %   call(G) - the tracer will show the call port of a procedure box with goal G
 % Clauses are grouped by the form of Goal.
 % Module:Goal
@@ -273,75 +275,95 @@ goal_behavior(Module:Goal,_,Behavior) :-
   !,
   goal_behavior(Goal,Module,Behavior).
 % !
-goal_behavior(!,_,true) :- % TODO take special effect of cut into account - e.g. in ((!,fail);a) the behavior is fail but is predicted as a, right?
+goal_behavior(!,_,true(cut)) :-
   !.
 % true
-goal_behavior(true,_,true) :-
+goal_behavior(true,_,true(nocut)) :-
   !.
 % fail
-goal_behavior(fail,_,fail) :-
+goal_behavior(fail,_,fail(nocut)) :-
   !.
 % A,B
-goal_behavior((A,_),Module,fail) :-
-  goal_behavior(A,Module,fail),
+goal_behavior((A,_),Module,fail(Cut)) :-
+  goal_behavior(A,Module,fail(Cut)),
   !.
 goal_behavior((A,B),Module,Behavior) :-
-  goal_behavior(A,Module,true),
+  goal_behavior(A,Module,true(Cut)),
   !,
-  goal_behavior(B,Module,Behavior).
+  goal_behavior(B,Module,Behavior0),
+  add_cut(Behavior0,Cut,Behavior).
 goal_behavior((A,_),Module,Behavior) :-
   !,
   goal_behavior(A,Module,Behavior).
 % A -> B
-goal_behavior((A -> _),Module,fail) :-
-  goal_behavior(A,Module,fail),
+goal_behavior((A->_),Module,fail(nocut)) :-
+  goal_behavior(A,Module,fail(_)), % scope of cut limited to A
   !.
-goal_behavior((A -> B),Module,Behavior) :-
-  goal_behavior(A,Module,true),
+goal_behavior((A->B),Module,Behavior) :-
+  goal_behavior(A,Module,true(_)), % scope of cut limited to A
   !,
   goal_behavior(B,Module,Behavior).
-goal_behavior((A -> _),Module,Behavior) :-
+goal_behavior((A->_),Module,Behavior) :-
   !,
   goal_behavior(A,Module,Behavior).
 % A;B
+goal_behavior((A;_),Module,fail(cut)) :-
+  goal_behavior(A,Module,fail(cut)),
+  !.
 goal_behavior((A;B),Module,Behavior) :-
-  goal_behavior(A,Module,fail),
+  goal_behavior(A,Module,fail(nocut)),
   !,
   goal_behavior(B,Module,Behavior).
-goal_behavior((A;_),Module,true) :-
-  goal_behavior(A,Module,true),
+goal_behavior((A;_),Module,true(Cut)) :-
+  goal_behavior(A,Module,true(Cut)),
   !.
 goal_behavior((A;_),Module,Behavior) :-
   !,
   goal_behavior(A,Module,Behavior).
 % \+A
-goal_behavior(\+A,Module,true) :-
+goal_behavior(\+A,Module,true(nocut)) :-
   !,
-  goal_behavior(A,Module,fail).
-goal_behavior(\+A,Module,fail) :-
+  goal_behavior(A,Module,fail(_)). % scope of cut limited to A
+goal_behavior(\+A,Module,fail(nocut)) :-
   !,
-  goal_behavior(A,Module,true).
+  goal_behavior(A,Module,true(_)). % scope of cut limited to A
 goal_behavior(\+A,Module,Behavior) :-
   !,
   goal_behavior(A,Module,Behavior).
 % if(A,B,C)
 goal_behavior(if(A,_,C),Module,Behavior) :-
-  goal_behavior(A,Module,fail),
+  goal_behavior(A,Module,fail(_)), % scope of cut limited to A
   !,
   goal_behavior(C,Module,Behavior).
 goal_behavior(if(A,B,_),Module,Behavior) :-
-  goal_behavior(A,Module,true),
+  goal_behavior(A,Module,true(_)), % scope of cut limited to A
   !,
   goal_behavior(B,Module,Behavior).
 goal_behavior(if(A,_,_),Module,Behavior) :-
   !,
   goal_behavior(A,Module,Behavior).
 % once(A)
+goal_behavior(once(A),Module,fail(nocut)) :-
+  goal_behavior(A,Module,fail(_)), % scope of cut limited to A
+  !.
+goal_behavior(once(A),Module,true(nocut)) :-
+  goal_behavior(A,Module,true(_)), % scope of cut limited to A
+  !.
 goal_behavior(once(A),Module,Behavior) :-
   !,
   goal_behavior(A,Module,Behavior).
 % other forms
 goal_behavior(Goal,Module,call(Module:Goal)).
+
+add_cut(true(Cut1),Cut2,true(Cut)) :-
+  cut_or(Cut1,Cut2,Cut).
+add_cut(fail(Cut1),Cut2,fail(Cut)) :-
+  cut_or(Cut1,Cut2,Cut).
+add_cut(call(Goal),_,call(Goal)).
+
+cut_or(nocut,nocut,nocut) :-
+  !.
+cut_or(_,_,cut).
 
 % recall_blocked_goal(+Goal,-ID)
 % To be called when Goal is unblocked. Succeeds if it was previously remembered
