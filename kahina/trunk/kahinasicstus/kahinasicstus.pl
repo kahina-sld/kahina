@@ -4,6 +4,7 @@
 :- use_module(library(lists)).
 :- use_module(library(jasper)).
 :- use_module(library(system)).
+:- use_module(library(terms)).
 
 :- multifile user:breakpoint_expansion/2.
 
@@ -195,6 +196,7 @@ get_next_pseudostep_id(ID) :-
 
 start_new_kahina_session(Bridge) :-
   initialize_pseudostep_id,
+  retractall(source_clause(_,_,_,_)),
   get_kahina_instance(Instance),
   get_jvm(JVM),
   jasper_call(JVM,
@@ -226,6 +228,32 @@ get_jvm(JVM) :-
   assert(jvm(JVM)).
 
 % ------------------------------------------------------------------------------
+% SOURCE INFORMATION
+% Mainly variable bindings.
+% ------------------------------------------------------------------------------
+
+:- dynamic source_clause/4.
+
+read_source_file(AbsFileName) :-
+  open(AbsFileName,read,Stream,[eof_action(eof_code)]),
+  repeat,
+    read_term(Stream,Term,[variable_names(Names),layout(Layout)]),
+    handle_term(Term,Names,Layout,AbsFileName),
+  !,
+  close(Stream).
+
+handle_term(end_of_file,_,_,_) :-
+  !.
+handle_term(Clause,Names,Layout,AbsFileName) :-
+  layout_ln(Layout,LineNumber),
+  assert(source_clause(LineNumber,AbsFileName,Clause,Names)),
+  fail.
+
+layout_ln([LineNumber|_],LineNumber) :-
+  !.
+layout_ln(LineNumber,LineNumber).
+
+% ------------------------------------------------------------------------------
 % BLOCKED GOALS
 % Here, unblock steps are matched to corresponding block steps in the history.
 % Some guesswork is involved.
@@ -255,6 +283,28 @@ remember_blocked_goal(Module:Goal,ID) :-
   (reduce_goal(TargetGoal,TargetModule,ReducedTarget)
   -> memberchk(blocked_goal(ID,ReducedTarget,Condition,_),BlockedGoals) % last arg will be instantiated later to mark goal as unblocked
    ; true). % We will not be able to trace any unblock step back to this block step.
+
+% recall_blocked_goal(+Goal,-ID)
+% To be called when Goal is unblocked. Succeeds if it was previously remembered
+% blocked, and instantiates ID to the ID of the corresponding block pseudostep.
+recall_blocked_goal(Module:Goal,ID) :-
+  memory(blocked_goals(BlockedGoals)),
+  member(blocked_goal(ID,Module2:Goal2,Condition,Unblocked),BlockedGoals),
+  (var(ID) % end of open-ended list reached
+  -> !, fail
+   ; true),
+  var(Unblocked), % not unblocked yet in the current stack
+  % Check if it's the same goal. If two literally identical goals are blocked,
+  % and unblocked in reverse order, our guess at the ID will be wrong. Checking
+  % the unblock condition might prevent this but cannot fully do so because it
+  % is not always sufficient, and does not help when both conditions become true
+  % simultaneously. In the latter case, we can hope that goals are unblocked in
+  % the order they were blocked, but SP does not guarantee this.
+  Module == Module2,
+  Goal == Goal2,
+  Condition,
+  Unblocked = true,
+  !.
 
 reduce_goal(Goal,Module,Reduced) :-
   goal_behavior(Goal,Module,call(Reduced)).
@@ -365,28 +415,6 @@ cut_or(nocut,nocut,nocut) :-
   !.
 cut_or(_,_,cut).
 
-% recall_blocked_goal(+Goal,-ID)
-% To be called when Goal is unblocked. Succeeds if it was previously remembered
-% blocked, and instantiates ID to the ID of the corresponding block pseudostep.
-recall_blocked_goal(Module:Goal,ID) :-
-  memory(blocked_goals(BlockedGoals)),
-  member(blocked_goal(ID,Module2:Goal2,Condition,Unblocked),BlockedGoals),
-  (var(ID) % end of open-ended list reached
-  -> !, fail
-   ; true),
-  var(Unblocked), % not unblocked yet in the current stack
-  % Check if it's the same goal. If two literally identical goals are blocked,
-  % and unblocked in reverse order, our guess at the ID will be wrong. Checking
-  % the unblock condition might prevent this but cannot fully do so because it
-  % is not always sufficient, and does not help when both conditions become true
-  % simultaneously. In the latter case, we can hope that goals are unblocked in
-  % the order they were blocked, but SP does not guarantee this.
-  Module == Module2,
-  Goal == Goal2,
-  Condition,
-  Unblocked = true,
-  !.
-
 % ------------------------------------------------------------------------------
 % UTILITIES
 % ------------------------------------------------------------------------------
@@ -394,3 +422,16 @@ recall_blocked_goal(Module:Goal,ID) :-
 memory(Term) :-
   execution_state(private(P)),
   memberchk(Term,P).
+
+% select_subterm(+SubtermSelector,+Term,-Subterm)
+% For definition of subterm selector, see SP manual or infer from this code.
+select_subterm([],Term,Term).
+select_subterm([ArgNo|ArgNos],Term,Subterm) :-
+  arg(ArgNo,Term,Arg),
+  select_subterm(ArgNos,Arg,Subterm).
+
+port_direction(call,in).
+port_direction(fail,out).
+port_direction(redo,in).
+port_direction(exit(_),out).
+port_direction(exception,out).
