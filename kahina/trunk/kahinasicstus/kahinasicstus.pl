@@ -26,13 +26,9 @@ kahina_breakpoint_action(Inv,Action) :-
   execution_state(port(Port)),
   get_bridge(Bridge),
   act(Port,Inv,Bridge),
-  (execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
-  -> write_to_chars(File,FileChars),
-     register_source_code_location(Bridge,Inv,FileChars,Line) % TODO port-specific?
-   ; true),
   get_action(Port,Bridge,Action).
 
-:- dynamic waiting_for_unblocked_goal/0.
+:- dynamic unblocked_pseudostep_waiting_for_link/1.
 
 act(call,Inv,Bridge) :-
   retract(unblock_pseudostep_waiting_for_link(UnblockingID)),
@@ -40,22 +36,29 @@ act(call,Inv,Bridge) :-
   recall_blocked_goal(Module:Goal,BlockingID),
   !,
   link_nodes(Bridge,UnblockingID,BlockingID),
-  act(call,Inv,Bridge). % Continue with second clause. Can't fail because recall_blocked_goal/2 is supposed to change the execution state.
+  act(call,Inv,Bridge). % Continue with second clause. Can't just fail because recall_blocked_goal/2 is supposed to change the execution state.
 act(call,Inv,Bridge) :-
   execution_state(pred(Module:Pred)),	% "module qualified goal template", see manual
   write_to_chars(Module:Pred,PredChars),
   act_step(Bridge,Inv,PredChars),
-  act_call(Bridge,Inv).
+  (execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
+  -> write_to_chars(File,FileChars),
+     register_source_code_location(Bridge,Inv,FileChars,Line)
+   ; true),
+  act_call(Bridge,Inv),
+  perhaps(send_variable_bindings(Bridge,Inv,call)).
 act(fail,Inv,Bridge) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   act_fail(Bridge,Inv).
 act(exit(nondet),Inv,Bridge) :-
   !,
   retractall(unblock_pseudostep_waiting_for_link(_)),
-  act_exit(Bridge,Inv,false).
+  act_exit(Bridge,Inv,false),
+  perhaps(send_variable_bindings(Bridge,Inv,exit(nondet))).
 act(exit(det),Inv,Bridge) :-
     retractall(unblock_pseudostep_waiting_for_link(_)),
-  act_exit(Bridge,Inv,true).
+  act_exit(Bridge,Inv,true),
+  perhaps(send_variable_bindings(Bridge,Inv,exit(det))).
 act(redo,Inv,Bridge) :-
     retractall(unblock_pseudostep_waiting_for_link(_)),
   act_redo(Bridge,Inv).
@@ -141,6 +144,22 @@ link_nodes(Bridge,Anchor,Target) :-
       link_nodes(+object('org/kahina/prolog/bridge/PrologBridge'),+integer,+integer),
       link_nodes(Bridge,Anchor,Target)).
 
+send_variable_bindings(Bridge,Inv,Port) :-
+  get_jvm(JVM),
+  variable_binding(Name,Value), % has many solutions
+  %send_variable_binding(JVM,Bridge,Inv,Port,Name,Value),
+  fail.
+send_variable_binding(_,_,_).
+
+send_variable_binding(JVM,Bridge,Inv,Port,Name,Value) :-
+  port_direction(Port,DirectionChars),
+  write_to_chars(Name,NameChars),
+  write_to_chars(Value,ValueChars),
+  jasper_call(JVM,
+      method('org/kahina/prolog/bridge/PrologBridge','registerBinding',[instance]),
+      register_bindings(+object('org/kahina/prolog/bridge/PrologBridge'),+integer,+chars,+chars,+chars),
+      register_bindings(Bridge,Inv,DirectionChars,NameChars,ValueChars)).
+
 % ------------------------------------------------------------------------------
 % CONTROL
 % ------------------------------------------------------------------------------
@@ -196,6 +215,7 @@ get_next_pseudostep_id(ID) :-
 
 start_new_kahina_session(Bridge) :-
   initialize_pseudostep_id,
+  retractall(source_read(_)),
   retractall(source_clause(_,_,_,_)),
   get_kahina_instance(Instance),
   get_jvm(JVM),
@@ -232,7 +252,17 @@ get_jvm(JVM) :-
 % Mainly variable bindings.
 % ------------------------------------------------------------------------------
 
-:- dynamic source_clause/4.
+:- dynamic source_read/1.
+:- dynamic source_clause/5.
+
+variable_binding(Name,Value) :-
+  execution_state(line(File,Line)), % TODO we do that twice at call ports, consolidate
+  (source_read(File) % TODO is that guaranteed to be absolute?
+  -> true
+   ; read_source_file(File)),
+  execution_state(parent_clause(Clause)),
+  once((source_clause(SourceClause,File,FirstLine,LastLine,Names),subsumes(SourceClause,Clause),FirstLine=<Line,LastLine>=Line)), % TODO with really bad code organization, we might retrieve a wrong clause here
+  member(Name=Value,Names).
 
 read_source_file(AbsFileName) :-
   open(AbsFileName,read,Stream,[eof_action(eof_code)]),
@@ -240,18 +270,16 @@ read_source_file(AbsFileName) :-
     read_term(Stream,Term,[variable_names(Names),layout(Layout)]),
     handle_term(Term,Names,Layout,AbsFileName),
   !,
-  close(Stream).
+  close(Stream),
+  assert(source_read(AbsFileName)).
 
 handle_term(end_of_file,_,_,_) :-
   !.
 handle_term(Clause,Names,Layout,AbsFileName) :-
-  layout_ln(Layout,LineNumber),
-  assert(source_clause(LineNumber,AbsFileName,Clause,Names)),
+  first_line(Layout,FirstLine),
+  last_line(Layout,LastLine),
+  assert(source_clause(Clause,AbsFileName,FirstLine,LastLine,Names)),
   fail.
-
-layout_ln([LineNumber|_],LineNumber) :-
-  !.
-layout_ln(LineNumber,LineNumber).
 
 % ------------------------------------------------------------------------------
 % BLOCKED GOALS
@@ -423,15 +451,26 @@ memory(Term) :-
   execution_state(private(P)),
   memberchk(Term,P).
 
-% select_subterm(+SubtermSelector,+Term,-Subterm)
-% For definition of subterm selector, see SP manual or infer from this code.
-select_subterm([],Term,Term).
-select_subterm([ArgNo|ArgNos],Term,Subterm) :-
-  arg(ArgNo,Term,Arg),
-  select_subterm(ArgNos,Arg,Subterm).
+port_direction(call,[105,110]). % in
+port_direction(fail,[111,117,116]). % out
+port_direction(redo,[105,110]).
+port_direction(exit(_),[111,117,116]).
+port_direction(exception,[111,117,116]).
 
-port_direction(call,in).
-port_direction(fail,out).
-port_direction(redo,in).
-port_direction(exit(_),out).
-port_direction(exception,out).
+perhaps(Goal) :-
+  Goal,
+  !.
+perhaps(_).
+
+first_line([FirstLine|_],FirstLine) :-
+  !.
+first_line(FirstLine,FirstLine).
+
+last_line(LastLine,LastLine) :-
+  integer(LastLine),
+  !.
+last_line([LastArg],LastLine) :-
+  !,
+  last_line(LastArg,LastLine).
+last_line([_|Args],LastLine) :-
+  last_line(Args,LastLine).
