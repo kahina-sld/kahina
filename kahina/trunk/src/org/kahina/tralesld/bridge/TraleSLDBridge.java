@@ -71,7 +71,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		}
 	}
 
-	public void step(int extID, String nodeLabel, String consoleMessage)
+	public void step(int extID, String stepType, String nodeLabel, String consoleMessage)
 	{
 		try
 		{
@@ -79,12 +79,12 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				System.err.println(this + ".registerStepInformation(" + extID + "," + nodeLabel + "," + consoleMessage + ")");
 			}
-			super.step(extID, nodeLabel);
+			super.step(extID, nodeLabel, nodeLabel);
 			state.consoleMessage(convertStepID(extID), extID, LogicProgrammingStepType.CALL, consoleMessage);
-			if (nodeLabel.startsWith("rule_close") && lastRegisteredChartEdge != -1)
+			if (stepType.equals("rule_close") && lastRegisteredChartEdge != -1)
 			{
 				state.linkEdgeToNode(lastRegisteredChartEdge, currentID);
-			} else if (nodeLabel.startsWith("rec["))
+			} else if (stepType.equals("rec"))
 			{
 				if (VERBOSE)
 				{
@@ -93,7 +93,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				String sentence = nodeLabel.substring(3, nodeLabel.length());
 				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtilities.parsePrologStringList(sentence) }));
 				initializeChart(sentence);
-			} else if (nodeLabel.startsWith("compile_gram("))
+			} else if (stepType.equals("compile_gram("))
 			{
 				if (VERBOSE)
 				{

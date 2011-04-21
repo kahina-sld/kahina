@@ -93,6 +93,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 		if (VERBOSE)
 			System.err.println("new LogicProgrammingBridge()");
 	}
+	
+	// TODO use console messages?
 
 	/**
 	 * Alternative to {@link LogicProgrammingBridge#step(int, String)} that
