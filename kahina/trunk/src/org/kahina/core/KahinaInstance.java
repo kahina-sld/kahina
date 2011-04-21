@@ -1,5 +1,6 @@
 package org.kahina.core;
 
+import java.awt.event.ActionEvent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,6 +11,8 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.bridge.KahinaBridge;
@@ -19,8 +22,10 @@ import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.event.KahinaPerspectiveEvent;
 import org.kahina.core.event.KahinaSessionEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaGUI;
@@ -37,6 +42,7 @@ import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.source.KahinaJEditSourceCodeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.tralesld.TraleSLDState;
+import org.kahina.tralesld.event.TraleSLDControlEventCommands;
 
 public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge> implements KahinaListener
 {
@@ -150,10 +156,16 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		if (e instanceof KahinaUpdateEvent)
 		{
 			processUpdateEvent((KahinaUpdateEvent) e);
-		} else if (e instanceof KahinaSessionEvent)
+		} 
+		else if (e instanceof KahinaPerspectiveEvent)
+		{
+			processPerspectiveEvent((KahinaPerspectiveEvent) e);
+		}
+		else if (e instanceof KahinaSessionEvent)
 		{
 			processSessionEvent((KahinaSessionEvent) e);
-		} else if (e instanceof KahinaSystemEvent)
+		} 
+		else if (e instanceof KahinaSystemEvent)
 		{
 			processSystemEvent((KahinaSystemEvent) e);
 		}
@@ -166,6 +178,19 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			KahinaRunner.deinitialize();
 		}
 	}
+	
+	private void processPerspectiveEvent(KahinaPerspectiveEvent e)
+	{
+		int type = e.getPerspectiveEventType();
+		if (type == KahinaPerspectiveEvent.SAVE_PERSPECTIVE)
+		{
+			savePerspectiveAs(e.getFile());
+		} 
+		else if (type == KahinaPerspectiveEvent.LOAD_PERSPECTIVE)
+		{
+			loadPerspective(e.getFile());
+		}
+	}
 
 	private void processSessionEvent(KahinaSessionEvent e)
 	{
@@ -173,7 +198,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		if (type == KahinaSessionEvent.SAVE_SESSION)
 		{
 			saveSessionAs(e.getFile());
-		} else if (type == KahinaSessionEvent.LOAD_SESSION)
+		} 
+		else if (type == KahinaSessionEvent.LOAD_SESSION)
 		{
 			loadSession(e.getFile());
 		}
@@ -292,6 +318,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			}
 		}
 	}
+	
 
 	private void processUpdateEvent(KahinaUpdateEvent e)
 	{
@@ -300,6 +327,16 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		{
 			KahinaRunner.processEvent(new KahinaConsoleLineEvent(refs));
 		}
+	}
+	
+	private void loadPerspective(File file)
+	{
+		//TODO: load XML file and tell GUI manager to apply new perspective
+	}
+	
+	private void savePerspectiveAs(File file)
+	{
+		//TODO: tell GUI manager to save current perspective to XML file
 	}
 	
 	/**
@@ -317,5 +354,4 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			loadSession(new File(args[0]));
 		}
 	}
-	
 }
