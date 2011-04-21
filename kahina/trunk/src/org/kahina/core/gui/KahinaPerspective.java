@@ -30,13 +30,13 @@ import org.w3c.dom.Element;
 public class KahinaPerspective 
 {
 	//view options are indexed by string identifiers
-	Map<String,KahinaViewConfiguration<KahinaView<?>>> config;
+	Map<String,KahinaViewConfiguration> config;
 	//the arrangement, size and position of windows
 	KahinaArrangement arrangement;
 	
 	public KahinaPerspective()
 	{
-		config = new HashMap<String,KahinaViewConfiguration<KahinaView<?>>>();
+		config = new HashMap<String,KahinaViewConfiguration>();
 		arrangement = new KahinaArrangement();
 	}
 	
@@ -53,11 +53,23 @@ public class KahinaPerspective
         Element configsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:configurations");
         for (String viewID : config.keySet())
         {
-        	Element configEl = config.get(viewID).exportXML(dom);
+        	Element configEl = this.getConfiguration(viewID).exportXML(dom);
         	configEl.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:viewid", viewID);
         	configsEl.appendChild(configEl);
         }
         el.appendChild(configsEl);
         return el;
+	}
+	
+	public KahinaViewConfiguration getConfiguration(String viewID)
+	{
+		KahinaViewConfiguration conf = config.get(viewID);
+		if (conf == null) return new KahinaViewConfiguration();
+		return conf;
+	}
+	
+	public void setConfiguration(String viewID, KahinaViewConfiguration conf)
+	{
+		config.put(viewID, conf);
 	}
 }

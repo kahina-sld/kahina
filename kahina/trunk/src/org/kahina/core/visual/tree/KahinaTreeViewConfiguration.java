@@ -3,9 +3,13 @@ package org.kahina.core.visual.tree;
 import java.awt.Color;
 import java.util.HashMap;
 
+import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
-public class KahinaTreeViewConfiguration extends KahinaViewConfiguration<KahinaTreeView>
+public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 {
 	// display options
 	private int horizontalDistance = 5;
@@ -310,7 +314,8 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration<KahinaT
 		if (newPolicy >= 0 && newPolicy <= 2)
 		{
 			terminalsPolicy = newPolicy;
-		} else
+		} 
+		else
 		{
 			System.err.println("WARNING: unknown terminals policy value " + newPolicy);
 		}
@@ -322,8 +327,91 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration<KahinaT
 		return config;
 	}
 	
-	public void exportToXML()
+	public Element exportXML(Document dom)
 	{
+		Element el = super.exportXML(dom);
+		el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type","org.kahina.core.visual.tree.KahinaTree");
 		
+		Element horDistEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		horDistEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","horizontalDistance");
+		horDistEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",horizontalDistance + "");	
+		el.appendChild(horDistEl);
+		
+		Element verDistEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		verDistEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","verticalDistance");
+		verDistEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",verticalDistance + "");	
+		el.appendChild(verDistEl);
+		
+		Element fontSizeEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		fontSizeEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","fontSize");
+		fontSizeEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",fontSize + "");	
+		el.appendChild(fontSizeEl);
+		
+		Element displaySecondDimEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		displaySecondDimEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","displaySecondDimension");
+		displaySecondDimEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",displaySecondDimension + "");	
+		el.appendChild(displaySecondDimEl);
+		
+		Element bgColorEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		bgColorEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","bgColor");
+		bgColorEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",bgColor.toString());	
+		el.appendChild(bgColorEl);
+		
+		Element nodeShapePolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		nodeShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","nodeShapePolicy");
+		nodeShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",nodeShapePolicy + "");	
+		el.appendChild(nodeShapePolicyEl);
+		
+		Element edgeShapePolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		edgeShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","edgeShapePolicy");
+		edgeShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",edgeShapePolicy + "");	
+		el.appendChild(edgeShapePolicyEl);
+		
+		Element nodeDisplayPolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		nodeDisplayPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","nodeDisplayPolicy");
+		nodeDisplayPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",nodeDisplayPolicy + "");	
+		el.appendChild(nodeDisplayPolicyEl);
+		
+		Element collapsePolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		collapsePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","collapsePolicy");
+		collapsePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",collapsePolicy + "");	
+		el.appendChild(collapsePolicyEl);
+		
+		Element terminalsPolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		terminalsPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","terminalsPolicy");
+		terminalsPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",terminalsPolicy + "");	
+		el.appendChild(terminalsPolicyEl);
+		
+		Element lineShapePolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		lineShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","lineShapePolicy");
+		lineShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",lineShapePolicy + "");	
+		el.appendChild(lineShapePolicyEl);
+		
+		Element secondaryLineShapePolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		secondaryLineShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","secondaryLineShapePolicy");
+		secondaryLineShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",secondaryLineShapePolicy + "");	
+		el.appendChild(secondaryLineShapePolicyEl);
+		
+		Element nodePositionPolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		nodePositionPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","nodePositionPolicy");
+		nodePositionPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",nodePositionPolicy + "");	
+		el.appendChild(nodePositionPolicyEl);
+		
+		Element antialiasingPolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		antialiasingPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","antialiasingPolicy");
+		antialiasingPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",antialiasingPolicy + "");	
+		el.appendChild(antialiasingPolicyEl);
+		
+		Element displayOrientationEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		displayOrientationEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","displayOrientation");
+		displayOrientationEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",displayOrientation + "");	
+		el.appendChild(displayOrientationEl);
+		
+		Element cuttingPolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		cuttingPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","cuttingPolicy");
+		cuttingPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",cuttingPolicy + "");	
+		el.appendChild(cuttingPolicyEl);
+		
+		return el;
 	}
 }

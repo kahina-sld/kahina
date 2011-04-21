@@ -50,6 +50,9 @@ public class KahinaWindowManager implements KahinaListener
         //create windows for all the other registered views
         for (KahinaView<?> view : gui.views)
         {
+        	//for now, generate the perspective from the defined configurations
+        	currentPerspective.setConfiguration(view.getTitle(), view.getConfig());
+        	
             KahinaWindow viewWindow = integrateInDefaultWindow(view, control);
             xPos += width + 20;
             width = view.getTitle().length() * 12 + 50;

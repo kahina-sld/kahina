@@ -149,4 +149,10 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		// recalculation is implicitly part of this (via marker)
 		selectStep(e.getSelectedStep());
 	}
+	
+	//TODO: define a configuration that does not only configure the top layer
+	public KahinaTreeViewConfiguration getConfig()
+	{
+		return views[0].getConfig();
+	}
 }

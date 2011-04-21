@@ -10,6 +10,7 @@ import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.core.visual.tree.KahinaTreeViewConfiguration;
 
 public abstract class KahinaView<T extends KahinaObject> implements KahinaListener
 {  
@@ -17,6 +18,8 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	
     // the title of the tab or window this view is displayed in
     private String title = "Unnamed View";
+    
+	protected KahinaViewConfiguration config;
     
     protected T model;
     
@@ -92,4 +95,10 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
     {
         this.title = title;
     }
+    
+	public KahinaViewConfiguration getConfig()
+	{
+		System.err.println("WARNING: getting the empty default configuration!");
+		return config;
+	}
 }
