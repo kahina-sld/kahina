@@ -1,14 +1,23 @@
 package org.kahina.core.gui;
 
 import java.awt.Toolkit;
+import java.io.File;
 import java.util.HashMap;
 
 import javax.swing.JFrame;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaListener;
+import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.event.KahinaPerspectiveEvent;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.visual.KahinaView;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 
-public class KahinaWindowManager
+public class KahinaWindowManager implements KahinaListener
 {
     public KahinaMainWindow mainWindow;
     
@@ -21,7 +30,10 @@ public class KahinaWindowManager
     
     public KahinaWindowManager(KahinaGUI gui, KahinaController control)
     {
-        this.gui = gui;     
+        this.gui = gui;  
+        
+        this.currentPerspective = new KahinaPerspective();
+        
         this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         this.topLevelWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         
@@ -55,6 +67,8 @@ public class KahinaWindowManager
             viewWindow.setSize(width, height);
             viewWindow.setLocation(xPos, yPos);
         }
+        
+		control.registerListener(KahinaEventTypes.PERSPECTIVE, this);
     }
     
     public void disposeAllWindows()
@@ -123,4 +137,37 @@ public class KahinaWindowManager
             window.setVisible(true);
         }
     }
+    
+	@Override
+	public void processEvent(KahinaEvent e)
+	{
+		if (e instanceof KahinaPerspectiveEvent)
+		{
+			processPerspectiveEvent((KahinaPerspectiveEvent) e);
+		}
+	}
+    
+	private void processPerspectiveEvent(KahinaPerspectiveEvent e)
+	{
+		int type = e.getPerspectiveEventType();
+		if (type == KahinaPerspectiveEvent.SAVE_PERSPECTIVE)
+		{
+			savePerspectiveAs(e.getFile());
+		} 
+		else if (type == KahinaPerspectiveEvent.LOAD_PERSPECTIVE)
+		{
+			loadPerspective(e.getFile());
+		}
+	}
+	
+	private void loadPerspective(File file)
+	{
+		//TODO: load XML file and apply new perspective
+	}
+	
+	private void savePerspectiveAs(File file)
+	{
+		Node node = currentPerspective.exportXML(XMLUtilities.newEmptyDocument());
+		XMLUtilities.writeXML(node,file.getAbsolutePath());
+	}
 }

@@ -157,10 +157,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		{
 			processUpdateEvent((KahinaUpdateEvent) e);
 		} 
-		else if (e instanceof KahinaPerspectiveEvent)
-		{
-			processPerspectiveEvent((KahinaPerspectiveEvent) e);
-		}
 		else if (e instanceof KahinaSessionEvent)
 		{
 			processSessionEvent((KahinaSessionEvent) e);
@@ -176,19 +172,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		if (e.getSystemEventType() == KahinaSystemEvent.QUIT)
 		{
 			KahinaRunner.deinitialize();
-		}
-	}
-	
-	private void processPerspectiveEvent(KahinaPerspectiveEvent e)
-	{
-		int type = e.getPerspectiveEventType();
-		if (type == KahinaPerspectiveEvent.SAVE_PERSPECTIVE)
-		{
-			savePerspectiveAs(e.getFile());
-		} 
-		else if (type == KahinaPerspectiveEvent.LOAD_PERSPECTIVE)
-		{
-			loadPerspective(e.getFile());
 		}
 	}
 
@@ -327,16 +310,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		{
 			KahinaRunner.processEvent(new KahinaConsoleLineEvent(refs));
 		}
-	}
-	
-	private void loadPerspective(File file)
-	{
-		//TODO: load XML file and tell GUI manager to apply new perspective
-	}
-	
-	private void savePerspectiveAs(File file)
-	{
-		//TODO: tell GUI manager to save current perspective to XML file
 	}
 	
 	/**

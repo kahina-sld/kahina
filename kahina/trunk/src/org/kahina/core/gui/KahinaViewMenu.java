@@ -53,7 +53,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener
             File dataFile = chooser.getSelectedFile();
             if (dataFile != null) KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_PERSPECTIVE, dataFile));
         }
-        else if (s.equals("savePerspective"))
+        else if (s.equals("savePerspectiveAs"))
         {
             JFileChooser chooser = new JFileChooser(new File("."));
             chooser.setDialogTitle("Save Perspective As");
