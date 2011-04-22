@@ -87,61 +87,61 @@ act(unblock,_,Bridge) :-
 act_step(Bridge,Inv,PredChars) :-
   get_jvm(JVM),
   jasper_call(JVM,
-      method('org/kahina/prolog/bridge/PrologBridge','step',[instance]),
-      step(+object('org/kahina/prolog/bridge/PrologBridge'),+integer,+chars),
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','step',[instance]),
+      step(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+chars),
       step(Bridge,Inv,PredChars)).
 
 act_call(Bridge,Inv) :-
   get_jvm(JVM),
   jasper_call(JVM,
-      method('org/kahina/prolog/bridge/PrologBridge','call',[instance]),
-      call(+object('org/kahina/prolog/bridge/PrologBridge'),+integer),
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','call',[instance]),
+      call(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
       call(Bridge,Inv)).
 
 act_fail(Bridge,Inv) :-
   get_jvm(JVM),
   jasper_call(JVM,
-      method('org/kahina/prolog/bridge/PrologBridge','fail',[instance]),
-      fail(+object('org/kahina/prolog/bridge/PrologBridge'),+integer),
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','fail',[instance]),
+      fail(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
       fail(Bridge,Inv)),
   end(Inv,Bridge).
 
 act_exit(Bridge,Inv,Det) :-
   get_jvm(JVM),
   jasper_call(JVM,
-      method('org/kahina/prolog/bridge/PrologBridge','exit',[instance]),
-      exit(+object('org/kahina/prolog/bridge/PrologBridge'),+integer,+boolean),
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','exit',[instance]),
+      exit(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+boolean),
       exit(Bridge,Inv,Det)),
   end(Inv,Bridge).
 
 act_redo(Bridge,Inv) :-
   get_jvm(JVM),
   jasper_call(JVM,
-      method('org/kahina/prolog/bridge/PrologBridge','redo',[instance]),
-      redo(+object('org/kahina/prolog/bridge/PrologBridge'),+integer),
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','redo',[instance]),
+      redo(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
       redo(Bridge,Inv)).
 
 end(1,Bridge) :-
   !,
   get_jvm(JVM),
   jasper_call(JVM,
-      method('org/kahina/prolog/bridge/PrologBridge','end',[instance]),
-      end(+object('org/kahina/prolog/bridge/PrologBridge'),+integer),
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','end',[instance]),
+      end(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
       end(Bridge,1)).
 end(_,_).
 
 register_source_code_location(Bridge,Inv,FileChars,Line) :-
   get_jvm(JVM),
   jasper_call(JVM,
-      method('org/kahina/prolog/bridge/PrologBridge','registerStepSourceCodeLocation',[instance]),
-      register_step_source_code_location(+object('org/kahina/prolog/bridge/PrologBridge'),+integer,+chars,+integer),
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','registerStepSourceCodeLocation',[instance]),
+      register_step_source_code_location(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+chars,+integer),
       register_step_source_code_location(Bridge,Inv,FileChars,Line)).
 
 link_nodes(Bridge,Anchor,Target) :-
   get_jvm(JVM),
   jasper_call(JVM,
-      method('org/kahina/prolog/bridge/PrologBridge','linkNodes',[instance]),
-      link_nodes(+object('org/kahina/prolog/bridge/PrologBridge'),+integer,+integer),
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','linkNodes',[instance]),
+      link_nodes(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+integer),
       link_nodes(Bridge,Anchor,Target)).
 
 send_variable_bindings(Bridge,Inv,Port) :-
@@ -156,8 +156,8 @@ send_variable_binding(JVM,Bridge,Inv,Port,Name,Value) :-
   write_to_chars(Name,NameChars),
   write_to_chars(Value,ValueChars),
   jasper_call(JVM,
-      method('org/kahina/prolog/bridge/PrologBridge','registerBinding',[instance]),
-      register_bindings(+object('org/kahina/prolog/bridge/PrologBridge'),+integer,+chars,+chars,+chars),
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','registerBinding',[instance]),
+      register_bindings(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+chars,+chars,+chars),
       register_bindings(Bridge,Inv,DirectionChars,NameChars,ValueChars)).
 
 % ------------------------------------------------------------------------------
@@ -181,8 +181,8 @@ wait_for_action(Bridge,Action) :-
 get_action_from_bridge(Bridge,Action) :-
   get_jvm(JVM),
   jasper_call(JVM,
-      method('org/kahina/prolog/bridge/PrologBridge','getAction',[instance]),
-      get_action(+object('org/kahina/prolog/bridge/PrologBridge'),[-char]),
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','getAction',[instance]),
+      get_action(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),[-char]),
       get_action(Bridge,Action)).
 
 % ------------------------------------------------------------------------------
@@ -220,8 +220,8 @@ start_new_kahina_session(Bridge) :-
   get_kahina_instance(Instance),
   get_jvm(JVM),
   jasper_call(JVM,
-      method('org/kahina/prolog/PrologDebuggerInstance','startNewSession',[instance]),
-      start_new_session(+object('org/kahina/prolog/PrologDebuggerInstance'),[-object('org/kahina/prolog/bridge/PrologBridge')]),
+      method('org/kahina/sicstus/SICStusPrologDebuggerInstance','startNewSession',[instance]),
+      start_new_session(+object('org/kahina/sicstus/SICStusPrologDebuggerInstance'),[-object('org/kahina/sicstus/bridge/SICStusPrologBridge')]),
       start_new_session(Instance,Bridge)),
   write_to_chars('[query]',RootLabelChars),
   act_step(Bridge,0,RootLabelChars),
@@ -234,7 +234,7 @@ get_kahina_instance(Instance) :-
   !.
 get_kahina_instance(Instance) :-
   get_jvm(JVM),
-  jasper_new_object(JVM,'org/kahina/prolog/PrologDebuggerInstance',init,init,LocalInstance),
+  jasper_new_object(JVM,'org/kahina/sicstus/SICStusPrologDebuggerInstance',init,init,LocalInstance),
   jasper_create_global_ref(JVM,LocalInstance,Instance),
   assert(kahina_instance(Instance)).
 
