@@ -147,7 +147,7 @@ link_nodes(Bridge,Anchor,Target) :-
 send_variable_bindings(Bridge,Inv,Port) :-
   get_jvm(JVM),
   variable_binding(Name,Value), % has many solutions
-  %send_variable_binding(JVM,Bridge,Inv,Port,Name,Value),
+  send_variable_binding(JVM,Bridge,Inv,Port,Name,Value),
   fail.
 send_variable_binding(_,_,_).
 

@@ -9,7 +9,9 @@ import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.prolog.profiler.PrologProfiler;
 import org.kahina.sicstus.bridge.SICStusPrologBridge;
+import org.kahina.sicstus.data.bindings.SICStusPrologVariableBindingSet;
 import org.kahina.sicstus.gui.SICStusPrologGUI;
+import org.kahina.sicstus.visual.bindings.SICStusPrologVariableBindingSetView;
 
 public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SICStusPrologGUI, SICStusPrologBridge>
 {
@@ -52,7 +54,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 	protected void fillViewRegistry()
 	{
 		super.fillViewRegistry();
-		//KahinaViewRegistry.registerMapping(SICStusPrologVariableBindingSet.class, SICStusPrologVariableBindingSetView.class); TODO
+		KahinaViewRegistry.registerMapping(SICStusPrologVariableBindingSet.class, SICStusPrologVariableBindingSetView.class);
 		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, PrologJEditSourceCodeView.class);
 	}
 	

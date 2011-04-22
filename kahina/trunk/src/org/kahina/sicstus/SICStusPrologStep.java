@@ -1,7 +1,7 @@
 package org.kahina.sicstus;
 
 import org.kahina.lp.LogicProgrammingStep;
-import org.kahina.sicstus.data.SICStusPrologVariableBindingSet;
+import org.kahina.sicstus.data.bindings.SICStusPrologVariableBindingSet;
 
 public class SICStusPrologStep extends LogicProgrammingStep
 {

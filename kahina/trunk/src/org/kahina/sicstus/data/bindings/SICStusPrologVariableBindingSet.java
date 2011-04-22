@@ -1,4 +1,4 @@
-package org.kahina.sicstus.data;
+package org.kahina.sicstus.data.bindings;
 
 import java.util.Map;
 import java.util.SortedSet;
