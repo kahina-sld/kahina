@@ -251,20 +251,21 @@ variable_binding(Name,Value) :-
   (source_read(File) % TODO is that guaranteed to be absolute?
   -> true
    ; read_source_file(File)),
-  execution_state(parent_clause(Clause,SubtermSelector)), % Clause is as it is read from the source, it does not have variable bindings.
-  execution_state(goal(_Module:Goal)), % TODO consolidate, see above
-  once(( % TODO This is not guaranteed to find the right clause, but it takes a lot to trick us here: two clauses on the same line (!) both (!) of which are variants of the current parent clause
-      source_clause(SourceClause,File,FirstLine,LastLine,Names),
+  execution_state(parent_clause(Clause,SubtermSelector)), % Clause is as it is read from the source modulo module prefix translation, it does not have variable bindings.
+  execution_state(goal(_:Goal)), % TODO consolidate, see above
+  once(( % TODO With two clauses on the same line, this may find the wrong one.
+      source_clause(SourceClause,File,FirstLine,LastLine,Names), % 
       FirstLine =< Line,
-      LastLine >= Line,
-      variant(SourceClause,Clause))),
-  SourceClause = (_ :- SourceBody), % TODO Mooooduuuules!
+      LastLine >= Line)), % TODO check if SourceClause is a variant of Clause modulo module prefix normalization
+  SourceClause = (_ :- SourceBody), % if we were dealing with a fact, we wouldn't be here
   select_subterm(SubtermSelector,SourceBody,SourceGoal),
   term_variables(SourceGoal,Variables), % limit our attention to the variables in the current goal, for the others we don't have the values handy
   member(Variable,Variables), % pick a variable
   member(Name=Value,Names), % pick a name
   Variable == Value, % match them
-  SourceGoal = Goal. % bind current value to variable
+  (SourceGoal = Goal % bind current value to variable
+  -> true
+   ; SourceGoal = _:Goal). % in case the source form of the goal has a module prefix
 
 read_source_file(AbsFileName) :-
   open(AbsFileName,read,Stream,[eof_action(eof_code)]),
