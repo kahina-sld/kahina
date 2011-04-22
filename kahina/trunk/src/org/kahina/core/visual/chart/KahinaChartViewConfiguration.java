@@ -3,6 +3,8 @@ package org.kahina.core.visual.chart;
 import java.awt.Color;
 
 import org.kahina.core.visual.KahinaViewConfiguration;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class KahinaChartViewConfiguration extends KahinaViewConfiguration
 {
@@ -198,4 +200,69 @@ public class KahinaChartViewConfiguration extends KahinaViewConfiguration
     {
         return cellWidth;
     }
+    
+	public Element exportXML(Document dom)
+	{
+		Element el = super.exportXML(dom);
+		el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type","org.kahina.core.visual.tree.KahinaChart");
+		
+		Element cellWidthEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		cellWidthEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","cellWidth");
+		cellWidthEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",cellWidth + "");	
+		el.appendChild(cellWidthEl);
+		
+		Element fontSizeEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		fontSizeEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","fontSize");
+		fontSizeEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",fontSize + "");	
+		el.appendChild(fontSizeEl);
+		
+		Element bgColorEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		bgColorEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","bgColor");
+		bgColorEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",bgColor.toString());	
+		el.appendChild(bgColorEl);
+		
+		Element cellWidthPolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		cellWidthPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","cellWidthPolicy");
+		cellWidthPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",cellWidthPolicy + "");	
+		el.appendChild(cellWidthPolicyEl);
+		
+		Element edgeStackingPolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		edgeStackingPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","edgeStackingPolicy");
+		edgeStackingPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",edgeStackingPolicy + "");	
+		el.appendChild(edgeStackingPolicyEl);
+		
+		Element displayRangePolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		displayRangePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","displayRangePolicy");
+		displayRangePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",displayRangePolicy + "");	
+		el.appendChild(displayRangePolicyEl);
+		
+		Element dependencyDisplayPolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		dependencyDisplayPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","dependencyDisplayPolicy");
+		dependencyDisplayPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",dependencyDisplayPolicy + "");	
+		el.appendChild(dependencyDisplayPolicyEl);
+		
+		Element antialiasingPolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		antialiasingPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","antialiasingPolicy");
+		antialiasingPolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",antialiasingPolicy + "");	
+		el.appendChild(antialiasingPolicyEl);
+		
+		Element displayOrientationEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		displayOrientationEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","displayOrientation");
+		displayOrientationEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",displayOrientation + "");	
+		el.appendChild(displayOrientationEl);
+		
+		Element transitiveAncestorsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		transitiveAncestorsEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","transitiveAncestors");
+		transitiveAncestorsEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",transitiveAncestors + "");	
+		el.appendChild(transitiveAncestorsEl);
+		
+		Element transitiveDescendantsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		transitiveDescendantsEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","transitiveDescendants");
+		transitiveDescendantsEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",transitiveDescendants + "");	
+		el.appendChild(transitiveDescendantsEl);
+		
+		//TODO: add element and XML linearization for display decider
+		
+		return el;
+	}
 }
