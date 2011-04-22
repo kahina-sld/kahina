@@ -251,16 +251,20 @@ variable_binding(Name,Value) :-
   (source_read(File) % TODO is that guaranteed to be absolute?
   -> true
    ; read_source_file(File)),
-  execution_state(parent_clause(Clause,SubtermSelector)),
+  execution_state(parent_clause(Clause,SubtermSelector)), % Clause is as it is read from the source, it does not have variable bindings.
   execution_state(goal(_Module:Goal)), % TODO consolidate, see above
-  once(( % TODO with really bad code organization, we might retrieve a wrong clause here
+  once(( % TODO This is not guaranteed to find the right clause, but it takes a lot to trick us here: two clauses on the same line (!) both (!) of which are variants of the current parent clause
       source_clause(SourceClause,File,FirstLine,LastLine,Names),
       FirstLine =< Line,
       LastLine >= Line,
-      subsumes(SourceClause,Clause), % TODO is this check necessary?
-      SourceClause = (_ :- SourceBody), % TODO Mooooduuuules!
-      select_subterm(SubtermSelector,SourceBody,Goal))), % TODO What about the module? % This unifies the current values with the variables in the variable names list
-  member(Name=Value,Names).
+      variant(SourceClause,Clause))),
+  SourceClause = (_ :- SourceBody), % TODO Mooooduuuules!
+  select_subterm(SubtermSelector,SourceBody,SourceGoal),
+  term_variables(SourceGoal,Variables), % limit our attention to the variables in the current goal, for the others we don't have the values handy
+  member(Variable,Variables), % pick a variable
+  member(Name=Value,Names), % pick a name
+  Variable == Value, % match them
+  SourceGoal = Goal. % bind current value to variable
 
 read_source_file(AbsFileName) :-
   open(AbsFileName,read,Stream,[eof_action(eof_code)]),
