@@ -58,88 +58,88 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
         String command = e.getActionCommand();
         if (command.equals("Zoom In"))
         {
-            view.view.zoomIn();
+            view.view.getConfig().zoomIn();
         }
         else if (command.equals("Zoom Out"))
         {
-            view.view.zoomOut();
+            view.view.getConfig().zoomOut();
         }
         else if (command.equals("Minimal necessary width"))
         {
-            view.view.setCellWidthPolicy(KahinaChartView.MINIMAL_NECESSARY_WIDTH);
+            view.view.getConfig().setCellWidthPolicy(KahinaChartViewOptions.MINIMAL_NECESSARY_WIDTH);
         }
         else if (command.equals("Maximal necessary width"))
         {
-            view.view.setCellWidthPolicy(KahinaChartView.MAXIMAL_NECESSARY_WIDTH);
+            view.view.getConfig().setCellWidthPolicy(KahinaChartViewOptions.MAXIMAL_NECESSARY_WIDTH);
         }
         else if (command.equals("Fixed width"))
         {
-            view.view.setCellWidthPolicy(KahinaChartView.FIXED_WIDTH);
+            view.view.getConfig().setCellWidthPolicy(KahinaChartViewOptions.FIXED_WIDTH);
         }
         else if (command.equals("Ancestors and Descendants"))
         {
-            view.view.setDependencyDisplayPolicy(KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS);
+            view.view.getConfig().setDependencyDisplayPolicy(KahinaChartViewOptions.BOTH_ANCESTORS_AND_DESCENDANTS);
         }
         else if (command.equals("Only ancestors (= production)"))
         {
-            view.view.setDependencyDisplayPolicy(KahinaChartView.ANCESTORS_ONLY);
+            view.view.getConfig().setDependencyDisplayPolicy(KahinaChartViewOptions.ANCESTORS_ONLY);
         }
         else if (command.equals("Only descendants (= origin)"))
         {
-            view.view.setDependencyDisplayPolicy(KahinaChartView.DESCENDANTS_ONLY);
+            view.view.getConfig().setDependencyDisplayPolicy(KahinaChartViewOptions.DESCENDANTS_ONLY);
         }
         else if (command.equals("No dependencies"))
         {
-            view.view.setDependencyDisplayPolicy(KahinaChartView.NO_DEPENDENCIES);
+            view.view.getConfig().setDependencyDisplayPolicy(KahinaChartViewOptions.NO_DEPENDENCIES);
         }
         else if (command.equals("ancestorTransitivity"))
         {
-            view.view.swapAncestorTransitivity();
+            view.view.getConfig().swapAncestorTransitivity();
         }
         else if (command.equals("descendantTransitivity"))
         {
-            view.view.swapDescendantTransitivity();
+            view.view.getConfig().swapDescendantTransitivity();
         }
         else if (command.equals("Fill space compactly"))
         {
-            view.view.setEdgeStackingPolicy(KahinaChartView.STACK_EDGES_FILL_SPACE);
+            view.view.getConfig().setEdgeStackingPolicy(KahinaChartViewOptions.STACK_EDGES_FILL_SPACE);
         }
         else if (command.equals("Maintain chronological order"))
         {
-            view.view.setEdgeStackingPolicy(KahinaChartView.STACK_EDGES_BY_ID);
+            view.view.getConfig().setEdgeStackingPolicy(KahinaChartViewOptions.STACK_EDGES_BY_ID);
         }
         else if (command.equals("Bottom Up"))
         {
-            view.view.setDisplayOrientation(KahinaChartView.BOTTOM_UP_DISPLAY);
+            view.view.getConfig().setDisplayOrientation(KahinaChartViewOptions.BOTTOM_UP_DISPLAY);
         }
         else if (command.equals("Top Down"))
         {
-            view.view.setDisplayOrientation(KahinaChartView.TOP_DOWN_DISPLAY);
+            view.view.getConfig().setDisplayOrientation(KahinaChartViewOptions.TOP_DOWN_DISPLAY);
         }
         else if (command.equals("Used range only"))
         {
-            view.view.setDisplayRangePolicy(KahinaChartView.RANGE_USED_ONLY);
+            view.view.getConfig().setDisplayRangePolicy(KahinaChartViewOptions.RANGE_USED_ONLY);
         }
         else if (command.equals("Defined range"))
         {
-            view.view.setDisplayRangePolicy(KahinaChartView.RANGE_USED_OR_CAPTION_DEFINED);
+            view.view.getConfig().setDisplayRangePolicy(KahinaChartViewOptions.RANGE_USED_OR_CAPTION_DEFINED);
         }
         else if (command.equals("Complete range"))
         {
-            view.view.setDisplayRangePolicy(KahinaChartView.RANGE_COMPLETE);
+            view.view.getConfig().setDisplayRangePolicy(KahinaChartViewOptions.RANGE_COMPLETE);
         }
         else if (command.equals("Antialiasing On"))
         {
-            view.view.setAntialiasingPolicy(KahinaChartView.ANTIALIASING);
+            view.view.getConfig().setAntialiasingPolicy(KahinaChartViewOptions.ANTIALIASING);
         }
         else if (command.equals("Antialiasing Off"))
         {
-            view.view.setAntialiasingPolicy(KahinaChartView.NO_ANTIALIASING);
+            view.view.getConfig().setAntialiasingPolicy(KahinaChartViewOptions.NO_ANTIALIASING);
         }
         else if (command.endsWith("0 %"))
         {
             int zoomLevel = Integer.parseInt(command.substring(0, command.length() - 3));
-            view.view.setZoomLevel(zoomLevel);
+            view.view.getConfig().setZoomLevel(zoomLevel);
         }
         else if (command.equals("Save as PNG"))
         {
@@ -164,9 +164,10 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
         else if (command.startsWith("edgeLabel:"))
         {
             String edgeLabel = command.substring(10);
-            view.view.displayDecider.swapLabelDisplay(edgeLabel);
+            view.view.getConfig().displayDecider.swapLabelDisplay(edgeLabel);
         }
         view.view.recalculate();
+        view.view.updateHighlightings();
         view.updateDisplay();
         view.repaint();
     }

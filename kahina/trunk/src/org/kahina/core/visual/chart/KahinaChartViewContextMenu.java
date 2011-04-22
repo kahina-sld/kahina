@@ -32,7 +32,7 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         for (int i = 4; i <= 20; i += 1)
         {
             JRadioButtonMenuItem sizeItem = new JRadioButtonMenuItem(i + "0 %");
-            if (i == v.getZoomLevel()) sizeItem.setSelected(true);
+            if (i == v.config.getZoomLevel()) sizeItem.setSelected(true);
             sizeItem.addActionListener(l);
             sizeGroup.add(sizeItem);
             zoomSubmenu.add(sizeItem);
@@ -42,13 +42,13 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         addSeparator();
         
         JMenu edgeLabelDisplayPolicySubmenu = new JMenu("Show \"failed\" edges with label");
-        v.displayDecider.updatePossibleEdgeLabels();
-        for (String edgeLabel : v.displayDecider.getPossibleEdgeLabels())
+        v.config.displayDecider.updatePossibleEdgeLabels();
+        for (String edgeLabel : v.config.displayDecider.getPossibleEdgeLabels())
         {
             JCheckBoxMenuItem displayEdgeLabelItem = new JCheckBoxMenuItem(edgeLabel);
             displayEdgeLabelItem.setActionCommand("edgeLabel:" + edgeLabel);
             displayEdgeLabelItem.addActionListener(l);
-            if (v.displayDecider.hiddenEdgeLabels.contains(edgeLabel))
+            if (v.config.displayDecider.hiddenEdgeLabels.contains(edgeLabel))
             {
                 displayEdgeLabelItem.setSelected(false);
             }
@@ -74,7 +74,7 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         fixedWidthItem.addActionListener(l);
         cellWidthPolicyGroup.add(fixedWidthItem);
         cellWidthPolicySubmenu.add(fixedWidthItem);
-        switch (v.getCellWidthPolicy())
+        switch (v.config.getCellWidthPolicy())
         {
             case 0:
             {
@@ -109,7 +109,7 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         noDependenciesItem.addActionListener(l);
         dependencyDisplayPolicyGroup.add(noDependenciesItem);
         dependencyDisplayPolicySubmenu.add(noDependenciesItem);
-        switch (v.getDependencyDisplayPolicy())
+        switch (v.config.getDependencyDisplayPolicy())
         {
             case 0:
             {
@@ -132,12 +132,12 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         JCheckBoxMenuItem ancestorTransitivityItem = new JCheckBoxMenuItem("Ancestor Transitivity");
         ancestorTransitivityItem.setActionCommand("ancestorTransitivity");
         ancestorTransitivityItem.addActionListener(l);
-        ancestorTransitivityItem.setSelected(v.getAncestorTransitivity());
+        ancestorTransitivityItem.setSelected(v.config.getAncestorTransitivity());
         dependencyDisplayPolicySubmenu.add(ancestorTransitivityItem);
         JCheckBoxMenuItem descendantTransitivityItem = new JCheckBoxMenuItem("Descendant Transitivity");
         descendantTransitivityItem.setActionCommand("descendantTransitivity");
         descendantTransitivityItem.addActionListener(l);
-        descendantTransitivityItem.setSelected(v.getDescendantTransitivity());
+        descendantTransitivityItem.setSelected(v.config.getDescendantTransitivity());
         dependencyDisplayPolicySubmenu.add(descendantTransitivityItem);
         add(dependencyDisplayPolicySubmenu);
         
@@ -151,7 +151,7 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         maintainChronologicalOrderItem.addActionListener(l);
         edgeStackingPolicyGroup.add(maintainChronologicalOrderItem);
         edgeStackingPolicySubmenu.add(maintainChronologicalOrderItem);
-        switch (v.getEdgeStackingPolicy())
+        switch (v.config.getEdgeStackingPolicy())
         {
             case 0:
             {
@@ -174,7 +174,7 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         topDownItem.addActionListener(l);
         displayOrientationGroup.add(topDownItem);
         displayOrientationSubmenu.add(topDownItem);
-        switch (v.getDisplayOrientation())
+        switch (v.config.getDisplayOrientation())
         {
             case 0:
             {
@@ -201,7 +201,7 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         completeRangeItem.addActionListener(l);
         displayRangePolicyGroup.add(completeRangeItem);
         displayRangePolicySubmenu.add(completeRangeItem);
-        switch (v.getDisplayRangePolicy())
+        switch (v.config.getDisplayRangePolicy())
         {
             case 0:
             {
@@ -230,7 +230,7 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         antialiasingOffItem.addActionListener(l);
         antialiasingGroup.add(antialiasingOffItem);
         antialiasingSubmenu.add(antialiasingOffItem);
-        switch (v.getAntialiasingPolicy())
+        switch (v.config.getAntialiasingPolicy())
         {
             case 0:
             {

@@ -49,7 +49,8 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 		if (fontSize > 6)
 		{
 			fontSize -= 1;
-		} else
+		} 
+		else
 		{
 			System.err.println("No zoom levels below 6 allowed!");
 		}

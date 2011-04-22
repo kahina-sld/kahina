@@ -28,50 +28,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
 {
 	private static final boolean verbose = false;
 	
-    //display options
-    private int cellWidth = 150; 
-    Color bgColor = Color.WHITE;
-    int cellWidthPolicy = KahinaChartView.MINIMAL_NECESSARY_WIDTH;
-    int edgeStackingPolicy = KahinaChartView.STACK_EDGES_BY_ID;
-    int displayOrientation = KahinaChartView.BOTTOM_UP_DISPLAY;
-    int displayRangePolicy = KahinaChartView.RANGE_USED_OR_CAPTION_DEFINED;
-    int dependencyDisplayPolicy = KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS;
-    int antialiasingPolicy = KahinaChartView.ANTIALIASING;
-    boolean transitiveAncestors;
-    boolean transitiveDescendants;
-    KahinaChartEdgeDisplayDecider displayDecider;
-    int fontSize; //also determines zoom factor and cell height
-    int cellHeight; //do not implement a setter for this, but change it with font size
-        
-    //DISPLAY CONSTANTS
-    
-    //possible values for cellWidthPolicy
-    public static final int FIXED_WIDTH = 0;
-    public static final int MINIMAL_NECESSARY_WIDTH = 1;
-    public static final int MAXIMAL_NECESSARY_WIDTH = 2;
-    
-    //possible values for edgeStackingPolicy
-    public static final int STACK_EDGES_FILL_SPACE = 0;
-    public static final int STACK_EDGES_BY_ID = 1;
-    
-    //possible values for displayOrientation
-    public static final int BOTTOM_UP_DISPLAY = 0;
-    public static final int TOP_DOWN_DISPLAY = 1;
-    
-    //possible values for displayRangePolicy
-    public static final int RANGE_USED_OR_CAPTION_DEFINED = 0;
-    public static final int RANGE_USED_ONLY = 1;
-    public static final int RANGE_COMPLETE = 2;
-    
-    //possible values for dependencyDisplayPolicy
-    public static final int BOTH_ANCESTORS_AND_DESCENDANTS = 0;
-    public static final int ANCESTORS_ONLY = 1;
-    public static final int DESCENDANTS_ONLY = 2;
-    public static final int NO_DEPENDENCIES = 3;
-    
-    //possible values for antialiasing policy
-    public static final int ANTIALIASING = 0;
-    public static final int NO_ANTIALIASING = 1;
+	KahinaChartViewConfiguration config;
     
     //keep track of occupied cells; also used for reverse indexing
     ArrayList<HashMap<Integer,Integer>> usedSpace;
@@ -100,6 +57,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     //private variables for internal calculations across functions
     int totalCellWidthMaximum;
     HashMap<Integer,Integer> segmentWidths;
+    int cellHeight; //do not implement a setter for this, but change it with font size
     //temporary data structure for grid layout according to displayRangePolicy
     HashMap<Integer,Integer> segmentOffsets = new HashMap<Integer,Integer>();
     int chartWidth;
@@ -108,18 +66,20 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     {
     	super(control);
         g = null;
+        
+        config = new KahinaChartViewConfiguration();
+        
         resetAllStructures();
         statusColorEncoding = new HashMap<Integer, Color>();
         statusHighlightColorEncoding = new HashMap<Integer, Color>();
         statusStrokeEncoding = new HashMap<Integer, Stroke>();
         statusFontEncoding = new HashMap<Integer, Font>();
-        transitiveAncestors = false;
-        transitiveDescendants = false;
+        
         chartWidth = 0;
-        fontSize = 10;
         cellHeight = 14;
-        displayDecider = new KahinaChartEdgeDisplayDecider();
-        displayDecider.setChartView(this);
+
+        setDisplayDecider(new KahinaChartEdgeDisplayDecider());
+
         control.registerListener("chart update", this);
     }
     
@@ -127,6 +87,11 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     {
         this(control);
         display(chartModel);
+    }
+    
+    public KahinaChartViewConfiguration getConfig()
+    {
+    	return config;
     }
     
     public void display(KahinaChart chartModel)
@@ -144,175 +109,10 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     
     public void setDisplayDecider(KahinaChartEdgeDisplayDecider displayDecider)
     {
-        this.displayDecider = displayDecider;
+        this.config.displayDecider = displayDecider;
         displayDecider.setChartView(this);
     }
     
-    public void zoomIn()
-    {
-        if (fontSize < 20)
-        {
-            fontSize += 1;
-            recalculate();
-        }
-        else
-        {
-            System.err.println("No zoom levels beyond 20 allowed!");
-        }
-    }
-    
-    public void zoomOut()
-    {
-        if (fontSize > 4)
-        {
-            fontSize -= 1;
-            recalculate();
-        }
-        else
-        {
-            System.err.println("No zoom levels below 4 allowed!");
-        }
-    }
-    
-    public void setZoomLevel(int level)
-    {
-        fontSize = level;
-        recalculate();
-    }
-    
-    public int getZoomLevel()
-    {
-        return fontSize;
-    }
-    
-    public void setCellWidthPolicy(int newPolicy)
-    {
-        if (newPolicy >= 0 && newPolicy <= 2)
-        {
-            cellWidthPolicy = newPolicy;
-            recalculate();
-        }
-        else
-        {
-            System.err.println("WARNING: unknown cell width policy value " + newPolicy);
-        }
-    }
-    
-    public void setDisplayOrientation(int newPolicy)
-    {
-        if (newPolicy >= 0 && newPolicy <= 1)
-        {
-            displayOrientation = newPolicy;
-            recalculate();
-        }
-        else
-        {
-            System.err.println("WARNING: unknown displayOrientation value " + newPolicy);
-        }
-    }
-    
-    public void setDisplayRangePolicy(int newPolicy)
-    {
-        if (newPolicy >= 0 && newPolicy <= 2)
-        {
-            displayRangePolicy = newPolicy;
-            recalculate();
-        }
-        else
-        {
-            System.err.println("WARNING: unknown display range policy value " + newPolicy);
-        }
-    }
-    
-    public void setEdgeStackingPolicy(int newPolicy)
-    {
-        if (newPolicy >= 0 && newPolicy <= 1)
-        {
-            edgeStackingPolicy = newPolicy;
-            recalculate();
-        }
-        else
-        {
-            System.err.println("WARNING: unknown edge stacking policy value " + newPolicy);
-        }
-    }
-    
-    public int getCellWidthPolicy()
-    {
-        return cellWidthPolicy;
-    }
-    
-    public int getEdgeStackingPolicy()
-    {
-        return edgeStackingPolicy;
-    }
-    
-    public int getDisplayOrientation()
-    {
-        return displayOrientation;
-    }
-    
-    public int getDisplayRangePolicy()
-    {
-        return displayRangePolicy;
-    }
-    
-    public int getDependencyDisplayPolicy()
-    {
-        return dependencyDisplayPolicy;
-    }
-    
-    public void setDependencyDisplayPolicy(int newPolicy)
-    {
-        if (newPolicy >= 0 && newPolicy <= 3)
-        {
-            dependencyDisplayPolicy = newPolicy;
-            updateHighlightings();
-        }
-        else
-        {
-            System.err.println("WARNING: unknown dependency display policy value " + newPolicy);
-        }
-    }
-    
-    public int getAntialiasingPolicy()
-    {
-        return antialiasingPolicy;
-    }
-
-    public void setAntialiasingPolicy(int newPolicy)
-    {
-        if (newPolicy >= 0 && newPolicy <= 1)
-        {
-            antialiasingPolicy = newPolicy;
-        }
-        else
-        {
-            System.err.println("WARNING: unknown antialiasing policy value " + newPolicy);
-        }
-    }
-    
-    public boolean getAncestorTransitivity()
-    {
-        return transitiveAncestors;
-    }
-    
-    public void swapAncestorTransitivity()
-    {
-        transitiveAncestors = !transitiveAncestors;
-        updateHighlightings();
-    }
-    
-    public boolean getDescendantTransitivity()
-    {
-        return transitiveDescendants;
-    }
-    
-    public void swapDescendantTransitivity()
-    {
-        transitiveDescendants = !transitiveDescendants;
-        updateHighlightings();
-    }
     
     private void resetAllStructures()
     {   
@@ -334,14 +134,15 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         totalCellWidthMaximum = 0;
         
         //temporary data structure aligning edges with rows to be drawn in
-        HashMap<Integer,Integer> rowForEdge = new HashMap<Integer, Integer>();   
+        HashMap<Integer,Integer> rowForEdge = new HashMap<Integer, Integer>();
+        int fontSize = config.getZoomLevel();
         
         //cell height determined by font size       
         FontMetrics fm = getFontMetrics(new Font(Font.MONOSPACED,Font.PLAIN, fontSize), new BasicStroke(1), fontSize);
         cellHeight = fm.getHeight();
         
         //initialize cell widths with values determined by their captions
-        if (cellWidthPolicy != FIXED_WIDTH)
+        if (config.getCellWidthPolicy() != KahinaChartViewOptions.FIXED_WIDTH)
         {
             for (int id : model.getSegmentsWithCaption())
             {
@@ -355,13 +156,13 @@ public class KahinaChartView extends KahinaView<KahinaChart>
 
         for (int curEdge : model.getEdgeIDs())
         {
-            if (decideEdgeDisplay(curEdge))
+            if (config.decideEdgeDisplay(curEdge))
             {
                 int leftBound = model.getLeftBoundForEdge(curEdge);
                 int rightBound = model.getRightBoundForEdge(curEdge);
                 String edgeCaption = model.getEdgeCaption(curEdge);
                 
-                if (cellWidthPolicy != FIXED_WIDTH)
+                if (config.getCellWidthPolicy() != KahinaChartViewOptions.FIXED_WIDTH)
                 {
                     Stroke edgeStroke = getEdgeStroke(curEdge);
                     Font edgeFont = getEdgeFont(curEdge);
@@ -380,7 +181,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
                 }
                 
                 //determine vertical slot according to stacking policy
-                if (edgeStackingPolicy == STACK_EDGES_FILL_SPACE)
+                if (config.getEdgeStackingPolicy() == KahinaChartViewOptions.STACK_EDGES_FILL_SPACE)
                 {
                     //fit in as early as possible (start searching from the top)
                     for (int i = 0; true; i++)
@@ -410,7 +211,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         }
         
         int currentOffset = 0;
-        if (displayRangePolicy == RANGE_COMPLETE)
+        if (config.getDisplayRangePolicy() == KahinaChartViewOptions.RANGE_COMPLETE)
         {
             for (int segmentID = 0; segmentID <= model.getRightmostCovered(); segmentID++)
             {
@@ -422,7 +223,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         {       
             HashSet<Integer> segmentIDs = new HashSet<Integer>();
             segmentIDs.addAll(segmentWidths.keySet());
-            if (displayRangePolicy == RANGE_USED_OR_CAPTION_DEFINED)
+            if (config.getDisplayRangePolicy() == KahinaChartViewOptions.RANGE_USED_OR_CAPTION_DEFINED)
             {
                 segmentIDs.addAll(model.getSegmentsWithCaption());
             }
@@ -453,11 +254,11 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         	{
         		System.err.println("curEdge: " + curEdge);
         	}
-            if (decideEdgeDisplay(curEdge))
+            if (config.decideEdgeDisplay(curEdge))
             {
                 //straightforward use of segmentOffsets to determine all the coordinates
                 int drawIntoRow = rowForEdge.get(curEdge);               
-                if (displayOrientation == BOTTOM_UP_DISPLAY)
+                if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
                 {
                     drawIntoRow = usedSpace.size() - drawIntoRow - 1;
                 }   
@@ -485,11 +286,11 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     
     public boolean segmentDisplayed(int id)
     {
-        if (displayRangePolicy == RANGE_USED_OR_CAPTION_DEFINED)
+        if (config.getDisplayRangePolicy() == KahinaChartViewOptions.RANGE_USED_OR_CAPTION_DEFINED)
         {
             return (model.segmentHasCaption(id) || model.segmentIsCovered(id));
         }
-        else if (displayRangePolicy == RANGE_USED_ONLY)
+        else if (config.getDisplayRangePolicy() == KahinaChartViewOptions.RANGE_USED_ONLY)
         {
             return (model.segmentIsCovered(id));
         }
@@ -522,12 +323,6 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         {
             usedInRow.put(i,edgeID);
         }
-    }
-    
-    private boolean decideEdgeDisplay(int edgeID)
-    {
-        if (displayDecider == null) return true;
-        return displayDecider.decideEdgeDisplay(edgeID);
     }
     
     public int getNumberOfSegments()
@@ -616,11 +411,11 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         Font fnt = statusFontEncoding.get(status);
         if (fnt == null)
         {
-            return new Font(Font.SANS_SERIF,Font.PLAIN, fontSize);
+            return new Font(Font.SANS_SERIF,Font.PLAIN, config.getZoomLevel());
         }
         else
         {
-            return new Font(fnt.getFamily(), fnt.getStyle(), fontSize);
+            return new Font(fnt.getFamily(), fnt.getStyle(), config.getZoomLevel());
         }
     }
     
@@ -634,7 +429,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         List<Integer> visibleEdges = new LinkedList<Integer>();
         for (int edge : model.getEdgeIDs())
         {
-            if (decideEdgeDisplay(edge))
+            if (config.decideEdgeDisplay(edge))
             {
                 visibleEdges.add(edge);
             }
@@ -671,7 +466,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         Integer edgeWidth = width.get(edgeID);
         if (edgeWidth == null)
         {
-            return cellWidth;
+            return config.getCellWidth();
         }
         return edgeWidth;
     }
@@ -740,48 +535,48 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         Integer width = segmentWidths.get(segmentID);
         if (width == null)
         {
-            switch (displayRangePolicy)
+            switch (config.getDisplayRangePolicy())
             {
-                case RANGE_USED_OR_CAPTION_DEFINED:
+                case KahinaChartViewOptions.RANGE_USED_OR_CAPTION_DEFINED:
                 {
                     if (model.segmentHasCaption(segmentID))
                     {
-                        if (cellWidthPolicy == FIXED_WIDTH) return cellWidth;
-                        else if (cellWidthPolicy == MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
+                        if (config.getCellWidthPolicy() == KahinaChartViewOptions.FIXED_WIDTH) return config.getCellWidth();
+                        else if (config.getCellWidthPolicy() == KahinaChartViewOptions.MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
                     }
                     else
                     {
                         return 0;
                     }
                 }
-                case RANGE_USED_ONLY:
+                case KahinaChartViewOptions.RANGE_USED_ONLY:
                 {
                     return 0;
                 }
-                case RANGE_COMPLETE:
+                case KahinaChartViewOptions.RANGE_COMPLETE:
                 {
-                    if (cellWidthPolicy == FIXED_WIDTH) return cellWidth;
-                    else if (cellWidthPolicy == MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
+                    if (config.getCellWidthPolicy() == KahinaChartViewOptions.FIXED_WIDTH) return config.getCellWidth();
+                    else if (config.getCellWidthPolicy() == KahinaChartViewOptions.MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
                     else return 0;
                 }
             }
         }
         else
         {
-            switch (displayRangePolicy)
+            switch (config.getDisplayRangePolicy())
             {
-                case RANGE_USED_OR_CAPTION_DEFINED:
+                case KahinaChartViewOptions.RANGE_USED_OR_CAPTION_DEFINED:
                 {
-                    if (cellWidthPolicy ==  FIXED_WIDTH) return cellWidth;
-                    else if (cellWidthPolicy == MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
+                    if (config.getCellWidthPolicy() ==  KahinaChartViewOptions.FIXED_WIDTH) return config.getCellWidth();
+                    else if (config.getCellWidthPolicy() == KahinaChartViewOptions.MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
                     else return width;
                 }
-                case RANGE_USED_ONLY:
+                case KahinaChartViewOptions.RANGE_USED_ONLY:
                 {
                     if (model.segmentIsCovered(segmentID))
                     {
-                        if (cellWidthPolicy == FIXED_WIDTH) return cellWidth;
-                        else if (cellWidthPolicy == MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
+                        if (config.getCellWidthPolicy() == KahinaChartViewOptions.FIXED_WIDTH) return config.getCellWidth();
+                        else if (config.getCellWidthPolicy() == KahinaChartViewOptions.MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
                         else return width;
                     }
                     else
@@ -789,10 +584,10 @@ public class KahinaChartView extends KahinaView<KahinaChart>
                         return 0;
                     }
                 }
-                case RANGE_COMPLETE:
+                case KahinaChartViewOptions.RANGE_COMPLETE:
                 {
-                    if (cellWidthPolicy == FIXED_WIDTH) return cellWidth;
-                    else if (cellWidthPolicy == MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
+                    if (config.getCellWidthPolicy() == KahinaChartViewOptions.FIXED_WIDTH) return config.getCellWidth();
+                    else if (config.getCellWidthPolicy() == KahinaChartViewOptions.MAXIMAL_NECESSARY_WIDTH) return totalCellWidthMaximum;
                     else return width;
                 }
             }
@@ -883,8 +678,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     {
         highlights.clear();
         highlights.add(markedEdge);
-        if (    dependencyDisplayPolicy == KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS || 
-                dependencyDisplayPolicy == KahinaChartView.ANCESTORS_ONLY   )
+        if (    config.getDependencyDisplayPolicy() == KahinaChartViewOptions.BOTH_ANCESTORS_AND_DESCENDANTS || 
+        		config.getDependencyDisplayPolicy() == KahinaChartViewOptions.ANCESTORS_ONLY   )
         {
             //highlight ancestors
             LinkedList<Integer> agenda = new LinkedList<Integer>();
@@ -894,14 +689,14 @@ public class KahinaChartView extends KahinaView<KahinaChart>
             {
                 nextAncestor = agenda.remove(0);
                 highlights.add(nextAncestor);
-                if (transitiveAncestors)
+                if (config.transitiveAncestors)
                 {
                     agenda.addAll(model.getMotherEdgesForEdge(nextAncestor));
                 }
             }
         }
-        if (    dependencyDisplayPolicy == KahinaChartView.BOTH_ANCESTORS_AND_DESCENDANTS || 
-                dependencyDisplayPolicy == KahinaChartView.DESCENDANTS_ONLY   )
+        if (    config.getDependencyDisplayPolicy() == KahinaChartViewOptions.BOTH_ANCESTORS_AND_DESCENDANTS || 
+        		config.getDependencyDisplayPolicy() == KahinaChartViewOptions.DESCENDANTS_ONLY   )
         {
             //highlight descendants
             LinkedList<Integer> agenda = new LinkedList<Integer>();
@@ -911,22 +706,12 @@ public class KahinaChartView extends KahinaView<KahinaChart>
             {
                 nextAncestor = agenda.remove(0);
                 highlights.add(nextAncestor);
-                if (transitiveDescendants)
+                if (config.transitiveDescendants)
                 {
                     agenda.addAll(model.getDaughterEdgesForEdge(nextAncestor));
                 }
             }
         }
-    }
-
-    public void setCellWidth(int cellWidth)
-    {
-        this.cellWidth = cellWidth;
-    }
-
-    public int getCellWidth()
-    {
-        return cellWidth;
     }
     
     public int edgeAtCoordinates(int x, int y)
@@ -958,7 +743,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         //System.err.println("Column: " + middleSegment);      
             
         //column determined via segment, now compute row
-        if (displayOrientation == BOTTOM_UP_DISPLAY)
+        if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
         {
             y = getDisplayHeight() - y; 
         }
