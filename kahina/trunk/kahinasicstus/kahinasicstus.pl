@@ -244,15 +244,22 @@ get_jvm(JVM) :-
 % ------------------------------------------------------------------------------
 
 :- dynamic source_read/1.
-:- dynamic source_clause/5.
+:- dynamic source_clause/5. % TODO index by functor?
 
 variable_binding(Name,Value) :-
   execution_state(line(File,Line)), % TODO we do that twice at call ports, consolidate
   (source_read(File) % TODO is that guaranteed to be absolute?
   -> true
    ; read_source_file(File)),
-  execution_state(parent_clause(Clause)),
-  once((source_clause(SourceClause,File,FirstLine,LastLine,Names),subsumes(SourceClause,Clause),FirstLine=<Line,LastLine>=Line)), % TODO with really bad code organization, we might retrieve a wrong clause here
+  execution_state(parent_clause(Clause,SubtermSelector)),
+  execution_state(goal(_Module:Goal)), % TODO consolidate, see above
+  once(( % TODO with really bad code organization, we might retrieve a wrong clause here
+      source_clause(SourceClause,File,FirstLine,LastLine,Names),
+      FirstLine =< Line,
+      LastLine >= Line,
+      subsumes(SourceClause,Clause), % TODO is this check necessary?
+      SourceClause = (_ :- SourceBody), % TODO Mooooduuuules!
+      select_subterm(SubtermSelector,SourceBody,Goal))), % TODO What about the module? % This unifies the current values with the variables in the variable names list
   member(Name=Value,Names).
 
 read_source_file(AbsFileName) :-
@@ -465,3 +472,9 @@ last_line([LastArg],LastLine) :-
   last_line(LastArg,LastLine).
 last_line([_|Args],LastLine) :-
   last_line(Args,LastLine).
+
+% select_subterm(+SubtermSelector,?Term,?Subterm)
+select_subterm([],Term,Term).
+select_subterm([ArgNo|ArgNos],Term,Subterm) :-
+  arg(ArgNo,Term,Arg),
+  select_subterm(ArgNos,Arg,Subterm).
