@@ -1,11 +1,8 @@
 package org.kahina.core.behavior;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.dag.KahinaDAG;
-import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
 
 /**

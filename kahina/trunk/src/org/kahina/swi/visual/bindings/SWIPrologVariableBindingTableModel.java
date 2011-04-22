@@ -1,8 +1,8 @@
-package org.kahina.prolog.visual.bindings;
+package org.kahina.swi.visual.bindings;
 
 import javax.swing.table.AbstractTableModel;
 
-public class PrologVariableBindingTableModel extends AbstractTableModel
+public class SWIPrologVariableBindingTableModel extends AbstractTableModel
 {
 
 	private static final long serialVersionUID = 2591048016192505705L;

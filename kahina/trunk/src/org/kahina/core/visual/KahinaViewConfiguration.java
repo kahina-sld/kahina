@@ -1,13 +1,5 @@
 package org.kahina.core.visual;
 
-import java.util.Map;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.kahina.core.data.KahinaObject;
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.gui.KahinaPerspective;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 

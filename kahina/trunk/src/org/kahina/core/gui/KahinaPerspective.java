@@ -3,8 +3,6 @@ package org.kahina.core.gui;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kahina.core.data.KahinaObject;
-import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

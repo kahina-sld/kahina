@@ -1,10 +1,7 @@
 package org.kahina.core.visual.tree;
 
 import java.awt.Color;
-import java.util.HashMap;
 
-import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

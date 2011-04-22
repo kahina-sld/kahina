@@ -20,7 +20,6 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.KahinaViewConfiguration;
 
 // TODO Second dimension sometimes isn't properly displayed when there is no
 // second-dimension root of the nodes in one view. Test case: set goal nodes to

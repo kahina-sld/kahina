@@ -1,4 +1,4 @@
-package org.kahina.prolog.visual.bindings;
+package org.kahina.swi.visual.bindings;
 
 import java.awt.BorderLayout;
 
@@ -6,20 +6,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.prolog.data.bindings.PrologVariableBindingSet;
+import org.kahina.swi.data.bindings.SWIPrologVariableBindingSet;
 
-public class PrologVariableBindingSetViewPanel extends KahinaViewPanel<PrologVariableBindingSetView>
+public class SWIPrologVariableBindingSetViewPanel extends KahinaViewPanel<SWIPrologVariableBindingSetView>
 {
 
 	private static final long serialVersionUID = 1373740134949605494L;
 
 	private static final String[] EMPTY = {};
 
-	private final PrologVariableBindingTableModel tableModel = new PrologVariableBindingTableModel();
+	private final SWIPrologVariableBindingTableModel tableModel = new SWIPrologVariableBindingTableModel();
 
 	private final JTable table = new JTable(tableModel);
 
-	public PrologVariableBindingSetViewPanel()
+	public SWIPrologVariableBindingSetViewPanel()
 	{
 		setLayout(new BorderLayout());
 		table.setFillsViewportHeight(true);
@@ -29,7 +29,7 @@ public class PrologVariableBindingSetViewPanel extends KahinaViewPanel<PrologVar
 	@Override
 	public void updateDisplay()
 	{
-		PrologVariableBindingSet bindings = view.getModel();
+		SWIPrologVariableBindingSet bindings = view.getModel();
 
 		if (bindings == null)
 		{

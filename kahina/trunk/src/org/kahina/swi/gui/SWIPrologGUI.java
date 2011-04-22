@@ -1,18 +1,18 @@
-package org.kahina.prolog.gui;
+package org.kahina.swi.gui;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
-import org.kahina.prolog.PrologDebuggerInstance;
-import org.kahina.prolog.PrologStep;
-import org.kahina.prolog.data.tree.PrologLayerDecider;
+import org.kahina.swi.SWIPrologDebuggerInstance;
+import org.kahina.swi.SWIPrologStep;
+import org.kahina.swi.data.tree.SWIPrologLayerDecider;
 
-public class PrologGUI extends LogicProgrammingGUI
+public class SWIPrologGUI extends LogicProgrammingGUI
 {
 	
 	private static final boolean VERBOSE = false;
 
-	public PrologGUI(Class<? extends PrologStep> stepType, PrologDebuggerInstance instance, KahinaController control)
+	public SWIPrologGUI(Class<? extends SWIPrologStep> stepType, SWIPrologDebuggerInstance instance, KahinaController control)
 	{
 		super(stepType, instance, control);
 	}
@@ -33,11 +33,11 @@ public class PrologGUI extends LogicProgrammingGUI
 		super.displayMainViews();
 		if (VERBOSE)
 		{
-			System.err.println("Main views displayed as far as superclass of PrologGUI is concerned.");
+			System.err.println("Main views displayed as far as superclass of SWIPrologGUI is concerned.");
 		}
 		//only set deciders here because the trees are generated generically by the KahinaState
-		mainTreeView.getModel().setLayerDecider(new PrologLayerDecider(2));
-		mainTreeView.getSecondaryModel().setLayerDecider(new PrologLayerDecider(2));
+		mainTreeView.getModel().setLayerDecider(new SWIPrologLayerDecider(2));
+		mainTreeView.getSecondaryModel().setLayerDecider(new SWIPrologLayerDecider(2));
 		if (VERBOSE)
 		{
 			System.err.println("//" + this + ".displayMainViews()");

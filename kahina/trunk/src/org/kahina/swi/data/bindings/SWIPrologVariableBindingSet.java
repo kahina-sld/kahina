@@ -1,8 +1,8 @@
-package org.kahina.prolog.data.bindings;
+package org.kahina.swi.data.bindings;
 
 import org.kahina.core.data.KahinaObject;
 
-public class PrologVariableBindingSet extends KahinaObject
+public class SWIPrologVariableBindingSet extends KahinaObject
 {
 
 	private static final long serialVersionUID = 9032602517905562761L;
@@ -11,11 +11,11 @@ public class PrologVariableBindingSet extends KahinaObject
 
 	private String[] values = {};
 	
-	public PrologVariableBindingSet()
+	public SWIPrologVariableBindingSet()
 	{
 	}
 
-	public PrologVariableBindingSet(PrologVariableBindingSet original)
+	public SWIPrologVariableBindingSet(SWIPrologVariableBindingSet original)
 	{
 		keys = original.keys;
 		values = original.values;

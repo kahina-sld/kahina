@@ -12,7 +12,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.core.visual.text.KahinaTextView;
 
 public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> implements ListSelectionListener
 {

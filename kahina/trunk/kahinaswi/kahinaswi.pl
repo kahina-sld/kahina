@@ -46,7 +46,7 @@ get_kahina_instance(Instance) :-
   kahina_instance(Instance),
   !.
 get_kahina_instance(Instance) :-
-  jpl_new('org.kahina.prolog.PrologDebuggerInstance',[],Instance),
+  jpl_new('org.kahina.swi.SWIPrologDebuggerInstance',[],Instance),
   assert(kahina_instance(Instance)).
 
 get_bridge(Bridge) :-

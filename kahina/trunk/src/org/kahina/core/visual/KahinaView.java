@@ -10,7 +10,6 @@ import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
-import org.kahina.core.visual.tree.KahinaTreeViewConfiguration;
 
 public abstract class KahinaView<T extends KahinaObject> implements KahinaListener
 {  

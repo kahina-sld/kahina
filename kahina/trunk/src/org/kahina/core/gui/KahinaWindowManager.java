@@ -11,10 +11,8 @@ import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaPerspectiveEvent;
-import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.visual.KahinaView;
-import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 public class KahinaWindowManager implements KahinaListener

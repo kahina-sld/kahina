@@ -1,6 +1,5 @@
 package org.kahina.core;
 
-import java.awt.event.ActionEvent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,8 +10,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.bridge.KahinaBridge;
@@ -22,10 +19,8 @@ import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
-import org.kahina.core.event.KahinaPerspectiveEvent;
 import org.kahina.core.event.KahinaSessionEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaGUI;
@@ -42,7 +37,6 @@ import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.source.KahinaJEditSourceCodeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.tralesld.TraleSLDState;
-import org.kahina.tralesld.event.TraleSLDControlEventCommands;
 
 public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge> implements KahinaListener
 {

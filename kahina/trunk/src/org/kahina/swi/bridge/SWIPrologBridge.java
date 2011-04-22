@@ -1,24 +1,24 @@
-package org.kahina.prolog.bridge;
+package org.kahina.swi.bridge;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
-import org.kahina.prolog.PrologState;
-import org.kahina.prolog.PrologStep;
+import org.kahina.swi.SWIPrologStep;
 
-public class PrologBridge extends LogicProgrammingBridge
+public class SWIPrologBridge extends LogicProgrammingBridge
 {
 
-	public PrologBridge(PrologState state)
+	public SWIPrologBridge(LogicProgrammingState state)
 	{
 		super(state);
 	}
 	
 	@Override
-	protected PrologStep generateStep()
+	protected SWIPrologStep generateStep()
 	{
-		return new PrologStep();
+		return new SWIPrologStep();
 	}
 	
 
@@ -41,7 +41,7 @@ public class PrologBridge extends LogicProgrammingBridge
 		try
 		{
 			int internalStepID = convertStepID(externalStepID);
-			PrologStep step = KahinaRunner.retrieve(PrologStep.class, internalStepID);
+			SWIPrologStep step = KahinaRunner.retrieve(SWIPrologStep.class, internalStepID);
 			
 			if ("in".equals(direction))
 			{

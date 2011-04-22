@@ -1,11 +1,11 @@
-package org.kahina.prolog.data.tree;
+package org.kahina.swi.data.tree;
 
 import java.util.regex.Pattern;
 
 import org.kahina.core.data.tree.DefaultLayerDecider;
 import org.kahina.core.data.tree.KahinaTree;
 
-public class PrologLayerDecider extends DefaultLayerDecider
+public class SWIPrologLayerDecider extends DefaultLayerDecider
 {
 	/**
 	 * 
@@ -20,7 +20,7 @@ public class PrologLayerDecider extends DefaultLayerDecider
 	
 	int limit;
 
-	public PrologLayerDecider()
+	public SWIPrologLayerDecider()
 	{
 		this(1);
 	}
@@ -31,7 +31,7 @@ public class PrologLayerDecider extends DefaultLayerDecider
 	 *            Limits the number of layers, higher levels will be conflated
 	 *            with the limit.
 	 */
-	public PrologLayerDecider(int limit)
+	public SWIPrologLayerDecider(int limit)
 	{
 		this.limit = limit;
 	}
