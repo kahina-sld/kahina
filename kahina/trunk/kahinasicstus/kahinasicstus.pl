@@ -102,14 +102,14 @@ act_fail(Bridge,JVM,Inv) :-
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','fail',[instance]),
       fail(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
       fail(Bridge,Inv)),
-  select(Inv,Bridge,JVM).
+  end(Inv,Bridge,JVM).
 
 act_exit(Bridge,JVM,Inv,Det) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','exit',[instance]),
       exit(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+boolean),
       exit(Bridge,Inv,Det)),
-  select(Inv,Bridge,JVM).
+  end(Inv,Bridge,JVM).
 
 act_redo(Bridge,JVM,Inv) :-
   jasper_call(JVM,
@@ -119,14 +119,14 @@ act_redo(Bridge,JVM,Inv) :-
 
 :- dynamic end_det/0.
 
-select(1,Bridge,JVM) :-
+end(1,Bridge,JVM) :-
   !,
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','select',[instance]),
       select(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
       select(Bridge,1)),
   assert(end_det).
-select(_,_,_).
+end(_,_,_).
 
 register_source_code_location(Bridge,JVM,Inv,FileChars,Line) :-
   get_jvm(JVM),
