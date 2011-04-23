@@ -12,7 +12,9 @@ import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaDialogEvent;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaViewIntegrationType;
+import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.chart.KahinaChartView;
@@ -23,6 +25,7 @@ import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
 import org.kahina.tralesld.event.TraleSLDControlEventCommands;
+import org.kahina.tralesld.gui.TraleSLDWindowManager;
 import org.kahina.tralesld.profiler.TraleSLDProfileEntryMapper;
 import org.kahina.tralesld.visual.chart.TraleSLDChartEdgeDisplayDecider;
 
@@ -56,6 +59,12 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.SUCCESSFUL, Color.GREEN);
 		mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.FAILED, Color.RED);
 		mainChartView.setDisplayDecider(new TraleSLDChartEdgeDisplayDecider());
+	}
+	
+	@Override
+	protected KahinaWindowManager createWindowManager(KahinaGUI gui, KahinaController control)
+	{
+		return new TraleSLDWindowManager(gui, control);
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
@@ -35,7 +36,7 @@ public class KahinaWindowManager implements KahinaListener
         this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         this.topLevelWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         
-        mainWindow = new KahinaMainWindow(this, control, gui.kahina);
+        mainWindow = createMainWindow(this, control, gui.kahina);
         
         int width = gui.getControlPanel().getWidth();
         int height = 100;
@@ -72,7 +73,12 @@ public class KahinaWindowManager implements KahinaListener
 		control.registerListener(KahinaEventTypes.PERSPECTIVE, this);
     }
     
-    public void disposeAllWindows()
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
+	{
+		return new KahinaMainWindow(this, control, gui.kahina);
+	}
+
+	public void disposeAllWindows()
     {
         for (JFrame viewWindow : topLevelWindows.values())
         {

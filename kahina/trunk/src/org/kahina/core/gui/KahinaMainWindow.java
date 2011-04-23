@@ -25,8 +25,10 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	public static boolean verbose = false;
 
 	public KahinaWindowManager windowManager;
+	
+	protected JMenuBar menuBar;
 
-	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance kahina)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
 	{
 		this.windowManager = windowManager;
 
@@ -36,12 +38,11 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Uncomment this in order to be able to profile using JRat.
 
-		JMenuBar menuBar = new JMenuBar();
+		menuBar = new JMenuBar();
 		menuBar.add(new KahinaSessionMenu());
 		menuBar.add(new KahinaViewMenu(kahina));
 		
-		// TODO these three menus are specific to logic programming or TraleSLD, should be added dynamically
-		menuBar.add(new KahinaParseMenu(kahina));
+		// TODO these three menus are specific to logic programming, should be added in subclasses
 		menuBar.add(new KahinaBreakpointMenu());
 		menuBar.add(new KahinaProfilerMenu());
 		
