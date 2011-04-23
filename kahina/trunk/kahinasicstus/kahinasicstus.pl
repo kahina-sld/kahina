@@ -102,14 +102,14 @@ act_fail(Bridge,JVM,Inv) :-
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','fail',[instance]),
       fail(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
       fail(Bridge,Inv)),
-  end(Inv,Bridge,JVM).
+  select(Inv,Bridge,JVM).
 
 act_exit(Bridge,JVM,Inv,Det) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','exit',[instance]),
       exit(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+boolean),
       exit(Bridge,Inv,Det)),
-  end(Inv,Bridge,JVM).
+  select(Inv,Bridge,JVM).
 
 act_redo(Bridge,JVM,Inv) :-
   jasper_call(JVM,
@@ -117,13 +117,16 @@ act_redo(Bridge,JVM,Inv) :-
       redo(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
       redo(Bridge,Inv)).
 
-end(1,Bridge,JVM) :-
+:- dynamic end_det/0.
+
+select(1,Bridge,JVM) :-
   !,
   jasper_call(JVM,
-      method('org/kahina/sicstus/bridge/SICStusPrologBridge','end',[instance]),
-      end(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
-      end(Bridge,1)).
-end(_,_,_).
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','select',[instance]),
+      select(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
+      select(Bridge,1)),
+  assert(end_det).
+select(_,_,_).
 
 register_source_code_location(Bridge,JVM,Inv,FileChars,Line) :-
   get_jvm(JVM),
@@ -158,6 +161,9 @@ send_variable_binding(Bridge,JVM,Inv,Port,Name,Value) :-
 % ------------------------------------------------------------------------------
 
 get_action(unblock,_,_,99) :- % c
+  !.
+get_action(_,_,_,99) :-
+  retract(end_det),
   !.
 get_action(_,Bridge,JVM,Action) :-
   wait_for_action(Bridge,JVM,Action),
@@ -251,7 +257,7 @@ variable_binding(Name,Value) :-
   (source_read(File) % TODO is that guaranteed to be absolute?
   -> true
    ; read_source_file(File)),
-  execution_state(parent_clause(Clause,SubtermSelector)), % Clause is as it is read from the source modulo module prefix translation, it does not have variable bindings.
+  execution_state(parent_clause(_Clause,SubtermSelector)), % Clause is as it is read from the source modulo module prefix translation, it does not have variable bindings.
   execution_state(goal(_:Goal)), % TODO consolidate, see above
   once(( % TODO With two clauses on the same line, this may find the wrong one.
       source_clause(SourceClause,File,FirstLine,LastLine,Names), % 

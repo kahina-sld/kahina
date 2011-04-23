@@ -459,6 +459,23 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 		}
 	}
+	
+	/**
+	 * Call this to force the GUI to select the indicated step and update, e.g.
+	 * before pausing to present the user with a result.
+	 * @param extID
+	 */
+	public void select(int extID)
+	{
+		try
+		{
+			KahinaRunner.processEvent(new KahinaSelectionEvent(currentID));
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
 
 	/**
 	 * @return the action command for the tracer. Currently supported are:
