@@ -41,7 +41,10 @@ act(call,Inv,Bridge,JVM) :-
 act(call,Inv,Bridge,JVM) :-
   execution_state(pred(Module:Pred)),	% "module qualified goal template", see manual
   write_to_chars(Module:Pred,PredChars),
-  act_step(Bridge,JVM,Inv,PredChars),
+  execution_state(goal(_:Goal)),
+  goal_desc(Module,Goal,GoalDesc),
+  write_to_chars(GoalDesc,GoalDescChars),
+  act_step(Bridge,JVM,Inv,PredChars,GoalDescChars),
   (execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
   -> write_to_chars(File,FileChars),
      register_source_code_location(Bridge,JVM,Inv,FileChars,Line)
@@ -67,9 +70,11 @@ act(block,_,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)), % TODO What if the unblocked step is immediately blocked, e.g. in freeze(X,freeze(Y,...))? freeze/2 isn't called, so we would have to do the linking here.
   execution_state(goal(Module:Goal)),
   remember_blocked_goal(Module:Goal,ID),
-  execution_state(pred(Module:Pred)),
+  execution_state(pred(_:Pred)),
   write_to_chars(Module:Pred,PredChars),
-  act_step(Bridge,JVM,ID,[98,108,111,99,107,32|PredChars]), % 'block '
+  goal_desc(Module,Goal,GoalDesc),
+  write_to_chars(GoalDesc,GoalDescChars),
+  act_step(Bridge,JVM,ID,[98,108,111,99,107,32|PredChars],[98,108,111,99,107,32|GoalDescChars]), % 'block '
   act_call(Bridge,JVM,ID),
   act_exit(Bridge,JVM,ID,true).
 act(unblock,_,Bridge,JVM) :-
@@ -77,7 +82,10 @@ act(unblock,_,Bridge,JVM) :-
   get_next_pseudostep_id(ID),
   execution_state(pred(Module:Pred)),
   write_to_chars(Module:Pred,PredChars),
-  act_step(Bridge,JVM,ID,[117,110,98,108,111,99,107,32|PredChars]), % 'unblock '
+  execution_state(goal(_:Goal)),
+  goal_desc(Module,Goal,GoalDesc),
+  write_to_chars(GoalDesc,GoalDescChars),
+  act_step(Bridge,JVM,ID,[117,110,98,108,111,99,107,32|PredChars],[117,110,98,108,111,99,107,32|GoalDescChars]), % 'unblock '
   act_call(Bridge,JVM,ID),
   act_exit(Bridge,JVM,ID,true),
   % Would be nicer to have the unblocked steps as children of the unblock step
@@ -85,11 +93,12 @@ act(unblock,_,Bridge,JVM) :-
   assert(unblock_pseudostep_waiting_for_link(ID)).
 % TODO handle exception ports
 
-act_step(Bridge,JVM,Inv,PredChars) :-
+% TODO it might make sense to change the goal desc at the exit port (additional bindings!)
+act_step(Bridge,JVM,Inv,PredChars,GoalDescChars) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','step',[instance]),
-      step(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+chars),
-      step(Bridge,Inv,PredChars)).
+      step(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+chars,+chars),
+      step(Bridge,Inv,PredChars,GoalDescChars)).
 
 act_call(Bridge,JVM,Inv) :-
   jasper_call(JVM,
@@ -222,7 +231,7 @@ start_new_kahina_session(Bridge,JVM) :-
       start_new_session(+object('org/kahina/sicstus/SICStusPrologDebuggerInstance'),[-object('org/kahina/sicstus/bridge/SICStusPrologBridge')]),
       start_new_session(Instance,Bridge)),
   write_to_chars('[query]',RootLabelChars),
-  act_step(Bridge,JVM,0,RootLabelChars),
+  act_step(Bridge,JVM,0,RootLabelChars,RootLabelChars),
   act_call(Bridge,JVM,0).
 
 :- dynamic kahina_instance/1.
@@ -489,3 +498,11 @@ select_subterm([],Term,Term).
 select_subterm([ArgNo|ArgNos],Term,Subterm) :-
   arg(ArgNo,Term,Arg),
   select_subterm(ArgNos,Arg,Subterm).
+
+% goal_desc(+Module,+Goal,-GoalDesc)
+% Used to remove the module prefix from goal descriptions if it refers to the
+% type-in module.
+goal_desc(Module,Goal,Goal) :-
+  module(Module),
+  !.
+goal_desc(Module,Goal,Module:Goal).
