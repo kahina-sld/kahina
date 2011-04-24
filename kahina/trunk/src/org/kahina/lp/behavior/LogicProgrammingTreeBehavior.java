@@ -24,6 +24,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 {
 	private static final boolean VERBOSE = false;
 
+	public static final int MAX_NODE_LABEL_LENGTH = 30;
+
 	// call dimension is always stored in a secondary tree structure
 	protected KahinaTree secondaryTree;
 
@@ -340,6 +342,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			System.err.println("LogicProgrammingTreeBehavior.processStepInformation(" + stepID + ",\"" + stepInfo + "\")");
 		int extID = LogicProgrammingStep.get(stepID).getExternalID();
 		String caption;
+		if (stepInfo.length() > MAX_NODE_LABEL_LENGTH)
+		{
+			stepInfo = stepInfo.substring(0, MAX_NODE_LABEL_LENGTH - 3) + "...";
+		}
 		if (extID >= 0)
 		{
 			caption = extID + " " + stepInfo;
