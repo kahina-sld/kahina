@@ -36,7 +36,7 @@ act(call,Inv,Bridge,JVM) :-
   execution_state(goal(Module:Goal)),
   recall_blocked_goal(Module:Goal,BlockingID),
   !,
-  link_nodes(Bridge,UnblockingID,BlockingID),
+  link_nodes(Bridge,JVM,UnblockingID,BlockingID),
   act(call,Inv,Bridge,JVM). % Continue with second clause. Can't just fail because recall_blocked_goal/2 is supposed to change the execution state.
 act(call,Inv,Bridge,JVM) :-
   execution_state(pred(Module:Pred)),	% "module qualified goal template", see manual
