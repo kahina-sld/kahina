@@ -261,7 +261,7 @@ public class KahinaChartViewConfiguration extends KahinaViewConfiguration
 		transitiveDescendantsEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",transitiveDescendants + "");	
 		el.appendChild(transitiveDescendantsEl);
 		
-		//TODO: add element and XML linearization for display decider
+		el.appendChild(displayDecider.exportXML(dom));
 		
 		return el;
 	}

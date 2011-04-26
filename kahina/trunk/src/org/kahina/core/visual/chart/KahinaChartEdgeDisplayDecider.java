@@ -3,6 +3,9 @@ package org.kahina.core.visual.chart;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 public class KahinaChartEdgeDisplayDecider
 {
     KahinaChartView view;
@@ -114,5 +117,68 @@ public class KahinaChartEdgeDisplayDecider
         }
         return (decision > 0);
     }
+    
+	public Element exportXML(Document dom)
+	{
+		Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:displaydecider");
+		el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type","org.kahina.core.visual.tree.KahinaChart");
+		
+		Element possEdgeLabelsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:stringset");
+		possEdgeLabelsEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","possEdgeLabels");
+		for (String s : possibleEdgeLabels)
+		{
+			Element sEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:string");
+			sEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",s);
+			possEdgeLabelsEl.appendChild(sEl);
+		}
+		el.appendChild(possEdgeLabelsEl);
+		
+		Element dispEdgeLabelsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:stringset");
+		dispEdgeLabelsEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","dispEdgeLabels");
+		for (String s : displayedEdgeLabels)
+		{
+			Element sEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:string");
+			sEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",s);
+			dispEdgeLabelsEl.appendChild(sEl);
+		}
+		el.appendChild(dispEdgeLabelsEl);
+		
+		Element hideEdgeLabelsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:stringset");
+		hideEdgeLabelsEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","hideEdgeLabels");
+		for (String s : hiddenEdgeLabels)
+		{
+			Element sEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:string");
+			sEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",s);
+			hideEdgeLabelsEl.appendChild(sEl);
+		}
+		el.appendChild(hideEdgeLabelsEl);
+		
+		Element dispEdgeStatusEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:intset");
+		dispEdgeStatusEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","dispEdgeStatus");
+		for (String s : displayedEdgeLabels)
+		{
+			Element sEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:int");
+			sEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",s);
+			dispEdgeStatusEl.appendChild(sEl);
+		}
+		el.appendChild(dispEdgeStatusEl);
+		
+		Element hideEdgeStatusEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:intset");
+		hideEdgeStatusEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","hideEdgeStatus");
+		for (String s : hiddenEdgeLabels)
+		{
+			Element sEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:int");
+			sEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",s);
+			hideEdgeStatusEl.appendChild(sEl);
+		}
+		el.appendChild(hideEdgeStatusEl);	
+		
+		Element edgeLabelPriorityEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
+		edgeLabelPriorityEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","edgeLabelPriority");
+		edgeLabelPriorityEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",edgeLabelPriority + "");	
+		el.appendChild(edgeLabelPriorityEl);
+		
+		return el;
+	}
 }
 
