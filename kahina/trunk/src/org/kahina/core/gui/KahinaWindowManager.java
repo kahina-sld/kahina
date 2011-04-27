@@ -11,7 +11,10 @@ import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaPerspectiveEvent;
+import org.kahina.core.event.KahinaWindowEvent;
+import org.kahina.core.event.KahinaWindowEventType;
 import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.visual.KahinaEmptyView;
 import org.kahina.core.visual.KahinaView;
 import org.w3c.dom.Node;
 
@@ -26,9 +29,12 @@ public class KahinaWindowManager implements KahinaListener
     
     KahinaGUI gui;
     
+    KahinaController control;
+    
     public KahinaWindowManager(KahinaGUI gui, KahinaController control)
     {
         this.gui = gui;  
+        this.control = control;
         
         this.currentPerspective = new KahinaPerspective("default", "Default", gui.views);
         
@@ -51,6 +57,7 @@ public class KahinaWindowManager implements KahinaListener
         mainWindow = createMainWindow(this, control, gui.kahina);
         
 		control.registerListener(KahinaEventTypes.PERSPECTIVE, this);
+		control.registerListener(KahinaEventTypes.WINDOW, this);
     }
     
     protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
@@ -132,6 +139,10 @@ public class KahinaWindowManager implements KahinaListener
 		{
 			processPerspectiveEvent((KahinaPerspectiveEvent) e);
 		}
+		else if (e instanceof KahinaWindowEvent)
+		{
+			processWindowEvent((KahinaWindowEvent) e);
+		}
 	}
     
 	private void processPerspectiveEvent(KahinaPerspectiveEvent e)
@@ -145,6 +156,64 @@ public class KahinaWindowManager implements KahinaListener
 		{
 			loadPerspective(e.getFile());
 		}
+	}
+	
+	private void processWindowEvent(KahinaWindowEvent e)
+	{
+		int type = e.getWindowEventType();
+		if (type == KahinaWindowEventType.NEW_DEFAULT)
+		{
+			KahinaView view = new KahinaEmptyView(control);
+	        KahinaWindow viewWindow = new KahinaDefaultWindow(view, control);
+	        contentWindows.put(view,viewWindow);
+	        topLevelWindows.put(view,viewWindow);
+            viewWindow.setSize(300,100);
+            viewWindow.setLocation(200,200);
+	        viewWindow.setVisible(true);
+		} 
+		else if (type == KahinaWindowEventType.NEW_HORI_SPLIT)
+		{
+			KahinaView lView = new KahinaEmptyView(control);
+			KahinaView rView = new KahinaEmptyView(control);
+			KahinaWindow lViewWindow = new KahinaDefaultWindow(lView, control);
+	        KahinaWindow rViewWindow = new KahinaDefaultWindow(rView, control);
+	        KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow();
+	        splitWindow.setTitle("New Horizontal Split");
+	        splitWindow.setLeftWindow(lViewWindow);
+	        splitWindow.setRightWindow(rViewWindow);
+	        topLevelWindows.put(lView,splitWindow);
+	        topLevelWindows.put(rView,splitWindow);
+            splitWindow.setSize(600,150);
+            splitWindow.setLocation(200,200);
+	        splitWindow.setVisible(true);
+		} 
+		else if (type == KahinaWindowEventType.NEW_VERT_SPLIT)
+		{
+			KahinaView tView = new KahinaEmptyView(control);
+			KahinaView bView = new KahinaEmptyView(control);
+			KahinaWindow tViewWindow = new KahinaDefaultWindow(tView, control);
+	        KahinaWindow bViewWindow = new KahinaDefaultWindow(bView, control);
+	        KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow();
+	        splitWindow.setTitle("New Vertical Split");
+	        splitWindow.setUpperWindow(tViewWindow);
+	        splitWindow.setLowerWindow(bViewWindow);
+	        topLevelWindows.put(tView,splitWindow);
+	        topLevelWindows.put(bView,splitWindow);
+            splitWindow.setSize(300,250);
+            splitWindow.setLocation(200,200);
+	        splitWindow.setVisible(true);
+		} 
+		else if (type == KahinaWindowEventType.NEW_TABBED)
+		{
+			KahinaView view = new KahinaEmptyView(control);
+			KahinaWindow viewWindow = new KahinaDefaultWindow(view, control);
+	        KahinaTabbedWindow tabbedWindow = new KahinaTabbedWindow();
+	        tabbedWindow.setTitle("New Tabbed Window");
+	        tabbedWindow.addWindow(viewWindow);
+            tabbedWindow.setSize(300,250);
+            tabbedWindow.setLocation(200,200);
+	        tabbedWindow.setVisible(true);
+		} 
 	}
 	
 	private void loadPerspective(File file)

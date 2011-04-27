@@ -2,7 +2,6 @@ package org.kahina.core.event;
 
 public interface KahinaEventTypes
 {
-	
 	public static final String STEP_FOCUS = "stepfocus";
 	public static final String SELECTION = "select";
 	public static final String UPDATE = "update";
@@ -15,5 +14,5 @@ public interface KahinaEventTypes
 	public static final String TREE_MATCH = "treeMatch";
 	public static final String WARN = "warn";
 	public static final String REDRAW = "redraw";
-
+	public static final String WINDOW = "window";
 }
