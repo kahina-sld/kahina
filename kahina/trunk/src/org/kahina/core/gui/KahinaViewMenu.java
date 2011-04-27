@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -16,11 +17,19 @@ public class KahinaViewMenu  extends JMenu implements ActionListener
 {
 	private static final long serialVersionUID = -8816851369583949953L;
 
-	public KahinaViewMenu(KahinaInstance kahina)
+	public KahinaViewMenu(KahinaWindowManager manager)
     {
         super("View"); 
         
-        //TODO: add check boxes for the different windows here
+        //TODO: this part of the menu must become dynamic
+        for (KahinaWindow window : manager.topLevelWindows.values())
+        {
+            JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(window.getTitle());
+            windowCheckBoxItem.setActionCommand("toggleVisibility:" + window.getTitle());
+            windowCheckBoxItem.addActionListener(this);
+            windowCheckBoxItem.setState(manager.currentPerspective.isVisible(window.getTitle()));
+            this.add(windowCheckBoxItem);
+        }
         
         this.addSeparator();
         

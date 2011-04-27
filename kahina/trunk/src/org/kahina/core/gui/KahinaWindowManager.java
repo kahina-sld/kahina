@@ -1,6 +1,5 @@
 package org.kahina.core.gui;
 
-import java.awt.Toolkit;
 import java.io.File;
 import java.util.HashMap;
 
@@ -31,12 +30,10 @@ public class KahinaWindowManager implements KahinaListener
     {
         this.gui = gui;  
         
-        this.currentPerspective = new KahinaPerspective(gui.views);
+        this.currentPerspective = new KahinaPerspective("default", "Default", gui.views);
         
         this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         this.topLevelWindows = new HashMap<KahinaView<?>, KahinaWindow>();
-        
-        mainWindow = createMainWindow(this, control, gui.kahina);
         
         //create windows for all the other registered views
         KahinaArrangement arr = currentPerspective.getArrangement();
@@ -50,6 +47,8 @@ public class KahinaWindowManager implements KahinaListener
             viewWindow.setSize(arr.getWidth(viewID), arr.getHeight(viewID));
             viewWindow.setLocation(arr.getXPos(viewID), arr.getYPos(viewID));
         }
+        
+        mainWindow = createMainWindow(this, control, gui.kahina);
         
 		control.registerListener(KahinaEventTypes.PERSPECTIVE, this);
     }

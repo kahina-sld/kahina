@@ -29,33 +29,45 @@ import org.w3c.dom.Element;
 
 public class KahinaPerspective 
 {
+	//the Kahina application this perspective is assigned to
+	String appID;
+	//the name this perspective is referred by in the GUI
+	String name;
+	
 	//view options are indexed by string identifiers
 	Map<String,KahinaViewConfiguration> config;
+	//visibility status of windows (and views)
+	Map<String,Boolean> visible;
 	//the arrangement, size and position of windows
 	KahinaArrangement arrangement;
-	//TODO: model visibility of windows
+
 	
-	public KahinaPerspective()
+	public KahinaPerspective(String appID, String name)
 	{
+		this.appID = appID;
+		this.name = name;
 		config = new HashMap<String,KahinaViewConfiguration>();
+		visible = new HashMap<String,Boolean>();
 		arrangement = new KahinaArrangement();
 	}
 	
-	public KahinaPerspective(List<KahinaView<?>> views)
+	public KahinaPerspective(String appID, String name,List<KahinaView<?>> views)
 	{
 		config = new HashMap<String,KahinaViewConfiguration>();
+		visible = new HashMap<String,Boolean>();
 		arrangement = new KahinaArrangement(views);
 	}
 	
 	public static KahinaPerspective importXML(Element e)
 	{
-		KahinaPerspective perspective = new KahinaPerspective();
+		KahinaPerspective perspective = new KahinaPerspective("default", "Default");
 		return perspective;
 	}
 	
 	public Element exportXML(Document dom)
 	{
 		Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:perspective");
+		el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:appid", appID);
         el.appendChild(arrangement.exportXML(dom));
         Element configsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:configurations");
         for (String viewID : config.keySet())
@@ -80,8 +92,31 @@ public class KahinaPerspective
 		config.put(viewID, conf);
 	}
 	
+	public String getAppID()
+	{
+		return appID;
+	}
+	
+	public String getName()
+	{
+		return name;
+	}
+	
 	public KahinaArrangement getArrangement()
 	{
 		return arrangement;
+	}
+	
+	public void setVisibility(String viewID, boolean vis)
+	{
+		visible.put(viewID, vis);
+	}
+	
+	//windows and views are visible by default
+	public boolean isVisible(String viewID)
+	{
+		Boolean vis = visible.get(viewID);
+		if (vis == null) return true;
+		return vis;
 	}
 }

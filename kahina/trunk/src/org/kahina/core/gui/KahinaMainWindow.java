@@ -40,7 +40,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		menuBar = new JMenuBar();
 		menuBar.add(new KahinaSessionMenu());
-		menuBar.add(new KahinaViewMenu(kahina));
+		menuBar.add(new KahinaViewMenu(windowManager));
 		
 		// TODO these three menus are specific to logic programming, should be added in subclasses
 		menuBar.add(new KahinaBreakpointMenu());
