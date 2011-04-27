@@ -3,6 +3,7 @@ package org.kahina.core.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.HashMap;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -23,26 +24,30 @@ import org.kahina.core.visual.KahinaView;
 public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaListener
 {
 	private static final long serialVersionUID = -8816851369583949953L;
+	
+    HashMap<String,JCheckBoxMenuItem> windowEntries;
+    KahinaWindowManager manager;
 
 	public KahinaViewMenu(KahinaWindowManager manager)
     {
         super("View"); 
         
+        windowEntries = new HashMap<String,JCheckBoxMenuItem>();
+        this.manager = manager;
+        
         manager.control.registerListener(KahinaEventTypes.WINDOW, this);
         
-        //TODO: this part of the menu must become dynamic
         for (KahinaWindow window : manager.topLevelWindows.values())
         {
             JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(window.getTitle());
             windowCheckBoxItem.setActionCommand("toggleVisibility:" + window.getTitle());
             windowCheckBoxItem.addActionListener(this);
-            windowCheckBoxItem.setState(manager.currentPerspective.isVisible(window.getTitle()));
+            windowCheckBoxItem.setSelected(manager.currentPerspective.isVisible(window.getTitle()));
+            windowEntries.put(window.getTitle(), windowCheckBoxItem);
             this.add(windowCheckBoxItem);
         }
         
         this.addSeparator();
-        
-        //TODO: add functionality for these buttons
         
         JMenuItem newDefaultWindowItem = new JMenuItem("New Default Window");
         newDefaultWindowItem.setActionCommand("newDefaultWindow");
@@ -99,6 +104,11 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         {	
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, "New Window"));
         }
+        else if (s.startsWith("toggleVisibility"))
+        {
+            String windowID = s.substring(s.indexOf(':') + 1);
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, windowID));
+        }
         else if (s.equals("loadPerspective"))
         {
             JFileChooser chooser = new JFileChooser(new File("."));
@@ -128,9 +138,21 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 	private void processWindowEvent(KahinaWindowEvent e)
 	{
 		int type = e.getWindowEventType();
-		if (type == KahinaWindowEventType.NEW_DEFAULT)
+		//handle generation of different types of new windows
+		if (type >= 0 && type <= 3)
 		{
-
+			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(e.getWindowID());
+            windowCheckBoxItem.setActionCommand("toggleVisibility:" + e.getWindowID());
+            windowCheckBoxItem.addActionListener(this);
+            windowCheckBoxItem.setSelected(manager.currentPerspective.isVisible(e.getWindowID()));
+            windowEntries.put(e.getWindowID(), windowCheckBoxItem);
+            this.add(windowCheckBoxItem);
 		} 
+		else if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
+		{
+			//TODO: find out why this does not work yet
+			JCheckBoxMenuItem item = windowEntries.get(e.getWindowID());
+			item.setSelected(!item.isSelected());
+		}
 	}
 }

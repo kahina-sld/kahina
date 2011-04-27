@@ -27,6 +27,8 @@ public class KahinaWindowManager implements KahinaListener
     HashMap<KahinaView<?>, KahinaWindow> contentWindows;
     HashMap<KahinaView<?>, KahinaWindow> topLevelWindows;
     
+    HashMap<String,KahinaWindow> windowByID;
+    
     KahinaGUI gui;
     
     KahinaController control;
@@ -40,6 +42,8 @@ public class KahinaWindowManager implements KahinaListener
         
         this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         this.topLevelWindows = new HashMap<KahinaView<?>, KahinaWindow>();
+        
+        this.windowByID = new HashMap<String,KahinaWindow>();
         
         //create windows for all the other registered views
         KahinaArrangement arr = currentPerspective.getArrangement();
@@ -213,6 +217,11 @@ public class KahinaWindowManager implements KahinaListener
             tabbedWindow.setSize(300,250);
             tabbedWindow.setLocation(200,200);
 	        tabbedWindow.setVisible(true);
+		} 
+		else if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
+		{
+			//TODO: fill windowByID in order to access window
+			//TODO: show or hide the respective window
 		} 
 	}
 	
