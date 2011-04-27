@@ -97,7 +97,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
     
 	public KahinaViewConfiguration getConfig()
 	{
-		System.err.println("WARNING: getting the empty default configuration!");
+		System.err.println("WARNING! No configuration defined for view: " + title);
 		return config;
 	}
 }

@@ -31,43 +31,24 @@ public class KahinaWindowManager implements KahinaListener
     {
         this.gui = gui;  
         
-        this.currentPerspective = new KahinaPerspective();
+        this.currentPerspective = new KahinaPerspective(gui.views);
         
         this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         this.topLevelWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         
         mainWindow = createMainWindow(this, control, gui.kahina);
         
-        int width = gui.getControlPanel().getWidth();
-        int height = 100;
-        
-        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-        int xPos = 0;
-        int yPos = 0;
-        int maxY = height;
-        
         //create windows for all the other registered views
+        KahinaArrangement arr = currentPerspective.getArrangement();
         for (KahinaView<?> view : gui.views)
         {
-        	//for now, generate the perspective from the defined configurations
+        	String viewID = view.getTitle();
+        	//for now, generate the perspective from the predefined configurations
         	currentPerspective.setConfiguration(view.getTitle(), view.getConfig());
         	
             KahinaWindow viewWindow = integrateInDefaultWindow(view, control);
-            xPos += width + 20;
-            width = view.getTitle().length() * 12 + 50;
-            if (xPos + width > screenWidth)
-            {
-                xPos = 0;
-                yPos = maxY + 20;
-                maxY = 0;
-            }
-            height = view.getTitle().length() * 24;       
-            if (height > maxY)
-            {
-                maxY = height;
-            }
-            viewWindow.setSize(width, height);
-            viewWindow.setLocation(xPos, yPos);
+            viewWindow.setSize(arr.getWidth(viewID), arr.getHeight(viewID));
+            viewWindow.setLocation(arr.getXPos(viewID), arr.getYPos(viewID));
         }
         
 		control.registerListener(KahinaEventTypes.PERSPECTIVE, this);

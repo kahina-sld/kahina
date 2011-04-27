@@ -1,8 +1,10 @@
 package org.kahina.core.gui;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,11 +33,18 @@ public class KahinaPerspective
 	Map<String,KahinaViewConfiguration> config;
 	//the arrangement, size and position of windows
 	KahinaArrangement arrangement;
+	//TODO: model visibility of windows
 	
 	public KahinaPerspective()
 	{
 		config = new HashMap<String,KahinaViewConfiguration>();
 		arrangement = new KahinaArrangement();
+	}
+	
+	public KahinaPerspective(List<KahinaView<?>> views)
+	{
+		config = new HashMap<String,KahinaViewConfiguration>();
+		arrangement = new KahinaArrangement(views);
 	}
 	
 	public static KahinaPerspective importXML(Element e)
@@ -69,5 +78,10 @@ public class KahinaPerspective
 	public void setConfiguration(String viewID, KahinaViewConfiguration conf)
 	{
 		config.put(viewID, conf);
+	}
+	
+	public KahinaArrangement getArrangement()
+	{
+		return arrangement;
 	}
 }
