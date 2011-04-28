@@ -9,6 +9,7 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
@@ -90,19 +91,91 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         String s = e.getActionCommand();
         if (s.equals("newDefaultWindow"))
         {	
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_DEFAULT, "New Window"));
+        	String title;
+        	while (true)
+        	{
+        		title = (String) JOptionPane.showInputDialog(this,
+                    "Enter a unique title for the new window.",
+                    "New Default Window",
+                    JOptionPane.PLAIN_MESSAGE);
+        		if (windowEntries.get(title) != null)
+        		{
+        			JOptionPane.showMessageDialog(this,
+        				    "A window with that name already exists.", 
+        				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
+        		}
+        		else
+        		{
+        			break;
+        		}
+        	}
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_DEFAULT, title));
         }
         else if (s.equals("newVertSplitWindow"))
         {	
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_VERT_SPLIT, "New Window"));
+        	String title;
+        	while (true)
+        	{
+        		title = (String) JOptionPane.showInputDialog(this,
+                    "Enter a unique title for the new window.",
+                    "New Default Window",
+                    JOptionPane.PLAIN_MESSAGE);
+        		if (windowEntries.get(title) != null)
+        		{
+        			JOptionPane.showMessageDialog(this,
+        				    "A window with that name already exists.", 
+        				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
+        		}
+        		else
+        		{
+        			break;
+        		}
+        	}
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_VERT_SPLIT, title));
         }
         else if (s.equals("newHoriSplitWindow"))
         {	
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_HORI_SPLIT, "New Window"));
+        	String title;
+        	while (true)
+        	{
+        		title = (String) JOptionPane.showInputDialog(this,
+                    "Enter a unique title for the new window.",
+                    "New Default Window",
+                    JOptionPane.PLAIN_MESSAGE);
+        		if (windowEntries.get(title) != null)
+        		{
+        			JOptionPane.showMessageDialog(this,
+        				    "A window with that name already exists.", 
+        				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
+        		}
+        		else
+        		{
+        			break;
+        		}
+        	}
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_HORI_SPLIT, title));
         }
         else if (s.equals("newTabbedWindow"))
         {	
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, "New Window"));
+        	String title;
+        	while (true)
+        	{
+        		title = (String) JOptionPane.showInputDialog(this,
+                    "Enter a unique title for the new window.",
+                    "New Default Window",
+                    JOptionPane.PLAIN_MESSAGE);
+        		if (windowEntries.get(title) != null)
+        		{
+        			JOptionPane.showMessageDialog(this,
+        				    "A window with that name already exists.", 
+        				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
+        		}
+        		else
+        		{
+        			break;
+        		}
+        	}
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, title));
         }
         else if (s.startsWith("toggleVisibility"))
         {

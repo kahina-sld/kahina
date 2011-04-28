@@ -179,8 +179,9 @@ public class KahinaWindowManager implements KahinaListener
 		{
 			KahinaView view = new KahinaEmptyView(control);
 	        KahinaWindow viewWindow = new KahinaDefaultWindow(view, control);
-	        windowByID.put(viewWindow.getTitle(), viewWindow);
+	        windowByID.put(e.getWindowID(), viewWindow);
 	        contentWindows.put(view,viewWindow);
+	        viewWindow.setTitle(e.getWindowID());
             viewWindow.setSize(300,100);
             viewWindow.setLocation(200,200);
 	        viewWindow.setVisible(true);
