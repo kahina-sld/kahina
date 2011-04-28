@@ -6,6 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.border.TitledBorder;
 
+import org.kahina.core.control.KahinaController;
+
 public class KahinaHorizontallySplitWindow extends KahinaWindow
 {
 
@@ -17,8 +19,9 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     JPanel leftPanel;
     JPanel rightPanel;
     
-    public KahinaHorizontallySplitWindow()
+    public KahinaHorizontallySplitWindow(KahinaController control)
     {
+    	super(control);
         leftPanel = new JPanel();
         leftPanel.setBorder(BorderFactory.createTitledBorder("Drag window 1 here!"));
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -33,12 +36,14 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     public void setLeftWindow(KahinaWindow w)
     {
         ((TitledBorder) leftPanel.getBorder()).setTitle(w.getTitle());
+        leftPanel.removeAll();
         leftPanel.add(w.getContentPane());
     }
     
     public void setRightWindow(KahinaWindow w)
     {
         ((TitledBorder) rightPanel.getBorder()).setTitle(w.getTitle());
+        rightPanel.removeAll();
         rightPanel.add(w.getContentPane());
     }
 }

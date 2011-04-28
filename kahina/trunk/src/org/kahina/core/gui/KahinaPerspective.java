@@ -112,6 +112,11 @@ public class KahinaPerspective
 		visible.put(viewID, vis);
 	}
 	
+	public void toggleVisibility(String viewID)
+	{
+		setVisibility(viewID, !isVisible(viewID));
+	}
+	
 	//windows and views are visible by default
 	public boolean isVisible(String viewID)
 	{

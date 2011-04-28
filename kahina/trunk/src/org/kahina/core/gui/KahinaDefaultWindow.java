@@ -9,6 +9,7 @@ public class KahinaDefaultWindow extends KahinaWindow
     
     public KahinaDefaultWindow(KahinaView v, KahinaController control)
     {
+    	super(control);
         setContent(v, control);
         setTitle(v.getTitle());
     }

@@ -49,8 +49,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		mainTreeView.setStatusColorEncoding(TraleSLDStepType.FINISHED, new Color(102, 51, 153));
 		mainTreeView.setStatusColorEncoding(TraleSLDStepType.BLOCKED, Color.BLACK);
 		// TODO: build font color customization facilities into TreeView
-		// mainTreeView.setStatusFontColorEncoding(TraleSLDStepType.BLOCKED,
-		// Color.BLACK);
+		// mainTreeView.setStatusFontColorEncoding(TraleSLDStepType.BLOCKED,Color.BLACK);
 
 		mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.PROSPECTIVE, new Color(192, 192, 192));
 		mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.SUCCESSFUL, new Color(102, 153, 102));
@@ -77,8 +76,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	public void displayMainViews()
 	{
 		super.displayMainViews();
-		// set deciders here because the trees are generated generically by the
-		// KahinaState
+		// set deciders here because the trees are generated generically by the KahinaState
 		mainTreeView.getModel().setLayerDecider(new TraleSLDLayerDecider(2));
 		mainTreeView.getSecondaryModel().setLayerDecider(new TraleSLDLayerDecider(2));
 		mainChartView.display(instance.getState().getChart());
@@ -87,21 +85,29 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	@Override
 	public void prepare(KahinaController control)
 	{
-		super.prepare(control);
-		integrateVariableDisplays(KahinaViewIntegrationType.VERTICAL, "startBindings", "endBindings", "Variable bindings", control);
-		integrateVariableDisplays(KahinaViewIntegrationType.VERTICAL, "codeLocation", "messageConsole", "Source & Console", control);
-		integrateVariableDisplays(KahinaViewIntegrationType.HORIZONTAL, "startFeatStruct", "endFeatStruct", "Feature Structures", control);
-		// slightly hacky: allow direct manipulation of view components
-		getWindowForVarName("codeLocation").setSize(400, 500);
-		getWindowForVarName("codeLocation").setLocation(400, 0);
-		getWindowForVarName("startFeatStruct").setSize(700, 300);
-		getWindowForVarName("startFeatStruct").setLocation(0, 550);
-		getWindowForVarName("startBindings").setSize(200, 300);
-		getWindowForVarName("startBindings").setLocation(700, 550);
-		getWindowForVarName("controlFlowTree").setSize(500, 800);
-		getWindowForVarName("controlFlowTree").setLocation(800, 0);
-		getWindowForVarName("chart").setSize(400, 400);
-		getWindowForVarName("chart").setLocation(0, 150);
+		try
+		{
+			super.prepare(control);
+			integrateWindows(KahinaViewIntegrationType.VERTICAL, "startBindings", "endBindings", "Variable bindings", control);
+			integrateWindows(KahinaViewIntegrationType.VERTICAL, "codeLocation", "Message console", "Source & Console", control);
+			integrateWindows(KahinaViewIntegrationType.HORIZONTAL, "startFeatStruct", "endFeatStruct", "Feature Structures", control);
+			//TODO: put this into a configuration instead
+			//hack for the moment: allow direct manipulation of view components
+			windowManager.getWindowByID("Source & Console").setSize(400, 500);
+			windowManager.getWindowByID("Source & Console").setLocation(400, 0);
+			windowManager.getWindowByID("Feature Structures").setSize(700, 300);
+			windowManager.getWindowByID("Feature Structures").setLocation(0, 550);
+			windowManager.getWindowByID("Variable bindings").setSize(200, 300);
+			windowManager.getWindowByID("Variable bindings").setLocation(700, 550);
+			windowManager.getWindowByID("Control flow tree").setSize(500, 800);
+			windowManager.getWindowByID("Control flow tree").setLocation(800, 0);
+			windowManager.getWindowByID("Chart").setSize(400, 400);
+			windowManager.getWindowByID("Chart").setLocation(0, 150);
+		}
+		catch (NullPointerException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -118,8 +124,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 
 		if (type == KahinaDialogEvent.COMPILE)
 		{
-			// TODO custom dialog with fancy stuff like recently compiled
-			// grammars
+			// TODO custom dialog with fancy stuff like recently compiled grammars
 			// TODO add filter, just show .pl files per default
 			File directory = new File(".");
 			JFileChooser chooser = new JFileChooser(directory);
@@ -154,7 +159,8 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 					KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE, new Object[] { grammar.getAbsolutePath() }));
 				}
 			}
-		} else if (type == KahinaDialogEvent.PARSE)
+		} 
+		else if (type == KahinaDialogEvent.PARSE)
 		{
 			// TODO offer recent parses in a ComboBox
 			String sentence = (String) JOptionPane.showInputDialog(windowManager.mainWindow, "Enter a sentence to parse, with the words separated by spaces.", "Parse sentence",

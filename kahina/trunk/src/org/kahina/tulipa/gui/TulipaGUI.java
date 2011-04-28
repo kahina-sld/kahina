@@ -65,9 +65,10 @@ public class TulipaGUI extends KahinaGUI
     public void prepare(KahinaController control)
     {
         super.prepare(control);
-        getWindowForVarName("dag").setSize(800, 500);
-        getWindowForVarName("dag").setLocation(0, 150);
-        getWindowForVarName("grammar").setSize(800, 100);
-        getWindowForVarName("grammar").setLocation(0, 700);
+        //TODO: put this into a default configuration
+        //getWindowForVarName("dag").setSize(800, 500);
+        //getWindowForVarName("dag").setLocation(0, 150);
+        //getWindowForVarName("grammar").setSize(800, 100);
+        //getWindowForVarName("grammar").setLocation(0, 700);
     }
 }

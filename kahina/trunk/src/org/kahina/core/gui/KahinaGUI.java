@@ -97,8 +97,7 @@ public class KahinaGUI implements KahinaListener
 	}
 
 	/**
-	 * overwrite this to specify a non-standard mapping from step properties to
-	 * views
+	 * overwrite this to specify a non-standard mapping from step properties to views
 	 * 
 	 * @param stepType
 	 */
@@ -136,7 +135,7 @@ public class KahinaGUI implements KahinaListener
 		return controlPanel;
 	}
 
-	public KahinaWindow getWindowForVarName(String varName)
+	/*public KahinaWindow getWindowForVarName(String varName)
 	{
 		KahinaView<?> view = varNameToView.get(varName);
 		if (view != null)
@@ -144,33 +143,25 @@ public class KahinaGUI implements KahinaListener
 			return windowManager.topLevelWindows.get(view);
 		}
 		return null;
-	}
+	}*/
 
-	public void integrateVariableDisplays(int integrationType, String var1, String var2, String newTitle, KahinaController control)
+	public void integrateWindows(int integrationType, String window1ID, String window2ID, String newTitle, KahinaController control)
 	{
-		KahinaView<?> view1 = varNameToView.get(var1);
-		KahinaView<?> view2 = varNameToView.get(var2);
-		if (view1 == null || view2 == null)
+		switch (integrationType)
 		{
-			throw new RuntimeException("Error integrating views: " + var1 + " and " + var2);
-		} else
-		{
-			switch (integrationType)
+			case KahinaViewIntegrationType.VERTICAL:
 			{
-				case KahinaViewIntegrationType.VERTICAL:
-				{
-					windowManager.integrateInVerticallySplitWindow(view1, view2, newTitle, control);
-					break;
-				}
-				case KahinaViewIntegrationType.HORIZONTAL:
-				{
-					windowManager.integrateInHorizontallySplitWindow(view1, view2, newTitle, control);
-					break;
-				}
-				case KahinaViewIntegrationType.TABBED:
-				{
-					// TODO
-				}
+				windowManager.integrateInVerticallySplitWindow(window1ID, window2ID, newTitle, control);
+				break;
+			}
+			case KahinaViewIntegrationType.HORIZONTAL:
+			{
+				windowManager.integrateInHorizontallySplitWindow(window1ID, window2ID, newTitle, control);
+				break;
+			}
+			case KahinaViewIntegrationType.TABBED:
+			{
+				// TODO
 			}
 		}
 	}
@@ -216,13 +207,16 @@ public class KahinaGUI implements KahinaListener
 		if (e instanceof KahinaSelectionEvent)
 		{
 			processEvent((KahinaSelectionEvent) e);
-		} else if (e instanceof KahinaDialogEvent)
+		} 
+		else if (e instanceof KahinaDialogEvent)
 		{
 			processEvent((KahinaDialogEvent) e);
-		} else if (e instanceof KahinaControlEvent)
+		} 
+		else if (e instanceof KahinaControlEvent)
 		{
 			processEvent((KahinaControlEvent) e);
-		} else if (e instanceof KahinaWarnEvent)
+		} 
+		else if (e instanceof KahinaWarnEvent)
 		{
 			processEvent((KahinaWarnEvent) e);
 		}

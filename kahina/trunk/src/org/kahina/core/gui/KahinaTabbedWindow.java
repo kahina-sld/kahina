@@ -2,12 +2,15 @@ package org.kahina.core.gui;
 
 import javax.swing.JTabbedPane;
 
+import org.kahina.core.control.KahinaController;
+
 public class KahinaTabbedWindow  extends KahinaWindow
 {
     JTabbedPane tabbedPane;
     
-    public KahinaTabbedWindow()
+    public KahinaTabbedWindow(KahinaController control)
     {
+    	super(control);
         tabbedPane = new JTabbedPane();
         getContentPane().add(tabbedPane);
     }
