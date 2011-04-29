@@ -10,7 +10,6 @@ import org.kahina.core.control.KahinaController;
 
 public class KahinaHorizontallySplitWindow extends KahinaWindow
 {
-
 	private static final long serialVersionUID = 7735328776548607273L;
 	
 	KahinaWindow leftWindow;
@@ -35,6 +34,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     
     public void setLeftWindow(KahinaWindow w)
     {
+    	leftWindow = w;
         ((TitledBorder) leftPanel.getBorder()).setTitle(w.getTitle());
         leftPanel.removeAll();
         leftPanel.add(w.getContentPane());
@@ -42,6 +42,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     
     public void setRightWindow(KahinaWindow w)
     {
+    	rightWindow = w;
         ((TitledBorder) rightPanel.getBorder()).setTitle(w.getTitle());
         rightPanel.removeAll();
         rightPanel.add(w.getContentPane());

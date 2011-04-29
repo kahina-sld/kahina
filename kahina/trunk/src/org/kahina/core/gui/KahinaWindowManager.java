@@ -83,6 +83,11 @@ public class KahinaWindowManager implements KahinaListener
         }
         mainWindow.dispose();
     }
+	
+	public boolean isTopLevelWindow(KahinaWindow w)
+	{
+		return (windowByID.get(w.getTitle()) != null);
+	}
     
     public KahinaWindow integrateInDefaultWindow(KahinaView<?> view, KahinaController control)
     {

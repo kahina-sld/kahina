@@ -35,6 +35,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public void setUpperWindow(KahinaWindow w)
     {
+    	upperWindow = w;
         ((TitledBorder) topPanel.getBorder()).setTitle(w.getTitle());
         topPanel.removeAll();
         topPanel.add(w.getContentPane());
@@ -42,6 +43,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public void setLowerWindow(KahinaWindow w)
     {
+    	lowerWindow = w;
         ((TitledBorder) bottomPanel.getBorder()).setTitle(w.getTitle());
         bottomPanel.removeAll();
         bottomPanel.add(w.getContentPane());
