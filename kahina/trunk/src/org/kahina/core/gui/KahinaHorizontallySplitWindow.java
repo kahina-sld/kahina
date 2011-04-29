@@ -18,15 +18,22 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     JPanel leftPanel;
     JPanel rightPanel;
     
-    public KahinaHorizontallySplitWindow(KahinaController control)
+    KahinaWindowListener leftPanelListener;
+    KahinaWindowListener rightPanelListener;
+    
+    public KahinaHorizontallySplitWindow(KahinaWindowManager wm)
     {
-    	super(control);
+    	super(wm);
         leftPanel = new JPanel();
         leftPanel.setBorder(BorderFactory.createTitledBorder("Drag window 1 here!"));
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanelListener = new KahinaWindowListener(this);
+        leftPanel.addMouseListener(leftPanelListener);
         rightPanel = new JPanel();
         rightPanel.setBorder(BorderFactory.createTitledBorder("Drag window 2 here!"));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanelListener = new KahinaWindowListener(this);
+        rightPanel.addMouseListener(rightPanelListener);
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setResizeWeight(.5);
         getContentPane().add(splitPane);
@@ -35,6 +42,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     public void setLeftWindow(KahinaWindow w)
     {
     	leftWindow = w;
+    	leftPanelListener.setWindow(w);
         ((TitledBorder) leftPanel.getBorder()).setTitle(w.getTitle());
         leftPanel.removeAll();
         leftPanel.add(w.getContentPane());
@@ -43,6 +51,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     public void setRightWindow(KahinaWindow w)
     {
     	rightWindow = w;
+    	rightPanelListener.setWindow(w);
         ((TitledBorder) rightPanel.getBorder()).setTitle(w.getTitle());
         rightPanel.removeAll();
         rightPanel.add(w.getContentPane());

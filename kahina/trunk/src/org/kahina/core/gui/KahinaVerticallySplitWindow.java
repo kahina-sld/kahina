@@ -19,15 +19,22 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     JPanel topPanel;
     JPanel bottomPanel;
     
-    public KahinaVerticallySplitWindow(KahinaController control)
+    KahinaWindowListener topPanelListener;
+    KahinaWindowListener bottomPanelListener;
+    
+    public KahinaVerticallySplitWindow(KahinaWindowManager wm)
     {
-    	super(control);
+    	super(wm);
         topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         topPanel.setBorder(BorderFactory.createTitledBorder("Drag window 1 here!"));
+        topPanelListener = new KahinaWindowListener(this);
+        topPanel.addMouseListener(topPanelListener);
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         bottomPanel.setBorder(BorderFactory.createTitledBorder("Drag window 2 here!"));
+        bottomPanelListener = new KahinaWindowListener(this);
+        bottomPanel.addMouseListener(bottomPanelListener);
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topPanel, bottomPanel);
         splitPane.setResizeWeight(.5);
         getContentPane().add(splitPane);
@@ -36,6 +43,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     public void setUpperWindow(KahinaWindow w)
     {
     	upperWindow = w;
+    	topPanelListener.setWindow(w);
         ((TitledBorder) topPanel.getBorder()).setTitle(w.getTitle());
         topPanel.removeAll();
         topPanel.add(w.getContentPane());
@@ -44,6 +52,8 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     public void setLowerWindow(KahinaWindow w)
     {
     	lowerWindow = w;
+    	bottomPanelListener.setWindow(w);
+    	bottomPanel.addMouseListener(new KahinaWindowListener(w));
         ((TitledBorder) bottomPanel.getBorder()).setTitle(w.getTitle());
         bottomPanel.removeAll();
         bottomPanel.add(w.getContentPane());

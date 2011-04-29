@@ -9,14 +9,12 @@ import javax.swing.JPopupMenu;
 
 public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListener
 {
-	KahinaWindowManager wm;
 	KahinaWindow w;
 	
-	public KahinaWindowContextMenu(KahinaWindowManager wm, KahinaWindow w)
+	public KahinaWindowContextMenu(KahinaWindow w)
 	{
-		this.wm = wm;
 		this.w = w;
-		if (!wm.isTopLevelWindow(w))
+		if (!w.isTopLevelWindow())
 		{
 			JMenuItem undockItem = new JMenuItem("Undock");
 			undockItem.addActionListener(this);
@@ -41,9 +39,9 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		}
 	}
 	
-    public static JPopupMenu getMenu(KahinaWindowManager wm, KahinaWindow w)
+    public static JPopupMenu getMenu(KahinaWindow w)
     {
-        return new KahinaWindowContextMenu(wm, w);
+        return new KahinaWindowContextMenu(w);
     }
 
 

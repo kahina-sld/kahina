@@ -30,7 +30,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
 	{
-		super(control);
+		super(windowManager);
 		this.windowManager = windowManager;
 
 		this.setTitle("Kahina");

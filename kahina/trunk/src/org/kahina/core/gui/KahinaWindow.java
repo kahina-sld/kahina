@@ -16,13 +16,19 @@ public class KahinaWindow extends JFrame implements WindowListener
     
     private static final boolean verbose = false;
     
-    KahinaController control;
+    KahinaWindowManager wm;
     
-    public KahinaWindow(KahinaController control)
+    public KahinaWindow(KahinaWindowManager wm)
     {        
-    	this.control = control;
+    	this.wm = wm;
         setLayout(new BorderLayout());
+        this.addMouseListener(new KahinaWindowListener(this));
         this.addWindowListener(this);
+    }
+    
+    public boolean isTopLevelWindow()
+    {
+    	return wm.isTopLevelWindow(this);
     }
 
 	@Override
@@ -38,7 +44,7 @@ public class KahinaWindow extends JFrame implements WindowListener
 	@Override
 	public void windowClosing(WindowEvent e) 
 	{
-		control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE,this.getTitle()));
+		wm.control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE,this.getTitle()));
 	}
 
 	@Override

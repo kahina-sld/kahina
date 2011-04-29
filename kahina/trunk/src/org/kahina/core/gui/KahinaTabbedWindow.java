@@ -1,5 +1,8 @@
 package org.kahina.core.gui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JTabbedPane;
 
 import org.kahina.core.control.KahinaController;
@@ -8,15 +11,20 @@ public class KahinaTabbedWindow  extends KahinaWindow
 {
     JTabbedPane tabbedPane;
     
-    public KahinaTabbedWindow(KahinaController control)
+    List<KahinaWindow> windows;
+    
+    public KahinaTabbedWindow(KahinaWindowManager wm)
     {
-    	super(control);
+    	super(wm);
+    	windows = new ArrayList<KahinaWindow>();
+    	
         tabbedPane = new JTabbedPane();
         getContentPane().add(tabbedPane);
     }
     
     public void addWindow(KahinaWindow w)
     {
-        tabbedPane.add(w.getTitle(), w.getContentPane());
+    	windows.add(w);
+        tabbedPane.add(w.getTitle(), w.getContentPane()).addMouseListener(new KahinaWindowListener(w));
     }
 }

@@ -7,10 +7,10 @@ public class KahinaDefaultWindow extends KahinaWindow
 {
     KahinaView v;
     
-    public KahinaDefaultWindow(KahinaView v, KahinaController control)
+    public KahinaDefaultWindow(KahinaView v, KahinaWindowManager wm)
     {
-    	super(control);
-        setContent(v, control);
+    	super(wm);
+        setContent(v, wm.control);
         setTitle(v.getTitle());
     }
     

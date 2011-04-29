@@ -14,6 +14,7 @@ import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.KahinaDefaultWindow;
+import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.visual.dag.KahinaDAGView;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -45,7 +46,7 @@ public class KahinaDAGTest
             KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, v);
             KahinaRunner.getControl().registerListener(KahinaEventTypes.REDRAW, v);
             
-            KahinaDefaultWindow w = new KahinaDefaultWindow(v, KahinaRunner.getControl());
+            KahinaDefaultWindow w = new KahinaDefaultWindow(v, new KahinaWindowManager(null, KahinaRunner.getControl()));
             w.setSize(510, 720);
             w.setVisible(true);
             w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
