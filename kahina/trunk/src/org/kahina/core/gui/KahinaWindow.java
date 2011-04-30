@@ -4,7 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaWindowEvent;
@@ -17,14 +20,26 @@ public class KahinaWindow extends JFrame implements WindowListener
     private static final boolean verbose = false;
     
     KahinaWindowManager wm;
+    JPanel mainPanel;
     
     public KahinaWindow(KahinaWindowManager wm)
     {        
     	this.wm = wm;
         setLayout(new BorderLayout());
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createTitledBorder(this.getTitle()));
+        mainPanel.addMouseListener(new KahinaWindowListener(this));
+        this.add(mainPanel);
+        //TODO: find a way to make windows more compact and to avoid having the title twice
         //this.setUndecorated(true);
-        this.addMouseListener(new KahinaWindowListener(this));
         this.addWindowListener(this);
+    }
+    
+    public void setTitle(String title)
+    {
+    	super.setTitle(title);
+    	((TitledBorder) mainPanel.getBorder()).setTitle(title);
     }
     
     public boolean isTopLevelWindow()

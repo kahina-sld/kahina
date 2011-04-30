@@ -1,6 +1,7 @@
 package org.kahina.core.visual;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;

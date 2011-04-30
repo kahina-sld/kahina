@@ -34,6 +34,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		this.windowManager = windowManager;
 
 		this.setTitle("Kahina");
+        this.setUndecorated(false);
 		control.registerListener(KahinaEventTypes.TREE, this);
 		this.setLayout(new BorderLayout());
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
