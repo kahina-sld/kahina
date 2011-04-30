@@ -12,6 +12,7 @@ public class KahinaDefaultWindow extends KahinaWindow
     	super(wm);
         setContent(v, wm.control);
         setTitle(v.getTitle());
+
     }
     
     public void setContent(KahinaView v, KahinaController control)
@@ -24,5 +25,10 @@ public class KahinaDefaultWindow extends KahinaWindow
     public KahinaView getContent()
     {
         return v;
+    }
+    
+    public boolean isContentWindow()
+    {
+    	return true;
     }
 }

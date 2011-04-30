@@ -22,6 +22,7 @@ public class KahinaWindow extends JFrame implements WindowListener
     {        
     	this.wm = wm;
         setLayout(new BorderLayout());
+        //this.setUndecorated(true);
         this.addMouseListener(new KahinaWindowListener(this));
         this.addWindowListener(this);
     }
@@ -29,6 +30,18 @@ public class KahinaWindow extends JFrame implements WindowListener
     public boolean isTopLevelWindow()
     {
     	return wm.isTopLevelWindow(this);
+    }
+    
+    //per default, a window is not considered a content window
+    public boolean isContentWindow()
+    {
+    	return false;
+    }
+    
+    //per default, a window is not flippable
+    public boolean isFlippableWindow()
+    {
+    	return false;
     }
 
 	@Override

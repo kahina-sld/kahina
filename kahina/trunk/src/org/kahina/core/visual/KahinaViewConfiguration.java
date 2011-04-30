@@ -17,8 +17,7 @@ import org.w3c.dom.Element;
  *
  */
 public class KahinaViewConfiguration
-{
-	
+{	
 	/**public static KahinaViewConfiguration importXML(Element e)
 	{
 		return new KahinaViewConfiguration<KahinaView<KahinaObject>>();

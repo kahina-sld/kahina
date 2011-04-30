@@ -10,7 +10,6 @@ import org.kahina.core.control.KahinaController;
 
 public class KahinaVerticallySplitWindow extends KahinaWindow
 {
-
 	private static final long serialVersionUID = -4836711113431179305L;
 	
 	KahinaWindow upperWindow;
@@ -53,9 +52,13 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     {
     	lowerWindow = w;
     	bottomPanelListener.setWindow(w);
-    	bottomPanel.addMouseListener(new KahinaWindowListener(w));
         ((TitledBorder) bottomPanel.getBorder()).setTitle(w.getTitle());
         bottomPanel.removeAll();
         bottomPanel.add(w.getContentPane());
+    }
+    
+    public boolean isFlippableWindow()
+    {
+    	return true;
     }
 }

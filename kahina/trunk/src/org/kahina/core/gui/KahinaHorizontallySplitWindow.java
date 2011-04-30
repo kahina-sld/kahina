@@ -56,4 +56,9 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
         rightPanel.removeAll();
         rightPanel.add(w.getContentPane());
     }
+    
+    public boolean isFlippableWindow()
+    {
+    	return true;
+    }
 }
