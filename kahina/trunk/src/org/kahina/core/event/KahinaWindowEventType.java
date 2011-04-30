@@ -8,4 +8,5 @@ public class KahinaWindowEventType
     public static final int NEW_TABBED = 3;
     public static final int TOGGLE_VISIBLE = 4;
     public static final int REMOVE = 5;
+    public static final int RENAME = 6;
 }

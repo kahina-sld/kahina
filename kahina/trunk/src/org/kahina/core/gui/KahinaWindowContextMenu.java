@@ -5,7 +5,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+
+import org.kahina.core.KahinaRunner;
+import org.kahina.core.event.KahinaWindowEvent;
+import org.kahina.core.event.KahinaWindowEventType;
 
 
 public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListener
@@ -84,6 +89,28 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		else if (s.equals("Clone"))
 		{
 			System.err.println("Received order to clone window " + w.getTitle());
+		}
+		else if (s.equals("Rename"))
+		{
+        	String title;
+        	while (true)
+        	{
+        		title = (String) JOptionPane.showInputDialog(this,
+                    "Enter a new and unique title for the window.",
+                    "New Default Window",
+                    JOptionPane.PLAIN_MESSAGE);
+        		if (w.wm.getWindowByID(title) != null)
+        		{
+        			JOptionPane.showMessageDialog(this,
+        				    "A window with that name already exists.", 
+        				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
+        		}
+        		else
+        		{
+        			break;
+        		}
+        	}
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RENAME, w.getTitle() + "#" + title));
 		}
 	}
 	

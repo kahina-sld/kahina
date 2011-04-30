@@ -22,7 +22,6 @@ public class KahinaWindowListener extends MouseAdapter
     @Override
 	public void mousePressed(MouseEvent e) 
     {
-    	System.err.println("mousePress registered!");
         maybeShowPopup(e);
     }
 

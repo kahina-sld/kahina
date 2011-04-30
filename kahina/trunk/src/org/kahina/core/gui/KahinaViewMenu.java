@@ -38,8 +38,9 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         
         manager.control.registerListener(KahinaEventTypes.WINDOW, this);
         
-        for (KahinaWindow window : manager.windowByID.values())
+        for (String winID : manager.topLevelWindows)
         {
+        	KahinaWindow window = manager.getWindowByID(winID);
             JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(window.getTitle());
             windowCheckBoxItem.setActionCommand("toggleVisibility:" + window.getTitle());
             windowCheckBoxItem.addActionListener(this);
@@ -246,6 +247,17 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 			{
 				this.remove(windowCheckBoxItem);
 			}
+		} 
+		else if (type == KahinaWindowEventType.RENAME)
+		{
+			String[] winIDs = e.getWindowID().split("#");
+			JCheckBoxMenuItem windowCheckBoxItem = windowEntries.remove(winIDs[0]);
+			if (windowCheckBoxItem != null)
+			{
+				windowCheckBoxItem.setText(winIDs[1]);
+				windowCheckBoxItem.setActionCommand("toggleVisibility:" + winIDs[1]);
+			}
+			windowEntries.put(winIDs[1],windowCheckBoxItem);
 		} 
 	}
 }

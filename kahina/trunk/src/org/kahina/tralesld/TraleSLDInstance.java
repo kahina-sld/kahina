@@ -102,12 +102,22 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	@Override
 	public TraleSLDBridge startNewSession()
 	{
-		super.startNewSession();
-		profiler = new TraleSLDProfiler(state.getFullProfile());
-		controller.registerListener("edge select", this);
-		controller.registerListener("update", this);
-		controller.registerListener(KahinaEventTypes.CONTROL, this);
-		return bridge;
+		try
+		{
+			super.startNewSession();
+			profiler = new TraleSLDProfiler(state.getFullProfile());
+			controller.registerListener("edge select", this);
+			controller.registerListener("update", this);
+			controller.registerListener(KahinaEventTypes.CONTROL, this);
+			return bridge;
+		}
+		catch (NullPointerException e)
+		{
+			System.err.println("NULL POINTER EXCEPTION at the following stack position:");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		return null;
 	}
 
 	public String getCommand()
