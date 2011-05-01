@@ -318,6 +318,46 @@ public class KahinaWindowManager implements KahinaListener
 				}
 			}
 		} 
+		else if (type == KahinaWindowEventType.UNDOCK)
+		{
+			KahinaWindow window = windowByID.get(e.getWindowID());
+			if (window == null)
+			{
+				System.err.println("WARNING: Could not find window \"" + e.getWindowID() + "\".");
+			}
+			else
+			{
+				KahinaWindow embeddingWindow = window.getEmbeddingWindow();
+				if (embeddingWindow == null)
+				{
+					System.err.println("WARNING: Window \"" + e.getWindowID() + "\" cannot be undocked, as is not embedded.");
+				}
+				//now comes the interesting case
+				else
+				{
+					//let the embeddingWindow release the window and provide an appropriate replacement
+					KahinaWindow replacementWindow = embeddingWindow.getReplacementAfterRelease(window);
+					//simpler case: embeddingWindow was embedded
+					if (!embeddingWindow.isTopLevelWindow())
+					{
+						embeddingWindow.getEmbeddingWindow().replaceSubwindow(embeddingWindow,replacementWindow);
+					}
+					//complicated case: embeddingWindow was top level window
+					else
+					{
+						control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, embeddingWindow.getTitle()));
+						topLevelWindows.add(replacementWindow.getTitle());
+						replacementWindow.setVisible(true);
+						control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, replacementWindow.getTitle()));
+					}
+					windowByID.remove(embeddingWindow.getTitle());
+					windowByID.put(replacementWindow.getTitle(),replacementWindow);
+					//register and display the undocked window
+					topLevelWindows.add(e.getWindowID());
+					window.setVisible(true);
+				}
+			}
+		} 
 	}
 	
 	private void loadPerspective(File file)

@@ -1,5 +1,7 @@
 package org.kahina.core.gui;
 
+import java.awt.Container;
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -32,6 +34,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     
     public void setLeftWindow(KahinaWindow w)
     {
+    	w.embeddingWindow = this;
     	leftWindow = w;
         leftPanel.removeAll();
         leftPanel.add(w.getContentPane());
@@ -39,9 +42,63 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     
     public void setRightWindow(KahinaWindow w)
     {
+    	w.embeddingWindow = this;
     	rightWindow = w;
         rightPanel.removeAll();
         rightPanel.add(w.getContentPane());
+    }
+    
+    public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
+    {
+    	if (leftWindow == removedWindow)
+    	{
+    		leftWindow.embeddingWindow = null;
+    		leftWindow.setContentPane((Container) leftPanel.getComponents()[0]);		
+    		rightWindow.embeddingWindow = null;
+    		rightWindow.setContentPane((Container) rightPanel.getComponents()[0]);
+			//determine too surprising positions and sizes for the separate windows
+    		leftWindow.setSize(leftPanel.getSize());
+    		rightWindow.setSize(rightPanel.getSize());
+    		leftWindow.setLocation(this.getLocation());
+    		rightWindow.setLocation(this.getX() + leftPanel.getWidth(), this.getY());
+    		return rightWindow;
+    	}
+    	else if (rightWindow == removedWindow)
+    	{
+    		leftWindow.embeddingWindow = null;
+    		leftWindow.setContentPane((Container) leftPanel.getComponents()[0]);		
+    		rightWindow.embeddingWindow = null;
+    		rightWindow.setContentPane((Container) rightPanel.getComponents()[0]);
+			//determine too surprising positions and sizes for the separate windows
+    		leftWindow.setSize(leftPanel.getSize());
+    		rightWindow.setSize(rightPanel.getSize());
+    		rightWindow.setLocation(this.getX() + leftPanel.getWidth(), this.getY());
+    		leftWindow.setLocation(this.getLocation());
+    		return leftWindow;
+    	}
+    	else
+    	{
+    		System.err.println("WARNING: Window \"" + removedWindow.getTitle() + "\" is not a subwindow of window \"" + this.getTitle() + "\", release failed.");
+    		return this;
+    	}
+    }
+    
+    public void replaceSubwindow(KahinaWindow oldSubwindow, KahinaWindow newSubwindow)
+    {
+       	if (leftWindow == oldSubwindow)
+    	{
+       		oldSubwindow.embeddingWindow = null;
+       		setLeftWindow(newSubwindow);
+    	}
+    	else if (rightWindow == oldSubwindow)
+    	{
+       		oldSubwindow.embeddingWindow = null;
+       		setRightWindow(newSubwindow);
+    	}
+    	else
+    	{
+    		System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" is not a subwindow of window \"" + this.getTitle() + "\", replacement failed.");
+    	}
     }
     
     public boolean isFlippableWindow()

@@ -24,6 +24,7 @@ public class KahinaTabbedWindow  extends KahinaWindow
     
     public void addWindow(KahinaWindow w)
     {
+    	w.embeddingWindow = this;
     	windows.add(w);
         tabbedPane.add(w.getTitle(), w.getContentPane()).addMouseListener(new KahinaWindowListener(w));
     }

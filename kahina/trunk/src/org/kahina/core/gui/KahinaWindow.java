@@ -22,6 +22,9 @@ public class KahinaWindow extends JFrame implements WindowListener
     KahinaWindowManager wm;
     JPanel mainPanel;
     
+    //link upward in embedding structure tree
+    protected KahinaWindow embeddingWindow;
+    
     public KahinaWindow(KahinaWindowManager wm)
     {        
     	this.wm = wm;
@@ -30,6 +33,7 @@ public class KahinaWindow extends JFrame implements WindowListener
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder(this.getTitle()));
         mainPanel.addMouseListener(new KahinaWindowListener(this));
+        embeddingWindow = null;
         this.add(mainPanel);
         //TODO: find a way to make windows more compact and to avoid having the title twice
         //this.setUndecorated(true);
@@ -62,6 +66,23 @@ public class KahinaWindow extends JFrame implements WindowListener
     public void flipSubwindows()
     {
     	//do nothing per default, implemented by KahinaHorizontallySplitWindow and KahinaVerticallySplitWindow
+    }
+    
+    public KahinaWindow getEmbeddingWindow()
+    {
+    	return embeddingWindow;
+    }
+    
+    //for a container window, releases a subwindow and provides a replacement without the removed subwindow
+    public KahinaWindow getReplacementAfterRelease(KahinaWindow subwindow)
+    {
+    	return this;
+    }
+    
+    //for a container window, replaces a subwindow with the other
+    public void replaceSubwindow(KahinaWindow oldSubwindow, KahinaWindow newSubwindow)
+    {
+
     }
 
 	@Override

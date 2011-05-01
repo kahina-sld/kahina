@@ -84,7 +84,7 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		String s = e.getActionCommand();
 		if (s.equals("Undock"))
 		{
-			System.err.println("Received order to undock window " + w.getTitle());
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getTitle()));
 		}
 		else if (s.equals("Clone"))
 		{

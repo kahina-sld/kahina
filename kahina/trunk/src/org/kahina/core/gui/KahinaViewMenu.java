@@ -92,90 +92,22 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         String s = e.getActionCommand();
         if (s.equals("newDefaultWindow"))
         {	
-        	String title;
-        	while (true)
-        	{
-        		title = (String) JOptionPane.showInputDialog(this,
-                    "Enter a unique title for the new window.",
-                    "New Default Window",
-                    JOptionPane.PLAIN_MESSAGE);
-        		if (windowEntries.get(title) != null)
-        		{
-        			JOptionPane.showMessageDialog(this,
-        				    "A window with that name already exists.", 
-        				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
-        		}
-        		else
-        		{
-        			break;
-        		}
-        	}
+        	String title = getNewUniqueTitle();
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_DEFAULT, title));
         }
         else if (s.equals("newVertSplitWindow"))
         {	
-        	String title;
-        	while (true)
-        	{
-        		title = (String) JOptionPane.showInputDialog(this,
-                    "Enter a unique title for the new window.",
-                    "New Default Window",
-                    JOptionPane.PLAIN_MESSAGE);
-        		if (windowEntries.get(title) != null)
-        		{
-        			JOptionPane.showMessageDialog(this,
-        				    "A window with that name already exists.", 
-        				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
-        		}
-        		else
-        		{
-        			break;
-        		}
-        	}
+        	String title = getNewUniqueTitle();
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_VERT_SPLIT, title));
         }
         else if (s.equals("newHoriSplitWindow"))
         {	
-        	String title;
-        	while (true)
-        	{
-        		title = (String) JOptionPane.showInputDialog(this,
-                    "Enter a unique title for the new window.",
-                    "New Default Window",
-                    JOptionPane.PLAIN_MESSAGE);
-        		if (windowEntries.get(title) != null)
-        		{
-        			JOptionPane.showMessageDialog(this,
-        				    "A window with that name already exists.", 
-        				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
-        		}
-        		else
-        		{
-        			break;
-        		}
-        	}
+        	String title = getNewUniqueTitle();
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_HORI_SPLIT, title));
         }
         else if (s.equals("newTabbedWindow"))
         {	
-        	String title;
-        	while (true)
-        	{
-        		title = (String) JOptionPane.showInputDialog(this,
-                    "Enter a unique title for the new window.",
-                    "New Default Window",
-                    JOptionPane.PLAIN_MESSAGE);
-        		if (windowEntries.get(title) != null)
-        		{
-        			JOptionPane.showMessageDialog(this,
-        				    "A window with that name already exists.", 
-        				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
-        		}
-        		else
-        		{
-        			break;
-        		}
-        	}
+        	String title = getNewUniqueTitle();
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, title));
         }
         else if (s.startsWith("toggleVisibility"))
@@ -200,6 +132,29 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
             if (dataFile != null)  KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.SAVE_PERSPECTIVE, dataFile));
         }
     }
+	
+	private String getNewUniqueTitle()
+	{
+		String title;
+    	while (true)
+    	{
+    		title = (String) JOptionPane.showInputDialog(this,
+                "Enter a unique title for the new window.",
+                "New Default Window",
+                JOptionPane.PLAIN_MESSAGE);
+    		if (manager.getWindowByID(title) != null)
+    		{
+    			JOptionPane.showMessageDialog(this,
+    				    "A window with that name already exists.", 
+    				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
+    		}
+    		else
+    		{
+    			break;
+    		}
+    	}
+    	return title;
+	}
 	
 	public void processEvent(KahinaEvent e)
 	{
@@ -258,6 +213,24 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 				windowCheckBoxItem.setActionCommand("toggleVisibility:" + winIDs[1]);
 			}
 			windowEntries.put(winIDs[1],windowCheckBoxItem);
+		} 
+		else if (type == KahinaWindowEventType.UNDOCK)
+		{
+			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(e.getWindowID());
+            windowCheckBoxItem.setActionCommand("toggleVisibility:" + e.getWindowID());
+            windowCheckBoxItem.addActionListener(this);
+            windowCheckBoxItem.setSelected(true);
+            windowEntries.put(e.getWindowID(), windowCheckBoxItem);
+            this.add(windowCheckBoxItem,0);
+		} 
+		else if (type == KahinaWindowEventType.ADD_VIEW_MENU_ENTRY)
+		{
+			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(e.getWindowID());
+            windowCheckBoxItem.setActionCommand("toggleVisibility:" + e.getWindowID());
+            windowCheckBoxItem.addActionListener(this);
+            windowCheckBoxItem.setSelected(true);
+            windowEntries.put(e.getWindowID(), windowCheckBoxItem);
+            this.add(windowCheckBoxItem,0);
 		} 
 	}
 }

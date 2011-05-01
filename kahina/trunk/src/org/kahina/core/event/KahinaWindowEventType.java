@@ -10,4 +10,6 @@ public class KahinaWindowEventType
     public static final int REMOVE = 5;
     public static final int RENAME = 6;
     public static final int FLIP = 7;
+    public static final int UNDOCK = 8;
+    public static final int ADD_VIEW_MENU_ENTRY = 9; //only for view menu updates
 }
