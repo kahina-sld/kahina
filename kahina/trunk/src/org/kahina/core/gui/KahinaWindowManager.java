@@ -244,6 +244,7 @@ public class KahinaWindowManager implements KahinaListener
 				else
 				{
 					window.setVisible(currentPerspective.isVisible(e.getWindowID()));
+					if (!window.isVisible()) window.dispose();
 				}
 			}
 			else
@@ -344,6 +345,7 @@ public class KahinaWindowManager implements KahinaListener
 					windowByID.remove(embeddingWindow.getTitle());
 					windowByID.put(replacementWindow.getTitle(),replacementWindow);
 					//register and display the undocked window
+					currentPerspective.setVisibility(e.getWindowID(), true);
 					topLevelWindows.add(e.getWindowID());
 					window.setVisible(true);
 				}
@@ -378,6 +380,7 @@ public class KahinaWindowManager implements KahinaListener
 				else
 				{
 					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winIDs[0]));
+		            topLevelWindows.remove(winIDs[0]);
 					topLevelWindows.add(winIDs[1]);
 					splitWindow.setVisible(true);
 					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, winIDs[1]));
@@ -413,6 +416,7 @@ public class KahinaWindowManager implements KahinaListener
 				else
 				{
 					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winIDs[0]));
+		            topLevelWindows.remove(winIDs[0]);
 					topLevelWindows.add(winIDs[1]);
 					splitWindow.setVisible(true);
 					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, winIDs[1]));

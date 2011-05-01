@@ -22,6 +22,7 @@ public class KahinaWindowListener extends MouseAdapter
     @Override
 	public void mousePressed(MouseEvent e) 
     {
+    	System.err.println("Mouse pressed on window \"" + w.getTitle() + "\"");
         maybeShowPopup(e);
     }
 

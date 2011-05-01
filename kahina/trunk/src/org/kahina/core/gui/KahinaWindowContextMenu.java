@@ -113,6 +113,21 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
         	String title = getNewUniqueTitle("Enter a new and unique title for the split window.", "Split window");
 			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.HORI_SPLIT, w.getTitle() + "#" + title));
 		}
+		else if (s.equals("Show Decorations"))
+		{
+			//TODO: this will not work, as Swing refuses to remove window decorations!
+        	w.setVisible(false);
+        	w.setUndecorated(!w.isUndecorated());
+        	w.setVisible(true);
+		}
+		else if (s.equals("Close"))
+		{
+			if (!w.isTopLevelWindow())
+			{
+				KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getTitle()));
+			}
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, w.getTitle()));
+		}
 	}
 	
 	private String getNewUniqueTitle(String description, String dialogTitle)
