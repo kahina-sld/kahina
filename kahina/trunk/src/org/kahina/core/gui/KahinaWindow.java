@@ -63,6 +63,12 @@ public class KahinaWindow extends JFrame implements WindowListener
     	return false;
     }
     
+    //only KahinaDummyWindow returns true by default
+    public boolean isDummyWindow()
+    {
+    	return false;
+    }
+    
     public void flipSubwindows()
     {
     	//do nothing per default, implemented by KahinaHorizontallySplitWindow and KahinaVerticallySplitWindow

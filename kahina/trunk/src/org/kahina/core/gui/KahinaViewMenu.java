@@ -92,22 +92,22 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         String s = e.getActionCommand();
         if (s.equals("newDefaultWindow"))
         {	
-        	String title = getNewUniqueTitle();
+        	String title = getNewUniqueTitle("Default Window");
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_DEFAULT, title));
         }
         else if (s.equals("newVertSplitWindow"))
         {	
-        	String title = getNewUniqueTitle();
+        	String title = getNewUniqueTitle("Vertically Split Window");
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_VERT_SPLIT, title));
         }
         else if (s.equals("newHoriSplitWindow"))
         {	
-        	String title = getNewUniqueTitle();
+        	String title = getNewUniqueTitle("Horizontally Split Window");
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_HORI_SPLIT, title));
         }
         else if (s.equals("newTabbedWindow"))
         {	
-        	String title = getNewUniqueTitle();
+        	String title = getNewUniqueTitle("Tabbed Window");
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, title));
         }
         else if (s.startsWith("toggleVisibility"))
@@ -133,14 +133,14 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         }
     }
 	
-	private String getNewUniqueTitle()
+	private String getNewUniqueTitle(String windowType)
 	{
 		String title;
     	while (true)
     	{
     		title = (String) JOptionPane.showInputDialog(this,
                 "Enter a unique title for the new window.",
-                "New Default Window",
+                "New " + windowType,
                 JOptionPane.PLAIN_MESSAGE);
     		if (manager.getWindowByID(title) != null)
     		{

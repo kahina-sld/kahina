@@ -56,7 +56,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     		leftWindow.setContentPane((Container) leftPanel.getComponents()[0]);		
     		rightWindow.embeddingWindow = null;
     		rightWindow.setContentPane((Container) rightPanel.getComponents()[0]);
-			//determine too surprising positions and sizes for the separate windows
+			//crudely determine not too surprising positions and sizes for the separate windows
     		leftWindow.setSize(leftPanel.getSize());
     		rightWindow.setSize(rightPanel.getSize());
     		leftWindow.setLocation(this.getLocation());
@@ -69,7 +69,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     		leftWindow.setContentPane((Container) leftPanel.getComponents()[0]);		
     		rightWindow.embeddingWindow = null;
     		rightWindow.setContentPane((Container) rightPanel.getComponents()[0]);
-			//determine too surprising positions and sizes for the separate windows
+			//crudely determine not too surprising positions and sizes for the separate windows
     		leftWindow.setSize(leftPanel.getSize());
     		rightWindow.setSize(rightPanel.getSize());
     		rightWindow.setLocation(this.getX() + leftPanel.getWidth(), this.getY());

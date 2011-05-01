@@ -11,5 +11,7 @@ public class KahinaWindowEventType
     public static final int RENAME = 6;
     public static final int FLIP = 7;
     public static final int UNDOCK = 8;
-    public static final int ADD_VIEW_MENU_ENTRY = 9; //only for view menu updates
+    public static final int VERT_SPLIT = 9;
+    public static final int HORI_SPLIT = 10;
+    public static final int ADD_VIEW_MENU_ENTRY = 11; //only for view menu updates
 }

@@ -56,7 +56,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     		upperWindow.setContentPane((Container) topPanel.getComponents()[0]);		
     		lowerWindow.embeddingWindow = null;
     		lowerWindow.setContentPane((Container) bottomPanel.getComponents()[0]);
-			//determine too surprising positions and sizes for the separate windows
+    		//crudely determine not too surprising positions and sizes for the separate windows
     		upperWindow.setSize(topPanel.getSize());
     		lowerWindow.setSize(bottomPanel.getSize());
     		upperWindow.setLocation(this.getLocation());
@@ -69,7 +69,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     		upperWindow.setContentPane((Container) topPanel.getComponents()[0]);		
     		lowerWindow.embeddingWindow = null;
     		lowerWindow.setContentPane((Container) bottomPanel.getComponents()[0]);
-			//determine too surprising positions and sizes for the separate windows
+    		//crudely determine not too surprising positions and sizes for the separate windows
     		upperWindow.setSize(topPanel.getSize());
     		lowerWindow.setSize(bottomPanel.getSize());
     		lowerWindow.setLocation(this.getX(), this.getY() + topPanel.getHeight());

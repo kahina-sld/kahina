@@ -188,11 +188,9 @@ public class KahinaWindowManager implements KahinaListener
 		int type = e.getWindowEventType();
 		if (type == KahinaWindowEventType.NEW_DEFAULT)
 		{
-			KahinaView view = new KahinaEmptyView(control);
-	        KahinaWindow viewWindow = new KahinaDefaultWindow(view, this);
+	        KahinaWindow viewWindow = new KahinaDummyWindow(this);
 	        topLevelWindows.add(e.getWindowID());
 	        windowByID.put(e.getWindowID(), viewWindow);
-	        contentWindows.put(view,viewWindow);
 	        viewWindow.setTitle(e.getWindowID());
             viewWindow.setSize(300,100);
             viewWindow.setLocation(200,200);
@@ -200,45 +198,35 @@ public class KahinaWindowManager implements KahinaListener
 		} 
 		else if (type == KahinaWindowEventType.NEW_HORI_SPLIT)
 		{
-			KahinaView lView = new KahinaEmptyView(control);
-			KahinaView rView = new KahinaEmptyView(control);
-			KahinaWindow lViewWindow = new KahinaDefaultWindow(lView, this);
-	        KahinaWindow rViewWindow = new KahinaDefaultWindow(rView, this);
 	        KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this);
 	        topLevelWindows.add(e.getWindowID());
 	        windowByID.put(e.getWindowID(), splitWindow);
 	        splitWindow.setTitle(e.getWindowID());
-	        splitWindow.setLeftWindow(lViewWindow);
-	        splitWindow.setRightWindow(rViewWindow);
+	        splitWindow.setLeftWindow(new KahinaDummyWindow(this));
+	        splitWindow.setRightWindow(new KahinaDummyWindow(this));
             splitWindow.setSize(600,150);
             splitWindow.setLocation(200,200);
 	        splitWindow.setVisible(true);
 		} 
 		else if (type == KahinaWindowEventType.NEW_VERT_SPLIT)
 		{
-			KahinaView tView = new KahinaEmptyView(control);
-			KahinaView bView = new KahinaEmptyView(control);
-			KahinaWindow tViewWindow = new KahinaDefaultWindow(tView, this);
-	        KahinaWindow bViewWindow = new KahinaDefaultWindow(bView, this);
 	        KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this);
 	        topLevelWindows.add(e.getWindowID());
 	        windowByID.put(e.getWindowID(), splitWindow);
 	        splitWindow.setTitle(e.getWindowID());
-	        splitWindow.setUpperWindow(tViewWindow);
-	        splitWindow.setLowerWindow(bViewWindow);
+	        splitWindow.setUpperWindow(new KahinaDummyWindow(this));
+	        splitWindow.setLowerWindow(new KahinaDummyWindow(this));
             splitWindow.setSize(300,250);
             splitWindow.setLocation(200,200);
 	        splitWindow.setVisible(true);
 		} 
 		else if (type == KahinaWindowEventType.NEW_TABBED)
 		{
-			KahinaView view = new KahinaEmptyView(control);
-			KahinaWindow viewWindow = new KahinaDefaultWindow(view, this);
 	        KahinaTabbedWindow tabbedWindow = new KahinaTabbedWindow(this);
 	        topLevelWindows.add(e.getWindowID());
 	        windowByID.put(e.getWindowID(), tabbedWindow);
 	        tabbedWindow.setTitle(e.getWindowID());
-	        tabbedWindow.addWindow(viewWindow);
+	        tabbedWindow.addWindow(new KahinaDummyWindow(this));
             tabbedWindow.setSize(300,250);
             tabbedWindow.setLocation(200,200);
 	        tabbedWindow.setVisible(true);
@@ -340,7 +328,10 @@ public class KahinaWindowManager implements KahinaListener
 					//simpler case: embeddingWindow was embedded
 					if (!embeddingWindow.isTopLevelWindow())
 					{
-						embeddingWindow.getEmbeddingWindow().replaceSubwindow(embeddingWindow,replacementWindow);
+						KahinaWindow embEmbeddingWindow = embeddingWindow.getEmbeddingWindow();
+						embEmbeddingWindow.replaceSubwindow(embeddingWindow,replacementWindow);
+						embEmbeddingWindow.validate();
+						embEmbeddingWindow.repaint();
 					}
 					//complicated case: embeddingWindow was top level window
 					else
@@ -358,6 +349,76 @@ public class KahinaWindowManager implements KahinaListener
 				}
 			}
 		} 
+		else if (type == KahinaWindowEventType.VERT_SPLIT)
+		{
+			String[] winIDs = e.getWindowID().split("#");
+			KahinaWindow window = windowByID.get(winIDs[0]);
+			if (window == null)
+			{
+				System.err.println("WARNING: Could not find window \"" + winIDs[0] + "\".");
+			}
+			else
+			{
+				KahinaWindow oldEmbeddingWindow = window.getEmbeddingWindow();
+				KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this);
+		        windowByID.put(winIDs[1], splitWindow);
+		        splitWindow.setTitle(winIDs[1]);
+		        splitWindow.setUpperWindow(window);
+		        splitWindow.setLowerWindow(new KahinaDummyWindow(this));
+	            splitWindow.setSize(window.getWidth(),window.getHeight());
+	            splitWindow.setLocation(window.getLocation());
+	            window.setSize(window.getWidth(),window.getHeight() / 2);
+				if (oldEmbeddingWindow != null)
+				{
+					oldEmbeddingWindow.replaceSubwindow(window,splitWindow);
+					window.embeddingWindow = splitWindow;
+					oldEmbeddingWindow.validate();
+					oldEmbeddingWindow.repaint();
+				}
+				else
+				{
+					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winIDs[0]));
+					topLevelWindows.add(winIDs[1]);
+					splitWindow.setVisible(true);
+					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, winIDs[1]));
+				}
+			}
+		} 
+		else if (type == KahinaWindowEventType.HORI_SPLIT)
+		{
+			String[] winIDs = e.getWindowID().split("#");
+			KahinaWindow window = windowByID.get(winIDs[0]);
+			if (window == null)
+			{
+				System.err.println("WARNING: Could not find window \"" + winIDs[0] + "\".");
+			}
+			else
+			{
+				KahinaWindow oldEmbeddingWindow = window.getEmbeddingWindow();
+				KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this);
+		        windowByID.put(winIDs[1], splitWindow);
+		        splitWindow.setTitle(winIDs[1]);
+		        splitWindow.setLeftWindow(window);
+		        splitWindow.setRightWindow(new KahinaDummyWindow(this));
+	            splitWindow.setSize(window.getWidth(),window.getHeight());
+	            splitWindow.setLocation(window.getLocation());
+	            window.setSize(window.getWidth(),window.getHeight() / 2);
+				if (oldEmbeddingWindow != null)
+				{
+					oldEmbeddingWindow.replaceSubwindow(window,splitWindow);
+					window.embeddingWindow = splitWindow;
+					oldEmbeddingWindow.validate();
+					oldEmbeddingWindow.repaint();
+				}
+				else
+				{
+					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winIDs[0]));
+					topLevelWindows.add(winIDs[1]);
+					splitWindow.setVisible(true);
+					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, winIDs[1]));
+				}
+			}
+		}
 	}
 	
 	private void loadPerspective(File file)
