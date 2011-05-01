@@ -112,6 +112,10 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
         	}
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RENAME, w.getTitle() + "#" + title));
 		}
+		else if (s.equals("Flip"))
+		{
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.FLIP, w.getTitle()));
+		}
 	}
 	
     public static JPopupMenu getMenu(KahinaWindow w)

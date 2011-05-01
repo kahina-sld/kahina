@@ -275,7 +275,7 @@ public class KahinaWindowManager implements KahinaListener
 			else
 			{
 				//TODO: implement removal of non-top-level windows
-				System.err.println("WARNING: removal of non-top-level windows not yet implemented!");
+				System.err.println("WARNING: Removal of non-top-level windows not yet implemented!");
 			}
 		} 
 		else if (type == KahinaWindowEventType.RENAME)
@@ -284,7 +284,7 @@ public class KahinaWindowManager implements KahinaListener
 			KahinaWindow window = windowByID.remove(winIDs[0]);
 			if (window == null)
 			{
-				System.err.println("WARNING: could not find window \"" + winIDs[0] + "\"");
+				System.err.println("WARNING: Could not find window \"" + winIDs[0] + "\".");
 			}
 			else
 			{
@@ -296,6 +296,26 @@ public class KahinaWindowManager implements KahinaListener
 			{
 				topLevelWindows.remove(winIDs[0]);
 				topLevelWindows.add(winIDs[1]);
+			}
+		} 
+		else if (type == KahinaWindowEventType.FLIP)
+		{
+			KahinaWindow window = windowByID.get(e.getWindowID());
+			if (window == null)
+			{
+				System.err.println("WARNING: Could not find window \"" + e.getWindowID() + "\".");
+			}
+			else
+			{
+				if (window.isFlippableWindow())
+				{
+					window.flipSubwindows();
+					window.mainPanel.repaint();
+				}
+				else
+				{
+					System.err.println("WARNING: Window \"" + e.getWindowID() + "\" is not flippable. Ignored.");
+				}
 			}
 		} 
 	}

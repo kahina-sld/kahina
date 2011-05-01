@@ -9,4 +9,5 @@ public class KahinaWindowEventType
     public static final int TOGGLE_VISIBLE = 4;
     public static final int REMOVE = 5;
     public static final int RENAME = 6;
+    public static final int FLIP = 7;
 }

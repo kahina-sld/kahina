@@ -48,4 +48,11 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     {
     	return true;
     }
+    
+    public void flipSubwindows()
+    {
+    	KahinaWindow tempWindow = upperWindow;
+    	setUpperWindow(lowerWindow);
+    	setLowerWindow(tempWindow);
+    }
 }

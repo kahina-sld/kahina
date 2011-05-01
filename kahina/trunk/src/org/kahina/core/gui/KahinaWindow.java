@@ -58,6 +58,11 @@ public class KahinaWindow extends JFrame implements WindowListener
     {
     	return false;
     }
+    
+    public void flipSubwindows()
+    {
+    	//do nothing per default, implemented by KahinaHorizontallySplitWindow and KahinaVerticallySplitWindow
+    }
 
 	@Override
 	public void windowActivated(WindowEvent e) 
