@@ -268,16 +268,9 @@ public class KahinaWindowManager implements KahinaListener
 			if (topLevelWindows.contains(e.getWindowID()))
 			{
 				currentPerspective.setVisibility(e.getWindowID(), false);
-				KahinaWindow window = windowByID.remove(e.getWindowID());
 				topLevelWindows.remove(e.getWindowID());
-				if (window == null)
-				{
-					System.err.println("WARNING: could not find window \"" + e.getWindowID() + "\"");
-				}
-				else
-				{
-					window.dispose();
-				}
+				KahinaWindow window = windowByID.get(e.getWindowID());
+				window.dispose();
 			}
 			else
 			{
@@ -297,6 +290,7 @@ public class KahinaWindowManager implements KahinaListener
 			{
 				window.setTitle(winIDs[1]);
 				windowByID.put(winIDs[1], window);
+				window.mainPanel.repaint();
 			}
 			if (topLevelWindows.contains(winIDs[0]))
 			{
