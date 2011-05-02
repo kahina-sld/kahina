@@ -78,13 +78,18 @@ public class KahinaDummyWindow extends KahinaDefaultWindow
                     	KahinaWindow embWin = w.embeddingWindow;
                     	embWin.replaceSubwindow(w, w.wm.getWindowByID(winID));
                     	embWin.validate();
-                    	KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID)); 
+                    	embWin.repaint(); 
+                        KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));
                     }
                     else
                     {
-                    	//TODO: only modify positions
-                    }
-                    
+                    	KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, w.getTitle()));
+                    	//move positions of new window to simulate replacement
+                    	KahinaWindow newWindow = w.wm.getWindowByID(winID);
+                    	newWindow.setLocation(w.getLocation());
+                    	newWindow.validate();
+                    	newWindow.repaint();
+                    }              
                     e.getDropTargetContext().dropComplete(true);
                 } 
                 else 

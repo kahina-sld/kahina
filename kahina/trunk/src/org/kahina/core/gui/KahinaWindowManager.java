@@ -319,7 +319,8 @@ public class KahinaWindowManager implements KahinaListener
 				KahinaWindow embeddingWindow = window.getEmbeddingWindow();
 				if (embeddingWindow == null)
 				{
-					System.err.println("WARNING: Window \"" + e.getWindowID() + "\" cannot be undocked, as is not embedded.");
+					//warning deactivated because undocking is used generically for drag & drop functionality
+					//System.err.println("WARNING: Window \"" + e.getWindowID() + "\" cannot be undocked, as is not embedded.");
 				}
 				//now comes the interesting case
 				else
