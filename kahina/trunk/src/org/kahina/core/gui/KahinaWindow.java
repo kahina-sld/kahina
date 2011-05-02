@@ -20,7 +20,7 @@ public class KahinaWindow extends JFrame implements WindowListener
     private static final boolean verbose = false;
     
     KahinaWindowManager wm;
-    JPanel mainPanel;
+    KahinaTransferablePanel mainPanel;
     
     //link upward in embedding structure tree
     protected KahinaWindow embeddingWindow;
@@ -29,9 +29,7 @@ public class KahinaWindow extends JFrame implements WindowListener
     {        
     	this.wm = wm;
         setLayout(new BorderLayout());
-        mainPanel = new KahinaTransferablePanel();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.setBorder(BorderFactory.createTitledBorder(this.getTitle()));
+        mainPanel = new KahinaTransferablePanel(this.getTitle());
         mainPanel.addMouseListener(new KahinaWindowListener(this));
         embeddingWindow = null;
         this.add(mainPanel);
@@ -43,7 +41,7 @@ public class KahinaWindow extends JFrame implements WindowListener
     public void setTitle(String title)
     {
     	super.setTitle(title);
-    	((TitledBorder) mainPanel.getBorder()).setTitle(title);
+    	mainPanel.setTitle(title);
     }
     
     public boolean isTopLevelWindow()

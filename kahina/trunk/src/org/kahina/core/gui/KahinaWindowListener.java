@@ -24,9 +24,15 @@ public class KahinaWindowListener extends MouseAdapter
     @Override
 	public void mousePressed(MouseEvent e) 
     {
-        TransferHandler handler = w.mainPanel.getTransferHandler();
-        handler.exportAsDrag(w.mainPanel, e, TransferHandler.MOVE);
-        maybeShowPopup(e);
+        if (!e.isPopupTrigger()) 
+        {
+            TransferHandler handler = w.mainPanel.getTransferHandler();
+            handler.exportAsDrag(w.mainPanel, e, TransferHandler.MOVE);
+        }
+        else
+        {
+        	 KahinaWindowContextMenu.getMenu(w).show(e.getComponent(),e.getX(), e.getY());
+        }
     }
 
     @Override

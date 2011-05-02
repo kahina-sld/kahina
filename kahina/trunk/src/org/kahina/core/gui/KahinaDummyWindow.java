@@ -61,24 +61,19 @@ public class KahinaDummyWindow extends KahinaDefaultWindow
             try 
             {
                 Transferable tr = e.getTransferable();
-                DataFlavor flav = KahinaTransferablePanel.getTransferablePanelDataFlavor();
-                if (tr.isDataFlavorSupported(flav)) 
+                if (tr.isDataFlavorSupported(DataFlavor.stringFlavor)) 
                 {
-                    System.out.println("Drop accepted as movement!");
                     e.acceptDrop(DnDConstants.ACTION_MOVE);
  
-                    KahinaTransferablePanel data = (KahinaTransferablePanel) tr.getTransferData(flav);
+                    String data = (String) tr.getTransferData(DataFlavor.stringFlavor);
                     
-                    Point loc = e.getLocation();
- 
-                    data.setLocation(loc);      
-                    dropPanel.add(data);
+                    System.err.println("Moved window " + data);
+                    //dropPanel.add(data);
                     dropPanel.updateUI();
                     e.getDropTargetContext().dropComplete(true);
                 } 
                 else 
                 {
-                    System.err.println ("DataFlavor.stringFlavor is not supported, rejected");
                     e.rejectDrop();
                 }
             } 
