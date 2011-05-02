@@ -29,7 +29,7 @@ public class KahinaWindow extends JFrame implements WindowListener
     {        
     	this.wm = wm;
         setLayout(new BorderLayout());
-        mainPanel = new JPanel();
+        mainPanel = new KahinaTransferablePanel();
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBorder(BorderFactory.createTitledBorder(this.getTitle()));
         mainPanel.addMouseListener(new KahinaWindowListener(this));

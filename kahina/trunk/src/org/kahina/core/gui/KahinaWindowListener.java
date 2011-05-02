@@ -3,6 +3,8 @@ package org.kahina.core.gui;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.TransferHandler;
+
 import org.kahina.core.visual.tree.KahinaTreeViewContextMenu;
 
 public class KahinaWindowListener extends MouseAdapter
@@ -22,7 +24,8 @@ public class KahinaWindowListener extends MouseAdapter
     @Override
 	public void mousePressed(MouseEvent e) 
     {
-    	System.err.println("Mouse pressed on window \"" + w.getTitle() + "\"");
+        TransferHandler handler = w.mainPanel.getTransferHandler();
+        handler.exportAsDrag(w.mainPanel, e, TransferHandler.MOVE);
         maybeShowPopup(e);
     }
 
