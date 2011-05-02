@@ -14,6 +14,9 @@ import java.io.IOException;
 
 import javax.swing.JPanel;
 
+import org.kahina.core.KahinaRunner;
+import org.kahina.core.event.KahinaWindowEvent;
+import org.kahina.core.event.KahinaWindowEventType;
 import org.kahina.core.visual.KahinaEmptyView;
 import org.kahina.core.visual.KahinaView;
 
@@ -23,7 +26,7 @@ public class KahinaDummyWindow extends KahinaDefaultWindow
 	{
 		super(new KahinaEmptyView(wm.control),wm);
 		mainPanel.setTransferHandler(new KahinaWindowTransferHandler());
-        mainPanel.setDropTarget(new DropTarget(mainPanel, new MyDropTargetListener(mainPanel)));
+        mainPanel.setDropTarget(new DropTarget(mainPanel, new MyDropTargetListener(this)));
 	}
 	
 	public boolean isDummyWindow()
@@ -33,11 +36,11 @@ public class KahinaDummyWindow extends KahinaDefaultWindow
 	
 	class MyDropTargetListener implements DropTargetListener 
 	{	 
-        JPanel dropPanel;
+        KahinaWindow w;
         
-        public MyDropTargetListener(JPanel dropPanel) 
+        public MyDropTargetListener(KahinaDummyWindow w) 
         {
-            this.dropPanel = dropPanel;
+            this.w = w;
         }
  
         public void dragEnter(DropTargetDragEvent dtde) 
@@ -65,11 +68,23 @@ public class KahinaDummyWindow extends KahinaDefaultWindow
                 {
                     e.acceptDrop(DnDConstants.ACTION_MOVE);
  
-                    String data = (String) tr.getTransferData(DataFlavor.stringFlavor);
+                    String winID = (String) tr.getTransferData(DataFlavor.stringFlavor);
                     
-                    System.err.println("Moved window " + data);
-                    //dropPanel.add(data);
-                    dropPanel.updateUI();
+                    System.err.println("Moved window " + winID);
+                    
+                    KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, winID)); 
+                    if (!w.isTopLevelWindow())
+                    {
+                    	KahinaWindow embWin = w.embeddingWindow;
+                    	embWin.replaceSubwindow(w, w.wm.getWindowByID(winID));
+                    	embWin.validate();
+                    	KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID)); 
+                    }
+                    else
+                    {
+                    	//TODO: only modify positions
+                    }
+                    
                     e.getDropTargetContext().dropComplete(true);
                 } 
                 else 
