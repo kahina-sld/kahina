@@ -34,10 +34,10 @@ public class KahinaPerspective
 	//the name this perspective is referred by in the GUI
 	String name;
 	
-	//view options are indexed by string identifiers
-	Map<String,KahinaViewConfiguration> config;
+	//view options are indexed by integer IDs
+	Map<Integer,KahinaViewConfiguration> config;
 	//visibility status of windows (and views)
-	Map<String,Boolean> visible;
+	Map<Integer,Boolean> visible;
 	//the arrangement, size and position of windows
 	KahinaArrangement arrangement;
 
@@ -46,15 +46,15 @@ public class KahinaPerspective
 	{
 		this.appID = appID;
 		this.name = name;
-		config = new HashMap<String,KahinaViewConfiguration>();
-		visible = new HashMap<String,Boolean>();
+		config = new HashMap<Integer,KahinaViewConfiguration>();
+		visible = new HashMap<Integer,Boolean>();
 		arrangement = new KahinaArrangement();
 	}
 	
 	public KahinaPerspective(String appID, String name,List<KahinaView<?>> views)
 	{
-		config = new HashMap<String,KahinaViewConfiguration>();
-		visible = new HashMap<String,Boolean>();
+		config = new HashMap<Integer,KahinaViewConfiguration>();
+		visible = new HashMap<Integer,Boolean>();
 		arrangement = new KahinaArrangement(views);
 	}
 	
@@ -70,24 +70,24 @@ public class KahinaPerspective
 		el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:appid", appID);
         el.appendChild(arrangement.exportXML(dom));
         Element configsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:configurations");
-        for (String viewID : config.keySet())
+        for (int viewID : config.keySet())
         {
         	Element configEl = this.getConfiguration(viewID).exportXML(dom);
-        	configEl.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:viewid", viewID);
+        	configEl.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:viewid", viewID + "");
         	configsEl.appendChild(configEl);
         }
         el.appendChild(configsEl);
         return el;
 	}
 	
-	public KahinaViewConfiguration getConfiguration(String viewID)
+	public KahinaViewConfiguration getConfiguration(int viewID)
 	{
 		KahinaViewConfiguration conf = config.get(viewID);
 		if (conf == null) return new KahinaViewConfiguration();
 		return conf;
 	}
 	
-	public void setConfiguration(String viewID, KahinaViewConfiguration conf)
+	public void setConfiguration(int viewID, KahinaViewConfiguration conf)
 	{
 		config.put(viewID, conf);
 	}
@@ -107,18 +107,18 @@ public class KahinaPerspective
 		return arrangement;
 	}
 	
-	public void setVisibility(String viewID, boolean vis)
+	public void setVisibility(int viewID, boolean vis)
 	{
 		visible.put(viewID, vis);
 	}
 	
-	public void toggleVisibility(String viewID)
+	public void toggleVisibility(int viewID)
 	{
 		setVisibility(viewID, !isVisible(viewID));
 	}
 	
 	//windows and views are visible by default
-	public boolean isVisible(String viewID)
+	public boolean isVisible(int viewID)
 	{
 		Boolean vis = visible.get(viewID);
 		if (vis == null) return true;

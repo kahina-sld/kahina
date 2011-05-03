@@ -68,7 +68,7 @@ public class KahinaDummyWindow extends KahinaDefaultWindow
                 {
                     e.acceptDrop(DnDConstants.ACTION_MOVE);
  
-                    String winID = (String) tr.getTransferData(DataFlavor.stringFlavor);
+                    int winID = Integer.parseInt((String) tr.getTransferData(DataFlavor.stringFlavor));
                     
                     System.err.println("Moved window " + winID);
                     
@@ -83,14 +83,14 @@ public class KahinaDummyWindow extends KahinaDefaultWindow
                     }
                     else
                     {
-                    	KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, w.getTitle()));
+                    	KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));
                     	//move positions of new window to simulate replacement
                     	KahinaWindow newWindow = w.wm.getWindowByID(winID);
                     	newWindow.setLocation(w.getLocation());
                     	newWindow.validate();
                     	newWindow.repaint();
                     }              
-                    e.getDropTargetContext().dropComplete(true);
+                    e.getDropTargetContext().dropComplete(true);          
                 } 
                 else 
                 {

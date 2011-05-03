@@ -34,7 +34,7 @@ public class KahinaWindow extends JFrame implements WindowListener
     	this.wm = wm;
     	windowID = idCounter++;
         setLayout(new BorderLayout());
-        mainPanel = new KahinaTransferablePanel(this.getTitle());
+        mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
         mainPanel.addMouseListener(new KahinaWindowListener(this));
         embeddingWindow = null;
         this.add(mainPanel);
@@ -112,7 +112,7 @@ public class KahinaWindow extends JFrame implements WindowListener
 	@Override
 	public void windowClosing(WindowEvent e) 
 	{
-		wm.control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE,this.getTitle()));
+		wm.control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE,this.getID()));
 	}
 
 	@Override

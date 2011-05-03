@@ -145,7 +145,7 @@ public class KahinaGUI implements KahinaListener
 		return null;
 	}*/
 
-	public void integrateWindows(int integrationType, String window1ID, String window2ID, String newTitle, KahinaController control)
+	public void integrateWindows(int integrationType, int window1ID, int window2ID, String newTitle, KahinaController control)
 	{
 		switch (integrationType)
 		{

@@ -13,8 +13,9 @@ import javax.swing.border.TitledBorder;
 public class KahinaTransferablePanel extends JPanel implements Transferable 
 {
 	String title;
+	int windowID;
 	
-	public KahinaTransferablePanel(String title)
+	public KahinaTransferablePanel(String title, int windowID)
 	{
 		this.title = title;
 		this.setTransferHandler(new KahinaWindowTransferHandler());
@@ -39,7 +40,7 @@ public class KahinaTransferablePanel extends JPanel implements Transferable
 	public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException 
     {
         if(!flavor.equals(DataFlavor.stringFlavor)) throw new UnsupportedFlavorException(flavor);
-        return title;
+        return windowID + "";
 	}
 
 	@Override

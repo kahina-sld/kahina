@@ -88,7 +88,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		try
 		{
 			super.prepare(control);
-			integrateWindows(KahinaViewIntegrationType.VERTICAL, "startBindings", "endBindings", "Variable bindings", control);
+			/*integrateWindows(KahinaViewIntegrationType.VERTICAL, "startBindings", "endBindings", "Variable bindings", control);
 			integrateWindows(KahinaViewIntegrationType.VERTICAL, "codeLocation", "Message console", "Source & Console", control);
 			integrateWindows(KahinaViewIntegrationType.HORIZONTAL, "startFeatStruct", "endFeatStruct", "Feature Structures", control);
 			//TODO: put this into a configuration instead
@@ -102,7 +102,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 			windowManager.getWindowByID("Control flow tree").setSize(500, 800);
 			windowManager.getWindowByID("Control flow tree").setLocation(800, 0);
 			windowManager.getWindowByID("Chart").setSize(400, 400);
-			windowManager.getWindowByID("Chart").setLocation(0, 150);
+			windowManager.getWindowByID("Chart").setLocation(0, 150);*/
 		}
 		catch (NullPointerException e)
 		{

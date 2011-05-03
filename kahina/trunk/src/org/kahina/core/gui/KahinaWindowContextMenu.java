@@ -88,7 +88,7 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		String s = e.getActionCommand();
 		if (s.equals("Undock"))
 		{
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getTitle()));
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getID()));
 		}
 		else if (s.equals("Clone"))
 		{
@@ -97,21 +97,21 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		else if (s.equals("Rename"))
 		{
         	String title = getNewUniqueTitle("Enter a new and unique title for the window.", "Rename window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RENAME, w.getTitle() + "#" + title));
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RENAME, w.getID(), title));
 		}
 		else if (s.equals("Flip"))
 		{
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.FLIP, w.getTitle()));
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.FLIP, w.getID()));
 		}
 		else if (s.equals("Vertical Split"))
 		{
         	String title = getNewUniqueTitle("Enter a new and unique title for the split window.", "Split window");
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.VERT_SPLIT, w.getTitle() + "#" + title));
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.VERT_SPLIT, w.getID(), title));
 		}
 		else if (s.equals("Horizontal Split"))
 		{
         	String title = getNewUniqueTitle("Enter a new and unique title for the split window.", "Split window");
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.HORI_SPLIT, w.getTitle() + "#" + title));
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.HORI_SPLIT, w.getID(), title));
 		}
 		else if (s.equals("Show Decorations"))
 		{
@@ -126,28 +126,28 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 			{
 				//TODO: remove the dummy frame / window which is not registered and therefore not referenced
 				//not registered because we assumed identity of title and windowID
-				//it is probably better to introduce a difference of window titles and IDs, or to give numbers to dummy windows
+				//it is probably better to introduce a difference of window titles and IDs
 				//we can then avoid to manipulate windows directly and really leave that to the WindowManager,
 				//which is also helpful when mirroring window operations in the arrangement 
 			}
 			else if (!w.isTopLevelWindow())
 			{
-				KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getTitle()));
+				KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getID()));
 			}
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, w.getTitle()));
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, w.getID()));
 		}
 	}
 	
 	private String getNewUniqueTitle(String description, String dialogTitle)
 	{
 		String title;
-    	while (true)
+    	//while (true)
     	{
     		title = (String) JOptionPane.showInputDialog(this,
                 description,
                 dialogTitle,
                 JOptionPane.PLAIN_MESSAGE);
-    		if (w.wm.getWindowByID(title) != null)
+    		/*if (w.wm.getWindowByID(title) != null)
     		{
     			JOptionPane.showMessageDialog(this,
     				    "A window with that name already exists.", 
@@ -156,7 +156,7 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
     		else
     		{
     			break;
-    		}
+    		}*/
     	}
     	return title;
 	}

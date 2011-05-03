@@ -26,26 +26,26 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 {
 	private static final long serialVersionUID = -8816851369583949953L;
 	
-    HashMap<String,JCheckBoxMenuItem> windowEntries;
+    HashMap<Integer,JCheckBoxMenuItem> windowEntries;
     KahinaWindowManager manager;
 
 	public KahinaViewMenu(KahinaWindowManager manager)
     {
         super("View"); 
         
-        windowEntries = new HashMap<String,JCheckBoxMenuItem>();
+        windowEntries = new HashMap<Integer,JCheckBoxMenuItem>();
         this.manager = manager;
         
         manager.control.registerListener(KahinaEventTypes.WINDOW, this);
         
-        for (String winID : manager.topLevelWindows)
+        for (int winID : manager.topLevelWindows)
         {
         	KahinaWindow window = manager.getWindowByID(winID);
             JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(window.getTitle());
-            windowCheckBoxItem.setActionCommand("toggleVisibility:" + window.getTitle());
+            windowCheckBoxItem.setActionCommand("toggleVisibility:" + window.getID());
             windowCheckBoxItem.addActionListener(this);
-            windowCheckBoxItem.setSelected(manager.currentPerspective.isVisible(window.getTitle()));
-            windowEntries.put(window.getTitle(), windowCheckBoxItem);
+            windowCheckBoxItem.setSelected(manager.currentPerspective.isVisible(window.getID()));
+            windowEntries.put(window.getID(), windowCheckBoxItem);
             this.add(windowCheckBoxItem);
         }
         
@@ -93,26 +93,26 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         if (s.equals("newDefaultWindow"))
         {	
         	String title = getNewUniqueTitle("Default Window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_DEFAULT, title));
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_DEFAULT, -1, title));
         }
         else if (s.equals("newVertSplitWindow"))
         {	
         	String title = getNewUniqueTitle("Vertically Split Window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_VERT_SPLIT, title));
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_VERT_SPLIT, -1, title));
         }
         else if (s.equals("newHoriSplitWindow"))
         {	
         	String title = getNewUniqueTitle("Horizontally Split Window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_HORI_SPLIT, title));
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_HORI_SPLIT, -1, title));
         }
         else if (s.equals("newTabbedWindow"))
         {	
         	String title = getNewUniqueTitle("Tabbed Window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, title));
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, -1, title));
         }
         else if (s.startsWith("toggleVisibility"))
         {
-            String windowID = s.substring(s.indexOf(':') + 1);
+            int windowID = Integer.parseInt(s.substring(s.indexOf(':') + 1));
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, windowID));
         }
         else if (s.equals("loadPerspective"))
@@ -136,13 +136,14 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 	private String getNewUniqueTitle(String windowType)
 	{
 		String title;
-    	while (true)
+		//uniqueness check not needed any more, code and function name remain for legacy reasons
+    	//while (true)
     	{
     		title = (String) JOptionPane.showInputDialog(this,
                 "Enter a unique title for the new window.",
                 "New " + windowType,
                 JOptionPane.PLAIN_MESSAGE);
-    		if (manager.getWindowByID(title) != null)
+    		/*if (manager.getWindowByID(title) != null)
     		{
     			JOptionPane.showMessageDialog(this,
     				    "A window with that name already exists.", 
@@ -151,7 +152,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
     		else
     		{
     			break;
-    		}
+    		}*/
     	}
     	return title;
 	}
@@ -170,7 +171,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 		//handle generation of different types of new windows
 		if (type >= 0 && type <= 3)
 		{
-			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(e.getWindowID());
+			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(e.getStringContent());
             windowCheckBoxItem.setActionCommand("toggleVisibility:" + e.getWindowID());
             windowCheckBoxItem.addActionListener(this);
             windowCheckBoxItem.setSelected(manager.currentPerspective.isVisible(e.getWindowID()));
@@ -205,18 +206,15 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 		} 
 		else if (type == KahinaWindowEventType.RENAME)
 		{
-			String[] winIDs = e.getWindowID().split("#");
-			JCheckBoxMenuItem windowCheckBoxItem = windowEntries.remove(winIDs[0]);
+			JCheckBoxMenuItem windowCheckBoxItem = windowEntries.get(e.getWindowID());
 			if (windowCheckBoxItem != null)
 			{
-				windowCheckBoxItem.setText(winIDs[1]);
-				windowCheckBoxItem.setActionCommand("toggleVisibility:" + winIDs[1]);
+				windowCheckBoxItem.setText(manager.getWindowByID(e.getWindowID()).getTitle());
 			}
-			windowEntries.put(winIDs[1],windowCheckBoxItem);
 		} 
 		else if (type == KahinaWindowEventType.UNDOCK)
 		{
-			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(e.getWindowID());
+			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(manager.getWindowByID(e.getWindowID()).getTitle());
             windowCheckBoxItem.setActionCommand("toggleVisibility:" + e.getWindowID());
             windowCheckBoxItem.addActionListener(this);
             windowCheckBoxItem.setSelected(true);
@@ -225,7 +223,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 		} 
 		else if (type == KahinaWindowEventType.ADD_VIEW_MENU_ENTRY)
 		{
-			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(e.getWindowID());
+			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(manager.getWindowByID(e.getWindowID()).getTitle());
             windowCheckBoxItem.setActionCommand("toggleVisibility:" + e.getWindowID());
             windowCheckBoxItem.addActionListener(this);
             windowCheckBoxItem.setSelected(true);
