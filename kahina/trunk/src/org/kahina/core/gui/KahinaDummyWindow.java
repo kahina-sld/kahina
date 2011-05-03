@@ -83,7 +83,7 @@ public class KahinaDummyWindow extends KahinaDefaultWindow
                     }
                     else
                     {
-                    	KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));
+                    	KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, w.getID()));
                     	//move positions of new window to simulate replacement
                     	KahinaWindow newWindow = w.wm.getWindowByID(winID);
                     	newWindow.setLocation(w.getLocation());

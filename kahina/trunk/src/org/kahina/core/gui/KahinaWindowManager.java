@@ -92,7 +92,7 @@ public class KahinaWindowManager implements KahinaListener
 	
 	public boolean isTopLevelWindow(KahinaWindow w)
 	{
-		return topLevelWindows.contains(w.getTitle());
+		return topLevelWindows.contains(w.getID());
 	}
     
     public KahinaWindow integrateInDefaultWindow(KahinaView<?> view)

@@ -15,9 +15,8 @@ import org.kahina.core.event.KahinaWindowEventType;
 
 public class KahinaWindow extends JFrame implements WindowListener
 {
-	private static final long serialVersionUID = 6613805267152521669L;
-    
-    private static final boolean verbose = false;
+	private static final long serialVersionUID = 6613805267152521669L; 
+    private static final boolean verbose = false; 
     
     private static int idCounter = 0;
     
@@ -27,7 +26,7 @@ public class KahinaWindow extends JFrame implements WindowListener
     //link upward in embedding structure tree
     protected KahinaWindow embeddingWindow;
     
-    int windowID;
+    private int windowID;
     
     public KahinaWindow(KahinaWindowManager wm)
     {        
@@ -51,7 +50,7 @@ public class KahinaWindow extends JFrame implements WindowListener
     public void setTitle(String title)
     {
     	super.setTitle(title);
-    	mainPanel.setTitle(title);
+    	mainPanel.setTitle(title + " (" + windowID + ")");
     }
     
     public boolean isTopLevelWindow()
