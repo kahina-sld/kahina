@@ -19,15 +19,20 @@ public class KahinaWindow extends JFrame implements WindowListener
     
     private static final boolean verbose = false;
     
+    private static int idCounter = 0;
+    
     KahinaWindowManager wm;
     KahinaTransferablePanel mainPanel;
     
     //link upward in embedding structure tree
     protected KahinaWindow embeddingWindow;
     
+    int windowID;
+    
     public KahinaWindow(KahinaWindowManager wm)
     {        
     	this.wm = wm;
+    	windowID = idCounter++;
         setLayout(new BorderLayout());
         mainPanel = new KahinaTransferablePanel(this.getTitle());
         mainPanel.addMouseListener(new KahinaWindowListener(this));
@@ -36,6 +41,11 @@ public class KahinaWindow extends JFrame implements WindowListener
         //TODO: find a way to make windows more compact and to avoid having the title twice
         //this.setUndecorated(true);
         this.addWindowListener(this);
+    }
+    
+    public int getID()
+    {
+    	return windowID;
     }
     
     public void setTitle(String title)
