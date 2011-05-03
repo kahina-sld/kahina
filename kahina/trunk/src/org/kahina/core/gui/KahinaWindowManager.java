@@ -190,47 +190,51 @@ public class KahinaWindowManager implements KahinaListener
 		if (type == KahinaWindowEventType.NEW_DEFAULT)
 		{
 	        KahinaWindow viewWindow = new KahinaDummyWindow(this);
-	        topLevelWindows.add(e.getWindowID());
-	        windowByID.put(e.getWindowID(), viewWindow);
+	        topLevelWindows.add(viewWindow.getID());
+	        windowByID.put(viewWindow.getID(), viewWindow);
 	        viewWindow.setTitle(e.getStringContent());
             viewWindow.setSize(300,100);
             viewWindow.setLocation(200,200);
 	        viewWindow.setVisible(true);
+	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, viewWindow.getID()));
 		} 
 		else if (type == KahinaWindowEventType.NEW_HORI_SPLIT)
 		{
 	        KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this);
-	        topLevelWindows.add(e.getWindowID());
-	        windowByID.put(e.getWindowID(), splitWindow);
+	        topLevelWindows.add(splitWindow.getID());
+	        windowByID.put(splitWindow.getID(), splitWindow);
 	        splitWindow.setTitle(e.getStringContent());
 	        splitWindow.setLeftWindow(new KahinaDummyWindow(this));
 	        splitWindow.setRightWindow(new KahinaDummyWindow(this));
             splitWindow.setSize(600,150);
             splitWindow.setLocation(200,200);
 	        splitWindow.setVisible(true);
+	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, splitWindow.getID()));
 		} 
 		else if (type == KahinaWindowEventType.NEW_VERT_SPLIT)
 		{
 	        KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this);
-	        topLevelWindows.add(e.getWindowID());
-	        windowByID.put(e.getWindowID(), splitWindow);
+	        topLevelWindows.add(splitWindow.getID());
+	        windowByID.put(splitWindow.getID(), splitWindow);
 	        splitWindow.setTitle(e.getStringContent());
 	        splitWindow.setUpperWindow(new KahinaDummyWindow(this));
 	        splitWindow.setLowerWindow(new KahinaDummyWindow(this));
             splitWindow.setSize(300,250);
             splitWindow.setLocation(200,200);
 	        splitWindow.setVisible(true);
+	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, splitWindow.getID()));
 		} 
 		else if (type == KahinaWindowEventType.NEW_TABBED)
 		{
 	        KahinaTabbedWindow tabbedWindow = new KahinaTabbedWindow(this);
-	        topLevelWindows.add(e.getWindowID());
-	        windowByID.put(e.getWindowID(), tabbedWindow);
+	        topLevelWindows.add(tabbedWindow.getID());
+	        windowByID.put(tabbedWindow.getID(), tabbedWindow);
 	        tabbedWindow.setTitle(e.getStringContent());
 	        tabbedWindow.addWindow(new KahinaDummyWindow(this));
             tabbedWindow.setSize(300,250);
             tabbedWindow.setLocation(200,200);
 	        tabbedWindow.setVisible(true);
+	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, tabbedWindow.getID()));
 		} 
 		else if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
 		{

@@ -168,17 +168,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 	private void processWindowEvent(KahinaWindowEvent e)
 	{
 		int type = e.getWindowEventType();
-		//handle generation of different types of new windows
-		if (type >= 0 && type <= 3)
-		{
-			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(e.getStringContent());
-            windowCheckBoxItem.setActionCommand("toggleVisibility:" + e.getWindowID());
-            windowCheckBoxItem.addActionListener(this);
-            windowCheckBoxItem.setSelected(manager.currentPerspective.isVisible(e.getWindowID()));
-            windowEntries.put(e.getWindowID(), windowCheckBoxItem);
-            this.add(windowCheckBoxItem,0);
-		} 
-		else if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
+		if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
 		{
 			//react to a window that is being closed
 			boolean newVisibility = manager.currentPerspective.isVisible(e.getWindowID());
