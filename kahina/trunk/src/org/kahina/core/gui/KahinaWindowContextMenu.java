@@ -97,7 +97,10 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		else if (s.equals("Rename"))
 		{
         	String title = getNewUniqueTitle("Enter a new and unique title for the window.", "Rename window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RENAME, w.getID(), title));
+        	if (title != null)
+        	{
+        		KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RENAME, w.getID(), title));
+        	}
 		}
 		else if (s.equals("Flip"))
 		{
@@ -114,12 +117,18 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		else if (s.equals("Vertical Split"))
 		{
         	String title = getNewUniqueTitle("Enter a new and unique title for the split window.", "Split window");
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.VERT_SPLIT, w.getID(), title));
+        	if (title != null)
+        	{
+        		KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.VERT_SPLIT, w.getID(), title));
+        	}
 		}
 		else if (s.equals("Horizontal Split"))
 		{
         	String title = getNewUniqueTitle("Enter a new and unique title for the split window.", "Split window");
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.HORI_SPLIT, w.getID(), title));
+        	if (title != null)
+        	{
+        		KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.HORI_SPLIT, w.getID(), title));
+        	}
 		}
 		else if (s.equals("Show Decorations"))
 		{
