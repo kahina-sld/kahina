@@ -22,28 +22,28 @@ import org.w3c.dom.Element;
  */
 public class KahinaArrangement 
 {
-	//window parameters are indexed by string identifiers
-	Map<String,Integer> xPos;
-	Map<String,Integer> yPos;
-	Map<String,Integer> height;
-	Map<String,Integer> width;
+	//window parameters are indexed by integer IDs
+	Map<Integer,Integer> xPos;
+	Map<Integer,Integer> yPos;
+	Map<Integer,Integer> height;
+	Map<Integer,Integer> width;
 	
 	//TODO: model encapsulation of views into different window types
 	
 	public KahinaArrangement()
 	{
-		xPos = new HashMap<String,Integer>();
-		yPos = new HashMap<String,Integer>();
-		height = new HashMap<String,Integer>();
-		width = new HashMap<String,Integer>();
+		xPos = new HashMap<Integer,Integer>();
+		yPos = new HashMap<Integer,Integer>();
+		height = new HashMap<Integer,Integer>();
+		width = new HashMap<Integer,Integer>();
 	}
 	
-	public KahinaArrangement(List<KahinaView<?>> views)
+	public KahinaArrangement(Map<KahinaView<?>,KahinaWindow> views)
 	{
-		xPos = new HashMap<String,Integer>();
-		yPos = new HashMap<String,Integer>();
-		height = new HashMap<String,Integer>();
-		width = new HashMap<String,Integer>();
+		xPos = new HashMap<Integer,Integer>();
+		yPos = new HashMap<Integer,Integer>();
+		height = new HashMap<Integer,Integer>();
+		width = new HashMap<Integer,Integer>();
 		
         int width = 300; // formerly gui.getControlPanel().getWidth();
         int height = 100;
@@ -54,7 +54,7 @@ public class KahinaArrangement
         int maxY = height;
         
         //create default arrangement for all the registered views
-        for (KahinaView<?> view : views)
+        for (KahinaView<?> view : views.keySet())
         {
             xPos += width + 20;
             width = view.getTitle().length() * 12 + 50;
@@ -69,49 +69,49 @@ public class KahinaArrangement
             {
                 maxY = height;
             }
-            setXPos(view.getTitle(),xPos);
-            setYPos(view.getTitle(),yPos);
-            setWidth(view.getTitle(),width);
-            setHeight(view.getTitle(),height);
+            setXPos(views.get(view).getID(),xPos);
+            setYPos(views.get(view).getID(),yPos);
+            setWidth(views.get(view).getID(),width);
+            setHeight(views.get(view).getID(),height);
         }
 	}
 	
-	public void setXPos(String windowID, int pos)
+	public void setXPos(int windowID, int pos)
 	{
 		xPos.put(windowID,pos);
 	}
 	
-	public void setYPos(String windowID, int pos)
+	public void setYPos(int windowID, int pos)
 	{
 		yPos.put(windowID,pos);
 	}
 	
-	public void setHeight(String windowID, int pos)
+	public void setHeight(int windowID, int pos)
 	{
 		height.put(windowID,pos);
 	}
 	
-	public void setWidth(String windowID, int pos)
+	public void setWidth(int windowID, int pos)
 	{
 		width.put(windowID,pos);
 	}
 	
-	public int getXPos(String windowID)
+	public int getXPos(int windowID)
 	{
 		return xPos.get(windowID);
 	}
 	
-	public int getYPos(String windowID)
+	public int getYPos(int windowID)
 	{
 		return yPos.get(windowID);
 	}
 	
-	public int getHeight(String windowID)
+	public int getHeight(int windowID)
 	{
 		return height.get(windowID);
 	}
 	
-	public int getWidth(String windowID)
+	public int getWidth(int windowID)
 	{
 		return width.get(windowID);
 	}
@@ -119,11 +119,12 @@ public class KahinaArrangement
 	public Element exportXML(Document dom)
 	{
 		Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:arrangement");
-		for (String windowID : xPos.keySet())
+		for (int windowID : xPos.keySet())
 		{
 			Element windowEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:window");
-			windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID);
+			windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
 			windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type", "default");
+			windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type", "title");
 			windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
 			windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");
 			windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:height", height.get(windowID) + "");

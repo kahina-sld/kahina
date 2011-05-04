@@ -42,27 +42,30 @@ public class KahinaWindowManager implements KahinaListener
         this.control = control;
 		control.registerListener(KahinaEventTypes.PERSPECTIVE, this);
 		control.registerListener(KahinaEventTypes.WINDOW, this);
-        
-        this.currentPerspective = new KahinaPerspective("default", "Default", gui.views);
-        
+		
         this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
-        
         this.windowByID = new HashMap<Integer,KahinaWindow>();
         this.topLevelWindows = new HashSet<Integer>();
-        
-        //create windows for all the other registered views
-        KahinaArrangement arr = currentPerspective.getArrangement();
+		
+		//create windows for all the other registered views
         for (KahinaView<?> view : gui.views)
         {
         	String viewID = view.getTitle();
         	System.err.println("Generating view: " + viewID);
- 	
             KahinaWindow viewWindow = integrateInDefaultWindow(view);
-            viewWindow.setSize(arr.getWidth(viewID), arr.getHeight(viewID));
-            viewWindow.setLocation(arr.getXPos(viewID), arr.getYPos(viewID));
+        }
+        
+        this.currentPerspective = new KahinaPerspective("default", "Default", contentWindows);
+        
+        KahinaArrangement arr = currentPerspective.getArrangement();
+        for (KahinaView<?> view : contentWindows.keySet())
+        {
+        	KahinaWindow w = contentWindows.get(view);
+            w.setSize(arr.getWidth(w.getID()), arr.getHeight(w.getID()));
+            w.setLocation(arr.getXPos(w.getID()), arr.getYPos(w.getID()));
             
         	//for now, generate the perspective from the predefined configurations
-        	currentPerspective.setConfiguration(viewWindow.getID(), view.getConfig());
+        	currentPerspective.setConfiguration(w.getID(), view.getConfig());
         }
         
         mainWindow = createMainWindow(this, control, gui.kahina);

@@ -51,11 +51,11 @@ public class KahinaPerspective
 		arrangement = new KahinaArrangement();
 	}
 	
-	public KahinaPerspective(String appID, String name,List<KahinaView<?>> views)
+	public KahinaPerspective(String appID, String name,Map<KahinaView<?>,KahinaWindow> windows)
 	{
 		config = new HashMap<Integer,KahinaViewConfiguration>();
 		visible = new HashMap<Integer,Boolean>();
-		arrangement = new KahinaArrangement(views);
+		arrangement = new KahinaArrangement(windows);
 	}
 	
 	public static KahinaPerspective importXML(Element e)
