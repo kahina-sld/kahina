@@ -103,6 +103,14 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		{
 			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.FLIP, w.getID()));
 		}
+		else if (s.equals("Dynamic Clone"))
+		{
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DYNAMIC_CLONE, w.getID()));
+		}
+		else if (s.equals("Snapshot Clone"))
+		{
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.SNAPSHOT_CLONE, w.getID()));
+		}
 		else if (s.equals("Vertical Split"))
 		{
         	String title = getNewUniqueTitle("Enter a new and unique title for the split window.", "Split window");

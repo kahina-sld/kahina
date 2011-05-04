@@ -112,4 +112,16 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	setUpperWindow(lowerWindow);
     	setLowerWindow(tempWindow);
     }
+    
+    public KahinaWindow createDynamicClone()
+    {
+    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm);
+    	cloneWindow.cloned = true;
+    	cloneWindow.setTitle(getTitle() + " (clone)");
+    	cloneWindow.setUpperWindow(upperWindow.createDynamicClone());
+    	cloneWindow.setLowerWindow(lowerWindow.createDynamicClone());
+    	cloneWindow.setSize(this.getSize());
+    	cloneWindow.setLocation(this.getX() + 100, this.getY() + 100);
+    	return cloneWindow;
+    }
 }

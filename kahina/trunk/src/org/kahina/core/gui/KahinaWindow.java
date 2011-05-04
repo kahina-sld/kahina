@@ -27,6 +27,7 @@ public class KahinaWindow extends JFrame implements WindowListener
     protected KahinaWindow embeddingWindow;
     
     private int windowID;
+    protected boolean cloned;
     
     public KahinaWindow(KahinaWindowManager wm)
     {        
@@ -36,15 +37,22 @@ public class KahinaWindow extends JFrame implements WindowListener
         mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
         mainPanel.addMouseListener(new KahinaWindowListener(this));
         embeddingWindow = null;
+        cloned = false;
         this.add(mainPanel);
         //TODO: find a way to make windows more compact and to avoid having the title twice
         //this.setUndecorated(true);
         this.addWindowListener(this);
+        wm.registerWindow(this);
     }
     
     public int getID()
     {
     	return windowID;
+    }
+    
+    public boolean isClone()
+    {
+    	return cloned;
     }
     
     public void setTitle(String title)
@@ -79,6 +87,17 @@ public class KahinaWindow extends JFrame implements WindowListener
     public void flipSubwindows()
     {
     	//do nothing per default, implemented by KahinaHorizontallySplitWindow and KahinaVerticallySplitWindow
+    }
+    
+    /**
+     * Creates an exact copy of this window, with identical update behavior.
+     * Implementations must override this to provide the desired functionality.
+     * 
+     * @return an exact copy of the current window, with identical behavior
+     */
+    public KahinaWindow createDynamicClone()
+    {
+    	return new KahinaWindow(wm);
     }
     
     public KahinaWindow getEmbeddingWindow()

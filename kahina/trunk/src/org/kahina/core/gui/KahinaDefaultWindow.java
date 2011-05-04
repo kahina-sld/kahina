@@ -32,4 +32,14 @@ public class KahinaDefaultWindow extends KahinaWindow
     {
     	return true;
     }
+    
+    public KahinaWindow createDynamicClone()
+    {
+    	KahinaDefaultWindow cloneWindow = new KahinaDefaultWindow(v,wm);
+    	cloneWindow.cloned = true;
+    	cloneWindow.setTitle(cloneWindow.getTitle() + " (clone)");
+    	cloneWindow.setSize(this.getSize());
+    	cloneWindow.setLocation(this.getX() + 100, this.getY() + 100);
+    	return cloneWindow;
+    }
 }
