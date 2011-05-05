@@ -100,6 +100,17 @@ public class KahinaWindow extends JFrame implements WindowListener
     	return new KahinaWindow(wm);
     }
     
+    /**
+     * Creates an exact copy of this window, but with immutable content.
+     * Implementations must override this to provide the desired functionality.
+     * 
+     * @return an copy of the current window at the current step, with immutable content
+     */
+    public KahinaWindow createSnapshotClone()
+    {
+    	return new KahinaWindow(wm);
+    }
+    
     public KahinaWindow getEmbeddingWindow()
     {
     	return embeddingWindow;

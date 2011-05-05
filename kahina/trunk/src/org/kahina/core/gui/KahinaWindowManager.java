@@ -328,6 +328,21 @@ public class KahinaWindowManager implements KahinaListener
 		        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, cloneWindow.getID()));
 			}
 		} 
+		else if (type == KahinaWindowEventType.SNAPSHOT_CLONE)
+		{
+			KahinaWindow window = windowByID.get(e.getWindowID());
+			if (window == null)
+			{
+				System.err.println("WARNING: Could not find window \"" + e.getWindowID() + "\".");
+			}
+			else
+			{
+				KahinaWindow cloneWindow = window.createSnapshotClone();
+		        topLevelWindows.add(cloneWindow.getID());
+		        cloneWindow.setVisible(true);
+		        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, cloneWindow.getID()));
+			}
+		} 
 		else if (type == KahinaWindowEventType.UNDOCK)
 		{
 			KahinaWindow window = windowByID.get(e.getWindowID());

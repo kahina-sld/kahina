@@ -124,4 +124,16 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     	cloneWindow.setLocation(this.getX() + 100, this.getY() + 100);
     	return cloneWindow;
     }
+    
+    public KahinaWindow createSnapshotClone()
+    {
+    	KahinaHorizontallySplitWindow cloneWindow = new KahinaHorizontallySplitWindow(wm);
+    	cloneWindow.cloned = true;
+    	cloneWindow.setTitle(getTitle() + " (at step " + wm.gui.kahina.getState().nextStepID() + ")");
+    	cloneWindow.setLeftWindow(leftWindow.createSnapshotClone());
+    	cloneWindow.setRightWindow(rightWindow.createSnapshotClone());
+    	cloneWindow.setSize(this.getSize());
+    	cloneWindow.setLocation(this.getX() + 100, this.getY() + 100);
+    	return cloneWindow;
+    }
 }
