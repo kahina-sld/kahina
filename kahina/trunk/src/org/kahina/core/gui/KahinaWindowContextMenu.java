@@ -69,7 +69,7 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		
 			this.addSeparator();
 		
-			if (w.isContentWindow())
+			if (w.isContentWindow() && w.isClone())
 			{
 				JMenuItem disposeItem = new JMenuItem("Dispose");
 				disposeItem.addActionListener(this);
@@ -139,15 +139,7 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		}
 		else if (s.equals("Close"))
 		{
-			if (w.isDummyWindow())
-			{
-				//TODO: remove the dummy frame / window which is not registered and therefore not referenced
-				//not registered because we assumed identity of title and windowID
-				//it is probably better to introduce a difference of window titles and IDs
-				//we can then avoid to manipulate windows directly and really leave that to the WindowManager,
-				//which is also helpful when mirroring window operations in the arrangement 
-			}
-			else if (!w.isTopLevelWindow())
+			if (!w.isTopLevelWindow())
 			{
 				KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getID()));
 			}

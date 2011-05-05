@@ -29,6 +29,18 @@ public class KahinaArrangement
 	Map<Integer,Integer> width;
 	
 	//TODO: model encapsulation of views into different window types
+	//! pending design decision on encoding of arrangements
+	//	1) conceptually clean: turn this into an independent representation 
+	//		+ could lead to an arrangement as a primary object to generate the GUI from
+	//		+ would possible make parts of KahinaGUI superfluous
+	//		- very expensive and possibly redundant representation of containment hierarchy
+	//		? would this representation be useful for any other purpose
+	//	2) quick to implement: remove this representation, let KahinaWindowManager do this directly
+	//		+ direct manipulations are quick, no spurious maintenance of identical information
+	//		- much workload on the KahinaWindowManager, unclear how initialization would work
+	//	3) a hybrid approach: window data here, containment hierarchy in the windows
+	//		+ quickly implemented and probably easy to maintain
+	//		- conceptually very unclean, Arrangement would degrade to an external copy of basic data
 	
 	public KahinaArrangement()
 	{
