@@ -90,10 +90,6 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		{
 			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getID()));
 		}
-		else if (s.equals("Clone"))
-		{
-			System.err.println("Received order to clone window " + w.getTitle());
-		}
 		else if (s.equals("Rename"))
 		{
         	String title = getNewUniqueTitle("Enter a new and unique title for the window.", "Rename window");
@@ -144,6 +140,10 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 				KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getID()));
 			}
 			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, w.getID()));
+		}
+		else if (s.equals("Dispose"))
+		{
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DISPOSE, w.getID()));
 		}
 	}
 	

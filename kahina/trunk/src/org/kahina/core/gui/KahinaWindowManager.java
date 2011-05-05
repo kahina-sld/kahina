@@ -275,6 +275,11 @@ public class KahinaWindowManager implements KahinaListener
 				System.err.println("WARNING: Removal of non-top-level windows not yet implemented!");
 			}
 		} 
+		else if (type == KahinaWindowEventType.DISPOSE)
+		{
+			control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, e.getWindowID()));
+			windowByID.remove(e.getWindowID());
+		} 
 		else if (type == KahinaWindowEventType.RENAME)
 		{
 			KahinaWindow window = windowByID.get(e.getWindowID());

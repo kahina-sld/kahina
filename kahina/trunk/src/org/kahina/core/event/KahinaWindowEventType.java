@@ -16,4 +16,5 @@ public class KahinaWindowEventType
     public static final int ADD_VIEW_MENU_ENTRY = 11; //only for view menu updates
     public static final int DYNAMIC_CLONE = 12;
     public static final int SNAPSHOT_CLONE = 13;
+    public static final int DISPOSE = 14;
 }
