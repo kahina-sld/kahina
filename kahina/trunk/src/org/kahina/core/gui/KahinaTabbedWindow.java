@@ -1,5 +1,6 @@
 package org.kahina.core.gui;
 
+import java.awt.Container;
 import java.awt.dnd.DropTarget;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,49 @@ public class KahinaTabbedWindow  extends KahinaWindow
     	w.embeddingWindow = this;
     	windows.add(w);
         tabbedPane.add(w.getTitle(), w.getContentPane());
-        //tabbedPane.addMouseListener(new KahinaWindowListener(w));
+    }
+    
+    public void addWindow(int index, KahinaWindow w)
+    {
+    	w.embeddingWindow = this;
+    	windows.add(index, w);
+        tabbedPane.add(w.getTitle(), w.getContentPane());
+    }
+    
+    public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
+    {
+    	int index = windows.indexOf(removedWindow);
+    	if (index != -1)
+    	{
+    		removedWindow.embeddingWindow = null;
+
+    		//crudely determine not too surprising positions and sizes for the separate windows
+    		removedWindow.setSize(tabbedPane.getComponents()[index].getSize());
+    		removedWindow.setLocation(this.getX() + 30, this.getY() + index * 50);
+    		
+    		removedWindow.setContentPane((Container) tabbedPane.getComponents()[index]);
+    		//tabbedPane.remove(index);
+    	}
+    	else
+    	{
+    		System.err.println("WARNING: Window \"" + removedWindow.getTitle() + "\" not found as a tab in window \"" + this.getTitle() + "\", release failed.");
+    	}
+		return this;
+    }
+    
+    public void replaceSubwindow(KahinaWindow oldSubwindow, KahinaWindow newSubwindow)
+    {
+    	int index = windows.indexOf(oldSubwindow);
+    	if (index != -1)
+    	{
+    		oldSubwindow.embeddingWindow = null;
+    		oldSubwindow.setContentPane((Container) tabbedPane.getComponents()[index]);
+    		
+        	addWindow(index,newSubwindow);
+    	}
+    	else
+    	{
+    		System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" not found as a tab in window \"" + this.getTitle() + "\", replacement failed.");
+    	}
     }
 }

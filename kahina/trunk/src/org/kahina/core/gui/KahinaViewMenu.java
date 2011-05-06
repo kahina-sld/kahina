@@ -184,7 +184,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 		}
 		else if (type == KahinaWindowEventType.REMOVE)
 		{
-			JCheckBoxMenuItem windowCheckBoxItem = windowEntries.get(e.getWindowID());
+			JCheckBoxMenuItem windowCheckBoxItem = windowEntries.remove(e.getWindowID());
 			if (windowCheckBoxItem == null)
 			{
 				System.err.println("WARNING: no check box item for window \"" + e.getWindowID() + "\"");

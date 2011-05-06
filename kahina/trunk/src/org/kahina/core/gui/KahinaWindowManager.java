@@ -271,8 +271,7 @@ public class KahinaWindowManager implements KahinaListener
 			}
 			else
 			{
-				//TODO: implement removal of non-top-level windows
-				System.err.println("WARNING: Removal of non-top-level windows not yet implemented!");
+				System.err.println("WARNING: Removal only possible for top-level windows! Undock first!");
 			}
 		} 
 		else if (type == KahinaWindowEventType.DISPOSE)
