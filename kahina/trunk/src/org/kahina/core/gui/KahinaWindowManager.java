@@ -278,6 +278,7 @@ public class KahinaWindowManager implements KahinaListener
 		} 
 		else if (type == KahinaWindowEventType.DISPOSE)
 		{
+			control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, e.getWindowID()));
 			control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, e.getWindowID()));
 			windowByID.remove(e.getWindowID());
 		} 

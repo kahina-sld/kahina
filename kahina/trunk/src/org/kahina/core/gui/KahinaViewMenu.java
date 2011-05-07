@@ -184,6 +184,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 		}
 		else if (type == KahinaWindowEventType.REMOVE)
 		{
+			System.err.println("Received order to remove check box item for window " + e.getWindowID());
 			JCheckBoxMenuItem windowCheckBoxItem = windowEntries.remove(e.getWindowID());
 			if (windowCheckBoxItem == null)
 			{
@@ -191,6 +192,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 			}
 			else
 			{
+				System.err.println("Removing check box item for window " + e.getWindowID());
 				this.remove(windowCheckBoxItem);
 			}
 		} 
