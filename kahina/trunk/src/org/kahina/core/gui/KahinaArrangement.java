@@ -2,6 +2,7 @@ package org.kahina.core.gui;
 
 import java.awt.Toolkit;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +29,8 @@ public class KahinaArrangement
 	Map<Integer,Integer> height;
 	Map<Integer,Integer> width;
 	
+    HashSet<Integer> topLevelWindows;
+	
 	//TODO: model encapsulation of views into different window types
 	//! pending design decision on encoding of arrangements
 	//	1) conceptually clean: turn this into an independent representation 
@@ -48,6 +51,7 @@ public class KahinaArrangement
 		yPos = new HashMap<Integer,Integer>();
 		height = new HashMap<Integer,Integer>();
 		width = new HashMap<Integer,Integer>();
+		topLevelWindows = new HashSet<Integer>();
 	}
 	
 	public KahinaArrangement(Map<KahinaView<?>,KahinaWindow> views)
@@ -56,6 +60,8 @@ public class KahinaArrangement
 		yPos = new HashMap<Integer,Integer>();
 		height = new HashMap<Integer,Integer>();
 		width = new HashMap<Integer,Integer>();
+		
+		topLevelWindows = new HashSet<Integer>();
 		
         int width = 300; // formerly gui.getControlPanel().getWidth();
         int height = 100;

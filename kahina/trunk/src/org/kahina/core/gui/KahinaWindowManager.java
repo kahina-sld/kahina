@@ -23,11 +23,11 @@ public class KahinaWindowManager implements KahinaListener
 {
     public KahinaMainWindow mainWindow;
     
-    KahinaPerspective currentPerspective;
+    KahinaPerspective psp;
+    KahinaArrangement arr;
     
     //main registry for windows: access windows by their windowID
     private HashMap<Integer,KahinaWindow> windowByID;
-    HashSet<Integer> topLevelWindows;
     
     HashMap<KahinaView<?>, KahinaWindow> contentWindows;
     //HashMap<KahinaView<?>, KahinaWindow> topLevelWindows;
@@ -45,27 +45,29 @@ public class KahinaWindowManager implements KahinaListener
 		
         this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         this.windowByID = new HashMap<Integer,KahinaWindow>();
-        this.topLevelWindows = new HashSet<Integer>();
 		
 		//create windows for all the other registered views
         for (KahinaView<?> view : gui.views)
         {
         	String viewID = view.getTitle();
         	System.err.println("Generating view: " + viewID);
-            KahinaWindow viewWindow = integrateInDefaultWindow(view);
+            KahinaWindow viewWindow = new KahinaDefaultWindow(view, this);
+            viewWindow.setTitle(view.getTitle());
+            contentWindows.put(view,viewWindow);
         }
         
-        this.currentPerspective = new KahinaPerspective("default", "Default", contentWindows);
+        this.psp = new KahinaPerspective("default", "Default", contentWindows);
         
-        KahinaArrangement arr = currentPerspective.getArrangement();
+        this.arr = psp.getArrangement();
         for (KahinaView<?> view : contentWindows.keySet())
         {
         	KahinaWindow w = contentWindows.get(view);
             w.setSize(arr.getWidth(w.getID()), arr.getHeight(w.getID()));
             w.setLocation(arr.getXPos(w.getID()), arr.getYPos(w.getID()));
+            arr.topLevelWindows.add(w.getID());
             
         	//for now, generate the perspective from the predefined configurations
-        	currentPerspective.setConfiguration(w.getID(), view.getConfig());
+        	psp.setConfiguration(w.getID(), view.getConfig());
         }
         
         mainWindow = createMainWindow(this, control, gui.kahina);
@@ -91,7 +93,7 @@ public class KahinaWindowManager implements KahinaListener
 
 	public void disposeAllWindows()
     {
-        for (int windowID : topLevelWindows)
+        for (int windowID : arr.topLevelWindows)
         {
             getWindowByID(windowID).dispose();
         }
@@ -100,14 +102,14 @@ public class KahinaWindowManager implements KahinaListener
 	
 	public boolean isTopLevelWindow(KahinaWindow w)
 	{
-		return topLevelWindows.contains(w.getID());
+		return arr.topLevelWindows.contains(w.getID());
 	}
     
     public KahinaWindow integrateInDefaultWindow(KahinaView<?> view)
     {
         KahinaWindow viewWindow = new KahinaDefaultWindow(view, this);
         viewWindow.setTitle(view.getTitle());
-        topLevelWindows.add(viewWindow.getID());
+        arr.topLevelWindows.add(viewWindow.getID());
         contentWindows.put(view,viewWindow);
         return viewWindow;
     }
@@ -159,9 +161,9 @@ public class KahinaWindowManager implements KahinaListener
     public void displayWindows()
     {
     	mainWindow.setVisible(true);
-        for (int winID : topLevelWindows)
+        for (int winID : arr.topLevelWindows)
         {
-            getWindowByID(winID).setVisible(currentPerspective.isVisible(winID));
+            getWindowByID(winID).setVisible(psp.isVisible(winID));
         }
     }
     
@@ -197,7 +199,7 @@ public class KahinaWindowManager implements KahinaListener
 		if (type == KahinaWindowEventType.NEW_DEFAULT)
 		{
 	        KahinaWindow viewWindow = new KahinaDummyWindow(this);
-	        topLevelWindows.add(viewWindow.getID());
+	        arr.topLevelWindows.add(viewWindow.getID());
 	        viewWindow.setTitle(e.getStringContent());
             viewWindow.setSize(300,100);
             viewWindow.setLocation(200,200);
@@ -207,7 +209,7 @@ public class KahinaWindowManager implements KahinaListener
 		else if (type == KahinaWindowEventType.NEW_HORI_SPLIT)
 		{
 	        KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this);
-	        topLevelWindows.add(splitWindow.getID());
+	        arr.topLevelWindows.add(splitWindow.getID());
 	        splitWindow.setTitle(e.getStringContent());
 	        splitWindow.setLeftWindow(new KahinaDummyWindow(this));
 	        splitWindow.setRightWindow(new KahinaDummyWindow(this));
@@ -219,7 +221,7 @@ public class KahinaWindowManager implements KahinaListener
 		else if (type == KahinaWindowEventType.NEW_VERT_SPLIT)
 		{
 	        KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this);
-	        topLevelWindows.add(splitWindow.getID());
+	        arr.topLevelWindows.add(splitWindow.getID());
 	        splitWindow.setTitle(e.getStringContent());
 	        splitWindow.setUpperWindow(new KahinaDummyWindow(this));
 	        splitWindow.setLowerWindow(new KahinaDummyWindow(this));
@@ -231,7 +233,7 @@ public class KahinaWindowManager implements KahinaListener
 		else if (type == KahinaWindowEventType.NEW_TABBED)
 		{
 	        KahinaTabbedWindow tabbedWindow = new KahinaTabbedWindow(this);
-	        topLevelWindows.add(tabbedWindow.getID());
+	        arr.topLevelWindows.add(tabbedWindow.getID());
 	        tabbedWindow.setTitle(e.getStringContent());
 	        tabbedWindow.addWindow(new KahinaDummyWindow(this));
             tabbedWindow.setSize(300,250);
@@ -241,9 +243,9 @@ public class KahinaWindowManager implements KahinaListener
 		} 
 		else if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
 		{
-			if (topLevelWindows.contains(e.getWindowID()))
+			if (arr.topLevelWindows.contains(e.getWindowID()))
 			{
-				currentPerspective.toggleVisibility(e.getWindowID());
+				psp.toggleVisibility(e.getWindowID());
 				KahinaWindow window = windowByID.get(e.getWindowID());
 				if (window == null)
 				{
@@ -251,7 +253,7 @@ public class KahinaWindowManager implements KahinaListener
 				}
 				else
 				{
-					window.setVisible(currentPerspective.isVisible(e.getWindowID()));
+					window.setVisible(psp.isVisible(e.getWindowID()));
 					if (!window.isVisible()) window.dispose();
 				}
 			}
@@ -262,10 +264,10 @@ public class KahinaWindowManager implements KahinaListener
 		} 
 		else if (type == KahinaWindowEventType.REMOVE)
 		{
-			if (topLevelWindows.contains(e.getWindowID()))
+			if (arr.topLevelWindows.contains(e.getWindowID()))
 			{
-				currentPerspective.setVisibility(e.getWindowID(), false);
-				topLevelWindows.remove(e.getWindowID());
+				psp.setVisibility(e.getWindowID(), false);
+				arr.topLevelWindows.remove(e.getWindowID());
 				KahinaWindow window = windowByID.get(e.getWindowID());
 				window.dispose();
 			}
@@ -322,7 +324,7 @@ public class KahinaWindowManager implements KahinaListener
 			else
 			{
 				KahinaWindow cloneWindow = window.createDynamicClone();
-		        topLevelWindows.add(cloneWindow.getID());
+		        arr.topLevelWindows.add(cloneWindow.getID());
 		        cloneWindow.setVisible(true);
 		        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, cloneWindow.getID()));
 			}
@@ -337,7 +339,7 @@ public class KahinaWindowManager implements KahinaListener
 			else
 			{
 				KahinaWindow cloneWindow = window.createSnapshotClone();
-		        topLevelWindows.add(cloneWindow.getID());
+		        arr.topLevelWindows.add(cloneWindow.getID());
 		        cloneWindow.setVisible(true);
 		        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, cloneWindow.getID()));
 			}
@@ -374,14 +376,14 @@ public class KahinaWindowManager implements KahinaListener
 					else
 					{
 						control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, embeddingWindow.getID()));
-						topLevelWindows.add(replacementWindow.getID());
+						arr.topLevelWindows.add(replacementWindow.getID());
 						replacementWindow.setVisible(true);
 						control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, replacementWindow.getID()));
 					}
 					windowByID.remove(embeddingWindow.getID());
 					//register and display the undocked window
-					currentPerspective.setVisibility(e.getWindowID(), true);
-					topLevelWindows.add(e.getWindowID());
+					psp.setVisibility(e.getWindowID(), true);
+					arr.topLevelWindows.add(e.getWindowID());
 					window.setVisible(true);
 				}
 			}
@@ -413,8 +415,8 @@ public class KahinaWindowManager implements KahinaListener
 				else
 				{
 					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, e.getWindowID()));
-		            topLevelWindows.remove(e.getWindowID());
-					topLevelWindows.add(splitWindow.getID());
+		            arr.topLevelWindows.remove(e.getWindowID());
+					arr.topLevelWindows.add(splitWindow.getID());
 					splitWindow.setVisible(true);
 					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, splitWindow.getID()));
 				}
@@ -447,8 +449,8 @@ public class KahinaWindowManager implements KahinaListener
 				else
 				{
 					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, e.getWindowID()));
-		            topLevelWindows.remove(e.getWindowID());
-					topLevelWindows.add(splitWindow.getID());
+		            arr.topLevelWindows.remove(e.getWindowID());
+					arr.topLevelWindows.add(splitWindow.getID());
 					splitWindow.setVisible(true);
 					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, splitWindow.getID()));
 				}
@@ -463,7 +465,7 @@ public class KahinaWindowManager implements KahinaListener
 	
 	private void savePerspectiveAs(File file)
 	{
-		Node node = currentPerspective.exportXML(XMLUtilities.newEmptyDocument());
+		Node node = psp.exportXML(XMLUtilities.newEmptyDocument());
 		XMLUtilities.writeXML(node,file.getAbsolutePath());
 	}
 }
