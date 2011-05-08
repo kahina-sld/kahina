@@ -26,14 +26,14 @@ public class KahinaTabbedWindow  extends KahinaWindow
     
     public void addWindow(KahinaWindow w)
     {
-    	w.embeddingWindow = this;
+    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(w);
         tabbedPane.add(w.getTitle(), w.getContentPane());
     }
     
     public void addWindow(int index, KahinaWindow w)
     {
-    	w.embeddingWindow = this;
+    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(index, w);
         tabbedPane.add(w.getTitle(), w.getContentPane());
     }
@@ -43,7 +43,7 @@ public class KahinaTabbedWindow  extends KahinaWindow
     	int index = windows.indexOf(removedWindow);
     	if (index != -1)
     	{
-    		removedWindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(removedWindow.getID(),-1);
 
     		//crudely determine not too surprising positions and sizes for the separate windows
     		removedWindow.setSize(tabbedPane.getComponents()[index].getSize());
@@ -64,7 +64,7 @@ public class KahinaTabbedWindow  extends KahinaWindow
     	int index = windows.indexOf(oldSubwindow);
     	if (index != -1)
     	{
-    		oldSubwindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
     		oldSubwindow.setContentPane((Container) tabbedPane.getComponents()[index]);
     		
         	addWindow(index,newSubwindow);

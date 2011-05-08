@@ -34,7 +34,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public void setUpperWindow(KahinaWindow w)
     {
-    	w.embeddingWindow = this;
+    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	upperWindow = w;
         topPanel.removeAll();
         topPanel.add(w.getContentPane());
@@ -42,7 +42,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public void setLowerWindow(KahinaWindow w)
     {
-    	w.embeddingWindow = this;
+    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	lowerWindow = w;
         bottomPanel.removeAll();
         bottomPanel.add(w.getContentPane());
@@ -52,9 +52,9 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     {
     	if (upperWindow == removedWindow)
     	{
-    		upperWindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(upperWindow.getID(),-1);
     		upperWindow.setContentPane((Container) topPanel.getComponents()[0]);		
-    		lowerWindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(lowerWindow.getID(),-1);
     		lowerWindow.setContentPane((Container) bottomPanel.getComponents()[0]);
     		//crudely determine not too surprising positions and sizes for the separate windows
     		upperWindow.setSize(topPanel.getSize());
@@ -65,9 +65,9 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	}
     	else if (lowerWindow == removedWindow)
     	{
-    		upperWindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(upperWindow.getID(),-1);
     		upperWindow.setContentPane((Container) topPanel.getComponents()[0]);		
-    		lowerWindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(lowerWindow.getID(),-1);
     		lowerWindow.setContentPane((Container) bottomPanel.getComponents()[0]);
     		//crudely determine not too surprising positions and sizes for the separate windows
     		upperWindow.setSize(topPanel.getSize());
@@ -87,12 +87,12 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     {
        	if (upperWindow == oldSubwindow)
     	{
-       		oldSubwindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
        		setUpperWindow(newSubwindow);
     	}
     	else if (lowerWindow == oldSubwindow)
     	{
-       		oldSubwindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
        		setLowerWindow(newSubwindow);
     	}
     	else

@@ -34,7 +34,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     
     public void setLeftWindow(KahinaWindow w)
     {
-    	w.embeddingWindow = this;
+    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	leftWindow = w;
         leftPanel.removeAll();
         leftPanel.add(w.getContentPane());
@@ -42,7 +42,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     
     public void setRightWindow(KahinaWindow w)
     {
-    	w.embeddingWindow = this;
+    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	rightWindow = w;
         rightPanel.removeAll();
         rightPanel.add(w.getContentPane());
@@ -52,9 +52,9 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     {
     	if (leftWindow == removedWindow)
     	{
-    		leftWindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(leftWindow.getID(),-1);
     		leftWindow.setContentPane((Container) leftPanel.getComponents()[0]);		
-    		rightWindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(rightWindow.getID(),-1);
     		rightWindow.setContentPane((Container) rightPanel.getComponents()[0]);
 			//crudely determine not too surprising positions and sizes for the separate windows
     		leftWindow.setSize(leftPanel.getSize());
@@ -65,9 +65,9 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     	}
     	else if (rightWindow == removedWindow)
     	{
-    		leftWindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(leftWindow.getID(),-1);
     		leftWindow.setContentPane((Container) leftPanel.getComponents()[0]);		
-    		rightWindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(rightWindow.getID(),-1);
     		rightWindow.setContentPane((Container) rightPanel.getComponents()[0]);
 			//crudely determine not too surprising positions and sizes for the separate windows
     		leftWindow.setSize(leftPanel.getSize());
@@ -87,12 +87,12 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     {
        	if (leftWindow == oldSubwindow)
     	{
-       		oldSubwindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
        		setLeftWindow(newSubwindow);
     	}
     	else if (rightWindow == oldSubwindow)
     	{
-       		oldSubwindow.embeddingWindow = null;
+    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
        		setRightWindow(newSubwindow);
     	}
     	else

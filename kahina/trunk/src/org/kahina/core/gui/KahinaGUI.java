@@ -50,8 +50,6 @@ public class KahinaGUI implements KahinaListener
 	protected KahinaTextView messageConsoleView;
 
 	protected List<KahinaView<?>> views;
-	// values as defined in KahinaViewVisibility
-	Map<KahinaView<?>, Integer> viewVisibility;
 	protected KahinaWindowManager windowManager;
 
 	protected Set<KahinaView<?>> livingViews;
@@ -80,7 +78,6 @@ public class KahinaGUI implements KahinaListener
 		this.controlPanel = new KahinaControlPanel();
 
 		this.views = new ArrayList<KahinaView<?>>();
-		this.viewVisibility = new HashMap<KahinaView<?>, Integer>();
 
 		this.livingViews = new HashSet<KahinaView<?>>();
 		this.fieldToView = new HashMap<Field, KahinaView<? extends KahinaObject>>();
@@ -161,15 +158,15 @@ public class KahinaGUI implements KahinaListener
 			}
 			case KahinaViewIntegrationType.TABBED:
 			{
-				// TODO
+				//TODO
 			}
 		}
 	}
 
 	public void prepare(KahinaController control)
 	{
-		displayMainViews();
 		windowManager = createWindowManager(this, control);
+		displayMainViews();
 	}	
 
 	protected KahinaWindowManager createWindowManager(KahinaGUI kahinaGUI, KahinaController control)
@@ -179,6 +176,8 @@ public class KahinaGUI implements KahinaListener
 
 	public final void show()
 	{
+		//TODO: load last perspective, or default perspective from XML
+		windowManager.createWindows(KahinaPerspective.generateDefaultPerspective(varNameToView));
 		windowManager.displayWindows();
 	}
 

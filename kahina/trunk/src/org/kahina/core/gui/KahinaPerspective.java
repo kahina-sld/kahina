@@ -1,9 +1,11 @@
 package org.kahina.core.gui;
 
+import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.kahina.core.data.KahinaObject;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
 import org.w3c.dom.Document;
@@ -39,7 +41,7 @@ public class KahinaPerspective
 	//visibility status of windows (and views)
 	Map<Integer,Boolean> visible;
 	//the arrangement, size and position of windows
-	KahinaArrangement arrangement;
+	KahinaArrangement arr;
 
 	
 	public KahinaPerspective(String appID, String name)
@@ -48,14 +50,50 @@ public class KahinaPerspective
 		this.name = name;
 		config = new HashMap<Integer,KahinaViewConfiguration>();
 		visible = new HashMap<Integer,Boolean>();
-		arrangement = new KahinaArrangement();
+		arr = new KahinaArrangement();
 	}
 	
-	public KahinaPerspective(String appID, String name,Map<KahinaView<?>,KahinaWindow> windows)
+	public static KahinaPerspective generateDefaultPerspective(Map<String, KahinaView<? extends KahinaObject>> nameToView)
 	{
-		config = new HashMap<Integer,KahinaViewConfiguration>();
-		visible = new HashMap<Integer,Boolean>();
-		arrangement = new KahinaArrangement(windows);
+		KahinaPerspective psp = new KahinaPerspective("default", "Default");
+		
+		//generate windowIDs by hand; somewhat risky because the window ID system becomes easy to break
+		int winID = 0;
+		
+        //create default arrangement for all the registered views
+        for (String name : nameToView.keySet())
+        {
+        	KahinaView<?> view = nameToView.get(name);
+        	
+            int width = 300; // formerly gui.getControlPanel().getWidth();
+            int height = 100;
+            
+            int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+            int xPos = 0;
+            int yPos = 0;
+            int maxY = height;
+            
+            xPos += width + 20;
+            width = view.getTitle().length() * 12 + 50;
+            if (xPos + width > screenWidth)
+            {
+                xPos = 0;
+                yPos = maxY + 20;
+                maxY = 0;
+            }
+            height = view.getTitle().length() * 24;       
+            if (height > maxY)
+            {
+                maxY = height;
+            }
+            System.err.println("Generating coordinates for " + winID);
+            psp.arr.setXPos(winID,xPos);
+            psp.arr.setYPos(winID,yPos);
+            psp.arr.setWidth(winID,width);
+            psp.arr.setHeight(winID,height);
+            winID++;
+        }
+		return psp;
 	}
 	
 	public static KahinaPerspective importXML(Element e)
@@ -68,7 +106,7 @@ public class KahinaPerspective
 	{
 		Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:perspective");
 		el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:appid", appID);
-        el.appendChild(arrangement.exportXML(dom));
+        el.appendChild(arr.exportXML(dom));
         Element configsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:configurations");
         for (int viewID : config.keySet())
         {
@@ -104,7 +142,7 @@ public class KahinaPerspective
 	
 	public KahinaArrangement getArrangement()
 	{
-		return arrangement;
+		return arr;
 	}
 	
 	public void setVisibility(int viewID, boolean vis)

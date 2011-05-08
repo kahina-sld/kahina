@@ -1,5 +1,6 @@
 package org.kahina.core.gui;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,8 +46,17 @@ public class KahinaWindowManager implements KahinaListener
 		
         this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         this.windowByID = new HashMap<Integer,KahinaWindow>();
-		
-		//create windows for all the other registered views
+    }
+    
+    /**
+     * Builds the windows according to some perspective. Must be called before display.
+     */
+    public void createWindows(KahinaPerspective psp)
+    {
+        this.psp = psp;     
+        this.arr = psp.getArrangement();
+        
+		//create windows for all the other views
         for (KahinaView<?> view : gui.views)
         {
         	String viewID = view.getTitle();
@@ -56,9 +66,6 @@ public class KahinaWindowManager implements KahinaListener
             contentWindows.put(view,viewWindow);
         }
         
-        this.psp = new KahinaPerspective("default", "Default", contentWindows);
-        
-        this.arr = psp.getArrangement();
         for (KahinaView<?> view : contentWindows.keySet())
         {
         	KahinaWindow w = contentWindows.get(view);
@@ -71,9 +78,6 @@ public class KahinaWindowManager implements KahinaListener
         }
         
         mainWindow = createMainWindow(this, control, gui.kahina);
-        //windowByID.put(mainWindow.getID(), mainWindow);
-        //TODO: think about special treatment for main window
-        //topLevelWindowByID.add("main");
     }
     
     public void registerWindow(KahinaWindow window)
@@ -160,11 +164,21 @@ public class KahinaWindowManager implements KahinaListener
     
     public void displayWindows()
     {
-    	mainWindow.setVisible(true);
-        for (int winID : arr.topLevelWindows)
-        {
-            getWindowByID(winID).setVisible(psp.isVisible(winID));
-        }
+    	if (psp == null)
+    	{
+    		System.err.println("No perspective defined, createWindows() was probably not called.");
+    		System.err.println("A default perspective can be generated via KahinaPerspective.generateDefaultPerspective()");
+    		System.err.println("Unable to display windows, quitting.");
+    		System.exit(1);
+    	}
+    	else
+    	{
+    		mainWindow.setVisible(true);
+    		for (int winID : arr.topLevelWindows)
+    		{
+    			getWindowByID(winID).setVisible(psp.isVisible(winID));
+    		}
+    	}
     }
     
 	@Override
@@ -409,7 +423,7 @@ public class KahinaWindowManager implements KahinaListener
 				if (oldEmbeddingWindow != null)
 				{
 					oldEmbeddingWindow.replaceSubwindow(window,splitWindow);
-					window.embeddingWindow = splitWindow;
+					arr.setEmbeddingWindowID(window.getID(),splitWindow.getID());
 					oldEmbeddingWindow.validate();
 					oldEmbeddingWindow.repaint();
 				}
@@ -443,7 +457,7 @@ public class KahinaWindowManager implements KahinaListener
 				if (oldEmbeddingWindow != null)
 				{
 					oldEmbeddingWindow.replaceSubwindow(window,splitWindow);
-					window.embeddingWindow = splitWindow;
+					arr.setEmbeddingWindowID(window.getID(),splitWindow.getID());
 					oldEmbeddingWindow.validate();
 					oldEmbeddingWindow.repaint();
 				}

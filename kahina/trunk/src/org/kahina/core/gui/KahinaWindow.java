@@ -1,6 +1,9 @@
 package org.kahina.core.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -23,20 +26,49 @@ public class KahinaWindow extends JFrame implements WindowListener
     KahinaWindowManager wm;
     KahinaTransferablePanel mainPanel;
     
-    //link upward in embedding structure tree
-    protected KahinaWindow embeddingWindow;
-    
-    private int windowID;
+    protected final int windowID;
     protected boolean cloned;
     
+    /**
+     * Constructs a KahinaWindow with a new unique ID.
+     * Caution is advised with this constructor, as incorrect ID assignment can break the window system.
+     * @param wm the window manager that is to manage this window
+     */
     public KahinaWindow(KahinaWindowManager wm)
-    {        
+    {     
     	this.wm = wm;
     	windowID = idCounter++;
         setLayout(new BorderLayout());
         mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
         mainPanel.addMouseListener(new KahinaWindowListener(this));
-        embeddingWindow = null;
+        wm.arr.setEmbeddingWindowID(windowID, -1);
+        cloned = false;
+        this.add(mainPanel);
+        //TODO: find a way to make windows more compact and to avoid having the title twice
+        //this.setUndecorated(true);
+        this.addWindowListener(this);
+        wm.registerWindow(this);
+    }
+    
+    /**
+     * Constructs a KahinaWindow with a specified ID.
+     * Caution is advised with this constructor, as incorrect ID assignment can break the window system.
+     * @param wm the window manager that is to manage this window
+     * @param id the unique window ID that this window will be referred by (never use -1 or an ID that is already used!)
+     */
+    public KahinaWindow(KahinaWindowManager wm, int id)
+    {     
+    	this.wm = wm;
+    	this.windowID = id;
+    	//make sure the other constructor does not cause any ID clashes
+    	if (windowID > idCounter)
+    	{
+    		idCounter = windowID + 1;
+    	}
+        setLayout(new BorderLayout());
+        mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
+        mainPanel.addMouseListener(new KahinaWindowListener(this));
+        wm.arr.setEmbeddingWindowID(windowID, -1);
         cloned = false;
         this.add(mainPanel);
         //TODO: find a way to make windows more compact and to avoid having the title twice
@@ -55,10 +87,63 @@ public class KahinaWindow extends JFrame implements WindowListener
     	return cloned;
     }
     
+    //overloaded property manipulation to also update the manager's arrangement object
+    //this gives us adaptation of the arrangement object to resizes and movements for free
+    //the problem is that some of these are called before the window manager is fully initialized
+    
     public void setTitle(String title)
     {
     	super.setTitle(title);
     	mainPanel.setTitle(title + " (" + windowID + ")");
+    	wm.arr.setTitle(windowID,title);
+    }
+    
+    public void setSize(int width, int height)
+    {
+    	super.setSize(width,height);
+    	wm.arr.setSize(windowID,width,height);
+    }
+    
+    public void setSize(Dimension size)
+    {
+    	super.setSize(size);
+    	wm.arr.setSize(windowID,size.width,size.height);
+    }
+    
+    public void setLocation(int xPos, int yPos)
+    {
+    	super.setLocation(xPos,yPos);
+    	if (wm != null)
+    	{
+    		wm.arr.setXPos(windowID,xPos);
+    		wm.arr.setYPos(windowID,yPos);
+    	}
+    }
+    
+    public void setLocation(Point p)
+    {
+    	super.setLocation(p);
+    	wm.arr.setXPos(windowID, p.x);
+    	wm.arr.setYPos(windowID, p.y);
+    }
+    
+    public void setBounds(int xPos, int yPos, int width, int height)
+    {
+    	super.setBounds(xPos,yPos,width,height);
+    	if (wm != null)
+    	{
+    		wm.arr.setXPos(windowID, xPos);
+    		wm.arr.setYPos(windowID, yPos);
+    		wm.arr.setSize(windowID,width,height);
+    	}
+    }
+    
+    public void setBounds(Rectangle rect)
+    {
+    	super.setBounds(rect);
+    	wm.arr.setXPos(windowID, rect.x);
+    	wm.arr.setYPos(windowID, rect.y);
+    	wm.arr.setSize(windowID, rect.width, rect.height);
     }
     
     public boolean isTopLevelWindow()
@@ -111,9 +196,13 @@ public class KahinaWindow extends JFrame implements WindowListener
     	return new KahinaWindow(wm);
     }
     
+    /**
+     * 
+     * @return the embedding KahinaWindow; null if it this is a top-level window
+     */
     public KahinaWindow getEmbeddingWindow()
     {
-    	return embeddingWindow;
+    	return wm.getWindowByID(wm.arr.getEmbeddingWindowID(windowID));
     }
     
     //for a container window, releases a subwindow and provides a replacement without the removed subwindow
