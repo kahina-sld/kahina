@@ -16,6 +16,13 @@ public class KahinaDefaultWindow extends KahinaWindow
         setTitle(v.getTitle());
     }
     
+    public KahinaDefaultWindow(KahinaView v, KahinaWindowManager wm, int winID)
+    {
+    	super(wm, winID);
+        setContent(v, wm.control);
+        setTitle(v.getTitle());
+    }
+    
     public void setContent(KahinaView v, KahinaController control)
     {
         this.v = v;

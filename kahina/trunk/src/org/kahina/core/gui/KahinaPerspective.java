@@ -63,6 +63,7 @@ public class KahinaPerspective
         //create default arrangement for all the registered views
         for (String name : nameToView.keySet())
         {
+        	psp.arr.bindNameToWindow(name,winID);
         	KahinaView<?> view = nameToView.get(name);
         	
             int width = 300; // formerly gui.getControlPanel().getWidth();
@@ -86,7 +87,6 @@ public class KahinaPerspective
             {
                 maxY = height;
             }
-            System.err.println("Generating coordinates for " + winID);
             psp.arr.setXPos(winID,xPos);
             psp.arr.setYPos(winID,yPos);
             psp.arr.setWidth(winID,width);

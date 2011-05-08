@@ -30,8 +30,8 @@ public class KahinaWindowManager implements KahinaListener
     //main registry for windows: access windows by their windowID
     private HashMap<Integer,KahinaWindow> windowByID;
     
+    //TODO: this map does not make much sense any longer, as multiple windows will share or be part of one view!
     HashMap<KahinaView<?>, KahinaWindow> contentWindows;
-    //HashMap<KahinaView<?>, KahinaWindow> topLevelWindows;
     
     KahinaGUI gui;
     
@@ -57,11 +57,11 @@ public class KahinaWindowManager implements KahinaListener
         this.arr = psp.getArrangement();
         
 		//create windows for all the other views
-        for (KahinaView<?> view : gui.views)
+        for (String name : gui.varNameToView.keySet())
         {
-        	String viewID = view.getTitle();
-        	System.err.println("Generating view: " + viewID);
-            KahinaWindow viewWindow = new KahinaDefaultWindow(view, this);
+        	KahinaView<?> view = gui.varNameToView.get(name);
+        	System.err.println("Generating view: " + name);
+            KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, arr.getWinIDForName(name));
             viewWindow.setTitle(view.getTitle());
             contentWindows.put(view,viewWindow);
         }

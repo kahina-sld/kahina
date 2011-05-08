@@ -30,29 +30,18 @@ public class KahinaArrangement
 	Map<Integer,Integer> width;
 	Map<Integer,String> title;
 	
-	//this mapping provides the connection between data and view windows
+	//this mapping provides the connection between node data and (primary) associated view windows
+	//the values of this mapping constitute the seed for bottom-up embedding tree construction
+	private Map<String,Integer> nameToWindowID;
 	
 	//all the containment information is stored here, window operations manipulate this
     private HashMap<Integer,Integer> embeddingWindow;
     //TODO: type information will have to be represented if the window manager is to build up the GUI from this
     
     //TODO: decide whether these two make sense, as this information can be inferred bottom-up from embeddingWindow
+    //will not use these for import and export for now
     HashSet<Integer> topLevelWindows;
     HashMap<Integer,List<Integer>> childWindows;
-	
-	//TODO: model encapsulation of views into different window types
-	//! pending design decision on encoding of arrangements
-	//	1) conceptually clean: turn this into an independent representation 
-	//		+ could lead to an arrangement as a primary object to generate the GUI from
-	//		+ would possible make parts of KahinaGUI superfluous
-	//		- very expensive and possibly redundant representation of containment hierarchy
-	//		? would this representation be useful for any other purpose
-	//	2) quick to implement: remove this representation, let KahinaWindowManager do this directly
-	//		+ direct manipulations are quick, no spurious maintenance of identical information
-	//		- much workload on the KahinaWindowManager, unclear how initialization would work
-	//	3) a hybrid approach: window data here, containment hierarchy in the windows
-	//		+ quickly implemented and probably easy to maintain
-	//		- conceptually very unclean, Arrangement would degrade to an external copy of basic data
 	
 	public KahinaArrangement()
 	{
@@ -61,17 +50,7 @@ public class KahinaArrangement
 		height = new HashMap<Integer,Integer>();
 		width = new HashMap<Integer,Integer>();
 		title = new HashMap<Integer,String>();
-		topLevelWindows = new HashSet<Integer>();
-		embeddingWindow = new HashMap<Integer,Integer>();
-	}
-	
-	public KahinaArrangement(Map<KahinaView<?>,KahinaWindow> views)
-	{
-		xPos = new HashMap<Integer,Integer>();
-		yPos = new HashMap<Integer,Integer>();
-		height = new HashMap<Integer,Integer>();
-		width = new HashMap<Integer,Integer>();
-		title = new HashMap<Integer,String>();
+		nameToWindowID = new HashMap<String,Integer>();
 		
 		topLevelWindows = new HashSet<Integer>();
 		embeddingWindow = new HashMap<Integer,Integer>();
@@ -113,6 +92,11 @@ public class KahinaArrangement
 		embeddingWindow.put(windowID, embeddingID);
 	}
 	
+	public void bindNameToWindow(String name, int windowID)
+	{
+		nameToWindowID.put(name, windowID);
+	}
+	
 	public int getXPos(int windowID)
 	{
 		return xPos.get(windowID);
@@ -143,11 +127,16 @@ public class KahinaArrangement
 		return embeddingWindow.get(windowID);
 	}
 	
+	public int getWinIDForName(String name)
+	{
+		return nameToWindowID.get(name);
+	}
+	
 	/*
 	 * Informal description of the XML format:
 	 * (TODO: replace this by a formal specification as an XML schema or similar)
-	 * - encodings of embeddings does not mirror internal structure because it can be mapped
-	 *   very nicely onto an XML encoding that is much easier to edit in XML without introducing inconsistencies
+	 * - encodings of embeddings does not mirror internal storage format because it can be mapped
+	 *   very nicely onto a tree structure that is much easier to edit in XML without introducing inconsistencies
 	 * - binding of live views to the structures they are to represent is defined via the displayIDs
 	 * - snapshot clones are represented, but neither imported nor exported because they cannot reliably be restored
 	 * - TODO: offer an option to linearize and restore contents of snapshot clones as well
