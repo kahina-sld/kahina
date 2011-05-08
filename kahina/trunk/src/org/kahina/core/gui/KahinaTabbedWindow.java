@@ -38,6 +38,11 @@ public class KahinaTabbedWindow  extends KahinaWindow
         tabbedPane.add(w.getTitle(), w.getContentPane());
     }
     
+	public int getWindowType()
+	{
+		return KahinaWindowType.TABBED_WINDOW;
+	}
+    
     public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
     {
     	int index = windows.indexOf(removedWindow);

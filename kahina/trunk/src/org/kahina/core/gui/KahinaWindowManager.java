@@ -83,6 +83,7 @@ public class KahinaWindowManager implements KahinaListener
     public void registerWindow(KahinaWindow window)
     {
     	 windowByID.put(window.getID(),window);
+    	 arr.setWindowType(window.getID(), window.getWindowType());
     }
     
     public KahinaWindow getWindowByID(int winID)

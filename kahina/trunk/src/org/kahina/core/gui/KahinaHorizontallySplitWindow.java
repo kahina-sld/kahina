@@ -101,6 +101,11 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     	}
     }
     
+	public int getWindowType()
+	{
+		return KahinaWindowType.HORI_SPLIT_WINDOW;
+	}
+    
     public boolean isFlippableWindow()
     {
     	return true;

@@ -87,9 +87,21 @@ public class KahinaWindow extends JFrame implements WindowListener
     	return cloned;
     }
     
+    /**
+     * Returns the type of the current window. Used in storing arrangements.
+     * Returns KahinaWindowType.DEFAULT_WINDOW by default, indicating no embedded windows.
+     * This is overridden by specializations that embed other windows.
+     * @return one of the constants defined in KahinaWindowType, representing the type of this window
+     */
+	public int getWindowType()
+	{
+		return KahinaWindowType.DEFAULT_WINDOW;
+	}
+    
     //overloaded property manipulation to also update the manager's arrangement object
     //this gives us adaptation of the arrangement object to resizes and movements for free
-    //the problem is that some of these are called before the window manager is fully initialized
+    //TODO: 1) some of these are called before the window manager is fully initialized
+	// 		2) when the position is initalized during JFrame construction, values in the arrangement are overwritten
     
     public void setTitle(String title)
     {

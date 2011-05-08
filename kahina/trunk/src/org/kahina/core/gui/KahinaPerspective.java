@@ -60,19 +60,19 @@ public class KahinaPerspective
 		//generate windowIDs by hand; somewhat risky because the window ID system becomes easy to break
 		int winID = 0;
 		
+        int width = 300; // formerly gui.getControlPanel().getWidth();
+        int height = 100;
+        
+        int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int xPos = 0;
+        int yPos = 0;
+        int maxY = height;
+		
         //create default arrangement for all the registered views
         for (String name : nameToView.keySet())
         {
         	psp.arr.bindNameToWindow(name,winID);
         	KahinaView<?> view = nameToView.get(name);
-        	
-            int width = 300; // formerly gui.getControlPanel().getWidth();
-            int height = 100;
-            
-            int screenWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
-            int xPos = 0;
-            int yPos = 0;
-            int maxY = height;
             
             xPos += width + 20;
             width = view.getTitle().length() * 12 + 50;
@@ -87,6 +87,7 @@ public class KahinaPerspective
             {
                 maxY = height;
             }
+            System.err.println("winCoord(" + winID + ") := (" + xPos + "," + yPos + "," + width + "," + height + ")");
             psp.arr.setXPos(winID,xPos);
             psp.arr.setYPos(winID,yPos);
             psp.arr.setWidth(winID,width);
