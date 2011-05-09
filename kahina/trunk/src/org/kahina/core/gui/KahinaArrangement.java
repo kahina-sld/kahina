@@ -169,65 +169,87 @@ public class KahinaArrangement
 	 * - TODO: offer an option to linearize and restore contents of snapshot clones as well
 	 */
 	
-	
+	//TODO: somehow get the order of the elements right! problem is that content windows can come in in any order!
 	public Element exportXML(Document dom)
 	{
-		Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:arrangement");
-		for (int windowID : xPos.keySet())
+		Element topEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:arrangement");
+		HashMap<Integer,Element> constructedNodes = new HashMap<Integer,Element>();
+		for (Integer windowID : nameToWindowID.values())
 		{
-			switch (windowType.get(windowID))
+			System.err.println("Processing windowID " + windowID);
+			Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:default-window");
+			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
+			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
+			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
+			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");
+			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:height", height.get(windowID) + "");
+			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:width", width.get(windowID) + "");
+			constructedNodes.put(windowID, el);
+			//potentially confusing, but sound and efficient: reuse windowID and el to march up the embedding hierarchy
+			while (windowID != null && windowID != -1)
 			{
-				case KahinaWindowType.DEFAULT_WINDOW:
+				windowID = embeddingWindow.get(windowID);
+				System.err.println("	Recursion into windowID " + windowID);
+				if (windowID == null || windowID == -1)
 				{
-					Element windowEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:default-window");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:height", height.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:width", width.get(windowID) + "");
-					el.appendChild(windowEl);
+					topEl.appendChild(el);
+				}
+				else if (constructedNodes.get(windowID) != null)
+				{
+					constructedNodes.get(windowID).appendChild(el);
 					break;
 				}
-				case KahinaWindowType.HORI_SPLIT_WINDOW:
+				else
 				{
-					Element windowEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:hori-split-window");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:height", height.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:width", width.get(windowID) + "");
-					el.appendChild(windowEl);
-					break;
-				}
-				case KahinaWindowType.VERT_SPLIT_WINDOW:
-				{
-					Element windowEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:vert-split-window");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:height", height.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:width", width.get(windowID) + "");
-					el.appendChild(windowEl);
-					break;
-				}
-				case KahinaWindowType.TABBED_WINDOW:
-				{
-					Element windowEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:tabbed-window");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:height", height.get(windowID) + "");
-					windowEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:width", width.get(windowID) + "");
-					el.appendChild(windowEl);
-					break;
+					System.err.println("Window type: " + windowType.get(windowID));
+					switch (windowType.get(windowID))
+					{
+						case KahinaWindowType.HORI_SPLIT_WINDOW:
+						{
+							Element embeddingEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:hori-split-window");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:height", height.get(windowID) + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:width", width.get(windowID) + "");
+							embeddingEl.appendChild(el);
+							constructedNodes.put(windowID, embeddingEl);
+							el = embeddingEl;
+							break;
+						}
+						case KahinaWindowType.VERT_SPLIT_WINDOW:
+						{
+							Element embeddingEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:vert-split-window");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:height", height.get(windowID) + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:width", width.get(windowID) + "");
+							embeddingEl.appendChild(el);
+							constructedNodes.put(windowID, embeddingEl);
+							el = embeddingEl;
+							break;
+						}
+						case KahinaWindowType.TABBED_WINDOW:
+						{
+							Element embeddingEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:tabbed-window");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:height", height.get(windowID) + "");
+							embeddingEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:width", width.get(windowID) + "");
+							embeddingEl.appendChild(el);
+							constructedNodes.put(windowID, embeddingEl);
+							el = embeddingEl;
+							break;
+						}
+					}
 				}
 			}
-
 		}
-        return el;
+        return topEl;
 	}
 }

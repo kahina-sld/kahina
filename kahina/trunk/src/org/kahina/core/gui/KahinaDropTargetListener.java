@@ -59,6 +59,7 @@ public class KahinaDropTargetListener implements DropTargetListener
 	                {
 	                	KahinaWindow embWin = w.getEmbeddingWindow();
 	                	embWin.replaceSubwindow(w, w.wm.getWindowByID(winID));
+	                	w.wm.arr.setEmbeddingWindowID(winID, embWin.getID());
 	                	embWin.validate();
 	                	embWin.repaint(); 
 	                    KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));
