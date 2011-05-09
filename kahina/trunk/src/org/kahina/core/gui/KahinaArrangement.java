@@ -176,7 +176,7 @@ public class KahinaArrangement
 		HashMap<Integer,Element> constructedNodes = new HashMap<Integer,Element>();
 		for (Integer windowID : nameToWindowID.values())
 		{
-			System.err.println("Processing windowID " + windowID);
+			//System.err.println("Processing windowID " + windowID);
 			Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:default-window");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
@@ -189,7 +189,7 @@ public class KahinaArrangement
 			while (windowID != null && windowID != -1)
 			{
 				windowID = embeddingWindow.get(windowID);
-				System.err.println("	Recursion into windowID " + windowID);
+				//System.err.println("	Recursion into windowID " + windowID);
 				if (windowID == null || windowID == -1)
 				{
 					topEl.appendChild(el);

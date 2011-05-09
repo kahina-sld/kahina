@@ -87,7 +87,7 @@ public class KahinaPerspective
             {
                 maxY = height;
             }
-            System.err.println("winCoord(" + winID + ") := (" + xPos + "," + yPos + "," + width + "," + height + ")");
+            //System.err.println("winCoord(" + winID + ") := (" + xPos + "," + yPos + "," + width + "," + height + ")");
             psp.arr.setXPos(winID,xPos);
             psp.arr.setYPos(winID,yPos);
             psp.arr.setWidth(winID,width);

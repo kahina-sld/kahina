@@ -106,6 +106,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     {
     	super.setTitle(title);
     	mainPanel.setTitle(title + " (" + windowID + ")");
+    	wm.arr.setTitle(windowID, title);
     }
     
     public boolean isTopLevelWindow()
