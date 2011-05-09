@@ -1,16 +1,12 @@
 package org.kahina.core.gui;
 
-import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import org.kahina.core.visual.KahinaView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import com.sun.xml.internal.ws.org.objectweb.asm.Type;
 
 /**
  * Storage for window configurations in a perspective.
