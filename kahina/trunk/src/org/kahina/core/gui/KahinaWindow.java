@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -16,7 +18,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaWindowEvent;
 import org.kahina.core.event.KahinaWindowEventType;
 
-public class KahinaWindow extends JFrame implements WindowListener
+public class KahinaWindow extends JFrame implements WindowListener, ComponentListener
 {
 	private static final long serialVersionUID = 6613805267152521669L; 
     private static final boolean verbose = false; 
@@ -28,10 +30,6 @@ public class KahinaWindow extends JFrame implements WindowListener
     
     protected final int windowID;
     protected boolean cloned;
-    
-    //flag determining whether changes in size and position are handed on to the arrangement 
-    //must be deactivated while creating a window from an arrangement
-    private boolean mirrorCoordinatesInArrangement = false;
     
     /**
      * Constructs a KahinaWindow with a new unique ID.
@@ -51,6 +49,7 @@ public class KahinaWindow extends JFrame implements WindowListener
         //TODO: find a way to make windows more compact and to avoid having the title twice
         //this.setUndecorated(true);
         this.addWindowListener(this);
+        this.addComponentListener(this);
         wm.registerWindow(this);
     }
     
@@ -78,6 +77,7 @@ public class KahinaWindow extends JFrame implements WindowListener
         //TODO: find a way to make windows more compact and to avoid having the title twice
         //this.setUndecorated(true);
         this.addWindowListener(this);
+        this.addComponentListener(this);
         wm.registerWindow(this);
     }
     
@@ -102,81 +102,10 @@ public class KahinaWindow extends JFrame implements WindowListener
 		return KahinaWindowType.DEFAULT_WINDOW;
 	}
     
-    //overloaded property manipulation to also update the manager's arrangement object
-    //ideally, this gives us adaptation of the arrangement object to resizes and movements for free
-    
     public void setTitle(String title)
     {
     	super.setTitle(title);
     	mainPanel.setTitle(title + " (" + windowID + ")");
-    	wm.arr.setTitle(windowID,title);
-    }
-    
-    public void setSize(int width, int height)
-    {
-    	super.setSize(width,height);
-    	if (mirrorCoordinatesInArrangement)
-    	{
-    		wm.arr.setSize(windowID,width,height);
-    	}
-    }
-    
-    public void setSize(Dimension size)
-    {
-    	super.setSize(size);
-    	if (mirrorCoordinatesInArrangement)
-    	{
-    		wm.arr.setSize(windowID,size.width,size.height);
-    	}
-    }
-    
-    public void setLocation(int xPos, int yPos)
-    {
-    	super.setLocation(xPos,yPos);
-    	if (mirrorCoordinatesInArrangement)
-    	{
-    		wm.arr.setXPos(windowID,xPos);
-    		wm.arr.setYPos(windowID,yPos);
-    	}
-    }
-    
-    public void setLocation(Point p)
-    {
-    	super.setLocation(p);
-    	if (mirrorCoordinatesInArrangement)
-    	{
-    		wm.arr.setXPos(windowID, p.x);
-    		wm.arr.setYPos(windowID, p.y);
-    	}
-    }
-    
-    public void setBounds(int xPos, int yPos, int width, int height)
-    {
-    	super.setBounds(xPos,yPos,width,height);
-    	if (mirrorCoordinatesInArrangement)
-    	{
-    		wm.arr.setXPos(windowID, xPos);
-    		wm.arr.setYPos(windowID, yPos);
-    		wm.arr.setSize(windowID,width,height);
-    	}
-    }
-    
-    public void setBounds(Rectangle rect)
-    {
-    	super.setBounds(rect);
-    	if (mirrorCoordinatesInArrangement)
-    	{
-    		wm.arr.setXPos(windowID, rect.x);
-    		wm.arr.setYPos(windowID, rect.y);
-    		wm.arr.setSize(windowID, rect.width, rect.height);
-    	}
-    }
-    
-    public void setVisible(boolean b)
-    {
-    	super.setVisible(b);
-    	//construction phase is over, allow user to modify arrangement "directly"
-    	mirrorCoordinatesInArrangement = true;
     }
     
     public boolean isTopLevelWindow()
@@ -230,7 +159,7 @@ public class KahinaWindow extends JFrame implements WindowListener
     }
     
     /**
-     * 
+     * Retrieves the direct ancestor of this window in the embedding tree.
      * @return the embedding KahinaWindow; null if it this is a top-level window
      */
     public KahinaWindow getEmbeddingWindow()
@@ -284,5 +213,30 @@ public class KahinaWindow extends JFrame implements WindowListener
 	@Override
 	public void windowOpened(WindowEvent e) 
 	{		
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent arg0) 
+	{
+		
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent arg0) 
+	{
+		wm.arr.setXPos(windowID, this.getX());
+		wm.arr.setYPos(windowID, this.getY());
+	}
+
+	@Override
+	public void componentResized(ComponentEvent arg0) 
+	{
+		wm.arr.setSize(windowID,this.getWidth(),this.getHeight());
+	}
+
+	@Override
+	public void componentShown(ComponentEvent arg0) 
+	{
+		
 	}   
 }
