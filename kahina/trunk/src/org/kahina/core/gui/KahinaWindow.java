@@ -29,6 +29,10 @@ public class KahinaWindow extends JFrame implements WindowListener
     protected final int windowID;
     protected boolean cloned;
     
+    //flag determining whether changes in size and position are handed on to the arrangement 
+    //must be deactivated while creating a window from an arrangement
+    private boolean mirrorCoordinatesInArrangement = false;
+    
     /**
      * Constructs a KahinaWindow with a new unique ID.
      * Caution is advised with this constructor, as incorrect ID assignment can break the window system.
@@ -99,9 +103,7 @@ public class KahinaWindow extends JFrame implements WindowListener
 	}
     
     //overloaded property manipulation to also update the manager's arrangement object
-    //this gives us adaptation of the arrangement object to resizes and movements for free
-    //TODO: 1) some of these are called before the window manager is fully initialized
-	// 		2) when the position is initalized during JFrame construction, values in the arrangement are overwritten
+    //ideally, this gives us adaptation of the arrangement object to resizes and movements for free
     
     public void setTitle(String title)
     {
@@ -113,19 +115,25 @@ public class KahinaWindow extends JFrame implements WindowListener
     public void setSize(int width, int height)
     {
     	super.setSize(width,height);
-    	wm.arr.setSize(windowID,width,height);
+    	if (mirrorCoordinatesInArrangement)
+    	{
+    		wm.arr.setSize(windowID,width,height);
+    	}
     }
     
     public void setSize(Dimension size)
     {
     	super.setSize(size);
-    	wm.arr.setSize(windowID,size.width,size.height);
+    	if (mirrorCoordinatesInArrangement)
+    	{
+    		wm.arr.setSize(windowID,size.width,size.height);
+    	}
     }
     
     public void setLocation(int xPos, int yPos)
     {
     	super.setLocation(xPos,yPos);
-    	if (wm != null)
+    	if (mirrorCoordinatesInArrangement)
     	{
     		wm.arr.setXPos(windowID,xPos);
     		wm.arr.setYPos(windowID,yPos);
@@ -135,14 +143,17 @@ public class KahinaWindow extends JFrame implements WindowListener
     public void setLocation(Point p)
     {
     	super.setLocation(p);
-    	wm.arr.setXPos(windowID, p.x);
-    	wm.arr.setYPos(windowID, p.y);
+    	if (mirrorCoordinatesInArrangement)
+    	{
+    		wm.arr.setXPos(windowID, p.x);
+    		wm.arr.setYPos(windowID, p.y);
+    	}
     }
     
     public void setBounds(int xPos, int yPos, int width, int height)
     {
     	super.setBounds(xPos,yPos,width,height);
-    	if (wm != null)
+    	if (mirrorCoordinatesInArrangement)
     	{
     		wm.arr.setXPos(windowID, xPos);
     		wm.arr.setYPos(windowID, yPos);
@@ -153,9 +164,19 @@ public class KahinaWindow extends JFrame implements WindowListener
     public void setBounds(Rectangle rect)
     {
     	super.setBounds(rect);
-    	wm.arr.setXPos(windowID, rect.x);
-    	wm.arr.setYPos(windowID, rect.y);
-    	wm.arr.setSize(windowID, rect.width, rect.height);
+    	if (mirrorCoordinatesInArrangement)
+    	{
+    		wm.arr.setXPos(windowID, rect.x);
+    		wm.arr.setYPos(windowID, rect.y);
+    		wm.arr.setSize(windowID, rect.width, rect.height);
+    	}
+    }
+    
+    public void setVisible(boolean b)
+    {
+    	super.setVisible(b);
+    	//construction phase is over, allow user to modify arrangement "directly"
+    	mirrorCoordinatesInArrangement = true;
     }
     
     public boolean isTopLevelWindow()
