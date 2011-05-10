@@ -16,6 +16,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -142,6 +143,16 @@ public class XMLUtilities
         {
 			System.err.println("   " + e.getMessage());		
 		}
+	}
+	
+	public static int attrIntVal(Element el, String attrName)
+	{
+		return Integer.parseInt(el.getAttribute(attrName));
+	}
+	
+	public static String attrStrVal(Element el, String attrName)
+	{
+		return el.getAttribute(attrName);
 	}
 	
 }

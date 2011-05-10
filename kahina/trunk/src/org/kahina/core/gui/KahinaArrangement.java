@@ -5,8 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.kahina.core.io.util.XMLUtilities;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Storage for window configurations in a perspective.
@@ -164,6 +166,25 @@ public class KahinaArrangement
 	 * - snapshot clones are represented, but neither imported nor exported because they cannot reliably be restored
 	 * - TODO: offer an option to linearize and restore contents of snapshot clones as well
 	 */
+	
+	public static KahinaArrangement importXML(Element topEl)
+	{
+		KahinaArrangement arr = new KahinaArrangement();
+		NodeList nl = topEl.getElementsByTagNameNS("http://www.kahina.org/xml/kahina", "kahina:default-window");
+		Element el;
+		//start at the leaves of the embedding hierarchy and work bottom-up
+		for (int i = 0; i < nl.getLength(); i++)
+		{
+			el = (Element) nl.item(i);
+			while (el != topEl)
+			{
+				int winID = XMLUtilities.attrIntVal(el, "kahina:id");
+				System.err.println("Now loading winID " + winID);
+				el = (Element) el.getParentNode();
+			}
+		}
+		return arr;
+	}
 	
 	//TODO: somehow get the order of the elements right! problem is that content windows can come in in any order!
 	public Element exportXML(Document dom)
