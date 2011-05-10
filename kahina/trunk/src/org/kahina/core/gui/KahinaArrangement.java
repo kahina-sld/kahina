@@ -176,15 +176,39 @@ public class KahinaArrangement
 		for (int i = 0; i < nl.getLength(); i++)
 		{
 			el = (Element) nl.item(i);
+			int previousID = -1;
+			int winID = -1;
 			while (el != topEl)
 			{
-				int winID = XMLUtilities.attrIntVal(el, "kahina:id");
+				winID = XMLUtilities.attrIntVal(el, "kahina:id");
+				if (previousID != -1)
+				{
+					arr.embeddingWindow.put(previousID,winID);
+				}
 				System.err.println("Now loading winID " + winID);
 				arr.setXPos(winID, XMLUtilities.attrIntVal(el, "kahina:xpos"));
 				arr.setYPos(winID, XMLUtilities.attrIntVal(el, "kahina:ypos"));
 				arr.setWidth(winID, XMLUtilities.attrIntVal(el, "kahina:width"));
 				arr.setHeight(winID, XMLUtilities.attrIntVal(el, "kahina:height"));
 				arr.setTitle(winID, XMLUtilities.attrStrVal(el, "kahina:title"));
+				String type = el.getLocalName();
+				if (type.equals("default-window"))
+				{
+					arr.setWindowType(winID, KahinaWindowType.DEFAULT_WINDOW);
+				}
+				else if (type.equals("hori-split-window"))
+				{
+					arr.setWindowType(winID, KahinaWindowType.HORI_SPLIT_WINDOW);
+				}
+				else if (type.equals("veri-split-window"))
+				{
+					arr.setWindowType(winID, KahinaWindowType.VERT_SPLIT_WINDOW);
+				}
+				else if (type.equals("tabbed-window"))
+				{
+					arr.setWindowType(winID, KahinaWindowType.TABBED_WINDOW);
+				}
+				previousID = winID;
 				el = (Element) el.getParentNode();
 			}
 		}
