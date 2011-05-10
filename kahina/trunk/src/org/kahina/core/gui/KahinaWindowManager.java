@@ -477,6 +477,7 @@ public class KahinaWindowManager implements KahinaListener
 	private void loadPerspective(File file)
 	{
 		//TODO: load XML file and apply new perspective
+		KahinaPerspective.importXML(XMLUtilities.parseXMLFile(file, false).getDocumentElement());
 	}
 	
 	private void savePerspectiveAs(File file)

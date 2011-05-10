@@ -10,6 +10,7 @@ import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Storage of window configuration and display options for a Kahina instance.
@@ -100,6 +101,10 @@ public class KahinaPerspective
 	public static KahinaPerspective importXML(Element e)
 	{
 		KahinaPerspective perspective = new KahinaPerspective("default", "Default");
+		NodeList nl = e.getElementsByTagName("kahina:arrangement");
+		//NodeList nl = e.getElementsByTagNameNS("http://www.kahina.org/xml/kahina","kahina:arrangement");
+		System.err.println("Number of arrangement elements: " + nl.getLength());
+		perspective.arr = KahinaArrangement.importXML((Element) nl.item(0));
 		return perspective;
 	}
 	

@@ -170,7 +170,7 @@ public class KahinaArrangement
 	public static KahinaArrangement importXML(Element topEl)
 	{
 		KahinaArrangement arr = new KahinaArrangement();
-		NodeList nl = topEl.getElementsByTagNameNS("http://www.kahina.org/xml/kahina", "kahina:default-window");
+		NodeList nl = topEl.getElementsByTagName("kahina:default-window");
 		Element el;
 		//start at the leaves of the embedding hierarchy and work bottom-up
 		for (int i = 0; i < nl.getLength(); i++)
@@ -180,6 +180,11 @@ public class KahinaArrangement
 			{
 				int winID = XMLUtilities.attrIntVal(el, "kahina:id");
 				System.err.println("Now loading winID " + winID);
+				arr.setXPos(winID, XMLUtilities.attrIntVal(el, "kahina:xpos"));
+				arr.setYPos(winID, XMLUtilities.attrIntVal(el, "kahina:ypos"));
+				arr.setWidth(winID, XMLUtilities.attrIntVal(el, "kahina:width"));
+				arr.setHeight(winID, XMLUtilities.attrIntVal(el, "kahina:height"));
+				arr.setTitle(winID, XMLUtilities.attrStrVal(el, "kahina:title"));
 				el = (Element) el.getParentNode();
 			}
 		}
