@@ -204,7 +204,7 @@ public class KahinaChartViewConfiguration extends KahinaViewConfiguration
 	public Element exportXML(Document dom)
 	{
 		Element el = super.exportXML(dom);
-		el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type","org.kahina.core.visual.tree.KahinaChart");
+		el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type","org.kahina.core.visual.chart.KahinaChartViewConfiguration");
 		
 		Element cellWidthEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
 		cellWidthEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","cellWidth");

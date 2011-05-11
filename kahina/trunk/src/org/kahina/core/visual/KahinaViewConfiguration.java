@@ -18,10 +18,15 @@ import org.w3c.dom.Element;
  */
 public class KahinaViewConfiguration
 {	
-	/**public static KahinaViewConfiguration importXML(Element e)
+	/**
+	 * Default implementation creates an empty KahinaViewConfiguration
+	 * @param e the DOM node the configuration is to be read from
+	 * @return the configuration encoded in the DOM node
+	 */
+	public static KahinaViewConfiguration importXML(Element e)
 	{
-		return new KahinaViewConfiguration<KahinaView<KahinaObject>>();
-	}**/
+		return new KahinaViewConfiguration();
+	}
 	
 	/**
 	 * Default implementation creates an empty element without type specification

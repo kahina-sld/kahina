@@ -319,7 +319,7 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 		}
 	}
 	
-	public static KahinaTreeViewConfiguration importFromXML()
+	public static KahinaTreeViewConfiguration importXML(Element configEl)
 	{
 		KahinaTreeViewConfiguration config = new KahinaTreeViewConfiguration();
 		return config;
@@ -328,7 +328,7 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 	public Element exportXML(Document dom)
 	{
 		Element el = super.exportXML(dom);
-		el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type","org.kahina.core.visual.tree.KahinaTree");
+		el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type","org.kahina.core.visual.tree.KahinaTreeViewConfiguration");
 		
 		Element horDistEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
 		horDistEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","horizontalDistance");
