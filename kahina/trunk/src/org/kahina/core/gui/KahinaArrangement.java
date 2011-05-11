@@ -31,8 +31,10 @@ public class KahinaArrangement
 	Map<Integer,String> title;
 	
 	//this mapping provides the connection between node data and (primary) associated view windows
-	//the values of this mapping constitute the seed for bottom-up embedding tree construction
-	private Map<String,Integer> nameToWindowID;
+	//the keys of this mapping constitute the seed for bottom-up embedding tree construction
+	private Map<Integer,String> winIDToBinding;
+	//with each name we associate a primary window, the others are clones
+	private Map<String,Integer> primaryWindow;
 	
 	//all the containment information is stored here, window operations manipulate this
     private HashMap<Integer,Integer> embeddingWindow;
@@ -51,7 +53,8 @@ public class KahinaArrangement
 		height = new HashMap<Integer,Integer>();
 		width = new HashMap<Integer,Integer>();
 		title = new HashMap<Integer,String>();
-		nameToWindowID = new HashMap<String,Integer>();
+		winIDToBinding = new HashMap<Integer,String>();
+		primaryWindow = new HashMap<String,Integer>();
 		windowType = new HashMap<Integer,Integer>();
 		
 		topLevelWindows = new HashSet<Integer>();
@@ -112,9 +115,14 @@ public class KahinaArrangement
 		embeddingWindow.put(windowID, embeddingID);
 	}
 	
-	public void bindNameToWindow(String name, int windowID)
+	public void setPrimaryWindow(String binding, int winID)
 	{
-		nameToWindowID.put(name, windowID);
+		primaryWindow.put(binding,winID);
+	}
+	
+	public void bindWindow(int windowID, String binding)
+	{
+		winIDToBinding.put(windowID,binding);
 	}
 	
 	public int getXPos(int windowID)
@@ -152,9 +160,14 @@ public class KahinaArrangement
 		return embeddingWindow.get(windowID);
 	}
 	
-	public int getWinIDForName(String name)
+	public String getBindingForWinID(int winID)
 	{
-		return nameToWindowID.get(name);
+		return winIDToBinding.get(winID);
+	}
+	
+	public int getPrimaryWinIDForName(String name)
+	{
+		return primaryWindow.get(name);
 	}
 	
 	/*
@@ -220,7 +233,7 @@ public class KahinaArrangement
 	{
 		Element topEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:arrangement");
 		HashMap<Integer,Element> constructedNodes = new HashMap<Integer,Element>();
-		for (Integer windowID : nameToWindowID.values())
+		for (Integer windowID : winIDToBinding.keySet())
 		{
 			//System.err.println("Processing windowID " + windowID);
 			Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:default-window");

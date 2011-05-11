@@ -70,10 +70,11 @@ public class KahinaPerspective
         int maxY = height;
 		
         //create default arrangement for all the registered views
-        for (String name : nameToView.keySet())
+        for (String binding : nameToView.keySet())
         {
-        	psp.arr.bindNameToWindow(name,winID);
-        	KahinaView<?> view = nameToView.get(name);
+        	psp.arr.bindWindow(winID, binding);
+        	psp.arr.setPrimaryWindow(binding, winID);
+        	KahinaView<?> view = nameToView.get(binding);
             
             xPos += width + 20;
             width = view.getTitle().length() * 12 + 50;

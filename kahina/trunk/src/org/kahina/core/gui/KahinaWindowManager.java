@@ -30,7 +30,7 @@ public class KahinaWindowManager implements KahinaListener
     //main registry for windows: access windows by their windowID
     private HashMap<Integer,KahinaWindow> windowByID;
     
-    //TODO: this map does not make much sense any longer, as multiple windows will share or be part of one view!
+    //TODO: this map does not make much sense any longer, it should be changed to operate on arr.primaryWindows
     HashMap<KahinaView<?>, KahinaWindow> contentWindows;
     
     KahinaGUI gui;
@@ -56,12 +56,12 @@ public class KahinaWindowManager implements KahinaListener
         this.psp = psp;     
         this.arr = psp.getArrangement();
         
-		//create windows for all the other views
+		//create windows for all the other views (TODO: produce all the dynamic clones)
         for (String name : gui.varNameToView.keySet())
         {
         	KahinaView<?> view = gui.varNameToView.get(name);
         	System.err.println("Generating view: " + name);
-            KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, arr.getWinIDForName(name));
+            KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, arr.getPrimaryWinIDForName(name));
             viewWindow.setTitle(view.getTitle());
             contentWindows.put(view,viewWindow);
         }
@@ -306,6 +306,7 @@ public class KahinaWindowManager implements KahinaListener
 			}
 			else
 			{
+				//TODO: switch titles of clones as well; let clones always have identical title + " (clone)"
 				window.setTitle(e.getStringContent());
 				window.mainPanel.repaint();
 			}
