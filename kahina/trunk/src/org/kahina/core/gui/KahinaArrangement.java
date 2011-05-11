@@ -118,6 +118,7 @@ public class KahinaArrangement
 	public void setPrimaryWindow(String binding, int winID)
 	{
 		primaryWindow.put(binding,winID);
+		bindWindow(winID,binding);
 	}
 	
 	public void bindWindow(int windowID, String binding)
@@ -208,6 +209,12 @@ public class KahinaArrangement
 				if (type.equals("default-window"))
 				{
 					arr.setWindowType(winID, KahinaWindowType.DEFAULT_WINDOW);
+					String binding = XMLUtilities.attrStrVal(el, "kahina:binding");
+					arr.bindWindow(winID, binding);
+					if (XMLUtilities.attrBoolVal(el, "kahina:primary"))
+					{
+						arr.setPrimaryWindow(binding, winID);
+					}
 				}
 				else if (type.equals("hori-split-window"))
 				{
@@ -238,6 +245,8 @@ public class KahinaArrangement
 			//System.err.println("Processing windowID " + windowID);
 			Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:default-window");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
+			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:primary", title.get(windowID));
+			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:binding", winIDToBinding.get(windowID));
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");

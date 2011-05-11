@@ -72,7 +72,6 @@ public class KahinaPerspective
         //create default arrangement for all the registered views
         for (String binding : nameToView.keySet())
         {
-        	psp.arr.bindWindow(winID, binding);
         	psp.arr.setPrimaryWindow(binding, winID);
         	KahinaView<?> view = nameToView.get(binding);
             

@@ -145,6 +145,11 @@ public class XMLUtilities
 		}
 	}
 	
+	public static boolean attrBoolVal(Element el, String attrName)
+	{
+		return Boolean.parseBoolean(el.getAttribute(attrName));
+	}
+	
 	public static int attrIntVal(Element el, String attrName)
 	{
 		return Integer.parseInt(el.getAttribute(attrName));
