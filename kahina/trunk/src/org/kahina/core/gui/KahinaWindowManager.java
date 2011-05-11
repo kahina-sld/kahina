@@ -30,9 +30,6 @@ public class KahinaWindowManager implements KahinaListener
     //main registry for windows: access windows by their windowID
     private HashMap<Integer,KahinaWindow> windowByID;
     
-    //TODO: this map does not make much sense any longer, it should be changed to operate on arr.primaryWindows
-    HashMap<KahinaView<?>, KahinaWindow> contentWindows;
-    
     KahinaGUI gui;
     
     KahinaController control;
@@ -44,7 +41,6 @@ public class KahinaWindowManager implements KahinaListener
 		control.registerListener(KahinaEventTypes.PERSPECTIVE, this);
 		control.registerListener(KahinaEventTypes.WINDOW, this);
 		
-        this.contentWindows = new HashMap<KahinaView<?>, KahinaWindow>();
         this.windowByID = new HashMap<Integer,KahinaWindow>();
     }
     
@@ -56,25 +52,26 @@ public class KahinaWindowManager implements KahinaListener
         this.psp = psp;     
         this.arr = psp.getArrangement();
         
-		//create windows for all the other views (TODO: produce all the dynamic clones)
+		//create windows for all the other views (TODO: produce all the dynamic clones as well)
         for (String name : gui.varNameToView.keySet())
         {
         	KahinaView<?> view = gui.varNameToView.get(name);
         	System.err.println("Generating view: " + name);
             KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, arr.getPrimaryWinIDForName(name));
             viewWindow.setTitle(view.getTitle());
-            contentWindows.put(view,viewWindow);
+            
+            //TODO: for now, build the arrangement from within (this should be done in the defualt constructor)
+            arr.topLevelWindows.add(viewWindow.getID());
         }
         
-        for (KahinaView<?> view : contentWindows.keySet())
+        for (int winID : arr.topLevelWindows)
         {
-        	KahinaWindow w = contentWindows.get(view);
+        	KahinaWindow w = getWindowByID(winID);
             w.setSize(arr.getWidth(w.getID()), arr.getHeight(w.getID()));
             w.setLocation(arr.getXPos(w.getID()), arr.getYPos(w.getID()));
-            arr.topLevelWindows.add(w.getID());
             
-        	//for now, generate the perspective from the predefined configurations
-        	psp.setConfiguration(w.getID(), view.getConfig());
+        	//apply configuration as defined by the perspective to the view
+            gui.varNameToView.get(arr.getBindingForWinID(w.getID())).setConfig(psp.getConfiguration(w.getID()));
         }
         
         mainWindow = createMainWindow(this, control, gui.kahina);
@@ -115,7 +112,6 @@ public class KahinaWindowManager implements KahinaListener
         KahinaWindow viewWindow = new KahinaDefaultWindow(view, this);
         viewWindow.setTitle(view.getTitle());
         arr.topLevelWindows.add(viewWindow.getID());
-        contentWindows.put(view,viewWindow);
         return viewWindow;
     }
     

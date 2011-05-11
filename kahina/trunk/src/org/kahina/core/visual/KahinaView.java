@@ -96,9 +96,13 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
         this.title = title;
     }
     
+	public void setConfig(KahinaViewConfiguration config)
+	{
+		this.config = config;
+	}
+    
 	public KahinaViewConfiguration getConfig()
 	{
-		System.err.println("WARNING! No configuration defined for view: " + title);
 		return config;
 	}
 }
