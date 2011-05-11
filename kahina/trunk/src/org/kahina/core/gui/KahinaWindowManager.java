@@ -74,7 +74,35 @@ public class KahinaWindowManager implements KahinaListener
             gui.varNameToView.get(arr.getBindingForWinID(w.getID())).setConfig(psp.getConfiguration(w.getID()));
         }
         
+        //TODO: register main window in arrangement as well (another element name!)
         mainWindow = createMainWindow(this, control, gui.kahina);
+    }
+    
+    /**
+     * Discards the current perspective and applies a newly provided one.
+     * @param psp the perspective to be applied
+     */
+    public void setAndApplyPerspective(KahinaPerspective psp)
+    {
+        this.psp = psp;     
+        this.arr = psp.getArrangement();
+        
+        //TODO: does not handle the embedding structure so far; just the window positions
+        //it will require a major and systematic effort to correctly implement all of this
+        
+        for (int winID : windowByID.keySet())
+        {
+        	System.err.println("Applying new layout to window with ID " + winID);
+        	
+        	KahinaWindow w = getWindowByID(winID);
+            w.setSize(arr.getWidth(w.getID()), arr.getHeight(w.getID()));
+            w.setLocation(arr.getXPos(w.getID()), arr.getYPos(w.getID()));
+            w.validate();
+            w.repaint();
+            
+        	//apply configuration as defined by the perspective to the view
+            gui.varNameToView.get(arr.getBindingForWinID(w.getID())).setConfig(psp.getConfiguration(w.getID()));
+        }
     }
     
     public void registerWindow(KahinaWindow window)
@@ -200,7 +228,7 @@ public class KahinaWindowManager implements KahinaListener
 		} 
 		else if (type == KahinaPerspectiveEvent.LOAD_PERSPECTIVE)
 		{
-			loadPerspective(e.getFile());
+			setAndApplyPerspective(loadPerspective(e.getFile()));
 		}
 	}
 	
@@ -471,10 +499,9 @@ public class KahinaWindowManager implements KahinaListener
 		}
 	}
 	
-	private void loadPerspective(File file)
+	private KahinaPerspective loadPerspective(File file)
 	{
-		//TODO: load XML file and apply new perspective
-		KahinaPerspective.importXML(XMLUtilities.parseXMLFile(file, false).getDocumentElement());
+		return KahinaPerspective.importXML(XMLUtilities.parseXMLFile(file, false).getDocumentElement());
 	}
 	
 	private void savePerspectiveAs(File file)
