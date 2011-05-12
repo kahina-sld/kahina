@@ -38,7 +38,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         
         manager.control.registerListener(KahinaEventTypes.WINDOW, this);
         
-        for (int winID : manager.arr.topLevelWindows)
+        for (int winID : manager.arr.getTopLevelWindows())
         {
         	KahinaWindow window = manager.getWindowByID(winID);
             JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(window.getTitle());

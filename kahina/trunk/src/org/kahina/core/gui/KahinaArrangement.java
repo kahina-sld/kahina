@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kahina.core.io.util.XMLUtilities;
 import org.w3c.dom.Document;
@@ -43,8 +44,7 @@ public class KahinaArrangement
     
     //TODO: decide whether these two make sense, as this information can be inferred bottom-up from embeddingWindow
     //will not use these for import and export for now
-    HashSet<Integer> topLevelWindows;
-    HashMap<Integer,List<Integer>> childWindows;
+    //HashSet<Integer> topLevelWindows;
 	
 	public KahinaArrangement()
 	{
@@ -56,8 +56,6 @@ public class KahinaArrangement
 		winIDToBinding = new HashMap<Integer,String>();
 		primaryWindow = new HashMap<String,Integer>();
 		windowType = new HashMap<Integer,Integer>();
-		
-		topLevelWindows = new HashSet<Integer>();
 		embeddingWindow = new HashMap<Integer,Integer>();
 	}
 	
@@ -169,6 +167,19 @@ public class KahinaArrangement
 	public int getPrimaryWinIDForName(String name)
 	{
 		return primaryWindow.get(name);
+	}
+	
+	public Set<Integer> getTopLevelWindows()
+	{
+		HashSet<Integer> topLevelWindows = new HashSet<Integer>();
+		for (int winID : embeddingWindow.keySet())
+		{
+			if (embeddingWindow.get(winID) == -1)
+			{
+				topLevelWindows.add(winID);
+			}
+		}
+		return topLevelWindows;
 	}
 	
 	/*
