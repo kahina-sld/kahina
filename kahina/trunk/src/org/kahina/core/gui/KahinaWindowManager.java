@@ -60,7 +60,7 @@ public class KahinaWindowManager implements KahinaListener
             KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, arr.getPrimaryWinIDForName(name));
             viewWindow.setTitle(view.getTitle());
             
-            //TODO: for now, build the arrangement from within (this should be done in the defualt constructor)
+            //TODO: for now, build the arrangement from within (this should be done in the perspective's default constructor)
             arr.topLevelWindows.add(viewWindow.getID());
         }
         
@@ -76,6 +76,7 @@ public class KahinaWindowManager implements KahinaListener
         
         //TODO: register main window in arrangement as well (another element name!)
         mainWindow = createMainWindow(this, control, gui.kahina);
+        arr.setPrimaryWindow("main", mainWindow.getID());
     }
     
     /**

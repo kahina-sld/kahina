@@ -33,7 +33,7 @@ public class KahinaArrangement
 	//this mapping provides the connection between node data and (primary) associated view windows
 	//the keys of this mapping constitute the seed for bottom-up embedding tree construction
 	private Map<Integer,String> winIDToBinding;
-	//with each name we associate a primary window, the others are clones
+	//with each name we associate a primary window, the others are clones; "main" reserved for main window
 	private Map<String,Integer> primaryWindow;
 	
 	//all the containment information is stored here, window operations manipulate this
@@ -245,7 +245,7 @@ public class KahinaArrangement
 			//System.err.println("Processing windowID " + windowID);
 			Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:default-window");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
-			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:primary", title.get(windowID));
+			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:primary", (primaryWindow.get(winIDToBinding.get(windowID)) == windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:binding", winIDToBinding.get(windowID));
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
