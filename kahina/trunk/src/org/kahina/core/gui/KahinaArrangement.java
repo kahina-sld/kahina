@@ -41,10 +41,6 @@ public class KahinaArrangement
     private HashMap<Integer,Integer> embeddingWindow;
     //type information is needed by the window manager to build up the GUI from this
     private HashMap<Integer,Integer> windowType;
-    
-    //TODO: decide whether these two make sense, as this information can be inferred bottom-up from embeddingWindow
-    //will not use these for import and export for now
-    //HashSet<Integer> topLevelWindows;
 	
 	public KahinaArrangement()
 	{
@@ -175,6 +171,19 @@ public class KahinaArrangement
 		for (int winID : embeddingWindow.keySet())
 		{
 			if (embeddingWindow.get(winID) == -1)
+			{
+				topLevelWindows.add(winID);
+			}
+		}
+		return topLevelWindows;
+	}
+	
+	public Set<Integer> getTopLevelWindowsWithoutMainWindow()
+	{
+		HashSet<Integer> topLevelWindows = new HashSet<Integer>();
+		for (int winID : embeddingWindow.keySet())
+		{
+			if (embeddingWindow.get(winID) == -1 && winID != primaryWindow.get("main"))
 			{
 				topLevelWindows.add(winID);
 			}

@@ -64,7 +64,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	this.wm = wm;
     	this.windowID = id;
     	//make sure the other constructor does not cause any ID clashes
-    	if (windowID > idCounter)
+    	if (windowID >= idCounter)
     	{
     		idCounter = windowID + 1;
     	}

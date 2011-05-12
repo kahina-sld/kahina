@@ -26,8 +26,8 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 {
 	private static final long serialVersionUID = -8816851369583949953L;
 	
-    HashMap<Integer,JCheckBoxMenuItem> windowEntries;
-    KahinaWindowManager manager;
+    private HashMap<Integer,JCheckBoxMenuItem> windowEntries;
+    private KahinaWindowManager manager;
 
 	public KahinaViewMenu(KahinaWindowManager manager)
     {
@@ -38,7 +38,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         
         manager.control.registerListener(KahinaEventTypes.WINDOW, this);
         
-        for (int winID : manager.arr.getTopLevelWindows())
+        for (int winID : manager.arr.getTopLevelWindowsWithoutMainWindow())
         {
         	KahinaWindow window = manager.getWindowByID(winID);
             JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(window.getTitle());

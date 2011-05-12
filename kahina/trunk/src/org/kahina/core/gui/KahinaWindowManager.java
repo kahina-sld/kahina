@@ -52,15 +52,11 @@ public class KahinaWindowManager implements KahinaListener
         this.psp = psp;     
         this.arr = psp.getArrangement();
         
-        //create and register main window
-        mainWindow = createMainWindow(this, control, gui.kahina, arr.getPrimaryWinIDForName("main"));
-        arr.setPrimaryWindow("main", mainWindow.getID());
-        
-		//create windows for all the other views (TODO: produce all the dynamic clones as well)
+		//create windows for all the other views (TODO: produce dynamic clones as well)
         for (String name : gui.varNameToView.keySet())
         {
         	KahinaView<?> view = gui.varNameToView.get(name);
-        	System.err.println("Generating view: " + name);
+        	System.err.println("Generating view: " + name + " primaryWindow: " + arr.getPrimaryWinIDForName(name));
             KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, arr.getPrimaryWinIDForName(name));
             viewWindow.setTitle(view.getTitle());
         }
@@ -81,6 +77,10 @@ public class KahinaWindowManager implements KahinaListener
             	gui.varNameToView.get(binding).setConfig(psp.getConfiguration(w.getID()));
             }
         }
+        
+        //create and register main window (must be last because view menu needs to be filled)
+        mainWindow = createMainWindow(this, control, gui.kahina, arr.getPrimaryWinIDForName("main"));
+        arr.setPrimaryWindow("main", mainWindow.getID());
     }
     
     /**
@@ -149,14 +149,14 @@ public class KahinaWindowManager implements KahinaListener
 	
 	public boolean isTopLevelWindow(KahinaWindow w)
 	{
-		return (arr.getEmbeddingWindowID(w.getID()) != -1);
+		return (arr.getEmbeddingWindowID(w.getID()) == -1);
 	}
     
     public KahinaWindow integrateInDefaultWindow(KahinaView<?> view)
     {
         KahinaWindow viewWindow = new KahinaDefaultWindow(view, this);
         viewWindow.setTitle(view.getTitle());
-        //arr.topLevelWindows.add(viewWindow.getID());
+        psp.arr.setEmbeddingWindowID(viewWindow.getID(),-1);
         return viewWindow;
     }
     
@@ -316,16 +316,9 @@ public class KahinaWindowManager implements KahinaListener
 		} 
 		else if (type == KahinaWindowEventType.REMOVE)
 		{
-			if (arr.getEmbeddingWindowID(e.getWindowID()) == -1)
-			{
-				psp.setVisibility(e.getWindowID(), false);
-				KahinaWindow window = windowByID.get(e.getWindowID());
-				window.dispose();
-			}
-			else
-			{
-				System.err.println("WARNING: Removal only possible for top-level windows! Undock first!");
-			}
+			psp.setVisibility(e.getWindowID(), false);
+			KahinaWindow window = windowByID.get(e.getWindowID());
+			window.dispose();
 		} 
 		else if (type == KahinaWindowEventType.DISPOSE)
 		{
@@ -439,6 +432,7 @@ public class KahinaWindowManager implements KahinaListener
 		} 
 		else if (type == KahinaWindowEventType.VERT_SPLIT)
 		{
+			System.err.println("Window operation: vertical split of window " + e.getWindowID());
 			KahinaWindow window = windowByID.get(e.getWindowID());
 			if (window == null)
 			{
