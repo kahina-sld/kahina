@@ -32,7 +32,18 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	{
 		super(windowManager);
 		this.windowManager = windowManager;
-
+		initialize(control);
+	}
+	
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
+	{
+		super(windowManager,winID);
+		this.windowManager = windowManager;
+		initialize(control);
+	}
+	
+	private void initialize(KahinaController control)
+	{
 		this.setTitle("Kahina");
         this.setUndecorated(false);
 		control.registerListener(KahinaEventTypes.TREE, this);

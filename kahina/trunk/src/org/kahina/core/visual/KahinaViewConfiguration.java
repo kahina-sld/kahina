@@ -34,7 +34,7 @@ public class KahinaViewConfiguration
 	public Element exportXML(Document dom)
 	{
 		Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:configuration");
-		el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type","org.kahina.core.visual.chart.KahinaViewConfiguration");
+		el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:type","org.kahina.core.visual.KahinaViewConfiguration");
 		return el;
 	}
 }

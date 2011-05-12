@@ -52,6 +52,10 @@ public class KahinaWindowManager implements KahinaListener
         this.psp = psp;     
         this.arr = psp.getArrangement();
         
+        //create and register main window
+        mainWindow = createMainWindow(this, control, gui.kahina, arr.getPrimaryWinIDForName("main"));
+        arr.setPrimaryWindow("main", mainWindow.getID());
+        
 		//create windows for all the other views (TODO: produce all the dynamic clones as well)
         for (String name : gui.varNameToView.keySet())
         {
@@ -73,10 +77,6 @@ public class KahinaWindowManager implements KahinaListener
         	//apply configuration as defined by the perspective to the view
             gui.varNameToView.get(arr.getBindingForWinID(w.getID())).setConfig(psp.getConfiguration(w.getID()));
         }
-        
-        //TODO: register main window in arrangement as well (another element name!)
-        mainWindow = createMainWindow(this, control, gui.kahina);
-        arr.setPrimaryWindow("main", mainWindow.getID());
     }
     
     /**
@@ -98,11 +98,16 @@ public class KahinaWindowManager implements KahinaListener
         	KahinaWindow w = getWindowByID(winID);
             w.setSize(arr.getWidth(w.getID()), arr.getHeight(w.getID()));
             w.setLocation(arr.getXPos(w.getID()), arr.getYPos(w.getID()));
+    
+        	//apply configuration as defined by the perspective to the view
+            //TODO: also define the main window as a "view" for a more unified treatment
+            String binding = arr.getBindingForWinID(w.getID());
+            if (!binding.equals("main"))
+            {
+            	gui.varNameToView.get(binding).setConfig(psp.getConfiguration(w.getID()));
+            }
             w.validate();
             w.repaint();
-            
-        	//apply configuration as defined by the perspective to the view
-            gui.varNameToView.get(arr.getBindingForWinID(w.getID())).setConfig(psp.getConfiguration(w.getID()));
         }
     }
     
@@ -120,6 +125,11 @@ public class KahinaWindowManager implements KahinaListener
     protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
 	{
 		return new KahinaMainWindow(this, control, gui.kahina);
+	}
+    
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
+	{
+		return new KahinaMainWindow(this, control, gui.kahina, winID);
 	}
 
 	public void disposeAllWindows()
