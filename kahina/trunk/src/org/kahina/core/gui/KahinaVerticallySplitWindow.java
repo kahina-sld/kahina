@@ -23,6 +23,17 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     public KahinaVerticallySplitWindow(KahinaWindowManager wm)
     {
     	super(wm);
+    	this.initialize();
+    }
+    
+    public KahinaVerticallySplitWindow(KahinaWindowManager wm, int winID)
+    {
+    	super(wm,winID);
+    	this.initialize();
+    }
+    
+    private void initialize()
+    {
         topPanel = new JPanel();
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         bottomPanel = new JPanel();
@@ -30,6 +41,24 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topPanel, bottomPanel);
         splitPane.setResizeWeight(.5);
         mainPanel.add(splitPane);
+    }
+    
+    public boolean addSubwindow(KahinaWindow w)
+    {
+    	if (upperWindow == null)
+    	{
+    		setUpperWindow(w);
+    		return true;
+    	}
+    	else if (lowerWindow == null)
+    	{
+    		setLowerWindow(w);
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
     }
     
     public void setUpperWindow(KahinaWindow w)

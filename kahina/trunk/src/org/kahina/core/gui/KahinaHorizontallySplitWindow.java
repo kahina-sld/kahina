@@ -23,6 +23,17 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     public KahinaHorizontallySplitWindow(KahinaWindowManager wm)
     {
     	super(wm);
+    	this.initialize();
+    }
+    
+    public KahinaHorizontallySplitWindow(KahinaWindowManager wm, int winID)
+    {
+    	super(wm,winID);
+    	this.initialize();
+    }
+    
+    private void initialize()
+    {
         leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         rightPanel = new JPanel();
@@ -30,6 +41,24 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
         splitPane.setResizeWeight(.5);
         mainPanel.add(splitPane);
+    }
+    
+    public boolean addSubwindow(KahinaWindow w)
+    {
+    	if (leftWindow == null)
+    	{
+    		setLeftWindow(w);
+    		return true;
+    	}
+    	else if (rightWindow == null)
+    	{
+    		setRightWindow(w);
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
     }
     
     public void setLeftWindow(KahinaWindow w)

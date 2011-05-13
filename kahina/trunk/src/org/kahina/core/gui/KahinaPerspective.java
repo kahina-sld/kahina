@@ -104,6 +104,7 @@ public class KahinaPerspective
             psp.arr.setYPos(winID,yPos);
             psp.arr.setWidth(winID,width);
             psp.arr.setHeight(winID,height);
+            psp.arr.setTitle(winID,binding);
             winID++;
         }
 		return psp;

@@ -45,75 +45,119 @@ public class KahinaWindowManager implements KahinaListener
     }
     
     /**
-     * Builds the windows according to some perspective. Must be called before display.
+     * Builds the windows according to some perspective. Must be called before first display.
      */
     public void createWindows(KahinaPerspective psp)
     {
         this.psp = psp;     
         this.arr = psp.getArrangement();
         
-		//create windows for all the other views (TODO: produce dynamic clones as well)
-        for (String name : gui.varNameToView.keySet())
+		//first create a window stub for all the windows mentioned in the arrangement... 
+        for (int winID : arr.getAllWindows())
         {
-        	KahinaView<?> view = gui.varNameToView.get(name);
-        	System.err.println("Generating view: " + name + " primaryWindow: " + arr.getPrimaryWinIDForName(name));
-            KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, arr.getPrimaryWinIDForName(name));
-            viewWindow.setTitle(view.getTitle());
+        	String binding = arr.getBindingForWinID(winID);
+        	//if it has a binding, it is primary or a dynamic clone, so we construct a default window for it
+        	if (binding != null)
+        	{
+        		if (!binding.equals("main"))
+        		{
+        			KahinaView<?> view = gui.varNameToView.get(binding);
+        			System.err.println("Generating view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
+        			KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, winID);
+        			viewWindow.setTitle(arr.getTitle(winID));
+        		}
+        	}
+            //otherwise build stubs according to the type of embedding window
+        	else
+        	{
+        		switch (arr.getWindowType(winID))
+        		{
+        			case KahinaWindowType.HORI_SPLIT_WINDOW:
+        			{
+                		KahinaWindow viewWindow = new KahinaHorizontallySplitWindow(this, winID);
+                		viewWindow.setTitle(arr.getTitle(winID));
+                		break;
+        			}
+        			case KahinaWindowType.VERT_SPLIT_WINDOW:
+        			{
+                		KahinaWindow viewWindow = new KahinaVerticallySplitWindow(this, winID);
+                		viewWindow.setTitle(arr.getTitle(winID));
+                		break;
+        			}
+        			case KahinaWindowType.TABBED_WINDOW:
+        			{
+                		KahinaWindow viewWindow = new KahinaTabbedWindow(this, winID);
+                		viewWindow.setTitle(arr.getTitle(winID));
+                		break;
+        			}
+        			default:
+        			{
+        				System.err.println("WARNING: Could not load default window without binding!");
+        				System.err.println("         The perspective might contain descriptions of snapshot clones.");
+        			}
+        		}
+        	}
         }
         
-        for (int winID : arr.getTopLevelWindows())
+        //... then process the embedding structure ...
+        for (int winID : arr.getAllWindows())
         {
-        	System.err.println("Loading top level window " + winID);
+        	Integer embeddingID = arr.getEmbeddingWindowID(winID);
+        	System.err.println("Embedding window " + winID + " into window " + embeddingID);
+        	if (embeddingID != null && embeddingID != -1)
+        	{
+            	System.err.println("Embedding window " + winID + " into window " + embeddingID);
+        		boolean success = windowByID.get(embeddingID).addSubwindow(windowByID.get(winID));
+        		if (!success)
+        		{
+        			System.err.println("ERROR: ill-defined window arrangement directly under window " + embeddingID );
+        		}
+        	}
+        }
+        
+        //... then adapt the coordinates ...     
+        for (int winID : arr.getTopLevelWindowsWithoutMainWindow())
+        {
+        	System.err.println("Setting coordinates of top level window " + winID);
         	
         	KahinaWindow w = getWindowByID(winID);
             w.setSize(arr.getWidth(w.getID()), arr.getHeight(w.getID()));
             w.setLocation(arr.getXPos(w.getID()), arr.getYPos(w.getID()));
-            
+        }
+        
+        //... fill the default windows with the content specified by the bindings ... 
+        for (int winID : arr.getDefaultWindows())
+        {    
         	//apply configuration as defined by the perspective to the view
             //TODO: also define the main window as a "view" for a more unified treatment
-            String binding = arr.getBindingForWinID(w.getID());
+            String binding = arr.getBindingForWinID(winID);
             if (!binding.equals("main"))
             {
-            	gui.varNameToView.get(binding).setConfig(psp.getConfiguration(w.getID()));
+            	//TODO: this calls the generic setConfig()-method, instead of the specific overloaded versions
+            	//the more specific config eclipses the one we set; we seem to need reflection here as well
+            	//! better: overload and check for correct types in each implementation
+            	//TODO: allow different configurations (and therefore different views) for clones
+            	gui.varNameToView.get(binding).setConfig(psp.getConfiguration(winID));
             }
         }
         
-        //create and register main window (must be last because view menu needs to be filled)
+        //... and finally create and register the main window (must be last because the view menu needs to be filled)
         mainWindow = createMainWindow(this, control, gui.kahina, arr.getPrimaryWinIDForName("main"));
         arr.setPrimaryWindow("main", mainWindow.getID());
+        mainWindow.setSize(arr.getWidth(mainWindow.getID()), arr.getHeight(mainWindow.getID()));
+        mainWindow.setLocation(arr.getXPos(mainWindow.getID()), arr.getYPos(mainWindow.getID()));
     }
     
     /**
-     * Discards the current perspective and applies a newly provided one.
-     * Requires windows to already have been created via createWindows().
+     * Discards the current perspective and rebuilds the GUI according to a newly provided one.
      * @param psp the perspective to be applied
      */
     public void setAndApplyPerspective(KahinaPerspective psp)
-    {
-        this.psp = psp;     
-        this.arr = psp.getArrangement();
-        
-        //TODO: does not handle the embedding structure so far; just the window positions
-        //it will require a major and systematic effort to correctly implement all of this
-        
-        for (int winID : windowByID.keySet())
-        {
-        	System.err.println("Applying new layout to window with ID " + winID);
-        	
-        	KahinaWindow w = getWindowByID(winID);
-            w.setSize(arr.getWidth(w.getID()), arr.getHeight(w.getID()));
-            w.setLocation(arr.getXPos(w.getID()), arr.getYPos(w.getID()));
-    
-        	//apply configuration as defined by the perspective to the view
-            //TODO: also define the main window as a "view" for a more unified treatment
-            String binding = arr.getBindingForWinID(w.getID());
-            if (!binding.equals("main"))
-            {
-            	gui.varNameToView.get(binding).setConfig(psp.getConfiguration(w.getID()));
-            }
-            w.validate();
-            w.repaint();
-        }
+    {  
+    	disposeAllWindows();
+        windowByID.clear();
+        createWindows(psp);
+        displayWindows();
     }
     
     public void registerWindow(KahinaWindow window)
@@ -287,7 +331,7 @@ public class KahinaWindowManager implements KahinaListener
 		{
 	        KahinaTabbedWindow tabbedWindow = new KahinaTabbedWindow(this);
 	        tabbedWindow.setTitle(e.getStringContent());
-	        tabbedWindow.addWindow(new KahinaDummyWindow(this));
+	        tabbedWindow.addSubwindow(new KahinaDummyWindow(this));
             tabbedWindow.setSize(300,250);
             tabbedWindow.setLocation(200,200);
 	        tabbedWindow.setVisible(true);

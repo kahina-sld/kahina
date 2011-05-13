@@ -43,7 +43,6 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
         setLayout(new BorderLayout());
         mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
         mainPanel.addMouseListener(new KahinaWindowListener(this));
-        wm.arr.setEmbeddingWindowID(windowID, -1);
         cloned = false;
         this.add(mainPanel);
         //TODO: find a way to make windows more compact and to avoid having the title twice
@@ -71,7 +70,6 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
         setLayout(new BorderLayout());
         mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
         mainPanel.addMouseListener(new KahinaWindowListener(this));
-        wm.arr.setEmbeddingWindowID(windowID, -1);
         cloned = false;
         this.add(mainPanel);
         //TODO: find a way to make windows more compact and to avoid having the title twice
@@ -166,6 +164,16 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     public KahinaWindow getEmbeddingWindow()
     {
     	return wm.getWindowByID(wm.arr.getEmbeddingWindowID(windowID));
+    }
+    
+    /**
+     * Adds a subwindow if there is space for it; generic handle for configuring windows.
+     * @param subwindow the subwindow to be added
+     * @return whether the subwindow was successfully added; false by default
+     */
+    public boolean addSubwindow(KahinaWindow subwindow)
+    {
+    	return false;
     }
     
     //for a container window, releases a subwindow and provides a replacement without the removed subwindow

@@ -16,6 +16,17 @@ public class KahinaTabbedWindow  extends KahinaWindow
     public KahinaTabbedWindow(KahinaWindowManager wm)
     {
     	super(wm);
+    	this.initialize();
+    }
+    
+    public KahinaTabbedWindow(KahinaWindowManager wm, int winID)
+    {
+    	super(wm, winID);
+    	this.initialize();
+    }
+    
+    private void initialize()
+    {
     	windows = new ArrayList<KahinaWindow>();
     	mainPanel.setTransferHandler(new KahinaWindowTransferHandler());
         mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
@@ -24,11 +35,12 @@ public class KahinaTabbedWindow  extends KahinaWindow
         mainPanel.add(tabbedPane);
     }
     
-    public void addWindow(KahinaWindow w)
+    public boolean addSubwindow(KahinaWindow w)
     {
     	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(w);
         tabbedPane.add(w.getTitle(), w.getContentPane());
+        return true;
     }
     
     public void addWindow(int index, KahinaWindow w)

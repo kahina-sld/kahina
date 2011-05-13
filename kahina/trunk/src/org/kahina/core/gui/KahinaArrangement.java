@@ -25,11 +25,11 @@ import org.w3c.dom.NodeList;
 public class KahinaArrangement 
 {
 	//window parameters are indexed by integer IDs
-	Map<Integer,Integer> xPos;
-	Map<Integer,Integer> yPos;
-	Map<Integer,Integer> height;
-	Map<Integer,Integer> width;
-	Map<Integer,String> title;
+	private Map<Integer,Integer> xPos;
+	private Map<Integer,Integer> yPos;
+	private Map<Integer,Integer> height;
+	private Map<Integer,Integer> width;
+	private Map<Integer,String> title;
 	
 	//this mapping provides the connection between node data and (primary) associated view windows
 	//the keys of this mapping constitute the seed for bottom-up embedding tree construction
@@ -88,17 +88,18 @@ public class KahinaArrangement
 	
 	/**
 	 * Sets the window type for some windowID.
-	 * Refuses to set the type for some window where it is already defined.
+	 * Refuses to change the type of a window once it is defined.
 	 * @param windowID
 	 * @param type
 	 */
 	public void setWindowType(int windowID, int type)
 	{
-		if (windowType.get(windowID) == null)
+		Integer oldType = windowType.get(windowID);
+		if (oldType == null)
 		{
 			windowType.put(windowID, type);
 		}
-		else
+		else if (oldType != type)
 		{
 			System.err.println("WARNING: Cannot change type of window " + windowID + " to " + type + "!");
 		}
@@ -152,7 +153,9 @@ public class KahinaArrangement
 	
 	public int getEmbeddingWindowID(int windowID)
 	{
-		return embeddingWindow.get(windowID);
+		Integer embeddingID = embeddingWindow.get(windowID);
+		if (embeddingID == null) return -1;
+		return embeddingID;
 	}
 	
 	public String getBindingForWinID(int winID)
@@ -165,12 +168,17 @@ public class KahinaArrangement
 		return primaryWindow.get(name);
 	}
 	
+	public Set<Integer> getAllWindows()
+	{
+		return title.keySet();
+	}
+	
 	public Set<Integer> getTopLevelWindows()
 	{
 		HashSet<Integer> topLevelWindows = new HashSet<Integer>();
-		for (int winID : embeddingWindow.keySet())
+		for (int winID : getAllWindows())
 		{
-			if (embeddingWindow.get(winID) == -1)
+			if (getEmbeddingWindowID(winID) == -1)
 			{
 				topLevelWindows.add(winID);
 			}
@@ -181,14 +189,19 @@ public class KahinaArrangement
 	public Set<Integer> getTopLevelWindowsWithoutMainWindow()
 	{
 		HashSet<Integer> topLevelWindows = new HashSet<Integer>();
-		for (int winID : embeddingWindow.keySet())
+		for (int winID : getAllWindows())
 		{
-			if (embeddingWindow.get(winID) == -1 && winID != primaryWindow.get("main"))
+			if (getEmbeddingWindowID(winID) == -1 && winID != primaryWindow.get("main"))
 			{
 				topLevelWindows.add(winID);
 			}
 		}
 		return topLevelWindows;
+	}
+	
+	public Set<Integer> getDefaultWindows()
+	{
+		return winIDToBinding.keySet();
 	}
 	
 	/*
@@ -226,6 +239,7 @@ public class KahinaArrangement
 				arr.setHeight(winID, XMLUtilities.attrIntVal(el, "kahina:height"));
 				arr.setTitle(winID, XMLUtilities.attrStrVal(el, "kahina:title"));
 				String type = el.getLocalName();
+				System.err.println("  Window is of type " + type + ".");
 				if (type.equals("default-window"))
 				{
 					arr.setWindowType(winID, KahinaWindowType.DEFAULT_WINDOW);
@@ -240,7 +254,7 @@ public class KahinaArrangement
 				{
 					arr.setWindowType(winID, KahinaWindowType.HORI_SPLIT_WINDOW);
 				}
-				else if (type.equals("veri-split-window"))
+				else if (type.equals("vert-split-window"))
 				{
 					arr.setWindowType(winID, KahinaWindowType.VERT_SPLIT_WINDOW);
 				}

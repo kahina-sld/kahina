@@ -78,7 +78,7 @@ public class KahinaDropTargetListener implements DropTargetListener
                 else
                 {
                 	KahinaTabbedWindow tabbedWindow = (KahinaTabbedWindow) w;
-                	tabbedWindow.addWindow(w.wm.getWindowByID(winID));
+                	tabbedWindow.addSubwindow(w.wm.getWindowByID(winID));
                     KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));
                 }
                 e.getDropTargetContext().dropComplete(true);          
