@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="tralesld">
+  <kahina:arrangement>
+    <kahina:default-window kahina:binding="main" kahina:height="120" kahina:id="0" kahina:primary="true" kahina:title="Kahina" kahina:width="625" kahina:xpos="0" kahina:ypos="25"/>
+    <kahina:hori-split-window kahina:height="246" kahina:id="15" kahina:title="Variable Bindings" kahina:width="531" kahina:xpos="836" kahina:ypos="689">
+      <kahina:default-window kahina:binding="startBindings" kahina:height="312" kahina:id="1" kahina:primary="true" kahina:title="startBindings" kahina:width="206" kahina:xpos="246" kahina:ypos="251"/>
+      <kahina:default-window kahina:binding="endBindings" kahina:height="264" kahina:id="5" kahina:primary="true" kahina:title="endBindings" kahina:width="182" kahina:xpos="474" kahina:ypos="254"/>
+    </kahina:hori-split-window>
+    <kahina:hori-split-window kahina:height="384" kahina:id="9" kahina:title="Feature Structures" kahina:width="845" kahina:xpos="0" kahina:ypos="561">
+      <kahina:default-window kahina:binding="endFeatStruct" kahina:height="312" kahina:id="2" kahina:primary="true" kahina:title="endFeatStruct" kahina:width="206" kahina:xpos="566" kahina:ypos="25"/>
+      <kahina:default-window kahina:binding="startFeatStruct" kahina:height="360" kahina:id="6" kahina:primary="true" kahina:title="startFeatStruct" kahina:width="230" kahina:xpos="202" kahina:ypos="428"/>
+    </kahina:hori-split-window>
+    <kahina:default-window kahina:binding="chart" kahina:height="416" kahina:id="3" kahina:primary="true" kahina:title="Chart" kahina:width="358" kahina:xpos="2" kahina:ypos="145"/>
+    <kahina:default-window kahina:binding="controlFlowTree" kahina:height="666" kahina:id="4" kahina:primary="true" kahina:title="Control flow tree" kahina:width="437" kahina:xpos="843" kahina:ypos="25"/>
+    <kahina:vert-split-window kahina:height="414" kahina:id="12" kahina:title="Code &amp; Trace" kahina:width="483" kahina:xpos="360" kahina:ypos="145">
+      <kahina:default-window kahina:binding="messageConsole" kahina:height="360" kahina:id="7" kahina:primary="true" kahina:title="Message console" kahina:width="230" kahina:xpos="452" kahina:ypos="428"/>
+      <kahina:default-window kahina:binding="codeLocation" kahina:height="288" kahina:id="8" kahina:primary="true" kahina:title="codeLocation" kahina:width="194" kahina:xpos="702" kahina:ypos="428"/>
+    </kahina:vert-split-window>
+  </kahina:arrangement>
+  <kahina:configurations>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="1"/>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="2"/>
+    <kahina:configuration kahina:type="org.kahina.core.visual.chart.KahinaChartViewConfiguration" kahina:viewid="3">
+      <kahina:option kahina:name="cellWidth" kahina:value="150"/>
+      <kahina:option kahina:name="fontSize" kahina:value="10"/>
+      <kahina:option kahina:name="bgColor" kahina:value="java.awt.Color[r=255,g=255,b=255]"/>
+      <kahina:option kahina:name="cellWidthPolicy" kahina:value="1"/>
+      <kahina:option kahina:name="edgeStackingPolicy" kahina:value="1"/>
+      <kahina:option kahina:name="displayRangePolicy" kahina:value="0"/>
+      <kahina:option kahina:name="dependencyDisplayPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="antialiasingPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="displayOrientation" kahina:value="0"/>
+      <kahina:option kahina:name="transitiveAncestors" kahina:value="false"/>
+      <kahina:option kahina:name="transitiveDescendants" kahina:value="false"/>
+      <kahina:displaydecider kahina:type="org.kahina.core.visual.tree.KahinaChart">
+        <kahina:stringset kahina:name="possEdgeLabels"/>
+        <kahina:stringset kahina:name="dispEdgeLabels"/>
+        <kahina:stringset kahina:name="hideEdgeLabels"/>
+        <kahina:intset kahina:name="dispEdgeStatus"/>
+        <kahina:intset kahina:name="hideEdgeStatus"/>
+        <kahina:option kahina:name="edgeLabelPriority" kahina:value="false"/>
+      </kahina:displaydecider>
+    </kahina:configuration>
+    <kahina:configuration kahina:type="org.kahina.core.visual.tree.KahinaTreeViewConfiguration" kahina:viewid="4">
+      <kahina:option kahina:name="horizontalDistance" kahina:value="18"/>
+      <kahina:option kahina:name="verticalDistance" kahina:value="3"/>
+      <kahina:option kahina:name="fontSize" kahina:value="10"/>
+      <kahina:option kahina:name="displaySecondDimension" kahina:value="false"/>
+      <kahina:option kahina:name="bgColor" kahina:value="java.awt.Color[r=255,g=255,b=255]"/>
+      <kahina:option kahina:name="nodeShapePolicy" kahina:value="0"/>
+      <kahina:option kahina:name="edgeShapePolicy" kahina:value="1"/>
+      <kahina:option kahina:name="nodeDisplayPolicy" kahina:value="1"/>
+      <kahina:option kahina:name="collapsePolicy" kahina:value="2"/>
+      <kahina:option kahina:name="terminalsPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="lineShapePolicy" kahina:value="0"/>
+      <kahina:option kahina:name="secondaryLineShapePolicy" kahina:value="2"/>
+      <kahina:option kahina:name="nodePositionPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="antialiasingPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="displayOrientation" kahina:value="0"/>
+      <kahina:option kahina:name="cuttingPolicy" kahina:value="1"/>
+    </kahina:configuration>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="5"/>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="6"/>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="7"/>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="8"/>
+  </kahina:configurations>
+</kahina:perspective>

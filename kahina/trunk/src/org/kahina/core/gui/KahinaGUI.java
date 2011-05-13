@@ -167,8 +167,6 @@ public class KahinaGUI implements KahinaListener
 	{
 		windowManager = createWindowManager(this, control);
 		displayMainViews();
-		//TODO: load last perspective, or default perspective from XML
-		windowManager.createWindows(KahinaPerspective.generateDefaultPerspective(varNameToView));
 	}	
 
 	protected KahinaWindowManager createWindowManager(KahinaGUI kahinaGUI, KahinaController control)
@@ -183,6 +181,7 @@ public class KahinaGUI implements KahinaListener
 
 	public void displayMainViews()
 	{
+		windowManager.createWindows(KahinaPerspective.generateDefaultPerspective(varNameToView));
 	}
 
 	public void displayStepContent(int stepID)

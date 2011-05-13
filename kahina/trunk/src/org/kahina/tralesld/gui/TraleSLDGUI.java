@@ -13,8 +13,10 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewIntegrationType;
 import org.kahina.core.gui.KahinaWindowManager;
+import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.chart.KahinaChartView;
@@ -80,6 +82,11 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		mainTreeView.getModel().setLayerDecider(new TraleSLDLayerDecider(2));
 		mainTreeView.getSecondaryModel().setLayerDecider(new TraleSLDLayerDecider(2));
 		mainChartView.display(instance.getState().getChart());
+		
+		//TODO: load last perspective instead of only default perspective from XML
+		//File xmlFile = new File("src/org/kahina/tralesld/gui/tralesld-manywindows.xml");
+		File xmlFile = new File(TraleSLDGUI.class.getResource("tralesld-manywindows.xml").getFile());
+		windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLFile(xmlFile, false).getDocumentElement()));
 	}
 
 	@Override
