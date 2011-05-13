@@ -82,11 +82,6 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		mainTreeView.getModel().setLayerDecider(new TraleSLDLayerDecider(2));
 		mainTreeView.getSecondaryModel().setLayerDecider(new TraleSLDLayerDecider(2));
 		mainChartView.display(instance.getState().getChart());
-		
-		//TODO: load last perspective instead of only default perspective from XML
-		//File xmlFile = new File("src/org/kahina/tralesld/gui/tralesld-manywindows.xml");
-		File xmlFile = new File(TraleSLDGUI.class.getResource("tralesld-manywindows.xml").getFile());
-		windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLFile(xmlFile, false).getDocumentElement()));
 	}
 
 	@Override
@@ -94,22 +89,16 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	{
 		try
 		{
-			super.prepare(control);
-			/*integrateWindows(KahinaViewIntegrationType.VERTICAL, "startBindings", "endBindings", "Variable bindings", control);
-			integrateWindows(KahinaViewIntegrationType.VERTICAL, "codeLocation", "Message console", "Source & Console", control);
-			integrateWindows(KahinaViewIntegrationType.HORIZONTAL, "startFeatStruct", "endFeatStruct", "Feature Structures", control);
-			//TODO: put this into a configuration instead
-			//hack for the moment: allow direct manipulation of view components
-			windowManager.getWindowByID("Source & Console").setSize(400, 500);
-			windowManager.getWindowByID("Source & Console").setLocation(400, 0);
-			windowManager.getWindowByID("Feature Structures").setSize(700, 300);
-			windowManager.getWindowByID("Feature Structures").setLocation(0, 550);
-			windowManager.getWindowByID("Variable bindings").setSize(200, 300);
-			windowManager.getWindowByID("Variable bindings").setLocation(700, 550);
-			windowManager.getWindowByID("Control flow tree").setSize(500, 800);
-			windowManager.getWindowByID("Control flow tree").setLocation(800, 0);
-			windowManager.getWindowByID("Chart").setSize(400, 400);
-			windowManager.getWindowByID("Chart").setLocation(0, 150);*/
+			displayMainViews();
+			
+			windowManager = createWindowManager(this, control);
+			
+			//TODO: load last perspective instead of only default perspective from XML
+			//File xmlFile = new File("src/org/kahina/tralesld/gui/tralesld-manywindows.xml");
+			File xmlFile = new File(TraleSLDGUI.class.getResource("tralesld-manywindows.xml").getFile());
+			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLFile(xmlFile, false).getDocumentElement()));
+			
+
 		}
 		catch (NullPointerException e)
 		{

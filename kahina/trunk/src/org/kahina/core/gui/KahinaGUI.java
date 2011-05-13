@@ -166,6 +166,7 @@ public class KahinaGUI implements KahinaListener
 	public void prepare(KahinaController control)
 	{
 		windowManager = createWindowManager(this, control);
+		windowManager.createWindows(KahinaPerspective.generateDefaultPerspective(varNameToView));
 		displayMainViews();
 	}	
 
@@ -181,7 +182,7 @@ public class KahinaGUI implements KahinaListener
 
 	public void displayMainViews()
 	{
-		windowManager.createWindows(KahinaPerspective.generateDefaultPerspective(varNameToView));
+		
 	}
 
 	public void displayStepContent(int stepID)
