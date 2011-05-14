@@ -76,6 +76,14 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         JMenu changePerspectiveMenu = new JMenu("Change Perspective");
         
         JMenu recentPerspectivesMenu = new JMenu("Recent Perspectives");
+        int count = 0;
+        for (KahinaPerspective psp : manager.recentPerspectives)
+        {
+        	JMenuItem recentPerspectiveItem = new JMenuItem(psp.getName());
+        	recentPerspectiveItem.setActionCommand("loadRecentPerspective:" + count++);
+        	recentPerspectiveItem.addActionListener(this);
+            recentPerspectivesMenu.add(recentPerspectiveItem);
+        }
         changePerspectiveMenu.add(recentPerspectivesMenu);
         
         JMenu predefinedPerspectivesMenu = new JMenu("Predefined Perspectives");

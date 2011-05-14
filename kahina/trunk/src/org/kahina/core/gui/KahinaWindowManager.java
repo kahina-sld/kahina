@@ -4,6 +4,8 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -27,6 +29,10 @@ public class KahinaWindowManager implements KahinaListener
     KahinaPerspective psp;
     KahinaArrangement arr;
     
+    //store recent perspectives and cache default perspectives
+    List<KahinaPerspective> recentPerspectives;
+    List<KahinaPerspective> defaultPerspectives;
+    
     //main registry for windows: access windows by their windowID
     private HashMap<Integer,KahinaWindow> windowByID;
     
@@ -42,13 +48,19 @@ public class KahinaWindowManager implements KahinaListener
 		control.registerListener(KahinaEventTypes.WINDOW, this);
 		
         this.windowByID = new HashMap<Integer,KahinaWindow>();
+        
+        recentPerspectives = new LinkedList<KahinaPerspective>();
+        //TODO: load the default perspectives in the source folder of the respective KahinaGUI instance
+        defaultPerspectives = new LinkedList<KahinaPerspective>();
+        
     }
     
     /**
      * Builds the windows according to some perspective. Must be called before first display.
      */
     public void createWindows(KahinaPerspective psp)
-    {
+    {	
+    	registerRecentPerspective(psp);
         this.psp = psp;     
         this.arr = psp.getArrangement();
         
@@ -544,6 +556,16 @@ public class KahinaWindowManager implements KahinaListener
 	private KahinaPerspective loadPerspective(File file)
 	{
 		return KahinaPerspective.importXML(XMLUtilities.parseXMLFile(file, false).getDocumentElement());
+	}
+	
+	//by default, 5 recent perspectives are kept in memory
+	private void registerRecentPerspective(KahinaPerspective psp)
+	{
+		recentPerspectives.add(0,psp);
+		if (recentPerspectives.size() > 5)
+		{
+			recentPerspectives.remove(5);
+		}
 	}
 	
 	private void savePerspectiveAs(File file)

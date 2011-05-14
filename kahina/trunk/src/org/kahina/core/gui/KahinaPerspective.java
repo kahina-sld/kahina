@@ -112,7 +112,9 @@ public class KahinaPerspective
 	
 	public static KahinaPerspective importXML(Element topEl)
 	{
-		KahinaPerspective perspective = new KahinaPerspective("default", "Default");
+		String appID = XMLUtilities.attrStrVal(topEl, "kahina:appID");
+		String name = XMLUtilities.attrStrVal(topEl, "kahina:name");
+		KahinaPerspective perspective = new KahinaPerspective(appID, name);
 		NodeList nl = topEl.getElementsByTagName("kahina:arrangement");
 		perspective.arr = KahinaArrangement.importXML((Element) nl.item(0));
 		nl = topEl.getElementsByTagName("kahina:configuration");
@@ -153,6 +155,7 @@ public class KahinaPerspective
 	{
 		Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:perspective");
 		el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:appid", appID);
+		el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:name", name);
         el.appendChild(arr.exportXML(dom));
         Element configsEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:configurations");
         for (int viewID : config.keySet())

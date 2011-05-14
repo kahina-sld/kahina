@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="tralesld">
+<kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="tralesld" kahina:name="integrated">
   <kahina:arrangement>
     <kahina:default-window kahina:binding="main" kahina:height="120" kahina:id="0" kahina:primary="true" kahina:title="Kahina" kahina:width="625" kahina:xpos="0" kahina:ypos="25"/>
     <kahina:vert-split-window kahina:height="958" kahina:id="26" kahina:title="Integrated Window" kahina:width="1280" kahina:xpos="0" kahina:ypos="0">
