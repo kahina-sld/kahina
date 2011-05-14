@@ -130,10 +130,10 @@ public class KahinaWindowManager implements KahinaListener
         for (int winID : arr.getAllWindows())
         {
         	Integer embeddingID = arr.getEmbeddingWindowID(winID);
-        	System.err.println("Embedding window " + winID + " into window " + embeddingID);
+        	//System.err.println("Embedding window " + winID + " into window " + embeddingID);
         	if (embeddingID != null && embeddingID != -1)
         	{
-            	System.err.println("Embedding window " + winID + " into window " + embeddingID);
+            	//System.err.println("Embedding window " + winID + " into window " + embeddingID);
         		boolean success = windowByID.get(embeddingID).addSubwindow(windowByID.get(winID));
         		if (!success)
         		{
@@ -145,7 +145,7 @@ public class KahinaWindowManager implements KahinaListener
         //... then adapt the coordinates ...     
         for (int winID : arr.getTopLevelWindowsWithoutMainWindow())
         {
-        	System.err.println("Setting coordinates of top level window " + winID);
+        	//System.err.println("Setting coordinates of top level window " + winID);
         	
         	KahinaWindow w = getWindowByID(winID);
             w.setSize(arr.getWidth(w.getID()), arr.getHeight(w.getID()));

@@ -232,14 +232,14 @@ public class KahinaArrangement
 				{
 					arr.embeddingWindow.put(previousID,winID);
 				}
-				System.err.println("Now loading winID " + winID);
+				//System.err.println("Now loading winID " + winID);
 				arr.setXPos(winID, XMLUtilities.attrIntVal(el, "kahina:xpos"));
 				arr.setYPos(winID, XMLUtilities.attrIntVal(el, "kahina:ypos"));
 				arr.setWidth(winID, XMLUtilities.attrIntVal(el, "kahina:width"));
 				arr.setHeight(winID, XMLUtilities.attrIntVal(el, "kahina:height"));
 				arr.setTitle(winID, XMLUtilities.attrStrVal(el, "kahina:title"));
 				String type = el.getLocalName();
-				System.err.println("  Window is of type " + type + ".");
+				//System.err.println("  Window is of type " + type + ".");
 				if (type.equals("default-window"))
 				{
 					arr.setWindowType(winID, KahinaWindowType.DEFAULT_WINDOW);
@@ -303,7 +303,7 @@ public class KahinaArrangement
 				}
 				else
 				{
-					System.err.println("Window type: " + windowType.get(windowID));
+					//System.err.println("Window type: " + windowType.get(windowID));
 					switch (windowType.get(windowID))
 					{
 						case KahinaWindowType.HORI_SPLIT_WINDOW:
