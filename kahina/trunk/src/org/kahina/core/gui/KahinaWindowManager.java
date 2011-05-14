@@ -2,6 +2,7 @@ package org.kahina.core.gui;
 
 import java.awt.Toolkit;
 import java.io.File;
+import java.io.FileFilter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -50,9 +51,23 @@ public class KahinaWindowManager implements KahinaListener
         this.windowByID = new HashMap<Integer,KahinaWindow>();
         
         recentPerspectives = new LinkedList<KahinaPerspective>();
-        //TODO: load the default perspectives in the source folder of the respective KahinaGUI instance
+        //load the default perspectives in the bin folder of the respective KahinaGUI instance
         defaultPerspectives = new LinkedList<KahinaPerspective>();
-        
+        // This filter only returns XML files
+        FileFilter fileFilter = new FileFilter() 
+        {
+            public boolean accept(File file) 
+            {
+            	//System.err.println("Filtering file " + file.getName() + ": " + file.getName().endsWith("xml"));
+                return file.getName().endsWith("xml");
+            }
+        };
+        File[] files = new File(gui.getClass().getResource(".").getFile()).listFiles(fileFilter);
+        for (File f : files)
+        {
+        	System.err.println("Loading default perspective: " + f.getAbsolutePath());
+        	defaultPerspectives.add(loadPerspective(f));
+        }
     }
     
     /**
