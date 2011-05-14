@@ -113,8 +113,6 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         savePerspectiveAsItem.setActionCommand("savePerspectiveAs");
         savePerspectiveAsItem.addActionListener(this);
         this.add(savePerspectiveAsItem);
-        
-        //TODO: add "Change Perspective" menu with all the perspectives defined for the application
     }
 	
 	@Override
@@ -153,6 +151,16 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
             if (dataFile != null) KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_PERSPECTIVE, dataFile));
+        }
+        else if (s.startsWith("loadRecentPerspective:"))
+        {
+        	int counter = Integer.parseInt(s.substring(22));
+        	KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_RECENT_PERSPECTIVE, counter));
+        }
+        else if (s.startsWith("loadDefaultPerspective:"))
+        {
+        	int counter = Integer.parseInt(s.substring(23));
+        	KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_DEFAULT_PERSPECTIVE, counter));
         }
         else if (s.equals("savePerspectiveAs"))
         {

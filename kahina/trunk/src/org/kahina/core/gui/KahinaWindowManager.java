@@ -318,6 +318,14 @@ public class KahinaWindowManager implements KahinaListener
 		{
 			setAndApplyPerspective(loadPerspective(e.getFile()));
 		}
+		else if (type == KahinaPerspectiveEvent.LOAD_RECENT_PERSPECTIVE)
+		{
+			setAndApplyPerspective(recentPerspectives.get(e.getID()));
+		}
+		else if (type == KahinaPerspectiveEvent.LOAD_DEFAULT_PERSPECTIVE)
+		{
+			setAndApplyPerspective(defaultPerspectives.get(e.getID()));
+		}
 	}
 	
 	private void processWindowEvent(KahinaWindowEvent e)

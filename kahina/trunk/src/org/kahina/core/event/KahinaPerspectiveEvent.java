@@ -6,15 +6,30 @@ public class KahinaPerspectiveEvent extends KahinaEvent
 {
 	File file;
     int perspectiveEventType;
+    int id;
     
     public static final int SAVE_PERSPECTIVE = 0;
     public static final int LOAD_PERSPECTIVE = 1;
+    public static final int LOAD_RECENT_PERSPECTIVE = 3;
+    public static final int LOAD_DEFAULT_PERSPECTIVE = 3;
+    
+    public KahinaPerspectiveEvent(int perspectiveEventType, int id)
+    {
+        super(KahinaEventTypes.PERSPECTIVE);
+        this.perspectiveEventType = perspectiveEventType;
+        this.id = id;
+    }
     
     public KahinaPerspectiveEvent(int perspectiveEventType, File file)
     {
         super(KahinaEventTypes.PERSPECTIVE);
         this.perspectiveEventType = perspectiveEventType;
         this.file = file;
+    }
+    
+    public int getID()
+    {
+    	return id;
     }
     
     public File getFile()
