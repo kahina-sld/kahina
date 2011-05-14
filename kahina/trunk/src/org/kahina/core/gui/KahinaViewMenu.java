@@ -73,15 +73,30 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 
         this.addSeparator();
         
+        JMenu changePerspectiveMenu = new JMenu("Change Perspective");
+        
+        JMenu recentPerspectivesMenu = new JMenu("Recent Perspectives");
+        changePerspectiveMenu.add(recentPerspectivesMenu);
+        
+        JMenu predefinedPerspectivesMenu = new JMenu("Predefined Perspectives");
+        changePerspectiveMenu.add(predefinedPerspectivesMenu);
+        
         JMenuItem loadPerspectiveItem = new JMenuItem("Load Perspective ...");
         loadPerspectiveItem.setActionCommand("loadPerspective");
         loadPerspectiveItem.addActionListener(this);
-        this.add(loadPerspectiveItem);
-            
-        JMenuItem savePerspectiveItem = new JMenuItem("Save Perspective As...");
-        savePerspectiveItem.setActionCommand("savePerspectiveAs");
+        changePerspectiveMenu.add(loadPerspectiveItem);
+        
+        this.add(changePerspectiveMenu);
+        
+        JMenuItem savePerspectiveItem = new JMenuItem("Save Perspective");
+        savePerspectiveItem.setActionCommand("savePerspective");
         savePerspectiveItem.addActionListener(this);
         this.add(savePerspectiveItem);
+            
+        JMenuItem savePerspectiveAsItem = new JMenuItem("Save Perspective As...");
+        savePerspectiveAsItem.setActionCommand("savePerspectiveAs");
+        savePerspectiveAsItem.addActionListener(this);
+        this.add(savePerspectiveAsItem);
         
         //TODO: add "Change Perspective" menu with all the perspectives defined for the application
     }
