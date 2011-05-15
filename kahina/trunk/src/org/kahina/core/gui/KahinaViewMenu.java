@@ -26,14 +26,12 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 {
 	private static final long serialVersionUID = -8816851369583949953L;
 	
-    //private HashMap<Integer,JCheckBoxMenuItem> windowEntries;
     private KahinaWindowManager manager;
 
 	public KahinaViewMenu(KahinaWindowManager manager)
     {
         super("View"); 
         
-        //windowEntries = new HashMap<Integer,JCheckBoxMenuItem>();
         this.manager = manager;      
         manager.control.registerListener(KahinaEventTypes.WINDOW, this);
       
@@ -44,16 +42,13 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 	{
 		this.removeAll();
 		
-		System.err.println("Top Level windows: " + manager.arr.getTopLevelWindowsWithoutMainWindow());
         for (int winID : manager.arr.getTopLevelWindowsWithoutMainWindow())
         {
-        	System.err.println("Win ID: " + winID);
         	KahinaWindow window = manager.getWindowByID(winID);
             JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(window.getTitle());
             windowCheckBoxItem.setActionCommand("toggleVisibility:" + window.getID());
             windowCheckBoxItem.addActionListener(this);
             windowCheckBoxItem.setSelected(manager.psp.isVisible(window.getID()));
-            //windowEntries.put(window.getID(), windowCheckBoxItem);
             this.add(windowCheckBoxItem);
         }
         
@@ -219,59 +214,5 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 		{
 			rebuild();
 		}
-		/*if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
-		{
-			//react to a window that is being closed
-			boolean newVisibility = manager.psp.isVisible(e.getWindowID());
-			JCheckBoxMenuItem windowCheckBoxItem = windowEntries.get(e.getWindowID());
-			if (windowCheckBoxItem == null)
-			{
-				System.err.println("WARNING: no check box item for window \"" + e.getWindowID() + "\"");
-			}
-			else
-			{
-				windowCheckBoxItem.setSelected(newVisibility);
-			}
-		}
-		else if (type == KahinaWindowEventType.REMOVE)
-		{
-			System.err.println("Received order to remove check box item for window " + e.getWindowID());
-			JCheckBoxMenuItem windowCheckBoxItem = windowEntries.remove(e.getWindowID());
-			if (windowCheckBoxItem == null)
-			{
-				System.err.println("WARNING: no check box item for window \"" + e.getWindowID() + "\"");
-			}
-			else
-			{
-				System.err.println("Removing check box item for window " + e.getWindowID());
-				this.remove(windowCheckBoxItem);
-			}
-		} 
-		else if (type == KahinaWindowEventType.RENAME)
-		{
-			JCheckBoxMenuItem windowCheckBoxItem = windowEntries.get(e.getWindowID());
-			if (windowCheckBoxItem != null)
-			{
-				windowCheckBoxItem.setText(manager.getWindowByID(e.getWindowID()).getTitle());
-			}
-		} 
-		else if (type == KahinaWindowEventType.UNDOCK)
-		{
-			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(manager.getWindowByID(e.getWindowID()).getTitle());
-            windowCheckBoxItem.setActionCommand("toggleVisibility:" + e.getWindowID());
-            windowCheckBoxItem.addActionListener(this);
-            windowCheckBoxItem.setSelected(true);
-            windowEntries.put(e.getWindowID(), windowCheckBoxItem);
-            this.add(windowCheckBoxItem,0);
-		} 
-		else if (type == KahinaWindowEventType.ADD_VIEW_MENU_ENTRY)
-		{
-			JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(manager.getWindowByID(e.getWindowID()).getTitle());
-            windowCheckBoxItem.setActionCommand("toggleVisibility:" + e.getWindowID());
-            windowCheckBoxItem.addActionListener(this);
-            windowCheckBoxItem.setSelected(true);
-            windowEntries.put(e.getWindowID(), windowCheckBoxItem);
-            this.add(windowCheckBoxItem,0);
-		}*/ 
 	}
 }

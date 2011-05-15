@@ -503,9 +503,9 @@ public class KahinaWindowManager implements KahinaListener
 					//complicated case: embeddingWindow was top level window
 					else
 					{
-						control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DISPOSE, embeddingWindow.getID()));
 						replacementWindow.setVisible(true);
 					}
+					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DISPOSE, embeddingWindow.getID()));
 					windowByID.remove(embeddingWindow.getID());
 					//register and display the undocked window
 					psp.setVisibility(e.getWindowID(), true);
