@@ -32,29 +32,19 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     protected boolean cloned;
     
     /**
-     * Constructs a KahinaWindow with a new unique ID.
-     * Caution is advised with this constructor, as incorrect ID assignment can break the window system.
+     * Constructs a KahinaWindow with a new unique window ID.
      * @param wm the window manager that is to manage this window
      */
     public KahinaWindow(KahinaWindowManager wm)
     {     
     	this.wm = wm;
     	windowID = idCounter++;
-        setLayout(new BorderLayout());
-        mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
-        mainPanel.addMouseListener(new KahinaWindowListener(this));
-        cloned = false;
-        this.add(mainPanel);
-        //TODO: find a way to make windows more compact and to avoid having the title twice
-        //this.setUndecorated(true);
-        this.addWindowListener(this);
-        this.addComponentListener(this);
-        wm.registerWindow(this);
+        initialize();
     }
     
     /**
-     * Constructs a KahinaWindow with a specified ID.
-     * Caution is advised with this constructor, as incorrect ID assignment can break the window system.
+     * Constructs a KahinaWindow with a specified window ID.
+     * Caution is advised with this constructor, as duplicate ID assignment can break the window system.
      * @param wm the window manager that is to manage this window
      * @param id the unique window ID that this window will be referred by (never use -1 or an ID that is already used!)
      */
@@ -67,13 +57,16 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	{
     		idCounter = windowID + 1;
     	}
+    	initialize();
+    }
+    
+    private void initialize()
+    {
         setLayout(new BorderLayout());
         mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
         mainPanel.addMouseListener(new KahinaWindowListener(this));
         cloned = false;
         this.add(mainPanel);
-        //TODO: find a way to make windows more compact and to avoid having the title twice
-        //this.setUndecorated(true);
         this.addWindowListener(this);
         this.addComponentListener(this);
         wm.registerWindow(this);
@@ -87,6 +80,19 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     public boolean isClone()
     {
     	return cloned;
+    }
+    
+    public void setBorder(boolean border)
+    {
+    	wm.psp.arr.setBorder(windowID, border);
+    	if (border)
+    	{
+        	mainPanel.setBorder(BorderFactory.createTitledBorder(this.getTitle()));
+    	}
+    	else
+    	{
+    		mainPanel.setBorder(null);
+    	}
     }
     
     /**

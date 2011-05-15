@@ -2,25 +2,25 @@
 <kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="tralesld" kahina:name="integrated">
   <kahina:arrangement>
     <kahina:default-window kahina:binding="main" kahina:height="120" kahina:id="0" kahina:primary="true" kahina:title="Kahina" kahina:width="625" kahina:xpos="0" kahina:ypos="25"/>
-    <kahina:vert-split-window kahina:height="958" kahina:id="26" kahina:title="Integrated Window" kahina:width="1280" kahina:xpos="0" kahina:ypos="0">
-      <kahina:vert-split-window kahina:height="344" kahina:id="21" kahina:title="Data Structures" kahina:width="1276" kahina:xpos="0" kahina:ypos="599">
-        <kahina:hori-split-window kahina:height="426" kahina:id="11" kahina:title="Variable Bindings" kahina:width="643" kahina:xpos="630" kahina:ypos="564">
-          <kahina:default-window kahina:binding="startBindings" kahina:height="337" kahina:id="1" kahina:primary="true" kahina:title="startBindings" kahina:width="217" kahina:xpos="181" kahina:ypos="58"/>
-          <kahina:default-window kahina:binding="endBindings" kahina:height="264" kahina:id="5" kahina:primary="true" kahina:title="endBindings" kahina:width="182" kahina:xpos="0" kahina:ypos="428"/>
+    <kahina:vert-split-window kahina:height="958" kahina:id="26" kahina:title="Integrated Window" kahina:border="false" kahina:width="1280" kahina:xpos="0" kahina:ypos="0">
+      <kahina:vert-split-window kahina:height="344" kahina:id="21" kahina:title="Data Structures" kahina:border="true" kahina:width="1276" kahina:xpos="0" kahina:ypos="599">
+        <kahina:hori-split-window kahina:height="426" kahina:id="11" kahina:title="Variable Bindings" kahina:border="false" kahina:width="643" kahina:xpos="630" kahina:ypos="564">
+          <kahina:default-window kahina:binding="startBindings" kahina:height="337" kahina:id="1" kahina:border="true" kahina:primary="true" kahina:title="startBindings" kahina:width="217" kahina:xpos="181" kahina:ypos="58"/>
+          <kahina:default-window kahina:binding="endBindings" kahina:height="264" kahina:id="5" kahina:border="true" kahina:primary="true" kahina:title="endBindings" kahina:width="182" kahina:xpos="0" kahina:ypos="428"/>
         </kahina:hori-split-window>
-        <kahina:hori-split-window kahina:height="326" kahina:id="14" kahina:title="Feature Structures" kahina:width="630" kahina:xpos="35" kahina:ypos="641">
-          <kahina:default-window kahina:binding="endFeatStruct" kahina:height="337" kahina:id="2" kahina:primary="true" kahina:title="endFeatStruct" kahina:width="248" kahina:xpos="470" kahina:ypos="415"/>
-          <kahina:default-window kahina:binding="startFeatStruct" kahina:height="360" kahina:id="6" kahina:primary="true" kahina:title="startFeatStruct" kahina:width="230" kahina:xpos="202" kahina:ypos="428"/>
+        <kahina:hori-split-window kahina:height="326" kahina:id="14" kahina:title="Feature Structures" kahina:border="false" kahina:width="630" kahina:xpos="35" kahina:ypos="641">
+          <kahina:default-window kahina:binding="endFeatStruct" kahina:height="337" kahina:id="2" kahina:primary="true" kahina:border="true" kahina:title="endFeatStruct" kahina:width="248" kahina:xpos="470" kahina:ypos="415"/>
+          <kahina:default-window kahina:binding="startFeatStruct" kahina:height="360" kahina:id="6" kahina:primary="true" kahina:border="true" kahina:title="startFeatStruct" kahina:width="230" kahina:xpos="202" kahina:ypos="428"/>
         </kahina:hori-split-window>
       </kahina:vert-split-window>
-      <kahina:hori-split-window kahina:height="576" kahina:id="24" kahina:title="Navigation" kahina:width="1280" kahina:xpos="0" kahina:ypos="25">
-        <kahina:tabbed-window kahina:height="454" kahina:id="19" kahina:title="Control Structure" kahina:width="622" kahina:xpos="0" kahina:ypos="145">
+      <kahina:hori-split-window kahina:height="576" kahina:id="24" kahina:title="Navigation" kahina:border="false" kahina:width="1280" kahina:xpos="0" kahina:ypos="25">
+        <kahina:tabbed-window kahina:height="454" kahina:id="19" kahina:title="Control Structure" kahina:border="true" kahina:width="622" kahina:xpos="0" kahina:ypos="145">
           <kahina:default-window kahina:binding="chart" kahina:height="422" kahina:id="3" kahina:primary="true" kahina:title="Chart" kahina:width="250" kahina:xpos="1" kahina:ypos="145"/>
           <kahina:default-window kahina:binding="controlFlowTree" kahina:height="540" kahina:id="4" kahina:primary="true" kahina:title="Control flow tree" kahina:width="650" kahina:xpos="625" kahina:ypos="25"/>
         </kahina:tabbed-window>
-        <kahina:vert-split-window kahina:height="574" kahina:id="12" kahina:title="Source Code &amp; Trace" kahina:width="655" kahina:xpos="625" kahina:ypos="24">
-          <kahina:default-window kahina:binding="messageConsole" kahina:height="360" kahina:id="7" kahina:primary="true" kahina:title="Message console" kahina:width="230" kahina:xpos="452" kahina:ypos="428"/>
-          <kahina:default-window kahina:binding="codeLocation" kahina:height="288" kahina:id="8" kahina:primary="true" kahina:title="codeLocation" kahina:width="194" kahina:xpos="313" kahina:ypos="185"/>
+        <kahina:vert-split-window kahina:height="574" kahina:id="12" kahina:title="Source Code &amp; Trace" kahina:border="true" kahina:width="655" kahina:xpos="625" kahina:ypos="24">
+          <kahina:default-window kahina:binding="messageConsole" kahina:height="360" kahina:id="7" kahina:primary="true" kahina:border="false" kahina:title="Message console" kahina:width="230" kahina:xpos="452" kahina:ypos="428"/>
+          <kahina:default-window kahina:binding="codeLocation" kahina:height="288" kahina:id="8" kahina:primary="true" kahina:border="false" kahina:title="codeLocation" kahina:width="194" kahina:xpos="313" kahina:ypos="185"/>
         </kahina:vert-split-window>
       </kahina:hori-split-window>
     </kahina:vert-split-window>

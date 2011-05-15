@@ -92,6 +92,7 @@ public class KahinaWindowManager implements KahinaListener
         			System.err.println("Generating view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
         			KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, winID);
         			viewWindow.setTitle(arr.getTitle(winID));
+                    viewWindow.setBorder(arr.hasBorder(winID));
         		}
         	}
             //otherwise build stubs according to the type of embedding window
@@ -103,18 +104,21 @@ public class KahinaWindowManager implements KahinaListener
         			{
                 		KahinaWindow viewWindow = new KahinaHorizontallySplitWindow(this, winID);
                 		viewWindow.setTitle(arr.getTitle(winID));
+                        viewWindow.setBorder(arr.hasBorder(winID));
                 		break;
         			}
         			case KahinaWindowType.VERT_SPLIT_WINDOW:
         			{
                 		KahinaWindow viewWindow = new KahinaVerticallySplitWindow(this, winID);
                 		viewWindow.setTitle(arr.getTitle(winID));
+                        viewWindow.setBorder(arr.hasBorder(winID));
                 		break;
         			}
         			case KahinaWindowType.TABBED_WINDOW:
         			{
                 		KahinaWindow viewWindow = new KahinaTabbedWindow(this, winID);
                 		viewWindow.setTitle(arr.getTitle(winID));
+                        viewWindow.setBorder(arr.hasBorder(winID));
                 		break;
         			}
         			default:

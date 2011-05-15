@@ -30,6 +30,8 @@ public class KahinaArrangement
 	private Map<Integer,Integer> height;
 	private Map<Integer,Integer> width;
 	private Map<Integer,String> title;
+	//border status of windows and views; also determines whether they are manipulable
+	Map<Integer,Boolean> border;
 	
 	//this mapping provides the connection between node data and (primary) associated view windows
 	//the keys of this mapping constitute the seed for bottom-up embedding tree construction
@@ -49,6 +51,7 @@ public class KahinaArrangement
 		height = new HashMap<Integer,Integer>();
 		width = new HashMap<Integer,Integer>();
 		title = new HashMap<Integer,String>();
+		border = new HashMap<Integer,Boolean>();
 		winIDToBinding = new HashMap<Integer,String>();
 		primaryWindow = new HashMap<String,Integer>();
 		windowType = new HashMap<Integer,Integer>();
@@ -103,6 +106,11 @@ public class KahinaArrangement
 		{
 			System.err.println("WARNING: Cannot change type of window " + windowID + " to " + type + "!");
 		}
+	}
+	
+	public void setBorder(int viewID, boolean bor)
+	{
+		border.put(viewID, bor);
 	}
 	
 	public void setEmbeddingWindowID(int windowID, int embeddingID)
@@ -171,6 +179,14 @@ public class KahinaArrangement
 	public int getWindowType(int windowID)
 	{
 		return windowType.get(windowID);
+	}
+	
+	//windows and views have borders by default
+	public boolean hasBorder(int viewID)
+	{
+		Boolean bor = border.get(viewID);
+		if (bor == null) return true;
+		return bor;
 	}
 	
 	public int getEmbeddingWindowID(int windowID)
@@ -260,6 +276,7 @@ public class KahinaArrangement
 				arr.setWidth(winID, XMLUtilities.attrIntVal(el, "kahina:width"));
 				arr.setHeight(winID, XMLUtilities.attrIntVal(el, "kahina:height"));
 				arr.setTitle(winID, XMLUtilities.attrStrVal(el, "kahina:title"));
+				arr.setBorder(winID, XMLUtilities.attrBoolVal(el, "kahina:border"));
 				String type = el.getLocalName();
 				//System.err.println("  Window is of type " + type + ".");
 				if (type.equals("default-window"))
@@ -304,6 +321,7 @@ public class KahinaArrangement
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:primary", (primaryWindow.get(winIDToBinding.get(windowID)) == windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:binding", winIDToBinding.get(windowID));
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:title", title.get(windowID));
+			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:border", border.get(windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:xpos", xPos.get(windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:ypos", yPos.get(windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:height", height.get(windowID) + "");
