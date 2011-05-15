@@ -26,26 +26,34 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 {
 	private static final long serialVersionUID = -8816851369583949953L;
 	
-    private HashMap<Integer,JCheckBoxMenuItem> windowEntries;
+    //private HashMap<Integer,JCheckBoxMenuItem> windowEntries;
     private KahinaWindowManager manager;
 
 	public KahinaViewMenu(KahinaWindowManager manager)
     {
         super("View"); 
         
-        windowEntries = new HashMap<Integer,JCheckBoxMenuItem>();
-        this.manager = manager;
-        
+        //windowEntries = new HashMap<Integer,JCheckBoxMenuItem>();
+        this.manager = manager;      
         manager.control.registerListener(KahinaEventTypes.WINDOW, this);
-        
+      
+        rebuild();
+    }
+	
+	public void rebuild()
+	{
+		this.removeAll();
+		
+		System.err.println("Top Level windows: " + manager.arr.getTopLevelWindowsWithoutMainWindow());
         for (int winID : manager.arr.getTopLevelWindowsWithoutMainWindow())
         {
+        	System.err.println("Win ID: " + winID);
         	KahinaWindow window = manager.getWindowByID(winID);
             JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(window.getTitle());
             windowCheckBoxItem.setActionCommand("toggleVisibility:" + window.getID());
             windowCheckBoxItem.addActionListener(this);
             windowCheckBoxItem.setSelected(manager.psp.isVisible(window.getID()));
-            windowEntries.put(window.getID(), windowCheckBoxItem);
+            //windowEntries.put(window.getID(), windowCheckBoxItem);
             this.add(windowCheckBoxItem);
         }
         
@@ -113,7 +121,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         savePerspectiveAsItem.setActionCommand("savePerspectiveAs");
         savePerspectiveAsItem.addActionListener(this);
         this.add(savePerspectiveAsItem);
-    }
+	}
 	
 	@Override
     public void actionPerformed(ActionEvent e)
@@ -207,7 +215,11 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 	private void processWindowEvent(KahinaWindowEvent e)
 	{
 		int type = e.getWindowEventType();
-		if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
+		if (type == KahinaWindowEventType.UPDATE_VIEW_MENU)
+		{
+			rebuild();
+		}
+		/*if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
 		{
 			//react to a window that is being closed
 			boolean newVisibility = manager.psp.isVisible(e.getWindowID());
@@ -260,6 +272,6 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
             windowCheckBoxItem.setSelected(true);
             windowEntries.put(e.getWindowID(), windowCheckBoxItem);
             this.add(windowCheckBoxItem,0);
-		} 
+		}*/ 
 	}
 }

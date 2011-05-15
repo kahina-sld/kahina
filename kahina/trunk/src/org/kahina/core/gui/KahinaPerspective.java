@@ -151,6 +151,18 @@ public class KahinaPerspective
 		return perspective;
 	}
 	
+	/**
+	 * Removes a window from the perspective.
+	 * Not well-defined for embedded windows that should be undocked prior to being disposed of.
+	 * @param winID the ID of the window to be removed
+	 */
+	public void disposeWindow(int winID)
+	{
+		config.remove(winID);
+		visible.remove(winID);
+		arr.disposeWindow(winID);
+	}
+	
 	public Element exportXML(Document dom)
 	{
 		Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:perspective");

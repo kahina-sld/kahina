@@ -121,6 +121,28 @@ public class KahinaArrangement
 		winIDToBinding.put(windowID,binding);
 	}
 	
+	/**
+	 * Removes all the data for some window, only for internal use.
+	 * To remove a window consistently, use KahinaWindowEventType.DISPOSE.
+	 * @param winID the ID of the window to be removed
+	 */
+	public void disposeWindow(int winID)
+	{
+		if (winIDToBinding.get(winID) != null && primaryWindow.get(winIDToBinding.get(winID)) == winID)
+		{
+			System.err.println("WARNING: removing a primary window! Inconsistencies may arise!");
+			primaryWindow.remove(winIDToBinding.get(winID));
+		}	
+		xPos.remove(winID);
+		yPos.remove(winID);
+		height.remove(winID);
+		width.remove(winID);
+		title.remove(winID);
+		winIDToBinding.remove(winID);
+		embeddingWindow.remove(winID);
+		windowType.remove(winID);
+	}
+	
 	public int getXPos(int windowID)
 	{
 		return xPos.get(windowID);

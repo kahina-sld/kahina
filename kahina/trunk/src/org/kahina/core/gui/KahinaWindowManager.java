@@ -338,7 +338,7 @@ public class KahinaWindowManager implements KahinaListener
             viewWindow.setSize(300,100);
             viewWindow.setLocation(200,200);
 	        viewWindow.setVisible(true);
-	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, viewWindow.getID()));
+	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, viewWindow.getID()));
 		} 
 		else if (type == KahinaWindowEventType.NEW_HORI_SPLIT)
 		{
@@ -349,7 +349,7 @@ public class KahinaWindowManager implements KahinaListener
             splitWindow.setSize(600,150);
             splitWindow.setLocation(200,200);
 	        splitWindow.setVisible(true);
-	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, splitWindow.getID()));
+	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, splitWindow.getID()));
 		} 
 		else if (type == KahinaWindowEventType.NEW_VERT_SPLIT)
 		{
@@ -360,7 +360,7 @@ public class KahinaWindowManager implements KahinaListener
             splitWindow.setSize(300,250);
             splitWindow.setLocation(200,200);
 	        splitWindow.setVisible(true);
-	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, splitWindow.getID()));
+	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, splitWindow.getID()));
 		} 
 		else if (type == KahinaWindowEventType.NEW_TABBED)
 		{
@@ -370,7 +370,7 @@ public class KahinaWindowManager implements KahinaListener
             tabbedWindow.setSize(300,250);
             tabbedWindow.setLocation(200,200);
 	        tabbedWindow.setVisible(true);
-	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, tabbedWindow.getID()));
+	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, tabbedWindow.getID()));
 		} 
 		else if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
 		{
@@ -387,6 +387,7 @@ public class KahinaWindowManager implements KahinaListener
 					window.setVisible(psp.isVisible(e.getWindowID()));
 					if (!window.isVisible()) window.dispose();
 				}
+				control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, e.getWindowID()));
 			}
 			else
 			{
@@ -398,12 +399,15 @@ public class KahinaWindowManager implements KahinaListener
 			psp.setVisibility(e.getWindowID(), false);
 			KahinaWindow window = windowByID.get(e.getWindowID());
 			window.dispose();
+			control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, e.getWindowID()));
 		} 
 		else if (type == KahinaWindowEventType.DISPOSE)
 		{
 			control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, e.getWindowID()));
 			control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, e.getWindowID()));
+			psp.disposeWindow(e.getWindowID());
 			windowByID.remove(e.getWindowID());
+			control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, e.getWindowID()));
 		} 
 		else if (type == KahinaWindowEventType.RENAME)
 		{
@@ -417,6 +421,7 @@ public class KahinaWindowManager implements KahinaListener
 				//TODO: switch titles of clones as well; let clones always have identical title + " (clone)"
 				window.setTitle(e.getStringContent());
 				window.mainPanel.repaint();
+				control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, e.getWindowID()));
 			}
 		} 
 		else if (type == KahinaWindowEventType.FLIP)
@@ -450,7 +455,7 @@ public class KahinaWindowManager implements KahinaListener
 			{
 				KahinaWindow cloneWindow = window.createDynamicClone();
 		        cloneWindow.setVisible(true);
-		        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, cloneWindow.getID()));
+		        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, cloneWindow.getID()));
 			}
 		} 
 		else if (type == KahinaWindowEventType.SNAPSHOT_CLONE)
@@ -464,7 +469,7 @@ public class KahinaWindowManager implements KahinaListener
 			{
 				KahinaWindow cloneWindow = window.createSnapshotClone();
 		        cloneWindow.setVisible(true);
-		        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, cloneWindow.getID()));
+		        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, cloneWindow.getID()));
 			}
 		} 
 		else if (type == KahinaWindowEventType.UNDOCK)
@@ -498,14 +503,14 @@ public class KahinaWindowManager implements KahinaListener
 					//complicated case: embeddingWindow was top level window
 					else
 					{
-						control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, embeddingWindow.getID()));
+						control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DISPOSE, embeddingWindow.getID()));
 						replacementWindow.setVisible(true);
-						control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, replacementWindow.getID()));
 					}
 					windowByID.remove(embeddingWindow.getID());
 					//register and display the undocked window
 					psp.setVisibility(e.getWindowID(), true);
 					window.setVisible(true);
+					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, e.getWindowID()));
 				}
 			}
 		} 
@@ -538,7 +543,7 @@ public class KahinaWindowManager implements KahinaListener
 				{
 					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, e.getWindowID()));
 					splitWindow.setVisible(true);
-					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, splitWindow.getID()));
+					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, splitWindow.getID()));
 				}
 			}
 		} 
@@ -570,7 +575,7 @@ public class KahinaWindowManager implements KahinaListener
 				{
 					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, e.getWindowID()));
 					splitWindow.setVisible(true);
-					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.ADD_VIEW_MENU_ENTRY, splitWindow.getID()));
+					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, splitWindow.getID()));
 				}
 			}
 		}
