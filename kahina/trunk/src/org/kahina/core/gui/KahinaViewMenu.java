@@ -27,6 +27,8 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 	private static final long serialVersionUID = -8816851369583949953L;
 	
     private KahinaWindowManager manager;
+    
+    private File lastPerspectiveFile;
 
 	public KahinaViewMenu(KahinaWindowManager manager)
     {
@@ -165,13 +167,38 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         	int counter = Integer.parseInt(s.substring(23));
         	KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_DEFAULT_PERSPECTIVE, counter));
         }
+        else if (s.equals("savePerspective"))
+        {
+        	if (lastPerspectiveFile != null)
+        	{
+        		KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.SAVE_PERSPECTIVE, lastPerspectiveFile));
+        	}
+        	else
+        	{
+        		this.actionPerformed(new ActionEvent(this,0,"savePerspectiveAs"));
+        	}
+        }
         else if (s.equals("savePerspectiveAs"))
         {
+        	String title = (String) JOptionPane.showInputDialog(this,
+                    "Enter a name for the perspective.",
+                    "Save Perspective",
+                    JOptionPane.PLAIN_MESSAGE);
+        	if (title.length() > 0)
+        	{
+        		manager.psp.setName(title);
+        	}
+        	else
+        	{
+        		JOptionPane.showMessageDialog(this, "Empty string is not a valid name!");
+        	}
+        	
             JFileChooser chooser = new JFileChooser(new File("."));
             chooser.setDialogTitle("Save Perspective As");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
             if (dataFile != null)  KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.SAVE_PERSPECTIVE, dataFile));
+            lastPerspectiveFile = dataFile;
         }
     }
 	

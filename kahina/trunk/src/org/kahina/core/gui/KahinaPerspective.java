@@ -202,6 +202,11 @@ public class KahinaPerspective
 		return name;
 	}
 	
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+	
 	public KahinaArrangement getArrangement()
 	{
 		return arr;
