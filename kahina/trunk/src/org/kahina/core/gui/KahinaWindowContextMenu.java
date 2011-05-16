@@ -21,17 +21,15 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 	{
 		this.w = w;
 		
-		if (w.isTopLevelWindow())
-		{
-			JCheckBoxMenuItem decorationsItem = new JCheckBoxMenuItem("Show Decorations");
-			decorationsItem.addActionListener(this);
-			this.add(decorationsItem);
-			
-			this.addSeparator();
-		}
-		
 		if (!w.isDummyWindow())
 		{
+			JMenuItem fuseItem = new JCheckBoxMenuItem("Fuse / Remove Frame");
+			fuseItem.setActionCommand("Fuse");
+			fuseItem.addActionListener(this);
+			this.add(fuseItem);
+			
+			this.addSeparator();
+			
 			JMenuItem renameItem = new JMenuItem("Rename");
 			renameItem.addActionListener(this);
 			this.add(renameItem);
@@ -144,6 +142,10 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		else if (s.equals("Dispose"))
 		{
 			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DISPOSE, w.getID()));
+		}
+		else if (s.equals("Fuse"))
+		{
+			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.FUSE, w.getID()));
 		}
 	}
 	

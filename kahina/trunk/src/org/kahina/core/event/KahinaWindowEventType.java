@@ -17,4 +17,5 @@ public class KahinaWindowEventType
     public static final int DYNAMIC_CLONE = 12;
     public static final int SNAPSHOT_CLONE = 13;
     public static final int DISPOSE = 14;
+    public static final int FUSE = 15;
 }
