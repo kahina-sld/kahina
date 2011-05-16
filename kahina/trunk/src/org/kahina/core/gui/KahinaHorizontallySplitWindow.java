@@ -147,6 +147,14 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     	setRightWindow(tempWindow);
     }
     
+    public void flipSubwindowsIfIndicatedByCoordinates()
+    {
+    	if (wm.arr.getXPos(leftWindow.getID()) > wm.arr.getXPos(rightWindow.getID()))
+    	{
+    		flipSubwindows();
+    	}
+    }
+    
     public KahinaWindow createDynamicClone()
     {
     	KahinaHorizontallySplitWindow cloneWindow = new KahinaHorizontallySplitWindow(wm);

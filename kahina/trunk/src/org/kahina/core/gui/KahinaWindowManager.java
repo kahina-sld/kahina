@@ -156,6 +156,24 @@ public class KahinaWindowManager implements KahinaListener
             w.setLocation(arr.getXPos(w.getID()), arr.getYPos(w.getID()));
         }
         
+        //... flip the subwindows of composed windows if inconsistent with the coordinates ...
+        for (int winID : arr.getAllWindows())
+        {
+	        switch (arr.getWindowType(winID))
+			{
+				case KahinaWindowType.HORI_SPLIT_WINDOW:
+				{
+	        		((KahinaHorizontallySplitWindow) windowByID.get(winID)).flipSubwindowsIfIndicatedByCoordinates();
+	        		break;
+				}
+				case KahinaWindowType.VERT_SPLIT_WINDOW:
+				{
+					((KahinaVerticallySplitWindow) windowByID.get(winID)).flipSubwindowsIfIndicatedByCoordinates();
+	        		break;
+				}
+			}
+        }
+        
         //... fill the default windows with the content specified by the bindings ... 
         for (int winID : arr.getDefaultWindows())
         {    

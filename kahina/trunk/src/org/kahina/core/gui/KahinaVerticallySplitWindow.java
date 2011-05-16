@@ -147,6 +147,14 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	setLowerWindow(tempWindow);
     }
     
+    public void flipSubwindowsIfIndicatedByCoordinates()
+    {
+    	if (wm.arr.getYPos(upperWindow.getID()) > wm.arr.getYPos(lowerWindow.getID()))
+    	{
+    		flipSubwindows();
+    	}
+    }
+    
     public KahinaWindow createDynamicClone()
     {
     	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm);
