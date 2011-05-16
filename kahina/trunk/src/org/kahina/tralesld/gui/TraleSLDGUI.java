@@ -94,7 +94,6 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 			windowManager = createWindowManager(this, control);
 			
 			//TODO: load last perspective instead of only default perspective from XML
-			//File xmlFile = new File("src/org/kahina/tralesld/gui/tralesld-manywindows.xml");
 			File xmlFile = new File(TraleSLDGUI.class.getResource("tralesld-manywindows.xml").getFile());
 			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLFile(xmlFile, false).getDocumentElement()));
 			

@@ -18,5 +18,10 @@ public class TraleSLDWindowManager extends KahinaWindowManager
 	{
 		return new TraleSLDMainWindow(windowManager, control, kahina);
 	}
+    
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
+	{
+		return new TraleSLDMainWindow(this, control, kahina, winID);
+	}
 
 }

@@ -15,5 +15,11 @@ public class TraleSLDMainWindow extends KahinaMainWindow
 		super(windowManager, control, kahina);
 		menuBar.add(new TraleSLDParseMenu(kahina), 2);
 	}
+	
+	public TraleSLDMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
+	{
+		super(windowManager, control, kahina, winID);
+		menuBar.add(new TraleSLDParseMenu(kahina), 2);
+	}
 
 }

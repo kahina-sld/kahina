@@ -171,6 +171,7 @@ public class KahinaWindowManager implements KahinaListener
 					((KahinaVerticallySplitWindow) windowByID.get(winID)).flipSubwindowsIfIndicatedByCoordinates();
 	        		break;
 				}
+				//TODO: adapt this system for tabbed windows as well (sorting involved!)
 			}
         }
         
