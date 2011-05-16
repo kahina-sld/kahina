@@ -411,7 +411,16 @@ public class KahinaWindowManager implements KahinaListener
 			win.setBorder(false);
 			win.validate();
 			win.repaint();
+			control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, e.getWindowID()));
 		} 
+		else if (type == KahinaWindowEventType.RESTORE_FRAME)
+		{
+			KahinaWindow win = windowByID.get(e.getWindowID());
+			win.setBorder(true);
+			win.validate();
+			win.repaint();
+			control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, e.getWindowID()));
+		}
 		else if (type == KahinaWindowEventType.DISPOSE)
 		{
 			control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, e.getWindowID()));

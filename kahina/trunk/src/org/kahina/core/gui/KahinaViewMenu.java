@@ -75,6 +75,23 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         newTabbedWindowItem.setActionCommand("newTabbedWindow");
         newTabbedWindowItem.addActionListener(this);
         this.add(newTabbedWindowItem);
+        
+        this.addSeparator();
+        
+        JMenu restoreFrameMenu = new JMenu("Restore Frame");
+        
+        for (int winID : manager.psp.arr.getAllWindows())
+        {
+        	if (!manager.psp.arr.hasBorder(winID))
+        	{
+        		JMenuItem restoreFrameItem = new JMenuItem(manager.psp.arr.getTitle(winID));
+        		restoreFrameItem.setActionCommand("restoreFrame:" + winID);
+        		restoreFrameItem.addActionListener(this);
+        		restoreFrameMenu.add(restoreFrameItem);
+        	}
+        }
+        
+        this.add(restoreFrameMenu);
 
         this.addSeparator();
         
@@ -148,6 +165,11 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         {
             int windowID = Integer.parseInt(s.substring(s.indexOf(':') + 1));
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, windowID));
+        }
+        else if (s.startsWith("restoreFrame:"))
+        {
+        	int windowID = Integer.parseInt(s.substring(s.indexOf(':') + 1));
+        	KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RESTORE_FRAME, windowID));
         }
         else if (s.equals("loadPerspective"))
         {
