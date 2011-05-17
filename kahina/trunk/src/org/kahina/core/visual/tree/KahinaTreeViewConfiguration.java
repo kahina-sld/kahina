@@ -2,9 +2,11 @@ package org.kahina.core.visual.tree;
 
 import java.awt.Color;
 
+import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.visual.KahinaViewConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 {
@@ -322,6 +324,77 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 	public static KahinaTreeViewConfiguration importXML(Element configEl)
 	{
 		KahinaTreeViewConfiguration config = new KahinaTreeViewConfiguration();
+		Element optionEl = null;
+		NodeList optionsList = configEl.getElementsByTagName("kahina:option");
+		for (int i = 0; i < optionsList.getLength(); i++)
+		{
+			optionEl = (Element) optionsList.item(i);
+			String optName = XMLUtilities.attrStrVal(optionEl, "kahina:name");
+			if (optName.equals("horizontalDistance"))
+			{
+				config.horizontalDistance = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("verticalDistance"))
+			{
+				config.verticalDistance = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("fontSize"))
+			{
+				config.fontSize = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("displaySecondDimension"))
+			{
+				config.displaySecondDimension = XMLUtilities.attrBoolVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("bgColor"))
+			{
+				
+			}
+			else if (optName.equals("nodeShapePolicy"))
+			{
+				config.nodeShapePolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("edgeShapePolicy"))
+			{
+				config.edgeShapePolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("nodeDisplayPolicy"))
+			{
+				config.nodeDisplayPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("collapsePolicy"))
+			{
+				config.collapsePolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("terminalsPolicy"))
+			{
+				config.terminalsPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("lineShapePolicy"))
+			{
+				config.lineShapePolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("secondaryLineShapePolicy"))
+			{
+				config.secondaryLineShapePolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("nodePositionPolicy"))
+			{
+				config.nodePositionPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("antialiasingPolicy"))
+			{
+				config.antialiasingPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("displayOrientation"))
+			{
+				config.displayOrientation = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("cuttingPolicy"))
+			{
+				config.cuttingPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+		}
 		return config;
 	}
 	
