@@ -69,7 +69,8 @@ public class VisualizationUtility
 				System.err.println(this + ".visualize(" + grisuMessage + ")");
 			}
 			return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView().getCanvas();
-		} catch (ParseException e)
+		} 
+		catch (Exception e)
 		{
 			JPanel result = new JPanel();
 			result.add(new JLabel("Parse error: \n" + e.getMessage() + "\nGrisu message was: \n" + grisuMessage));
