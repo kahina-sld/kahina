@@ -160,6 +160,9 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 	//TODO: define a configuration that does not only configure the top layer
 	public void setConfig(KahinaViewConfiguration config)
 	{
+		System.err.print("Setting a tree view configuration! ");
+		System.err.print(((KahinaTreeViewConfiguration) config).bgColor + " ");
+		System.err.println(((KahinaTreeViewConfiguration) config).getVerticalDistance());
 		views[0].setConfig(config);
 	}
 }
