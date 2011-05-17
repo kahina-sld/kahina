@@ -1,5 +1,6 @@
 package org.kahina.core.io.util;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -148,6 +149,35 @@ public class XMLUtilities
 	public static boolean attrBoolVal(Element el, String attrName)
 	{
 		return Boolean.parseBoolean(el.getAttribute(attrName));
+	}
+	
+	/**
+	 * Constructs a color from an attribute value in an XML document.
+	 * Expects the color to be encoded as color(R,G,B).
+	 * Outputs an informative error message and returns Color.WHITE on error.
+	 * @param el the element whose attribute we access
+	 * @param attrName name of the attribute whose value encodes the color
+	 * @return the color at the specified element and attribute
+	 */
+	public static Color attrColorVal(Element el, String attrName)
+	{
+		String colorString = el.getAttribute(attrName);
+		if (!(colorString.startsWith("(") && colorString.endsWith(")")))
+		{
+			System.err.println("ERROR: color descriptions must be in brackets!");
+			return Color.WHITE;
+		}
+		colorString = colorString.substring(1,colorString.length() - 1);
+		String[] values = colorString.split(",");
+		if (values.length != 3)
+		{
+			System.err.println("ERROR: color descriptions must consist of three comma-separated integers!");
+			return Color.WHITE;
+		}
+		int red = Integer.parseInt(values[0]);
+		int green = Integer.parseInt(values[1]);
+		int blue = Integer.parseInt(values[2]);
+		return new Color(red,green,blue);
 	}
 	
 	public static int attrIntVal(Element el, String attrName)

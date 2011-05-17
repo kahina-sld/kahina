@@ -348,7 +348,7 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 			}
 			else if (optName.equals("bgColor"))
 			{
-				
+				config.bgColor = XMLUtilities.attrColorVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("nodeShapePolicy"))
 			{
@@ -425,7 +425,7 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 		
 		Element bgColorEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
 		bgColorEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","bgColor");
-		bgColorEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",bgColor.toString());	
+		bgColorEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value","(" + bgColor.getRed() + "," + bgColor.getGreen() + "," + bgColor.getBlue() + ")");	
 		el.appendChild(bgColorEl);
 		
 		Element nodeShapePolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");

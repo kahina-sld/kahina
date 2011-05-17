@@ -23,7 +23,7 @@
     <kahina:configuration kahina:type="org.kahina.core.visual.chart.KahinaChartViewConfiguration" kahina:viewid="3">
       <kahina:option kahina:name="cellWidth" kahina:value="150"/>
       <kahina:option kahina:name="fontSize" kahina:value="10"/>
-      <kahina:option kahina:name="bgColor" kahina:value="java.awt.Color[r=255,g=255,b=255]"/>
+      <kahina:option kahina:name="bgColor" kahina:value="(255,255255)"/>
       <kahina:option kahina:name="cellWidthPolicy" kahina:value="1"/>
       <kahina:option kahina:name="edgeStackingPolicy" kahina:value="1"/>
       <kahina:option kahina:name="displayRangePolicy" kahina:value="0"/>
@@ -46,7 +46,7 @@
       <kahina:option kahina:name="verticalDistance" kahina:value="3"/>
       <kahina:option kahina:name="fontSize" kahina:value="10"/>
       <kahina:option kahina:name="displaySecondDimension" kahina:value="false"/>
-      <kahina:option kahina:name="bgColor" kahina:value="java.awt.Color[r=255,g=255,b=255]"/>
+      <kahina:option kahina:name="bgColor" kahina:value="(255,255,255)"/>
       <kahina:option kahina:name="nodeShapePolicy" kahina:value="0"/>
       <kahina:option kahina:name="edgeShapePolicy" kahina:value="1"/>
       <kahina:option kahina:name="nodeDisplayPolicy" kahina:value="1"/>
