@@ -30,11 +30,11 @@
     <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="2"/>
     <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="3"/>
     <kahina:configuration kahina:type="org.kahina.core.visual.tree.KahinaTreeViewConfiguration" kahina:viewid="4">
-      <kahina:option kahina:name="horizontalDistance" kahina:value="10"/>
-      <kahina:option kahina:name="verticalDistance" kahina:value="2"/>
+      <kahina:option kahina:name="horizontalDistance" kahina:value="18"/>
+      <kahina:option kahina:name="verticalDistance" kahina:value="10"/>
       <kahina:option kahina:name="fontSize" kahina:value="10"/>
       <kahina:option kahina:name="displaySecondDimension" kahina:value="true"/>
-      <kahina:option kahina:name="bgColor" kahina:value="(255,255,255)"/>
+      <kahina:option kahina:name="bgColor" kahina:value="(255,255,0)"/>
       <kahina:option kahina:name="nodeShapePolicy" kahina:value="0"/>
       <kahina:option kahina:name="edgeShapePolicy" kahina:value="1"/>
       <kahina:option kahina:name="nodeDisplayPolicy" kahina:value="1"/>

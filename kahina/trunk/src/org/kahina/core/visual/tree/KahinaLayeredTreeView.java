@@ -8,6 +8,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
+import org.kahina.core.visual.KahinaViewConfiguration;
 
 public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 {
@@ -154,5 +155,11 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 	public KahinaTreeViewConfiguration getConfig()
 	{
 		return views[0].getConfig();
+	}
+	
+	//TODO: define a configuration that does not only configure the top layer
+	public void setConfig(KahinaViewConfiguration config)
+	{
+		views[0].setConfig(config);
 	}
 }
