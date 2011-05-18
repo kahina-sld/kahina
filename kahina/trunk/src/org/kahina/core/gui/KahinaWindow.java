@@ -87,7 +87,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	wm.psp.arr.setBorder(windowID, border);
     	if (border)
     	{
-        	mainPanel.setBorder(BorderFactory.createTitledBorder(this.getTitle()));
+        	mainPanel.setBorder(BorderFactory.createTitledBorder(mainPanel.title));
     	}
     	else
     	{

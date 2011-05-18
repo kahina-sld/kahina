@@ -67,7 +67,7 @@ public class KahinaTabbedWindow  extends KahinaWindow
     		removedWindow.setLocation(this.getX() + 30, this.getY() + index * 50);
     		
     		removedWindow.setContentPane((Container) tabbedPane.getComponents()[index]);
-    		//tabbedPane.remove(index);
+    		windows.remove(removedWindow);
     	}
     	else
     	{
