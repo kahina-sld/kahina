@@ -147,17 +147,17 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         }
         else if (s.equals("newVertSplitWindow"))
         {	
-        	String title = getNewUniqueTitle("Vertically Split Window");
+        	String title = getNewTitle("Vertically Split Window");
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_VERT_SPLIT, -1, title));
         }
         else if (s.equals("newHoriSplitWindow"))
         {	
-        	String title = getNewUniqueTitle("Horizontally Split Window");
+        	String title = getNewTitle("Horizontally Split Window");
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_HORI_SPLIT, -1, title));
         }
         else if (s.equals("newTabbedWindow"))
         {	
-        	String title = getNewUniqueTitle("Tabbed Window");
+        	String title = getNewTitle("Tabbed Window");
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, -1, title));
         }
         else if (s.startsWith("toggleVisibility"))
@@ -223,28 +223,12 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         }
     }
 	
-	private String getNewUniqueTitle(String windowType)
+	private String getNewTitle(String windowType)
 	{
-		String title;
-		//uniqueness check not needed any more, code and function name remain for legacy reasons
-    	//while (true)
-    	{
-    		title = (String) JOptionPane.showInputDialog(this,
-                "Enter a unique title for the new window.",
+		return (String) JOptionPane.showInputDialog(this,
+                "Enter a title for the new window.",
                 "New " + windowType,
                 JOptionPane.PLAIN_MESSAGE);
-    		/*if (manager.getWindowByID(title) != null)
-    		{
-    			JOptionPane.showMessageDialog(this,
-    				    "A window with that name already exists.", 
-    				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
-    		}
-    		else
-    		{
-    			break;
-    		}*/
-    	}
-    	return title;
 	}
 	
 	public void processEvent(KahinaEvent e)

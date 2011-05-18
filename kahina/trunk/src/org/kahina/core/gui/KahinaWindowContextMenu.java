@@ -90,7 +90,7 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		}
 		else if (s.equals("Rename"))
 		{
-        	String title = getNewUniqueTitle("Enter a new and unique title for the window.", "Rename window");
+        	String title = getNewTitle("Enter a new title for the window.", "Rename window");
         	if (title != null)
         	{
         		KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RENAME, w.getID(), title));
@@ -110,7 +110,7 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		}
 		else if (s.equals("Vertical Split"))
 		{
-        	String title = getNewUniqueTitle("Enter a new and unique title for the split window.", "Split window");
+        	String title = getNewTitle("Enter a title for the split window.", "Split window");
         	if (title != null)
         	{
         		KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.VERT_SPLIT, w.getID(), title));
@@ -118,18 +118,11 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		}
 		else if (s.equals("Horizontal Split"))
 		{
-        	String title = getNewUniqueTitle("Enter a new and unique title for the split window.", "Split window");
+        	String title = getNewTitle("Enter a title for the split window.", "Split window");
         	if (title != null)
         	{
         		KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.HORI_SPLIT, w.getID(), title));
         	}
-		}
-		else if (s.equals("Show Decorations"))
-		{
-			//TODO: this will not work, as Swing refuses to remove window decorations!
-        	w.setVisible(false);
-        	w.setUndecorated(!w.isUndecorated());
-        	w.setVisible(true);
 		}
 		else if (s.equals("Close"))
 		{
@@ -149,27 +142,12 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		}
 	}
 	
-	private String getNewUniqueTitle(String description, String dialogTitle)
+	private String getNewTitle(String description, String dialogTitle)
 	{
-		String title;
-    	//while (true)
-    	{
-    		title = (String) JOptionPane.showInputDialog(this,
+		return (String) JOptionPane.showInputDialog(this,
                 description,
                 dialogTitle,
                 JOptionPane.PLAIN_MESSAGE);
-    		/*if (w.wm.getWindowByID(title) != null)
-    		{
-    			JOptionPane.showMessageDialog(this,
-    				    "A window with that name already exists.", 
-    				    "Uniqueness Enforcement",JOptionPane.WARNING_MESSAGE);
-    		}
-    		else
-    		{
-    			break;
-    		}*/
-    	}
-    	return title;
 	}
 	
     public static JPopupMenu getMenu(KahinaWindow w)
