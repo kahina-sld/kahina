@@ -531,7 +531,7 @@ public class KahinaWindowManager implements KahinaListener
 				{
 					//let the embeddingWindow release the window and provide an appropriate replacement
 					KahinaWindow replacementWindow = embeddingWindow.getReplacementAfterRelease(window);
-					//simpler case: embeddingWindow was embedded
+					//complicated case: embeddingWindow was embedded
 					if (!embeddingWindow.isTopLevelWindow())
 					{
 						KahinaWindow embEmbeddingWindow = embeddingWindow.getEmbeddingWindow();
@@ -539,13 +539,17 @@ public class KahinaWindowManager implements KahinaListener
 						embEmbeddingWindow.validate();
 						embEmbeddingWindow.repaint();
 					}
-					//complicated case: embeddingWindow was top level window
+					//simple case: embeddingWindow was top level window
 					else
 					{
 						replacementWindow.setVisible(true);
 					}
-					control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DISPOSE, embeddingWindow.getID()));
-					windowByID.remove(embeddingWindow.getID());
+					//the two windows are equal in the case of a tabbed window
+					if (embeddingWindow != replacementWindow)
+					{
+						control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DISPOSE, embeddingWindow.getID()));
+						windowByID.remove(embeddingWindow.getID());
+					}
 					//register and display the undocked window
 					psp.setVisibility(e.getWindowID(), true);
 					window.setVisible(true);
@@ -625,7 +629,7 @@ public class KahinaWindowManager implements KahinaListener
 		return KahinaPerspective.importXML(XMLUtilities.parseXMLFile(file, false).getDocumentElement());
 	}
 	
-	//by default, 5 recent perspectives are kept in memory
+	//by default, the five most recent perspectives are kept in memory
 	private void registerRecentPerspective(KahinaPerspective psp)
 	{
 		recentPerspectives.add(0,psp);
