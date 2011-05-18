@@ -132,6 +132,11 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		return config;
 	}
 	
+	public void setConfig(KahinaTreeViewConfiguration config)
+	{
+		this.config = config;
+	}
+	
 	public boolean isSecondDimensionDisplayed()
 	{
 		return config.isSecondDimensionDisplayed() && secondaryTreeModel != null;
