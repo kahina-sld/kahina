@@ -23,7 +23,7 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		
 		if (!w.isDummyWindow())
 		{
-			JMenuItem fuseItem = new JCheckBoxMenuItem("Fuse / Remove Frame");
+			JMenuItem fuseItem = new JMenuItem("Fuse / Remove Frame");
 			fuseItem.setActionCommand("Fuse");
 			fuseItem.addActionListener(this);
 			this.add(fuseItem);
@@ -57,22 +57,22 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 			this.add(snapCloneItem);
 			
 			this.addSeparator();
-			
-			JMenuItem vertSplitItem = new JMenuItem("Vertical Split");
-			vertSplitItem.addActionListener(this);
-			this.add(vertSplitItem);
-			JMenuItem horiSplitItem = new JMenuItem("Horizontal Split");
-			horiSplitItem.addActionListener(this);
-			this.add(horiSplitItem);
+		}
 		
-			this.addSeparator();
+		JMenuItem vertSplitItem = new JMenuItem("Vertical Split");
+		vertSplitItem.addActionListener(this);
+		this.add(vertSplitItem);
+		JMenuItem horiSplitItem = new JMenuItem("Horizontal Split");
+		horiSplitItem.addActionListener(this);
+		this.add(horiSplitItem);
+	
+		this.addSeparator();
 		
-			if (w.isContentWindow() && w.isClone())
-			{
-				JMenuItem disposeItem = new JMenuItem("Dispose");
-				disposeItem.addActionListener(this);
-				this.add(disposeItem);
-			}
+		if (w.isContentWindow() && w.isClone())
+		{
+			JMenuItem disposeItem = new JMenuItem("Dispose");
+			disposeItem.addActionListener(this);
+			this.add(disposeItem);
 		}
 		
 		JMenuItem closeItem = new JMenuItem("Close");
