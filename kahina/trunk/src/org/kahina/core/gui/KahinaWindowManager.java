@@ -567,6 +567,10 @@ public class KahinaWindowManager implements KahinaListener
 			}
 			else
 			{
+				if (window.isDummyWindow())
+				{
+					window.setTitle("Empty view");
+				}
 				KahinaWindow oldEmbeddingWindow = window.getEmbeddingWindow();
 				KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this);
 		        splitWindow.setTitle(e.getStringContent());
@@ -599,6 +603,10 @@ public class KahinaWindowManager implements KahinaListener
 			}
 			else
 			{
+				if (window.isDummyWindow())
+				{
+					window.setTitle("Empty view");
+				}
 				KahinaWindow oldEmbeddingWindow = window.getEmbeddingWindow();
 				KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this);
 		        splitWindow.setTitle(e.getStringContent());

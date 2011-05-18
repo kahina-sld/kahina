@@ -143,8 +143,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         String s = e.getActionCommand();
         if (s.equals("newDefaultWindow"))
         {	
-        	String title = getNewUniqueTitle("Default Window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_DEFAULT, -1, title));
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_DEFAULT, -1, "Empty view"));
         }
         else if (s.equals("newVertSplitWindow"))
         {	
