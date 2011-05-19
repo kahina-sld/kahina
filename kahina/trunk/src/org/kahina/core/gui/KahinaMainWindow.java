@@ -23,22 +23,18 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	private static final long serialVersionUID = 4400677323996243739L;
 
 	public static boolean verbose = false;
-
-	public KahinaWindowManager windowManager;
 	
 	protected JMenuBar menuBar;
 
 	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
 	{
 		super(windowManager);
-		this.windowManager = windowManager;
 		initialize(control);
 	}
 	
 	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
 	{
 		super(windowManager,winID);
-		this.windowManager = windowManager;
 		initialize(control);
 	}
 	
@@ -53,7 +49,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		menuBar = new JMenuBar();
 		menuBar.add(new KahinaSessionMenu());
-		menuBar.add(new KahinaViewMenu(windowManager));
+		menuBar.add(new KahinaViewMenu(wm));
 		
 		// TODO these three menus are specific to logic programming, should be added in subclasses
 		menuBar.add(new KahinaBreakpointMenu());
@@ -62,8 +58,9 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		menuBar.add(new KahinaHelpMenu());
 		this.setJMenuBar(menuBar);
 
-		windowManager.gui.getControlPanel().build();
-		this.add(windowManager.gui.getControlPanel(), BorderLayout.PAGE_START);
+		//TODO: change this to reflect the new way of treating control buttons
+		wm.gui.getControlPanel().build();
+		this.add(wm.gui.getControlPanel(), BorderLayout.PAGE_START);
 
 		// TODO: adapt this to the size of the control panel
 		int width = 625;
@@ -85,7 +82,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 	private void disposeAllWindows()
 	{
-		windowManager.disposeAllWindows();
+		wm.disposeAllWindows();
 	}
 
 	@Override

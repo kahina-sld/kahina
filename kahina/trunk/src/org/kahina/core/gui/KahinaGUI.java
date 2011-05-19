@@ -52,6 +52,7 @@ public class KahinaGUI implements KahinaListener
 	protected List<KahinaView<?>> views;
 	protected KahinaWindowManager windowManager;
 
+	//TODO: overhaul the treatment of clones that is currently inconsistent
 	protected Set<KahinaView<?>> livingViews;
 
 	Map<Field, KahinaView<? extends KahinaObject>> fieldToView;
