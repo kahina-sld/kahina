@@ -48,6 +48,9 @@ public class KahinaWindowManager implements KahinaListener
 		control.registerListener(KahinaEventTypes.PERSPECTIVE, this);
 		control.registerListener(KahinaEventTypes.WINDOW, this);
 		
+		psp = new KahinaPerspective("Default", "default");
+		arr = psp.getArrangement();
+		
         this.windowByID = new HashMap<Integer,KahinaWindow>();
         
         recentPerspectives = new LinkedList<KahinaPerspective>();

@@ -11,6 +11,7 @@ import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.gui.KahinaControlButtonWindow;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.breakpoint.BreakpointEditorWindow;
 import org.kahina.core.gui.breakpoint.ThresholdedBreakpointEditorWindow;
@@ -39,7 +40,19 @@ public class LogicProgrammingGUI extends KahinaGUI
 		views.add(mainTreeView);
 		livingViews.add(mainTreeView);
 		varNameToView.put("controlFlowTree", mainTreeView);
+		
+		//TODO: make this new version the only way of defining the control buttons
+		KahinaControlButtonWindow controlWindow = new KahinaControlButtonWindow(windowManager);
+		controlWindow.setTitle("Control");
+		controlWindow.addControlButton("creep.png", "creep", "(C)ontinue to next step", KeyEvent.VK_C);
+		controlWindow.addControlButton("roundskip.png", "auto-complete", "(A)uto-complete this step", KeyEvent.VK_A);
+		controlWindow.addControlButton("pause.png", "(un)pause", "(P)ause the current skip operation", KeyEvent.VK_P);
+		controlWindow.addControlButton("skip.png", "skip", "(S)kip this step", KeyEvent.VK_S);
+		controlWindow.addControlButton("reject.png", "fail", "make this step (F)ail", KeyEvent.VK_F);
+		controlWindow.addControlButton("leap.png", "leap", "(L)eap to next breakpoint match", KeyEvent.VK_L);
+		controlWindow.addControlButton("stop.png", "stop", "abort skip or leap (X)", KeyEvent.VK_X);
 
+		//TODO: remove this legacy way of defining the control buttons
 		getControlPanel().addControlButtonGroup("Control");
 		getControlPanel().addControlButton("creep.png", "creep", "(C)ontinue to next step", "Control", KeyEvent.VK_C);
 		getControlPanel().addControlButton("roundskip.png", "auto-complete", "(A)uto-complete this step", "Control", KeyEvent.VK_A);

@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -45,6 +46,7 @@ public class KahinaGUI implements KahinaListener
 
 	KahinaSelectionHistory selectionHistory;
 
+	List<KahinaControlButtonWindow> controlWindows;
 	KahinaControlPanel controlPanel;
 
 	protected KahinaTextView messageConsoleView;
@@ -75,7 +77,10 @@ public class KahinaGUI implements KahinaListener
 		control.registerListener(KahinaEventTypes.WARN, this);
 
 		this.selectionHistory = new KahinaSelectionHistory(control);
+		
+		this.windowManager = createWindowManager(this, control);
 
+		this.controlWindows = new LinkedList<KahinaControlButtonWindow>();
 		this.controlPanel = new KahinaControlPanel();
 
 		this.views = new ArrayList<KahinaView<?>>();
@@ -127,6 +132,11 @@ public class KahinaGUI implements KahinaListener
 			}
 		}
 	}
+	
+	public List<KahinaControlButtonWindow> getControlWindows()
+	{
+		return controlWindows;
+	}
 
 	public KahinaControlPanel getControlPanel()
 	{
@@ -166,7 +176,6 @@ public class KahinaGUI implements KahinaListener
 
 	public void prepare(KahinaController control)
 	{
-		windowManager = createWindowManager(this, control);
 		windowManager.createWindows(KahinaPerspective.generateDefaultPerspective(varNameToView));
 		displayMainViews();
 	}	
