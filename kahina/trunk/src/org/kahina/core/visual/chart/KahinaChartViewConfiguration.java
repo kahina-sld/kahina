@@ -2,9 +2,12 @@ package org.kahina.core.visual.chart;
 
 import java.awt.Color;
 
+import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.visual.KahinaViewConfiguration;
+import org.kahina.core.visual.tree.KahinaTreeViewConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class KahinaChartViewConfiguration extends KahinaViewConfiguration
 {
@@ -200,6 +203,64 @@ public class KahinaChartViewConfiguration extends KahinaViewConfiguration
     {
         return cellWidth;
     }
+    
+	public static KahinaChartViewConfiguration importXML(Element configEl)
+	{
+		KahinaChartViewConfiguration config = new KahinaChartViewConfiguration();
+		Element optionEl = null;
+		NodeList optionsList = configEl.getElementsByTagName("kahina:option");
+		for (int i = 0; i < optionsList.getLength(); i++)
+		{
+			optionEl = (Element) optionsList.item(i);
+			String optName = XMLUtilities.attrStrVal(optionEl, "kahina:name");
+			if (optName.equals("cellWidth"))
+			{
+				config.cellWidth = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("fontSize"))
+			{
+				config.fontSize = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("bgColor"))
+			{
+				config.bgColor = XMLUtilities.attrColorVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("cellWidthPolicy"))
+			{
+				config.cellWidthPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("edgeStackingPolicy"))
+			{
+				config.edgeStackingPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("displayRangePolicy"))
+			{
+				config.displayRangePolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("dependencyDisplayPolicy"))
+			{
+				config.dependencyDisplayPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("transitiveAncestors"))
+			{
+				config.transitiveAncestors = XMLUtilities.attrBoolVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("transitiveDescendants"))
+			{
+				config.transitiveDescendants = XMLUtilities.attrBoolVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("antialiasingPolicy"))
+			{
+				config.antialiasingPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			else if (optName.equals("displayOrientation"))
+			{
+				config.displayOrientation = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+			}
+			//TODO: import display decider
+		}
+		return config;
+	}
     
 	public Element exportXML(Document dom)
 	{
