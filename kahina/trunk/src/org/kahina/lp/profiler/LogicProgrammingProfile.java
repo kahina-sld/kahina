@@ -19,13 +19,15 @@ public class LogicProgrammingProfile implements Serializable
 	 */
 	private static final long serialVersionUID = 4869556554829662187L;
 	
-	private static final String[] COLUMN_NAMES = {"Category", "Name", "Calls", "Redos", "Exits", "Fails"};
+	private static final String[] COLUMN_NAMES = {"Category", "Name", "Calls", "Redos", "Exits", "Fails", "Exceptions"};
 
 	private static final boolean VERBOSE = false;
 
 	private final Map<ProfileEntry, Integer> callsByEntry = new HashMap<ProfileEntry, Integer>();
 	
 	private final Map<ProfileEntry, Integer> failsByEntry = new HashMap<ProfileEntry, Integer>();
+	
+	private final Map<ProfileEntry, Integer> exceptionsByEntry = new HashMap<ProfileEntry, Integer>();
 	
 	private final Map<ProfileEntry, Integer> exitsByEntry = new HashMap<ProfileEntry, Integer>();
 	
@@ -61,6 +63,15 @@ public class LogicProgrammingProfile implements Serializable
 		count(entry, failsByEntry);
 	}
 
+	public void exception(ProfileEntry entry)
+	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".exception(" + entry + ")");
+		}
+		count(entry, exceptionsByEntry);
+	}
+
 	public void exit(ProfileEntry entry)
 	{
 		count(entry, exitsByEntry);
@@ -73,6 +84,7 @@ public class LogicProgrammingProfile implements Serializable
 		entrySet.addAll(redosByEntry.keySet());
 		entrySet.addAll(exitsByEntry.keySet());
 		entrySet.addAll(failsByEntry.keySet());
+		entrySet.addAll(exceptionsByEntry.keySet());
 		final int size = entrySet.size() + 1; // additional sum row
 		final String[] category = new String[size];
 		final String[] name = new String[size];
@@ -80,11 +92,13 @@ public class LogicProgrammingProfile implements Serializable
 		int[] redos = new int[size];
 		int[] exits = new int[size];
 		int[] fails = new int[size];
+		int[] exceptions = new int[size];
 		int i = 0;
 		int callSum = 0;
 		int redoSum = 0;
 		int exitSum = 0;
 		int failSum = 0;
+		int exceptionSum = 0;
 		for (ProfileEntry entry : entrySet)
 		{
 			category[i] = entry.getCategory();
@@ -93,6 +107,7 @@ public class LogicProgrammingProfile implements Serializable
 			redoSum += redos[i] = Utilities.nullToZero(redosByEntry.get(entry));
 			exitSum += exits[i] = Utilities.nullToZero(exitsByEntry.get(entry));
 			failSum += fails[i] = Utilities.nullToZero(failsByEntry.get(entry));
+			failSum += fails[i] = Utilities.nullToZero(exceptionsByEntry.get(entry));
 			i++;
 		}
 		category[i] = "Total";
@@ -101,7 +116,8 @@ public class LogicProgrammingProfile implements Serializable
 		redos[i] = redoSum;
 		exits[i] = exitSum;
 		fails[i] = failSum;
-		final int[][] numbers = new int[][] {null, null, calls, redos, exits, fails};
+		exceptions[i] = exceptionSum;
+		final int[][] numbers = new int[][] {null, null, calls, redos, exits, fails, exceptions};
 		return new AbstractTableModel()
 		{
 
@@ -110,7 +126,7 @@ public class LogicProgrammingProfile implements Serializable
 			@Override
 			public int getColumnCount()
 			{
-				return 6;
+				return 7;
 			}
 
 			@Override

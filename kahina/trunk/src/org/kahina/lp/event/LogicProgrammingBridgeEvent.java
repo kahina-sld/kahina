@@ -97,6 +97,11 @@ public class LogicProgrammingBridgeEvent extends KahinaEvent
                 s += "stepFail (" + id + ")";
                 break;
             }
+            case LogicProgrammingBridgeEventType.STEP_EXCEPTION:
+            {
+                s += "stepException (" + id + ")";
+                break;
+            }
         }
         return s;
     }

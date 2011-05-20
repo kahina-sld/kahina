@@ -50,6 +50,9 @@ public class LogicProgrammingProfiler implements KahinaListener
 		} else if (eventType == LogicProgrammingBridgeEventType.STEP_FAIL)
 		{
 			fail(event.getID());
+		} else if (eventType == LogicProgrammingBridgeEventType.STEP_EXCEPTION)
+		{
+			exception(event.getID());
 		} else if (eventType == LogicProgrammingBridgeEventType.STEP_DET_EXIT)
 		{
 			exit(event.getID());
@@ -70,6 +73,11 @@ public class LogicProgrammingProfiler implements KahinaListener
 	protected void fail(int id)
 	{
 		profile.fail(getProfileEntryForStepID(id));
+	}
+	
+	protected void exception(int id)
+	{
+		profile.exception(getProfileEntryForStepID(id));
 	}
 
 	protected void exit(int id)

@@ -9,4 +9,5 @@ public class LogicProgrammingStepType
     public static final int REDO = 4;
 	public static final int PSEUDO_BLOCKED = 5;
 	public static final int PSEUDO_UNBLOCKED = 6;
+    public static final int EXCEPTION = 7;
 }

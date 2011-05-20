@@ -284,6 +284,26 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			aut.process(stepID);
 		}
 	}
+	
+	/**
+	 * checks for breakpoint matches caused by exception of the step at stepID;
+	 * causes events to be fired in the case of matches
+	 */
+	public void exceptionBreakpointCheck(int stepID)
+	{
+		for (TreeAutomaton aut : primaryBreakpoints)
+		{
+			aut.process(stepID);
+		}
+		for (TreeAutomaton aut : secondaryBreakpoints)
+		{
+			aut.process(stepID);
+		}
+		for (TreeAutomaton aut : creepPoints)
+		{
+			aut.process(stepID);
+		}
+	}
 
 	/**
 	 * contains the logic by which the tree is formed out of callstacks called
@@ -472,11 +492,25 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	public void processStepFail(int stepID)
 	{
 		if (VERBOSE)
+		{
 			System.err.println("LogicProgrammingTreeBehavior.processStepFail(" + stepID + ")");
+		}
 		stepBeingRedone = -1;
 		object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);
 		lastActiveID = object.getParent(stepID);
 		failureBreakpointCheck(stepID);
+	}
+	
+	public void processStepException(int stepID)
+	{
+		if (VERBOSE)
+		{
+			System.err.println("LogicProgrammingTreeBehavior.processStepException(" + stepID + ")");
+		}
+		stepBeingRedone = -1;
+		object.setNodeStatus(stepID, LogicProgrammingStepType.EXCEPTION);
+		lastActiveID = object.getParent(stepID);
+		exceptionBreakpointCheck(stepID);
 	}
 
 	@Override
@@ -525,6 +559,11 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		case LogicProgrammingBridgeEventType.STEP_FAIL:
 		{
 			processStepFail(e.getID());
+			break;
+		}
+		case LogicProgrammingBridgeEventType.STEP_EXCEPTION:
+		{
+			processStepException(e.getID());
 			break;
 		}
 		}

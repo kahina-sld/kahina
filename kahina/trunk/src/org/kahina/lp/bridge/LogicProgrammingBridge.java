@@ -431,6 +431,49 @@ public class LogicProgrammingBridge extends KahinaBridge
 	}
 
 	/**
+	 * Called to indicate that the exception port of the procedure box with the given
+	 * ID has been reached.
+	 * @param extID
+	 */
+	public void exception(int extID)
+	{
+		try
+		{
+			if (VERBOSE)
+			{
+				System.err.println("LogicProgrammingBridge.exception(" + extID + ")");
+			}
+			int stepID = convertStepID(extID);
+			if (stepID == waitingForReturnFromSkip)
+			{
+				waitingForReturnFromSkip = -1;
+			}
+			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_EXCEPTION, stepID));
+			currentID = stepID;
+			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
+
+			// stop autocomplete/leap when we're done
+			if (stepID == state.getStepTree().getRootID() && bridgeState != 'n')
+			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+				bridgeState = 'c';
+			}
+
+			selectIfPaused(stepID);
+			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
+			if (reference != null)
+			{
+				state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.EXCEPTION));
+			}
+			disableAutoCompleteSkip();
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
+	/**
 	 * Introduces a "secondary edge" to the control flow tree, e.g. for marking
 	 * the corresponding blocking step (target) for a given unblocking step
 	 * (anchor).

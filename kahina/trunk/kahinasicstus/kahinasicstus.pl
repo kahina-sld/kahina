@@ -66,6 +66,9 @@ act(exit(det),Inv,Bridge,JVM) :-
 act(redo,Inv,Bridge,JVM) :-
     retractall(unblock_pseudostep_waiting_for_link(_)),
   act_redo(Bridge,JVM,Inv).
+act(exception(Exception),Inv,Bridge,JVM) :-
+  retractall(unblock_pseudostep_waiting_for_link(_)),
+  act_exception(Bridge,JVM,Inv).
 act(block,_,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)), % TODO What if the unblocked step is immediately blocked, e.g. in freeze(X,freeze(Y,...))? freeze/2 isn't called, so we would have to do the linking here.
   execution_state(goal(Module:Goal)),
@@ -91,7 +94,6 @@ act(unblock,_,Bridge,JVM) :-
   % Would be nicer to have the unblocked steps as children of the unblock step
   % rather than siblings, but we don't know how many there are.
   assert(unblock_pseudostep_waiting_for_link(ID)).
-% TODO handle exception ports
 
 % TODO it might make sense to change the goal desc at the exit port (additional bindings!)
 act_step(Bridge,JVM,Inv,PredChars,GoalDescChars) :-
@@ -111,6 +113,13 @@ act_fail(Bridge,JVM,Inv) :-
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','fail',[instance]),
       fail(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
       fail(Bridge,Inv)),
+  end(Inv,Bridge,JVM).
+
+act_exception(Bridge,JVM,Inv) :-
+  jasper_call(JVM,
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','exception',[instance]),
+      exception(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
+      exception(Bridge,Inv)),
   end(Inv,Bridge,JVM).
 
 act_exit(Bridge,JVM,Inv,Det) :-

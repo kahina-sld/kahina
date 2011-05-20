@@ -301,6 +301,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	public void registerMessage(int extID, String key, String grisuMessage)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".registerMessage(" + extID + "," + key + "," + grisuMessage);
+		}
 		try
 		{
 			int stepID = stepIDConv.get(extID);
@@ -322,6 +326,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	public void registerMessage(int extID, String key, String varName, String type, String grisuMessage)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".registerMessage(" + extID + "," + key + "," + varName + "," + grisuMessage);
+		}
 		try
 		{
 			registerMessage(extID, key, varName, null, type, grisuMessage);

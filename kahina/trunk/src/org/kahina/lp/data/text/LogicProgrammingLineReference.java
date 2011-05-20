@@ -6,7 +6,10 @@ import org.kahina.lp.LogicProgrammingStepType;
 
 public class LogicProgrammingLineReference extends KahinaLineReference
 {
-    //this takes constant values from LogicProgrammingStepType
+
+	private static final long serialVersionUID = -2368235915459798532L;
+
+	//this takes constant values from LogicProgrammingStepType
     public int port;
     
     //store the externalID for synthesis of the console line
@@ -38,6 +41,11 @@ public class LogicProgrammingLineReference extends KahinaLineReference
             case LogicProgrammingStepType.FAIL:
             {
                 portString = " Fail: ";
+                break;
+            }
+            case LogicProgrammingStepType.EXCEPTION:
+            {
+                portString = " Exception: ";
                 break;
             }
             case LogicProgrammingStepType.CALL:

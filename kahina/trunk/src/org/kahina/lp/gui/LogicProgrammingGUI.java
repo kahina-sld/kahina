@@ -70,6 +70,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.EXIT, new Color(153, 255, 102));
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.DET_EXIT, new Color(102, 153, 102));
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.FAIL, new Color(183, 50, 50));
+		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.EXCEPTION, new Color(204, 0, 153));
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.REDO, new Color(220, 110, 0));
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.PSEUDO_BLOCKED, Color.GRAY);
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.PSEUDO_UNBLOCKED, Color.LIGHT_GRAY);
