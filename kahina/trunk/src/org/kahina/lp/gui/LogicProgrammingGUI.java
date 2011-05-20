@@ -51,6 +51,13 @@ public class LogicProgrammingGUI extends KahinaGUI
 		controlWindow.addControlButton("reject.png", "fail", "make this step (F)ail", KeyEvent.VK_F);
 		controlWindow.addControlButton("leap.png", "leap", "(L)eap to next breakpoint match", KeyEvent.VK_L);
 		controlWindow.addControlButton("stop.png", "stop", "abort skip or leap (X)", KeyEvent.VK_X);
+		getControlWindows().add(controlWindow);
+		
+		KahinaControlButtonWindow historyWindow = new KahinaControlButtonWindow(windowManager);
+		historyWindow.setTitle("History");
+		historyWindow.addControlButton("back.png", "backInHistory", "Back (Q)", KeyEvent.VK_Q);
+		historyWindow.addControlButton("forward.png", "forwardInHistory", "Forward (W)", KeyEvent.VK_W);
+		getControlWindows().add(historyWindow);
 
 		//TODO: remove this legacy way of defining the control buttons
 		getControlPanel().addControlButtonGroup("Control");
