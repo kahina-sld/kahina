@@ -31,6 +31,11 @@ public class LogicProgrammingLineReference extends KahinaLineReference
     {
         return new LogicProgrammingLineReference(text, line, step, extID, newPort);
     }
+
+	public LogicProgrammingLineReference generateIDVariant(int newStepID)
+	{
+		return new LogicProgrammingLineReference(text, line, newStepID, extID, port);
+	}
     
     @Override
 	public String toString()

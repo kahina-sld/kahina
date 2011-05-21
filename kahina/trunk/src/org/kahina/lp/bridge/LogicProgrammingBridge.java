@@ -32,14 +32,16 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
  * in Kahina terminology) and turn it into information that can be displayed by
  * Kahina's views.
  * 
- * <p>Logic programming systems that have been connected to Kahina using
+ * <p>
+ * Logic programming systems that have been connected to Kahina using
  * specialized subclasses of {@link LogicProgrammingBridge} so far include TRALE
  * and, experimentally, SWI-Prolog and SICStus Prolog. The connection typically
  * involves some Prolog code that hooks into the tracer of the espective LP
  * system and calls Kahina's Java API via a Prolog/Java connection layer such as
  * Jasper or JPL.
  * 
- * <p>A Kahina "session" corresponds to the execution of one query in a LP system.
+ * <p>
+ * A Kahina "session" corresponds to the execution of one query in a LP system.
  * A new bridge is created, and all views are cleared, when a new session is
  * started. A session is started by calling the
  * {@link KahinaInstance#startNewSession()} method of an instance of the
@@ -70,7 +72,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	// store the state of the bridge, determining the next result of
 	// getPressedButton()
 	protected char bridgeState = 'n';
-	
+
 	// used to hand on skip commands to the logic programming system
 	protected boolean skipFlag = false;
 	protected int waitingForReturnFromSkip = -1;
@@ -93,13 +95,13 @@ public class LogicProgrammingBridge extends KahinaBridge
 		if (VERBOSE)
 			System.err.println("new LogicProgrammingBridge()");
 	}
-	
+
 	// TODO use console messages?
 
 	/**
 	 * For each new procedure box that is created, this method or one of its
-	 * variants must first be called. It is separate from {@link #call(int)}
-	 * for historic reasons and for flexibility, e.g. it can be overloaded with
+	 * variants must first be called. It is separate from {@link #call(int)} for
+	 * historic reasons and for flexibility, e.g. it can be overloaded with
 	 * various arguments representing all kinds of information about a step
 	 * without touching the call method. Note however that information about a
 	 * step that is not absolutely central, such as source code locations,
@@ -113,9 +115,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 *            predicate identifier such as {@code append/3}. Will be used
 	 *            for categorizing and counting steps in the profiler.
 	 * @param description
-	 *            A full description of the step, such as {@code
-	 *            append([1,2],[3,4],X)}. Will be used for labeling nodes in
-	 *            the control flow graph.
+	 *            A full description of the step, such as
+	 *            {@code append([1,2],[3,4],X)}. Will be used for labeling nodes
+	 *            in the control flow graph.
 	 * @param consoleMessage
 	 *            A more extensive description of the (type of) the step, such
 	 *            as a prose description of what {@code append/3} does. Will be
@@ -130,7 +132,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			int stepID = convertStepID(extID);
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
 			step.setGoalDesc(type); // TODO Also save goal in step in a
-											// separate field?
+									// separate field?
 			if (waitingForReturnFromSkip != -1)
 			{
 				state.hideStep(stepID);
@@ -152,10 +154,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 		}
 	}
-	
+
 	/**
 	 * Variant of {@link #step(int, String, String, String)} that uses the same
 	 * string for description and console message.
+	 * 
 	 * @param extID
 	 * @param predicate
 	 * @param nodeLabel
@@ -168,6 +171,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	/**
 	 * Variant of {@link #step(int, String, String, String)} that uses the same
 	 * string for type, description and console message.
+	 * 
 	 * @param extID
 	 * @param type
 	 */
@@ -196,8 +200,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			step.setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1));
 			currentID = stepID;
 			KahinaRunner.store(stepID, step);
-		} 
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -208,8 +211,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 * Called, typically following a call to
 	 * {@link #step(int, String, Stirng, String)} very soon, to indicate that
 	 * the call port of the procedure box with the given ID has been reached.
-	 * This will cause the corresponding node to appear in Kahina's control
-	 * flow graph.
+	 * This will cause the corresponding node to appear in Kahina's control flow
+	 * graph.
 	 * 
 	 * @param extID
 	 */
@@ -328,21 +331,21 @@ public class LogicProgrammingBridge extends KahinaBridge
 				KahinaRunner.store(newStepID, newStep);
 				stepIDConv.put(lastStep.getExternalID(), newStepID);
 				KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, id));
+
+				LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(id);
+				if (reference != null)
+				{
+					// TODO Do we want to select by external rather than
+					// internal ID in the console?
+					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.REDO).generateIDVariant(newStepID));
+				}
 			}
 
 			currentID = newStepID;
 			parentCandidateID = newStepID;
 
 			selectIfPaused(newStepID);
-
-			// TODO Do we also want console messages for each "virtual redo"? If
-			// so, move this into loop above.
-			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(lastStepID);
 			enableAutoCompleteSkip();
-			if (reference != null)
-			{
-				state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.REDO));
-			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -413,6 +416,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	/**
 	 * Called to indicate that the fail port of the procedure box with the given
 	 * ID has been reached.
+	 * 
 	 * @param extID
 	 */
 	public void fail(int extID)
@@ -429,7 +433,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
-			
+
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
 			if (reference != null)
 			{
@@ -452,8 +456,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 	}
 
 	/**
-	 * Called to indicate that the exception port of the procedure box with the given
-	 * ID has been reached.
+	 * Called to indicate that the exception port of the procedure box with the
+	 * given ID has been reached.
+	 * 
 	 * @param extID
 	 */
 	public void exception(int extID, String message)
@@ -472,7 +477,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_EXCEPTION, stepID));
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
-			
+
 			state.exceptionConsoleMessage(stepID, extID, message);
 
 			// stop autocomplete/leap when we're done
@@ -520,10 +525,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 		}
 	}
-	
+
 	/**
 	 * Call this to force the GUI to select the indicated step and update, e.g.
 	 * before pausing to present the user with a result.
+	 * 
 	 * @param extID
 	 */
 	public void select(int extID)
