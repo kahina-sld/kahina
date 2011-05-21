@@ -79,8 +79,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				System.err.println(this + ".step(" + extID + "," + stepType +  "," + nodeLabel + "," + consoleMessage + ")");
 			}
-			super.step(extID, nodeLabel, nodeLabel);
-			state.consoleMessage(convertStepID(extID), extID, LogicProgrammingStepType.CALL, consoleMessage);
+			super.step(extID, nodeLabel, nodeLabel, consoleMessage);
 			if (stepType.equals("rule_close") && lastRegisteredChartEdge != -1)
 			{
 				state.linkEdgeToNode(lastRegisteredChartEdge, currentID);

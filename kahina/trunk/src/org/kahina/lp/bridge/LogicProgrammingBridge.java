@@ -97,24 +97,39 @@ public class LogicProgrammingBridge extends KahinaBridge
 	// TODO use console messages?
 
 	/**
-	 * Alternative to {@link LogicProgrammingBridge#step(int, String)} that
-	 * makes it possible to specify both a predicate and a node label. The
-	 * predicate description will be used for profiler, the goal description for
-	 * nodes.
+	 * For each new procedure box that is created, this method or one of its
+	 * variants must first be called. It is separate from {@link #call(int)}
+	 * for historic reasons and for flexibility, e.g. it can be overloaded with
+	 * various arguments representing all kinds of information about a step
+	 * without touching the call method. Note however that information about a
+	 * step that is not absolutely central, such as source code locations,
+	 * should be sent to Kahina using specialized methods following the call to
+	 * the step method.
 	 * 
 	 * @param extID
-	 * @param predicate
-	 * @param nodeLabel
+	 *            An ID identifying the procedure box uniquely.
+	 * @param type
+	 *            A string identifying the type of the step, e.g. a Prolog
+	 *            predicate identifier such as {@code append/3}. Will be used
+	 *            for categorizing and counting steps in the profiler.
+	 * @param description
+	 *            A full description of the step, such as {@code
+	 *            append([1,2],[3,4],X)}. Will be used for labeling nodes in
+	 *            the control flow graph.
+	 * @param consoleMessage
+	 *            A more extensive description of the (type of) the step, such
+	 *            as a prose description of what {@code append/3} does. Will be
+	 *            displayed in the message console.
 	 */
-	public void step(int extID, String predicate, String nodeLabel)
+	public void step(int extID, String type, String description, String consoleMessage)
 	{
 		try
 		{
 			if (VERBOSE)
-				System.err.println("LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + predicate + ",\"" + nodeLabel + "\")");
+				System.err.println("LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + type + ",\"" + description + "\")");
 			int stepID = convertStepID(extID);
 			LogicProgrammingStep step = LogicProgrammingStep.get(stepID);
-			step.setGoalDesc(predicate); // TODO Also save goal in step in a
+			step.setGoalDesc(type); // TODO Also save goal in step in a
 											// separate field?
 			if (waitingForReturnFromSkip != -1)
 			{
@@ -126,35 +141,39 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			KahinaRunner.store(stepID, step);
 			// Set node label:
-			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, nodeLabel));
+			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.SET_GOAL_DESC, stepID, description));
 			currentID = stepID;
+			state.consoleMessage(stepID, extID, LogicProgrammingStepType.CALL, consoleMessage);
 			if (VERBOSE)
-				System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + predicate + ",\"" + nodeLabel + "\")");
+				System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + type + ",\"" + description + "\")");
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
 		}
 	}
+	
+	/**
+	 * Variant of {@link #step(int, String, String, String)} that uses the same
+	 * string for description and console message.
+	 * @param extID
+	 * @param predicate
+	 * @param nodeLabel
+	 */
+	public void step(int extID, String predicate, String nodeLabel)
+	{
+		step(extID, predicate, nodeLabel, nodeLabel);
+	}
 
 	/**
-	 * For each new procedure box that is created, this method must first be
-	 * called. It is separate from {@link #call(int)} for historic reasons and
-	 * for flexibility, e.g. it can be overloaded with various arguments
-	 * representing all kinds of information about a step without touching the
-	 * call method. Note however that information about a step that is not
-	 * absolutely central, such as source code locations, should be sent to
-	 * Kahina using specialized methods following the call to the step method.
-	 * 
+	 * Variant of {@link #step(int, String, String, String)} that uses the same
+	 * string for type, description and console message.
 	 * @param extID
-	 *            An ID identifying the procedure box uniquely.
-	 * @param nodeLabel
-	 *            The node label that will represent this procedure box in
-	 *            Kahina's control flow graph.
+	 * @param type
 	 */
-	public void step(int extID, String nodeLabel)
+	public void step(int extID, String type)
 	{
-		step(extID, nodeLabel, nodeLabel);
+		step(extID, type, type);
 	}
 
 	/**
@@ -186,10 +205,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 	}
 
 	/**
-	 * Called, typically following a call to {@link #step(int, String)} very
-	 * soon, to indicate that the call port of the procedure box with the given
-	 * ID has been reached. This will cause the corresponding node to appear in
-	 * Kahina's control flow graph.
+	 * Called, typically following a call to
+	 * {@link #step(int, String, Stirng, String)} very soon, to indicate that
+	 * the call port of the procedure box with the given ID has been reached.
+	 * This will cause the corresponding node to appear in Kahina's control
+	 * flow graph.
 	 * 
 	 * @param extID
 	 */

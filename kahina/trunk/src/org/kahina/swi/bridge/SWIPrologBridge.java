@@ -3,7 +3,6 @@ package org.kahina.swi.bridge;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.lp.LogicProgrammingState;
-import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.swi.SWIPrologStep;
 
@@ -19,14 +18,6 @@ public class SWIPrologBridge extends LogicProgrammingBridge
 	protected SWIPrologStep generateStep()
 	{
 		return new SWIPrologStep();
-	}
-	
-
-	@Override
-	public void step(int extID, String nodeLabel)
-	{
-		super.step(extID,nodeLabel);
-		state.consoleMessage(convertStepID(extID), extID, LogicProgrammingStepType.CALL, nodeLabel);
 	}
 	
 	/**
