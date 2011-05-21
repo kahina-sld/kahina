@@ -80,18 +80,15 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
     public void processEvent(KahinaConsoleLineEvent e)
     {
         Set<KahinaLineReference> consoleLines = e.getConsoleLines();
-        int leadIndex = selectionModel.getLeadSelectionIndex();
-        if (leadIndex == -1 || !consoleLines.contains(listModel.getElementAt(leadIndex)))
-        {
-            leadIndex = listModel.indexOf(consoleLines.iterator().next());
-        }
         selectionModel.clearSelection();
+        // TODO It would be nicer to add the selection interval for the line
+        // that was just added/clicked on (if any) last so it becomes the
+        // anchor and the lead. But at the moment we do not have that
+        // information here.
         for (KahinaLineReference consoleLine : consoleLines)
         {
             int index =  listModel.indexOf(consoleLine);
             selectionModel.addSelectionInterval(index, index);
         }
-        selectionModel.setAnchorSelectionIndex(leadIndex);
-        selectionModel.setLeadSelectionIndex(leadIndex);
     }
 }
