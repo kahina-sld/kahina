@@ -455,7 +455,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 * ID has been reached.
 	 * @param extID
 	 */
-	public void exception(int extID)
+	public void exception(int extID, String message)
 	{
 		try
 		{
@@ -480,11 +480,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 
 			selectIfPaused(stepID);
-			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
-			if (reference != null)
-			{
-				state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.EXCEPTION));
-			}
+			state.exceptionConsoleMessage(stepID, extID, message);
 			disableAutoCompleteSkip();
 		} catch (Exception e)
 		{

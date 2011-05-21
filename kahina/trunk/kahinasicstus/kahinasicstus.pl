@@ -68,7 +68,8 @@ act(redo,Inv,Bridge,JVM) :-
   act_redo(Bridge,JVM,Inv).
 act(exception(Exception),Inv,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
-  act_exception(Bridge,JVM,Inv).
+  write_to_chars(Exception,ExceptionChars),
+  act_exception(Bridge,JVM,Inv,ExceptionChars).
 act(block,_,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)), % TODO What if the unblocked step is immediately blocked, e.g. in freeze(X,freeze(Y,...))? freeze/2 isn't called, so we would have to do the linking here.
   execution_state(goal(Module:Goal)),
@@ -115,11 +116,11 @@ act_fail(Bridge,JVM,Inv) :-
       fail(Bridge,Inv)),
   end(Inv,Bridge,JVM).
 
-act_exception(Bridge,JVM,Inv) :-
+act_exception(Bridge,JVM,Inv,ExceptionChars) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','exception',[instance]),
-      exception(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
-      exception(Bridge,Inv)),
+      exception(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+chars),
+      exception(Bridge,Inv,ExceptionChars)),
   end(Inv,Bridge,JVM).
 
 act_exit(Bridge,JVM,Inv,Det) :-

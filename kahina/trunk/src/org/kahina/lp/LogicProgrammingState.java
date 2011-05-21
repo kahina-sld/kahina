@@ -83,6 +83,20 @@ public class LogicProgrammingState extends KahinaState
         KahinaRunner.processEvent(new KahinaMessageEvent(ref));
     }
     
+    public void exceptionConsoleMessage(int stepID, int extID, String message)
+    {
+    	int lineID = consoleMessages.text.addLine(message);
+    	KahinaLineReference ref = new LogicProgrammingLineReference(consoleMessages, lineID, stepID, extID, LogicProgrammingStepType.EXCEPTION);
+    	Set<KahinaLineReference> refs = consoleLines.get(stepID);
+        if (refs == null)
+        {
+            refs = new HashSet<KahinaLineReference>();
+            consoleLines.put(stepID, refs);
+        }
+        refs.add(ref);
+        KahinaRunner.processEvent(new KahinaMessageEvent(ref));
+    }
+    
     public void consoleMessage(LogicProgrammingLineReference ref)
     {
         Set<KahinaLineReference> refs = consoleLines.get(ref.step);
