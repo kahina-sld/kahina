@@ -494,6 +494,15 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 		}
 	}
+	
+	public void warning(String message)
+	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".warning(" + message + ")");
+		}
+		// TODO
+	}
 
 	/**
 	 * Introduces a "secondary edge" to the control flow tree, e.g. for marking

@@ -40,7 +40,7 @@ import org.kahina.tralesld.TraleSLDState;
 
 public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge> implements KahinaListener
 {
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 	
 	protected G gui;
 	
