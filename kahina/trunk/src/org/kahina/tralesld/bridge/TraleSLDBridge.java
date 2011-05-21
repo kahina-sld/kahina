@@ -431,6 +431,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
 
+			// TODO update a TraleSLDLineReference (that class doesn't exist
+			// yet) or rewrite the whole thing – why are console messages line
+			// references?
+
 			// stop autocomplete/leap when we're done
 			if (stepID == state.getStepTree().getRootID() && bridgeState != 'n')
 			{
@@ -442,10 +446,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 			}
-
-			// TODO update a TraleSLDLineReference (that class doesn't exist
-			// yet) or rewrite the whole thing – why are console messages line
-			// references?
 			
 			disableAutoCompleteSkip();
 		} catch (Exception e)

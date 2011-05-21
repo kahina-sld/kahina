@@ -40,7 +40,7 @@ import org.kahina.tralesld.TraleSLDState;
 
 public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge> implements KahinaListener
 {
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 	
 	protected G gui;
 	
@@ -300,6 +300,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	private void processUpdateEvent(KahinaUpdateEvent e)
 	{
 		Set<KahinaLineReference> refs = state.getLineReferencesForStep(e.getSelectedStep());
+		if (VERBOSE)
+		{
+			System.err.println("Line references for step " + e.getSelectedStep() + ": " + refs);
+		}
 		if (refs != null)
 		{
 			KahinaRunner.processEvent(new KahinaConsoleLineEvent(refs));

@@ -382,16 +382,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
 
-			// stop autocomplete/leap when we're done
-			if (deterministic && stepID == state.getStepTree().getRootID() && bridgeState != 'n')
-			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
-				bridgeState = 'c';
-			}
-
-			selectIfPaused(stepID);
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
-			disableAutoCompleteSkip();
 			if (reference != null)
 			{
 				if (deterministic)
@@ -402,6 +393,16 @@ public class LogicProgrammingBridge extends KahinaBridge
 					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.EXIT));
 				}
 			}
+
+			// stop autocomplete/leap when we're done
+			if (deterministic && stepID == state.getStepTree().getRootID() && bridgeState != 'n')
+			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+				bridgeState = 'c';
+			}
+
+			selectIfPaused(stepID);
+			disableAutoCompleteSkip();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -428,6 +429,12 @@ public class LogicProgrammingBridge extends KahinaBridge
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
+			
+			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
+			if (reference != null)
+			{
+				state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.FAIL));
+			}
 
 			// stop autocomplete/leap when we're done
 			if (stepID == state.getStepTree().getRootID() && bridgeState != 'n')
@@ -435,13 +442,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
-
 			selectIfPaused(stepID);
-			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
-			if (reference != null)
-			{
-				state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.FAIL));
-			}
 			disableAutoCompleteSkip();
 		} catch (Exception e)
 		{
@@ -471,6 +472,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_EXCEPTION, stepID));
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
+			
+			state.exceptionConsoleMessage(stepID, extID, message);
 
 			// stop autocomplete/leap when we're done
 			if (stepID == state.getStepTree().getRootID() && bridgeState != 'n')
@@ -478,9 +481,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
-
 			selectIfPaused(stepID);
-			state.exceptionConsoleMessage(stepID, extID, message);
 			disableAutoCompleteSkip();
 		} catch (Exception e)
 		{

@@ -1,6 +1,7 @@
 package org.kahina.core.gui.event;
 
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
 
 public class KahinaUpdateEvent extends KahinaEvent
 {
@@ -8,7 +9,7 @@ public class KahinaUpdateEvent extends KahinaEvent
     
     public KahinaUpdateEvent(int selectedStep)
     {
-        super("update");
+        super(KahinaEventTypes.UPDATE);
         this.selectedStep = selectedStep;
     }
     
