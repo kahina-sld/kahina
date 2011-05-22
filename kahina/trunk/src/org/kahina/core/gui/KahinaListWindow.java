@@ -5,6 +5,7 @@ import java.awt.dnd.DropTarget;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -13,6 +14,7 @@ import javax.swing.event.ListSelectionListener;
 
 public class KahinaListWindow extends KahinaWindow implements ListSelectionListener
 {
+	DefaultListModel listModel;
 	JList list;
 	JPanel displayPane;
     
@@ -36,7 +38,8 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     	windows = new ArrayList<KahinaWindow>();
     	selectedWindow = -1;
 
-        list = new JList();
+    	listModel = new DefaultListModel();
+        list = new JList(listModel);
     	list.setTransferHandler(new KahinaWindowTransferHandler());
         list.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
         list.addListSelectionListener(this);
@@ -50,7 +53,7 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     {
     	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(w);
-        list.add(w);
+        listModel.addElement(w);
         selectedWindow = windows.size() - 1;
         return true;
     }
@@ -59,7 +62,7 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     {
     	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(index, w);
-        list.add(w, index);
+        listModel.insertElementAt(w,index);
     }
     
 	public int getWindowType()
@@ -84,7 +87,7 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     		removedWindow.setLocation(this.getX() + 30, this.getY() + index * 50);
     		
     		windows.remove(removedWindow);
-    		list.remove(index);
+    		listModel.remove(index);
     	}
     	else
     	{

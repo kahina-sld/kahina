@@ -76,6 +76,11 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         newTabbedWindowItem.addActionListener(this);
         this.add(newTabbedWindowItem);
         
+        JMenuItem newListWindowItem = new JMenuItem("New List Window");
+        newListWindowItem.setActionCommand("newListWindow");
+        newListWindowItem.addActionListener(this);
+        this.add(newListWindowItem);
+        
         this.addSeparator();
         
         JMenu restoreFrameMenu = new JMenu("Restore Frame");
@@ -159,6 +164,11 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         {	
         	String title = getNewTitle("Tabbed Window");
             KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, -1, title));
+        }
+        else if (s.equals("newListWindow"))
+        {	
+        	String title = getNewTitle("List Window");
+            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_LIST, -1, title));
         }
         else if (s.startsWith("toggleVisibility"))
         {

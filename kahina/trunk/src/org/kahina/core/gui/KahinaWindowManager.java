@@ -419,6 +419,16 @@ public class KahinaWindowManager implements KahinaListener
 	        tabbedWindow.setVisible(true);
 	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, tabbedWindow.getID()));
 		} 
+		else if (type == KahinaWindowEventType.NEW_LIST)
+		{
+	        KahinaListWindow listWindow = new KahinaListWindow(this);
+	        listWindow.setTitle(e.getStringContent());
+	        listWindow.addSubwindow(new KahinaDummyWindow(this));
+            listWindow.setSize(300,250);
+            listWindow.setLocation(200,200);
+	        listWindow.setVisible(true);
+	        control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UPDATE_VIEW_MENU, listWindow.getID()));
+		} 
 		else if (type == KahinaWindowEventType.TOGGLE_VISIBLE)
 		{
 			if (arr.getEmbeddingWindowID(e.getWindowID()) == -1)
