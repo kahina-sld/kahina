@@ -12,12 +12,11 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 public class KahinaListWindow extends KahinaWindow implements MouseListener
 {
+	private static final long serialVersionUID = -3092025976121299649L;
+	
 	DefaultListModel listModel;
 	JList list;
 	JPanel displayPane;
@@ -94,7 +93,6 @@ public class KahinaListWindow extends KahinaWindow implements MouseListener
 		{
 			int oldSelectedWindow = selectedWindow;
 			selectedWindow = index;
-			System.err.println("oldSelectedWindow: " + oldSelectedWindow);
 			if (oldSelectedWindow != -1)
 			{
 				windows.get(oldSelectedWindow).setContentPane((Container) displayPane.getComponents()[0]);
