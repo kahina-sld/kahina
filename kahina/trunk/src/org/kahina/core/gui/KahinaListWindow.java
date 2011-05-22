@@ -57,6 +57,7 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(w);
         listModel.addElement(w);
+        list.setSelectedIndex(windows.size() - 1);
         selectedWindow = windows.size() - 1;
         return true;
     }
@@ -72,6 +73,36 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
 	{
 		return KahinaWindowType.LIST_WINDOW;
 	}
+	
+	/**
+	 * Selects an index of the list and displays the associated window on the right.
+	 * @param index the index to be displayed; -1 for no selection
+	 */
+	public void selectWindow(int index)
+	{
+		if (index == -1)
+		{
+			if (selectedWindow != -1)
+			{
+				windows.get(selectedWindow).setContentPane((Container) displayPane.getComponents()[0]);
+			}
+		}
+		else if (index < windows.size())
+		{
+			int oldSelectedWindow = selectedWindow;
+			selectedWindow = index;
+			System.err.println("oldSelectedWindow: " + oldSelectedWindow);
+			if (oldSelectedWindow != -1)
+			{
+				windows.get(oldSelectedWindow).setContentPane((Container) displayPane.getComponents()[0]);
+			}
+			displayPane.add(windows.get(selectedWindow).getContentPane());
+		}
+		else
+		{
+			System.err.println("WARNING: could not select index " + index + " in list window.");
+		}
+	}
     
     public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
     {
@@ -83,7 +114,7 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     		if (index == selectedWindow)
     		{
     	  		removedWindow.setContentPane((Container) displayPane.getComponents()[0]);
-        		list.setSelectedIndex(--selectedWindow);
+        		selectWindow(--selectedWindow);
     		}
     		//crudely determine not too surprising positions and sizes for the separate windows
     		removedWindow.setSize(removedWindow.getComponents()[0].getSize());
@@ -106,7 +137,7 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     	{
     		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
     		oldSubwindow.setContentPane((Container) displayPane.getComponents()[0]);
-    		list.setSelectedIndex(--selectedWindow);
+    		selectWindow(--selectedWindow);
         	addWindow(index,newSubwindow);
     	}
     	else if (index != -1)
@@ -123,15 +154,6 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) 
 	{
-		int oldSelectedWindow = selectedWindow;
-		selectedWindow = arg0.getFirstIndex();
-		if (oldSelectedWindow != -1)
-		{
-			windows.get(oldSelectedWindow).setContentPane((Container) displayPane.getComponents()[0]);
-		}
-		if (selectedWindow != -1)
-		{
-			displayPane.add(windows.get(selectedWindow).getContentPane());
-		}	
+		selectWindow(arg0.getFirstIndex());
 	}
 }
