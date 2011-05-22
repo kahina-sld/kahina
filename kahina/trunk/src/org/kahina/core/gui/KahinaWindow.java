@@ -254,4 +254,9 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 	{
 		
 	}   
+	
+	public String toString()
+	{
+		return getTitle();
+	}
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -36,17 +37,19 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     private void initialize()
     {
     	windows = new ArrayList<KahinaWindow>();
-    	selectedWindow = -1;
+    	selectedWindow = -1;	
 
     	listModel = new DefaultListModel();
         list = new JList(listModel);
     	list.setTransferHandler(new KahinaWindowTransferHandler());
         list.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
         list.addListSelectionListener(this);
-        mainPanel.add(list);
         
         displayPane = new JPanel();
-        mainPanel.add(displayPane);
+        
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, list, displayPane);
+        splitPane.setResizeWeight(.3);
+        mainPanel.add(splitPane);
     }
     
     public boolean addSubwindow(KahinaWindow w)

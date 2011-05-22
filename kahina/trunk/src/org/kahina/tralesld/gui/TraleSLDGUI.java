@@ -91,13 +91,12 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		{
 			displayMainViews();
 			
-			windowManager = createWindowManager(this, control);
+			//this line now causes trouble (two window managers), commented out for now
+			//windowManager = createWindowManager(this, control);
 			
 			//TODO: load last perspective instead of only default perspective from XML
 			File xmlFile = new File(TraleSLDGUI.class.getResource("tralesld-manywindows.xml").getFile());
-			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLFile(xmlFile, false).getDocumentElement()));
-			
-
+			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLFile(xmlFile, false).getDocumentElement()));			
 		}
 		catch (NullPointerException e)
 		{
