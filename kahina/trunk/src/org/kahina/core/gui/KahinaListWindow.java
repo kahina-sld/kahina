@@ -2,9 +2,12 @@ package org.kahina.core.gui;
 
 import java.awt.Container;
 import java.awt.dnd.DropTarget;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -13,7 +16,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-public class KahinaListWindow extends KahinaWindow implements ListSelectionListener
+public class KahinaListWindow extends KahinaWindow implements MouseListener
 {
 	DefaultListModel listModel;
 	JList list;
@@ -43,9 +46,10 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
         list = new JList(listModel);
     	list.setTransferHandler(new KahinaWindowTransferHandler());
         list.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
-        list.addListSelectionListener(this);
+        list.addMouseListener(this);
         
         displayPane = new JPanel();
+        displayPane.setLayout(new BoxLayout(displayPane, BoxLayout.Y_AXIS));
         
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, list, displayPane);
         splitPane.setResizeWeight(.3);
@@ -57,8 +61,7 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(w);
         listModel.addElement(w);
-        list.setSelectedIndex(windows.size() - 1);
-        selectedWindow = windows.size() - 1;
+        selectWindow(windows.size() - 1);
         return true;
     }
     
@@ -102,6 +105,7 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
 		{
 			System.err.println("WARNING: could not select index " + index + " in list window.");
 		}
+		displayPane.repaint();
 	}
     
     public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
@@ -114,7 +118,9 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     		if (index == selectedWindow)
     		{
     	  		removedWindow.setContentPane((Container) displayPane.getComponents()[0]);
-        		selectWindow(--selectedWindow);
+    	  		int oldSelectedWindow = selectedWindow;
+    	  		selectedWindow = -1;
+        		selectWindow(oldSelectedWindow - 1);     		
     		}
     		//crudely determine not too surprising positions and sizes for the separate windows
     		removedWindow.setSize(removedWindow.getComponents()[0].getSize());
@@ -150,10 +156,38 @@ public class KahinaListWindow extends KahinaWindow implements ListSelectionListe
     		System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" not found as a tab in window \"" + this.getTitle() + "\", replacement failed.");
     	}
     }
+    
+    public void mouseClicked(MouseEvent e) 
+    {
+    	selectWindow(list.locationToIndex(e.getPoint()));
+    }
 
 	@Override
-	public void valueChanged(ListSelectionEvent arg0) 
+	public void mouseEntered(MouseEvent arg0) 
 	{
-		selectWindow(arg0.getFirstIndex());
+		// TODO Auto-generated method stub
+		
 	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) 
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 }
