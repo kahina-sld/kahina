@@ -103,6 +103,20 @@ public class KahinaWindowManager implements KahinaListener
         	{
         		switch (arr.getWindowType(winID))
         		{
+	    			case KahinaWindowType.MAIN_WINDOW:
+	    			{
+	    				//TODO: change the main window layout according to new schema
+	            		KahinaWindow viewWindow = new KahinaMainWindow(this,this.control,this.gui.kahina, winID);
+	            		viewWindow.setTitle(arr.getTitle(winID));
+	            		break;
+	    			}
+	    			case KahinaWindowType.CONTROL_WINDOW:
+	    			{
+	            		KahinaWindow viewWindow = new KahinaControlButtonWindow(this, winID);
+	            		viewWindow.setTitle(arr.getTitle(winID));
+	                    viewWindow.setBorder(arr.hasBorder(winID));
+	            		break;
+	    			}
         			case KahinaWindowType.HORI_SPLIT_WINDOW:
         			{
                 		KahinaWindow viewWindow = new KahinaHorizontallySplitWindow(this, winID);
@@ -120,6 +134,13 @@ public class KahinaWindowManager implements KahinaListener
         			case KahinaWindowType.TABBED_WINDOW:
         			{
                 		KahinaWindow viewWindow = new KahinaTabbedWindow(this, winID);
+                		viewWindow.setTitle(arr.getTitle(winID));
+                        viewWindow.setBorder(arr.hasBorder(winID));
+                		break;
+        			}
+        			case KahinaWindowType.LIST_WINDOW:
+        			{
+                		KahinaWindow viewWindow = new KahinaListWindow(this, winID);
                 		viewWindow.setTitle(arr.getTitle(winID));
                         viewWindow.setBorder(arr.hasBorder(winID));
                 		break;
