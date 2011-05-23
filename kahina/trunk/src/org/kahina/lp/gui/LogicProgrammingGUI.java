@@ -41,23 +41,16 @@ public class LogicProgrammingGUI extends KahinaGUI
 		livingViews.add(mainTreeView);
 		varNameToView.put("controlFlowTree", mainTreeView);
 		
-		//TODO: make this new version the only way of defining the control buttons
-		KahinaControlButtonWindow controlWindow = new KahinaControlButtonWindow(windowManager);
-		controlWindow.setTitle("Control");
-		controlWindow.addControlButton("creep.png", "creep", "(C)ontinue to next step", KeyEvent.VK_C);
-		controlWindow.addControlButton("roundskip.png", "auto-complete", "(A)uto-complete this step", KeyEvent.VK_A);
-		controlWindow.addControlButton("pause.png", "(un)pause", "(P)ause the current skip operation", KeyEvent.VK_P);
-		controlWindow.addControlButton("skip.png", "skip", "(S)kip this step", KeyEvent.VK_S);
-		controlWindow.addControlButton("reject.png", "fail", "make this step (F)ail", KeyEvent.VK_F);
-		controlWindow.addControlButton("leap.png", "leap", "(L)eap to next breakpoint match", KeyEvent.VK_L);
-		controlWindow.addControlButton("stop.png", "stop", "abort skip or leap (X)", KeyEvent.VK_X);
-		windowManager.getPerspective().getArrangement().getTopLevelWindows().add(controlWindow.getID());
+		addControlButton("Control", "creep.png", "creep", "(C)ontinue to next step", KeyEvent.VK_C);
+		addControlButton("Control", "roundskip.png", "auto-complete", "(A)uto-complete this step", KeyEvent.VK_A);
+		addControlButton("Control", "pause.png", "(un)pause", "(P)ause the current skip operation", KeyEvent.VK_P);
+		addControlButton("Control", "skip.png", "skip", "(S)kip this step", KeyEvent.VK_S);
+		addControlButton("Control", "reject.png", "fail", "make this step (F)ail", KeyEvent.VK_F);
+		addControlButton("Control", "leap.png", "leap", "(L)eap to next breakpoint match", KeyEvent.VK_L);
+		addControlButton("Control", "stop.png", "stop", "abort skip or leap (X)", KeyEvent.VK_X);
 		
-		KahinaControlButtonWindow historyWindow = new KahinaControlButtonWindow(windowManager);
-		historyWindow.setTitle("History");
-		historyWindow.addControlButton("back.png", "backInHistory", "Back (Q)", KeyEvent.VK_Q);
-		historyWindow.addControlButton("forward.png", "forwardInHistory", "Forward (W)", KeyEvent.VK_W);
-		windowManager.getPerspective().getArrangement().getTopLevelWindows().add(historyWindow.getID());
+		addControlButton("History", "back.png", "backInHistory", "Back (Q)", KeyEvent.VK_Q);
+		addControlButton("History", "forward.png", "forwardInHistory", "Forward (W)", KeyEvent.VK_W);
 
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.CALL, Color.WHITE);
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.EXIT, new Color(153, 255, 102));

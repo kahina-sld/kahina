@@ -46,11 +46,10 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 		
         for (int winID : manager.arr.getTopLevelWindowsWithoutMainWindow())
         {
-        	KahinaWindow window = manager.getWindowByID(winID);
-            JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(window.getTitle());
-            windowCheckBoxItem.setActionCommand("toggleVisibility:" + window.getID());
+            JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(manager.arr.getTitle(winID));
+            windowCheckBoxItem.setActionCommand("toggleVisibility:" + winID);
             windowCheckBoxItem.addActionListener(this);
-            windowCheckBoxItem.setSelected(manager.psp.isVisible(window.getID()));
+            windowCheckBoxItem.setSelected(manager.psp.isVisible(winID));
             this.add(windowCheckBoxItem);
         }
         

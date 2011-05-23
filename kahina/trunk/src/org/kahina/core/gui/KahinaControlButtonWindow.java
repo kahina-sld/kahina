@@ -28,9 +28,9 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
 	}
 	
     //used to add simple button definitions (not more than an icon path, a command, a tool tip and a mnemonic)
-    public void addControlButton(String iconFilePath, String command, String toolTipText, int mnemonic)
+    public void addControlButton(KahinaControlButton button)
     {
-        buttons.add(new KahinaControlButton(iconFilePath, command, toolTipText, mnemonic));       
+        buttons.add(button);       
     }
     
     //needs to be built before the window can be displayed

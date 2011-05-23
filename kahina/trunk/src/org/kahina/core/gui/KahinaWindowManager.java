@@ -89,7 +89,26 @@ public class KahinaWindowManager implements KahinaListener
         	//if it has a binding, it is primary or a dynamic clone, so we construct a default window for it
         	if (binding != null)
         	{
-        		if (!binding.equals("main"))
+        		if (binding.equals("main"))
+        		{
+        	        //create and register the main window (once had to be last because the view menu needed to be filled)
+        	        mainWindow = createMainWindow(this, control, gui.kahina, arr.getPrimaryWinIDForName("main"));
+        	        arr.setPrimaryWindow("main", mainWindow.getID());
+            		mainWindow.setTitle(arr.getTitle(winID));
+        	        mainWindow.setSize(arr.getWidth(mainWindow.getID()), arr.getHeight(mainWindow.getID()));
+        	        mainWindow.setLocation(arr.getXPos(mainWindow.getID()), arr.getYPos(mainWindow.getID()));
+        		}
+        		else if (arr.getWindowType(winID) == KahinaWindowType.CONTROL_WINDOW)
+        		{
+        			KahinaControlButtonWindow controlWindow = new KahinaControlButtonWindow(this, winID);
+        			controlWindow.setBorder(arr.hasBorder(winID));
+        			controlWindow.setTitle(arr.getTitle(winID));
+        			for (KahinaControlButton button : gui.controlWindows.get(binding))
+        			{
+        				controlWindow.addControlButton(button);
+        			}
+        		}
+        		else //creating the stubs for the default views
         		{
         			KahinaView<?> view = gui.varNameToView.get(binding);
         			System.err.println("Generating view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
@@ -103,20 +122,6 @@ public class KahinaWindowManager implements KahinaListener
         	{
         		switch (arr.getWindowType(winID))
         		{
-	    			case KahinaWindowType.MAIN_WINDOW:
-	    			{
-	    				//TODO: change the main window layout according to new schema
-	            		KahinaWindow viewWindow = new KahinaMainWindow(this,this.control,this.gui.kahina, winID);
-	            		viewWindow.setTitle(arr.getTitle(winID));
-	            		break;
-	    			}
-	    			case KahinaWindowType.CONTROL_WINDOW:
-	    			{
-	            		KahinaWindow viewWindow = new KahinaControlButtonWindow(this, winID);
-	            		viewWindow.setTitle(arr.getTitle(winID));
-	                    viewWindow.setBorder(arr.hasBorder(winID));
-	            		break;
-	    			}
         			case KahinaWindowType.HORI_SPLIT_WINDOW:
         			{
                 		KahinaWindow viewWindow = new KahinaHorizontallySplitWindow(this, winID);
@@ -199,8 +204,8 @@ public class KahinaWindowManager implements KahinaListener
 			}
         }
         
-        //... fill the default windows with the content specified by the bindings ... 
-        for (int winID : arr.getDefaultWindows())
+        //... and fill the content windows with the content specified by the bindings. 
+        for (int winID : arr.getContentWindows())
         {    
         	//apply configuration as defined by the perspective to the view
             //TODO: also define the main window as a "view" for a more unified treatment
@@ -214,12 +219,6 @@ public class KahinaWindowManager implements KahinaListener
             	gui.varNameToView.get(binding).setConfig(psp.getConfiguration(winID));
             }
         }
-        
-        //... and finally create and register the main window (must be last because the view menu needs to be filled)
-        mainWindow = createMainWindow(this, control, gui.kahina, arr.getPrimaryWinIDForName("main"));
-        arr.setPrimaryWindow("main", mainWindow.getID());
-        mainWindow.setSize(arr.getWidth(mainWindow.getID()), arr.getHeight(mainWindow.getID()));
-        mainWindow.setLocation(arr.getXPos(mainWindow.getID()), arr.getYPos(mainWindow.getID()));
     }
     
     /**

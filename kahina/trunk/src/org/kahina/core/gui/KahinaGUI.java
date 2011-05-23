@@ -46,7 +46,7 @@ public class KahinaGUI implements KahinaListener
 
 	KahinaSelectionHistory selectionHistory;
 
-	List<KahinaControlButtonWindow> controlWindows;
+	Map<String,List<KahinaControlButton>> controlWindows;
 
 	protected KahinaTextView messageConsoleView;
 
@@ -79,7 +79,7 @@ public class KahinaGUI implements KahinaListener
 		
 		this.windowManager = createWindowManager(this, control);
 
-		this.controlWindows = new LinkedList<KahinaControlButtonWindow>();
+		this.controlWindows = new HashMap<String,List<KahinaControlButton>>();
 
 		this.views = new ArrayList<KahinaView<?>>();
 
@@ -131,9 +131,15 @@ public class KahinaGUI implements KahinaListener
 		}
 	}
 	
-	public List<KahinaControlButtonWindow> getControlWindows()
+	public void addControlButton(String windowTitle, String iconFilePath, String command, String toolTipText, int mnemonic)
 	{
-		return controlWindows;
+		List<KahinaControlButton> list = controlWindows.get(windowTitle);
+		if (list == null)
+		{
+			list = new LinkedList<KahinaControlButton>();
+			controlWindows.put(windowTitle, list);
+		}
+		list.add(new KahinaControlButton(iconFilePath, command, toolTipText, mnemonic));
 	}
 
 	/*public KahinaWindow getWindowForVarName(String varName)

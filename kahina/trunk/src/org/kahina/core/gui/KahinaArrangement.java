@@ -237,7 +237,7 @@ public class KahinaArrangement
 		return topLevelWindows;
 	}
 	
-	public Set<Integer> getDefaultWindows()
+	public Set<Integer> getContentWindows()
 	{
 		return winIDToBinding.keySet();
 	}
@@ -289,6 +289,16 @@ public class KahinaArrangement
 						arr.setPrimaryWindow(binding, winID);
 					}
 				}
+				else if (type.equals("control-window"))
+				{
+					arr.setWindowType(winID, KahinaWindowType.CONTROL_WINDOW);
+					String binding = XMLUtilities.attrStrVal(el, "kahina:binding");
+					arr.bindWindow(winID, binding);
+					if (XMLUtilities.attrBoolVal(el, "kahina:primary"))
+					{
+						arr.setPrimaryWindow(binding, winID);
+					}
+				}
 				else if (type.equals("hori-split-window"))
 				{
 					arr.setWindowType(winID, KahinaWindowType.HORI_SPLIT_WINDOW);
@@ -316,7 +326,15 @@ public class KahinaArrangement
 		for (Integer windowID : winIDToBinding.keySet())
 		{
 			//System.err.println("Processing windowID " + windowID);
-			Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:default-window");
+			Element el = null;
+			if (windowType.get(windowID) == KahinaWindowType.DEFAULT_WINDOW)
+			{
+				el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:default-window");
+			}
+			else if (windowType.get(windowID) == KahinaWindowType.CONTROL_WINDOW)
+			{
+				el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:control-window");
+			}
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:id", windowID + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:primary", (primaryWindow.get(winIDToBinding.get(windowID)) == windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:binding", winIDToBinding.get(windowID));
