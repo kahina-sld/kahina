@@ -234,6 +234,15 @@ public class KahinaWindowManager implements KahinaListener
         displayWindows();
     }
     
+    /**
+     * Gets the current perspective, can be manipulated and reapplied.
+     * @return the current perspective
+     */
+    public KahinaPerspective getPerspective()
+    {
+    	return psp;
+    }
+    
     public void registerWindow(KahinaWindow window)
     {
     	 windowByID.put(window.getID(),window);

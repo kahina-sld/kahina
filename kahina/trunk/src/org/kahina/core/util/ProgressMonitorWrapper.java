@@ -1,5 +1,7 @@
 package org.kahina.core.util;
 
+import java.awt.Component;
+
 import javax.swing.ProgressMonitor;
 
 import org.kahina.core.gui.KahinaControlPanel;
@@ -13,7 +15,7 @@ public class ProgressMonitorWrapper
 	
 	private int max;
 
-	public ProgressMonitorWrapper(KahinaControlPanel parentComponent, String message, String note, int min, int max)
+	public ProgressMonitorWrapper(Component parentComponent, String message, String note, int min, int max)
 	{
 		monitor = new ProgressMonitor(parentComponent, message, note, min, max);
 		this.max = max;

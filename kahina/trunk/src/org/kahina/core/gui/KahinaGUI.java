@@ -47,7 +47,6 @@ public class KahinaGUI implements KahinaListener
 	KahinaSelectionHistory selectionHistory;
 
 	List<KahinaControlButtonWindow> controlWindows;
-	KahinaControlPanel controlPanel;
 
 	protected KahinaTextView messageConsoleView;
 
@@ -81,7 +80,6 @@ public class KahinaGUI implements KahinaListener
 		this.windowManager = createWindowManager(this, control);
 
 		this.controlWindows = new LinkedList<KahinaControlButtonWindow>();
-		this.controlPanel = new KahinaControlPanel();
 
 		this.views = new ArrayList<KahinaView<?>>();
 
@@ -136,11 +134,6 @@ public class KahinaGUI implements KahinaListener
 	public List<KahinaControlButtonWindow> getControlWindows()
 	{
 		return controlWindows;
-	}
-
-	public KahinaControlPanel getControlPanel()
-	{
-		return controlPanel;
 	}
 
 	/*public KahinaWindow getWindowForVarName(String varName)
@@ -333,16 +326,16 @@ public class KahinaGUI implements KahinaListener
 
 	public ProgressMonitorWrapper createProgressMonitorWrapper(String message, String note, int min, int max)
 	{
-		return new ProgressMonitorWrapper(controlPanel, message, note, min, max);
+		return new ProgressMonitorWrapper(windowManager.mainWindow, message, note, min, max);
 	}
 
 	public int showConfirmDialog(Object message, String title, int optionType)
 	{
-		return JOptionPane.showConfirmDialog(controlPanel, message, title, optionType);
+		return JOptionPane.showConfirmDialog(windowManager.mainWindow, message, title, optionType);
 	}
 
 	public void showMessageDialog(Object message, String title, int messageType)
 	{
-		JOptionPane.showMessageDialog(controlPanel, message, title, messageType);
+		JOptionPane.showMessageDialog(windowManager.mainWindow, message, title, messageType);
 	}
 }

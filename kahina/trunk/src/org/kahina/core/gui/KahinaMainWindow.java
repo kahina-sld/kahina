@@ -17,8 +17,9 @@ import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
 import org.kahina.core.gui.profiler.KahinaProfilerMenu;
+import org.kahina.core.visual.KahinaEmptyView;
 
-public class KahinaMainWindow extends KahinaWindow implements KahinaListener
+public class KahinaMainWindow extends KahinaDefaultWindow implements KahinaListener
 {
 	private static final long serialVersionUID = 4400677323996243739L;
 
@@ -28,13 +29,13 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
 	{
-		super(windowManager);
+		super(new KahinaEmptyView(control),windowManager);
 		initialize(control);
 	}
 	
 	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
 	{
-		super(windowManager,winID);
+		super(new KahinaEmptyView(control),windowManager,winID);
 		initialize(control);
 	}
 	
@@ -58,11 +59,6 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		menuBar.add(new KahinaHelpMenu());
 		this.setJMenuBar(menuBar);
 
-		//TODO: change this to reflect the new way of treating control buttons
-		wm.gui.getControlPanel().build();
-		this.add(wm.gui.getControlPanel(), BorderLayout.PAGE_START);
-
-		// TODO: adapt this to the size of the control panel
 		int width = 625;
 		int height = 120;
 		this.setSize(width, height);
@@ -78,6 +74,11 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 			}
 
 		});
+	}
+	
+	public int getWindowType()
+	{
+		return KahinaWindowType.MAIN_WINDOW;
 	}
 
 	private void disposeAllWindows()

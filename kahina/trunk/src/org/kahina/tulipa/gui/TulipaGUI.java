@@ -41,7 +41,8 @@ public class TulipaGUI extends KahinaGUI
         livingViews.add(grammarView);
         varNameToView.put("grammar", grammarView);
         
-        getControlPanel().addControlButtonGroup("Control");
+        //TODO: adapt this to new way of defining control windows
+        /*getControlPanel().addControlButtonGroup("Control");
         getControlPanel().addControlButton("creep.png", "creep", "(C)ontinue to next step", "Control", KeyEvent.VK_C);
         getControlPanel().addControlButton("roundskip.png", "auto-complete", "(A)uto-complete this step", "Control", KeyEvent.VK_A);
         getControlPanel().addControlButton("reject.png", "fail", "make this step (F)ail", "Control", KeyEvent.VK_F);
@@ -50,7 +51,7 @@ public class TulipaGUI extends KahinaGUI
         
         getControlPanel().addControlButtonGroup("History");
         getControlPanel().addControlButton("back.png", "backInHistory", "Back (Q)",  "History", KeyEvent.VK_Q);
-        getControlPanel().addControlButton("forward.png", "forwardInHistory", "Forward (W)",  "History", KeyEvent.VK_W);
+        getControlPanel().addControlButton("forward.png", "forwardInHistory", "Forward (W)",  "History", KeyEvent.VK_W);*/
     }
     
     @Override
