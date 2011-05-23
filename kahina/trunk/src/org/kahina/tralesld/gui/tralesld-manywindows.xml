@@ -2,8 +2,10 @@
 <kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="tralesld" kahina:name="many-windows">
   <kahina:arrangement>
     <kahina:default-window kahina:binding="main" kahina:height="120" kahina:id="0" kahina:primary="true" kahina:title="Kahina" kahina:width="625" kahina:xpos="0" kahina:ypos="25"/>
-    <kahina:control-window kahina:binding="Control" kahina:height="120" kahina:id="16" kahina:primary="true" kahina:border="true" kahina:title="Control" kahina:width="625" kahina:xpos="120" kahina:ypos="25"/>
-    <kahina:control-window kahina:binding="History" kahina:height="120" kahina:id="17" kahina:primary="true" kahina:border="true" kahina:title="History" kahina:width="625" kahina:xpos="120" kahina:ypos="650"/>
+    <kahina:hori-split-window kahina:height="100" kahina:id="18" kahina:title="Control Window" kahina:border="false" kahina:width="650" kahina:xpos="0" kahina:ypos="40">
+    	<kahina:control-window kahina:binding="Control" kahina:height="100" kahina:id="16" kahina:primary="true" kahina:border="true" kahina:title="Control" kahina:width="400" kahina:xpos="120" kahina:ypos="25"/>
+    	<kahina:control-window kahina:binding="History" kahina:height="100" kahina:id="17" kahina:primary="true" kahina:border="true" kahina:title="History" kahina:width="200" kahina:xpos="420" kahina:ypos="25"/>
+    </kahina:hori-split-window>
     <kahina:hori-split-window kahina:height="246" kahina:id="15" kahina:title="Variable Bindings" kahina:border="false" kahina:width="531" kahina:xpos="836" kahina:ypos="689">
       <kahina:default-window kahina:binding="startBindings" kahina:height="312" kahina:id="1" kahina:primary="true" kahina:border="true" kahina:title="startBindings" kahina:width="206" kahina:xpos="246" kahina:ypos="251"/>
       <kahina:default-window kahina:binding="endBindings" kahina:height="264" kahina:id="5" kahina:primary="true" kahina:border="true" kahina:title="endBindings" kahina:width="182" kahina:xpos="474" kahina:ypos="254"/>
