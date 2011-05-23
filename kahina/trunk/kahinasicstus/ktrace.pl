@@ -17,3 +17,5 @@ noktrace :-
   nodebug,
   retract(kbreakpoint(Breakpoint)),
   remove_breakpoints([Breakpoint]).
+
+:- set_prolog_flag(source_info,on).
