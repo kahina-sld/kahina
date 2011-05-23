@@ -14,7 +14,6 @@ import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
-import org.kahina.core.gui.KahinaViewIntegrationType;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.profiler.ProfileEntry;
@@ -27,7 +26,6 @@ import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
 import org.kahina.tralesld.event.TraleSLDControlEventCommands;
-import org.kahina.tralesld.gui.TraleSLDWindowManager;
 import org.kahina.tralesld.profiler.TraleSLDProfileEntryMapper;
 import org.kahina.tralesld.visual.chart.TraleSLDChartEdgeDisplayDecider;
 
@@ -49,9 +47,6 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		varNameToView.put("chart", mainChartView);
 
 		mainTreeView.setStatusColorEncoding(TraleSLDStepType.FINISHED, new Color(102, 51, 153));
-		mainTreeView.setStatusColorEncoding(TraleSLDStepType.BLOCKED, Color.BLACK);
-		// TODO: build font color customization facilities into TreeView
-		// mainTreeView.setStatusFontColorEncoding(TraleSLDStepType.BLOCKED,Color.BLACK);
 
 		mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.PROSPECTIVE, new Color(192, 192, 192));
 		mainChartView.setStatusColorEncoding(TraleSLDChartEdgeStatus.SUCCESSFUL, new Color(102, 153, 102));

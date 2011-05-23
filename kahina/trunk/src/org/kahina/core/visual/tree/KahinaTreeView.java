@@ -177,8 +177,10 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 	{
 		int status = getContentfulTreeModel().getNodeStatus(nodeID);
 		Color col = statusNodeColorEncoding.get(status);
-		// System.err.println("Node " + nodeID + ": status " + status +
-		// " ->  color " + col);
+		if (VERBOSE)
+		{
+			System.err.println("Node " + nodeID + ": status " + status + " ->  color " + col);
+		}
 		if (col == null)
 		{
 			return Color.WHITE;
@@ -250,6 +252,10 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 
 	public void setStatusColorEncoding(int status, Color color)
 	{
+		if (VERBOSE)
+		{
+			System.err.println("status " + status + " -> color " + color);
+		}
 		statusNodeColorEncoding.put(status, color);
 	}
 
