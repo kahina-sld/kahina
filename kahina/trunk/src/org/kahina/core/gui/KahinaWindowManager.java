@@ -101,17 +101,19 @@ public class KahinaWindowManager implements KahinaListener
         		else if (arr.getWindowType(winID) == KahinaWindowType.CONTROL_WINDOW)
         		{
         			KahinaControlButtonWindow controlWindow = new KahinaControlButtonWindow(this, winID);
+        			System.err.println("Generating control view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
         			controlWindow.setBorder(arr.hasBorder(winID));
         			controlWindow.setTitle(arr.getTitle(winID));
         			for (KahinaControlButton button : gui.controlWindows.get(binding))
         			{
         				controlWindow.addControlButton(button);
         			}
+        			controlWindow.build();
         		}
         		else //creating the stubs for the default views
         		{
         			KahinaView<?> view = gui.varNameToView.get(binding);
-        			System.err.println("Generating view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
+        			System.err.println("Generating default view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
         			KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, winID);
         			viewWindow.setTitle(arr.getTitle(winID));
                     viewWindow.setBorder(arr.hasBorder(winID));
@@ -120,8 +122,9 @@ public class KahinaWindowManager implements KahinaListener
             //otherwise build stubs according to the type of embedding window
         	else
         	{
+        		System.err.println("Generating embedding window " + winID);
         		switch (arr.getWindowType(winID))
-        		{
+        		{		
         			case KahinaWindowType.HORI_SPLIT_WINDOW:
         			{
                 		KahinaWindow viewWindow = new KahinaHorizontallySplitWindow(this, winID);
@@ -188,6 +191,7 @@ public class KahinaWindowManager implements KahinaListener
         //... flip the subwindows of composed windows if inconsistent with the coordinates ...
         for (int winID : arr.getAllWindows())
         {
+
 	        switch (arr.getWindowType(winID))
 			{
 				case KahinaWindowType.HORI_SPLIT_WINDOW:
@@ -209,9 +213,10 @@ public class KahinaWindowManager implements KahinaListener
         {    
         	//apply configuration as defined by the perspective to the view
             //TODO: also define the main window as a "view" for a more unified treatment
-            String binding = arr.getBindingForWinID(winID);
-            if (!binding.equals("main"))
+            if (arr.getWindowType(winID) == KahinaWindowType.DEFAULT_WINDOW)
             {
+                String binding = arr.getBindingForWinID(winID);
+                System.err.println("ID: " + winID + " Binding: " + binding);
             	//TODO: this calls the generic setConfig()-method, instead of the specific overloaded versions
             	//the more specific config eclipses the one we set; we seem to need reflection here as well
             	//! better: overload and check for correct types in each implementation

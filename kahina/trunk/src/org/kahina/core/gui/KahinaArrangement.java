@@ -251,16 +251,16 @@ public class KahinaArrangement
 	 * - snapshot clones are represented, but neither imported nor exported because they cannot reliably be restored
 	 * - TODO: offer an option to linearize and restore contents of snapshot clones as well
 	 */
-	
 	public static KahinaArrangement importXML(Element topEl)
 	{
 		KahinaArrangement arr = new KahinaArrangement();
-		NodeList nl = topEl.getElementsByTagName("kahina:default-window");
 		Element el;
+		List<Element> botEls = XMLUtilities.getElements(topEl,"kahina:default-window");
+		botEls.addAll(XMLUtilities.getElements(topEl,"kahina:control-window"));
 		//start at the leaves of the embedding hierarchy and work bottom-up
-		for (int i = 0; i < nl.getLength(); i++)
+		for (Element botEl : botEls)
 		{
-			el = (Element) nl.item(i);
+			el = botEl;
 			int previousID = -1;
 			int winID = -1;
 			while (el != topEl)
@@ -281,8 +281,16 @@ public class KahinaArrangement
 				//System.err.println("  Window is of type " + type + ".");
 				if (type.equals("default-window"))
 				{
-					arr.setWindowType(winID, KahinaWindowType.DEFAULT_WINDOW);
+
 					String binding = XMLUtilities.attrStrVal(el, "kahina:binding");
+					if (binding.equals("main"))
+					{
+						arr.setWindowType(winID, KahinaWindowType.MAIN_WINDOW);
+					}
+					else
+					{
+						arr.setWindowType(winID, KahinaWindowType.DEFAULT_WINDOW);
+					}
 					arr.bindWindow(winID, binding);
 					if (XMLUtilities.attrBoolVal(el, "kahina:primary"))
 					{

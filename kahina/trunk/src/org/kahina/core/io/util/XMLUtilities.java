@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -19,6 +21,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -188,6 +191,31 @@ public class XMLUtilities
 	public static String attrStrVal(Element el, String attrName)
 	{
 		return el.getAttribute(attrName);
+	}
+	
+	public static List<Element> getElements(Element el, String elName)
+	{
+		LinkedList<Element> children = new LinkedList<Element>();
+		NodeList nl = el.getElementsByTagName(elName);
+		for (int i = 0; i < nl.getLength(); i++)
+		{
+			children.add((Element) nl.item(i));
+		}
+		return children;
+	}
+	
+	public static List<Element> getChildElements(Element el)
+	{
+		LinkedList<Element> children = new LinkedList<Element>();
+		NodeList nl = el.getChildNodes();
+		for (int i = 0; i < nl.getLength(); i++)
+		{
+			if (nl.item(i).getNodeType() == Node.ELEMENT_NODE)
+			{
+				children.add((Element) nl.item(i));
+			}
+		}
+		return children;
 	}
 	
 }

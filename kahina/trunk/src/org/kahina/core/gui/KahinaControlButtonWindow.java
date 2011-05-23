@@ -36,13 +36,13 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
     //needs to be built before the window can be displayed
     public void build()
     {
-        this.removeAll();
-        this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+        //this.removeAll();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         for (KahinaControlButton controlButton : buttons)
         {
             JButton button = controlButton.create();
             button.addActionListener(this);
-            add(button);
+            mainPanel.add(button);
         }
     }
     
@@ -50,5 +50,10 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
     {
         String command = e.getActionCommand();
         KahinaRunner.processEvent(new KahinaControlEvent(command));
+    }
+    
+    public int getWindowType()
+    {
+    	return KahinaWindowType.CONTROL_WINDOW;
     }
 }

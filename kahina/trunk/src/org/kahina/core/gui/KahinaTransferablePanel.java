@@ -33,7 +33,7 @@ public class KahinaTransferablePanel extends JPanel implements Transferable
     public void setTitle(String title)
     {
     	this.title = title;
-    	((TitledBorder)getBorder()).setTitle(title);
+    	((TitledBorder) getBorder()).setTitle(title);
     }
 
 	
@@ -41,7 +41,6 @@ public class KahinaTransferablePanel extends JPanel implements Transferable
 	public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException 
     {
         if(!flavor.equals(DataFlavor.stringFlavor)) throw new UnsupportedFlavorException(flavor);
-        System.err.println("Getting transfer data: " + windowID);
         return windowID + "";
 	}
 
