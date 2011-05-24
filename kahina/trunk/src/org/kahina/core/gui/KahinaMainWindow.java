@@ -28,23 +28,23 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	
 	protected JMenuBar menuBar;
 
-	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
 	{
 		super(windowManager);
-		initialize(control);
+		this.initializeMainWindow();
 	}
 	
-	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina, int winID)
 	{
-		super(windowManager);
-		initialize(control);
+		super(windowManager, winID);
+		this.initializeMainWindow();
 	}
 	
-	private void initialize(KahinaController control)
+	private void initializeMainWindow()
 	{
 		this.setTitle("Kahina");
         this.setUndecorated(false);
-		control.registerListener(KahinaEventTypes.TREE, this);
+		wm.control.registerListener(KahinaEventTypes.TREE, this);
 		this.setLayout(new BorderLayout());
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Uncomment this in order to be able to profile using JRat.
@@ -67,8 +67,8 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		mainPanel.setTransferHandler(new KahinaWindowTransferHandler());
         mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
-		control.registerListener(KahinaEventTypes.SYSTEM, this);
-		control.registerListener(KahinaEventTypes.SESSION, this);
+		wm.control.registerListener(KahinaEventTypes.SYSTEM, this);
+		wm.control.registerListener(KahinaEventTypes.SESSION, this);
 		this.addWindowListener(new WindowAdapter()
 		{
 			@Override

@@ -113,10 +113,10 @@ public class KahinaWindowManager implements KahinaListener
         		}
         		case KahinaWindowType.MAIN_WINDOW:
         		{
-        			mainWindow = createMainWindow(this, control, gui.kahina, winID);
+        			mainWindow = createMainWindow(this, gui.kahina, winID);
             		mainWindow.setTitle(arr.getTitle(winID));
-        	        mainWindow.setSize(arr.getWidth(mainWindow.getID()), arr.getHeight(mainWindow.getID()));
-        	        mainWindow.setLocation(arr.getXPos(mainWindow.getID()), arr.getYPos(mainWindow.getID()));
+        	        mainWindow.setSize(arr.getWidth(winID), arr.getHeight(winID));
+        	        mainWindow.setLocation(arr.getXPos(winID), arr.getYPos(winID));
         			break;
         		}
     			case KahinaWindowType.HORI_SPLIT_WINDOW:
@@ -202,7 +202,7 @@ public class KahinaWindowManager implements KahinaListener
         }
         
         //... and fill the content windows with the content specified by the bindings. 
-        for (int winID : arr.getContentWindows())
+        for (int winID : arr.getContentWindowsWithoutMainWindow())
         {    
         	//apply configuration as defined by the perspective to the view
             if (arr.getWindowType(winID) == KahinaWindowType.DEFAULT_WINDOW)
@@ -249,14 +249,14 @@ public class KahinaWindowManager implements KahinaListener
     	return windowByID.get(winID);
     }
     
-    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaInstance<?, ?, ?> kahina)
 	{
-		return new KahinaMainWindow(this, control, gui.kahina);
+		return new KahinaMainWindow(this, gui.kahina);
 	}
     
-    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaInstance<?, ?, ?> kahina, int winID)
 	{
-		return new KahinaMainWindow(this, control, gui.kahina, winID);
+		return new KahinaMainWindow(this, gui.kahina, winID);
 	}
 
 	public void disposeAllWindows()

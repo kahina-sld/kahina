@@ -8,20 +8,19 @@ import org.kahina.core.gui.KahinaWindowManager;
 
 public class TraleSLDWindowManager extends KahinaWindowManager
 {
-
 	public TraleSLDWindowManager(KahinaGUI gui, KahinaController control)
 	{
 		super(gui, control);
 	}
     
-    protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
 	{
-		return new TraleSLDMainWindow(windowManager, control, kahina);
+		return new TraleSLDMainWindow(windowManager, kahina);
 	}
     
-    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaInstance<?, ?, ?> kahina, int winID)
 	{
-		return new TraleSLDMainWindow(this, control, kahina, winID);
+		return new TraleSLDMainWindow(this, kahina, winID);
 	}
 
 }

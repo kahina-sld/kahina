@@ -7,18 +7,17 @@ import org.kahina.core.gui.KahinaWindowManager;
 
 public class TraleSLDMainWindow extends KahinaMainWindow
 {
-
 	private static final long serialVersionUID = -8044329699904664157L;
 
-	public TraleSLDMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
 	{
-		super(windowManager, control, kahina);
+		super(windowManager, kahina);
 		menuBar.add(new TraleSLDParseMenu(kahina), 2);
 	}
 	
-	public TraleSLDMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
+	public TraleSLDMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina, int winID)
 	{
-		super(windowManager, control, kahina, winID);
+		super(windowManager, kahina, winID);
 		menuBar.add(new TraleSLDParseMenu(kahina), 2);
 	}
 

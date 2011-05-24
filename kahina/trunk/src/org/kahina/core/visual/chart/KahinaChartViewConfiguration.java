@@ -258,6 +258,7 @@ public class KahinaChartViewConfiguration extends KahinaViewConfiguration
 				config.displayOrientation = XMLUtilities.attrIntVal(optionEl, "kahina:value");
 			}
 			//TODO: import display decider
+			config.displayDecider = new KahinaChartEdgeDisplayDecider();
 		}
 		return config;
 	}
