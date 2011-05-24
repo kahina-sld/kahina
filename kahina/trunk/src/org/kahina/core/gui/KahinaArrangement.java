@@ -38,6 +38,7 @@ public class KahinaArrangement
 	private Map<Integer,String> winIDToBinding;
 	//with each name we associate a primary window, the others are clones; "main" reserved for main window
 	private Map<String,Integer> primaryWindow;
+	int mainWindowID;
 	
 	//all the containment information is stored here, window operations manipulate this
     private HashMap<Integer,Integer> embeddingWindow;
@@ -229,7 +230,7 @@ public class KahinaArrangement
 		HashSet<Integer> topLevelWindows = new HashSet<Integer>();
 		for (int winID : getAllWindows())
 		{
-			if (getEmbeddingWindowID(winID) == -1 && winID != primaryWindow.get("main"))
+			if (getEmbeddingWindowID(winID) == -1 && winID != mainWindowID)
 			{
 				topLevelWindows.add(winID);
 			}
@@ -257,6 +258,7 @@ public class KahinaArrangement
 		Element el;
 		List<Element> botEls = XMLUtilities.getElements(topEl,"kahina:default-window");
 		botEls.addAll(XMLUtilities.getElements(topEl,"kahina:control-window"));
+		botEls.addAll(XMLUtilities.getElements(topEl,"kahina:main-window"));
 		//start at the leaves of the embedding hierarchy and work bottom-up
 		for (Element botEl : botEls)
 		{
@@ -283,14 +285,7 @@ public class KahinaArrangement
 				{
 
 					String binding = XMLUtilities.attrStrVal(el, "kahina:binding");
-					if (binding.equals("main"))
-					{
-						arr.setWindowType(winID, KahinaWindowType.MAIN_WINDOW);
-					}
-					else
-					{
-						arr.setWindowType(winID, KahinaWindowType.DEFAULT_WINDOW);
-					}
+					arr.setWindowType(winID, KahinaWindowType.DEFAULT_WINDOW);
 					arr.bindWindow(winID, binding);
 					if (XMLUtilities.attrBoolVal(el, "kahina:primary"))
 					{
@@ -306,6 +301,11 @@ public class KahinaArrangement
 					{
 						arr.setPrimaryWindow(binding, winID);
 					}
+				}
+				else if (type.equals("main-window"))
+				{
+					arr.mainWindowID = winID;
+					arr.setWindowType(winID, KahinaWindowType.MAIN_WINDOW);
 				}
 				else if (type.equals("hori-split-window"))
 				{

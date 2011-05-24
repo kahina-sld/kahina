@@ -1,6 +1,7 @@
 package org.kahina.core.gui;
 
 import java.awt.BorderLayout;
+import java.awt.dnd.DropTarget;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -19,7 +20,7 @@ import org.kahina.core.event.KahinaTreeEventType;
 import org.kahina.core.gui.profiler.KahinaProfilerMenu;
 import org.kahina.core.visual.KahinaEmptyView;
 
-public class KahinaMainWindow extends KahinaDefaultWindow implements KahinaListener
+public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 {
 	private static final long serialVersionUID = 4400677323996243739L;
 
@@ -29,13 +30,13 @@ public class KahinaMainWindow extends KahinaDefaultWindow implements KahinaListe
 
 	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina)
 	{
-		super(new KahinaEmptyView(control),windowManager);
+		super(windowManager);
 		initialize(control);
 	}
 	
 	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, KahinaInstance<?, ?, ?> kahina, int winID)
 	{
-		super(new KahinaEmptyView(control),windowManager,winID);
+		super(windowManager);
 		initialize(control);
 	}
 	
@@ -62,6 +63,9 @@ public class KahinaMainWindow extends KahinaDefaultWindow implements KahinaListe
 		int width = 625;
 		int height = 120;
 		this.setSize(width, height);
+		
+		mainPanel.setTransferHandler(new KahinaWindowTransferHandler());
+        mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
 		control.registerListener(KahinaEventTypes.SYSTEM, this);
 		control.registerListener(KahinaEventTypes.SESSION, this);

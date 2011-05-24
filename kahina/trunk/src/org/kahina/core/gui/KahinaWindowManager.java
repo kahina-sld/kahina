@@ -85,21 +85,21 @@ public class KahinaWindowManager implements KahinaListener
 		//first create a window stub for all the windows mentioned in the arrangement... 
         for (int winID : arr.getAllWindows())
         {
-        	String binding = arr.getBindingForWinID(winID);
-        	//if it has a binding, it is primary or a dynamic clone, so we construct a default window for it
-        	if (binding != null)
-        	{
-        		if (binding.equals("main"))
+    		switch (arr.getWindowType(winID))
+    		{	
+        		case KahinaWindowType.DEFAULT_WINDOW:
         		{
-        	        //create and register the main window (once had to be last because the view menu needed to be filled)
-        	        mainWindow = createMainWindow(this, control, gui.kahina, arr.getPrimaryWinIDForName("main"));
-        	        arr.setPrimaryWindow("main", mainWindow.getID());
-            		mainWindow.setTitle(arr.getTitle(winID));
-        	        mainWindow.setSize(arr.getWidth(mainWindow.getID()), arr.getHeight(mainWindow.getID()));
-        	        mainWindow.setLocation(arr.getXPos(mainWindow.getID()), arr.getYPos(mainWindow.getID()));
+        			String binding = arr.getBindingForWinID(winID);
+        			KahinaView<?> view = gui.varNameToView.get(binding);
+        			System.err.println("Generating default view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
+        			KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, winID);
+        			viewWindow.setTitle(arr.getTitle(winID));
+                    viewWindow.setBorder(arr.hasBorder(winID));
+        			break;
         		}
-        		else if (arr.getWindowType(winID) == KahinaWindowType.CONTROL_WINDOW)
+        		case KahinaWindowType.CONTROL_WINDOW:
         		{
+        			String binding = arr.getBindingForWinID(winID);
         			KahinaControlButtonWindow controlWindow = new KahinaControlButtonWindow(this, winID);
         			System.err.println("Generating control view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
         			controlWindow.setBorder(arr.hasBorder(winID));
@@ -109,57 +109,50 @@ public class KahinaWindowManager implements KahinaListener
         				controlWindow.addControlButton(button);
         			}
         			controlWindow.build();
+        			break;
         		}
-        		else //creating the stubs for the default views
+        		case KahinaWindowType.MAIN_WINDOW:
         		{
-        			KahinaView<?> view = gui.varNameToView.get(binding);
-        			System.err.println("Generating default view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
-        			KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, winID);
-        			viewWindow.setTitle(arr.getTitle(winID));
+        			mainWindow = createMainWindow(this, control, gui.kahina, winID);
+            		mainWindow.setTitle(arr.getTitle(winID));
+        	        mainWindow.setSize(arr.getWidth(mainWindow.getID()), arr.getHeight(mainWindow.getID()));
+        	        mainWindow.setLocation(arr.getXPos(mainWindow.getID()), arr.getYPos(mainWindow.getID()));
+        			break;
+        		}
+    			case KahinaWindowType.HORI_SPLIT_WINDOW:
+    			{
+            		KahinaWindow viewWindow = new KahinaHorizontallySplitWindow(this, winID);
+            		viewWindow.setTitle(arr.getTitle(winID));
                     viewWindow.setBorder(arr.hasBorder(winID));
-        		}
-        	}
-            //otherwise build stubs according to the type of embedding window
-        	else
-        	{
-        		System.err.println("Generating embedding window " + winID);
-        		switch (arr.getWindowType(winID))
-        		{		
-        			case KahinaWindowType.HORI_SPLIT_WINDOW:
-        			{
-                		KahinaWindow viewWindow = new KahinaHorizontallySplitWindow(this, winID);
-                		viewWindow.setTitle(arr.getTitle(winID));
-                        viewWindow.setBorder(arr.hasBorder(winID));
-                		break;
-        			}
-        			case KahinaWindowType.VERT_SPLIT_WINDOW:
-        			{
-                		KahinaWindow viewWindow = new KahinaVerticallySplitWindow(this, winID);
-                		viewWindow.setTitle(arr.getTitle(winID));
-                        viewWindow.setBorder(arr.hasBorder(winID));
-                		break;
-        			}
-        			case KahinaWindowType.TABBED_WINDOW:
-        			{
-                		KahinaWindow viewWindow = new KahinaTabbedWindow(this, winID);
-                		viewWindow.setTitle(arr.getTitle(winID));
-                        viewWindow.setBorder(arr.hasBorder(winID));
-                		break;
-        			}
-        			case KahinaWindowType.LIST_WINDOW:
-        			{
-                		KahinaWindow viewWindow = new KahinaListWindow(this, winID);
-                		viewWindow.setTitle(arr.getTitle(winID));
-                        viewWindow.setBorder(arr.hasBorder(winID));
-                		break;
-        			}
-        			default:
-        			{
-        				System.err.println("WARNING: Could not load default window without binding!");
-        				System.err.println("         The perspective might contain descriptions of snapshot clones.");
-        			}
-        		}
-        	}
+            		break;
+    			}
+    			case KahinaWindowType.VERT_SPLIT_WINDOW:
+    			{
+            		KahinaWindow viewWindow = new KahinaVerticallySplitWindow(this, winID);
+            		viewWindow.setTitle(arr.getTitle(winID));
+                    viewWindow.setBorder(arr.hasBorder(winID));
+            		break;
+    			}
+    			case KahinaWindowType.TABBED_WINDOW:
+    			{
+            		KahinaWindow viewWindow = new KahinaTabbedWindow(this, winID);
+            		viewWindow.setTitle(arr.getTitle(winID));
+                    viewWindow.setBorder(arr.hasBorder(winID));
+            		break;
+    			}
+    			case KahinaWindowType.LIST_WINDOW:
+    			{
+            		KahinaWindow viewWindow = new KahinaListWindow(this, winID);
+            		viewWindow.setTitle(arr.getTitle(winID));
+                    viewWindow.setBorder(arr.hasBorder(winID));
+            		break;
+    			}
+    			default:
+    			{
+    				System.err.println("WARNING: Could not load default window without binding!");
+    				System.err.println("         The perspective might contain descriptions of snapshot clones.");
+    			}
+    		}
         }
         
         //... then process the embedding structure ...
@@ -179,7 +172,7 @@ public class KahinaWindowManager implements KahinaListener
         }
         
         //... then adapt the coordinates ...     
-        for (int winID : arr.getTopLevelWindowsWithoutMainWindow())
+        for (int winID : arr.getTopLevelWindows())
         {
         	//System.err.println("Setting coordinates of top level window " + winID);
         	
@@ -204,7 +197,7 @@ public class KahinaWindowManager implements KahinaListener
 					((KahinaVerticallySplitWindow) windowByID.get(winID)).flipSubwindowsIfIndicatedByCoordinates();
 	        		break;
 				}
-				//TODO: adapt this system for tabbed windows as well (sorting involved!)
+				//TODO: adapt this system for tabbed and list windows as well (sorting involved!)
 			}
         }
         
@@ -212,11 +205,9 @@ public class KahinaWindowManager implements KahinaListener
         for (int winID : arr.getContentWindows())
         {    
         	//apply configuration as defined by the perspective to the view
-            //TODO: also define the main window as a "view" for a more unified treatment
             if (arr.getWindowType(winID) == KahinaWindowType.DEFAULT_WINDOW)
             {
                 String binding = arr.getBindingForWinID(winID);
-                System.err.println("ID: " + winID + " Binding: " + binding);
             	//TODO: this calls the generic setConfig()-method, instead of the specific overloaded versions
             	//the more specific config eclipses the one we set; we seem to need reflection here as well
             	//! better: overload and check for correct types in each implementation
