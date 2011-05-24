@@ -41,30 +41,31 @@ import org.kahina.tralesld.TraleSLDState;
 public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge> implements KahinaListener
 {
 	private static final boolean VERBOSE = false;
-	
+
 	protected G gui;
-	
+
 	// TODO maybe group state, bridge, profiler etc. under a new Session type
-	
+
 	protected S state;
-	
+
 	protected B bridge;
-	
+
 	protected KahinaController controller;
-	
+
 	protected ObjectMagazine<KahinaStep> steps;
-	
+
 	protected final KahinaController guiController;
-	
+
 	private boolean guiStarted = false;
 
 	public KahinaInstance()
-	{		
+	{
 		fillViewRegistry();
-		initializeNewSession(); // dummy session so views have something (empty) to show
+		initializeNewSession(); // dummy session so views have something (empty)
+								// to show
 		guiController = new KahinaController();
 	}
-	
+
 	/**
 	 * This code used to live in the constructor, but that caused problems with
 	 * subclass fields that need to be initialized before the GUI is created.
@@ -72,29 +73,37 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	 */
 	private void startGUI()
 	{
-		KahinaRunner.setGUIController(guiController); // TODO get rid of KahinaRunner
+		KahinaRunner.setGUIController(guiController); // TODO get rid of
+														// KahinaRunner
 		gui = createGUI(guiController);
 		gui.prepare(guiController);
 		guiStarted = true;
 	}
-	
+
 	public B startNewSession()
 	{
-		if (!guiStarted)
+		try
 		{
-			startGUI();
+			if (!guiStarted)
+			{
+				startGUI();
+			}
+			initializeNewSession();
+			gui.displayMainViews();
+			gui.show();
+			KahinaRunner.processEvent(new KahinaSelectionEvent(-1));
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
 		}
-		initializeNewSession();
-		gui.displayMainViews();
-		gui.show();
-		KahinaRunner.processEvent(new KahinaSelectionEvent(-1));
 		if (VERBOSE)
 		{
 			System.err.println(this + ".startNewSession()=" + bridge);
 		}
 		return bridge;
 	}
-	
+
 	protected void initializeNewSession()
 	{
 		if (steps != null)
@@ -113,9 +122,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		createTreeBehavior();
 		createWarner();
 	}
-	
+
 	protected abstract void createTreeBehavior();
-	
+
 	private KahinaWarner createWarner()
 	{
 		return new KahinaWarner(this);
@@ -150,12 +159,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		if (e instanceof KahinaUpdateEvent)
 		{
 			processUpdateEvent((KahinaUpdateEvent) e);
-		} 
-		else if (e instanceof KahinaSessionEvent)
+		} else if (e instanceof KahinaSessionEvent)
 		{
 			processSessionEvent((KahinaSessionEvent) e);
-		} 
-		else if (e instanceof KahinaSystemEvent)
+		} else if (e instanceof KahinaSystemEvent)
 		{
 			processSystemEvent((KahinaSystemEvent) e);
 		}
@@ -175,8 +182,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		if (type == KahinaSessionEvent.SAVE_SESSION)
 		{
 			saveSessionAs(e.getFile());
-		} 
-		else if (type == KahinaSessionEvent.LOAD_SESSION)
+		} else if (type == KahinaSessionEvent.LOAD_SESSION)
 		{
 			loadSession(e.getFile());
 		}
@@ -295,7 +301,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			}
 		}
 	}
-	
 
 	private void processUpdateEvent(KahinaUpdateEvent e)
 	{
@@ -309,17 +314,18 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			KahinaRunner.processEvent(new KahinaConsoleLineEvent(refs));
 		}
 	}
-	
+
 	/**
 	 * Writing a main method for a Kahina-based debugging environment is simple:
 	 * just create an instance of your KahinaInstance subclass and pass its
 	 * start method the arguments.
+	 * 
 	 * @param args
 	 */
 	public void start(String[] args)
 	{
 		startNewSession();
-		
+
 		if (args.length > 0)
 		{
 			loadSession(new File(args[0]));
