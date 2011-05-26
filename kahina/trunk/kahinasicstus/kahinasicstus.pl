@@ -9,19 +9,23 @@
 :- multifile user:breakpoint_expansion/2.
 
 user:breakpoint_expansion(kahina_breakpoint_action,[
-    silent,
+    % The three parameters Show, Mode, Command control Prolog's behavior on
+    % encountering a breakpoint.
+    silent, % Show: silent, don't display anything
     inv(Inv),
     port(Port),
     true(kahinasicstus:kahina_breakpoint_action(Inv,Port,Action)),
+    % Mode, Command: depends, controlled by GUI
     (true(Action == 115) % s(kip)
-    -> skip(Inv),
-       proceed
+    -> skip(Inv),         % Mode: skip(Inv)
+       proceed            % Command: proceed
      ; (true(Action == 102) % f(ail)
        -> \+ port(fail),
-          fail(Inv)
+          fail(Inv)       % Command: fail(Inv), Mode immaterial
         ; true(Action == 97) % a(bort)
-          -> abort
-           ; proceed))]).
+          -> abort        % Command: abort, Mode immaterial
+           ; debug,       % Mode: debug, i.e. leap (default is trace, i.e. creep)
+             proceed))]). % Command: proceed
 
 kahina_breakpoint_action(Inv,Port,Action) :-
   get_bridge(Bridge),
