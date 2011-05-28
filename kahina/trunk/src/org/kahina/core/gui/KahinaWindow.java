@@ -1,6 +1,7 @@
 package org.kahina.core.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -66,7 +67,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
         mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
         mainPanel.addMouseListener(new KahinaWindowListener(this));
         cloned = false;
-        this.add(mainPanel);
+        this.getContentPane().add(mainPanel);
         this.addWindowListener(this);
         this.addComponentListener(this);
         wm.registerWindow(this);

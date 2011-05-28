@@ -47,7 +47,6 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	{
 		this.setTitle("Kahina");
 		wm.control.registerListener(KahinaEventTypes.TREE, this);
-		this.setLayout(new BorderLayout());
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Uncomment this in order to be able to profile using JRat.
 
@@ -59,12 +58,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		
 		menuBar.add(new KahinaHelpMenu());
 		this.setJMenuBar(menuBar);
-
-		int width = 625;
-		int height = 120;
-		this.setSize(width, height);
 		
-		mainPanel.setTransferHandler(new KahinaWindowTransferHandler());
         mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
 		wm.control.registerListener(KahinaEventTypes.SYSTEM, this);
@@ -78,6 +72,12 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 			}
 
 		});
+	}
+	
+	public void setSize(int width, int height)
+	{
+		super.setSize(width,height);
+		mainPanel.setSize(width - 10,height - 50);
 	}
 	
 	protected void addAdditionalMenus()
@@ -123,10 +123,12 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		if (event instanceof KahinaTreeEvent)
 		{
 			processTreeEvent((KahinaTreeEvent) event);
-		} else if (event instanceof KahinaSystemEvent)
+		} 
+		else if (event instanceof KahinaSystemEvent)
 		{
 			processSystemEvent((KahinaSystemEvent) event);
-		} else if (event instanceof KahinaSessionEvent)
+		} 
+		else if (event instanceof KahinaSessionEvent)
 		{
 			processSessionEvent((KahinaSessionEvent) event);
 		}

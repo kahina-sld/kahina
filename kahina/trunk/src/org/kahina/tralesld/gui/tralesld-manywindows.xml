@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="tralesld" kahina:name="many-windows">
   <kahina:arrangement>
-    <kahina:main-window kahina:height="120" kahina:id="0" kahina:primary="true" kahina:title="Kahina" kahina:width="625" kahina:xpos="0" kahina:ypos="25"/>
+    <kahina:main-window kahina:height="120" kahina:id="0" kahina:primary="true" kahina:border="false" kahina:title="Kahina" kahina:width="625" kahina:xpos="0" kahina:ypos="25"/>
     <kahina:hori-split-window kahina:height="100" kahina:id="18" kahina:title="Control Window" kahina:border="false" kahina:width="650" kahina:xpos="0" kahina:ypos="40">
     	<kahina:control-window kahina:binding="Control" kahina:height="100" kahina:id="16" kahina:primary="true" kahina:border="true" kahina:title="Control" kahina:width="400" kahina:xpos="120" kahina:ypos="25"/>
     	<kahina:control-window kahina:binding="History" kahina:height="100" kahina:id="17" kahina:primary="true" kahina:border="true" kahina:title="History" kahina:width="200" kahina:xpos="420" kahina:ypos="25"/>
