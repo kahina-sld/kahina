@@ -37,7 +37,7 @@ public class KahinaWindowManager implements KahinaListener
     //main registry for windows: access windows by their windowID
     private HashMap<Integer,KahinaWindow> windowByID;
     
-    KahinaGUI gui;
+    public KahinaGUI gui;
     
     KahinaController control;
     
@@ -113,7 +113,7 @@ public class KahinaWindowManager implements KahinaListener
         		}
         		case KahinaWindowType.MAIN_WINDOW:
         		{
-        			mainWindow = createMainWindow(this, gui.kahina, winID);
+        			mainWindow = createMainWindow(this, winID);
             		mainWindow.setTitle(arr.getTitle(winID));
         	        mainWindow.setSize(arr.getWidth(winID), arr.getHeight(winID));
         	        mainWindow.setLocation(arr.getXPos(winID), arr.getYPos(winID));
@@ -249,14 +249,14 @@ public class KahinaWindowManager implements KahinaListener
     	return windowByID.get(winID);
     }
     
-    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaInstance<?, ?, ?> kahina)
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager)
 	{
-		return new KahinaMainWindow(this, gui.kahina);
+		return new KahinaMainWindow(this);
 	}
     
-    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaInstance<?, ?, ?> kahina, int winID)
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, int winID)
 	{
-		return new KahinaMainWindow(this, gui.kahina, winID);
+		return new KahinaMainWindow(this, winID);
 	}
 
 	public void disposeAllWindows()

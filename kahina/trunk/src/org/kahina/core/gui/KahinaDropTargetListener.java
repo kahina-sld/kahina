@@ -90,6 +90,12 @@ public class KahinaDropTargetListener implements DropTargetListener
                 			tabbedWindow.addSubwindow(w.wm.getWindowByID(winID));
                 			break;
                 		}
+                		case KahinaWindowType.MAIN_WINDOW:
+                		{
+                			KahinaMainWindow mainWindow = (KahinaMainWindow) w;
+                			mainWindow.addSubwindow(w.wm.getWindowByID(winID));
+                			break;
+                		}
                 	}
                 	KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));
                 }

@@ -131,6 +131,11 @@ public class KahinaGUI implements KahinaListener
 		}
 	}
 	
+	public KahinaInstance<?,?,?> getKahinaInstance()
+	{
+		return kahina;
+	}
+	
 	public void addControlButton(String windowTitle, String iconFilePath, String command, String toolTipText, int mnemonic)
 	{
 		List<KahinaControlButton> list = controlWindows.get(windowTitle);

@@ -2,23 +2,30 @@ package org.kahina.tralesld.gui;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.gui.KahinaBreakpointMenu;
 import org.kahina.core.gui.KahinaMainWindow;
 import org.kahina.core.gui.KahinaWindowManager;
+import org.kahina.core.gui.profiler.KahinaProfilerMenu;
+import org.kahina.lp.gui.LogicProgrammingMainWindow;
 
-public class TraleSLDMainWindow extends KahinaMainWindow
+public class TraleSLDMainWindow extends LogicProgrammingMainWindow
 {
 	private static final long serialVersionUID = -8044329699904664157L;
 
-	public TraleSLDMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDMainWindow(KahinaWindowManager windowManager)
 	{
-		super(windowManager, kahina);
-		menuBar.add(new TraleSLDParseMenu(kahina), 2);
+		super(windowManager);
 	}
 	
-	public TraleSLDMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina, int winID)
+	public TraleSLDMainWindow(KahinaWindowManager windowManager, int winID)
 	{
-		super(windowManager, kahina, winID);
-		menuBar.add(new TraleSLDParseMenu(kahina), 2);
+		super(windowManager, winID);
+	}
+	
+	protected void addAdditionalMenus()
+	{
+		menuBar.add(new TraleSLDParseMenu(wm.gui.getKahinaInstance()));
+		super.addAdditionalMenus();
 	}
 
 }

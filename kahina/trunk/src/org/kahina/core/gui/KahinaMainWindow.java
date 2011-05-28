@@ -27,14 +27,16 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	public static boolean verbose = false;
 	
 	protected JMenuBar menuBar;
+	
+	KahinaWindow subwindow;
 
-	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
+	public KahinaMainWindow(KahinaWindowManager windowManager)
 	{
 		super(windowManager);
 		this.initializeMainWindow();
 	}
 	
-	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina, int winID)
+	public KahinaMainWindow(KahinaWindowManager windowManager, int winID)
 	{
 		super(windowManager, winID);
 		this.initializeMainWindow();
@@ -53,9 +55,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		menuBar.add(new KahinaSessionMenu());
 		menuBar.add(new KahinaViewMenu(wm));
 		
-		// TODO these three menus are specific to logic programming, should be added in subclasses
-		menuBar.add(new KahinaBreakpointMenu());
-		menuBar.add(new KahinaProfilerMenu());
+		addAdditionalMenus();
 		
 		menuBar.add(new KahinaHelpMenu());
 		this.setJMenuBar(menuBar);
@@ -79,6 +79,32 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		});
 	}
+	
+	protected void addAdditionalMenus()
+	{
+		
+	}
+	
+	public boolean addSubwindow(KahinaWindow w)
+	{
+    	if (subwindow == null)
+    	{
+    		setSubwindow(w);
+    		return true;
+    	}
+    	else
+    	{
+    		return false;
+    	}
+	}
+	
+    public void setSubwindow(KahinaWindow w)
+    {
+    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
+    	subwindow = w;
+        mainPanel.removeAll();
+        mainPanel.add(w.getContentPane());
+    }
 	
 	public int getWindowType()
 	{

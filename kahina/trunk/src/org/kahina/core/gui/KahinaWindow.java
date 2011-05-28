@@ -25,8 +25,8 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     
     private static int idCounter = 0;
     
-    KahinaWindowManager wm;
-    KahinaTransferablePanel mainPanel;
+    protected KahinaWindowManager wm;
+    protected KahinaTransferablePanel mainPanel;
     
     protected final int windowID;
     protected boolean cloned;

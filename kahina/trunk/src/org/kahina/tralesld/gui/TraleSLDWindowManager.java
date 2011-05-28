@@ -1,6 +1,5 @@
 package org.kahina.tralesld.gui;
 
-import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaMainWindow;
@@ -13,14 +12,14 @@ public class TraleSLDWindowManager extends KahinaWindowManager
 		super(gui, control);
 	}
     
-    protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager)
 	{
-		return new TraleSLDMainWindow(windowManager, kahina);
+		return new TraleSLDMainWindow(windowManager);
 	}
     
-    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, KahinaInstance<?, ?, ?> kahina, int winID)
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, int winID)
 	{
-		return new TraleSLDMainWindow(this, kahina, winID);
+		return new TraleSLDMainWindow(this, winID);
 	}
 
 }
