@@ -7,10 +7,8 @@ import org.kahina.sicstus.SICStusPrologStep;
 
 public class SICStusPrologGUI extends LogicProgrammingGUI
 {
-
 	public SICStusPrologGUI(Class<? extends SICStusPrologStep> stepType, SICStusPrologDebuggerInstance instance, KahinaController control)
 	{
 		super(stepType, instance, control);
 	}
-
 }
