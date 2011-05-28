@@ -6,6 +6,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
@@ -45,7 +46,6 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	private void initializeMainWindow()
 	{
 		this.setTitle("Kahina");
-        this.setUndecorated(false);
 		wm.control.registerListener(KahinaEventTypes.TREE, this);
 		this.setLayout(new BorderLayout());
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -100,6 +100,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	
     public void setSubwindow(KahinaWindow w)
     {
+    	System.err.println("Setting subwindow!");
     	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	subwindow = w;
         mainPanel.removeAll();

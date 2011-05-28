@@ -25,7 +25,7 @@ public class KahinaDropTargetListener implements DropTargetListener
 
     public void dragEnter(DropTargetDragEvent dtde) 
     {
-        // TODO Auto-generated method stub
+        System.err.println("Entered drag area!");
     }
 
     public void dragExit(DropTargetEvent dte) 

@@ -21,5 +21,4 @@ public class TraleSLDWindowManager extends KahinaWindowManager
 	{
 		return new TraleSLDMainWindow(this, winID);
 	}
-
 }
