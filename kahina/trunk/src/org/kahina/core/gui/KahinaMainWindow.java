@@ -1,6 +1,7 @@
 package org.kahina.core.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.dnd.DropTarget;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -100,7 +101,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	
     public void setSubwindow(KahinaWindow w)
     {
-    	System.err.println("Setting subwindow!");
+    	System.err.println("Setting subwindow: " + w.getID());
     	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
     	subwindow = w;
         mainPanel.removeAll();
@@ -116,6 +117,40 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	{
 		wm.disposeAllWindows();
 	}
+	
+	public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
+    {
+    	if (subwindow == removedWindow)
+    	{
+    		wm.arr.setEmbeddingWindowID(removedWindow.getID(),-1);
+
+    		//crudely determine not too surprising positions and sizes for the separate windows
+    		removedWindow.setSize(this.getWidth(), this.getHeight() - 30);
+    		removedWindow.setLocation(this.getX() + 30, this.getY() + 50);
+    		
+    		removedWindow.setContentPane((Container) mainPanel.getComponents()[0]);
+    		subwindow = null;
+    	}
+    	else
+    	{
+    		System.err.println("WARNING: Window \"" + removedWindow.getTitle() + "\" is not embedded directly under the main window, release failed.");
+    	}
+		return this;
+    }
+    
+    public void replaceSubwindow(KahinaWindow oldSubwindow, KahinaWindow newSubwindow)
+    {
+    	if (subwindow == oldSubwindow)
+    	{
+    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
+    		
+        	setSubwindow(newSubwindow);
+    	}
+    	else
+    	{
+    		System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" not found as a tab in window \"" + this.getTitle() + "\", replacement failed.");
+    	}
+    }
 
 	@Override
 	public void processEvent(KahinaEvent event)
