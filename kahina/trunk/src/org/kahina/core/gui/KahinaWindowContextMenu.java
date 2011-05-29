@@ -56,17 +56,20 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 			snapCloneItem.addActionListener(this);
 			this.add(snapCloneItem);
 			
-			this.addSeparator();
+			if (w.getID() != w.wm.arr.mainWindowID) this.addSeparator();
 		}
 		
-		JMenuItem vertSplitItem = new JMenuItem("Vertical Split");
-		vertSplitItem.addActionListener(this);
-		this.add(vertSplitItem);
-		JMenuItem horiSplitItem = new JMenuItem("Horizontal Split");
-		horiSplitItem.addActionListener(this);
-		this.add(horiSplitItem);
-	
-		this.addSeparator();
+		if (w.getID() != w.wm.arr.mainWindowID)
+		{
+			JMenuItem vertSplitItem = new JMenuItem("Vertical Split");
+			vertSplitItem.addActionListener(this);
+			this.add(vertSplitItem);
+			JMenuItem horiSplitItem = new JMenuItem("Horizontal Split");
+			horiSplitItem.addActionListener(this);
+			this.add(horiSplitItem);
+		
+			this.addSeparator();
+		}
 		
 		if (w.isContentWindow() && w.isClone())
 		{
@@ -75,9 +78,12 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 			this.add(disposeItem);
 		}
 		
-		JMenuItem closeItem = new JMenuItem("Close");
-		closeItem.addActionListener(this);
-		this.add(closeItem);
+		if (w.getID() != w.wm.arr.mainWindowID)
+		{	
+			JMenuItem closeItem = new JMenuItem("Close");
+			closeItem.addActionListener(this);
+			this.add(closeItem);
+		}
 	}
 	
 	@Override
