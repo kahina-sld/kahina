@@ -5,8 +5,13 @@
 :- use_module(library(lists)).
 :- use_module(library(system)).
 :- use_module(library(terms)).
-:- use_module('$QTYPE_HOME/atts').
-:- use_module('$QTYPE_HOME/ops').
+
+user:generate_message_hook(qtype_home_not_set,[format('ERROR: Environment variable QTYPE_HOME must be set to path of directory',[]),nl,format('containing qtype.pl',[]),nl|Tail],Tail).
+
+:- environ('QTYPE_HOME',_)
+   -> ( use_module('$QTYPE_HOME/atts'),
+        consult('$QTYPE_HOME/ops') )
+    ; raise_exception(qtype_home_not_set).
 
 :- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
 
@@ -67,7 +72,7 @@ set_breakpoints_clause(Module,Head,Body) :-
   \+ qbreakpoint(Pred,_),
   has_subgoal(Body,msg(_,_,_)),
   add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action],BID),
-  assert(Pred,BID).
+  assert(qbreakpoint(Pred,BID)).
 set_breakpoints_clause(_,_,_).
 
 module_head_pred(_,Module:Head,Module:Functor/Arity) :-
@@ -87,8 +92,6 @@ qtype_home(Home) :-
   !.
 qtype_home(_) :-
   raise_exception(qtype_home_not_set).
-
-user:generate_message_hook(qtype_home_not_set,[format('ERROR: Environment variable QTYPE_HOME must be set to path of directory',[]),nl,format('containing qtype.pl',[]),nl|Tail],Tail).
 
 ends_with(List,List) :-
   !.
