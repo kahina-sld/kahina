@@ -2,7 +2,11 @@
                   noqtrace/0]).
 
 :- use_module('../kahinasicstus/kahinasicstus').
+:- use_module(library(lists)).
 :- use_module(library(system)).
+:- use_module(library(terms)).
+:- use_module('$QTYPE_HOME/atts').
+:- use_module('$QTYPE_HOME/ops').
 
 :- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
 
@@ -24,13 +28,18 @@ set_breakpoints(Home) :-
   directory_files(Home,Files),
   atom_codes('.pl',ExtensionCodes),
   member(File,Files),
+  \+ not_parsed(File),
   atom_codes(File,FileCodes),
   ends_with(FileCodes,ExtensionCodes),
-  open(File,read,Stream,[eof_action(eof_code)]),
+  absolute_file_name(File,AbsFile,[relative_to(Home)]),
+  open(AbsFile,read,Stream,[eof_action(eof_code)]),
   set_breakpoints_file(Stream,_),
   close(Stream),
   fail.
 set_breakpoints(_).
+
+not_parsed('atts.pl').
+not_parsed('ops.pl').
 
 % recursive, fails
 set_breakpoints_file(Stream,ModuleHint) :-
@@ -57,7 +66,7 @@ set_breakpoints_clause(Module,Head,Body) :-
   module_head_pred(Module,Head,Pred),
   \+ qbreakpoint(Pred,_),
   has_subgoal(Body,msg(_,_,_)),
-  add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahinasicstus_breakpoint_action],BID),
+  add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action],BID),
   assert(Pred,BID).
 set_breakpoints_clause(_,_,_).
 
