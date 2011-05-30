@@ -235,11 +235,11 @@ get_next_pseudostep_id(ID) :-
   NewID is ID - 1,
   assert(next_pseudostep_id(NewID)).
 
-start_new_kahina_session(Bridge,JVM) :-write(snks),nl,
+start_new_kahina_session(Bridge,JVM) :-
   initialize_pseudostep_id,
   retractall(source_read(_)),
   retractall(source_clause(_,_,_,_)),
-  get_kahina_instance(Instance,JVM),write(gki),nl,
+  get_kahina_instance(Instance,JVM),
   jasper_call(JVM,
       method('org/kahina/sicstus/SICStusPrologDebuggerInstance','startNewSession',[instance]),
       start_new_session(+object('org/kahina/sicstus/SICStusPrologDebuggerInstance'),[-object('org/kahina/sicstus/bridge/SICStusPrologBridge')]),
