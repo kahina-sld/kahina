@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="default" kahina:name="kahinasicstus-integrated">
+<kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="" kahina:name="kahinasicstus-integrated2">
   <kahina:arrangement>
-    <kahina:main-window kahina:border="false" kahina:height="510" kahina:id="0" kahina:primary="false" kahina:title="Kahina" kahina:width="662" kahina:xpos="0" kahina:ypos="25">
+    <kahina:main-window kahina:border="false" kahina:height="809" kahina:id="0" kahina:primary="false" kahina:title="Kahina" kahina:width="1090" kahina:xpos="0" kahina:ypos="25">
       <kahina:vert-split-window kahina:height="573" kahina:id="19" kahina:title="Content" kahina:width="553" kahina:xpos="1024" kahina:ypos="146">
         <kahina:hori-split-window kahina:height="100" kahina:id="18" kahina:title="Control" kahina:width="650" kahina:xpos="0" kahina:ypos="40">
           <kahina:control-window kahina:binding="History" kahina:border="true" kahina:height="100" kahina:id="17" kahina:primary="true" kahina:title="History" kahina:width="200" kahina:xpos="420" kahina:ypos="25"/>
