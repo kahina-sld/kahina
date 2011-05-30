@@ -28,7 +28,7 @@ user:breakpoint_expansion(kahina_breakpoint_action,[
              proceed))]). % Command: proceed
 
 kahina_breakpoint_action(Inv,Port,Action) :-
-  get_bridge(Bridge),
+  get_bridge(Inv,Port,Bridge),
   get_jvm(JVM),
   act(Port,Inv,Bridge,JVM),
   get_action(Port,Bridge,JVM,Action).
@@ -210,16 +210,16 @@ get_action_from_bridge(Bridge,JVM,Action) :-
 % INSTANCE/SESSION/BRIDGE MANAGEMENT
 % ------------------------------------------------------------------------------
 
-get_bridge(Bridge) :-
-  memory(kahina_bridge(Bridge)),
-  ensure_bridge_exists(Bridge).
+:- dynamic bridge/1.
 
-ensure_bridge_exists(Bridge) :-
-  var(Bridge),
+get_bridge(1,call,Bridge) :-
   !,
   get_jvm(JVM),
-  start_new_kahina_session(Bridge,JVM).
-ensure_bridge_exists(_).
+  start_new_kahina_session(Bridge,JVM),
+  retractall(bridge(_)),
+  assert(bridge(Bridge)).
+get_bridge(_,_,Bridge) :-
+  bridge(Bridge).
 
 % Since we use Prolog's invocation numbers for step IDs, we need a
 % non-conflicting number space for pseudostep IDs... like negative numbers.
@@ -235,11 +235,11 @@ get_next_pseudostep_id(ID) :-
   NewID is ID - 1,
   assert(next_pseudostep_id(NewID)).
 
-start_new_kahina_session(Bridge,JVM) :-
+start_new_kahina_session(Bridge,JVM) :-write(snks),nl,
   initialize_pseudostep_id,
   retractall(source_read(_)),
   retractall(source_clause(_,_,_,_)),
-  get_kahina_instance(Instance,JVM),
+  get_kahina_instance(Instance,JVM),write(gki),nl,
   jasper_call(JVM,
       method('org/kahina/sicstus/SICStusPrologDebuggerInstance','startNewSession',[instance]),
       start_new_session(+object('org/kahina/sicstus/SICStusPrologDebuggerInstance'),[-object('org/kahina/sicstus/bridge/SICStusPrologBridge')]),
