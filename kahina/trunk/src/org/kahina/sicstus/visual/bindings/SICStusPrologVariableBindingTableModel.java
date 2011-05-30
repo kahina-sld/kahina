@@ -14,7 +14,6 @@ public class SICStusPrologVariableBindingTableModel extends AbstractTableModel
 	public void setBindings(String[] variableNames, String[] inValues, String[] outValues)
 	{
 		data = new String[][] { variableNames, inValues, outValues };
-		fireTableStructureChanged();
 	}
 
 	@Override
