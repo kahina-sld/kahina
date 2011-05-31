@@ -82,8 +82,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	protected LogicProgrammingState state;
 
-	private boolean autoCompleteSkipEnabled = false;
-
 	public LogicProgrammingBridge(LogicProgrammingState state)
 	{
 		super();
@@ -95,8 +93,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 		if (VERBOSE)
 			System.err.println("new LogicProgrammingBridge()");
 	}
-
-	// TODO use console messages?
 
 	/**
 	 * For each new procedure box that is created, this method or one of its
@@ -245,7 +241,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 				System.err.println("Selecting if paused...");
 			}
 			selectIfPaused(stepID);
-			enableAutoCompleteSkip();
 			if (VERBOSE)
 			{
 				System.err.println("//LogicProgrammingBridge.call(" + extID + ")");
@@ -345,7 +340,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 			parentCandidateID = newStepID;
 
 			selectIfPaused(newStepID);
-			enableAutoCompleteSkip();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -405,7 +399,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 
 			selectIfPaused(stepID);
-			disableAutoCompleteSkip();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -447,7 +440,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 				bridgeState = 'c';
 			}
 			selectIfPaused(stepID);
-			disableAutoCompleteSkip();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -487,14 +479,13 @@ public class LogicProgrammingBridge extends KahinaBridge
 				bridgeState = 'c';
 			}
 			selectIfPaused(stepID);
-			disableAutoCompleteSkip();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
 		}
 	}
-	
+
 	public void warning(String message)
 	{
 		if (VERBOSE)
@@ -733,18 +724,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	protected void enableAutoCompleteSkip()
-	{
-		autoCompleteSkipEnabled = true;
-		// TODO enable GUI buttons
-	}
-
-	protected void disableAutoCompleteSkip()
-	{
-		autoCompleteSkipEnabled = false;
-		// TODO disable GUI buttons
-	}
-
 	@Override
 	protected LogicProgrammingStep generateStep()
 	{
@@ -823,9 +802,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 		} else if (command.equals("auto-complete"))
 		{
-			if (autoCompleteSkipEnabled)
+			if (bridgeState == 'n')
 			{
-				if (bridgeState == 'n')
+				if (canSkipOrAutocomplete())
 				{
 					bridgeState = 't';
 					if (selectedID == -1)
@@ -835,20 +814,33 @@ public class LogicProgrammingBridge extends KahinaBridge
 					{
 						skipID = selectedID;
 					}
-				} else if (bridgeState == 'p')
+				} else
 				{
-					bridgeState = 't';
-				} else if (bridgeState == 'q')
-				{
-					bridgeState = 't';
-					skipID = currentID;
+					if (VERBOSE)
+					{
+						System.err.println("WARNING: auto-complete/skip are not valid operations right now.");
+					}
 				}
+			} else if (bridgeState == 'p')
+			{
+				bridgeState = 't';
+			} else if (bridgeState == 'q')
+			{
+				bridgeState = 't';
+				skipID = currentID;
 			}
+
 		} else if (command.equals("skip"))
 		{
-			if (autoCompleteSkipEnabled)
+			if (canSkipOrAutocomplete())
 			{
 				skipFlag = true;
+			} else
+			{
+				if (VERBOSE)
+				{
+					System.err.println("WARNING: auto-complete/skip are not valid operations right now.");
+				}
 			}
 		} else if (command.equals("leap"))
 		{
@@ -880,6 +872,20 @@ public class LogicProgrammingBridge extends KahinaBridge
 				bridgeState = 's';
 			}
 		}
+	}
+
+	protected boolean canSkipOrAutocomplete()
+	{
+		int candidateID;
+		if (selectedID == -1)
+		{
+			candidateID = currentID;
+		} else
+		{
+			candidateID = selectedID;
+		}
+		int status = state.getStepTree().getNodeStatus(candidateID);
+		return status == LogicProgrammingStepType.CALL || status == LogicProgrammingStepType.REDO;
 	}
 
 	@Override

@@ -446,8 +446,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 			}
-			
-			disableAutoCompleteSkip();
 		} catch (Exception e)
 		{
 			e.printStackTrace();
