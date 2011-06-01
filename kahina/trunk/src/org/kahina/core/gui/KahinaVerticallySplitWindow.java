@@ -86,9 +86,11 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     {
     	double upperHeight = 1.0;
     	double lowerHeight = 1.0;
-    	if (upperWindow != null) upperHeight = upperWindow.getHeight();
-    	if (lowerWindow != null) lowerHeight = lowerWindow.getHeight();
+    	if (upperWindow != null) upperHeight = wm.arr.getHeight(upperWindow.getID());
+    	if (lowerWindow != null) lowerHeight = wm.arr.getHeight(lowerWindow.getID());
+    	//System.err.println(windowID + ".adaptVertDividerLocation(" + upperHeight + " / " + "(" + upperHeight + " + " + lowerHeight + "))");
     	splitPane.setDividerLocation(upperHeight / (upperHeight + lowerHeight));
+        splitPane.setResizeWeight(upperHeight / (upperHeight + lowerHeight));
     }
     
     public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)

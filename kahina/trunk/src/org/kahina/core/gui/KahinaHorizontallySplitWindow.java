@@ -20,6 +20,8 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     JPanel leftPanel;
     JPanel rightPanel;
     
+    JSplitPane splitPane;
+    
     public KahinaHorizontallySplitWindow(KahinaWindowManager wm)
     {
     	super(wm);
@@ -38,7 +40,8 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
         rightPanel = new JPanel();
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightPanel);
+        splitPane.setDividerSize(2);
         splitPane.setResizeWeight(.5);
         mainPanel.add(splitPane);
     }
@@ -67,6 +70,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     	leftWindow = w;
         leftPanel.removeAll();
         leftPanel.add(w.getContentPane());
+        adaptDividerLocation();
     }
     
     public void setRightWindow(KahinaWindow w)
@@ -75,6 +79,18 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     	rightWindow = w;
         rightPanel.removeAll();
         rightPanel.add(w.getContentPane());
+        adaptDividerLocation();
+    }
+    
+    private void adaptDividerLocation()
+    {
+    	double leftWidth = 1.0;
+    	double rightWidth = 1.0;
+    	if (leftWindow != null) leftWidth = wm.arr.getWidth(leftWindow.getID());
+    	if (rightWindow != null) rightWidth = wm.arr.getWidth(rightWindow.getID());
+    	//System.err.println(windowID + ".adaptHoriDividerLocation(" + leftWidth + " / " + "(" + leftWidth + " + " + rightWidth + "))");
+    	splitPane.setDividerLocation(leftWidth / (leftWidth + rightWidth));
+        splitPane.setResizeWeight(leftWidth / (leftWidth + rightWidth));
     }
     
     public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
@@ -128,6 +144,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     	{
     		System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" is not a subwindow of window \"" + this.getTitle() + "\", replacement failed.");
     	}
+        adaptDividerLocation();
     }
     
 	public int getWindowType()
