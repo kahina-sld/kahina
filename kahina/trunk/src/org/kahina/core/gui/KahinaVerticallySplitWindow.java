@@ -20,6 +20,8 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     JPanel topPanel;
     JPanel bottomPanel;
     
+    JSplitPane splitPane;
+    
     public KahinaVerticallySplitWindow(KahinaWindowManager wm)
     {
     	super(wm);
@@ -38,7 +40,8 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
         topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topPanel, bottomPanel);
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topPanel, bottomPanel);
+        splitPane.setDividerSize(2);
         splitPane.setResizeWeight(.5);
         mainPanel.add(splitPane);
     }
@@ -67,6 +70,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	upperWindow = w;
         topPanel.removeAll();
         topPanel.add(w.getContentPane());
+        adaptDividerLocation();
     }
     
     public void setLowerWindow(KahinaWindow w)
@@ -75,6 +79,16 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	lowerWindow = w;
         bottomPanel.removeAll();
         bottomPanel.add(w.getContentPane());
+        adaptDividerLocation();
+    }
+    
+    private void adaptDividerLocation()
+    {
+    	double upperHeight = 1.0;
+    	double lowerHeight = 1.0;
+    	if (upperWindow != null) upperHeight = upperWindow.getHeight();
+    	if (lowerWindow != null) lowerHeight = lowerWindow.getHeight();
+    	splitPane.setDividerLocation(upperHeight / (upperHeight + lowerHeight));
     }
     
     public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
@@ -128,6 +142,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	{
     		System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" is not a subwindow of window \"" + this.getTitle() + "\", replacement failed.");
     	}
+       	adaptDividerLocation();
     }
     
 	public int getWindowType()
