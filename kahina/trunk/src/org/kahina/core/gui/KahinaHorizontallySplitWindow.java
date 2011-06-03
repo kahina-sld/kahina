@@ -88,7 +88,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     	double rightWidth = 1.0;
     	if (leftWindow != null) leftWidth = wm.arr.getWidth(leftWindow.getID());
     	if (rightWindow != null) rightWidth = wm.arr.getWidth(rightWindow.getID());
-    	//System.err.println(windowID + ".adaptHoriDividerLocation(" + leftWidth + " / " + "(" + leftWidth + " + " + rightWidth + "))");
+    	System.err.println(windowID + ".adaptHoriDividerLocation(" + leftWidth + " / " + "(" + leftWidth + " + " + rightWidth + "))");
     	splitPane.setDividerLocation(leftWidth / (leftWidth + rightWidth));
         splitPane.setResizeWeight(leftWidth / (leftWidth + rightWidth));
     }

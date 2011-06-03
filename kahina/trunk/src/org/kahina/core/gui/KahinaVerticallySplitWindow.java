@@ -88,7 +88,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	double lowerHeight = 1.0;
     	if (upperWindow != null) upperHeight = wm.arr.getHeight(upperWindow.getID());
     	if (lowerWindow != null) lowerHeight = wm.arr.getHeight(lowerWindow.getID());
-    	//System.err.println(windowID + ".adaptVertDividerLocation(" + upperHeight + " / " + "(" + upperHeight + " + " + lowerHeight + "))");
+    	System.err.println(windowID + ".adaptVertDividerLocation(" + upperHeight + " / " + "(" + upperHeight + " + " + lowerHeight + "))");
     	splitPane.setDividerLocation(upperHeight / (upperHeight + lowerHeight));
         splitPane.setResizeWeight(upperHeight / (upperHeight + lowerHeight));
     }
@@ -162,6 +162,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	KahinaWindow tempWindow = upperWindow;
     	setUpperWindow(lowerWindow);
     	setLowerWindow(tempWindow);
+    	adaptDividerLocation();
     }
     
     public void flipSubwindowsIfIndicatedByCoordinates()
