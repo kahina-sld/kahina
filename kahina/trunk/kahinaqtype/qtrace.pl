@@ -69,11 +69,15 @@ set_breakpoints_term(_,_).
 % always succeeds
 set_breakpoints_clause(Module,Head,Body) :-
   module_head_pred(Module,Head,Pred),
+  \+ not_traced(Pred),
   \+ qbreakpoint(Pred,_),
   has_subgoal(Body,msg(_,_,_)),
   add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action],BID),
   assert(qbreakpoint(Pred,BID)).
 set_breakpoints_clause(_,_,_).
+
+not_traced(timer:msg_timer/_).
+not_traced(timer:msg_timer2/_).
 
 module_head_pred(_,Module:Head,Module:Functor/Arity) :-
   !,
@@ -102,3 +106,5 @@ hint_module(Hint,user) :-
   var(Hint),
   !.
 hint_module(Module,Module).
+
+:- set_prolog_flag(source_info,on).
