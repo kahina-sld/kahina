@@ -1,10 +1,13 @@
-:- module(kahinasicstus,[]).
+:- module(kahinasicstus,[end_trace_session/0]).
 
 :- use_module(library(charsio)).
 :- use_module(library(lists)).
 :- use_module(library(jasper)).
 :- use_module(library(system)).
 :- use_module(library(terms)).
+
+end_trace_session :-
+  retractall(bridge(_)).
 
 :- multifile user:breakpoint_expansion/2.
 
@@ -219,7 +222,12 @@ get_bridge(1,call,Bridge) :-
   retractall(bridge(_)),
   assert(bridge(Bridge)).
 get_bridge(_,_,Bridge) :-
-  bridge(Bridge).
+  bridge(Bridge),
+  !.
+get_bridge(_,_,Bridge) :-
+  get_jvm(JVM),
+  start_new_kahina_session(Bridge,JVM),
+  assert(bridge(Bridge)).
 
 % Since we use Prolog's invocation numbers for step IDs, we need a
 % non-conflicting number space for pseudostep IDs... like negative numbers.
