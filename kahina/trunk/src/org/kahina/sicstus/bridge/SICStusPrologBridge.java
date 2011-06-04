@@ -13,23 +13,30 @@ public class SICStusPrologBridge extends LogicProgrammingBridge
 	{
 		super(state);
 	}
-	
+
 	@Override
 	protected SICStusPrologStep generateStep()
 	{
 		return new SICStusPrologStep();
 	}
-	
+
 	public void registerBinding(int externalStepID, String direction, String variableName, String value)
 	{
-		int internalStepID = convertStepID(externalStepID);
-		SICStusPrologStep step = KahinaRunner.retrieve(SICStusPrologStep.class, internalStepID);
-		step.bindings.addBinding(variableName, direction, value);
-		KahinaRunner.store(internalStepID, step);
-		
-		if (bridgeState == 'n')
+		try
 		{
-			KahinaRunner.processEvent(new KahinaSelectionEvent(internalStepID));
+			int internalStepID = convertStepID(externalStepID);
+			SICStusPrologStep step = KahinaRunner.retrieve(SICStusPrologStep.class, internalStepID);
+			step.bindings.addBinding(variableName, direction, value);
+			KahinaRunner.store(internalStepID, step);
+
+			if (bridgeState == 'n')
+			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(internalStepID));
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
 		}
 	}
 

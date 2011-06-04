@@ -505,7 +505,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 */
 	public void linkNodes(int anchor, int target)
 	{
+		try
+		{
 		state.linkNodes(convertStepID(anchor), convertStepID(target));
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 
 	/**
