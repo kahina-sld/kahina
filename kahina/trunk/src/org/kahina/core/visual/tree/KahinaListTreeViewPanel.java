@@ -1,6 +1,8 @@
 package org.kahina.core.visual.tree;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -50,9 +52,11 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		clearIndentations();
 		lastMouseEvent = null;
 		splitPanes = new LinkedList<JSplitPane>();
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		for (int i = 0; i < panels.length; i++)
 		{
 			panels[i] = new JPanel();
+			panels[i].setLayout(new GridLayout());
 			lists[i] = new JList();
 			lists[i].setCellRenderer(new KahinaListTreeListRenderer(this, i));
 			lists[i].addMouseListener(this);
@@ -60,7 +64,6 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			lists[i].setModel(listModels[i]);
 			panels[i].add(lists[i]);
 		}
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		if (layers > 1)
 		{
 			JSplitPane splitPane = createSplitPane(0);
@@ -87,10 +90,14 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	
 	private void updateDividerLocations()
 	{
-		System.err.println("Divider Location: " + this.getWidth() + "/" + panels.length);
 		for (JSplitPane splitPane : splitPanes)
 		{
 			splitPane.setDividerLocation(this.getWidth() / panels.length);
+		}
+		for (int i = 0; i < panels.length; i++)
+		{
+			//lists[i].setMinimumSize(new Dimension(this.getWidth() / panels.length, this.getHeight()));
+			//lists[i].setPreferredSize(new Dimension(this.getWidth() / panels.length, this.getHeight()));
 		}
 	}
 
@@ -163,7 +170,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		StringBuilder whitespace = new StringBuilder();
 		for (int i = 0; i < length; i++)
 		{
-			whitespace.append(" ");
+			whitespace.append(' ');
 		}
 		return whitespace.toString();
 	}
