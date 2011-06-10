@@ -37,8 +37,8 @@ public class KahinaListTreeView extends KahinaView<KahinaTree>
 	HashMap<Integer, Font> statusFontEncoding;
 	HashMap<Integer, Boolean> statusVisibilityEncoding;
 	
-	// allow marking of a single node in the tree
-	private int markedNode;
+	// allow marking of trees on different layers
+	private int[] markedNodes;
 	
 	public KahinaListTreeView(KahinaController control, int... layers)
 	{
@@ -57,7 +57,7 @@ public class KahinaListTreeView extends KahinaView<KahinaTree>
 		
 		config = new KahinaTreeViewConfiguration();
 
-		markedNode = -1;
+		markedNodes = new int[layers.length];
 	}	
 
 	public void display(KahinaTree treeModel)
@@ -186,14 +186,14 @@ public class KahinaListTreeView extends KahinaView<KahinaTree>
 		statusFontEncoding.put(status, font);
 	}
 
-	public int getMarkedNode()
+	public int getMarkedNode(int layer)
 	{
-		return markedNode;
+		return markedNodes[layer];
 	}
 
-	public void setMarkedNode(int markedNode)
+	public void setMarkedNode(int layer, int markedNode)
 	{
-		this.markedNode = markedNode;
+		markedNodes[layer] = markedNode;
 	}
 
 	public void resetAllStructures()
@@ -316,31 +316,41 @@ public class KahinaListTreeView extends KahinaView<KahinaTree>
 		selectNode(e.getSelectedStep());
 	}
 	
+	public boolean displaysNode(int layer, int nodeID)
+	{
+		return true;
+	}
+	
 	public void selectNode(int nodeID)
 	{
 		if (nodeID == -1)
 	    {
-	        setMarkedNode(-1);
+	        for (int i = 0; i < layers.length; i++)
+	        {
+	        	setMarkedNode(i,-1);
+	        }
 	    }
 	    else
 	    {
 	        model.setReferenceNode(nodeID);
 	        secondaryTreeModel.setReferenceNode(nodeID);
-
-            /*if (view.view.displaysNode(nodeID))
-            {
-               view.view.setMarkedNode(nodeID);
-               view.scrollToNode(nodeID);
-            }
-            else
-            {
-                int newNodeID = model.getParent(nodeID, view.view.getTreeLayer());
-                view.view.setMarkedNode(newNodeID);
-                if (newNodeID != -1)
-                {
-                    view.scrollToNode(newNodeID);
-                }
-            }*/
+	        for (int i = 0; i < layers.length; i++)
+	        {
+	            if (displaysNode(i, nodeID))
+	            {
+	               markedNodes[i] = nodeID;
+	               //view.scrollToNode(nodeID);
+	            }
+	            else
+	            {
+	                int newNodeID = secondaryTreeModel.getParent(nodeID, i);
+	                markedNodes[i] = newNodeID;
+	                if (newNodeID != -1)
+	                {
+	                    //view.scrollToNode(newNodeID);
+	                }
+	            }
+	        }
 	    }
 	}
 }
