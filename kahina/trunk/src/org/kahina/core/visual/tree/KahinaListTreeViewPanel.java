@@ -23,12 +23,15 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private JList[] lists;
 	private DefaultListModel[] listModels;
 	
+	private KahinaListTreeListRenderer renderer;
+	
 	public KahinaListTreeViewPanel(int layers, KahinaController control)
 	{
 		if (VERBOSE)
 		{
 			System.err.println("new KahinaListTreeViewPanel(" + layers + ")");
 		}
+		renderer = new KahinaListTreeListRenderer(this);
 		panels = new JPanel[layers];
 		lists = new JList[layers];
 		listModels = new DefaultListModel[layers];
@@ -36,6 +39,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			panels[i] = new JPanel();
 			lists[i] = new JList();
+			lists[i].setCellRenderer(renderer);
 			listModels[i] = new DefaultListModel();
 			lists[i].setModel(listModels[i]);
 			panels[i].add(lists[i]);
@@ -99,7 +103,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private void fillListModel(int layer, int nodeID, int recursionDepth)
 	{
 		String nodeCaption = whitespace(2 * recursionDepth) + view.getModel().getNodeCaption(nodeID);
-		listModels[layer].addElement(nodeCaption);
+		listModels[layer].addElement(nodeID);
 		for (int childID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
 		{
 			fillListModel(layer, childID, recursionDepth + 1);
