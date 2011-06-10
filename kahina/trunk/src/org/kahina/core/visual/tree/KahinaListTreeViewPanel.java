@@ -5,6 +5,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -35,6 +36,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	
 	//GUI component handling
 	private MouseEvent lastMouseEvent;
+	private List<JSplitPane> splitPanes;
 	
 	public KahinaListTreeViewPanel(int layers, KahinaController control)
 	{
@@ -47,6 +49,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		listModels = new DefaultListModel[layers];
 		clearIndentations();
 		lastMouseEvent = null;
+		splitPanes = new LinkedList<JSplitPane>();
 		for (int i = 0; i < panels.length; i++)
 		{
 			panels[i] = new JPanel();
@@ -60,12 +63,17 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		if (layers > 1)
 		{
-			add(createSplitPane(0));
+			JSplitPane splitPane = createSplitPane(0);
+			splitPane.setDividerSize(2);
+			//splitPane.setEnabled(false);
+			splitPanes.add(splitPane);
+			add(splitPane);
 		} 
 		else
 		{
 			add(createPane(panels[0]));
 		}
+		updateDividerLocations();
 	}
 	
 	private void clearIndentations()
@@ -76,8 +84,17 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			indentations.add(new HashMap<Integer,Integer>());
 		}
 	}
+	
+	private void updateDividerLocations()
+	{
+		System.err.println("Divider Location: " + this.getWidth() + "/" + panels.length);
+		for (JSplitPane splitPane : splitPanes)
+		{
+			splitPane.setDividerLocation(this.getWidth() / panels.length);
+		}
+	}
 
-	private JComponent createSplitPane(int index)
+	private JSplitPane createSplitPane(int index)
 	{
 		if (VERBOSE)
 		{
@@ -93,6 +110,8 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		else
 		{
 			right = createSplitPane(index);
+			((JSplitPane) right).setDividerSize(2);
+			splitPanes.add((JSplitPane) right);
 		}
 		return new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, left, right);
 	}
@@ -108,6 +127,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	@Override
 	public void updateDisplay()
 	{
+		updateDividerLocations();
 		view.secondaryTreeModel.setReferenceNode(view.getModel().getReferenceNode());
 		clearIndentations();
 		for (int i = 0; i < panels.length; i++)
