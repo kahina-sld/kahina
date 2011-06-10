@@ -1,6 +1,9 @@
 package org.kahina.core.visual.tree;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -23,7 +26,8 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private JList[] lists;
 	private DefaultListModel[] listModels;
 	
-	private KahinaListTreeListRenderer renderer;
+	//internal storage for indentations in different layers
+	private List<HashMap<Integer,Integer>> indentations;
 	
 	public KahinaListTreeViewPanel(int layers, KahinaController control)
 	{
@@ -31,15 +35,15 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			System.err.println("new KahinaListTreeViewPanel(" + layers + ")");
 		}
-		renderer = new KahinaListTreeListRenderer(this);
 		panels = new JPanel[layers];
 		lists = new JList[layers];
 		listModels = new DefaultListModel[layers];
+		clearIndentations();
 		for (int i = 0; i < panels.length; i++)
 		{
 			panels[i] = new JPanel();
 			lists[i] = new JList();
-			lists[i].setCellRenderer(renderer);
+			lists[i].setCellRenderer(new KahinaListTreeListRenderer(this, i));
 			listModels[i] = new DefaultListModel();
 			lists[i].setModel(listModels[i]);
 			panels[i].add(lists[i]);
@@ -52,6 +56,15 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		else
 		{
 			add(createPane(panels[0]));
+		}
+	}
+	
+	private void clearIndentations()
+	{
+		indentations = new ArrayList<HashMap<Integer,Integer>>();
+		for (int i = 0; i < lists.length; i++)
+		{
+			indentations.add(new HashMap<Integer,Integer>());
 		}
 	}
 
@@ -87,6 +100,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	public void updateDisplay()
 	{
 		view.secondaryTreeModel.setReferenceNode(view.getModel().getReferenceNode());
+		clearIndentations();
 		for (int i = 0; i < panels.length; i++)
 		{
 			listModels[i].clear();
@@ -102,12 +116,17 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	
 	private void fillListModel(int layer, int nodeID, int recursionDepth)
 	{
-		String nodeCaption = whitespace(2 * recursionDepth) + view.getModel().getNodeCaption(nodeID);
+		indentations.get(layer).put(nodeID, recursionDepth);
 		listModels[layer].addElement(nodeID);
 		for (int childID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
 		{
 			fillListModel(layer, childID, recursionDepth + 1);
 		}
+	}
+	
+	public String getIndentingWhitespace(int layer, int nodeID)
+	{
+		return whitespace(2 * indentations.get(layer).get(nodeID));
 	}
 	
 	private String whitespace(int length)
