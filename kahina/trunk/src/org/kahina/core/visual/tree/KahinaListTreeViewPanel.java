@@ -1,6 +1,8 @@
 package org.kahina.core.visual.tree;
 
 import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,11 +16,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListModel;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
+public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener
 {
 	private static final boolean VERBOSE = false;
 	
@@ -44,6 +48,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			panels[i] = new JPanel();
 			lists[i] = new JList();
 			lists[i].setCellRenderer(new KahinaListTreeListRenderer(this, i));
+			lists[i].addMouseListener(this);
 			listModels[i] = new DefaultListModel();
 			lists[i].setModel(listModels[i]);
 			panels[i].add(lists[i]);
@@ -138,4 +143,63 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		}
 		return whitespace.toString();
 	}
+	
+	   @Override
+		public void mouseClicked(MouseEvent e)
+	    {
+		   	JList list = (JList) e.getComponent();
+	        int clickedIndex = list.locationToIndex(e.getPoint());     
+	        int clickedNode = (Integer) list.getModel().getElementAt(clickedIndex);
+	        /*if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
+	        {
+	            if (view.view.getConfig().getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_SECONDARY)
+	            {
+	                view.view.secondaryTreeModel.toggleCollapse(clickedNode);
+	            }
+	            else if (view.view.getConfig().getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_PRIMARY)
+	            {
+	                view.view.getModel().toggleCollapse(clickedNode);
+	            }
+	            view.view.recalculate();
+	            view.updateDisplay();
+	            view.repaint();
+	        }
+	        else*/
+	        {
+	            KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
+	            //lastMouseEvent = e;
+	        }
+	    }
+	    
+	    @Override
+		public void mousePressed(MouseEvent e) 
+	    {
+	        maybeShowPopup(e);
+	    }
+
+	    @Override
+		public void mouseReleased(MouseEvent e) 
+	    {
+	        maybeShowPopup(e);
+	    }
+
+	    private void maybeShowPopup(MouseEvent e) 
+	    {
+	        if (e.isPopupTrigger()) 
+	        {
+	            //KahinaTreeViewContextMenu.getMenu(this, view.view).show(e.getComponent(),e.getX(), e.getY());
+	        }
+	    }
+
+		@Override
+		public void mouseEntered(MouseEvent arg0) 
+		{
+			// TODO Auto-generated method stub		
+		}
+
+		@Override
+		public void mouseExited(MouseEvent arg0) 
+		{
+			// TODO Auto-generated method stub	
+		}
 }
