@@ -2,6 +2,7 @@ package org.kahina.core.visual.tree;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
@@ -33,6 +34,14 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
         Color fontColor = view.view.getNodeColor(nodeID);
         if (fontColor == Color.white) fontColor = Color.black;
         setForeground(fontColor);
+        if (view.view.getSecondaryModel().isCollapsed(nodeID))
+        {
+        	this.setFont(new Font("Arial", Font.BOLD, 12));
+        }
+        else
+        {
+        	this.setFont(new Font("Arial", Font.PLAIN, 12));
+        }
         //setBorder(new EmptyBorder(6,20,6,20));    
         return this;
 	}

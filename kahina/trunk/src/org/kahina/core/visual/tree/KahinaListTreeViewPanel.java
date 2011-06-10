@@ -33,6 +33,9 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	//internal storage for indentations in different layers
 	private List<HashMap<Integer,Integer>> indentations;
 	
+	//GUI component handling
+	private MouseEvent lastMouseEvent;
+	
 	public KahinaListTreeViewPanel(int layers, KahinaController control)
 	{
 		if (VERBOSE)
@@ -43,6 +46,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		lists = new JList[layers];
 		listModels = new DefaultListModel[layers];
 		clearIndentations();
+		lastMouseEvent = null;
 		for (int i = 0; i < panels.length; i++)
 		{
 			panels[i] = new JPanel();
@@ -145,61 +149,53 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	}
 	
 	   @Override
-		public void mouseClicked(MouseEvent e)
-	    {
-		   	JList list = (JList) e.getComponent();
-	        int clickedIndex = list.locationToIndex(e.getPoint());     
-	        int clickedNode = (Integer) list.getModel().getElementAt(clickedIndex);
-	        /*if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
-	        {
-	            if (view.view.getConfig().getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_SECONDARY)
-	            {
-	                view.view.secondaryTreeModel.toggleCollapse(clickedNode);
-	            }
-	            else if (view.view.getConfig().getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_PRIMARY)
-	            {
-	                view.view.getModel().toggleCollapse(clickedNode);
-	            }
-	            view.view.recalculate();
-	            view.updateDisplay();
-	            view.repaint();
-	        }
-	        else*/
-	        {
-	            KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
-	            //lastMouseEvent = e;
-	        }
-	    }
-	    
-	    @Override
-		public void mousePressed(MouseEvent e) 
-	    {
-	        maybeShowPopup(e);
-	    }
+	public void mouseClicked(MouseEvent e)
+    {
+	   	JList list = (JList) e.getComponent();
+        int clickedIndex = list.locationToIndex(e.getPoint());     
+        int clickedNode = (Integer) list.getModel().getElementAt(clickedIndex);
+        if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
+        {
+            view.secondaryTreeModel.toggleCollapse(clickedNode);
+            updateDisplay();
+            repaint();
+        }
+        else
+        {
+            KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
+            lastMouseEvent = e;
+        }
+    }
+    
+    @Override
+	public void mousePressed(MouseEvent e) 
+    {
+        maybeShowPopup(e);
+    }
 
-	    @Override
-		public void mouseReleased(MouseEvent e) 
-	    {
-	        maybeShowPopup(e);
-	    }
+    @Override
+	public void mouseReleased(MouseEvent e) 
+    {
+        maybeShowPopup(e);
+    }
 
-	    private void maybeShowPopup(MouseEvent e) 
-	    {
-	        if (e.isPopupTrigger()) 
-	        {
-	            //KahinaTreeViewContextMenu.getMenu(this, view.view).show(e.getComponent(),e.getX(), e.getY());
-	        }
-	    }
+    private void maybeShowPopup(MouseEvent e) 
+    {
+        if (e.isPopupTrigger()) 
+        {
+            //KahinaTreeViewContextMenu.getMenu(this, view.view).show(e.getComponent(),e.getX(), e.getY());
+        }
+    }
 
-		@Override
-		public void mouseEntered(MouseEvent arg0) 
-		{
-			// TODO Auto-generated method stub		
-		}
+	@Override
+	public void mouseEntered(MouseEvent arg0) 
+	{
+		// TODO Auto-generated method stub		
+	}
 
-		@Override
-		public void mouseExited(MouseEvent arg0) 
-		{
-			// TODO Auto-generated method stub	
-		}
+	@Override
+	public void mouseExited(MouseEvent arg0) 
+	{
+		// TODO Auto-generated method stub	
+	}
 }
