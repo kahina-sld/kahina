@@ -19,6 +19,7 @@ import org.kahina.core.profiler.DefaultProfileEntryMapper;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.tree.KahinaLayeredTreeView;
+import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
@@ -29,7 +30,8 @@ public class LogicProgrammingGUI extends KahinaGUI
 {
 	private static final boolean VERBOSE = false;
 
-	protected KahinaLayeredTreeView mainTreeView;
+	protected KahinaListTreeView mainTreeView;
+	//protected KahinaLayeredTreeView mainTreeView;
 
 	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina, KahinaController control)
 	{
@@ -61,11 +63,16 @@ public class LogicProgrammingGUI extends KahinaGUI
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.PSEUDO_BLOCKED, Color.GRAY);
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.PSEUDO_UNBLOCKED, Color.LIGHT_GRAY);
 	}
+	
+	protected KahinaListTreeView generateTreeView(KahinaController control)
+	{
+		return new KahinaListTreeView(control, 0);
+	}
 
-	protected KahinaLayeredTreeView generateTreeView(KahinaController control)
+	/*protected KahinaLayeredTreeView generateTreeView(KahinaController control)
 	{
 		return new KahinaLayeredTreeView(true, control, 0);
-	}
+	}*/
 
 	@Override
 	public void displayMainViews()

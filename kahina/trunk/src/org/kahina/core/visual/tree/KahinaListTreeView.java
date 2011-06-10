@@ -2,12 +2,9 @@ package org.kahina.core.visual.tree;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Stroke;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.swing.JComponent;
@@ -15,7 +12,6 @@ import javax.swing.JComponent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
 
@@ -26,7 +22,7 @@ public class KahinaListTreeView extends KahinaView<KahinaTree>
 	KahinaTreeViewConfiguration config;
 	
 	private final int[] layers;
-	private KahinaTree secondaryTreeModel;
+	KahinaTree secondaryTreeModel;
 	
 	// special display properties for certain nodes
 	HashMap<Integer, Color> nodeBorderColor;
@@ -263,7 +259,7 @@ public class KahinaListTreeView extends KahinaView<KahinaTree>
 		return secondaryParent;
 	}
 
-	private ArrayList<Integer> getVisibleVirtualChildren(KahinaTree treeModel, int nodeID, int treeLayer)
+	public ArrayList<Integer> getVisibleVirtualChildren(KahinaTree treeModel, int nodeID, int treeLayer)
 	{
 		ArrayList<Integer> descendants = new ArrayList<Integer>();
 		// System.err.println("\t Actual children for node " + nodeID + ": " +
@@ -305,5 +301,10 @@ public class KahinaListTreeView extends KahinaView<KahinaTree>
 	public KahinaTree getTreeModel()
 	{
 		return model;
+	}
+	
+	public KahinaTree getSecondaryModel()
+	{
+		return secondaryTreeModel;
 	}
 }
