@@ -12,6 +12,7 @@ import javax.swing.JSplitPane;
 import javax.swing.ListModel;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
@@ -81,6 +82,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	@Override
 	public void updateDisplay()
 	{
+		view.secondaryTreeModel.setReferenceNode(view.getModel().getReferenceNode());
 		for (int i = 0; i < panels.length; i++)
 		{
 			listModels[i].clear();
@@ -96,11 +98,21 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	
 	private void fillListModel(int layer, int nodeID, int recursionDepth)
 	{
-		String nodeCaption = view.getModel().getNodeCaption(nodeID);
+		String nodeCaption = whitespace(2 * recursionDepth) + view.getModel().getNodeCaption(nodeID);
 		listModels[layer].addElement(nodeCaption);
 		for (int childID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
 		{
 			fillListModel(layer, childID, recursionDepth + 1);
 		}
+	}
+	
+	private String whitespace(int length)
+	{
+		StringBuilder whitespace = new StringBuilder();
+		for (int i = 0; i < length; i++)
+		{
+			whitespace.append(" ");
+		}
+		return whitespace.toString();
 	}
 }

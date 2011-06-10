@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
 
@@ -306,5 +307,40 @@ public class KahinaListTreeView extends KahinaView<KahinaTree>
 	public KahinaTree getSecondaryModel()
 	{
 		return secondaryTreeModel;
+	}
+	
+	@Override
+	protected void processEvent(KahinaUpdateEvent e)
+	{
+		// recalculation is implicitly part of this (via marker)
+		selectNode(e.getSelectedStep());
+	}
+	
+	public void selectNode(int nodeID)
+	{
+		if (nodeID == -1)
+	    {
+	        setMarkedNode(-1);
+	    }
+	    else
+	    {
+	        model.setReferenceNode(nodeID);
+	        secondaryTreeModel.setReferenceNode(nodeID);
+
+            /*if (view.view.displaysNode(nodeID))
+            {
+               view.view.setMarkedNode(nodeID);
+               view.scrollToNode(nodeID);
+            }
+            else
+            {
+                int newNodeID = model.getParent(nodeID, view.view.getTreeLayer());
+                view.view.setMarkedNode(newNodeID);
+                if (newNodeID != -1)
+                {
+                    view.scrollToNode(newNodeID);
+                }
+            }*/
+	    }
 	}
 }
