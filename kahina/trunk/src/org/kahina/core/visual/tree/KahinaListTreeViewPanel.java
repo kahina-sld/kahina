@@ -131,7 +131,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	
 	public String getIndentingWhitespace(int layer, int nodeID)
 	{
-		return whitespace(2 * indentations.get(layer).get(nodeID));
+		return whitespace(4 * indentations.get(layer).get(nodeID));
 	}
 	
 	private String whitespace(int length)
