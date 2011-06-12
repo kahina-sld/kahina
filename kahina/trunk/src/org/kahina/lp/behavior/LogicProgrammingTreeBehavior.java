@@ -13,6 +13,8 @@ import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.event.KahinaStepDescriptionEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
@@ -55,6 +57,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		this.lastActiveID = -1;
 		KahinaRunner.getControl().registerListener("logic programming bridge", this);
 		KahinaRunner.getControl().registerListener("system", this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.STEP_DESCRIPTION, this);
 		primaryBreakpoints = new ArrayList<TreeAutomaton>();
 		initializePrimaryBreakpoints();
 		compilePrimaryBreakpoints();
@@ -520,14 +523,17 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			System.err.println("LogicProgrammingTreeBehavior.processEvent(" + e + ")");
 		if (e instanceof LogicProgrammingBridgeEvent)
 		{
-			processEvent((LogicProgrammingBridgeEvent) e);
+			processLogicProgrammingBridgeEvent((LogicProgrammingBridgeEvent) e);
 		} else if (e instanceof KahinaSystemEvent)
 		{
-			processEvent((KahinaSystemEvent) e);
+			processSystemEvent((KahinaSystemEvent) e);
+		} else if (e instanceof KahinaStepDescriptionEvent)
+		{
+			processStepDescriptionEvent((KahinaStepDescriptionEvent) e);
 		}
 	}
 
-	public void processEvent(LogicProgrammingBridgeEvent e)
+	public void processLogicProgrammingBridgeEvent(LogicProgrammingBridgeEvent e)
 	{
 		switch (e.getEventType())
 		{
@@ -569,7 +575,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		}
 	}
 
-	public void processEvent(KahinaSystemEvent e)
+	public void processSystemEvent(KahinaSystemEvent e)
 	{
 		if (e.getSystemEventType() == KahinaSystemEvent.APPLY_BREAKPOINTS)
 		{
@@ -612,5 +618,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			}
 			}
 		}
+	}
+	
+	public void processStepDescriptionEvent(KahinaStepDescriptionEvent e)
+	{
+		object.setNodeCaption(e.getStepID(), e.getDescription());
 	}
 }
