@@ -12,6 +12,7 @@ import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.event.KahinaStepDescriptionEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
@@ -157,11 +158,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 * 
 	 * @param extID
 	 * @param predicate
-	 * @param nodeLabel
+	 * @param description
 	 */
-	public void step(int extID, String predicate, String nodeLabel)
+	public void step(int extID, String predicate, String description)
 	{
-		step(extID, predicate, nodeLabel, nodeLabel);
+		step(extID, predicate, description, description);
 	}
 
 	/**
@@ -226,7 +227,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				System.err.println("Parent ID: " + parentCandidateID);
 			}
-			// used by tree behavior and profiler:
+			// used by tree behavior:
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, parentCandidateID));
 			// used by node counter:
 			KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, parentCandidateID));
@@ -346,6 +347,16 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 		}
 	}
+	
+	public void exit(int extID, boolean deterministic)
+	{
+		exit(extID, deterministic, null, null);
+	}
+	
+	public void exit(int extID, boolean deterministic, String newDescription)
+	{
+		exit(extID, deterministic, newDescription, newDescription);
+	}
 
 	/**
 	 * Called to indicate that the exit port of the procedure box with the given
@@ -358,7 +369,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 *            information from your LP system, the recommended default is
 	 *            {@code false}.
 	 */
-	public void exit(int extID, boolean deterministic)
+	public void exit(int extID, boolean deterministic, String newDescription, String newConsoleMessage)
 	{
 		try
 		{
@@ -378,16 +389,32 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
+			
+			// relabel node
+			if (newDescription != null)
+			{
+				KahinaRunner.processEvent(new KahinaStepDescriptionEvent(stepID, newDescription));
+			}
 
+			// create console message
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
 			if (reference != null)
-			{
+			{			
+				int port;
 				if (deterministic)
 				{
-					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.DET_EXIT));
+					port = LogicProgrammingStepType.DET_EXIT; 
 				} else
 				{
-					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.EXIT));
+					port = LogicProgrammingStepType.EXIT;
+				}
+				if (newConsoleMessage == null)
+				{
+					// use old text
+					state.consoleMessage(reference.generatePortVariant(port));
+				} else
+				{
+					state.consoleMessage(stepID, extID, port, newConsoleMessage);
 				}
 			}
 

@@ -64,7 +64,11 @@ act(fail,Inv,Bridge,JVM) :-
 act(exit(nondet),Inv,Bridge,JVM) :-
   !,
   retractall(unblock_pseudostep_waiting_for_link(_)),
-  act_exit(Bridge,JVM,Inv,false),
+  execution_state(pred(Module:_)),
+  execution_state(goal(_:Goal)),
+  goal_desc(Module,Goal,GoalDesc),
+  write_to_chars(GoalDesc,GoalDescChars),
+  act_exit(Bridge,JVM,Inv,false,GoalDescChars),
   perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(nondet))).
 act(exit(det),Inv,Bridge,JVM) :-
     retractall(unblock_pseudostep_waiting_for_link(_)),
@@ -135,6 +139,13 @@ act_exit(Bridge,JVM,Inv,Det) :-
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','exit',[instance]),
       exit(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+boolean),
       exit(Bridge,Inv,Det)),
+  end(Inv,Bridge,JVM).
+
+act_exit(Bridge,JVM,Inv,Det,GoalDescChars) :-
+  jasper_call(JVM,
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','exit',[instance]),
+      exit(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+boolean,+chars),
+      exit(Bridge,Inv,Det,GoalDescChars)),
   end(Inv,Bridge,JVM).
 
 act_redo(Bridge,JVM,Inv) :-
