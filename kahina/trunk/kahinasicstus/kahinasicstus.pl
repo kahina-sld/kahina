@@ -26,7 +26,8 @@ user:breakpoint_expansion(kahina_breakpoint_action,[
        -> \+ port(fail),
           fail(Inv)       % Command: fail(Inv), Mode immaterial
         ; true(Action == 97) % a(bort)
-          -> abort        % Command: abort, Mode immaterial
+          -> true(end_trace_session), % TODO necessary?
+             abort        % Command: abort, Mode immaterial
            ; debug,       % Mode: debug, i.e. leap (default is trace, i.e. creep)
              proceed))]). % Command: proceed
 
