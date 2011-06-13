@@ -7,10 +7,9 @@ import javax.swing.JComponent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
-import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
 
-public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
+public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 {
 	private static final boolean VERBOSE = false;
 
@@ -81,6 +80,7 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		}
 	}
 
+	@Override
 	public void displaySecondaryTree(KahinaTree treeModel)
 	{
 		if (VERBOSE)
@@ -110,7 +110,7 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 
 	public KahinaTree getSecondaryModel()
 	{
-		return views[0].secondaryTreeModel;
+		return views[0].getSecondaryModel();
 	}
 
 	@Override
@@ -128,6 +128,7 @@ public class KahinaLayeredTreeView extends KahinaView<KahinaTree>
 		return views[index];
 	}
 
+	@Override
 	public void setStatusColorEncoding(int status, Color color)
 	{
 		for (KahinaTreeView view : views)

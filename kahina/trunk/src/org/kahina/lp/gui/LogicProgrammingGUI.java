@@ -11,14 +11,13 @@ import org.kahina.core.breakpoint.KahinaBreakpointType;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaEventTypes;
-import org.kahina.core.gui.KahinaControlButtonWindow;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.breakpoint.BreakpointEditorWindow;
 import org.kahina.core.gui.breakpoint.ThresholdedBreakpointEditorWindow;
 import org.kahina.core.profiler.DefaultProfileEntryMapper;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
-import org.kahina.core.visual.tree.KahinaLayeredTreeView;
+import org.kahina.core.visual.tree.KahinaAbstractTreeView;
 import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
@@ -30,7 +29,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 {
 	private static final boolean VERBOSE = false;
 
-	protected KahinaListTreeView mainTreeView;
+	protected KahinaAbstractTreeView mainTreeView;
 	//protected KahinaLayeredTreeView mainTreeView;
 
 	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina, KahinaController control)
@@ -64,7 +63,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.PSEUDO_UNBLOCKED, Color.LIGHT_GRAY);
 	}
 	
-	protected KahinaListTreeView generateTreeView(KahinaController control)
+	protected KahinaAbstractTreeView generateTreeView(KahinaController control)
 	{
 		return new KahinaListTreeView(control, 0);
 	}

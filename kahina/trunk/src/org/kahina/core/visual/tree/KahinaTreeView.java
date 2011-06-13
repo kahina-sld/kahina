@@ -19,13 +19,12 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.visual.KahinaView;
 
 // TODO Second dimension sometimes isn't properly displayed when there is no
 // second-dimension root of the nodes in one view. Test case: set goal nodes to
 // be cornerstone nodes in a layer decider.
 
-public class KahinaTreeView extends KahinaView<KahinaTree>
+public class KahinaTreeView extends KahinaAbstractTreeView
 {
 	public static final boolean VERBOSE = false;
 	
@@ -109,6 +108,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		}
 	}
 
+	@Override
 	public void displaySecondaryTree(KahinaTree treeModel)
 	{
 		this.secondaryTreeModel = treeModel;
@@ -125,6 +125,12 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		model = layerModel;
 		nodeBorderColor = new HashMap<Integer, Color>();
 		recalculate();
+	}
+	
+	@Override
+	public KahinaTree getSecondaryModel()
+	{
+		return secondaryTreeModel;
 	}
 	
 	public KahinaTreeViewConfiguration getConfig()
@@ -250,6 +256,7 @@ public class KahinaTreeView extends KahinaView<KahinaTree>
 		this.treeLayer = treeLayer;
 	}
 
+	@Override
 	public void setStatusColorEncoding(int status, Color color)
 	{
 		if (VERBOSE)

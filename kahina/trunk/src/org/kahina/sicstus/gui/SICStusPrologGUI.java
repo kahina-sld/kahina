@@ -7,6 +7,8 @@ import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.visual.tree.KahinaAbstractTreeView;
+import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 import org.kahina.sicstus.SICStusPrologStep;
@@ -18,6 +20,7 @@ public class SICStusPrologGUI extends LogicProgrammingGUI
 		super(stepType, instance, control);
 	}
 	
+	@Override
 	protected KahinaWindowManager createWindowManager(KahinaGUI gui, KahinaController control)
 	{
 		return new SICStusPrologWindowManager(gui, control);
@@ -37,5 +40,11 @@ public class SICStusPrologGUI extends LogicProgrammingGUI
 		{
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public KahinaAbstractTreeView generateTreeView(KahinaController control)
+	{
+		return new KahinaLayeredTreeView(control, 0);
 	}
 }

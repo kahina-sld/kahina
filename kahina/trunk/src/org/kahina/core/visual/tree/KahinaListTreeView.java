@@ -13,10 +13,8 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
-import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.KahinaViewConfiguration;
 
-public class KahinaListTreeView extends KahinaView<KahinaTree>
+public class KahinaListTreeView extends KahinaAbstractTreeView
 {
 	private static final boolean VERBOSE = false;
 	
@@ -172,6 +170,7 @@ public class KahinaListTreeView extends KahinaView<KahinaTree>
 		return KahinaTreeViewOptions.COMPLETE_LINES;
 	}
 	
+	@Override
 	public void setStatusColorEncoding(int status, Color color)
 	{
 		if (VERBOSE)

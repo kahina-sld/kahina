@@ -1,7 +1,6 @@
 package org.kahina.swi.gui;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.swi.SWIPrologDebuggerInstance;
@@ -23,12 +22,6 @@ public class SWIPrologGUI extends LogicProgrammingGUI
 	{
 		return new KahinaListTreeView(control, 0, 1, 2);
 	}
-
-	/*@Override
-	protected KahinaLayeredTreeView generateTreeView(KahinaController control)
-	{
-		return new KahinaLayeredTreeView(control, 0, 1, 2);
-	}*/
 
 	@Override
 	public void displayMainViews()
