@@ -1,7 +1,6 @@
 package org.kahina.core.visual.tree;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -17,29 +16,29 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.ListModel;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
-import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener
 {
+	private static final long serialVersionUID = -2816651065876855228L;
+
 	private static final boolean VERBOSE = false;
-	
+
 	private JPanel[] panels;
 	private JList[] lists;
 	private DefaultListModel[] listModels;
-	
-	//internal storage for indentations in different layers
-	private List<HashMap<Integer,Integer>> indentations;
-	
-	//GUI component handling
+
+	// internal storage for indentations in different layers
+	private List<HashMap<Integer, Integer>> indentations;
+
+	// GUI component handling
 	private MouseEvent lastMouseEvent;
 	private List<JSplitPane> splitPanes;
-	
+
 	public KahinaListTreeViewPanel(int layers, KahinaController control)
 	{
 		if (VERBOSE)
@@ -68,26 +67,25 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			JSplitPane splitPane = createSplitPane(0);
 			splitPane.setDividerSize(2);
-			//splitPane.setEnabled(false);
+			// splitPane.setEnabled(false);
 			splitPanes.add(splitPane);
 			add(splitPane);
-		} 
-		else
+		} else
 		{
 			add(createPane(panels[0]));
 		}
 		updateDividerLocations();
 	}
-	
+
 	private void clearIndentations()
 	{
-		indentations = new ArrayList<HashMap<Integer,Integer>>();
+		indentations = new ArrayList<HashMap<Integer, Integer>>();
 		for (int i = 0; i < lists.length; i++)
 		{
-			indentations.add(new HashMap<Integer,Integer>());
+			indentations.add(new HashMap<Integer, Integer>());
 		}
 	}
-	
+
 	private void updateDividerLocations()
 	{
 		for (JSplitPane splitPane : splitPanes)
@@ -96,8 +94,10 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		}
 		for (int i = 0; i < panels.length; i++)
 		{
-			//lists[i].setMinimumSize(new Dimension(this.getWidth() / panels.length, this.getHeight()));
-			//lists[i].setPreferredSize(new Dimension(this.getWidth() / panels.length, this.getHeight()));
+			// lists[i].setMinimumSize(new Dimension(this.getWidth() /
+			// panels.length, this.getHeight()));
+			// lists[i].setPreferredSize(new Dimension(this.getWidth() /
+			// panels.length, this.getHeight()));
 		}
 	}
 
@@ -113,8 +113,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		if (index + 1 == panels.length)
 		{
 			right = createPane(panels[index]);
-		} 
-		else
+		} else
 		{
 			right = createSplitPane(index);
 			((JSplitPane) right).setDividerSize(2);
@@ -141,7 +140,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			listModels[i].clear();
 			int rootID = view.secondaryTreeModel.getRootID(i);
-			fillListModel(i,rootID,0);
+			fillListModel(i, rootID, 0);
 		}
 		for (JPanel panel : panels)
 		{
@@ -149,7 +148,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			panel.revalidate();
 		}
 	}
-	
+
 	private void fillListModel(int layer, int nodeID, int recursionDepth)
 	{
 		indentations.get(layer).put(nodeID, recursionDepth);
@@ -159,12 +158,12 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			fillListModel(layer, childID, recursionDepth + 1);
 		}
 	}
-	
+
 	public String getIndentingWhitespace(int layer, int nodeID)
 	{
 		return whitespace(4 * indentations.get(layer).get(nodeID));
 	}
-	
+
 	private String whitespace(int length)
 	{
 		StringBuilder whitespace = new StringBuilder();
@@ -174,55 +173,60 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		}
 		return whitespace.toString();
 	}
-	
-	   @Override
-	public void mouseClicked(MouseEvent e)
-    {
-	   	JList list = (JList) e.getComponent();
-        int clickedIndex = list.locationToIndex(e.getPoint());     
-        int clickedNode = (Integer) list.getModel().getElementAt(clickedIndex);
-        if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
-        {
-            view.secondaryTreeModel.toggleCollapse(clickedNode);
-            updateDisplay();
-            repaint();
-        }
-        else
-        {
-            KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
-            lastMouseEvent = e;
-        }
-    }
-    
-    @Override
-	public void mousePressed(MouseEvent e) 
-    {
-        maybeShowPopup(e);
-    }
-
-    @Override
-	public void mouseReleased(MouseEvent e) 
-    {
-        maybeShowPopup(e);
-    }
-
-    private void maybeShowPopup(MouseEvent e) 
-    {
-        if (e.isPopupTrigger()) 
-        {
-            //KahinaTreeViewContextMenu.getMenu(this, view.view).show(e.getComponent(),e.getX(), e.getY());
-        }
-    }
 
 	@Override
-	public void mouseEntered(MouseEvent arg0) 
+	public void mouseClicked(MouseEvent e)
 	{
-		// TODO Auto-generated method stub		
+		JList list = (JList) e.getComponent();
+		int clickedIndex = list.locationToIndex(e.getPoint());
+		Object element = list.getModel().getElementAt(clickedIndex);
+		if (element != null)
+		{
+			int clickedNode;
+			clickedNode = (Integer) element;
+			if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
+			{
+				view.secondaryTreeModel.toggleCollapse(clickedNode);
+				updateDisplay();
+				repaint();
+			} else
+			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
+				lastMouseEvent = e;
+			}
+		}
 	}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) 
+	public void mousePressed(MouseEvent e)
 	{
-		// TODO Auto-generated method stub	
+		maybeShowPopup(e);
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e)
+	{
+		maybeShowPopup(e);
+	}
+
+	private void maybeShowPopup(MouseEvent e)
+	{
+		if (e.isPopupTrigger())
+		{
+			// KahinaTreeViewContextMenu.getMenu(this,
+			// view.view).show(e.getComponent(),e.getX(), e.getY());
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0)
+	{
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0)
+	{
+		// TODO Auto-generated method stub
 	}
 }
