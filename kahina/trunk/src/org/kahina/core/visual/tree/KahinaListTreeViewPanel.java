@@ -16,13 +16,14 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.ListModel;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener
+public class CopyOfKahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener
 {
 	private static final long serialVersionUID = -2816651065876855228L;
 
@@ -39,7 +40,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private MouseEvent lastMouseEvent;
 	private List<JSplitPane> splitPanes;
 
-	public KahinaListTreeViewPanel(int layers, KahinaController control)
+	public CopyOfKahinaListTreeViewPanel(int layers, KahinaController control)
 	{
 		if (VERBOSE)
 		{
@@ -179,20 +180,24 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	{
 		JList list = (JList) e.getComponent();
 		int clickedIndex = list.locationToIndex(e.getPoint());
-		Object element = list.getModel().getElementAt(clickedIndex);
-		if (element != null)
+		ListModel model = list.getModel();
+		if (0 <= clickedIndex && clickedIndex < model.getSize())
 		{
-			int clickedNode;
-			clickedNode = (Integer) element;
-			if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
+			Object element = model.getElementAt(clickedIndex);
+			if (element != null)
 			{
-				view.secondaryTreeModel.toggleCollapse(clickedNode);
-				updateDisplay();
-				repaint();
-			} else
-			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
-				lastMouseEvent = e;
+				int clickedNode;
+				clickedNode = (Integer) element;
+				if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
+				{
+					view.secondaryTreeModel.toggleCollapse(clickedNode);
+					updateDisplay();
+					repaint();
+				} else
+				{
+					KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
+					lastMouseEvent = e;
+				}
 			}
 		}
 	}
