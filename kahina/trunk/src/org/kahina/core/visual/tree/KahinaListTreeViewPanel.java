@@ -181,23 +181,20 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		JList list = (JList) e.getComponent();
 		int clickedIndex = list.locationToIndex(e.getPoint());
 		ListModel model = list.getModel();
-		if (0 <= clickedIndex && clickedIndex < model.getSize())
+		Object element = model.getElementAt(clickedIndex);
+		if (element != null)
 		{
-			Object element = model.getElementAt(clickedIndex);
-			if (element != null)
+			int clickedNode;
+			clickedNode = (Integer) element;
+			if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
 			{
-				int clickedNode;
-				clickedNode = (Integer) element;
-				if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
-				{
-					view.secondaryTreeModel.toggleCollapse(clickedNode);
-					updateDisplay();
-					repaint();
-				} else
-				{
-					KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
-					lastMouseEvent = e;
-				}
+				view.secondaryTreeModel.toggleCollapse(clickedNode);
+				updateDisplay();
+				repaint();
+			} else
+			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
+				lastMouseEvent = e;
 			}
 		}
 	}
