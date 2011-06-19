@@ -23,7 +23,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class CopyOfKahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener
+public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener
 {
 	private static final long serialVersionUID = -2816651065876855228L;
 
@@ -40,7 +40,7 @@ public class CopyOfKahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTre
 	private MouseEvent lastMouseEvent;
 	private List<JSplitPane> splitPanes;
 
-	public CopyOfKahinaListTreeViewPanel(int layers, KahinaController control)
+	public KahinaListTreeViewPanel(int layers, KahinaController control)
 	{
 		if (VERBOSE)
 		{
