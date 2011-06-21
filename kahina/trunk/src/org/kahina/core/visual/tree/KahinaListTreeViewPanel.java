@@ -2,6 +2,7 @@ package org.kahina.core.visual.tree;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -25,7 +26,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener, ActionListener
+public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener
 {
 	private static final long serialVersionUID = -2816651065876855228L;
 
@@ -201,6 +202,11 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
         if (result == null) result = 1;
         return result;
     }
+    
+    public int getIndentationDepth(int layer, int nodeID)
+    {
+        return indentations.get(layer).get(nodeID);
+    }
 
 	public String getIndentingWhitespace(int layer, int nodeID)
 	{
@@ -216,6 +222,30 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		}
 		return whitespace.toString();
 	}
+    
+    private boolean isLeftButtonPosition(Point p, JList list, int clickedNode)
+    {
+        int distanceToLeft = p.x - list.getComponentAt(p).getX();
+        int layer = ((KahinaListTreeListRenderer) list.getCellRenderer()).layer;
+        distanceToLeft -= indentations.get(layer).get(clickedNode) * 30;
+        if (distanceToLeft < 15)
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    private boolean isRightButtonPosition(Point p, JList list, int clickedNode)
+    {
+        int distanceToLeft = p.x - list.getComponentAt(p).getX();
+        int layer = ((KahinaListTreeListRenderer) list.getCellRenderer()).layer;
+        distanceToLeft -= indentations.get(layer).get(clickedNode) * 30;
+        if (distanceToLeft >= 15 && distanceToLeft <= 30)
+        {
+            return true;
+        }
+        return false;
+    }
 
 	@Override
 	public void mouseClicked(MouseEvent e)
@@ -228,12 +258,36 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			int clickedNode;
 			clickedNode = (Integer) element;
-			if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
+
+            if (getNumberOfPrimaryAlternatives(clickedNode)  > 1)
+            {
+                //EXTREME HACK, FORTUNATELY NOT TIME-CRITICAL
+                //emulate the check whether one of the "buttons" was clicked
+                int choiceParent = getChoiceParent(clickedNode);
+                int choice = view.primaryChildChoices.get(choiceParent);
+                if (choice > 0 && isLeftButtonPosition(e.getPoint(), list, clickedNode))
+                {
+                    view.primaryChildChoices.put(choiceParent, choice - 1);
+                    updateDisplay();
+                    repaint();
+                    return;
+                }
+                else if (choice < getNumberOfPrimaryAlternatives(clickedNode) - 1 && isRightButtonPosition(e.getPoint(), list, clickedNode))
+                {
+                    //TODO: sanitize: check that button was really available
+                    view.primaryChildChoices.put(choiceParent, choice + 1);
+                    updateDisplay();
+                    repaint();
+                    return;
+                }
+            }
+            if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
 			{
 				view.secondaryTreeModel.toggleCollapse(clickedNode);
 				updateDisplay();
 				repaint();
-			} else
+			} 
+            else
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
 				lastMouseEvent = e;
@@ -273,20 +327,4 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	{
 		// TODO Auto-generated method stub
 	}
-    
-    public void actionPerformed(ActionEvent e)
-    {
-        String s = e.getActionCommand();
-        if (s.startsWith("+choice"))
-        {
-            Integer nodeID = Integer.parseInt(s.substring(7));
-            view.primaryChildChoices.put(nodeID, view.primaryChildChoices.get(nodeID) + 1);
-        }
-        else if (s.startsWith("-choice"))
-        {
-            Integer nodeID = Integer.parseInt(s.substring(7));
-            view.primaryChildChoices.put(nodeID, view.primaryChildChoices.get(nodeID) - 1);
-        }  
-        this.updateDisplay();
-    }
 }

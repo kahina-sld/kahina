@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -31,16 +32,14 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
         JPanel cellPanel = new JPanel();
         cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.X_AXIS));
         cellPanel.setSize(200,20);
-		int nodeID = (Integer) value; 
+		int nodeID = (Integer) value;
+        cellPanel.add(Box.createRigidArea(new Dimension(view.getIndentationDepth(layer,nodeID) * 30,0)));
 		int numAlternatives = view.getNumberOfPrimaryAlternatives(nodeID);
         if (numAlternatives > 1)
         {
-            cellPanel.add(new JLabel(view.getIndentingWhitespace(layer,nodeID)));
             JButton leftButton = new JButton("<");
             leftButton.setMargin(new Insets(0,0,0,0));
             leftButton.setPreferredSize(new Dimension(18,15));
-            leftButton.setActionCommand("-choice" + view.getChoiceParent(nodeID));
-            leftButton.addActionListener(view);
             if (view.view.primaryChildChoices.get(view.getChoiceParent(nodeID)) == 0)
             {
                 leftButton.setEnabled(false);
@@ -49,8 +48,6 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
             JButton rightButton = new JButton(">");
             rightButton.setMargin(new Insets(0,0,0,0));
             rightButton.setPreferredSize(new Dimension(18,15));
-            rightButton.setActionCommand("+choice" + view.getChoiceParent(nodeID));
-            rightButton.addActionListener(view);
             if (view.view.primaryChildChoices.get(view.getChoiceParent(nodeID)) == numAlternatives - 1)
             {
                 rightButton.setEnabled(false);
@@ -59,7 +56,7 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
         }
         else
         {
-            cellPanel.add(new JLabel(view.getIndentingWhitespace(layer,nodeID) + view.whitespace(4)));
+            cellPanel.add(Box.createRigidArea(new Dimension(30,0)));
         }
         String entry = "";
         if (view.view.getSecondaryModel().isCollapsed(nodeID))
