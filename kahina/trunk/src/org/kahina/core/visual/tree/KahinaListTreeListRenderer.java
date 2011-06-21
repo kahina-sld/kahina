@@ -39,6 +39,8 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
             JButton leftButton = new JButton("<");
             leftButton.setMargin(new Insets(0,0,0,0));
             leftButton.setPreferredSize(new Dimension(18,15));
+            leftButton.setActionCommand("-choice" + view.getChoiceParent(nodeID));
+            leftButton.addActionListener(view);
             if (view.view.primaryChildChoices.get(view.getChoiceParent(nodeID)) == 0)
             {
                 leftButton.setEnabled(false);
@@ -47,6 +49,8 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
             JButton rightButton = new JButton(">");
             rightButton.setMargin(new Insets(0,0,0,0));
             rightButton.setPreferredSize(new Dimension(18,15));
+            rightButton.setActionCommand("+choice" + view.getChoiceParent(nodeID));
+            rightButton.addActionListener(view);
             if (view.view.primaryChildChoices.get(view.getChoiceParent(nodeID)) == numAlternatives - 1)
             {
                 rightButton.setEnabled(false);

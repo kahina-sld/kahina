@@ -2,6 +2,8 @@ package org.kahina.core.visual.tree;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener
+public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener, ActionListener
 {
 	private static final long serialVersionUID = -2816651065876855228L;
 
@@ -271,4 +273,20 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	{
 		// TODO Auto-generated method stub
 	}
+    
+    public void actionPerformed(ActionEvent e)
+    {
+        String s = e.getActionCommand();
+        if (s.startsWith("+choice"))
+        {
+            Integer nodeID = Integer.parseInt(s.substring(7));
+            view.primaryChildChoices.put(nodeID, view.primaryChildChoices.get(nodeID) + 1);
+        }
+        else if (s.startsWith("-choice"))
+        {
+            Integer nodeID = Integer.parseInt(s.substring(7));
+            view.primaryChildChoices.put(nodeID, view.primaryChildChoices.get(nodeID) - 1);
+        }  
+        this.updateDisplay();
+    }
 }
