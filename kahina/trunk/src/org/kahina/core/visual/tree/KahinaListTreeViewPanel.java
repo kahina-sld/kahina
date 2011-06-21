@@ -35,8 +35,9 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
 	// internal storage for indentations in different layers
 	private List<HashMap<Integer, Integer>> indentations;
-	// internal storgae for the number of primary child choices
-    private HashMap<Integer, Integer> numPrimaryChildChoices;
+	// internal storage for the number of primary child choices
+    private HashMap<Integer, Integer> numPrimaryAlternatives;
+    private HashMap<Integer, Integer> choiceParent;
 
 	// GUI component handling
 	private MouseEvent lastMouseEvent;
@@ -52,7 +53,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		lists = new JList[layers];
 		listModels = new DefaultListModel[layers];
 		clearIndentations();
-        clearPrimaryChildChoices();
+        clearAlternatives();
 		lastMouseEvent = null;
 		splitPanes = new LinkedList<JSplitPane>();
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -90,9 +91,10 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		}
 	}
     
-    private void clearPrimaryChildChoices()
+    private void clearAlternatives()
     {
-        numPrimaryChildChoices = new HashMap<Integer, Integer>();
+        numPrimaryAlternatives = new HashMap<Integer, Integer>();
+        choiceParent = new HashMap<Integer, Integer>();
     }
 
 	private void updateDividerLocations()
@@ -171,23 +173,39 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
                 choice = 0;
                 view.primaryChildChoices.put(nodeID,choice);
             }
+            int displayChild = primaryChildren.get(choice);
+            choiceParent.put(displayChild, nodeID);
+            numPrimaryAlternatives.put(displayChild, primaryChildren.size());
             fillListModel(layer, primaryChildren.get(choice), recursionDepth + 1);
         }
         else
         {
     		for (int childID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
     		{
+                numPrimaryAlternatives.put(childID, 1);
     			fillListModel(layer, childID, recursionDepth + 1);
     		}
         }
 	}
+    
+    public int getChoiceParent(int nodeID)
+    {
+        return choiceParent.get(nodeID);
+    }
+    
+    public int getNumberOfPrimaryAlternatives(int nodeID)
+    {
+        Integer result = numPrimaryAlternatives.get(nodeID);
+        if (result == null) result = 1;
+        return result;
+    }
 
 	public String getIndentingWhitespace(int layer, int nodeID)
 	{
 		return whitespace(4 * indentations.get(layer).get(nodeID));
 	}
 
-	private String whitespace(int length)
+	public String whitespace(int length)
 	{
 		StringBuilder whitespace = new StringBuilder();
 		for (int i = 0; i < length; i++)

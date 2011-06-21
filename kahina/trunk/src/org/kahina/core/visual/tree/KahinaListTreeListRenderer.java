@@ -1,11 +1,19 @@
 package org.kahina.core.visual.tree;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Insets;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
 
 public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 {
@@ -20,8 +28,36 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 	
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) 
 	{
-		int nodeID = (Integer) value;
-        String entry = view.getIndentingWhitespace(layer,nodeID);
+        JPanel cellPanel = new JPanel();
+        cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.X_AXIS));
+        cellPanel.setSize(200,20);
+		int nodeID = (Integer) value; 
+		int numAlternatives = view.getNumberOfPrimaryAlternatives(nodeID);
+        if (numAlternatives > 1)
+        {
+            cellPanel.add(new JLabel(view.getIndentingWhitespace(layer,nodeID)));
+            JButton leftButton = new JButton("<");
+            leftButton.setMargin(new Insets(0,0,0,0));
+            leftButton.setPreferredSize(new Dimension(18,15));
+            if (view.view.primaryChildChoices.get(view.getChoiceParent(nodeID)) == 0)
+            {
+                leftButton.setEnabled(false);
+            }
+            cellPanel.add(leftButton);
+            JButton rightButton = new JButton(">");
+            rightButton.setMargin(new Insets(0,0,0,0));
+            rightButton.setPreferredSize(new Dimension(18,15));
+            if (view.view.primaryChildChoices.get(view.getChoiceParent(nodeID)) == numAlternatives - 1)
+            {
+                rightButton.setEnabled(false);
+            }
+            cellPanel.add(rightButton);
+        }
+        else
+        {
+            cellPanel.add(new JLabel(view.getIndentingWhitespace(layer,nodeID) + view.whitespace(4)));
+        }
+        String entry = "";
         if (view.view.getSecondaryModel().isCollapsed(nodeID))
         {
             entry += "+ ";
@@ -31,27 +67,28 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
             entry += "- ";
         }
         entry += view.view.getModel().getNodeCaption(nodeID);
-        setText(entry);
+        JLabel entryLabel = new JLabel(entry);
         if (nodeID == view.view.getMarkedNode(layer)) 
         {
-          setBackground(Color.yellow);
+          entryLabel.setBackground(Color.yellow);
         } 
         else 
         {
-          setBackground(Color.white);
+          entryLabel.setBackground(Color.white);
         }
         Color fontColor = view.view.getNodeColor(nodeID);
         if (fontColor == Color.white) fontColor = Color.black;
-        setForeground(fontColor);
+        entryLabel.setForeground(fontColor);
         if (!view.view.getSecondaryModel().getChildren(nodeID).equals(view.view.getSecondaryModel().getChildren(nodeID, layer, false)))
         {
-        	this.setFont(new Font("Arial", Font.BOLD, 12));
+        	entryLabel.setFont(new Font("Arial", Font.BOLD, 12));
         }
         else
         {
-        	this.setFont(new Font("Arial", Font.PLAIN, 12));
+        	entryLabel.setFont(new Font("Arial", Font.PLAIN, 12));
         }
+        cellPanel.add(entryLabel);
         //setBorder(new EmptyBorder(6,20,6,20));    
-        return this;
+        return cellPanel;
 	}
 }
