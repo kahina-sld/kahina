@@ -21,7 +21,16 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) 
 	{
 		int nodeID = (Integer) value;
-        String entry = view.getIndentingWhitespace(layer,nodeID) + view.view.getModel().getNodeCaption(nodeID);
+        String entry = view.getIndentingWhitespace(layer,nodeID);
+        if (view.view.getSecondaryModel().isCollapsed(nodeID))
+        {
+            entry += "+ ";
+        }
+        else
+        {
+            entry += "- ";
+        }
+        entry += view.view.getModel().getNodeCaption(nodeID);
         setText(entry);
         if (nodeID == view.view.getMarkedNode(layer)) 
         {
@@ -34,7 +43,7 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
         Color fontColor = view.view.getNodeColor(nodeID);
         if (fontColor == Color.white) fontColor = Color.black;
         setForeground(fontColor);
-        if (view.view.getSecondaryModel().isCollapsed(nodeID))
+        if (!view.view.getSecondaryModel().getChildren(nodeID).equals(view.view.getSecondaryModel().getChildren(nodeID, layer, false)))
         {
         	this.setFont(new Font("Arial", Font.BOLD, 12));
         }

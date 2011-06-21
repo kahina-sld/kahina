@@ -92,7 +92,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			gui.displayMainViews();
 			gui.show();
 			KahinaRunner.processEvent(new KahinaSelectionEvent(-1));
-		} catch (Exception e)
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
