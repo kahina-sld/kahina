@@ -33,7 +33,7 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
         cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.X_AXIS));
         cellPanel.setSize(200,20);
 		int nodeID = (Integer) value;
-        cellPanel.add(Box.createRigidArea(new Dimension(view.getIndentationDepth(layer,nodeID) * 30,0)));
+        cellPanel.add(Box.createRigidArea(new Dimension(view.getIndentationDepth(layer,nodeID) * 15,0)));
 		int numAlternatives = view.getNumberOfPrimaryAlternatives(nodeID);
         if (numAlternatives > 1)
         {
@@ -69,12 +69,15 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
         }
         entry += view.view.getModel().getNodeCaption(nodeID);
         JLabel entryLabel = new JLabel(entry);
+        entryLabel.setOpaque(true);
         if (nodeID == view.view.getMarkedNode(layer)) 
         {
+          cellPanel.setBackground(Color.white);
           entryLabel.setBackground(Color.yellow);
         } 
         else 
         {
+          cellPanel.setBackground(Color.white);
           entryLabel.setBackground(Color.white);
         }
         Color fontColor = view.view.getNodeColor(nodeID);

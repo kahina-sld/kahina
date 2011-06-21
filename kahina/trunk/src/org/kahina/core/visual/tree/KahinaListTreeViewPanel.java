@@ -205,7 +205,9 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
     
     public int getIndentationDepth(int layer, int nodeID)
     {
-        return indentations.get(layer).get(nodeID);
+        Integer depth = indentations.get(layer).get(nodeID);
+        if (depth == null) depth = 0;
+        return depth;
     }
 
 	public String getIndentingWhitespace(int layer, int nodeID)
@@ -223,11 +225,10 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		return whitespace.toString();
 	}
     
-    private boolean isLeftButtonPosition(Point p, JList list, int clickedNode)
+    private boolean isLeftButtonPosition(Point p, JList list, int clickedNode, int layer)
     {
         int distanceToLeft = p.x - list.getComponentAt(p).getX();
-        int layer = ((KahinaListTreeListRenderer) list.getCellRenderer()).layer;
-        distanceToLeft -= indentations.get(layer).get(clickedNode) * 30;
+        distanceToLeft -= indentations.get(layer).get(clickedNode) * 15;
         if (distanceToLeft < 15)
         {
             return true;
@@ -235,11 +236,10 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
         return false;
     }
     
-    private boolean isRightButtonPosition(Point p, JList list, int clickedNode)
+    private boolean isRightButtonPosition(Point p, JList list, int clickedNode, int layer)
     {
         int distanceToLeft = p.x - list.getComponentAt(p).getX();
-        int layer = ((KahinaListTreeListRenderer) list.getCellRenderer()).layer;
-        distanceToLeft -= indentations.get(layer).get(clickedNode) * 30;
+        distanceToLeft -= indentations.get(layer).get(clickedNode) * 15;
         if (distanceToLeft >= 15 && distanceToLeft <= 30)
         {
             return true;
@@ -251,6 +251,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	public void mouseClicked(MouseEvent e)
 	{
 		JList list = (JList) e.getComponent();
+        int layer = ((KahinaListTreeListRenderer) list.getCellRenderer()).layer;
 		int clickedIndex = list.locationToIndex(e.getPoint());
 		ListModel model = list.getModel();
 		Object element = model.getElementAt(clickedIndex);
@@ -261,23 +262,28 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
             if (getNumberOfPrimaryAlternatives(clickedNode)  > 1)
             {
-                //EXTREME HACK, FORTUNATELY NOT TIME-CRITICAL
+                //UGLY HACK, FORTUNATELY RELIABLE AND NOT EXPENSIVE
                 //emulate the check whether one of the "buttons" was clicked
                 int choiceParent = getChoiceParent(clickedNode);
                 int choice = view.primaryChildChoices.get(choiceParent);
-                if (choice > 0 && isLeftButtonPosition(e.getPoint(), list, clickedNode))
+                if (isLeftButtonPosition(e.getPoint(), list, clickedNode, layer))
                 {
-                    view.primaryChildChoices.put(choiceParent, choice - 1);
-                    updateDisplay();
-                    repaint();
+                    if (choice > 0)
+                    {
+                        view.primaryChildChoices.put(choiceParent, choice - 1);
+                        int selectionNode = view.getVisibleVirtualChildren(view.getTreeModel(), choiceParent, layer).get(choice - 1);
+                        KahinaRunner.processEvent(new KahinaSelectionEvent(selectionNode));
+                    }
                     return;
                 }
-                else if (choice < getNumberOfPrimaryAlternatives(clickedNode) - 1 && isRightButtonPosition(e.getPoint(), list, clickedNode))
+                else if (isRightButtonPosition(e.getPoint(), list, clickedNode, layer))
                 {
-                    //TODO: sanitize: check that button was really available
-                    view.primaryChildChoices.put(choiceParent, choice + 1);
-                    updateDisplay();
-                    repaint();
+                    if (choice < getNumberOfPrimaryAlternatives(clickedNode) - 1)
+                    {
+                        view.primaryChildChoices.put(choiceParent, choice + 1);
+                        int selectionNode = view.getVisibleVirtualChildren(view.getTreeModel(), choiceParent, layer).get(choice + 1);
+                        KahinaRunner.processEvent(new KahinaSelectionEvent(selectionNode));
+                    }
                     return;
                 }
             }
