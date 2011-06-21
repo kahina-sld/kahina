@@ -34,6 +34,9 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	HashMap<Integer, Stroke> statusStrokeEncoding;
 	HashMap<Integer, Font> statusFontEncoding;
 	HashMap<Integer, Boolean> statusVisibilityEncoding;
+    
+    // remember which branch of the primary tree is being visualized
+    HashMap<Integer, Integer> primaryChildChoices;
 	
 	// allow marking of trees on different layers
 	private int[] markedNodes;
@@ -55,6 +58,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		
 		config = new KahinaTreeViewConfiguration();
 
+        primaryChildChoices = new HashMap<Integer, Integer>();
 		markedNodes = new int[layers.length];
 	}	
 

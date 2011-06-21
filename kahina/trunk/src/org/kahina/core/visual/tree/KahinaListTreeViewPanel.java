@@ -35,6 +35,8 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
 	// internal storage for indentations in different layers
 	private List<HashMap<Integer, Integer>> indentations;
+	// internal storgae for the number of primary child choices
+    private HashMap<Integer, Integer> numPrimaryChildChoices;
 
 	// GUI component handling
 	private MouseEvent lastMouseEvent;
@@ -50,6 +52,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		lists = new JList[layers];
 		listModels = new DefaultListModel[layers];
 		clearIndentations();
+        clearPrimaryChildChoices();
 		lastMouseEvent = null;
 		splitPanes = new LinkedList<JSplitPane>();
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -86,6 +89,11 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			indentations.add(new HashMap<Integer, Integer>());
 		}
 	}
+    
+    private void clearPrimaryChildChoices()
+    {
+        numPrimaryChildChoices = new HashMap<Integer, Integer>();
+    }
 
 	private void updateDividerLocations()
 	{
@@ -154,10 +162,24 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	{
 		indentations.get(layer).put(nodeID, recursionDepth);
 		listModels[layer].addElement(nodeID);
-		for (int childID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
-		{
-			fillListModel(layer, childID, recursionDepth + 1);
-		}
+        List<Integer> primaryChildren = view.getVisibleVirtualChildren(view.getTreeModel(), nodeID, layer);
+        if (primaryChildren.size() > 1)
+        {
+            Integer choice = view.primaryChildChoices.get(nodeID);
+            if (choice == null)
+            {
+                choice = 0;
+                view.primaryChildChoices.put(nodeID,choice);
+            }
+            fillListModel(layer, primaryChildren.get(choice), recursionDepth + 1);
+        }
+        else
+        {
+    		for (int childID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
+    		{
+    			fillListModel(layer, childID, recursionDepth + 1);
+    		}
+        }
 	}
 
 	public String getIndentingWhitespace(int layer, int nodeID)
