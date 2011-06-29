@@ -80,6 +80,12 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     }
     
     @Override
+	public int getBestEquivalent(int nodeID, int layerID)
+    {
+    	return nodeID;
+    }
+    
+    @Override
     public int getParent(int nodeID)
     {
         Integer parent = parents.get(nodeID);

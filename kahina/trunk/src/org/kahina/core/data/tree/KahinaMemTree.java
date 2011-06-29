@@ -58,6 +58,23 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
 		// parent);
 		return parent;
 	}
+	
+	/**
+	 * Returns the lowest ancestor of nodeID whose layer is lower than or equals layerID.
+	 * If the node layer is higher or equal to layerID, the node itself is returned
+	 */
+	@Override
+	public int getBestEquivalent(int nodeID, int layerID)
+	{
+		if (decider.decideOnLayer(nodeID, this) <= layerID)
+		{
+			return nodeID;
+		}
+		else
+		{
+			return getParent(nodeID,layerID);
+		}
+	}
 
 	/**
 	 * Returns the virtual children of a node, i.e. those of its descendants

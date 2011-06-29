@@ -321,11 +321,6 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		selectNode(e.getSelectedStep());
 	}
 	
-	public boolean displaysNode(int layer, int nodeID)
-	{
-		return true;
-	}
-	
 	public void selectNode(int nodeID)
 	{
 		if (nodeID == -1)
@@ -341,20 +336,9 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	        secondaryTreeModel.setReferenceNode(nodeID);
 	        for (int i = 0; i < layers.length; i++)
 	        {
-	            if (displaysNode(i, nodeID))
-	            {
-	               markedNodes[i] = nodeID;
-	               //view.scrollToNode(nodeID);
-	            }
-	            else
-	            {
-	                int newNodeID = secondaryTreeModel.getParent(nodeID, i);
-	                markedNodes[i] = newNodeID;
-	                if (newNodeID != -1)
-	                {
-	                    //view.scrollToNode(newNodeID);
-	                }
-	            }
+	        	int parentID = secondaryTreeModel.getBestEquivalent(nodeID, i);
+	        	markedNodes[i] = parentID;
+	            //view.scrollToNode(newNodeID);
 	        }
 	    }
 	}

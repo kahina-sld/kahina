@@ -94,6 +94,8 @@ public abstract class KahinaTree extends KahinaObject
     public abstract void setNodeCaption(int nodeID, String caption);
 
     public abstract int getParent(int nodeID, int layer);
+    
+	public abstract int getBestEquivalent(int nodeID, int layer);
 
     public abstract void addChild(int parent, int child);
 
