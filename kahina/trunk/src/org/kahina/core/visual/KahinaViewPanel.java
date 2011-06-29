@@ -39,18 +39,26 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 	{
 		try
 		{
-			SwingUtilities.invokeAndWait(new Runnable()
+			if (SwingUtilities.isEventDispatchThread()) 
 			{
-
-				@Override
-				public void run()
-				{
-					updateDisplay();
-					repaint();
-				}
-				
-			});
-		} catch (Exception e)
+				updateDisplay();
+				repaint();
+			} 
+			else 
+			{
+			    SwingUtilities.invokeAndWait(new Runnable() 
+			    {
+			        @Override
+			        public void run() 
+			        {
+						updateDisplay();
+						repaint();
+			        }
+			    });
+			}
+			System.err.println("Trying to redraw!");
+		} 
+		catch (Exception e)
 		{
 			throw new KahinaException("Failed to update and repaint " + this + ".", e);
 		}
