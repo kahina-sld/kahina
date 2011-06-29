@@ -35,7 +35,7 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 		int nodeID = (Integer) value;
         cellPanel.add(Box.createRigidArea(new Dimension(view.getIndentationDepth(layer,nodeID) * 15,0)));
 		int numAlternatives = view.getNumberOfPrimaryAlternatives(nodeID);
-        if (numAlternatives > 1)
+        if (numAlternatives > 1 && index != 0)
         {
             JButton leftButton = new JButton("<");
             leftButton.setMargin(new Insets(0,0,0,0));
@@ -56,7 +56,7 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
         }
         else
         {
-            cellPanel.add(Box.createRigidArea(new Dimension(30,0)));
+            //cellPanel.add(Box.createRigidArea(new Dimension(30,0)));
         }
         String entry = "";
         if (view.view.getSecondaryModel().isCollapsed(nodeID))
