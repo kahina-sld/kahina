@@ -199,6 +199,28 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	public void setMarkedNode(int layer, int markedNode)
 	{
 		markedNodes[layer] = markedNode;
+		if (markedNode != -1)
+		{
+			//adapt choices such that the newly marked node is displayed
+			int childID = markedNode;
+			int parentID = secondaryTreeModel.getParent(markedNode,layer);
+			while (parentID != -1 && parentID != secondaryTreeModel.getRootID(layer))
+			{
+				//System.err.println("Ascending through primary tree: " + parentID);
+				if (primaryChildChoices.get(parentID) != null)
+				{
+					List<Integer> primaryChildren = getVisibleVirtualChildren(getTreeModel(), parentID, layer);
+					primaryChildChoices.put(parentID,primaryChildren.indexOf(childID));
+					childID = parentID;
+					parentID = secondaryTreeModel.getParent(parentID,layer);
+				}
+				else
+				{
+					childID = parentID;
+					parentID = secondaryTreeModel.getParent(parentID,layer);
+				}
+			}
+		}
 	}
 
 	public void resetAllStructures()
@@ -336,8 +358,8 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	        secondaryTreeModel.setReferenceNode(nodeID);
 	        for (int i = 0; i < layers.length; i++)
 	        {
-	        	int parentID = secondaryTreeModel.getBestEquivalent(nodeID, i);
-	        	markedNodes[i] = parentID;
+	        	int equivID = secondaryTreeModel.getBestEquivalent(nodeID, i);
+	        	setMarkedNode(i,equivID);
 	            //view.scrollToNode(newNodeID);
 	        }
 	    }
