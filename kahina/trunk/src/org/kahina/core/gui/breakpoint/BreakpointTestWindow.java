@@ -105,7 +105,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
                 addNode(parentNode, caption);
                 view.resetAllStructures();
                 view.calculateCoordinates();
-                viewPanel.updateDisplay();
+                viewPanel.updateDisplayAndRepaintFromEventDispatchThread();
             }
         }
         else if (s.equals("removeNode"))
@@ -243,7 +243,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         growthMode = false;
         view.resetAllStructures();
         view.calculateCoordinates();
-        viewPanel.updateDisplay();
+        viewPanel.updateDisplayAndRepaintFromEventDispatchThread();
         view.setMarkedNode(e.getNodeID());       
     }
     

@@ -51,8 +51,7 @@ public class TulipaGrammarViewPanel extends KahinaViewPanel<TulipaGrammarView> i
         this.view = view;
         //clauseList.setModel(view.getListModel());
         //clauseList.setSelectionModel(view.getSelectionModel());
-        revalidate();
-        updateDisplay();
+        updateDisplayAndRepaintFromEventDispatchThread();
     }
 	
 	@Override

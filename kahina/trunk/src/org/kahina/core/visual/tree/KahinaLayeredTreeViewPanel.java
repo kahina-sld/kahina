@@ -82,8 +82,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 	{
 		for (KahinaTreeViewPanel panel : panels)
 		{
-			panel.updateDisplay();
-			panel.revalidate();
+			panel.updateDisplayAndRepaintFromEventDispatchThread();
 		}
 	}
 

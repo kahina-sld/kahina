@@ -39,8 +39,7 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView<?>>
         this.view = view;
         list.setModel(view.getListModel());
         list.setSelectionModel(view.getSelectionModel());
-        revalidate();
-        updateDisplay();
+        this.updateDisplayAndRepaintFromEventDispatchThread();
     }
     
     @Override

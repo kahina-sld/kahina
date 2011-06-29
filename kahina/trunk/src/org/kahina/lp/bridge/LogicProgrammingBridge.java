@@ -37,7 +37,7 @@ import org.kahina.lp.event.LogicProgrammingBridgeEventType;
  * Logic programming systems that have been connected to Kahina using
  * specialized subclasses of {@link LogicProgrammingBridge} so far include TRALE
  * and, experimentally, SWI-Prolog and SICStus Prolog. The connection typically
- * involves some Prolog code that hooks into the tracer of the espective LP
+ * involves some Prolog code that hooks into the tracer of the respective LP
  * system and calls Kahina's Java API via a Prolog/Java connection layer such as
  * Jasper or JPL.
  * 

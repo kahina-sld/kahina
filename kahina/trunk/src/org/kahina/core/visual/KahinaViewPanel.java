@@ -34,7 +34,6 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 		updateDisplayAndRepaintFromEventDispatchThread();
 	}
 
-	// TODO get rid of redraw events, views should instead call this method after updating
 	public void updateDisplayAndRepaintFromEventDispatchThread()
 	{
 		try
@@ -42,6 +41,7 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 			if (SwingUtilities.isEventDispatchThread()) 
 			{
 				updateDisplay();
+				revalidate();
 				repaint();
 			} 
 			else 
@@ -52,11 +52,11 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 			        public void run() 
 			        {
 						updateDisplay();
+						revalidate();
 						repaint();
 			        }
 			    });
 			}
-			System.err.println("Trying to redraw!");
 		} 
 		catch (Exception e)
 		{

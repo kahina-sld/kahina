@@ -168,7 +168,7 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
         }
         view.view.recalculate();
         view.view.updateHighlightings();
-        view.updateDisplay();
+        view.updateDisplayAndRepaintFromEventDispatchThread();
         view.repaint();
     }
 

@@ -34,7 +34,7 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
         {
             view.view.getModel().toggleCollapse(clickedNode);
             view.view.recalculate();
-            view.updateDisplay();
+            view.updateDisplayAndRepaintFromEventDispatchThread();
             view.repaint();
         }
         else
@@ -142,7 +142,6 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
                 JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-        view.updateDisplay();
-        view.repaint();
+        view.updateDisplayAndRepaintFromEventDispatchThread();
     }
 }

@@ -49,8 +49,7 @@ public class KahinaTreeViewMarker
             for (KahinaTreeViewPanel view : views)
             {
                 view.view.setMarkedNode(-1);
-                view.updateDisplay();
-                view.repaint();
+                view.updateDisplayAndRepaintFromEventDispatchThread();
             }
         }
         else

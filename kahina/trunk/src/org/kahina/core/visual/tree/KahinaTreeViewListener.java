@@ -52,8 +52,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
                 view.view.getModel().toggleCollapse(clickedNode);
             }
             view.view.recalculate();
-            view.updateDisplay();
-            view.repaint();
+            view.updateDisplayAndRepaintFromEventDispatchThread();
         }
         else
         {
@@ -290,7 +289,6 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
                 JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
-        view.updateDisplay();
-        view.repaint();
+        view.updateDisplayAndRepaintFromEventDispatchThread();
     }
 }

@@ -68,7 +68,7 @@ public class KahinaController
             {
             	if (VERBOSE)
             	{
-            		System.err.println("Sending to listener: " + listener);
+            		System.err.println("    Sending to listener: " + listener);
             	}
                 listener.processEvent(event);
             }

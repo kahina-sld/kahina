@@ -290,7 +290,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
             if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
 			{
 				view.secondaryTreeModel.toggleCollapse(clickedNode);
-				updateDisplay();
+				updateDisplayAndRepaintFromEventDispatchThread();
 				repaint();
 			} 
             else
