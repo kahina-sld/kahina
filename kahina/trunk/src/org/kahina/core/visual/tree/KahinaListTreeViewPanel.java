@@ -179,7 +179,18 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
             int displayChild = primaryChildren.get(choice);
             choiceParent.put(displayChild, nodeID);
             numPrimaryAlternatives.put(displayChild, primaryChildren.size());
-            fillListModel(layer, primaryChildren.get(choice), recursionDepth + 1);
+            for (int childID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
+            {
+                int parentID = childID;
+                while (parentID != nodeID && parentID != displayChild)
+                {
+                    parentID = view.getTreeModel().getParent(parentID,layer);
+                }
+                if (parentID == displayChild)
+                {
+                    fillListModel(layer, childID, recursionDepth + 1);
+                }
+            }
         }
         else
         {
