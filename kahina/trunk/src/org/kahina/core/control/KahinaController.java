@@ -27,7 +27,7 @@ public class KahinaController
         registry = new HashMap<String,List<KahinaListener>>();
     }
     
-    public synchronized void registerListener(String type, KahinaListener listener)
+    public void registerListener(String type, KahinaListener listener)
     {
         List<KahinaListener> listenersForType = registry.get(type);
         if (listenersForType == null)
@@ -47,14 +47,14 @@ public class KahinaController
      * @param listener
      * @return <code>true</code> if listener was successfully removed, <code>false</code> if it never existed
      */
-    public synchronized boolean removeListener(String type, KahinaListener listener)
+    public boolean removeListener(String type, KahinaListener listener)
     {
         List<KahinaListener> listenersForType = registry.get(type);
         if (listenersForType == null) return false;
         return listenersForType.remove(listener);
     }
     
-    public synchronized void processEvent(KahinaEvent event)
+    public void processEvent(KahinaEvent event)
     {
         if (VERBOSE)
         {
