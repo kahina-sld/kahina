@@ -25,6 +25,7 @@ public class KahinaDummyWindow extends KahinaDefaultWindow
 	public KahinaDummyWindow(KahinaWindowManager wm)
 	{
 		super(new KahinaEmptyView(wm.control),wm);
+        setSize(300,150);
 		mainPanel.setTransferHandler(new KahinaWindowTransferHandler());
         mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 	}

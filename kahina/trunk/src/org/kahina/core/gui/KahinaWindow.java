@@ -142,6 +142,12 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	//do nothing per default, implemented by KahinaHorizontallySplitWindow and KahinaVerticallySplitWindow
     }
     
+    public void setSize(int width, int height)
+    {
+        super.setSize(width,height);
+        wm.arr.setSize(windowID,this.getWidth(),this.getHeight());
+    }
+    
     /**
      * Creates an exact copy of this window, with identical update behavior.
      * Implementations must override this to provide the desired functionality.
@@ -247,6 +253,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 	@Override
 	public void componentResized(ComponentEvent arg0) 
 	{
+        //System.err.println("KahinaWindow " + windowID + " resized to (" + this.getWidth() + "," + this.getHeight() + ")");
 		wm.arr.setSize(windowID,this.getWidth(),this.getHeight());
 	}
 
