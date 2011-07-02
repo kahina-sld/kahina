@@ -228,7 +228,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
     private boolean isLeftButtonPosition(Point p, JList list, int clickedNode, int layer)
     {
         int distanceToLeft = p.x - list.getComponentAt(p).getX();
-        distanceToLeft -= indentations.get(layer).get(clickedNode) * 15;
+        //distanceToLeft -= indentations.get(layer).get(clickedNode) * 15;
         if (distanceToLeft < 15)
         {
             return true;
@@ -239,7 +239,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
     private boolean isRightButtonPosition(Point p, JList list, int clickedNode, int layer)
     {
         int distanceToLeft = p.x - list.getComponentAt(p).getX();
-        distanceToLeft -= indentations.get(layer).get(clickedNode) * 15;
+        //distanceToLeft -= indentations.get(layer).get(clickedNode) * 15;
         if (distanceToLeft >= 15 && distanceToLeft <= 30)
         {
             return true;

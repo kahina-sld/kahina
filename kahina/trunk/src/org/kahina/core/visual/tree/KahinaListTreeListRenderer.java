@@ -33,7 +33,6 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
         cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.X_AXIS));
         cellPanel.setSize(200,20);
 		int nodeID = (Integer) value;
-        cellPanel.add(Box.createRigidArea(new Dimension(view.getIndentationDepth(layer,nodeID) * 15,0)));
 		int numAlternatives = view.getNumberOfPrimaryAlternatives(nodeID);
         if (numAlternatives > 1 && index != 0)
         {
@@ -56,8 +55,9 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
         }
         else
         {
-            //cellPanel.add(Box.createRigidArea(new Dimension(30,0)));
+            cellPanel.add(Box.createRigidArea(new Dimension(30,0)));
         }
+        cellPanel.add(Box.createRigidArea(new Dimension(view.getIndentationDepth(layer,nodeID) * 15,0)));
         String entry = "";
         if (view.view.getSecondaryModel().isCollapsed(nodeID))
         {
