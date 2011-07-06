@@ -24,6 +24,8 @@ import org.w3c.dom.NodeList;
  */
 public class KahinaArrangement 
 {
+	public static boolean verbose = false;
+	
 	//window parameters are indexed by integer IDs
 	private Map<Integer,Integer> xPos;
 	private Map<Integer,Integer> yPos;
@@ -81,6 +83,7 @@ public class KahinaArrangement
 	
 	public void setSize(int windowID, int w, int h)
 	{
+		if (verbose) System.err.println("arr.setSize(" + windowID + "," + w + "," + h + ")");
 		width.put(windowID,w);
 		height.put(windowID,h);
 	}

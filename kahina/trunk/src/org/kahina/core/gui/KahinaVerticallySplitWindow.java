@@ -1,6 +1,8 @@
 package org.kahina.core.gui;
 
 import java.awt.Container;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -43,6 +45,22 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topPanel, bottomPanel);
         splitPane.setDividerSize(2);
         splitPane.setResizeWeight(.5);
+        splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, 
+        	new PropertyChangeListener() 
+        	{
+	        	public void propertyChange(PropertyChangeEvent pce) 
+        		{
+	        		if (upperWindow != null)
+	        		{
+	        			wm.arr.setSize(upperWindow.windowID, getWidth(), splitPane.getDividerLocation());
+	        		}
+	        		if (lowerWindow != null)
+	        		{
+	        			wm.arr.setSize(lowerWindow.windowID, getWidth(), getHeight() - splitPane.getDividerLocation());
+	        		}
+        		}
+        	}
+        );
         mainPanel.add(splitPane);
     }
     
