@@ -315,9 +315,9 @@ public class KahinaGUI implements KahinaListener
 		{
 			super(parent, "About Kahina", false);
 			getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-			add(new JLabel("Kilian Evang, Johannes Dellert"));
-			add(new JLabel("Tuebingen University"));
-			add(new JLabel("(c) 2009-2010"));
+			add(new JLabel("Kilian Evang, Johannes Dellert"), "West");
+			add(new JLabel("Tuebingen University"), "West");
+			add(new JLabel("(c) 2009-2011"), "West");
 
 			JPanel p2 = new JPanel();
 			JButton ok = new JButton("Ok");
@@ -331,7 +331,8 @@ public class KahinaGUI implements KahinaListener
 					setVisible(false);
 				}
 			});
-			setSize(250, 150);
+			setSize(280, 110);
+			setLocation(parent.getX() + 200, parent.getY() + 200);
 		}
 	}
 
