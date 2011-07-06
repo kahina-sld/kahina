@@ -371,11 +371,11 @@ public class KahinaWindowManager implements KahinaListener
 		}
 		else if (type == KahinaPerspectiveEvent.LOAD_RECENT_PERSPECTIVE)
 		{
-			setAndApplyPerspective(recentPerspectives.get(e.getID()));
+			setAndApplyPerspective(recentPerspectives.get(e.getID()).copy());
 		}
 		else if (type == KahinaPerspectiveEvent.LOAD_DEFAULT_PERSPECTIVE)
 		{
-			setAndApplyPerspective(defaultPerspectives.get(e.getID()));
+			setAndApplyPerspective(defaultPerspectives.get(e.getID()).copy());
 		}
 	}
 	

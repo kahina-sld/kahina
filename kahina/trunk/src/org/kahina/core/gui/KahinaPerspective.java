@@ -57,6 +57,16 @@ public class KahinaPerspective
 		arr = new KahinaArrangement();
 	}
 	
+	public KahinaPerspective copy()
+	{
+		KahinaPerspective copy = new KahinaPerspective(appID, name);
+		//TODO: also provide copies of view configurations!
+		copy.config.putAll(config);
+		copy.visible.putAll(visible);
+		copy.arr = arr.copy();
+		return copy;
+	}
+	
 	public static KahinaPerspective generateDefaultPerspective(Map<String, KahinaView<? extends KahinaObject>> nameToView)
 	{
 		KahinaPerspective psp = new KahinaPerspective("default", "Default");

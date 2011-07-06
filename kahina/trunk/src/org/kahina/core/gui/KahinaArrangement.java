@@ -61,6 +61,23 @@ public class KahinaArrangement
 		embeddingWindow = new HashMap<Integer,Integer>();
 	}
 	
+	public KahinaArrangement copy()
+	{
+		KahinaArrangement copy = new KahinaArrangement();
+		copy.xPos.putAll(xPos);
+		copy.yPos.putAll(yPos);
+		copy.height.putAll(height);
+		copy.width.putAll(width);
+		copy.title.putAll(title);
+		copy.border.putAll(border);
+		copy.winIDToBinding.putAll(winIDToBinding);
+		copy.primaryWindow.putAll(primaryWindow);
+		copy.mainWindowID = mainWindowID;
+		copy.embeddingWindow.putAll(embeddingWindow);
+		copy.windowType.putAll(windowType);
+		return copy;
+	}
+	
 	public void setXPos(int windowID, int pos)
 	{
 		xPos.put(windowID,pos);
