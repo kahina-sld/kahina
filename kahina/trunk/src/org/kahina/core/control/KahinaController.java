@@ -64,13 +64,13 @@ public class KahinaController
         List<KahinaListener> listenersForType = registry.get(type);
         if (listenersForType != null)
         {
-            for (KahinaListener listener : listenersForType)
+            for (int i = 0; i < listenersForType.size(); i++)
             {
             	if (VERBOSE)
             	{
-            		System.err.println("    Sending to listener: " + listener);
+            		System.err.println("    Sending to listener: " + listenersForType.get(i));
             	}
-                listener.processEvent(event);
+                listenersForType.get(i).processEvent(event);
             }
         }
     }
