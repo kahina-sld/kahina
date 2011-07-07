@@ -678,6 +678,8 @@ public class KahinaWindowManager implements KahinaListener
 	//by default, the five most recent perspectives are kept in memory
 	private void registerRecentPerspective(KahinaPerspective psp)
 	{
+		//move to the front, or add to the front
+		recentPerspectives.remove(psp);
 		recentPerspectives.add(0,psp);
 		if (recentPerspectives.size() > 5)
 		{

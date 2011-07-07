@@ -37,7 +37,7 @@ public class KahinaPerspective
 {
 	//the Kahina application this perspective is assigned to
 	String appID;
-	//the name this perspective is referred by in the GUI
+	//the unique name this perspective is referred by in the GUI
 	String name;
 	
 	//view options are indexed by integer IDs
@@ -65,6 +65,21 @@ public class KahinaPerspective
 		copy.visible.putAll(visible);
 		copy.arr = arr.copy();
 		return copy;
+	}
+	
+	/**
+	 * Perspective equality is decided by their name only!
+	 */
+	public boolean equals(Object o)
+	{
+		if (o instanceof KahinaPerspective)
+		{
+			return ((KahinaPerspective ) o).getName().equals(name);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	public static KahinaPerspective generateDefaultPerspective(Map<String, KahinaView<? extends KahinaObject>> nameToView)
