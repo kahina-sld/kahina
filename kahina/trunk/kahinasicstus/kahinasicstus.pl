@@ -12,30 +12,36 @@ end_trace_session :-
 :- multifile user:breakpoint_expansion/2.
 
 user:breakpoint_expansion(kahina_breakpoint_action,[
-    % The three parameters Show, Mode, Command control Prolog's behavior on
-    % encountering a breakpoint.
-    silent, % Show: silent, don't display anything
+    % The three action variables Show, Mode, Command control Prolog's behavior
+    % on encountering a breakpoint. We use show/1, mode/1, command/1 terms to
+    % set their values. We always set Show to silent (no output on console). The
+    % values for Mode and Command depend on the response from the GUI. For lists
+    % of possible values for each action variable, see section 7.9.9 of the SP3
+    % manual.
+    show(silent),
     inv(Inv),
     port(Port),
-    true(kahinasicstus:kahina_breakpoint_action(Inv,Port,Action)),
-    % Mode, Command: depends, controlled by GUI
-    (true(Action == 115) % s(kip)
-    -> skip(Inv),         % Mode: skip(Inv)
-       proceed            % Command: proceed
-     ; (true(Action == 102) % f(ail)
-       -> \+ port(fail),
-          fail(Inv)       % Command: fail(Inv), Mode immaterial
-        ; true(Action == 97) % a(bort)
-          -> true(end_trace_session), % TODO necessary?
-             abort        % Command: abort, Mode immaterial
-           ; debug,       % Mode: debug, i.e. leap (default is trace, i.e. creep)
-             proceed))]). % Command: proceed
+    true(kahinasicstus:kahina_breakpoint_action(Inv,Port,Mode,Command)),
+    mode(Mode),
+    command(Command)]).
 
-kahina_breakpoint_action(Inv,Port,Action) :-
+kahina_breakpoint_action(Inv,Port,Mode,Command) :-
   get_bridge(Inv,Port,Bridge),
   get_jvm(JVM),
   act(Port,Inv,Bridge,JVM),
-  get_action(Port,Bridge,JVM,Action).
+  get_action(Port,Bridge,JVM,Action),
+  action_mode_command(Action,Mode,Command,Inv,Port).
+
+action_mode_command(115,skip(Inv),proceed,Inv,_Port) :- % s(kip)
+  !.
+action_mode_command(102,trace,proceed,_Inv,fail) :-     % f(ail)
+  !.
+action_mode_command(102,trace,fail(Inv),Inv,_Port) :-
+  !.
+action_mode_command(97,trace,abort,_Inv,_Port) :-       % a(bort)
+  !,
+  end_trace_session. % TODO necessary?
+action_mode_command(_,debug,proceed,_Inv,_Port).
 
 :- dynamic unblocked_pseudostep_waiting_for_link/1.
 
@@ -58,7 +64,7 @@ act(call,Inv,Bridge,JVM) :-
      register_source_code_location(Bridge,JVM,Inv,FileChars,Line)
    ; true),
   act_call(Bridge,JVM,Inv),
-  perhaps(send_variable_bindings(Bridge,JVM,Inv,call)).
+  perhaps(send_variable_bindings(Bridge,JVM,Inv,call)),write(what),nl.
 act(fail,Inv,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   act_fail(Bridge,JVM,Inv).
