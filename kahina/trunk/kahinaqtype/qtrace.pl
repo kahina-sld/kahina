@@ -46,11 +46,13 @@ set_breakpoints(_).
 not_parsed('atts.pl').
 not_parsed('ops.pl').
 
-% recursive, fails
+% recursive, always succeeds deterministically
 set_breakpoints_file(Stream,ModuleHint) :-
   read(Stream,Term),
   set_breakpoints_term(Term,ModuleHint),
+  !,
   set_breakpoints_file(Stream,ModuleHint).
+set_breakpoints_file(_,_).
 
 % fails on end of file
 set_breakpoints_term((:- module(ModuleHint)),ModuleHint) :-
