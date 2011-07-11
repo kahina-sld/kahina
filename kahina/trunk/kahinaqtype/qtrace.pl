@@ -20,7 +20,8 @@ user:generate_message_hook(qtype_home_not_set,[format('ERROR: Environment variab
 % at least one clause that has an immediate msg/3 subgoal.
 qtrace :-
   qtype_home(Home),
-  set_breakpoints(Home).
+  set_breakpoints(Home),
+  debug.
 
 noqtrace :-
   retract(qbreakpoint(_,BID)),
