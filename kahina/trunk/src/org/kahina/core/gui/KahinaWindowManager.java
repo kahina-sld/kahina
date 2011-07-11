@@ -1,16 +1,14 @@
 package org.kahina.core.gui;
 
-import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
-import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
@@ -337,14 +335,28 @@ public class KahinaWindowManager implements KahinaListener
     	}
     	else
     	{
-    		mainWindow.setVisible(true);
+    		displayWindow(mainWindow);
     		for (int winID : arr.getTopLevelWindows())
     		{
-    			getWindowByID(winID).setVisible(psp.isVisible(winID));
+    			displayWindow(getWindowByID(winID));
     		}
     	}
     }
     
+	private void displayWindow(final JFrame window)
+	{
+		SwingUtilities.invokeLater(new Runnable() {
+
+			@Override
+			public void run()
+			{
+	    		window.setVisible(true);
+	    		window.repaint();
+			}
+			
+		});
+	}
+
 	@Override
 	public void processEvent(KahinaEvent e)
 	{
