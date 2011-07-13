@@ -30,7 +30,7 @@ user:generate_message_hook(qtype_home_not_set,[format('ERROR: Environment variab
 % not that much of an issue, but still...)
 
 % We want to return to QType prompt, not SICStus prompt:
-kahinasicstus:abort_hook(trace,exception(kahinaqtype_abort)).
+kahinasicstus:abort_hook(trace,raise(kahinaqtype_abort)).
 
 :- multifile kahinasicstus:breakpoint_action_hook/4.
 
