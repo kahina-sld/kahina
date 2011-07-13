@@ -364,22 +364,26 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.processStepInformation(" + stepID + ",\"" + stepInfo + "\")");
 		int extID = LogicProgrammingStep.get(stepID).getExternalID();
-		String caption;
+		String caption = makeNodeLabel(extID, stepInfo);
+		object.addNode(stepID, caption, "", LogicProgrammingStepType.CALL);
+		// TODO: make this unnecessary => new structure for secondary tree,
+		// perhaps not a full tree model?
+		secondaryTree.addNode(stepID, caption, "", LogicProgrammingStepType.CALL);
+	}
+	
+	private String makeNodeLabel(int extID, String stepInfo)
+	{
 		if (stepInfo.length() > MAX_NODE_LABEL_LENGTH)
 		{
 			stepInfo = stepInfo.substring(0, MAX_NODE_LABEL_LENGTH - 3) + "...";
 		}
 		if (extID >= 0)
 		{
-			caption = extID + " " + stepInfo;
+			return extID + " " + stepInfo;
 		} else
 		{
-			caption = stepInfo;
+			return stepInfo;
 		}
-		object.addNode(stepID, caption, "", LogicProgrammingStepType.CALL);
-		// TODO: make this unnecessary => new structure for secondary tree,
-		// perhaps not a full tree model?
-		secondaryTree.addNode(stepID, caption, "", LogicProgrammingStepType.CALL);
 	}
 
 	/**
@@ -622,6 +626,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	
 	public void processStepDescriptionEvent(KahinaStepDescriptionEvent e)
 	{
-		object.setNodeCaption(e.getStepID(), e.getDescription());
+		int stepID = e.getStepID();
+		int extID = LogicProgrammingStep.get(stepID).getExternalID();
+		object.setNodeCaption(stepID, makeNodeLabel(extID, e.getDescription()));
 	}
 }

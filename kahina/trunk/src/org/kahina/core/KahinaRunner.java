@@ -53,6 +53,11 @@ public class KahinaRunner // TODO get rid of this class, make everything non-sta
     
 	public static void store(int id, KahinaObject object)
 	{
+		if (VERBOSE)
+		{
+			System.err.println("KahinaRunner.store(" + id + "," + object + ")");
+			System.err.println("steps == " + steps);
+		}
 		steps.store(id, (KahinaStep) object);
 	}
 
