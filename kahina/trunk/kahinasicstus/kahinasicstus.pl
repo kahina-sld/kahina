@@ -1,13 +1,12 @@
-:- module(kahinasicstus,[end_trace_session/0]).
+:- module(kahinasicstus,[end_trace_session/0,
+                         abort_hook/2,
+                         breakpoint_action_hook/4]).
 
 :- use_module(library(charsio)).
 :- use_module(library(lists)).
 :- use_module(library(jasper)).
 :- use_module(library(system)).
 :- use_module(library(terms)).
-
-end_trace_session :-
-  retractall(bridge(_)).
 
 :- multifile user:breakpoint_expansion/2.
 
@@ -25,6 +24,11 @@ user:breakpoint_expansion(kahina_breakpoint_action,[
     mode(Mode),
     command(Command)]).
 
+:- multifile breakpoint_action_hook/4.
+
+kahina_breakpoint_action(Inv,Port,Mode,Command) :-
+  breakpoint_action_hook(Port,Inv,Mode,Command),
+  !.
 kahina_breakpoint_action(Inv,Port,Mode,Command) :-
   get_bridge(Inv,Port,Bridge),
   get_jvm(JVM),
@@ -32,15 +36,18 @@ kahina_breakpoint_action(Inv,Port,Mode,Command) :-
   get_action(Port,Bridge,JVM,Action),
   action_mode_command(Action,Mode,Command,Inv,Port).
 
+:- multifile abort_hook/2.
+
 action_mode_command(115,skip(Inv),proceed,Inv,_Port) :- % s(kip)
   !.
 action_mode_command(102,trace,proceed,_Inv,fail) :-     % f(ail)
   !.
 action_mode_command(102,trace,fail(Inv),Inv,_Port) :-
   !.
-action_mode_command(97,trace,abort,_Inv,_Port) :-       % a(bort)
-  !,
-  end_trace_session. % TODO necessary?
+action_mode_command(97,Mode,Command,_Inv,_Port) :-     % a(bort)
+  abort_hook(Mode,Command), % if not implemented or fails for another reason, we set
+  !.                        % the command action variable to abort in second clause
+action_mode_command(97,trace,abort,_Inv,_Port).
 action_mode_command(_,debug,proceed,_Inv,_Port).
 
 :- dynamic unblocked_pseudostep_waiting_for_link/1.
@@ -64,25 +71,21 @@ act(call,Inv,Bridge,JVM) :-
      register_source_code_location(Bridge,JVM,Inv,FileChars,Line)
    ; true),
   act_call(Bridge,JVM,Inv),
-  perhaps(send_variable_bindings(Bridge,JVM,Inv,call)),write(what),nl.
+  perhaps(send_variable_bindings(Bridge,JVM,Inv,call)).
 act(fail,Inv,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   act_fail(Bridge,JVM,Inv).
-act(exit(nondet),Inv,Bridge,JVM) :-
-  !,
+act(exit(DetFlag),Inv,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   execution_state(pred(Module:_)),
   execution_state(goal(_:Goal)),
   goal_desc(Module,Goal,GoalDesc),
   write_to_chars(GoalDesc,GoalDescChars),
-  act_exit(Bridge,JVM,Inv,false,GoalDescChars),
-  perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(nondet))).
-act(exit(det),Inv,Bridge,JVM) :-
-    retractall(unblock_pseudostep_waiting_for_link(_)),
-  act_exit(Bridge,JVM,Inv,true),
-  perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(det))).
+  detflag_det(DetFlag,Det), % translates det/nondet to true/false
+  act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
+  perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(DetFlag))).
 act(redo,Inv,Bridge,JVM) :-
-    retractall(unblock_pseudostep_waiting_for_link(_)),
+  retractall(unblock_pseudostep_waiting_for_link(_)),
   act_redo(Bridge,JVM,Inv).
 act(exception(Exception),Inv,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
@@ -236,16 +239,13 @@ get_action_from_bridge(Bridge,JVM,Action) :-
 get_bridge(1,call,Bridge) :-
   !,
   get_jvm(JVM),
-  start_new_kahina_session(Bridge,JVM),
-  retractall(bridge(_)),
-  assert(bridge(Bridge)).
+  start_new_kahina_session(Bridge,JVM).
 get_bridge(_,_,Bridge) :-
   bridge(Bridge),
   !.
 get_bridge(_,_,Bridge) :-
   get_jvm(JVM),
-  start_new_kahina_session(Bridge,JVM),
-  assert(bridge(Bridge)).
+  start_new_kahina_session(Bridge,JVM).
 
 % Since we use Prolog's invocation numbers for step IDs, we need a
 % non-conflicting number space for pseudostep IDs... like negative numbers.
@@ -262,6 +262,7 @@ get_next_pseudostep_id(ID) :-
   assert(next_pseudostep_id(NewID)).
 
 start_new_kahina_session(Bridge,JVM) :-
+  end_trace_session,
   initialize_pseudostep_id,
   retractall(source_read(_)),
   retractall(source_clause(_,_,_,_)),
@@ -269,10 +270,20 @@ start_new_kahina_session(Bridge,JVM) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/SICStusPrologDebuggerInstance','startNewSession',[instance]),
       start_new_session(+object('org/kahina/sicstus/SICStusPrologDebuggerInstance'),[-object('org/kahina/sicstus/bridge/SICStusPrologBridge')]),
-      start_new_session(Instance,Bridge)),
+      start_new_session(Instance,LocalBridge)),
+  jasper_create_global_ref(JVM,LocalBridge,Bridge),
+  assert(bridge(Bridge)),
   write_to_chars('[query]',RootLabelChars),
   act_step(Bridge,JVM,0,RootLabelChars,RootLabelChars),
   act_call(Bridge,JVM,0).
+
+% retract and delete all bridge references
+end_trace_session :-
+  retract(bridge(Bridge)),
+  get_jvm(JVM),
+  jasper_delete_global_ref(JVM,Bridge),
+  fail.
+end_trace_session.
 
 :- dynamic kahina_instance/1.
 
@@ -515,6 +526,7 @@ port_direction(redo,[105,110]).
 port_direction(exit(_),[111,117,116]).
 port_direction(exception,[111,117,116]).
 
+% try to prove Goal, but succeed even if that fails
 perhaps(Goal) :-
   Goal,
   !.
@@ -546,3 +558,6 @@ goal_desc(Module,Goal,Goal) :-
   module(Module),
   !.
 goal_desc(Module,Goal,Module:Goal).
+
+detflag_det(det,true).
+detflag_det(nondet,false).

@@ -6,14 +6,41 @@
 :- use_module(library(system)).
 :- use_module(library(terms)).
 
+% ------------------------------------------------------------------------------
+% HOOK IMPLEMENTATIONS
+% ------------------------------------------------------------------------------
+
 user:generate_message_hook(qtype_home_not_set,[format('ERROR: Environment variable QTYPE_HOME must be set to path of directory',[]),nl,format('containing qtype.pl',[]),nl|Tail],Tail).
+
+:- multifile kahinasicstus:abort_hook/2.
+
+% TODO The following should check if we really are in a qtrace session, or maybe
+% there is a better way to customize the tracer behavior than hooks. Currently,
+% loading this module renders the regular SICStus debugger unusable (which is
+% not that much of an issue, but still...)
+
+% We want to return to QType prompt, not SICStus prompt:
+kahinasicstus:abort_hook(trace,exception(kahinaqtype_abort)).
+
+:- multifile kahinasicstus:breakpoint_action_hook/4.
+
+% This exception has a special meaning and should not be traced:
+kahinasicstus:breakpoint_action_hook(exception(kahinaqtype_abort),_,debug,proceed).
+
+:- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
+
+% ------------------------------------------------------------------------------
+% STARTUP TEST
+% ------------------------------------------------------------------------------
 
 :- environ('QTYPE_HOME',_)
    -> ( use_module('$QTYPE_HOME/atts'),
         consult('$QTYPE_HOME/ops') )
     ; raise_exception(qtype_home_not_set).
 
-:- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
+% ------------------------------------------------------------------------------
+% MAIN CODE
+% ------------------------------------------------------------------------------
 
 % First approximation to a QType-specific tracer:
 % Sets a breakpoint with kahina_breakpoint_action on every QType predicate with
