@@ -7,6 +7,16 @@
 :- use_module(library(terms)).
 
 % ------------------------------------------------------------------------------
+% STARTUP TEST
+% ------------------------------------------------------------------------------
+
+:- environ('QTYPE_HOME',_)
+   -> ( use_module('$QTYPE_HOME/atts'),
+        use_module('$QTYPE_HOME/ops') )
+    ; raise_exception(qtype_home_not_set).
+
+
+% ------------------------------------------------------------------------------
 % HOOK IMPLEMENTATIONS
 % ------------------------------------------------------------------------------
 
@@ -28,16 +38,6 @@ kahinasicstus:abort_hook(trace,exception(kahinaqtype_abort)).
 kahinasicstus:breakpoint_action_hook(exception(kahinaqtype_abort),_,debug,proceed).
 
 :- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
-
-% ------------------------------------------------------------------------------
-% STARTUP TEST
-% ------------------------------------------------------------------------------
-
-:- environ('QTYPE_HOME',_)
-   -> ( use_module('$QTYPE_HOME/atts'),
-        consult('$QTYPE_HOME/ops') )
-    ; raise_exception(qtype_home_not_set).
-
 % ------------------------------------------------------------------------------
 % MAIN CODE
 % ------------------------------------------------------------------------------
