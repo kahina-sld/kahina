@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kahinaTree>
+ <node caption="parsing [she, thinks, she, gives, her, milk]" label="" status="3">
+  <node caption="0 lexicon &quot;milk&quot;" status="2">
+   <node caption="2 rule(subject_head_rule)" status="1">
+    <node caption="3 unify(Subj)" status="0">
+     <node caption="4 type(edge,bot)" status="0">
+      <node caption="5 featval(edge:phon)" status="0">
+       <node caption="6 unify(SubjPhon)" status="0">
+        <node caption="7 type(phon,ne_list)" status="0">
+        </node>
+       </node>
+      </node>
+     </node>
+    </node>
+   </node>
+   <node caption="8 rule(head_complement_rule)" status="1">
+   <node caption="9 unify(Head)" status="0">
+     <node caption="10 type(edge,bot)" status="0">
+      <node caption="11 featval(edge:phon)" status="0">
+       <node caption="12 unify(HeadPhon)" status="0">
+        <node caption="13 type(phon,ne_list)" status="0">
+        </node>
+       </node>
+      </node>
+     </node>
+    </node>
+   </node>
+  </node>
+  <node caption="1 lexicon &quot;her&quot;" status="2">
+   <node caption="15 rule(subject_head_rule)" status="1">
+    <node caption="16 unify(Subj)" status="0">
+     <node caption="17 type(edge,bot)" status="0">
+      <node caption="18 featval(edge:phon)" status="0">
+       <node caption="19 unify(SubjPhon)" status="0">
+        <node caption="20 type(phon,ne_list)" status="0">
+         <node caption="21 unify(Head)" status="0">
+	      <node caption="22 type(edge,bot)" status="0">
+	       <node caption="23 featval(edge:phon)" status="0">
+	        <node caption="24 unify(HeadPhon)" status="0">
+	         <node caption="25 type(phon,ne_list)" status="0">
+	          <node caption="26 goal(phon_append/3)" status="0">
+	           <node caption="27 unify(SubjPhon)" status="0">
+	            <node caption="28 type(arg1,bot)">
+	             <node caption="29 unify(HeadPhon)" status="0">
+	              <node caption="30 type(arg2,bot)">
+	               <node caption="31 unify(MotherPhon)" status="0">
+	                <node caption="32 type(arg3,bot)" status="0">
+	                 <node caption="33 comp_clause" status="1">
+	                  <node caption="34 type(arg1,e_list)" status="1">
+	                  </node>
+	                 </node>
+	                 <node caption="35 comp_clause" status="1">
+	                  <node caption="36 type(arg1,e_list)" status="1">
+	                  </node>
+	                 </node>
+	                 <node caption="37 comp_clause" status="0">
+	                  <node caption="38 featval(arg1:hd)" status="0">
+	                   <node caption="39 unify(H)" status="0">
+	                    <node caption="40 type(hd,bot)" status="0">
+	                     <node caption="41 featval(arg1:tl)" status="0">
+	                      <node caption="42 unify(T1)" status="0">
+	                       <node caption="43 type(tl,list)" status="0">
+	                       </node>
+	                      </node>
+	                     </node>
+	                    </node>
+	                   </node>
+	                  </node>
+	                 </node>
+	                 <node caption="37 comp_clause" status="1">
+	                 </node>
+	                </node>
+	               </node>
+	              </node>
+	             </node>
+	            </node>
+	           </node>
+	          </node>
+	          <node caption="26 goal(phon_append/3)" status="1">
+	          </node>
+	         </node>
+	        </node>
+	       </node>
+	      </node>
+	     </node>
+        </node>
+       </node>
+      </node>
+     </node>
+    </node>
+   </node>
+  </node>
+ </node>
+</kahinaTree>

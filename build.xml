@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="compile">
+	<property name="src" location="src"/>
+	<property name="bin" location="bin"/>
+	<property name="lib" location="lib"/>
+	<property file="build.properties"/>
+	<target name="compile" depends="init">
+		<javac srcdir="${src}" destdir="${bin}" source="1.6" target="1.6" compiler="javac1.6">
+			<classpath>
+				<pathelement location="${lib}/gralej-v0_8_1/gralej.jar"/>
+				<pathelement location="${lib}/jedit-textArea.jar"/>
+			</classpath>
+		</javac>
+		<copy todir="${bin}">
+			<fileset dir="${src}" excludes="**/*.java"/>
+		</copy>
+	</target>
+	<target name="init">
+		<mkdir dir="${bin}"/>
+	</target>
+	<target name="clean">
+		<delete dir="${bin}"/>
+	</target>
+</project>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kahinaChart>
+	<segment id="0" caption="she"/>
+	<segment id="1" caption="thinks"/>
+	<segment id="2" caption="she"/>
+	<segment id="3" caption="gives"/>
+	<segment id="4" caption="her"/>
+	<segment id="5" caption="milk"/>
+	<edge id="0" left="5" right="5" status="0" caption="0 lexicon: &quot;milk&quot;"/>
+	<edge id="1" left="5" right="6" status="1" caption="subject_head_rule"/>
+	<edge id="2" left="5" right="6" status="1" caption="head_complement_rule"/>
+	<edge id="3" left="4" right="4" status="0" caption="1 lexicon: &quot;her&quot;"/>
+	<edge id="4" left="4" right="5" status="1" caption="subject_head_rule"/>
+	<edge id="5" left="4" right="5" status="1" caption="head_complement_rule"/>
+	<edge id="6" left="4" right="4" status="0" caption="2 lexicon: &quot;her&quot;"/>
+	<edge id="7" left="4" right="5" status="1" caption="subject_head_rule"/>
+	<edge id="8" left="4" right="5" status="1" caption="head_complement_rule"/>
+	<edge id="9" left="3" right="3" status="0" caption="3 lexicon: &quot;gives&quot;"/>
+	<edge id="10" left="3" right="4" status="1" caption="subject_head_rule"/>
+	<edge id="11" left="3" right="4" status="1" caption="head_complement_rule"/>
+	<edge id="12" left="3" right="4" status="1" caption="subject_head_rule"/>
+	<edge id="13" left="3" right="4" status="1" caption="subject_head_rule"/>
+	<edge id="14" left="3" right="4" status="0" caption="4 head_complement_rule"/>
+	<edge id="15" left="3" right="5" status="0" caption="5 head_complement_rule"/>
+	<edge id="16" left="3" right="4" status="1" caption="head_complement_rule"/>
+	<edge id="17" left="3" right="4" status="1" caption="subject_head_rule"/>
+	<edge id="18" left="3" right="4" status="1" caption="subject_head_rule"/>
+	<edge id="19" left="3" right="4" status="0" caption="6 head_complement_rule"/>
+	<edge id="20" left="3" right="5" status="0" caption="7 head_complement_rule"/>
+</kahinaChart>

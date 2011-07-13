@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="" kahina:name="kahinasicstus-integrated">
+  <kahina:arrangement>
+    <kahina:main-window kahina:border="false" kahina:height="809" kahina:id="0" kahina:primary="false" kahina:title="Kahina" kahina:width="1090" kahina:xpos="0" kahina:ypos="25">
+      <kahina:vert-split-window kahina:height="573" kahina:id="19" kahina:title="Content" kahina:width="553" kahina:xpos="1024" kahina:ypos="146">
+        <kahina:hori-split-window kahina:height="100" kahina:id="18" kahina:title="Control" kahina:width="650" kahina:xpos="0" kahina:ypos="40">
+          <kahina:control-window kahina:binding="History" kahina:border="true" kahina:height="100" kahina:id="17" kahina:primary="true" kahina:title="History" kahina:width="200" kahina:xpos="420" kahina:ypos="25"/>
+          <kahina:control-window kahina:binding="Control" kahina:border="true" kahina:height="100" kahina:id="16" kahina:primary="true" kahina:title="Control" kahina:width="400" kahina:xpos="120" kahina:ypos="25"/>
+        </kahina:hori-split-window>
+        <kahina:vert-split-window kahina:height="573" kahina:id="5" kahina:title="Data" kahina:width="553" kahina:xpos="1024" kahina:ypos="146">
+          <kahina:hori-split-window kahina:height="150" kahina:id="10" kahina:title="Upper half" kahina:width="600" kahina:xpos="1140" kahina:ypos="208">
+            <kahina:default-window kahina:binding="bindings" kahina:border="true" kahina:height="192" kahina:id="1" kahina:primary="true" kahina:title="bindings" kahina:width="146" kahina:xpos="432" kahina:ypos="116"/>
+            <kahina:default-window kahina:binding="controlFlowTree" kahina:border="true" kahina:height="408" kahina:id="2" kahina:primary="true" kahina:title="Control flow tree" kahina:width="254" kahina:xpos="486" kahina:ypos="24"/>
+          </kahina:hori-split-window>
+          <kahina:tabbed-window kahina:height="250" kahina:id="8" kahina:title="Lower half" kahina:width="300" kahina:xpos="794" kahina:ypos="318">
+            <kahina:default-window kahina:binding="messageConsole" kahina:border="true" kahina:height="360" kahina:id="3" kahina:primary="true" kahina:title="Message console" kahina:width="230" kahina:xpos="760" kahina:ypos="24"/>
+            <kahina:default-window kahina:binding="codeLocation" kahina:border="true" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:title="codeLocation" kahina:width="194" kahina:xpos="1010" kahina:ypos="24"/>
+          </kahina:tabbed-window>
+        </kahina:vert-split-window>
+      </kahina:vert-split-window>
+    </kahina:main-window>
+  </kahina:arrangement>
+  <kahina:configurations>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="1"/>
+    <kahina:configuration kahina:type="org.kahina.core.visual.tree.KahinaTreeViewConfiguration" kahina:viewid="2">
+      <kahina:option kahina:name="horizontalDistance" kahina:value="10"/>
+      <kahina:option kahina:name="verticalDistance" kahina:value="2"/>
+      <kahina:option kahina:name="fontSize" kahina:value="10"/>
+      <kahina:option kahina:name="displaySecondDimension" kahina:value="true"/>
+      <kahina:option kahina:name="bgColor" kahina:value="(255,255,255)"/>
+      <kahina:option kahina:name="nodeShapePolicy" kahina:value="0"/>
+      <kahina:option kahina:name="edgeShapePolicy" kahina:value="1"/>
+      <kahina:option kahina:name="nodeDisplayPolicy" kahina:value="1"/>
+      <kahina:option kahina:name="collapsePolicy" kahina:value="2"/>
+      <kahina:option kahina:name="terminalsPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="lineShapePolicy" kahina:value="2"/>
+      <kahina:option kahina:name="secondaryLineShapePolicy" kahina:value="1"/>
+      <kahina:option kahina:name="nodePositionPolicy" kahina:value="1"/>
+      <kahina:option kahina:name="antialiasingPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="displayOrientation" kahina:value="0"/>
+      <kahina:option kahina:name="cuttingPolicy" kahina:value="1"/>
+    </kahina:configuration>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="3"/>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="4"/>
+  </kahina:configurations>
+</kahina:perspective>
