@@ -12,8 +12,8 @@
       <kahina:default-window kahina:binding="endBindings" kahina:height="264" kahina:id="5" kahina:primary="true" kahina:border="true" kahina:title="endBindings" kahina:width="182" kahina:xpos="474" kahina:ypos="254"/>
     </kahina:hori-split-window>
     <kahina:hori-split-window kahina:height="384" kahina:id="9" kahina:title="Feature Structures" kahina:border="false" kahina:width="845" kahina:xpos="0" kahina:ypos="561">
-      <kahina:default-window kahina:binding="endFeatStruct" kahina:height="312" kahina:id="2" kahina:primary="true" kahina:border="true" kahina:title="endFeatStruct" kahina:width="206" kahina:xpos="566" kahina:ypos="25"/>
-      <kahina:default-window kahina:binding="startFeatStruct" kahina:height="360" kahina:id="6" kahina:primary="true" kahina:border="true" kahina:title="startFeatStruct" kahina:width="230" kahina:xpos="202" kahina:ypos="428"/>
+      <kahina:default-window kahina:binding="endFeatStruct" kahina:height="312" kahina:id="2" kahina:primary="true" kahina:border="true" kahina:title="endFeatStruct" kahina:width="420" kahina:xpos="566" kahina:ypos="25"/>
+      <kahina:default-window kahina:binding="startFeatStruct" kahina:height="360" kahina:id="6" kahina:primary="true" kahina:border="true" kahina:title="startFeatStruct" kahina:width="420" kahina:xpos="202" kahina:ypos="428"/>
     </kahina:hori-split-window>
     <kahina:default-window kahina:binding="chart" kahina:height="416" kahina:id="3" kahina:primary="true" kahina:title="Chart" kahina:border="true" kahina:width="358" kahina:xpos="2" kahina:ypos="145"/>
     <kahina:default-window kahina:binding="controlFlowTree" kahina:height="666" kahina:id="4" kahina:primary="true" kahina:border="true" kahina:title="Control flow tree" kahina:width="437" kahina:xpos="843" kahina:ypos="25"/>
