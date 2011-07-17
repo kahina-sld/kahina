@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.util.KahinaSwingUtilities;
@@ -457,10 +458,10 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         g.setColor(c);
     }
     
-    public void scrollToNode(int nodeID)
+    public void scrollToNode(final int nodeID)
     {
         //System.err.println("Scrolling to node " + nodeID + " on layer " + view.treeLayer);
-        Container parent = this.getParent().getParent();
+        final Container parent = this.getParent().getParent();
         if (nodeID != -1 && parent instanceof JScrollPane)
         {
             Integer x = view.getNodeX(nodeID);
@@ -471,7 +472,12 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
             }
             else
             {
-                KahinaSwingUtilities.scrollToCenter((JScrollPane) parent, view.getNodeX(nodeID), view.getNodeY(nodeID));
+            	SwingUtilities.invokeLater(new Runnable() {
+
+					@Override
+					public void run() {
+		                KahinaSwingUtilities.scrollToCenter((JScrollPane) parent, view.getNodeX(nodeID), view.getNodeY(nodeID));
+					}});
             }
         }
     }
