@@ -1,12 +1,16 @@
 package org.kahina.tralesld.gui;
 
 import java.awt.Color;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaController;
@@ -19,7 +23,6 @@ import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.chart.KahinaChartView;
-import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.tralesld.TraleSLDInstance;
@@ -94,12 +97,16 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 			displayMainViews();
 			
 			//TODO: load last perspective instead of only default perspective from XML
-			File xmlFile = new File(TraleSLDGUI.class.getResource("tralesld-manywindows.xml").getFile());
-			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLFile(xmlFile, false).getDocumentElement()));			
+			InputStream xmlStream = new BufferedInputStream(TraleSLDGUI.class.getResourceAsStream("tralesld-manywindows.xml"));
+			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLStream(xmlStream, false).getDocumentElement()));	
+			xmlStream.close();
 		}
 		catch (NullPointerException e)
 		{
 			e.printStackTrace();
+		} catch (IOException e)
+		{
+			throw new KahinaException("Failed to prepare GUI", e);
 		}
 	}
 

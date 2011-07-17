@@ -1,9 +1,9 @@
 package org.kahina.core.io.util;
 
 import java.awt.Color;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class XMLUtilities
 	 *            toggle validation
 	 * @return the parsed document
 	 */
-	public static Document parseXMLFile(File f, boolean validating) 
+	public static Document parseXMLStream(InputStream s, boolean validating) 
     {
 		try 
         {
@@ -45,7 +45,7 @@ public class XMLUtilities
 			factory.setValidating(validating);
 			DocumentBuilder builder = factory.newDocumentBuilder(); 
 			//builder.setEntityResolver(new MyEntityResolver());
-			Document ldoc = builder.parse(f);
+			Document ldoc = builder.parse(s);
 			ldoc.normalize();
 			return ldoc; 
 		}
