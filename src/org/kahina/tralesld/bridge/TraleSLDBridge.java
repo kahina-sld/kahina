@@ -435,17 +435,15 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// yet) or rewrite the whole thing – why are console messages line
 			// references?
 
-			// stop autocomplete/leap when we're done
-			if (stepID == state.getStepTree().getRootID() && bridgeState != 'n')
+			// Stop autocomplete/leap when we're done. Also, set to creep so
+			// we're sure to see the result and get the prompt back.
+			if (stepID == state.getStepTree().getRootID())
 			{
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
 
-			if (bridgeState == 'n')
-			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
-			}
+			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
