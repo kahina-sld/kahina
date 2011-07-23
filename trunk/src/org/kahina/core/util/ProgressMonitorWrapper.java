@@ -4,8 +4,6 @@ import java.awt.Component;
 
 import javax.swing.ProgressMonitor;
 
-import org.kahina.core.gui.KahinaControlPanel;
-
 public class ProgressMonitorWrapper
 {
 	
