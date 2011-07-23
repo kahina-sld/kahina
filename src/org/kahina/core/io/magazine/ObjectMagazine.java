@@ -24,16 +24,17 @@ import org.kahina.core.util.ProgressMonitorWrapper;
 
 /**
  * Stores objects in memory by default, but serializes them away to disk in
- * blocks when memory usage exceeds a specified threshold. The idea is from
- * {@link http://forums.sun.com/thread.jspa?messageID=10949277#10949277}.
+ * blocks when memory usage exceeds a specified threshold. The idea is from <a
+ * href="http://forums.sun.com/thread.jspa?messageID=10949277#10949277">http://
+ * forums.sun.com/thread.jspa?messageID=10949277#10949277</a>.
+ * 
  * @author ke
- *
+ * 
  * @param <S>
  */
-public class ObjectMagazine<S>
-{
+public class ObjectMagazine<S> {
 	private static final boolean VERBOSE = false;
-	
+
 	private static final int MIN_BLOCKS = 1;
 
 	private final File folder;
@@ -52,8 +53,8 @@ public class ObjectMagazine<S>
 
 	private int fileCount;
 
-	private ObjectMagazine(File folder, int blockSize, float lowerBound, float upperBound, int fileCount)
-	{
+	private ObjectMagazine(File folder, int blockSize, float lowerBound,
+			float upperBound, int fileCount) {
 		this.folder = folder;
 		this.blockSize = blockSize;
 		this.lowerBound = lowerBound;
@@ -61,122 +62,111 @@ public class ObjectMagazine<S>
 		this.fileCount = fileCount;
 	}
 
-	private Object[] loadOrCreateBlock(int blockNumber)
-	{
+	private Object[] loadOrCreateBlock(int blockNumber) {
 		blockNumbersUnloadQueue.addLast(blockNumber);
 		Object[] block;
 		File file = new File(folder, Integer.toString(blockNumber));
-		if (file.exists())
-		{
-			try
-			{
-				ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)));
+		if (file.exists()) {
+			try {
+				ObjectInputStream in = new ObjectInputStream(
+						new BufferedInputStream(new FileInputStream(file)));
 				block = (Object[]) in.readObject();
 				in.close();
-			} catch (IOException e)
-			{
-				throw new KahinaException("Error reading block " + blockNumber + " in folder " + folder + ".");
-			} catch (ClassNotFoundException e)
-			{
-				throw new KahinaException("Error reading block " + blockNumber + " in folder " + folder + ".");
+			} catch (IOException e) {
+				throw new KahinaException("Error reading block " + blockNumber
+						+ " in folder " + folder + ".");
+			} catch (ClassNotFoundException e) {
+				throw new KahinaException("Error reading block " + blockNumber
+						+ " in folder " + folder + ".");
 			}
-		} else
-		{
+		} else {
 			block = new Object[blockSize];
 			fileCount++;
 		}
 		loadedBlocksByBlockNumber.put(blockNumber, block);
-		if (VERBOSE)
-		{
-			System.err.println("Loaded or created block " + blockNumber + ", loaded blocks: " + blockNumbersUnloadQueue);
+		if (VERBOSE) {
+			System.err.println("Loaded or created block " + blockNumber
+					+ ", loaded blocks: " + blockNumbersUnloadQueue);
 		}
 		return block; // mere convenience
 	}
 
-	private void unloadBlock(int blockNumber)
-	{
+	private void unloadBlock(int blockNumber) {
 		Object[] block = loadedBlocksByBlockNumber.remove(blockNumber);
 		ObjectOutputStream out = null;
-		try
-		{
-			out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File(folder, Integer.toString(blockNumber)))));
+		try {
+			out = new ObjectOutputStream(new BufferedOutputStream(
+					new FileOutputStream(new File(folder,
+							Integer.toString(blockNumber)))));
 			out.writeObject(block);
-		} catch (IOException e)
-		{
-			throw new KahinaException("Error writing block " + blockNumber + " in folder " + folder + ".", e);
-		} finally
-		{
-			if (out != null)
-			{
-				try
-				{
+		} catch (IOException e) {
+			throw new KahinaException("Error writing block " + blockNumber
+					+ " in folder " + folder + ".", e);
+		} finally {
+			if (out != null) {
+				try {
 					out.close();
-					if (VERBOSE)
-					{
-						System.err.println("Wrote block " + blockNumber + " (" + block + "), length " + block.length + ").");
+					if (VERBOSE) {
+						System.err.println("Wrote block " + blockNumber + " ("
+								+ block + "), length " + block.length + ").");
 					}
-				} catch (IOException e)
-				{
-					throw new KahinaException("Error writing block " + blockNumber + " in folder " + folder + ".", e);
+				} catch (IOException e) {
+					throw new KahinaException("Error writing block "
+							+ blockNumber + " in folder " + folder + ".", e);
 				}
 			}
 		}
 	}
 
-	private void reduceMemoryUsage()
-	{
-		if (memoryRatio() > upperBound)
-		{
+	private void reduceMemoryUsage() {
+		if (memoryRatio() > upperBound) {
 			long ns;
-			if (VERBOSE)
-			{
-				System.err.println("Reducing memory usage. Loaded blocks: " + blockNumbersUnloadQueue);
+			if (VERBOSE) {
+				System.err.println("Reducing memory usage. Loaded blocks: "
+						+ blockNumbersUnloadQueue);
 				ns = System.nanoTime();
 			}
 			// TODO Comparing memory usage to the lower bound doesn't really
 			// make sense, the VM will keep all the garbage lying around. Maybe
 			// just reduce to a fixed number of blocks (like 10) and explicitly
 			// garbage-collect then.
-			while (blockNumbersUnloadQueue.size() > MIN_BLOCKS && memoryRatio() > lowerBound)
-			{
+			while (blockNumbersUnloadQueue.size() > MIN_BLOCKS
+					&& memoryRatio() > lowerBound) {
 				unloadBlock(blockNumbersUnloadQueue.removeFirst());
 			}
-			if (VERBOSE)
-			{
+			if (VERBOSE) {
 				ns = System.nanoTime() - ns;
-				System.err.println("Reduced memory usage, took " + ns + " ns. Loaded blocks: " + blockNumbersUnloadQueue);
+				System.err.println("Reduced memory usage, took " + ns
+						+ " ns. Loaded blocks: " + blockNumbersUnloadQueue);
 			}
 		}
 	}
 
-	private float memoryRatio()
-	{
-		if (VERBOSE)
-		{
+	private float memoryRatio() {
+		if (VERBOSE) {
 			System.err.println("Total memory: " + runtime.totalMemory());
 			System.err.println("Max memory:   " + runtime.maxMemory());
 			System.err.println("Free memory:  " + runtime.freeMemory());
-			System.err.println("Ratio: " + ((float) (runtime.totalMemory() - runtime.freeMemory())) / runtime.maxMemory());
+			System.err.println("Ratio: "
+					+ ((float) (runtime.totalMemory() - runtime.freeMemory()))
+					/ runtime.maxMemory());
 		}
-		return ((float) (runtime.totalMemory() - runtime.freeMemory())) / runtime.maxMemory();
+		return ((float) (runtime.totalMemory() - runtime.freeMemory()))
+				/ runtime.maxMemory();
 	}
 
-	public S retrieve(int index)
-	{
+	public S retrieve(int index) {
 		return cast(getBlockForIndex(index)[index % blockSize]);
 	}
 
-	public void store(int index, S object)
-	{
+	public void store(int index, S object) {
 		getBlockForIndex(index)[index % blockSize] = object;
 	}
 
-	private Object[] getBlockForIndex(int index)
-	{
+	private Object[] getBlockForIndex(int index) {
 		int blockNumber = index / blockSize;
 		Object[] block = loadedBlocksByBlockNumber.get(blockNumber);
-		if (block == null)
-		{
+		if (block == null) {
 			reduceMemoryUsage();
 			block = loadOrCreateBlock(blockNumber);
 		}
@@ -184,97 +174,91 @@ public class ObjectMagazine<S>
 	}
 
 	@SuppressWarnings("unchecked")
-	private S cast(Object object)
-	{
+	private S cast(Object object) {
 		return (S) object;
 	}
 
-	public static <S> ObjectMagazine<S> load(File folder, Class<S> objectType)
-	{
+	public static <S> ObjectMagazine<S> load(File folder, Class<S> objectType) {
 		Properties properties = readPropertiesFile(folder);
-		return new ObjectMagazine<S>(folder, Integer.parseInt(properties.getProperty("blockSize")), Float.parseFloat(properties.getProperty("lowerBound")), Float.parseFloat(properties
+		return new ObjectMagazine<S>(folder, Integer.parseInt(properties
+				.getProperty("blockSize")), Float.parseFloat(properties
+				.getProperty("lowerBound")), Float.parseFloat(properties
 				.getProperty("upperBound")), folder.list().length);
 	}
 
-	public static <S> ObjectMagazine<S> create()
-	{
+	public static <S> ObjectMagazine<S> create() {
 		return create(1000, 0.2F, 0.9F);
 	}
 
-	private static <S> ObjectMagazine<S> create(int blockSize, float lowerBound, float upperBound)
-	{
+	private static <S> ObjectMagazine<S> create(int blockSize,
+			float lowerBound, float upperBound) {
 		File directory;
-		try
-		{
+		try {
 			directory = FileUtilities.createTemporaryDirectory();
-		} catch (IOException e)
-		{
+		} catch (IOException e) {
 			throw new KahinaException("Failed to create magazine.", e);
 		}
 		writePropertiesFile(directory, blockSize, lowerBound, upperBound);
-		return new ObjectMagazine<S>(directory, blockSize, lowerBound, upperBound, 1);
+		return new ObjectMagazine<S>(directory, blockSize, lowerBound,
+				upperBound, 1);
 	}
 
-	private static Properties readPropertiesFile(File folder)
-	{
+	private static Properties readPropertiesFile(File folder) {
 		Properties properties = new Properties();
-		try
-		{
-			properties.load(new BufferedReader(new InputStreamReader(new FileInputStream(new File(folder, "magazine.properties")), "UTF-8")));
-		} catch (IOException e)
-		{
-			throw new KahinaException("I/O error reading magazine properties file.", e);
+		try {
+			properties.load(new BufferedReader(
+					new InputStreamReader(new FileInputStream(new File(folder,
+							"magazine.properties")), "UTF-8")));
+		} catch (IOException e) {
+			throw new KahinaException(
+					"I/O error reading magazine properties file.", e);
 		}
 		return properties;
 	}
 
-	private static void writePropertiesFile(File folder, int blockSize, float lowerBound, float upperBound)
-	{
+	private static void writePropertiesFile(File folder, int blockSize,
+			float lowerBound, float upperBound) {
 		Properties properties = new Properties();
 		properties.setProperty("blockSize", Integer.toString(blockSize));
 		properties.setProperty("lowerBound", Float.toString(lowerBound));
 		properties.setProperty("upperBound", Float.toString(upperBound));
-		try
-		{
-			properties.store(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(folder, "magazine.properties")), "UTF-8")), null);
-		} catch (IOException e)
-		{
-			throw new KahinaException("I/O error creating magazine properties file.", e);
+		try {
+			properties.store(
+					new BufferedWriter(new OutputStreamWriter(
+							new FileOutputStream(new File(folder,
+									"magazine.properties")), "UTF-8")), null);
+		} catch (IOException e) {
+			throw new KahinaException(
+					"I/O error creating magazine properties file.", e);
 		}
 	}
 
-	public int persistSteps()
-	{
+	public int persistSteps() {
 		return blockNumbersUnloadQueue.size() + fileCount;
 	}
 
 	// TODO canceling via progress monitor
-	public void persist(File destinationFolder, ProgressMonitorWrapper monitor)
-	{
-		for (int blockNumber : blockNumbersUnloadQueue)
-		{
+	public void persist(File destinationFolder, ProgressMonitorWrapper monitor) {
+		for (int blockNumber : blockNumbersUnloadQueue) {
 			unloadBlock(blockNumber);
 			monitor.increment();
 		}
 		blockNumbersUnloadQueue.clear();
-		for (File file : folder.listFiles())
-		{
-			try
-			{
-				FileUtilities.copy(file, new File(destinationFolder, file.getName()));
-				if (monitor != null)
-				{
+		for (File file : folder.listFiles()) {
+			try {
+				FileUtilities.copy(file,
+						new File(destinationFolder, file.getName()));
+				if (monitor != null) {
 					monitor.increment();
 				}
-			} catch (IOException e)
-			{
-				throw new KahinaException("I/O error while saving object magazine.", e);
+			} catch (IOException e) {
+				throw new KahinaException(
+						"I/O error while saving object magazine.", e);
 			}
 		}
 	}
 
-	public void close()
-	{
+	public void close() {
 		FileUtilities.deleteRecursively(folder);
 	}
 }
