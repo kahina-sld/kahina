@@ -15,7 +15,6 @@
         use_module('$QTYPE_HOME/ops') )
     ; raise_exception(qtype_home_not_set).
 
-
 % ------------------------------------------------------------------------------
 % HOOK IMPLEMENTATIONS
 % ------------------------------------------------------------------------------
@@ -26,8 +25,8 @@ user:generate_message_hook(qtype_home_not_set,[format('ERROR: Environment variab
 
 % TODO The following should check if we really are in a qtrace session, or maybe
 % there is a better way to customize the tracer behavior than hooks. Currently,
-% loading this module renders the regular SICStus debugger unusable (which is
-% not that much of an issue, but still...)
+% loading this module renders Kahina for SICStus unusable (which is not that
+% much of an issue, but still...)
 
 % We want to return to QType prompt, not SICStus prompt:
 kahinasicstus:abort_hook(trace,raise(kahinaqtype_abort)).
@@ -108,6 +107,7 @@ set_breakpoints_clause(_,_,_).
 
 not_traced(timer:msg_timer/_).
 not_traced(timer:msg_timer2/_).
+not_traced(cmd_aux:call_prolog/1).
 
 module_head_pred(_,Module:Head,Module:Functor/Arity) :-
   !,
