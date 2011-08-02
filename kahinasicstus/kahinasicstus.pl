@@ -45,8 +45,9 @@ action_mode_command(102,trace,proceed,_Inv,fail) :-     % f(ail)
 action_mode_command(102,trace,fail(Inv),Inv,_Port) :-
   !.
 action_mode_command(97,Mode,Command,_Inv,_Port) :-     % a(bort)
-  abort_hook(Mode,Command), % if not implemented or fails for another reason, we set
-  !.                        % the command action variable to abort in second clause
+  abort_hook(Mode,Command), % if not implemented or fails for another reason, we
+  !.                        % set the command action variable to abort in the
+                            % next clause
 action_mode_command(97,trace,abort,_Inv,_Port).
 action_mode_command(_,debug,proceed,_Inv,_Port).
 
@@ -291,9 +292,17 @@ get_kahina_instance(Instance,_) :-
   kahina_instance(Instance),
   !.
 get_kahina_instance(Instance,JVM) :-
-  jasper_new_object(JVM,'org/kahina/sicstus/SICStusPrologDebuggerInstance',init,init,LocalInstance),
+  instance_class(InstanceClass),
+  jasper_new_object(JVM,InstanceClass,init,init,LocalInstance),
   jasper_create_global_ref(JVM,LocalInstance,Instance),
   assert(kahina_instance(Instance)).
+
+:- multifile instance_class_hook/1.
+
+instance_class(InstanceClass) :-
+  instance_class_hook(InstanceClass),
+  !.
+instance_class('org/kahina/sicstus/SICStusPrologDebuggerInstance').
 
 :- dynamic jvm/1.
 

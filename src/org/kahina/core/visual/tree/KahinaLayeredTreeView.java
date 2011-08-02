@@ -20,19 +20,22 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 	private KahinaTreeViewMarker marker;
 
 	private KahinaTree secondaryModel;
+	
+	private final KahinaLayeredTreeViewPanel.Orientation orientation;
 
-	public KahinaLayeredTreeView(KahinaController control, int... layers)
+	public KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation orientation, KahinaController control, int... layers)
 	{
-		this(false, control, layers);
+		this(false, orientation, control, layers);
 	}
 
-	public KahinaLayeredTreeView(boolean displaySecondDimensionInTopLayer, KahinaController control, int... layers)
+	public KahinaLayeredTreeView(boolean displaySecondDimensionInTopLayer, KahinaLayeredTreeViewPanel.Orientation orientation, KahinaController control, int... layers)
 	{
 		super(control);
 		if (VERBOSE)
 		{
 			System.out.println("Constructing " + this);
 		}
+		this.orientation = orientation;
 		this.layers = layers;
 		views = new KahinaTreeView[layers.length];
 		views[0] = new KahinaTreeView(control);
@@ -117,7 +120,7 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 	public JComponent wrapInPanel(KahinaController control)
 	{
 		marker = new KahinaTreeViewMarker(model, secondaryModel);
-		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(views.length, marker, control);
+		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(views.length, marker, control, orientation);
 		control.registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;
