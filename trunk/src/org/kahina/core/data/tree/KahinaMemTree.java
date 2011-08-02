@@ -14,7 +14,7 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
 	 * 
 	 */
 	private static final long serialVersionUID = -721535790620674355L;
-	public static final boolean verbose = false;
+	public static final boolean VERBOSE = false;
 
 	public KahinaMemTree()
 	{
@@ -92,22 +92,22 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
 	@Override
 	public List<Integer> getChildren(int nodeID, int layer, boolean stopAtCornerstones)
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("\t\t KahinaMemTree.getChildren(" + nodeID + "," + layer + "," + stopAtCornerstones + ")");
 		List<Integer> chi = new ArrayList<Integer>();
 		List<Integer> frontLine = new ArrayList<Integer>();
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("\t\t\t layer( " + nodeID + " ) = " + decider.decideOnLayer(nodeID, this));
 		if (!stopAtCornerstones || nodeID == getRootID(layer) || decider.decideOnLayer(nodeID, this) >= layer)
 		{
 			frontLine.addAll(super.getChildren(nodeID, layer, false));
 		}
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("\t\t\t front line: " + frontLine);
 		while (frontLine.size() > 0)
 		{
 			int child = frontLine.remove(0);
-			if (verbose)
+			if (VERBOSE)
 				System.err.println("\t\t\t layer( " + child + " ) = " + decider.decideOnLayer(child, this));
 			if (decider.decideOnLayer(child, this) <= layer)
 			{
@@ -120,7 +120,7 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
 				frontLine.addAll(super.getChildren(child, 0, false));
 			}
 		}
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("\t\t => KahinaMemTree.getChildren(" + nodeID + "," + layer + ") = " + chi);
 		// System.err.println(chi);
 		return chi;

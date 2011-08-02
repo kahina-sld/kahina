@@ -7,6 +7,8 @@ import org.kahina.core.data.tree.KahinaTree;
 
 public class KahinaTreeViewMarker
 {
+	private static final boolean VERBOSE = false;
+	
     private KahinaTree model;
     
     private KahinaTree secondaryModel;
@@ -42,7 +44,11 @@ public class KahinaTreeViewMarker
     }
     
     public void markNode(int nodeID)
-    {     
+    {
+    	if (VERBOSE)
+    	{
+    		System.err.println(this + ".markNode(" + nodeID + ")");
+    	}
         if (nodeID == -1)
         {
             //deactivate marking in all registered views, inconsistencies otherwise
