@@ -21,12 +21,12 @@
 
 user:generate_message_hook(qtype_home_not_set,[format('ERROR: Environment variable QTYPE_HOME must be set to path of directory',[]),nl,format('containing qtype.pl',[]),nl|Tail],Tail).
 
-:- multifile kahinasicstus:abort_hook/2.
-
 % TODO The following should check if we really are in a qtrace session, or maybe
 % there is a better way to customize the tracer behavior than hooks. Currently,
 % loading this module renders Kahina for SICStus unusable (which is not that
 % much of an issue, but still...)
+
+:- multifile kahinasicstus:abort_hook/2.
 
 % We want to return to QType prompt, not SICStus prompt:
 kahinasicstus:abort_hook(trace,raise(kahinaqtype_abort)).
@@ -36,10 +36,15 @@ kahinasicstus:abort_hook(trace,raise(kahinaqtype_abort)).
 % This exception has a special meaning and should not be traced:
 kahinasicstus:breakpoint_action_hook(exception(kahinaqtype_abort),_,debug,proceed).
 
-:- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
+:- multifile kahinasicstus:instance_class_hook/1.
+
+kahinasicstus:instance_class_hook('org/kahina/qtype/QTypeDebuggerInstance').
+
 % ------------------------------------------------------------------------------
 % MAIN CODE
 % ------------------------------------------------------------------------------
+
+:- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
 
 % First approximation to a QType-specific tracer:
 % Sets a breakpoint with kahina_breakpoint_action on every QType predicate with
@@ -108,6 +113,15 @@ set_breakpoints_clause(_,_,_).
 not_traced(timer:msg_timer/_).
 not_traced(timer:msg_timer2/_).
 not_traced(cmd_aux:call_prolog/1).
+not_traced(cp_exsyn:tokenize_and_parse/0). % TODO rules, constraints, macros etc. views?
+not_traced(cp_sig:define_undefined_subtypes/1). % TODO type hierarchy view with features?
+not_traced(cp_sig:connect_homeless_types/2).
+not_traced(cp_sig:connect_homeless_types/3).
+not_traced(cp_sig:m_t_d/1).
+not_traced(cp_sig:is_this_atom/1).
+not_traced(cp_sig:cp_flubs/1).
+not_traced(cp_sig:expand_type/2)
+not_traced(bitsets:_/_).
 
 module_head_pred(_,Module:Head,Module:Functor/Arity) :-
   !,
@@ -136,5 +150,3 @@ hint_module(Hint,user) :-
   var(Hint),
   !.
 hint_module(Module,Module).
-
-:- set_prolog_flag(source_info,on).

@@ -17,8 +17,15 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 	private static final boolean VERBOSE = false;
 
 	private KahinaTreeViewPanel[] panels;
+	
+	private final Orientation orientation;
+	
+	public enum Orientation
+	{
+		VERTICAL, HORIZONTAL;
+	}
 
-	public KahinaLayeredTreeViewPanel(int layers, KahinaTreeViewMarker marker, KahinaController control)
+	public KahinaLayeredTreeViewPanel(int layers, KahinaTreeViewMarker marker, KahinaController control, Orientation orientation)
 	{
 		if (VERBOSE)
 		{
@@ -29,7 +36,16 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 		{
 			panels[i] = new KahinaTreeViewPanel(marker, control);
 		}
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.orientation = orientation;
+		int axis;
+		if (orientation == Orientation.VERTICAL)
+		{
+			axis = BoxLayout.Y_AXIS;
+		} else
+		{
+			axis = BoxLayout.X_AXIS;
+		}
+		this.setLayout(new BoxLayout(this, axis));
 		if (layers > 1)
 		{
 			add(createSplitPane(0));
@@ -55,8 +71,17 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 		{
 			bottom = createSplitPane(index);
 		}
+		
+		int split;
+		if (orientation == Orientation.VERTICAL)
+		{
+			split = JSplitPane.VERTICAL_SPLIT;
+		} else
+		{
+			split = JSplitPane.HORIZONTAL_SPLIT;
+		}
 
-		return new JSplitPane(JSplitPane.VERTICAL_SPLIT, top, bottom);
+		return new JSplitPane(split, top, bottom);
 	}
 
 	private JComponent createPane(JComponent panel)
