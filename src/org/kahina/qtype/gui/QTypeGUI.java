@@ -2,8 +2,7 @@ package org.kahina.qtype.gui;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.LayerDecider;
-import org.kahina.core.visual.tree.KahinaLayeredTreeView;
-import org.kahina.core.visual.tree.KahinaLayeredTreeViewPanel;
+import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.qtype.data.tree.QTypeLayerDecider;
 import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 import org.kahina.sicstus.SICStusPrologStep;
@@ -19,9 +18,9 @@ public class QTypeGUI extends SICStusPrologGUI {
 	}
 	
 	@Override
-	protected KahinaLayeredTreeView generateTreeView(KahinaController control)
+	protected KahinaListTreeView generateTreeView(KahinaController control)
 	{
-		return new KahinaLayeredTreeView(true, KahinaLayeredTreeViewPanel.Orientation.HORIZONTAL, control, 0, 1);
+		return new KahinaListTreeView(control, 0, 1);
 	}
 	
 	@Override

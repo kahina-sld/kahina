@@ -113,15 +113,15 @@ set_breakpoints_clause(_,_,_).
 not_traced(timer:msg_timer/_).
 not_traced(timer:msg_timer2/_).
 not_traced(cmd_aux:call_prolog/1).
-not_traced(cp_exsyn:tokenize_and_parse/0). % TODO rules, constraints, macros etc. views?
-not_traced(cp_sig:define_undefined_subtypes/1). % TODO type hierarchy view with features?
-not_traced(cp_sig:connect_homeless_types/2).
-not_traced(cp_sig:connect_homeless_types/3).
-not_traced(cp_sig:m_t_d/1).
-not_traced(cp_sig:is_this_atom/1).
-not_traced(cp_sig:cp_flubs/1).
-not_traced(cp_sig:expand_type/2)
-not_traced(bitsets:_/_).
+%not_traced(cp_exsyn:tokenize_and_parse/0). % TODO rules, constraints, macros etc. views?
+%not_traced(cp_sig:define_undefined_subtypes/1). % TODO type hierarchy view with features?
+%not_traced(cp_sig:connect_homeless_types/2).
+%not_traced(cp_sig:connect_homeless_types/3).
+%not_traced(cp_sig:m_t_d/1).
+%not_traced(cp_sig:is_this_atom/1).
+%not_traced(cp_sig:cp_flubs/1).
+%not_traced(cp_sig:expand_type/2)
+%not_traced(bitsets:_/_).
 
 module_head_pred(_,Module:Head,Module:Functor/Arity) :-
   !,
