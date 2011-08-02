@@ -6,6 +6,8 @@
 :- use_module(library(system)).
 :- use_module(library(terms)).
 
+% TODO make sure the root (step 0) gets an exit call so the GUI updates
+
 % ------------------------------------------------------------------------------
 % STARTUP TEST
 % ------------------------------------------------------------------------------

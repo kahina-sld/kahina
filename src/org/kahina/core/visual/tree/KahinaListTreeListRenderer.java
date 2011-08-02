@@ -18,6 +18,8 @@ import javax.swing.JPanel;
 
 public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 {
+	private static final boolean VERBOSE = false;
+	
 	KahinaListTreeViewPanel view;
 	int layer;
 	
@@ -29,6 +31,10 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 	
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) 
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".getListCellRendererComponent([list], [value], " + index + ", " + isSelected + ", " + cellHasFocus + ")");
+		}
         JPanel cellPanel = new JPanel();
         cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.X_AXIS));
         cellPanel.setSize(200,20);

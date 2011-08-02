@@ -46,14 +46,17 @@ public class QTypeLayerDecider extends LayerDecider {
 			System.err.println(this + ".doDecideOnLayer(" + nodeID + ", [tree]");
 		}
 		String caption = tree.getNodeCaption(nodeID);
-		if (caption.contains("compile_grammar(")) {
+		if (caption.contains("compile_grammar("))
+		{
 			return 0;
 		}
-		if (caption.contains("(")) {
+		if (caption.contains("("))
+		{
 			return 1;
 		}
 		int parentID = tree.getParent(nodeID);
-		if (parentID == -1) {
+		if (parentID == -1)
+		{
 			return 0;
 		}
 		return decideOnLayer(parentID, tree);
