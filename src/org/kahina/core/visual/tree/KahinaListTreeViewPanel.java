@@ -152,9 +152,10 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		clearIndentations();
 		for (int i = 0; i < panels.length; i++)
 		{
-			listModels[i].clear();
 			int rootID = view.secondaryTreeModel.getRootID(i);
+			listModels[i] = new DefaultListModel();
 			fillListModel(i, rootID, 0);
+			lists[i].setModel(listModels[i]);
 		}
 		for (JPanel panel : panels)
 		{
