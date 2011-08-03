@@ -191,7 +191,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 				int parentID = childID;
 				while (parentID != nodeID && parentID != displayChild)
 				{
-					parentID = view.getTreeModel().getParent(parentID, layer);
+					parentID = view.getTreeModel().getParent(parentID);
 				}
 				if (parentID == displayChild)
 				{
