@@ -61,6 +61,7 @@ act(call,Inv,Bridge,JVM) :-
   link_nodes(Bridge,JVM,UnblockingID,BlockingID),
   act(call,Inv,Bridge,JVM). % Continue with second clause. Can't just fail because recall_blocked_goal/2 is supposed to change the execution state.
 act(call,Inv,Bridge,JVM) :-
+  top_start(Inv),
   execution_state(pred(Module:Pred)),	% "module qualified goal template", see manual
   write_to_chars(Module:Pred,PredChars),
   execution_state(goal(_:Goal)),
@@ -75,7 +76,8 @@ act(call,Inv,Bridge,JVM) :-
   perhaps(send_variable_bindings(Bridge,JVM,Inv,call)).
 act(fail,Inv,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
-  act_fail(Bridge,JVM,Inv).
+  act_fail(Bridge,JVM,Inv),
+  top_end(Inv,Bridge,JVM).
 act(exit(DetFlag),Inv,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   execution_state(pred(Module:_)),
@@ -84,14 +86,17 @@ act(exit(DetFlag),Inv,Bridge,JVM) :-
   write_to_chars(GoalDesc,GoalDescChars),
   detflag_det(DetFlag,Det), % translates det/nondet to true/false
   act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
-  perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(DetFlag))).
+  perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(DetFlag))),
+  top_end(Inv,Bridge,JVM).
 act(redo,Inv,Bridge,JVM) :-
+  top_start(Inv),
   retractall(unblock_pseudostep_waiting_for_link(_)),
   act_redo(Bridge,JVM,Inv).
 act(exception(Exception),Inv,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   write_to_chars(Exception,ExceptionChars),
-  act_exception(Bridge,JVM,Inv,ExceptionChars).
+  act_exception(Bridge,JVM,Inv,ExceptionChars),
+  top_end(Inv,Bridge,JVM).
 act(block,_,Bridge,JVM) :-
   retractall(unblock_pseudostep_waiting_for_link(_)), % TODO What if the unblocked step is immediately blocked, e.g. in freeze(X,freeze(Y,...))? freeze/2 isn't called, so we would have to do the linking here.
   execution_state(goal(Module:Goal)),
@@ -118,6 +123,25 @@ act(unblock,_,Bridge,JVM) :-
   % rather than siblings, but we don't know how many there are.
   assert(unblock_pseudostep_waiting_for_link(ID)).
 
+:- dynamic top/1.
+:- dynamic end_det/0.
+
+top_start(_) :-
+  top(_),
+  !.
+top_start(Inv) :-
+  assert(top(Inv)).
+
+top_end(Inv,Bridge,JVM) :-
+  retract(top(Inv)),
+  !,
+  jasper_call(JVM,
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','select',[instance]),
+      select(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
+      select(Bridge,1)),
+  assert(end_det).
+top_end(_,_,_).
+
 % TODO it might make sense to change the goal desc at the exit port (additional bindings!)
 act_step(Bridge,JVM,Inv,PredChars,GoalDescChars) :-
   jasper_call(JVM,
@@ -135,46 +159,31 @@ act_fail(Bridge,JVM,Inv) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','fail',[instance]),
       fail(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
-      fail(Bridge,Inv)),
-  end(Inv,Bridge,JVM).
+      fail(Bridge,Inv)).
 
 act_exception(Bridge,JVM,Inv,ExceptionChars) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','exception',[instance]),
       exception(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+chars),
-      exception(Bridge,Inv,ExceptionChars)),
-  end(Inv,Bridge,JVM).
+      exception(Bridge,Inv,ExceptionChars)).
 
 act_exit(Bridge,JVM,Inv,Det) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','exit',[instance]),
       exit(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+boolean),
-      exit(Bridge,Inv,Det)),
-  end(Inv,Bridge,JVM).
+      exit(Bridge,Inv,Det)).
 
 act_exit(Bridge,JVM,Inv,Det,GoalDescChars) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','exit',[instance]),
       exit(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+boolean,+chars),
-      exit(Bridge,Inv,Det,GoalDescChars)),
-  end(Inv,Bridge,JVM).
+      exit(Bridge,Inv,Det,GoalDescChars)).
 
 act_redo(Bridge,JVM,Inv) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','redo',[instance]),
       redo(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
       redo(Bridge,Inv)).
-
-:- dynamic end_det/0.
-
-end(1,Bridge,JVM) :-
-  !,
-  jasper_call(JVM,
-      method('org/kahina/sicstus/bridge/SICStusPrologBridge','select',[instance]),
-      select(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
-      select(Bridge,1)),
-  assert(end_det).
-end(_,_,_).
 
 register_source_code_location(Bridge,JVM,Inv,FileChars,Line) :-
   get_jvm(JVM),
@@ -264,6 +273,7 @@ get_next_pseudostep_id(ID) :-
 
 start_new_kahina_session(Bridge,JVM) :-
   end_trace_session,
+  retractall(top(_)),
   initialize_pseudostep_id,
   retractall(source_read(_)),
   retractall(source_clause(_,_,_,_)),
