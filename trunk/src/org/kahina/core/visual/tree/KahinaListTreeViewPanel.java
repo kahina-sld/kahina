@@ -28,7 +28,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 {
 	private static final long serialVersionUID = -2816651065876855228L;
 
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 
 	private JPanel[] panels;
 	private JList[] lists;
