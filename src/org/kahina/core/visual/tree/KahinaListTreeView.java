@@ -198,38 +198,21 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	public void setMarkedNode(int layer, int markedNode)
 	{
 		markedNodes[layer] = markedNode;
-		// System.err.println("setMarkedNode(" + layer + "," + markedNode +
-		// ")");
 		if (markedNode != -1)
 		{
 			int childID = markedNode;
-			int parentID = secondaryTreeModel.getParent(markedNode, layer);
-			// System.err.println("   compare: " +
-			// secondaryTreeModel.getRootID(layer) + "?=" + childID);
-			while (parentID != -1 && childID != secondaryTreeModel.getRootID(layer))
-			{
-				childID = parentID;
-				parentID = secondaryTreeModel.getParent(parentID, layer);
-			}
 			// adapt choices such that the newly marked node is displayed
-			parentID = getTreeModel().getParent(markedNode, layer);
+			int parentID = getTreeModel().getParent(markedNode, layer);
 			while (parentID != -1 && childID != getTreeModel().getRootID(layer))
 			{
-				// System.err.println("   parentID: " + parentID);
 				if (primaryChildChoices.get(parentID) != null)
 				{
-					// System.err.println("     currentChoice: " +
-					// primaryChildChoices.get(parentID));
 					List<Integer> primaryChildren = getVisibleVirtualChildren(getTreeModel(), parentID, layer);
-					// System.err.println("     children: " + primaryChildren);
 					primaryChildChoices.put(parentID, primaryChildren.indexOf(childID));
-					// System.err.println("     newChoice: " +
-					// primaryChildChoices.get(parentID));
 					childID = parentID;
 					parentID = getTreeModel().getParent(parentID, layer);
 				} else
 				{
-					// System.err.println("     currentChoice: null");
 					childID = parentID;
 					parentID = getTreeModel().getParent(parentID, layer);
 				}
