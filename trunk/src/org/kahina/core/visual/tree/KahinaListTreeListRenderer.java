@@ -47,6 +47,10 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 		int numAlternatives = primaryAlternatives.size();
 		if (numAlternatives > 1 && index != 0)
 		{
+			if (VERBOSE)
+			{
+				System.err.println("numAlternatives: " + numAlternatives);
+			}
 			JButton leftButton = new JButton("<");
 			leftButton.setMargin(new Insets(0, 0, 0, 0));
 			leftButton.setPreferredSize(new Dimension(18, 15));
