@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -42,13 +43,14 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 		cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.X_AXIS));
 		cellPanel.setSize(200, 20);
 		int nodeID = (Integer) value;
-		int numAlternatives = view.getNumberOfPrimaryAlternatives(nodeID);
+		List<Integer> primaryAlternatives = view.view.getPrimaryAlternatives(nodeID, layer);
+		int numAlternatives = primaryAlternatives.size();
 		if (numAlternatives > 1 && index != 0)
 		{
 			JButton leftButton = new JButton("<");
 			leftButton.setMargin(new Insets(0, 0, 0, 0));
 			leftButton.setPreferredSize(new Dimension(18, 15));
-			if (view.view.primaryChildChoices.get(view.getChoiceParent(nodeID)) == 0)
+			if (view.view.isChosen(primaryAlternatives.get(0)))
 			{
 				leftButton.setEnabled(false);
 			}
@@ -56,7 +58,7 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 			JButton rightButton = new JButton(">");
 			rightButton.setMargin(new Insets(0, 0, 0, 0));
 			rightButton.setPreferredSize(new Dimension(18, 15));
-			if (view.view.primaryChildChoices.get(view.getChoiceParent(nodeID)) == numAlternatives - 1)
+			if (view.view.isChosen(primaryAlternatives.get(numAlternatives - 1)))
 			{
 				rightButton.setEnabled(false);
 			}

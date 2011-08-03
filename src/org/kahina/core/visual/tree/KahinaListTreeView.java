@@ -35,8 +35,10 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	HashMap<Integer, Font> statusFontEncoding;
 	HashMap<Integer, Boolean> statusVisibilityEncoding;
 
-	// remember which branch of the primary tree is being visualized
-	HashMap<Integer, Integer> primaryChildChoices;
+	// Remember which branch of the primary tree is being visualized. For each
+	// node with more than one primary child, stores the index of the currently
+	// chosen *real*, not virtual child.
+	private final HashMap<Integer, Integer> primaryChildChoices;
 
 	// allow marking of trees on different layers
 	private int[] markedNodes;
@@ -195,29 +197,9 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		return markedNodes[layer];
 	}
 
-	public void setMarkedNode(int layer, int markedNode)
+	private void setMarkedNode(int layer, int markedNode)
 	{
 		markedNodes[layer] = markedNode;
-		if (markedNode != -1)
-		{
-			int childID = markedNode;
-			// adapt choices such that the newly marked node is displayed
-			int parentID = getTreeModel().getParent(markedNode, layer);
-			while (parentID != -1 && childID != getTreeModel().getRootID(layer))
-			{
-				if (primaryChildChoices.get(parentID) != null)
-				{
-					List<Integer> primaryChildren = getVisibleVirtualChildren(getTreeModel(), parentID, layer);
-					primaryChildChoices.put(parentID, primaryChildren.indexOf(childID));
-					childID = parentID;
-					parentID = getTreeModel().getParent(parentID, layer);
-				} else
-				{
-					childID = parentID;
-					parentID = getTreeModel().getParent(parentID, layer);
-				}
-			}
-		}
 	}
 
 	public void resetAllStructures()
@@ -355,6 +337,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 			}
 		} else
 		{
+			adaptChoices(nodeID);
 			model.setReferenceNode(nodeID);
 			secondaryTreeModel.setReferenceNode(nodeID);
 			for (int i = 0; i < layers.length; i++)
@@ -362,6 +345,128 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 				int equivID = secondaryTreeModel.getBestEquivalent(nodeID, i);
 				setMarkedNode(i, equivID);
 				// view.scrollToNode(newNodeID);
+			}
+		}
+	}
+
+	/**
+	 * Adapts the primary branch choices so that the given node is shown.
+	 * 
+	 * @param nodeID
+	 */
+	private void adaptChoices(int nodeID)
+	{
+		KahinaTree primaryTree = getTreeModel();
+		int childID = nodeID;
+		int parentID = primaryTree.getParent(childID);
+		while (parentID != -1)
+		{
+			List<Integer> children = primaryTree.getChildren(parentID);
+			if (children.size() > 1)
+			{
+				primaryChildChoices.put(parentID, children.indexOf(childID));
+				if (VERBOSE)
+				{
+					System.err.println("Adapted choice: " + parentID + " -> " + children.indexOf(childID));
+				}
+			}
+			childID = parentID;
+			parentID = primaryTree.getParent(parentID);
+		}
+	}
+	
+	// TODO cache isChosen(int) and/or getPrimaryAlternatives(int, int)?
+
+	/**
+	 * Whether the given node is part of the currently chosen primary spine.
+	 * 
+	 * @param nodeID
+	 * @return
+	 */
+	public boolean isChosen(int nodeID)
+	{
+		if (VERBOSE)
+		{
+			System.err.println("Is node " + nodeID + " (" + getTreeModel().getNodeCaption(nodeID) + ") chosen?");
+			System.err.print("Its primary ancestors:");
+			int ancestor = getTreeModel().getParent(nodeID);
+			while (ancestor != -1)
+			{
+				System.err.print(" " + ancestor);
+				ancestor = getTreeModel().getParent(ancestor);
+			}
+			System.err.println();
+		}
+		// Simply go down from root, follow choices, try to find given ID.
+		KahinaTree primaryTree = getTreeModel();
+		int currentNodeID = primaryTree.getRootID();
+		while (true)
+		{
+			if (VERBOSE)
+			{
+				System.err.print(currentNodeID + " ");
+			}
+			if (currentNodeID == nodeID)
+			{
+				if (VERBOSE)
+				{
+					System.err.println();
+					System.err.println("Yes.");
+				}
+				return true;
+			}
+			Integer choice = primaryChildChoices.get(currentNodeID);
+			if (choice == null)
+			{
+				choice = 0;
+			}
+			List<Integer> children = primaryTree.getChildren(currentNodeID);
+			if (children.size() == 0)
+			{
+				if (VERBOSE)
+				{
+					System.err.println();
+					System.err.println("No.");
+				}
+				return false;
+			}
+			currentNodeID = children.get(choice);
+		}
+	}
+
+	/**
+	 * Returns the list of primary alternatives to a given node on a given
+	 * layer, including that node itself. Of all the virtual secondary siblings
+	 * of the node, the primary alternatives are those that are also primary
+	 * descendants of the virtual secondary parent (in well-formed
+	 * two-dimensional trees, this should be the case for all) and which are not
+	 * dominated by any other of the virtual secondary siblings.
+	 * 
+	 * @param nodeID
+	 * @param layer
+	 * @return
+	 */
+	public List<Integer> getPrimaryAlternatives(int nodeID, int layer)
+	{
+		int virtualSecondaryParentID = secondaryTreeModel.getParent(nodeID, layer);
+		List<Integer> children = getVisibleVirtualChildren(secondaryTreeModel, virtualSecondaryParentID, layer);
+		List<Integer> result = new ArrayList<Integer>();
+		findPrimaryAlternatives(getTreeModel().getChildren(nodeID), children, result);
+		return result;
+	}
+
+	private void findPrimaryAlternatives(List<Integer> primaryChildren, List<Integer> candidates, List<Integer> alternatives)
+	{
+		for (int primaryChild : primaryChildren)
+		{
+			int index = candidates.indexOf(primaryChild);
+			if (index != -1)
+			{
+				candidates.remove(index);
+				alternatives.add(primaryChild);
+			} else
+			{
+				findPrimaryAlternatives(getTreeModel().getChildren(primaryChild), candidates, alternatives);
 			}
 		}
 	}

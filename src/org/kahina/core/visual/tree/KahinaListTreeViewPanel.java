@@ -36,9 +36,6 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
 	// internal storage for indentations in different layers
 	private List<HashMap<Integer, Integer>> indentations;
-	// internal storage for the number of primary child choices
-	private HashMap<Integer, Integer> numPrimaryAlternatives;
-	private HashMap<Integer, Integer> choiceParent;
 
 	// GUI component handling
 	private MouseEvent lastMouseEvent;
@@ -54,7 +51,6 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		lists = new JList[layers];
 		listModels = new DefaultListModel[layers];
 		clearIndentations();
-		clearAlternatives();
 		lastMouseEvent = null;
 		splitPanes = new LinkedList<JSplitPane>();
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -90,12 +86,6 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			indentations.add(new HashMap<Integer, Integer>());
 		}
-	}
-
-	private void clearAlternatives()
-	{
-		numPrimaryAlternatives = new HashMap<Integer, Integer>();
-		choiceParent = new HashMap<Integer, Integer>();
 	}
 
 	private void updateDividerLocations()
@@ -156,7 +146,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			{
 				System.err.println("Starting to fill list model with root " + rootID);
 			}
-			fillListModel(i, rootID, 0);
+			fillListModel(i, rootID, 0); // TODO this we could do on a non-GUI thread
 			lists[i].setModel(listModels[i]);
 		}
 		for (JPanel panel : panels)
@@ -170,55 +160,16 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	{
 		indentations.get(layer).put(nodeID, recursionDepth);
 		listModels[layer].addElement(nodeID);
-		List<Integer> primaryChildren = view.getVisibleVirtualChildren(view.getTreeModel(), nodeID, layer);
-		if (primaryChildren.size() > 1)
+		for (int visibleVirtualSecondaryChildID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
 		{
-			Integer choice = view.primaryChildChoices.get(nodeID);
-			if (VERBOSE)
+			if (view.isChosen(visibleVirtualSecondaryChildID))
 			{
-				System.err.println("Node " + nodeID + ", choice " + choice);
-			}
-			if (choice == null)
+				fillListModel(layer, visibleVirtualSecondaryChildID, recursionDepth + 1);
+			} else if (VERBOSE)
 			{
-				choice = 0;
-				view.primaryChildChoices.put(nodeID, choice);
-			}
-			int displayChild = primaryChildren.get(choice);
-			choiceParent.put(displayChild, nodeID);
-			numPrimaryAlternatives.put(displayChild, primaryChildren.size());
-			for (int childID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
-			{
-				int parentID = childID;
-				while (parentID != nodeID && parentID != displayChild)
-				{
-					parentID = view.getTreeModel().getParent(parentID);
-				}
-				if (parentID == displayChild)
-				{
-					fillListModel(layer, childID, recursionDepth + 1);
-				}
-			}
-		} else
-		{
-			for (int childID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
-			{
-				numPrimaryAlternatives.put(childID, 1);
-				fillListModel(layer, childID, recursionDepth + 1);
+				System.err.println("Node with label " + view.getTreeModel().getNodeCaption(visibleVirtualSecondaryChildID) + " not chosen, sorry.");
 			}
 		}
-	}
-
-	public int getChoiceParent(int nodeID)
-	{
-		return choiceParent.get(nodeID);
-	}
-
-	public int getNumberOfPrimaryAlternatives(int nodeID)
-	{
-		Integer result = numPrimaryAlternatives.get(nodeID);
-		if (result == null)
-			result = 1;
-		return result;
 	}
 
 	public int getIndentationDepth(int layer, int nodeID)
@@ -278,29 +229,27 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			int clickedNode;
 			clickedNode = (Integer) element;
-
-			if (getNumberOfPrimaryAlternatives(clickedNode) > 1)
+			List<Integer> primaryAlternatives = view.getPrimaryAlternatives(clickedNode, layer);
+			int numberOfPrimaryAlternatives = primaryAlternatives.size();
+			int primaryAlternativeChoice = primaryAlternatives.indexOf(clickedNode); // not to be confused with primaryChildChoice, alternatives needn't be (real) siblings
+			if (numberOfPrimaryAlternatives > 1)
 			{
 				// UGLY HACK, FORTUNATELY RELIABLE AND NOT EXPENSIVE
 				// emulate the check whether one of the "buttons" was clicked
-				int choiceParent = getChoiceParent(clickedNode);
-				int choice = view.primaryChildChoices.get(choiceParent);
 				if (isLeftButtonPosition(e.getPoint(), list, clickedNode, layer))
 				{
-					if (choice > 0)
+					if (primaryAlternativeChoice > 0)
 					{
-						view.primaryChildChoices.put(choiceParent, choice - 1);
-						int selectionNode = view.getVisibleVirtualChildren(view.getTreeModel(), choiceParent, layer).get(choice - 1);
-						KahinaRunner.processEvent(new KahinaSelectionEvent(selectionNode));
+						// TODO do this without changing the selection?
+						KahinaRunner.processEvent(new KahinaSelectionEvent(primaryAlternatives.get(primaryAlternativeChoice - 1)));
 					}
 					return;
 				} else if (isRightButtonPosition(e.getPoint(), list, clickedNode, layer))
 				{
-					if (choice < getNumberOfPrimaryAlternatives(clickedNode) - 1)
+					if (primaryAlternativeChoice < numberOfPrimaryAlternatives - 1)
 					{
-						view.primaryChildChoices.put(choiceParent, choice + 1);
-						int selectionNode = view.getVisibleVirtualChildren(view.getTreeModel(), choiceParent, layer).get(choice + 1);
-						KahinaRunner.processEvent(new KahinaSelectionEvent(selectionNode));
+						// TODO do this without changing the selection?
+						KahinaRunner.processEvent(new KahinaSelectionEvent(primaryAlternatives.get(primaryAlternativeChoice + 1)));
 					}
 					return;
 				}
