@@ -450,13 +450,25 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	{
 		int virtualSecondaryParentID = secondaryTreeModel.getParent(nodeID, layer);
 		List<Integer> children = getVisibleVirtualChildren(secondaryTreeModel, virtualSecondaryParentID, layer);
+		if (VERBOSE)
+		{
+			System.err.println("Visible virtual children: " + children);
+		}
 		List<Integer> result = new ArrayList<Integer>();
-		findPrimaryAlternatives(getTreeModel().getChildren(nodeID), children, result);
+		findPrimaryAlternatives(getTreeModel().getChildren(virtualSecondaryParentID), children, result);
+		if (VERBOSE)
+		{
+			System.err.println("Primary alternatives: " + result);
+		}
 		return result;
 	}
 
 	private void findPrimaryAlternatives(List<Integer> primaryChildren, List<Integer> candidates, List<Integer> alternatives)
 	{
+		if (VERBOSE)
+		{
+			System.err.println("Primary children: " + primaryChildren);
+		}
 		for (int primaryChild : primaryChildren)
 		{
 			int index = candidates.indexOf(primaryChild);
