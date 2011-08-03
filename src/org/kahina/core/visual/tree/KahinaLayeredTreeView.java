@@ -20,7 +20,7 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 	private KahinaTreeViewMarker marker;
 
 	private KahinaTree secondaryModel;
-	
+
 	private final KahinaLayeredTreeViewPanel.Orientation orientation;
 
 	public KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation orientation, KahinaController control, int... layers)
@@ -154,14 +154,14 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 		// recalculation is implicitly part of this (via marker)
 		selectStep(e.getSelectedStep());
 	}
-	
-	//TODO: define a configuration that does not only configure the top layer
+
+	// TODO: define a configuration that does not only configure the top layer
 	public KahinaTreeViewConfiguration getConfig()
 	{
 		return views[0].getConfig();
 	}
-	
-	//TODO: define a configuration that does not only configure the top layer
+
+	// TODO: define a configuration that does not only configure the top layer
 	public void setConfig(KahinaViewConfiguration config)
 	{
 		System.err.print(((KahinaTreeViewConfiguration) config).bgColor + " ");

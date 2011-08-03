@@ -7,19 +7,20 @@ import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 import org.kahina.sicstus.SICStusPrologStep;
 import org.kahina.sicstus.gui.SICStusPrologGUI;
 
-public class QTypeGUI extends SICStusPrologGUI {
+public class QTypeGUI extends SICStusPrologGUI
+{
 
-	public QTypeGUI(Class<? extends SICStusPrologStep> stepType,
-			SICStusPrologDebuggerInstance instance, KahinaController control) {
+	public QTypeGUI(Class<? extends SICStusPrologStep> stepType, SICStusPrologDebuggerInstance instance, KahinaController control)
+	{
 		super(stepType, instance, control);
 	}
-	
+
 	@Override
 	protected KahinaListTreeView generateTreeView(KahinaController control)
 	{
 		return new KahinaListTreeView(control, 0, 1);
 	}
-	
+
 	@Override
 	public void displayMainViews()
 	{

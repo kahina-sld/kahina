@@ -3,8 +3,6 @@ package org.kahina.core.visual.tree;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Stroke;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,12 +17,12 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 public class KahinaListTreeView extends KahinaAbstractTreeView
 {
 	private static final boolean VERBOSE = false;
-	
+
 	KahinaTreeViewConfiguration config;
-	
+
 	private final int[] layers;
 	KahinaTree secondaryTreeModel;
-	
+
 	// special display properties for certain nodes
 	HashMap<Integer, Color> nodeBorderColor;
 	HashMap<Integer, Boolean> statusDisplayed;
@@ -36,13 +34,13 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	HashMap<Integer, Stroke> statusStrokeEncoding;
 	HashMap<Integer, Font> statusFontEncoding;
 	HashMap<Integer, Boolean> statusVisibilityEncoding;
-    
-    // remember which branch of the primary tree is being visualized
-    HashMap<Integer, Integer> primaryChildChoices;
-	
+
+	// remember which branch of the primary tree is being visualized
+	HashMap<Integer, Integer> primaryChildChoices;
+
 	// allow marking of trees on different layers
 	private int[] markedNodes;
-	
+
 	public KahinaListTreeView(KahinaController control, int... layers)
 	{
 		super(control);
@@ -57,12 +55,12 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		statusStrokeEncoding = new HashMap<Integer, Stroke>();
 		statusFontEncoding = new HashMap<Integer, Font>();
 		statusVisibilityEncoding = new HashMap<Integer, Boolean>();
-		
+
 		config = new KahinaTreeViewConfiguration();
 
-        primaryChildChoices = new HashMap<Integer, Integer>();
+		primaryChildChoices = new HashMap<Integer, Integer>();
 		markedNodes = new int[layers.length];
-	}	
+	}
 
 	public void display(KahinaTree treeModel)
 	{
@@ -87,7 +85,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		nodeBorderColor = new HashMap<Integer, Color>();
 		recalculate(); // TODO is this necessary?
 	}
-	
+
 	public void display(KahinaTree layerModel, int referenceNode)
 	{
 		layerModel.setReferenceNode(referenceNode);
@@ -95,17 +93,17 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		nodeBorderColor = new HashMap<Integer, Color>();
 		recalculate();
 	}
-	
+
 	public KahinaTreeViewConfiguration getConfig()
 	{
 		return config;
 	}
-	
+
 	public void setConfig(KahinaTreeViewConfiguration config)
 	{
 		this.config = config;
 	}
-	
+
 	public boolean isSecondDimensionDisplayed()
 	{
 		return config.isSecondDimensionDisplayed() && secondaryTreeModel != null;
@@ -164,10 +162,11 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	{
 		return nodeBorderColor.get(nodeID);
 	}
-	
+
 	/**
-	 * Returns the edge style for the edge leading to a node.
-	 * At the moment, this is a constant since dotted lines are not yet implemented.
+	 * Returns the edge style for the edge leading to a node. At the moment,
+	 * this is a constant since dotted lines are not yet implemented.
+	 * 
 	 * @param nodeID
 	 * @return KahinaTreeViewOptions.COMPLETE_LINES
 	 */
@@ -175,7 +174,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	{
 		return KahinaTreeViewOptions.COMPLETE_LINES;
 	}
-	
+
 	@Override
 	public void setStatusColorEncoding(int status, Color color)
 	{
@@ -199,39 +198,42 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	public void setMarkedNode(int layer, int markedNode)
 	{
 		markedNodes[layer] = markedNode;
-		//System.err.println("setMarkedNode(" + layer + "," + markedNode + ")");
+		// System.err.println("setMarkedNode(" + layer + "," + markedNode +
+		// ")");
 		if (markedNode != -1)
-		{	
+		{
 			int childID = markedNode;
-			int parentID = secondaryTreeModel.getParent(markedNode,layer);
-			//System.err.println("   compare: " + secondaryTreeModel.getRootID(layer) + "?=" + childID);
+			int parentID = secondaryTreeModel.getParent(markedNode, layer);
+			// System.err.println("   compare: " +
+			// secondaryTreeModel.getRootID(layer) + "?=" + childID);
 			while (parentID != -1 && childID != secondaryTreeModel.getRootID(layer))
 			{
 				childID = parentID;
-				parentID = secondaryTreeModel.getParent(parentID,layer);
+				parentID = secondaryTreeModel.getParent(parentID, layer);
 			}
-//          adapt choices such that the newly marked node is displayed
-            parentID = getTreeModel().getParent(markedNode,layer);
-            while (parentID != -1 && childID != getTreeModel().getRootID(layer))
-            {
-                //System.err.println("   parentID: " + parentID);
-                if (primaryChildChoices.get(parentID) != null)
-                {
-                    //System.err.println("     currentChoice: " + primaryChildChoices.get(parentID));
-                    List<Integer> primaryChildren = getVisibleVirtualChildren(getTreeModel(), parentID, layer);
-                    //System.err.println("     children: " + primaryChildren);
-                    primaryChildChoices.put(parentID,primaryChildren.indexOf(childID));
-                    //System.err.println("     newChoice: " + primaryChildChoices.get(parentID));
-                    childID = parentID;
-                    parentID = getTreeModel().getParent(parentID,layer);
-                }
-                else
-                {
-                    //System.err.println("     currentChoice: null");
-                    childID = parentID;
-                    parentID = getTreeModel().getParent(parentID,layer);
-                }
-            }
+			// adapt choices such that the newly marked node is displayed
+			parentID = getTreeModel().getParent(markedNode, layer);
+			while (parentID != -1 && childID != getTreeModel().getRootID(layer))
+			{
+				// System.err.println("   parentID: " + parentID);
+				if (primaryChildChoices.get(parentID) != null)
+				{
+					// System.err.println("     currentChoice: " +
+					// primaryChildChoices.get(parentID));
+					List<Integer> primaryChildren = getVisibleVirtualChildren(getTreeModel(), parentID, layer);
+					// System.err.println("     children: " + primaryChildren);
+					primaryChildChoices.put(parentID, primaryChildren.indexOf(childID));
+					// System.err.println("     newChoice: " +
+					// primaryChildChoices.get(parentID));
+					childID = parentID;
+					parentID = getTreeModel().getParent(parentID, layer);
+				} else
+				{
+					// System.err.println("     currentChoice: null");
+					childID = parentID;
+					parentID = getTreeModel().getParent(parentID, layer);
+				}
+			}
 		}
 	}
 
@@ -239,7 +241,6 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	{
 		statusDisplayed = new HashMap<Integer, Boolean>();
 	}
-
 
 	@Override
 	public JComponent wrapInPanel(KahinaController control)
@@ -256,21 +257,27 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		{
 			System.err.println(this + ".nodeIsVisible(" + nodeID + ")");
 		}
-		// TODO: process conditional option, allow user-definable decision function
-		if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.ALWAYS) return true;
-		if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.NEVER) return false;
+		// TODO: process conditional option, allow user-definable decision
+		// function
+		if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.ALWAYS)
+			return true;
+		if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.NEVER)
+			return false;
 		if (VERBOSE)
 		{
 			System.err.println("Looking for collapsed ancestor...");
 		}
-		if (secondaryTreeModel != null && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_SECONDARY && secondaryTreeModel.hasCollapsedAncestor(nodeID)) return false;
+		if (secondaryTreeModel != null && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_SECONDARY && secondaryTreeModel.hasCollapsedAncestor(nodeID))
+			return false;
 		int status = model.getNodeStatus(nodeID);
 		Boolean decision = statusVisibilityEncoding.get(status);
 		if (decision == null)
 		{
 			// default values decide
-			if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.STATUS_DEFAULT_YES) return true;
-			if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.STATUS_DEFAULT_NO) return false;
+			if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.STATUS_DEFAULT_YES)
+				return true;
+			if (config.getNodeDisplayPolicy() == KahinaTreeViewOptions.STATUS_DEFAULT_NO)
+				return false;
 		}
 		if (VERBOSE)
 		{
@@ -337,43 +344,42 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		}
 		return descendants;
 	}
-	
+
 	public KahinaTree getTreeModel()
 	{
 		return model;
 	}
-	
+
 	public KahinaTree getSecondaryModel()
 	{
 		return secondaryTreeModel;
 	}
-	
+
 	@Override
 	protected void processEvent(KahinaUpdateEvent e)
 	{
 		// recalculation is implicitly part of this (via marker)
 		selectNode(e.getSelectedStep());
 	}
-	
+
 	public void selectNode(int nodeID)
 	{
 		if (nodeID == -1)
-	    {
-	        for (int i = 0; i < layers.length; i++)
-	        {
-	        	setMarkedNode(i,-1);
-	        }
-	    }
-	    else
-	    {
-	        model.setReferenceNode(nodeID);
-	        secondaryTreeModel.setReferenceNode(nodeID);
-	        for (int i = 0; i < layers.length; i++)
-	        {
-	        	int equivID = secondaryTreeModel.getBestEquivalent(nodeID, i);
-	        	setMarkedNode(i,equivID);
-	            //view.scrollToNode(newNodeID);
-	        }
-	    }
+		{
+			for (int i = 0; i < layers.length; i++)
+			{
+				setMarkedNode(i, -1);
+			}
+		} else
+		{
+			model.setReferenceNode(nodeID);
+			secondaryTreeModel.setReferenceNode(nodeID);
+			for (int i = 0; i < layers.length; i++)
+			{
+				int equivID = secondaryTreeModel.getBestEquivalent(nodeID, i);
+				setMarkedNode(i, equivID);
+				// view.scrollToNode(newNodeID);
+			}
+		}
 	}
 }
