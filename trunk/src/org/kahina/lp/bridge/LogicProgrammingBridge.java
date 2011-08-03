@@ -347,12 +347,12 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 		}
 	}
-	
+
 	public void exit(int extID, boolean deterministic)
 	{
 		exit(extID, deterministic, null, null);
 	}
-	
+
 	public void exit(int extID, boolean deterministic, String newDescription)
 	{
 		exit(extID, deterministic, newDescription, newDescription);
@@ -389,7 +389,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
-			
+
 			// relabel node
 			if (newDescription != null)
 			{
@@ -399,11 +399,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// create console message
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
 			if (reference != null)
-			{			
+			{
 				int port;
 				if (deterministic)
 				{
-					port = LogicProgrammingStepType.DET_EXIT; 
+					port = LogicProgrammingStepType.DET_EXIT;
 				} else
 				{
 					port = LogicProgrammingStepType.EXIT;
@@ -468,7 +468,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
-			
+
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
@@ -509,7 +509,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
-			
+
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
@@ -539,7 +539,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
-		state.linkNodes(convertStepID(anchor), convertStepID(target));
+			state.linkNodes(convertStepID(anchor), convertStepID(target));
 		} catch (Exception e)
 		{
 			e.printStackTrace();

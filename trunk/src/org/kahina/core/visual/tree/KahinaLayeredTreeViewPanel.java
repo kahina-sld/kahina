@@ -17,9 +17,9 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 	private static final boolean VERBOSE = false;
 
 	private KahinaTreeViewPanel[] panels;
-	
+
 	private final Orientation orientation;
-	
+
 	public enum Orientation
 	{
 		VERTICAL, HORIZONTAL;
@@ -71,7 +71,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 		{
 			bottom = createSplitPane(index);
 		}
-		
+
 		int split;
 		if (orientation == Orientation.VERTICAL)
 		{

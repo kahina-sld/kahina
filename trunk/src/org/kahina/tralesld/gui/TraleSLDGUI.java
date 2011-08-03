@@ -62,18 +62,17 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		mainChartView.setStatusHighlightColorEncoding(TraleSLDChartEdgeStatus.FAILED, Color.RED);
 		mainChartView.setDisplayDecider(new TraleSLDChartEdgeDisplayDecider());
 	}
-	
+
 	@Override
 	protected KahinaWindowManager createWindowManager(KahinaGUI gui, KahinaController control)
 	{
 		return new TraleSLDWindowManager(gui, control);
 	}
-	
-	/*@Override
-	protected KahinaListTreeView generateTreeView(KahinaController control)
-	{
-		return new KahinaListTreeView(control, 0, 1, 2);
-	}*/
+
+	/*
+	 * @Override protected KahinaListTreeView generateTreeView(KahinaController
+	 * control) { return new KahinaListTreeView(control, 0, 1, 2); }
+	 */
 
 	@Override
 	protected KahinaLayeredTreeView generateTreeView(KahinaController control)
@@ -85,7 +84,8 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	public void displayMainViews()
 	{
 		super.displayMainViews();
-		// set deciders here because the trees are generated generically by the KahinaState
+		// set deciders here because the trees are generated generically by the
+		// KahinaState
 		mainTreeView.getModel().setLayerDecider(new TraleSLDLayerDecider(2));
 		mainTreeView.getSecondaryModel().setLayerDecider(new TraleSLDLayerDecider(2));
 		mainChartView.display(instance.getState().getChart());
@@ -97,13 +97,13 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		try
 		{
 			displayMainViews();
-			
-			//TODO: load last perspective instead of only default perspective from XML
+
+			// TODO: load last perspective instead of only default perspective
+			// from XML
 			InputStream xmlStream = new BufferedInputStream(TraleSLDGUI.class.getResourceAsStream("tralesld-manywindows.xml"));
-			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLStream(xmlStream, false).getDocumentElement()));	
+			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLStream(xmlStream, false).getDocumentElement()));
 			xmlStream.close();
-		}
-		catch (NullPointerException e)
+		} catch (NullPointerException e)
 		{
 			e.printStackTrace();
 		} catch (IOException e)
@@ -126,7 +126,8 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 
 		if (type == KahinaDialogEvent.COMPILE)
 		{
-			// TODO custom dialog with fancy stuff like recently compiled grammars
+			// TODO custom dialog with fancy stuff like recently compiled
+			// grammars
 			// TODO add filter, just show .pl files per default
 			File directory = new File(".");
 			JFileChooser chooser = new JFileChooser(directory);
@@ -161,8 +162,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 					KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE, new Object[] { grammar.getAbsolutePath() }));
 				}
 			}
-		} 
-		else if (type == KahinaDialogEvent.PARSE)
+		} else if (type == KahinaDialogEvent.PARSE)
 		{
 			// TODO offer recent parses in a ComboBox
 			String sentence = (String) JOptionPane.showInputDialog(windowManager.mainWindow, "Enter a sentence to parse, with the words separated by spaces.", "Parse sentence",
