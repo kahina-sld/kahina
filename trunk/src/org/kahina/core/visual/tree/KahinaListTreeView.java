@@ -466,10 +466,6 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		{
 			primaryAncestorID = primaryTree.getParent(primaryAncestorID);
 		}
-		
-		// TODO Is it really necessary for primary alternatives to have the
-		// same virtual secondary parent? (Hint: it isn't. If we do it like
-		// this, we won't see all the choices we should have.)
 
 		// Among the primary descendants of that node, find those that are in
 		// the list of visible virtual secondary children determined above, but
