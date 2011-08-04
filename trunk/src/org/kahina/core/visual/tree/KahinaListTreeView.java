@@ -374,7 +374,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 			parentID = primaryTree.getParent(parentID);
 		}
 	}
-	
+
 	// TODO cache isChosen(int) and/or getPrimaryAlternatives(int, int)?
 
 	/**
@@ -436,11 +436,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 
 	/**
 	 * Returns the list of primary alternatives to a given node on a given
-	 * layer, including that node itself. Of all the virtual secondary siblings
-	 * of the node, the primary alternatives are those that are also primary
-	 * descendants of the virtual secondary parent (in well-formed
-	 * two-dimensional trees, this should be the case for all) and which are not
-	 * dominated by any other of the virtual secondary siblings.
+	 * layer, including that node itself.
 	 * 
 	 * @param nodeID
 	 * @param layer
@@ -448,14 +444,38 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	 */
 	public List<Integer> getPrimaryAlternatives(int nodeID, int layer)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".getPrimaryAlternatives(" + nodeID + ", " + layer + ")");
+		}
+
+		// Determine the virtual secondary parent and its visible virtual
+		// secondary children:
 		int virtualSecondaryParentID = secondaryTreeModel.getParent(nodeID, layer);
 		List<Integer> children = getVisibleVirtualChildren(secondaryTreeModel, virtualSecondaryParentID, layer);
 		if (VERBOSE)
 		{
 			System.err.println("Visible virtual children: " + children);
 		}
+
+		// Among the virtual secondary parent and its visible virtual secondary
+		// children, find the lowest primary ancestor of node:
+		KahinaTree primaryTree = getTreeModel();
+		int primaryAncestorID = primaryTree.getParent(nodeID);
+		while (primaryAncestorID != virtualSecondaryParentID && !children.contains(primaryAncestorID))
+		{
+			primaryAncestorID = primaryTree.getParent(primaryAncestorID);
+		}
+		
+		// TODO Is it really necessary for primary alternatives to have the
+		// same virtual secondary parent? (Hint: it isn't. If we do it like
+		// this, we won't see all the choices we should have.)
+
+		// Among the primary descendants of that node, find those that are in
+		// the list of visible virtual secondary children determined above, but
+		// only the highest ones in each primary branch:
 		List<Integer> result = new ArrayList<Integer>();
-		findPrimaryAlternatives(getTreeModel().getChildren(virtualSecondaryParentID), children, result);
+		findPrimaryAlternatives(getTreeModel().getChildren(primaryAncestorID), children, result);
 		if (VERBOSE)
 		{
 			System.err.println("Primary alternatives: " + result);
