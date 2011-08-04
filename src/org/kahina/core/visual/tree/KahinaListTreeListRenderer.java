@@ -44,6 +44,10 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 		cellPanel.setSize(200, 20);
 		int nodeID = (Integer) value;
 		List<Integer> primaryAlternatives = view.view.getPrimaryAlternatives(nodeID, layer);
+		if (VERBOSE)
+		{
+			System.err.println("Primary alternatives of node " + nodeID + " (" + view.view.getTreeModel().getNodeCaption(nodeID) + "): " + primaryAlternatives);
+		}
 		int numAlternatives = primaryAlternatives.size();
 		if (numAlternatives > 1 && index != 0)
 		{
