@@ -60,7 +60,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	 * after {@link #model} has changed. This default implementation does
 	 * nothing.
 	 */
-	public void doDisplay()
+	protected void doDisplay()
 	{
 		// do nothing
 	}

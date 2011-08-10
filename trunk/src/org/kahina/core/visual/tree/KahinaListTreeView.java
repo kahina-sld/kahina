@@ -38,7 +38,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	// Remember which branch of the primary tree is being visualized. For each
 	// node with more than one primary child, stores the index of the currently
 	// chosen *real*, not virtual child.
-	private final HashMap<Integer, Integer> primaryChildChoices;
+	private HashMap<Integer, Integer> primaryChildChoices;
 
 	// allow marking of trees on different layers
 	private int[] markedNodes;
@@ -47,9 +47,6 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	{
 		super(control);
 		this.layers = layers;
-		model = new KahinaMemTree();
-		secondaryTreeModel = null;
-		resetAllStructures();
 		nodeBorderColor = new HashMap<Integer, Color>();
 		statusNodeColorEncoding = new HashMap<Integer, Color>();
 		statusEdgeColorEncoding = new HashMap<Integer, Color>();
@@ -57,11 +54,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		statusStrokeEncoding = new HashMap<Integer, Stroke>();
 		statusFontEncoding = new HashMap<Integer, Font>();
 		statusVisibilityEncoding = new HashMap<Integer, Boolean>();
-
 		config = new KahinaTreeViewConfiguration();
-
-		primaryChildChoices = new HashMap<Integer, Integer>();
-		markedNodes = new int[layers.length];
 	}
 
 	public void display(KahinaTree treeModel)
@@ -202,9 +195,17 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		markedNodes[layer] = markedNode;
 	}
 
-	public void resetAllStructures()
+	private void resetAllStructures()
 	{
 		statusDisplayed = new HashMap<Integer, Boolean>();
+		primaryChildChoices = new HashMap<Integer, Integer>();
+		markedNodes = new int[layers.length];
+	}
+	
+	@Override
+	protected void doDisplay()
+	{
+		resetAllStructures();
 	}
 
 	@Override
