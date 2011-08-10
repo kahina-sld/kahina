@@ -1,17 +1,13 @@
 package org.kahina.core.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.dnd.DropTarget;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 import javax.swing.JMenuBar;
-import javax.swing.JPanel;
 
-import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
@@ -19,17 +15,17 @@ import org.kahina.core.event.KahinaSessionEvent;
 import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaTreeEvent;
 import org.kahina.core.event.KahinaTreeEventType;
-import org.kahina.core.gui.profiler.KahinaProfilerMenu;
-import org.kahina.core.visual.KahinaEmptyView;
 
 public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 {
 	private static final long serialVersionUID = 4400677323996243739L;
+	
+	private static final boolean VERBOSE = false;
 
 	public static boolean verbose = false;
-	
+
 	protected JMenuBar menuBar;
-	
+
 	KahinaWindow subwindow;
 
 	public KahinaMainWindow(KahinaWindowManager windowManager)
@@ -37,13 +33,13 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		super(windowManager);
 		this.initializeMainWindow();
 	}
-	
+
 	public KahinaMainWindow(KahinaWindowManager windowManager, int winID)
 	{
 		super(windowManager, winID);
 		this.initializeMainWindow();
 	}
-	
+
 	private void initializeMainWindow()
 	{
 		this.setTitle("Kahina");
@@ -54,13 +50,13 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		menuBar = new JMenuBar();
 		menuBar.add(new KahinaSessionMenu());
 		menuBar.add(new KahinaViewMenu(wm));
-		
+
 		addAdditionalMenus();
-		
+
 		menuBar.add(new KahinaHelpMenu());
 		this.setJMenuBar(menuBar);
-		
-        mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
+
+		mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
 		wm.control.registerListener(KahinaEventTypes.SYSTEM, this);
 		wm.control.registerListener(KahinaEventTypes.SESSION, this);
@@ -74,40 +70,42 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		});
 	}
-	
+
 	public void setSize(int width, int height)
 	{
-		super.setSize(width,height);
-		mainPanel.setSize(width - 10,height - 50);
+		super.setSize(width, height);
+		mainPanel.setSize(width - 10, height - 50);
 	}
-	
+
 	protected void addAdditionalMenus()
 	{
-		
+
 	}
-	
+
 	public boolean addSubwindow(KahinaWindow w)
 	{
-    	if (subwindow == null)
-    	{
-    		setSubwindow(w);
-    		return true;
-    	}
-    	else
-    	{
-    		return false;
-    	}
+		if (subwindow == null)
+		{
+			setSubwindow(w);
+			return true;
+		} else
+		{
+			return false;
+		}
 	}
-	
-    public void setSubwindow(KahinaWindow w)
-    {
-    	System.err.println("Setting subwindow: " + w.getID());
-    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
-    	subwindow = w;
-        mainPanel.removeAll();
-        mainPanel.add(w.getContentPane());
-    }
-	
+
+	public void setSubwindow(KahinaWindow w)
+	{
+		if (VERBOSE)
+		{
+			System.err.println("Setting subwindow: " + w.getID());
+		}
+		wm.arr.setEmbeddingWindowID(w.getID(), windowID);
+		subwindow = w;
+		mainPanel.removeAll();
+		mainPanel.add(w.getContentPane());
+	}
+
 	public int getWindowType()
 	{
 		return KahinaWindowType.MAIN_WINDOW;
@@ -117,40 +115,39 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	{
 		wm.disposeAllWindows();
 	}
-	
-	public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
-    {
-    	if (subwindow == removedWindow)
-    	{
-    		wm.arr.setEmbeddingWindowID(removedWindow.getID(),-1);
 
-    		//crudely determine not too surprising positions and sizes for the separate windows
-    		removedWindow.setSize(this.getWidth(), this.getHeight() - 30);
-    		removedWindow.setLocation(this.getX() + 30, this.getY() + 50);
-    		
-    		removedWindow.setContentPane((Container) mainPanel.getComponents()[0]);
-    		subwindow = null;
-    	}
-    	else
-    	{
-    		System.err.println("WARNING: Window \"" + removedWindow.getTitle() + "\" is not embedded directly under the main window, release failed.");
-    	}
+	public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
+	{
+		if (subwindow == removedWindow)
+		{
+			wm.arr.setEmbeddingWindowID(removedWindow.getID(), -1);
+
+			// crudely determine not too surprising positions and sizes for the
+			// separate windows
+			removedWindow.setSize(this.getWidth(), this.getHeight() - 30);
+			removedWindow.setLocation(this.getX() + 30, this.getY() + 50);
+
+			removedWindow.setContentPane((Container) mainPanel.getComponents()[0]);
+			subwindow = null;
+		} else
+		{
+			System.err.println("WARNING: Window \"" + removedWindow.getTitle() + "\" is not embedded directly under the main window, release failed.");
+		}
 		return this;
-    }
-    
-    public void replaceSubwindow(KahinaWindow oldSubwindow, KahinaWindow newSubwindow)
-    {
-    	if (subwindow == oldSubwindow)
-    	{
-    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
-    		
-        	setSubwindow(newSubwindow);
-    	}
-    	else
-    	{
-    		System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" not found as a tab in window \"" + this.getTitle() + "\", replacement failed.");
-    	}
-    }
+	}
+
+	public void replaceSubwindow(KahinaWindow oldSubwindow, KahinaWindow newSubwindow)
+	{
+		if (subwindow == oldSubwindow)
+		{
+			wm.arr.setEmbeddingWindowID(oldSubwindow.getID(), -1);
+
+			setSubwindow(newSubwindow);
+		} else
+		{
+			System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" not found as a tab in window \"" + this.getTitle() + "\", replacement failed.");
+		}
+	}
 
 	@Override
 	public void processEvent(KahinaEvent event)
@@ -158,12 +155,10 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		if (event instanceof KahinaTreeEvent)
 		{
 			processTreeEvent((KahinaTreeEvent) event);
-		} 
-		else if (event instanceof KahinaSystemEvent)
+		} else if (event instanceof KahinaSystemEvent)
 		{
 			processSystemEvent((KahinaSystemEvent) event);
-		} 
-		else if (event instanceof KahinaSessionEvent)
+		} else if (event instanceof KahinaSessionEvent)
 		{
 			processSessionEvent((KahinaSessionEvent) event);
 		}
