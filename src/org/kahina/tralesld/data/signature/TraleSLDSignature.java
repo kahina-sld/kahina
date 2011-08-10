@@ -80,11 +80,20 @@ public class TraleSLDSignature extends KahinaObject
 	}
 	
 	/**
-	 * Fills the introFeats map; TODO: precompute and cache more type information
+	 * Fills the introFeats map. 
 	 * This needs to be called once for the visualization to work.
 	 */
+	//TODO: precompute and cache more type information:
+	//		- an indexing structure that directly encodes where features come from
+	//		- another indexing structure that makes all type restrictions for a feature explicit
+	//		- cache the usage data (i.e.: for which features at which types is a given type appropriate?)
+	//		- perhaps even generate and cache the HTML code for the view components?
+	//		  (probably not, this should logically be done by the TraleSLDSignatureView
 	public void inferCachedInformation()
 	{
-		
+		for (String type : types)
+		{
+			
+		}
 	}
 }

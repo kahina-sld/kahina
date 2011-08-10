@@ -289,6 +289,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		synchronized (traleCommands)
 		{
 			traleCommands.add("query dcompile_gram(" + PrologUtilities.stringToAtomLiteral(absolutePath) + ").");
+			traleCommands.add("query send_signature.");
 		}
 	}
 
