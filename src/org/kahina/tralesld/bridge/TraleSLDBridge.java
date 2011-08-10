@@ -70,6 +70,23 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			chart.setSegmentCaption(i, wordList.get(i));
 		}
 	}
+	
+	public void registerSubtype(String type, String subtype)
+	{
+		state.getSignature().addSubtypeRelation(type, subtype);
+	}
+	
+	public void registerAppropriateFeature(String type, String feature, String typeRest)
+	{
+		state.getSignature().addAppropriateFeature(type, feature, typeRest);
+	}
+	
+	//the TraleSLDSignature can only infer all necessary information after
+	//the entire type hierarchy with all the appropriateness conditions was registered
+	public void signatureFinished()
+	{
+		state.getSignature().inferCachedInformation();
+	}
 
 	public void step(int extID, String stepType, String nodeLabel, String consoleMessage)
 	{
