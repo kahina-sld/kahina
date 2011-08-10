@@ -227,7 +227,8 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			{
 				System.err.println("Sentence registered.");
 			}
-		} else if (TraleSLDControlEventCommands.REGISTER_GRAMMAR.equals(command))
+		} 
+		else if (TraleSLDControlEventCommands.REGISTER_GRAMMAR.equals(command))
 		{
 			grammar = (String) event.getArguments()[0];
 			PARSE_ACTION.setEnabled(commanding);
@@ -236,31 +237,35 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			{
 				System.err.println("Grammar registered.");
 			}
-		} else if (TraleSLDControlEventCommands.COMPILE.equals(command))
+		} 
+		else if (TraleSLDControlEventCommands.COMPILE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
 				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
-			} else
+			} 
+			else
 			{
-				// Lazy hack: set bridge to abort - if we go through the
-				// controller,
+				// Lazy hack: set bridge to abort - if we go through the controller,
 				// KahinaRunner will deinitialize and thwart subsequent eventing
 				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 				compile((String) event.getArguments()[0]);
 			}
-		} else if (TraleSLDControlEventCommands.PARSE.equals(command))
+		} 
+		else if (TraleSLDControlEventCommands.PARSE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
 				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { Utilities.join(" ", sentence) }));
-			} else
+			} 
+			else
 			{
 				// Lazy hack: see above
 				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 				parse(castToStringList(event.getArguments()[0]));
 			}
-		} else if (TraleSLDControlEventCommands.RESTART.equals(command))
+		} 
+		else if (TraleSLDControlEventCommands.RESTART.equals(command))
 		{
 			// Lazy hack: see above
 			bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));

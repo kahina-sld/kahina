@@ -9,6 +9,11 @@ import org.kahina.core.data.KahinaObject;
 
 public class TraleSLDSignature extends KahinaObject
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7411049956894696227L;
+
 	//types can simply be stored as strings because they have unique names
 	List<String> types;
 	
@@ -34,7 +39,7 @@ public class TraleSLDSignature extends KahinaObject
 		introFeats.put("bot", new HashMap<String,String>());
 	}
 	
-	public static TraleSLDSignature importFromTrale()
+	public static TraleSLDSignature loadFromTraleSignatureFile()
 	{
 		return new TraleSLDSignature();
 	}

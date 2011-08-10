@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.data.chart.KahinaMemChart;
 import org.kahina.lp.LogicProgrammingState;
+import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
 public class TraleSLDState extends LogicProgrammingState
 {
@@ -14,6 +15,7 @@ public class TraleSLDState extends LogicProgrammingState
 	private static final long serialVersionUID = -6388044339949017641L;
 
 	KahinaChart chart;
+	TraleSLDSignature signature;
 
 	// coordination between tree and chart
 	HashMap<Integer, Integer> edgeToNode;
@@ -23,6 +25,7 @@ public class TraleSLDState extends LogicProgrammingState
 	{
 		super();
 		chart = new KahinaMemChart();
+		signature = new TraleSLDSignature();
 		edgeToNode = new HashMap<Integer, Integer>();
 		nodeToEdge = new HashMap<Integer, Integer>();
 	}
@@ -30,6 +33,11 @@ public class TraleSLDState extends LogicProgrammingState
 	public KahinaChart getChart()
 	{
 		return chart;
+	}
+	
+	public TraleSLDSignature getSignature()
+	{
+		return signature;
 	}
 
 	public void linkEdgeToNode(int edgeID, int nodeID)
