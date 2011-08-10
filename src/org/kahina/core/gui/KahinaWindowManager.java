@@ -28,6 +28,8 @@ import org.w3c.dom.Node;
 
 public class KahinaWindowManager implements KahinaListener
 {
+	private static final boolean VERBOSE = false;
+	
 	public KahinaMainWindow mainWindow;
 
 	KahinaPerspective psp;
@@ -98,7 +100,10 @@ public class KahinaWindowManager implements KahinaListener
 			{
 				String binding = arr.getBindingForWinID(winID);
 				KahinaView<?> view = gui.varNameToView.get(binding);
-				System.err.println("Generating default view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
+				if (VERBOSE)
+				{
+					System.err.println("Generating default view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
+				}
 				KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, winID);
 				viewWindow.setTitle(arr.getTitle(winID));
 				viewWindow.setBorder(arr.hasBorder(winID));
@@ -108,7 +113,10 @@ public class KahinaWindowManager implements KahinaListener
 			{
 				String binding = arr.getBindingForWinID(winID);
 				KahinaControlButtonWindow controlWindow = new KahinaControlButtonWindow(this, winID);
-				System.err.println("Generating control view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
+				if (VERBOSE)
+				{
+					System.err.println("Generating control view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");
+				}
 				controlWindow.setBorder(arr.hasBorder(winID));
 				controlWindow.setTitle(arr.getTitle(winID));
 				for (KahinaControlButton button : gui.controlWindows.get(binding))
