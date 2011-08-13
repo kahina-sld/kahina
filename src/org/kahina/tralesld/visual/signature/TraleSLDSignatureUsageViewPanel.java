@@ -25,18 +25,4 @@ public class TraleSLDSignatureUsageViewPanel  extends KahinaViewPanel<TraleSLDSi
 	{
 		htmlPane.setText(view.getHTML(currentType));		
 	}
-	
-	/**@Override
-	public void processEvent(KahinaEvent event) 
-	{
-		if (event instanceof TraleSLDTypeSelectionEvent)
-        {
-            processEvent((TraleSLDTypeSelectionEvent) event);
-        }
-    }
-    
-    protected void processEvent(TraleSLDTypeSelectionEvent e)
-    {
-        setMarkedEdge(e.getSelectedEdge());
-    }*/
 }

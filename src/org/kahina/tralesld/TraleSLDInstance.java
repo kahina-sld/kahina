@@ -272,6 +272,11 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			compile(grammar);
 			parse(sentence);
 		}
+		else if (TraleSLDControlEventCommands.REBUILD_SIGNATURE_INFO.equals(command))
+		{
+			//this also rebuilds the chart and the step tree (could be done in a cleaner way)
+			gui.displayMainViews();
+		}
 	}
 
 	@SuppressWarnings("unchecked")

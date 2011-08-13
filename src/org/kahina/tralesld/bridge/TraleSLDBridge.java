@@ -73,11 +73,19 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	
 	public void registerSubtype(String type, String subtype)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".registerSubtype(" + type + "," + subtype +  ")");
+		}
 		state.getSignature().addSubtypeRelation(type, subtype);
 	}
 	
 	public void registerAppropriateFeature(String type, String feature, String typeRest)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".registerAppropriateFeature(" + type + "," + feature + "," + typeRest + ")");
+		}
 		state.getSignature().addAppropriateFeature(type, feature, typeRest);
 	}
 	
@@ -85,7 +93,12 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	//the entire type hierarchy with all the appropriateness conditions was registered
 	public void signatureFinished()
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".signatureFinished()");
+		}
 		state.getSignature().inferCachedInformation();
+		KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REBUILD_SIGNATURE_INFO));
 	}
 
 	public void step(int extID, String stepType, String nodeLabel, String consoleMessage)

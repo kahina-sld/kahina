@@ -13,4 +13,5 @@ public interface TraleSLDControlEventCommands
 
 	public static final String REGISTER_GRAMMAR = "register grammar";
 	
+	public static final String REBUILD_SIGNATURE_INFO = "rebuild signature info";
 }
