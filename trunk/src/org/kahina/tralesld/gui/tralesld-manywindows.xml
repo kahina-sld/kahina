@@ -21,6 +21,14 @@
       <kahina:default-window kahina:binding="messageConsole" kahina:height="360" kahina:id="7" kahina:border="true" kahina:primary="true" kahina:title="Message console" kahina:width="230" kahina:xpos="452" kahina:ypos="429"/>
       <kahina:default-window kahina:binding="codeLocation" kahina:height="288" kahina:id="8" kahina:border="true" kahina:primary="true" kahina:title="codeLocation" kahina:width="194" kahina:xpos="702" kahina:ypos="428"/>
     </kahina:vert-split-window>
+    <kahina:vert-split-window  kahina:height="625" kahina:id="24" kahina:title="ALE Signature Inspection" kahina:border="false" kahina:width="840" kahina:xpos="0" kahina:ypos="100">
+	  <kahina:hori-split-window kahina:height="312" kahina:id="23" kahina:title="Hierarchy and Appropriateness" kahina:border="false" kahina:width="840" kahina:xpos="0" kahina:ypos="100">
+	    <kahina:default-window kahina:binding="signature-hierarchy" kahina:height="312" kahina:id="20" kahina:primary="true" kahina:border="true" kahina:title="Type Hierarchy" kahina:width="420" kahina:xpos="0" kahina:ypos="100"/>
+	    <kahina:default-window kahina:binding="signature-appropriateness" kahina:height="312" kahina:id="21" kahina:primary="true" kahina:border="true" kahina:title="Appropriateness Conditions" kahina:width="420" kahina:xpos="420" kahina:ypos="100"/>
+	  </kahina:hori-split-window>
+	  <kahina:default-window kahina:binding="signature-usage" kahina:height="312" kahina:id="22" kahina:primary="true" kahina:border="true" kahina:title="Type Usage" kahina:width="840" kahina:xpos="0" kahina:ypos="412"/>
+	</kahina:vert-split-window>
+
   </kahina:arrangement>
   <kahina:configurations>
     <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="1"/>

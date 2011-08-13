@@ -100,6 +100,12 @@ public class KahinaWindowManager implements KahinaListener
 			{
 				String binding = arr.getBindingForWinID(winID);
 				KahinaView<?> view = gui.varNameToView.get(binding);
+				if (view == null)
+				{
+					System.err.println("WARNING: No view defined for binding \"" + binding + "\"");
+					System.err.println("Could not apply the perspective, aborting.");
+					return;
+				}
 				if (VERBOSE)
 				{
 					System.err.println("Generating default view " + winID + " for binding " + binding + " (primary window: " + arr.getPrimaryWinIDForName(binding) + ")");

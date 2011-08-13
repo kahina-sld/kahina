@@ -79,6 +79,21 @@ public class TraleSLDSignature extends KahinaObject
 		typeRestr.get(type).put(feature,valueRestr);
 	}
 	
+	public List<String> getTypes()
+	{
+		return types;
+	}
+	
+	public Set<String> getSubtypes(String type)
+	{
+		return subtypes.get(type);
+	}
+	
+	public Set<String> getSupertypes(String type)
+	{
+		return supertypes.get(type);
+	}
+	
 	/**
 	 * Fills the introFeats map. 
 	 * This needs to be called once for the visualization to work.
