@@ -9,7 +9,6 @@ import org.kahina.core.visual.KahinaViewPanel;
 public class TraleSLDSignatureAppropriatenessViewPanel extends KahinaViewPanel<TraleSLDSignatureAppropriatenessView> implements KahinaListener
 {
 	private JEditorPane htmlPane;
-	String currentType = "bot";
 	
 	public TraleSLDSignatureAppropriatenessViewPanel(KahinaController control)
 	{
@@ -23,6 +22,6 @@ public class TraleSLDSignatureAppropriatenessViewPanel extends KahinaViewPanel<T
 	@Override
 	public void updateDisplay() 
 	{
-		htmlPane.setText(view.getHTML(currentType));		
+		htmlPane.setText(view.getHTML(view.getCurrentType()));		
 	}
 }

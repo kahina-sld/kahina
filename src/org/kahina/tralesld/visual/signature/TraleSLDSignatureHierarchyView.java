@@ -48,12 +48,12 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
     		htmlBuilder = new StringBuilder("<h1>" + type + "</h1><b>Immediate supertypes: </b>");
     		for (String supertype : model.getSupertypes(type))
     		{
-    			htmlBuilder.append("<a href=\"type:" + supertype + "\">" + supertype + "</a>,");
+    			htmlBuilder.append("<a href=\"type:" + supertype + "\">" + supertype + "</a> ");
     		}
     		htmlBuilder.append("<br/><b>Immediate subtypes: </b>");
     		for (String subtype : model.getSubtypes(type))
     		{
-    			htmlBuilder.append("<a href=\"type:" + subtype + "\">" + subtype + "</a>,");
+    			htmlBuilder.append("<a href=\"type:" + subtype + "\">" + subtype + "</a> ");
     		}
     		htmlForType.put(type, htmlBuilder.toString());
     	}
@@ -80,7 +80,7 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
     	String usageHTML = htmlForType.get(type);
     	if (usageHTML == null)
     	{
-    		usageHTML = "No usage info available for type <b>" + type + "</b>.";
+    		usageHTML = "No type hierarchy available for type <b>" + type + "</b>.";
     	}
     	return usageHTML;
     }

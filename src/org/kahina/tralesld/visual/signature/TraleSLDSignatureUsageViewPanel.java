@@ -9,7 +9,6 @@ import org.kahina.core.visual.chart.KahinaChartView;
 public class TraleSLDSignatureUsageViewPanel  extends KahinaViewPanel<TraleSLDSignatureUsageView>
 {
 	private JEditorPane htmlPane;
-	String currentType = "bot";
 	
 	public TraleSLDSignatureUsageViewPanel(KahinaController control)
 	{
@@ -23,6 +22,6 @@ public class TraleSLDSignatureUsageViewPanel  extends KahinaViewPanel<TraleSLDSi
 	@Override
 	public void updateDisplay() 
 	{
-		htmlPane.setText(view.getHTML(currentType));		
+		htmlPane.setText(view.getHTML(view.getCurrentType()));		
 	}
 }

@@ -8,13 +8,13 @@ import org.kahina.core.visual.KahinaViewPanel;
 public class TraleSLDSignatureHierarchyViewPanel extends KahinaViewPanel<TraleSLDSignatureHierarchyView>
 {
 	private JEditorPane htmlPane;
-	String currentType = "bot";
 	
 	public TraleSLDSignatureHierarchyViewPanel(KahinaController control)
 	{
 		htmlPane = new JEditorPane();
 		htmlPane.setContentType("text/html");
 		htmlPane.setEditable(false);
+		htmlPane.addHyperlinkListener(new TraleSLDSignatureHyperlinkListener());
 		
 		add(htmlPane);
 	}
@@ -22,6 +22,6 @@ public class TraleSLDSignatureHierarchyViewPanel extends KahinaViewPanel<TraleSL
 	@Override
 	public void updateDisplay() 
 	{
-		htmlPane.setText(view.getHTML(currentType));		
+		htmlPane.setText(view.getHTML(view.getCurrentType()));		
 	}
 }
