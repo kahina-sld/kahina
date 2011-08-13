@@ -7,18 +7,23 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
+import org.kahina.tralesld.event.TraleSLDTypeSelectionEvent;
 
 public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature>
 {
 	private Map<String,String> htmlForType;
+	String currentType = "bot";
 	
     public TraleSLDSignatureHierarchyView(KahinaController control)
     {
     	super(control);
         
         htmlForType = new HashMap<String,String>();
+        
+        control.registerListener("type selection", this);
     }
     
     public TraleSLDSignatureHierarchyView(TraleSLDSignature signature, KahinaController control)
@@ -39,7 +44,7 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
     	StringBuilder htmlBuilder;
     	for (String type : model.getTypes())
     	{
-    		System.err.println("Producing hierarchy HTML for type: " + type);
+    		//System.err.println("Producing hierarchy HTML for type: " + type);
     		htmlBuilder = new StringBuilder("<h1>" + type + "</h1><b>Immediate supertypes: </b>");
     		for (String supertype : model.getSupertypes(type))
     		{
@@ -52,6 +57,16 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
     		}
     		htmlForType.put(type, htmlBuilder.toString());
     	}
+    }
+    
+    public String getCurrentType()
+    {
+    	return currentType;
+    }
+    
+    public void setCurrentType(String type)
+    {
+    	currentType = type;
     }
     
     /**
@@ -78,4 +93,17 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
         panel.setView(this);
         return new JScrollPane(panel);
 	}
+	
+	public void processEvent(KahinaEvent event) 
+	{
+		if (event instanceof TraleSLDTypeSelectionEvent)
+        {
+            processEvent((TraleSLDTypeSelectionEvent) event);
+        }
+    }
+    
+    protected void processEvent(TraleSLDTypeSelectionEvent e)
+    {
+        setCurrentType(e.getSelectedType());
+    }
 }

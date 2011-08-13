@@ -266,8 +266,7 @@ public class KahinaGUI implements KahinaListener
 				KahinaRunner.processEvent(new KahinaRedrawEvent());
 			}
 		}
-		// for special case of isolated view components: there is no
-		// coordinating KahinaGUI
+		// for special case of isolated view components: there is no coordinating KahinaGUI
 		else
 		{
 			if (VERBOSE)

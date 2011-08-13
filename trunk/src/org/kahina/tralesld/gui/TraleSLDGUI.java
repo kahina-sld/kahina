@@ -1,5 +1,7 @@
 package org.kahina.tralesld.gui;
 
+import gralej.controller.Controller;
+
 import java.awt.Color;
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -19,6 +21,8 @@ import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
@@ -32,6 +36,7 @@ import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
 import org.kahina.tralesld.event.TraleSLDControlEventCommands;
+import org.kahina.tralesld.event.TraleSLDTypeSelectionEvent;
 import org.kahina.tralesld.profiler.TraleSLDProfileEntryMapper;
 import org.kahina.tralesld.visual.chart.TraleSLDChartEdgeDisplayDecider;
 import org.kahina.tralesld.visual.signature.TraleSLDSignatureAppropriatenessView;
@@ -116,6 +121,8 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		signatureHierarchyView.display(instance.getState().getSignature());
 		signatureAppropriatenessView.display(instance.getState().getSignature());
 		signatureUsageView.display(instance.getState().getSignature());
+		KahinaRunner.processEvent(new TraleSLDTypeSelectionEvent("bot"));
+		KahinaRunner.processEvent(new KahinaRedrawEvent());
 	}
 
 	@Override
@@ -153,8 +160,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 
 		if (type == KahinaDialogEvent.COMPILE)
 		{
-			// TODO custom dialog with fancy stuff like recently compiled
-			// grammars
+			// TODO custom dialog with fancy stuff like recently compiled grammars
 			// TODO add filter, just show .pl files per default
 			File directory = new File(".");
 			JFileChooser chooser = new JFileChooser(directory);
