@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.kahina.core.data.KahinaObject;
 
@@ -29,6 +30,8 @@ public class TraleSLDSignature extends KahinaObject
 	Map<String,Map<String,String>> introFeats;
 	//inherited features are listed again when a type restriction is tightened
 	Map<String,Map<String,String>> typeRestr;
+	//store the features whose value can be of a given type
+	Map<String,Set<String>> usage;
 	
 	public TraleSLDSignature()
 	{
@@ -38,6 +41,7 @@ public class TraleSLDSignature extends KahinaObject
 		supertypes = new HashMap<String,Set<String>>();
 		introFeats = new HashMap<String,Map<String,String>>();
 		typeRestr = new HashMap<String,Map<String,String>>();
+		usage = new HashMap<String,Set<String>>();
 		
 		//the empty signature contains the root type "bot" without features
 		registerType("bot");
@@ -50,6 +54,7 @@ public class TraleSLDSignature extends KahinaObject
 		supertypes.put(type, new HashSet<String>());
 		introFeats.put(type, new HashMap<String,String>());
 		typeRestr.put(type, new HashMap<String,String>());
+		usage.put(type, new HashSet<String>());
 	}
 
 	public void addSubtypeRelation(String type, String subtype) 
@@ -77,6 +82,7 @@ public class TraleSLDSignature extends KahinaObject
 			registerType(valueRestr);
 		}
 		typeRestr.get(type).put(feature,valueRestr);
+		usage.get(valueRestr).add(type + ":" + feature);
 	}
 	
 	public List<String> getTypes()
@@ -92,6 +98,16 @@ public class TraleSLDSignature extends KahinaObject
 	public Set<String> getSupertypes(String type)
 	{
 		return supertypes.get(type);
+	}
+	
+	public Set<String> getUses(String type)
+	{
+		return usage.get(type);
+	}
+	
+	public Map<String,String> getAppropriateness(String type)
+	{
+		return typeRestr.get(type);
 	}
 	
 	/**
