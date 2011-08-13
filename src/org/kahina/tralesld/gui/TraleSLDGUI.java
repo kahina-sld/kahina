@@ -34,12 +34,19 @@ import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
 import org.kahina.tralesld.event.TraleSLDControlEventCommands;
 import org.kahina.tralesld.profiler.TraleSLDProfileEntryMapper;
 import org.kahina.tralesld.visual.chart.TraleSLDChartEdgeDisplayDecider;
+import org.kahina.tralesld.visual.signature.TraleSLDSignatureAppropriatenessView;
+import org.kahina.tralesld.visual.signature.TraleSLDSignatureHierarchyView;
+import org.kahina.tralesld.visual.signature.TraleSLDSignatureUsageView;
 
 public class TraleSLDGUI extends LogicProgrammingGUI
 {
 	private TraleSLDInstance instance;
 
 	protected KahinaChartView mainChartView;
+	
+	protected TraleSLDSignatureHierarchyView signatureHierarchyView;
+	protected TraleSLDSignatureAppropriatenessView signatureAppropriatenessView;
+	protected TraleSLDSignatureUsageView signatureUsageView;
 
 	public TraleSLDGUI(Class<? extends KahinaStep> stepType, TraleSLDInstance instance, KahinaController control)
 	{
@@ -51,6 +58,24 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		views.add(mainChartView);
 		livingViews.add(mainChartView);
 		varNameToView.put("chart", mainChartView);
+		
+		signatureHierarchyView = new TraleSLDSignatureHierarchyView(control);
+		signatureHierarchyView.setTitle("Type Hierarchy");
+		views.add(signatureHierarchyView);
+		livingViews.add(signatureHierarchyView);
+		varNameToView.put("signature-hierarchy", signatureHierarchyView);
+		
+		signatureAppropriatenessView = new TraleSLDSignatureAppropriatenessView(control);
+		signatureAppropriatenessView.setTitle("Appropriateness Conditions");
+		views.add(signatureAppropriatenessView);
+		livingViews.add(signatureAppropriatenessView);
+		varNameToView.put("signature-appropriateness", signatureAppropriatenessView);
+		
+		signatureUsageView = new TraleSLDSignatureUsageView(control);
+		signatureUsageView.setTitle("Type Usage");
+		views.add(signatureUsageView);
+		livingViews.add(signatureUsageView);
+		varNameToView.put("signature-usage", signatureUsageView);
 
 		mainTreeView.setStatusColorEncoding(TraleSLDStepType.FINISHED, new Color(102, 51, 153));
 
@@ -84,11 +109,13 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	public void displayMainViews()
 	{
 		super.displayMainViews();
-		// set deciders here because the trees are generated generically by the
-		// KahinaState
+		// set deciders here because the trees are generated generically by the KahinaState
 		mainTreeView.getModel().setLayerDecider(new TraleSLDLayerDecider(2));
 		mainTreeView.getSecondaryModel().setLayerDecider(new TraleSLDLayerDecider(2));
 		mainChartView.display(instance.getState().getChart());
+		signatureHierarchyView.display(instance.getState().getSignature());
+		signatureAppropriatenessView.display(instance.getState().getSignature());
+		signatureUsageView.display(instance.getState().getSignature());
 	}
 
 	@Override
