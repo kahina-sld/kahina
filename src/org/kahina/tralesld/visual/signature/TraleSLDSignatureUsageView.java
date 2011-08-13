@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.Stroke;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -48,7 +49,18 @@ public class TraleSLDSignatureUsageView extends KahinaView<TraleSLDSignature>
     public void recalculate()
     {
     	//generate the HTML code for usage information display here
-    	
+    	StringBuilder htmlBuilder;
+    	for (String type : model.getTypes())
+    	{
+    		//System.err.println("Producing feature appropriateness HTML for type: " + type);
+    		htmlBuilder = new StringBuilder("<h3>type:FEATURE:" + type + "</h3>");
+    		for (String entry : model.getUses(type))
+    		{
+    			String[] tyAndF = entry.split(":");
+    			htmlBuilder.append("<a href=\"type:" + tyAndF[0] + "\">" + tyAndF[0] + "</a>:" + tyAndF[1].toUpperCase() + ":" + type + "<br/> ");
+    		}
+    		htmlForType.put(type, htmlBuilder.toString());
+    	}
     }
     
     public String getCurrentType()

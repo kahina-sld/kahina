@@ -2,6 +2,7 @@ package org.kahina.tralesld.visual.signature;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -41,7 +42,18 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
     public void recalculate()
     {
     	//generate the HTML code for feature appropriateness display here
-    	
+    	StringBuilder htmlBuilder;
+    	for (String type : model.getTypes())
+    	{
+    		//System.err.println("Producing feature appropriateness HTML for type: " + type);
+    		htmlBuilder = new StringBuilder("<h3>" + type + ":FEATURE:restriction</h3>");
+    		Map<String,String> approp = model.getAppropriateness(type);
+    		for (Entry<String,String> condition : approp.entrySet())
+    		{
+    			htmlBuilder.append(condition.getKey().toUpperCase() + ": <a href=\"type:" + condition.getValue() + "\">" + condition.getValue() + "</a><br/> ");
+    		}
+    		htmlForType.put(type, htmlBuilder.toString());
+    	}
     }
     
     public String getCurrentType()
@@ -65,7 +77,7 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
     	String usageHTML = htmlForType.get(type);
     	if (usageHTML == null)
     	{
-    		usageHTML = "No usage info available for type <b>" + type + "</b>.";
+    		usageHTML = "No feature appropriateness information available for type <b>" + type + "</b>.";
     	}
     	return usageHTML;
     }
