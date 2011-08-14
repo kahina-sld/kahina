@@ -1,5 +1,6 @@
 package org.kahina.tralesld.visual.signature;
 
+import javax.swing.BoxLayout;
 import javax.swing.JEditorPane;
 
 import org.kahina.core.control.KahinaController;
@@ -12,6 +13,8 @@ public class TraleSLDSignatureAppropriatenessViewPanel extends KahinaViewPanel<T
 	
 	public TraleSLDSignatureAppropriatenessViewPanel(KahinaController control)
 	{
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		
 		htmlPane = new JEditorPane();
 		htmlPane.setContentType("text/html");
 		htmlPane.setEditable(false);

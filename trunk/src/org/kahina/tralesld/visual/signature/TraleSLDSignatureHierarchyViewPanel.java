@@ -1,17 +1,21 @@
 package org.kahina.tralesld.visual.signature;
 
+import javax.swing.BoxLayout;
 import javax.swing.JEditorPane;
+import javax.swing.JTextPane;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class TraleSLDSignatureHierarchyViewPanel extends KahinaViewPanel<TraleSLDSignatureHierarchyView>
 {
-	private JEditorPane htmlPane;
+	private JTextPane htmlPane;
 	
 	public TraleSLDSignatureHierarchyViewPanel(KahinaController control)
-	{
-		htmlPane = new JEditorPane();
+	{		
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		
+		htmlPane = new JTextPane();
 		htmlPane.setContentType("text/html");
 		htmlPane.setEditable(false);
 		htmlPane.addHyperlinkListener(new TraleSLDSignatureHyperlinkListener());
