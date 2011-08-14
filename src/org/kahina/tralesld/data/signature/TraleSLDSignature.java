@@ -129,7 +129,7 @@ public class TraleSLDSignature extends KahinaObject
 	//		- another indexing structure that makes all type restrictions for a feature explicit
 	public void inferCachedInformation()
 	{
-		//dynamic programming, reuse the type and feature introduction from higher types
+		//dynamic programming, reuse paths and featIntro information from higher types
 		LinkedList<String> botPath = new LinkedList<String>();
 		botPath.add("bot");
 		paths.get("bot").add(botPath);

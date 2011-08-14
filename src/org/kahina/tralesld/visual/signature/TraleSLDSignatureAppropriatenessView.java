@@ -46,7 +46,7 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
     	for (String type : model.getTypes())
     	{
     		//System.err.println("Producing feature appropriateness HTML for type: " + type);
-    		htmlBuilder = new StringBuilder("<h3>" + type + ":FEATURE:restriction</h3>");
+    		htmlBuilder = new StringBuilder("<u>Appropriate features for type <b>" + type + "</b>:</u><br/><br/>");
     		Map<String,String> approp = model.getAppropriateness(type);
     		for (Entry<String,String> condition : approp.entrySet())
     		{

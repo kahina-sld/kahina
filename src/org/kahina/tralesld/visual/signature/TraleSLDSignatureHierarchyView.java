@@ -1,5 +1,6 @@
 package org.kahina.tralesld.visual.signature;
 
+import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,7 +143,11 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
         TraleSLDSignatureHierarchyViewPanel panel = new TraleSLDSignatureHierarchyViewPanel(control);
         control.registerListener("redraw", panel);
         panel.setView(this);
-        return new JScrollPane(panel);
+        //TODO: somehow prevent the editor pane from exceeding the viewport bounds instead of line wrapping
+        JScrollPane scrollPane = new JScrollPane(panel);
+        //scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setPreferredSize(new Dimension(150,180));
+        return scrollPane;
 	}
 	
 	public void processEvent(KahinaEvent event) 

@@ -53,7 +53,7 @@ public class TraleSLDSignatureUsageView extends KahinaView<TraleSLDSignature>
     	for (String type : model.getTypes())
     	{
     		//System.err.println("Producing feature appropriateness HTML for type: " + type);
-    		htmlBuilder = new StringBuilder("<h3>type:FEATURE:" + type + "</h3>");
+    		htmlBuilder = new StringBuilder("<u>Type <b>" + type + "</b> is valid for:</u><br/><br/>");
     		for (String entry : model.getUses(type))
     		{
     			String[] tyAndF = entry.split(":");

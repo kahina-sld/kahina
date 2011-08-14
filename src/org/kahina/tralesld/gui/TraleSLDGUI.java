@@ -121,6 +121,13 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		signatureHierarchyView.display(instance.getState().getSignature());
 		signatureAppropriatenessView.display(instance.getState().getSignature());
 		signatureUsageView.display(instance.getState().getSignature());
+	}
+	
+	public void signatureUpdate()
+	{
+		signatureHierarchyView.display(instance.getState().getSignature());
+		signatureAppropriatenessView.display(instance.getState().getSignature());
+		signatureUsageView.display(instance.getState().getSignature());
 		KahinaRunner.processEvent(new TraleSLDTypeSelectionEvent("bot"));
 		KahinaRunner.processEvent(new KahinaRedrawEvent());
 	}
