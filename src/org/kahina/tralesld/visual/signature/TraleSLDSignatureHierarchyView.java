@@ -1,7 +1,9 @@
 package org.kahina.tralesld.visual.signature;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -45,15 +47,64 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
     	for (String type : model.getTypes())
     	{
     		//System.err.println("Producing hierarchy HTML for type: " + type);
-    		htmlBuilder = new StringBuilder("<h1>" + type + "</h1><b>Immediate supertypes: </b>");
-    		for (String supertype : model.getSupertypes(type))
+    		Set<String> supertypes = model.getSupertypes(type);
+    		Set<String> subtypes = model.getSubtypes(type);
+    		htmlBuilder = new StringBuilder("<h1>" + type + "</h1>");
+    		if (supertypes.size() == 0)
+    		{
+    			htmlBuilder.append("<b>Root type. </b>");
+    		}
+    		else
+    		{
+    			htmlBuilder.append("<b>Immediate supertypes: </b>");
+    		}		
+    		for (String supertype : supertypes)
     		{
     			htmlBuilder.append("<a href=\"type:" + supertype + "\">" + supertype + "</a> ");
     		}
-    		htmlBuilder.append("<br/><b>Immediate subtypes: </b>");
-    		for (String subtype : model.getSubtypes(type))
+    		
+    		if (subtypes.size() == 0)
     		{
-    			htmlBuilder.append("<a href=\"type:" + subtype + "\">" + subtype + "</a> ");
+    			htmlBuilder.append("<br/><b>Atomic type. </b>");
+    		}
+    		else
+    		{
+	    		htmlBuilder.append("<br/><b>Immediate subtypes: </b>");
+	    		for (String subtype : subtypes)
+	    		{
+	    			htmlBuilder.append("<a href=\"type:" + subtype + "\">" + subtype + "</a> ");
+	    		}
+    		}
+    		
+    		if (supertypes.size() > 0)
+    		{
+	    		htmlBuilder.append("<br/><br/><b>Sibling types: </b><br/>");	
+	    		for (String supertype : supertypes)
+	    		{
+	    			Set<String> siblingTypes = model.getSubtypes(supertype);
+	    			if (siblingTypes.size() == 1)
+	    			{
+	    				htmlBuilder.append("--none--");
+	    			}
+	    			for (String siblingType : siblingTypes)
+	    			{
+	    				if (!type.equals(siblingType))
+	    				{
+	    					htmlBuilder.append("<a href=\"type:" + siblingType + "\">" + siblingType + "</a> ");
+	    				}
+	    			}
+	    			htmlBuilder.append("(as subtypes of <a href=\"type:" + supertype + "\">" + supertype + "</a>) <br/>");
+	    		}
+    		}	
+    		
+    		htmlBuilder.append("<br/><b>Paths: </b><br/>");	
+    		for (List<String> path : model.getPaths(type))
+    		{
+    			for (String pathElement : path)
+    			{
+					htmlBuilder.append(" -> <a href=\"type:" + pathElement + "\">" + pathElement + "</a>");
+    			}
+    			htmlBuilder.append("<br/>");
     		}
     		htmlForType.put(type, htmlBuilder.toString());
     	}
