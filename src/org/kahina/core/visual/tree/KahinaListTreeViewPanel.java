@@ -159,7 +159,9 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private void fillListModel(int layer, int nodeID, int recursionDepth)
 	{
 		indentations.get(layer).put(nodeID, recursionDepth);
-		listModels[layer].addElement(nodeID);
+		KahinaListTreeListEntry entry = new KahinaListTreeListEntry();
+		entry.nodeID = nodeID;
+		listModels[layer].addElement(entry);
 		for (int visibleVirtualSecondaryChildID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
 		{
 			if (view.isChosen(visibleVirtualSecondaryChildID))
@@ -228,7 +230,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		if (element != null)
 		{
 			int clickedNode;
-			clickedNode = (Integer) element;
+			clickedNode = ((KahinaListTreeListEntry) element).nodeID;
 			List<Integer> primaryAlternatives = view.getPrimaryAlternatives(clickedNode, layer);
 			int numberOfPrimaryAlternatives = primaryAlternatives.size();
 			int primaryAlternativeChoice = primaryAlternatives.indexOf(clickedNode); // not to be confused with primaryChildChoice, alternatives needn't be (real) siblings
