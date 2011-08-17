@@ -82,4 +82,14 @@ public class Utilities
 		}
 		return integer;
 	}
+
+	public static int[] integerListToIntArray(List<Integer> list)
+	{
+		int[] result = new int[list.size()];
+		for (int i = 0; i < result.length; i++)
+		{
+			result[i] = list.get(i);
+		}
+		return result;
+	}
 }

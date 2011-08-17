@@ -252,26 +252,6 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		return decision;
 	}
 
-	private int getVisibleParent(int nodeID, int treeLayer)
-	{
-		int parent = model.getParent(nodeID, treeLayer);
-		while (!nodeIsVisible(parent))
-		{
-			parent = model.getParent(parent, treeLayer);
-		}
-		return parent;
-	}
-
-	private int getVisibleSecondaryParent(int nodeID, int treeLayer)
-	{
-		int secondaryParent = secondaryTreeModel.getParent(nodeID, treeLayer);
-		while (!nodeIsVisible(secondaryParent))
-		{
-			secondaryParent = secondaryTreeModel.getParent(secondaryParent, treeLayer);
-		}
-		return secondaryParent;
-	}
-
 	public ArrayList<Integer> getVisibleVirtualChildren(KahinaTree treeModel, int nodeID, int treeLayer)
 	{
 		ArrayList<Integer> descendants = new ArrayList<Integer>();
