@@ -42,7 +42,7 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 		JPanel cellPanel = new JPanel();
 		cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.X_AXIS));
 		cellPanel.setSize(200, 20);
-		int nodeID = (Integer) value;
+		int nodeID = ((KahinaListTreeListEntry) value).nodeID;
 		List<Integer> primaryAlternatives = view.view.getPrimaryAlternatives(nodeID, layer);
 		if (VERBOSE)
 		{

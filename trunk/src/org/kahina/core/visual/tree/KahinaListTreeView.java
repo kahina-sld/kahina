@@ -10,7 +10,6 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 
