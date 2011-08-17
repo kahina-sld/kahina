@@ -355,128 +355,14 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 			parentID = primaryTree.getParent(parentID);
 		}
 	}
-
-	// TODO cache isChosen(int) and/or getPrimaryAlternatives(int, int)?
-
-	/**
-	 * Whether the given node is part of the currently chosen primary spine.
-	 * 
-	 * @param nodeID
-	 * @return
-	 */
-	public boolean isChosen(int nodeID)
+	
+	public int getPrimaryChildChoice(int parent)
 	{
-		if (VERBOSE)
+		Integer result = primaryChildChoices.get(parent);
+		if (result == null)
 		{
-			System.err.println("Is node " + nodeID + " (" + getTreeModel().getNodeCaption(nodeID) + ") chosen?");
-			System.err.print("Its primary ancestors:");
-			int ancestor = getTreeModel().getParent(nodeID);
-			while (ancestor != -1)
-			{
-				System.err.print(" " + ancestor);
-				ancestor = getTreeModel().getParent(ancestor);
-			}
-			System.err.println();
-		}
-		// Simply go down from root, follow choices, try to find given ID.
-		KahinaTree primaryTree = getTreeModel();
-		int currentNodeID = primaryTree.getRootID();
-		while (true)
-		{
-			if (VERBOSE)
-			{
-				System.err.print(currentNodeID + " ");
-			}
-			if (currentNodeID == nodeID)
-			{
-				if (VERBOSE)
-				{
-					System.err.println();
-					System.err.println("Yes.");
-				}
-				return true;
-			}
-			Integer choice = primaryChildChoices.get(currentNodeID);
-			if (choice == null)
-			{
-				choice = 0;
-			}
-			List<Integer> children = primaryTree.getChildren(currentNodeID);
-			if (children.size() == 0)
-			{
-				if (VERBOSE)
-				{
-					System.err.println();
-					System.err.println("No.");
-				}
-				return false;
-			}
-			currentNodeID = children.get(choice);
-		}
-	}
-
-	/**
-	 * Returns the list of primary alternatives to a given node on a given
-	 * layer, including that node itself.
-	 * 
-	 * @param nodeID
-	 * @param layer
-	 * @return
-	 */
-	public List<Integer> getPrimaryAlternatives(int nodeID, int layer)
-	{
-		if (VERBOSE)
-		{
-			System.err.println(this + ".getPrimaryAlternatives(" + nodeID + ", " + layer + ")");
-		}
-
-		// Determine the virtual secondary parent and its visible virtual
-		// secondary children:
-		int virtualSecondaryParentID = secondaryTreeModel.getParent(nodeID, layer);
-		List<Integer> children = getVisibleVirtualChildren(secondaryTreeModel, virtualSecondaryParentID, layer);
-		if (VERBOSE)
-		{
-			System.err.println("Visible virtual children: " + children);
-		}
-
-		// Among the virtual secondary parent and its visible virtual secondary
-		// children, find the lowest primary ancestor of node:
-		KahinaTree primaryTree = getTreeModel();
-		int primaryAncestorID = primaryTree.getParent(nodeID);
-		while (primaryAncestorID != virtualSecondaryParentID && !children.contains(primaryAncestorID))
-		{
-			primaryAncestorID = primaryTree.getParent(primaryAncestorID);
-		}
-
-		// Among the primary descendants of that node, find those that are in
-		// the list of visible virtual secondary children determined above, but
-		// only the highest ones in each primary branch:
-		List<Integer> result = new ArrayList<Integer>();
-		findPrimaryAlternatives(getTreeModel().getChildren(primaryAncestorID), children, result);
-		if (VERBOSE)
-		{
-			System.err.println("Primary alternatives: " + result);
+			result = 0;
 		}
 		return result;
-	}
-
-	private void findPrimaryAlternatives(List<Integer> primaryChildren, List<Integer> candidates, List<Integer> alternatives)
-	{
-		if (VERBOSE)
-		{
-			System.err.println("Primary children: " + primaryChildren);
-		}
-		for (int primaryChild : primaryChildren)
-		{
-			int index = candidates.indexOf(primaryChild);
-			if (index != -1)
-			{
-				candidates.remove(index);
-				alternatives.add(primaryChild);
-			} else
-			{
-				findPrimaryAlternatives(getTreeModel().getChildren(primaryChild), candidates, alternatives);
-			}
-		}
 	}
 }
