@@ -22,7 +22,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListModel;
 
-import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
@@ -166,15 +165,15 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			{
 				break;
 			}
-			int chosenChildIndex = chosenChildIndex(children);
-			currentLeftAlternatives.addAll(findAlternatives(children.subList(0, chosenChildIndex), virtualSecondaryDescendants));
+			int choice = view.getPrimaryChildChoice(node);
+			currentLeftAlternatives.addAll(findAlternatives(children.subList(0, choice), virtualSecondaryDescendants));
 			int numChildren = children.size();
-			int firstRightAlternativeIndex = chosenChildIndex + 1;
+			int firstRightAlternativeIndex = choice + 1;
 			if (firstRightAlternativeIndex < numChildren)
 			{
 				currentRightAlternatives.addAll(0, findAlternatives(children.subList(firstRightAlternativeIndex, numChildren), virtualSecondaryDescendants));
 			}
-			node = children.get(chosenChildIndex);
+			node = children.get(choice);
 		}
 
 		// Step 3: add ghost if necessary
@@ -233,19 +232,6 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			}
 		}
 		return doneAny;
-	}
-
-	private int chosenChildIndex(List<Integer> children)
-	{
-		int numChildren = children.size();
-		for (int i = 0; i < numChildren; i++)
-		{
-			if (view.isChosen(children.get(i)))
-			{
-				return i;
-			}
-		}
-		throw new KahinaException("No chosen child found among " + children + ", this should never happen.");
 	}
 
 	private void addNodeToListModel(int node, DefaultListModel result, int indentation, List<Integer> leftAlternatives, List<Integer> rightAlternatives, boolean ghost)
