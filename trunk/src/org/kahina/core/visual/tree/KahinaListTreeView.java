@@ -205,6 +205,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	@Override
 	protected void doDisplay()
 	{
+		super.doDisplay();
 		resetAllStructures();
 	}
 

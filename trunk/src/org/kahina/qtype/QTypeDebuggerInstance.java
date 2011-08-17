@@ -21,5 +21,10 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 		LogicProgrammingTreeBehavior behavior = new LogicProgrammingTreeBehavior(state.getStepTree(), this, state.getSecondaryStepTree());
 		behavior.setMaxNodeLabelLength(-1);
 	}
+	
+	public static void main(String[] args)
+	{
+		(new QTypeDebuggerInstance()).start(args);
+	}
 
 }
