@@ -7,6 +7,8 @@ public class KahinaListTreeListEntry
 	
 	public int nodeID;
 	
+	public int indentation;
+	
 	public List<Integer> leftAlternatives;
 	
 	public List<Integer> rightAlternatives;
