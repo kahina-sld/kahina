@@ -7,8 +7,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
@@ -19,9 +22,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListModel;
 
+import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.core.util.Utilities;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener
@@ -32,10 +37,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
 	private JPanel[] panels;
 	private JList[] lists;
-	private DefaultListModel[] listModels;
-
-	// internal storage for indentations in different layers
-	private List<HashMap<Integer, Integer>> indentations;
+	private ListModel[] listModels;
 
 	// GUI component handling
 	private MouseEvent lastMouseEvent;
@@ -50,7 +52,6 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		panels = new JPanel[layers];
 		lists = new JList[layers];
 		listModels = new DefaultListModel[layers];
-		clearIndentations();
 		lastMouseEvent = null;
 		splitPanes = new LinkedList<JSplitPane>();
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -77,15 +78,6 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			add(createPane(panels[0]));
 		}
 		updateDividerLocations();
-	}
-
-	private void clearIndentations()
-	{
-		indentations = new ArrayList<HashMap<Integer, Integer>>();
-		for (int i = 0; i < lists.length; i++)
-		{
-			indentations.add(new HashMap<Integer, Integer>());
-		}
 	}
 
 	private void updateDividerLocations()
@@ -137,16 +129,10 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	{
 		updateDividerLocations();
 		view.secondaryTreeModel.setReferenceNode(view.getModel().getReferenceNode());
-		clearIndentations();
 		for (int i = 0; i < panels.length; i++)
 		{
 			int rootID = view.secondaryTreeModel.getRootID(i);
-			listModels[i] = new DefaultListModel();
-			if (VERBOSE)
-			{
-				System.err.println("Starting to fill list model with root " + rootID);
-			}
-			fillListModel(i, rootID, 0); // TODO this we could do on a non-GUI thread
+			listModels[i] = createListModel(i, rootID);
 			lists[i].setModel(listModels[i]);
 		}
 		for (JPanel panel : panels)
@@ -156,35 +142,133 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		}
 	}
 
-	private void fillListModel(int layer, int nodeID, int recursionDepth)
+	private ListModel createListModel(int layer, int root)
 	{
-		indentations.get(layer).put(nodeID, recursionDepth);
-		KahinaListTreeListEntry entry = new KahinaListTreeListEntry();
-		entry.nodeID = nodeID;
-		listModels[layer].addElement(entry);
-		for (int visibleVirtualSecondaryChildID : view.getVisibleVirtualChildren(view.secondaryTreeModel, nodeID, layer))
+		DefaultListModel result = new DefaultListModel();
+
+		// Step 1: traversal of the secondary tree
+		Set<Integer> virtualSecondaryDescendants = new HashSet<Integer>();
+		Map<Integer, Integer> indentations = new HashMap<Integer, Integer>();
+		fillVirtualSecondaryDescendantList(virtualSecondaryDescendants, indentations, layer, root, 0);
+
+		// Step 2: traversal of the primary tree
+		List<Integer> currentLeftAlternatives = new ArrayList<Integer>();
+		List<Integer> currentRightAlternatives = new ArrayList<Integer>();
+		Integer node = root;
+		while (true)
 		{
-			if (view.isChosen(visibleVirtualSecondaryChildID))
+			if (virtualSecondaryDescendants.contains(node))
 			{
-				fillListModel(layer, visibleVirtualSecondaryChildID, recursionDepth + 1);
-			} else if (VERBOSE)
+				addNodeToListModel(node, result, indentations.get(node), currentLeftAlternatives, currentRightAlternatives, false);
+			}
+			List<Integer> children = view.getTreeModel().getChildren(node);
+			if (children.isEmpty())
 			{
-				System.err.println("Node with label " + view.getTreeModel().getNodeCaption(visibleVirtualSecondaryChildID) + " not chosen, sorry.");
+				break;
+			}
+			int chosenChildIndex = chosenChildIndex(children);
+			currentLeftAlternatives.addAll(findAlternatives(children.subList(0, chosenChildIndex), virtualSecondaryDescendants));
+			int numChildren = children.size();
+			int firstRightAlternativeIndex = chosenChildIndex + 1;
+			if (firstRightAlternativeIndex < numChildren)
+			{
+				currentRightAlternatives.addAll(0, findAlternatives(children.subList(firstRightAlternativeIndex, numChildren), virtualSecondaryDescendants));
+			}
+			node = children.get(chosenChildIndex);
+		}
+
+		// Step 3: add ghost if necessary
+		if (!currentLeftAlternatives.isEmpty() || !currentRightAlternatives.isEmpty())
+		{
+			// indentation doesn't matter for ghosts, at least for the current
+			// way to display them
+			addNodeToListModel(node, result, 0, currentLeftAlternatives, currentRightAlternatives, true);
+		}
+
+		return result;
+	}
+
+	private List<Integer> findAlternatives(List<Integer> nodes, Set<Integer> virtualSecondaryDescendants)
+	{
+		List<Integer> result = new ArrayList<Integer>();
+		for (int node : nodes)
+		{
+			result.addAll(findAlternatives(node, virtualSecondaryDescendants));
+		}
+		return result;
+	}
+
+	private List<Integer> findAlternatives(int node, Set<Integer> virtualSecondaryDescendants)
+	{
+		List<Integer> result = new ArrayList<Integer>();
+		if (!findAlternatives(node, result, virtualSecondaryDescendants))
+		{
+			result.add(node);
+		}
+		return result;
+	}
+
+	private boolean findAlternatives(int node, List<Integer> result, Set<Integer> virtualSecondaryDescendants)
+	{
+		if (virtualSecondaryDescendants.contains(node))
+		{
+			result.add(node);
+			return true;
+		}
+		List<Integer> children = view.getTreeModel().getChildren(node);
+		boolean[] done = new boolean[children.size()];
+		boolean doneAny = false;
+		for (int i = 0; i < done.length; i++)
+		{
+			doneAny = doneAny || (done[i] = findAlternatives(children.get(i), result, virtualSecondaryDescendants));
+		}
+		if (doneAny)
+		{
+			for (int i = 0; i < done.length; i++)
+			{
+				if (!done[i])
+				{
+					result.add(children.get(i));
+				}
 			}
 		}
+		return doneAny;
 	}
 
-	public int getIndentationDepth(int layer, int nodeID)
+	private int chosenChildIndex(List<Integer> children)
 	{
-		Integer depth = indentations.get(layer).get(nodeID);
-		if (depth == null)
-			depth = 0;
-		return depth;
+		int numChildren = children.size();
+		for (int i = 0; i < numChildren; i++)
+		{
+			if (view.isChosen(children.get(i)))
+			{
+				return i;
+			}
+		}
+		throw new KahinaException("No chosen child found among " + children + ", this should never happen.");
 	}
 
-	public String getIndentingWhitespace(int layer, int nodeID)
+	private void addNodeToListModel(int node, DefaultListModel result, int indentation, List<Integer> leftAlternatives, List<Integer> rightAlternatives, boolean ghost)
 	{
-		return whitespace(4 * indentations.get(layer).get(nodeID));
+		KahinaListTreeListEntry entry = new KahinaListTreeListEntry();
+		entry.nodeID = node;
+		entry.indentation = indentation;
+		entry.leftAlternatives = Utilities.integerListToIntArray(leftAlternatives);
+		leftAlternatives.clear();
+		entry.rightAlternatives = Utilities.integerListToIntArray(rightAlternatives);
+		rightAlternatives.clear();
+		entry.ghost = ghost;
+		result.addElement(entry);
+	}
+
+	private void fillVirtualSecondaryDescendantList(Set<Integer> virtualSecondaryDescendants, Map<Integer, Integer> indentations, int layer, int node, int indentation)
+	{
+		virtualSecondaryDescendants.add(node);
+		indentations.put(node, indentation);
+		for (int child : view.getVisibleVirtualChildren(view.secondaryTreeModel, node, layer))
+		{
+			fillVirtualSecondaryDescendantList(virtualSecondaryDescendants, indentations, layer, child, indentation + 1);
+		}
 	}
 
 	public String whitespace(int length)
@@ -226,46 +310,50 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		int layer = ((KahinaListTreeListRenderer) list.getCellRenderer()).layer;
 		int clickedIndex = list.locationToIndex(e.getPoint());
 		ListModel model = list.getModel();
-		Object element = model.getElementAt(clickedIndex);
-		if (element != null)
+		if (clickedIndex == -1)
 		{
-			int clickedNode;
-			clickedNode = ((KahinaListTreeListEntry) element).nodeID;
-			List<Integer> primaryAlternatives = view.getPrimaryAlternatives(clickedNode, layer);
-			int numberOfPrimaryAlternatives = primaryAlternatives.size();
-			int primaryAlternativeChoice = primaryAlternatives.indexOf(clickedNode); // not to be confused with primaryChildChoice, alternatives needn't be (real) siblings
-			if (numberOfPrimaryAlternatives > 1)
+			return;
+		}
+		KahinaListTreeListEntry clickedEntry = (KahinaListTreeListEntry) model.getElementAt(clickedIndex);
+		if (clickedEntry == null)
+		{
+			return;
+		}
+		int clickedNode;
+		clickedNode = clickedEntry.nodeID;
+		boolean hasLeftAlternatives = clickedEntry.leftAlternatives.length > 0;
+		boolean hasRightAlternatives = clickedEntry.rightAlternatives.length > 0;
+		if (hasLeftAlternatives || hasRightAlternatives)
+		{
+			// UGLY HACK, FORTUNATELY RELIABLE AND NOT EXPENSIVE
+			// emulate the check whether one of the "buttons" was clicked
+			if (isLeftButtonPosition(e.getPoint(), list, clickedNode, layer))
 			{
-				// UGLY HACK, FORTUNATELY RELIABLE AND NOT EXPENSIVE
-				// emulate the check whether one of the "buttons" was clicked
-				if (isLeftButtonPosition(e.getPoint(), list, clickedNode, layer))
+				if (hasLeftAlternatives)
 				{
-					if (primaryAlternativeChoice > 0)
-					{
-						// TODO do this without changing the selection?
-						KahinaRunner.processEvent(new KahinaSelectionEvent(primaryAlternatives.get(primaryAlternativeChoice - 1)));
-					}
-					return;
-				} else if (isRightButtonPosition(e.getPoint(), list, clickedNode, layer))
-				{
-					if (primaryAlternativeChoice < numberOfPrimaryAlternatives - 1)
-					{
-						// TODO do this without changing the selection?
-						KahinaRunner.processEvent(new KahinaSelectionEvent(primaryAlternatives.get(primaryAlternativeChoice + 1)));
-					}
-					return;
+					// TODO do this without changing the selection?
+					KahinaRunner.processEvent(new KahinaSelectionEvent(clickedEntry.leftAlternatives[clickedEntry.leftAlternatives.length - 1]));
 				}
-			}
-			if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
+				return;
+			} else if (isRightButtonPosition(e.getPoint(), list, clickedNode, layer))
 			{
-				view.secondaryTreeModel.toggleCollapse(clickedNode);
-				updateDisplayAndRepaintFromEventDispatchThread();
-				repaint();
-			} else
-			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
-				lastMouseEvent = e;
+				if (hasRightAlternatives)
+				{
+					// TODO do this without changing the selection?
+					KahinaRunner.processEvent(new KahinaSelectionEvent(clickedEntry.rightAlternatives[0]));
+				}
+				return;
 			}
+		}
+		if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
+		{
+			view.secondaryTreeModel.toggleCollapse(clickedNode);
+			updateDisplayAndRepaintFromEventDispatchThread();
+			repaint();
+		} else
+		{
+			KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
+			lastMouseEvent = e;
 		}
 	}
 

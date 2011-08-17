@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
-import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -42,50 +41,40 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 		JPanel cellPanel = new JPanel();
 		cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.X_AXIS));
 		cellPanel.setSize(200, 20);
-		int nodeID = ((KahinaListTreeListEntry) value).nodeID;
-		List<Integer> primaryAlternatives = view.view.getPrimaryAlternatives(nodeID, layer);
-		if (VERBOSE)
+		KahinaListTreeListEntry entry = (KahinaListTreeListEntry) value;
+		int nodeID = entry.nodeID;
+		boolean hasLeftAlternatives = entry.leftAlternatives.length > 0;
+		boolean hasRightAlternatives = entry.rightAlternatives.length > 0;
+		if (hasLeftAlternatives || hasRightAlternatives)
 		{
-			System.err.println("Primary alternatives of node " + nodeID + " (" + view.view.getTreeModel().getNodeCaption(nodeID) + "): " + primaryAlternatives);
-		}
-		int numAlternatives = primaryAlternatives.size();
-		if (numAlternatives > 1 && index != 0)
-		{
-			if (VERBOSE)
-			{
-				System.err.println("numAlternatives: " + numAlternatives);
-			}
 			JButton leftButton = new JButton("<");
 			leftButton.setMargin(new Insets(0, 0, 0, 0));
 			leftButton.setPreferredSize(new Dimension(18, 15));
-			if (view.view.isChosen(primaryAlternatives.get(0)))
-			{
-				leftButton.setEnabled(false);
-			}
+			leftButton.setEnabled(hasLeftAlternatives);
 			cellPanel.add(leftButton);
 			JButton rightButton = new JButton(">");
 			rightButton.setMargin(new Insets(0, 0, 0, 0));
 			rightButton.setPreferredSize(new Dimension(18, 15));
-			if (view.view.isChosen(primaryAlternatives.get(numAlternatives - 1)))
-			{
-				rightButton.setEnabled(false);
-			}
+			rightButton.setEnabled(hasRightAlternatives);
 			cellPanel.add(rightButton);
 		} else
 		{
 			cellPanel.add(Box.createRigidArea(new Dimension(30, 0)));
 		}
-		cellPanel.add(Box.createRigidArea(new Dimension(view.getIndentationDepth(layer, nodeID) * 15, 0)));
-		String entry = "";
-		if (view.view.getSecondaryModel().isCollapsed(nodeID))
+		cellPanel.add(Box.createRigidArea(new Dimension(entry.indentation * 15, 0)));
+		String entryString = "";
+		if (!entry.ghost)
 		{
-			entry += "+ ";
-		} else
-		{
-			entry += "- ";
+			if (view.view.getSecondaryModel().isCollapsed(nodeID))
+			{
+				entryString += "+ ";
+			} else
+			{
+				entryString += "- ";
+			}
+			entryString += view.view.getModel().getNodeCaption(nodeID);
 		}
-		entry += view.view.getModel().getNodeCaption(nodeID);
-		JLabel entryLabel = new JLabel(entry);
+		JLabel entryLabel = new JLabel(entryString);
 		entryLabel.setOpaque(true);
 		if (nodeID == view.view.getMarkedNode(layer))
 		{

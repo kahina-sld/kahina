@@ -1,7 +1,5 @@
 package org.kahina.core.visual.tree;
 
-import java.util.List;
-
 public class KahinaListTreeListEntry
 {
 	
@@ -9,9 +7,9 @@ public class KahinaListTreeListEntry
 	
 	public int indentation;
 	
-	public List<Integer> leftAlternatives;
+	public int[] leftAlternatives;
 	
-	public List<Integer> rightAlternatives;
+	public int[] rightAlternatives;
 	
 	public boolean ghost;
 
