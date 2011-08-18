@@ -144,6 +144,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private ListModel createListModel(int layer, int root)
 	{
 		DefaultListModel result = new DefaultListModel();
+		result.addElement(null); // represents far left/far right buttons
 
 		// Step 1: traversal of the secondary tree, filtering nodes according to
 		// layer and visibility
@@ -175,7 +176,12 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			int firstRightAlternativeIndex = choice + 1;
 			if (firstRightAlternativeIndex < numChildren)
 			{
-				currentRightAlternatives.addAll(0, findAlternatives(children.subList(firstRightAlternativeIndex, numChildren), virtualSecondaryDescendants));
+				List<Integer> newRightAlternatives = findAlternatives(children.subList(firstRightAlternativeIndex, numChildren), virtualSecondaryDescendants);
+				if (VERBOSE)
+				{
+					System.err.println("New right alternatives at node " + node + ": " + newRightAlternatives);
+				}
+				currentRightAlternatives.addAll(0, newRightAlternatives);
 			}
 			node = children.get(choice);
 		}
@@ -189,6 +195,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			addNodeToListModel(node, result, 0, currentLeftAlternatives, currentRightAlternatives, true);
 		}
 
+		result.addElement(null); // represents far left/far right buttons
 		return result;
 	}
 
@@ -228,28 +235,33 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
 	/**
 	 * This methods recursively traverses the primary tree.
+	 * 
 	 * @param node
 	 *            any node dominated by a left or right sibling of the node
 	 *            whose alternatives we're looking for
-	 * @param result
+	 * @param alternatives
 	 * @param virtualSecondaryDescendants
 	 * @return Whether one or more alternatives have been found, i.e. whether
 	 *         node primarily dominates at least one of the
 	 *         virtualSecondaryDescendants.
 	 */
-	private boolean findAlternatives(int node, List<Integer> result, Set<Integer> virtualSecondaryDescendants)
+	private boolean findAlternatives(int node, List<Integer> alternatives, Set<Integer> virtualSecondaryDescendants)
 	{
 		if (virtualSecondaryDescendants.contains(node))
 		{
-			result.add(node);
+			alternatives.add(node);
 			return true;
 		}
 		List<Integer> children = view.getTreeModel().getChildren(node);
+		if (VERBOSE)
+		{
+			System.err.println("Finding alternatives under: " + children);
+		}
 		boolean[] done = new boolean[children.size()];
 		boolean doneAny = false;
 		for (int i = 0; i < done.length; i++)
 		{
-			doneAny = doneAny || (done[i] = findAlternatives(children.get(i), result, virtualSecondaryDescendants));
+			doneAny = doneAny || (done[i] = findAlternatives(children.get(i), alternatives, virtualSecondaryDescendants));
 		}
 		if (doneAny)
 		{
@@ -260,7 +272,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			{
 				if (!done[i])
 				{
-					result.add(children.get(i));
+					alternatives.add(children.get(i));
 				}
 			}
 		}
@@ -269,12 +281,20 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
 	private void addNodeToListModel(int node, DefaultListModel result, int indentation, List<Integer> leftAlternatives, List<Integer> rightAlternatives, boolean ghost)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".addNodeToListModel(" + node + ", model, " + indentation + ", " + leftAlternatives + ", " + rightAlternatives + ", " + ghost + ")");
+		}
 		KahinaListTreeListEntry entry = new KahinaListTreeListEntry();
 		entry.nodeID = node;
 		entry.indentation = indentation;
 		entry.leftAlternatives = Utilities.integerListToIntArray(leftAlternatives);
 		leftAlternatives.clear();
 		entry.rightAlternatives = Utilities.integerListToIntArray(rightAlternatives);
+		if (VERBOSE)
+		{
+			System.err.println("Discharchged right alternatives at node " + node + ": " + rightAlternatives);
+		}
 		rightAlternatives.clear();
 		entry.ghost = ghost;
 		result.addElement(entry);
@@ -321,6 +341,18 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		}
 		return false;
 	}
+	
+	private boolean isFarLeftButtonPosition(Point p, JList list)
+	{
+		int distanceToLeft = p.x - list.getComponentAt(p).getX();
+		return distanceToLeft < 25;
+	}
+	
+	private boolean isFarRightButtonPosition(Point p, JList list)
+	{
+		int distanceToLeft = p.x - list.getComponentAt(p).getX();
+		return distanceToLeft >= 25 && distanceToLeft <= 50;
+	}
 
 	@Override
 	public void mouseClicked(MouseEvent e)
@@ -336,6 +368,13 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		KahinaListTreeListEntry clickedEntry = (KahinaListTreeListEntry) model.getElementAt(clickedIndex);
 		if (clickedEntry == null)
 		{
+			if (isFarLeftButtonPosition(e.getPoint(), list))
+			{
+				view.autospineLeft();
+			} else if (isFarRightButtonPosition(e.getPoint(), list))
+			{
+				view.autospineRight();
+			}
 			return;
 		}
 		int clickedNode;
