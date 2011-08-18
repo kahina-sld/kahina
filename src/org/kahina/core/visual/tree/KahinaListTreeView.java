@@ -9,8 +9,10 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 
 public class KahinaListTreeView extends KahinaAbstractTreeView
@@ -364,5 +366,35 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 			result = 0;
 		}
 		return result;
+	}
+
+	public void autospineLeft()
+	{
+		int node = model.getRootID();
+		while (true)
+		{
+			List<Integer> children = model.getChildren(node);
+			if (children.isEmpty())
+			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(node));
+				return;
+			}
+			node = children.get(0);
+		}
+	}
+
+	public void autospineRight()
+	{
+		int node = model.getRootID();
+		while (true)
+		{
+			List<Integer> children = model.getChildren(node);
+			if (children.isEmpty())
+			{
+				KahinaRunner.processEvent(new KahinaSelectionEvent(node));
+				return;
+			}
+			node = children.get(children.size() - 1);
+		}
 	}
 }

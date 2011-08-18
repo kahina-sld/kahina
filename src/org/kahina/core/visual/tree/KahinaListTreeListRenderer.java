@@ -42,6 +42,21 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 		cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.X_AXIS));
 		cellPanel.setSize(200, 20);
 		KahinaListTreeListEntry entry = (KahinaListTreeListEntry) value;
+		if (entry == null)
+		{
+			cellPanel.setBackground(Color.white);
+			JButton leftButton = new JButton("<<");
+			leftButton.setMargin(new Insets(0, 0, 0, 0));
+			leftButton.setPreferredSize(new Dimension(36, 15));
+			// TODO disable if appropriate
+			cellPanel.add(leftButton);
+			JButton farRightButton = new JButton(">>");
+			farRightButton.setMargin(new Insets(0, 0, 0, 0));
+			farRightButton.setPreferredSize(new Dimension(36, 15));
+			// TODO disable if appropriate
+			cellPanel.add(farRightButton);
+			return cellPanel;
+		}
 		int nodeID = entry.nodeID;
 		boolean hasLeftAlternatives = entry.leftAlternatives.length > 0;
 		boolean hasRightAlternatives = entry.rightAlternatives.length > 0;
