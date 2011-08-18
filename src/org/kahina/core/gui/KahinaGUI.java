@@ -242,11 +242,6 @@ public class KahinaGUI implements KahinaListener
 		{
 			System.err.println(this + ".processEvent(" + e + ")");
 		}
-		displayMainViews();
-		if (VERBOSE)
-		{
-			System.err.println("Main views displayed");
-		}
 		if (e.getPanel() == null || livingViews.contains(e.getPanel().view))
 		{
 			if (VERBOSE)
