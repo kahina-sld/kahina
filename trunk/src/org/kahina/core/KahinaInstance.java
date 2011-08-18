@@ -212,6 +212,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			monitor = gui.createProgressMonitorWrapper("Loading session", null, 0, zipFile.size());
 			FileUtilities.unzipToDirectory(zipFile, directory, "steps/", monitor);
 			KahinaRunner.loadSteps(directory);
+			gui.displayMainViews();
 			KahinaRunner.processEvent(new KahinaSelectionEvent(state.getSelectedStepID()));
 		} catch (Exception e)
 		{
