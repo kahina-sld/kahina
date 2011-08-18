@@ -145,12 +145,13 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	{
 		DefaultListModel result = new DefaultListModel();
 
-		// Step 1: traversal of the secondary tree
+		// Step 1: traversal of the secondary tree, filtering nodes according to
+		// layer and visibility
 		Set<Integer> virtualSecondaryDescendants = new HashSet<Integer>();
 		Map<Integer, Integer> indentations = new HashMap<Integer, Integer>();
 		fillVirtualSecondaryDescendantList(virtualSecondaryDescendants, indentations, layer, root, 0);
 
-		// Step 2: traversal of the primary tree
+		// Step 2: traversal of the chosen spine of primary tree
 		List<Integer> currentLeftAlternatives = new ArrayList<Integer>();
 		List<Integer> currentRightAlternatives = new ArrayList<Integer>();
 		Integer node = root;
@@ -158,6 +159,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			if (virtualSecondaryDescendants.contains(node))
 			{
+				// display this node, and any alternatives we have collected
 				addNodeToListModel(node, result, indentations.get(node), currentLeftAlternatives, currentRightAlternatives, false);
 			}
 			List<Integer> children = view.getTreeModel().getChildren(node);
@@ -166,7 +168,9 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 				break;
 			}
 			int choice = view.getPrimaryChildChoice(node);
+			// collect left alternatives (starting with left siblings)
 			currentLeftAlternatives.addAll(findAlternatives(children.subList(0, choice), virtualSecondaryDescendants));
+			// collect right alternatives (starting with right siblings)
 			int numChildren = children.size();
 			int firstRightAlternativeIndex = choice + 1;
 			if (firstRightAlternativeIndex < numChildren)
@@ -176,7 +180,8 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			node = children.get(choice);
 		}
 
-		// Step 3: add ghost if necessary
+		// Step 3: add ghost if there are any collected alternatives that
+		// haven't been displayed
 		if (!currentLeftAlternatives.isEmpty() || !currentRightAlternatives.isEmpty())
 		{
 			// indentation doesn't matter for ghosts, at least for the current
@@ -187,6 +192,13 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		return result;
 	}
 
+	/**
+	 * @param nodes
+	 *            left or right siblings of the node whose alternatives we're
+	 *            looking for
+	 * @param virtualSecondaryDescendants
+	 * @return
+	 */
 	private List<Integer> findAlternatives(List<Integer> nodes, Set<Integer> virtualSecondaryDescendants)
 	{
 		List<Integer> result = new ArrayList<Integer>();
@@ -197,6 +209,13 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		return result;
 	}
 
+	/**
+	 * @param node
+	 *            left or right sibling of the node whose alternatives we're
+	 *            looking for
+	 * @param virtualSecondaryDescendants
+	 * @return
+	 */
 	private List<Integer> findAlternatives(int node, Set<Integer> virtualSecondaryDescendants)
 	{
 		List<Integer> result = new ArrayList<Integer>();
@@ -207,6 +226,17 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		return result;
 	}
 
+	/**
+	 * This methods recursively traverses the primary tree.
+	 * @param node
+	 *            any node dominated by a left or right sibling of the node
+	 *            whose alternatives we're looking for
+	 * @param result
+	 * @param virtualSecondaryDescendants
+	 * @return Whether one or more alternatives have been found, i.e. whether
+	 *         node primarily dominates at least one of the
+	 *         virtualSecondaryDescendants.
+	 */
 	private boolean findAlternatives(int node, List<Integer> result, Set<Integer> virtualSecondaryDescendants)
 	{
 		if (virtualSecondaryDescendants.contains(node))
@@ -223,6 +253,9 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		}
 		if (doneAny)
 		{
+			// The children which do not dominate any of the
+			// virtualSecondaryDescendants are nevertheless added to the list
+			// of alternatives, as representatives of their "empty" branches.
 			for (int i = 0; i < done.length; i++)
 			{
 				if (!done[i])
