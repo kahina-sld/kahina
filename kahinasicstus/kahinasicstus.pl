@@ -1,6 +1,6 @@
 :- module(kahinasicstus,[end_trace_session/0,
                          abort_hook/2,
-                         breakpoint_action_hook/4,
+                         breakpoint_action_hook/5,
                          add_kbreakpoint/3]).
 
 :- use_module(library(charsio)).
@@ -9,16 +9,9 @@
 :- use_module(library(system)).
 :- use_module(library(terms)).
 
-%   add_kbreakpoint(+Tests,+Actions,?BID)
-%   Shorthand for add_breakpoint([(call;fail;exit;redo;exception;block;unblock)|Tests]-[kahina_breakpoint_action|Actions],BID).
-%   Actions may be used to override action variable settings made by
-%   kahina_breakpoint_action in accordance to the response from the GUI.
-add_kbreakpoint(Tests,Actions,BID) :-
-  add_breakpoint([(call;fail;exit;redo;exception;block;unblock)|Tests]-[kahina_breakpoint_action|Actions],BID).
-
 :- multifile user:breakpoint_expansion/2.
 
-user:breakpoint_expansion(kahina_breakpoint_action,[
+user:breakpoint_expansion(kahina_breakpoint_action(Autoskip),[
     % The three action variables Show, Mode, Command control Prolog's behavior
     % on encountering a breakpoint. We use show/1, mode/1, command/1 terms to
     % set their values. We always set Show to silent (no output on console). The
@@ -28,36 +21,41 @@ user:breakpoint_expansion(kahina_breakpoint_action,[
     show(silent),
     inv(Inv),
     port(Port),
-    true(kahinasicstus:kahina_breakpoint_action(Inv,Port,Mode,Command)),
+    true(kahinasicstus:kahina_breakpoint_action(Inv,Port,Mode,Command,Autoskip)),
     mode(Mode),
     command(Command)]).
 
 :- multifile breakpoint_action_hook/4.
 
-kahina_breakpoint_action(Inv,Port,Mode,Command) :-
-  breakpoint_action_hook(Port,Inv,Mode,Command),
+kahina_breakpoint_action(Inv,Port,Mode,Command,Autoskip) :-
+  breakpoint_action_hook(Port,Inv,Mode,Command,Autoskip),
   !.
-kahina_breakpoint_action(Inv,Port,Mode,Command) :-
+kahina_breakpoint_action(Inv,Port,Mode,Command,Autoskip) :-
   get_bridge(Inv,Port,Bridge),
   get_jvm(JVM),
   act(Port,Inv,Bridge,JVM),
   get_action(Port,Bridge,JVM,Action),
-  action_mode_command(Action,Mode,Command,Inv,Port).
+  action_mode_command(Action,Mode,Command,Inv,Port,Autoskip).
 
 :- multifile abort_hook/2.
 
-action_mode_command(115,skip(Inv),proceed,Inv,_Port) :- % s(kip)
+action_mode_command(115,skip(Inv),proceed,Inv,_Port,_Autoskip) :- % s(kip)
   !.
-action_mode_command(102,trace,proceed,_Inv,fail) :-     % f(ail)
+action_mode_command(102,trace,proceed,_Inv,fail,_Autoskip) :-     % f(ail) at fail ports TODO what about exception ports?
   !.
-action_mode_command(102,trace,fail(Inv),Inv,_Port) :-
+action_mode_command(102,trace,fail(Inv),Inv,_Port,_Autoskip) :-   % f(ail) at other ports
   !.
-action_mode_command(97,Mode,Command,_Inv,_Port) :-     % a(bort)
+action_mode_command(97,Mode,Command,_Inv,_Port,_Autoskip) :-      % a(bort)
   abort_hook(Mode,Command), % if not implemented or fails for another reason, we
   !.                        % set the command action variable to abort in the
                             % next clause
-action_mode_command(97,trace,abort,_Inv,_Port).
-action_mode_command(_,debug,proceed,_Inv,_Port).
+action_mode_command(97,trace,abort,_Inv,_Port,_Autoskip) :-
+  !.
+action_mode_command(_,skip(Inv),proceed,Inv,call,true) :-         % autoskip at call ports
+  !.
+action_mode_command(_,skip(Inv),proceed,Inv,redo,true) :-         % autoskip at redo ports
+  !.
+action_mode_command(_,debug,proceed,_Inv,_Port,_Autoskip).        % creep
 
 :- dynamic unblocked_pseudostep_waiting_for_link/1.
 

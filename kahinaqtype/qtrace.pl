@@ -36,7 +36,7 @@ kahinasicstus:abort_hook(trace,raise(kahinaqtype_abort)).
 :- multifile kahinasicstus:breakpoint_action_hook/4.
 
 % This exception has a special meaning and should not be traced:
-kahinasicstus:breakpoint_action_hook(exception(kahinaqtype_abort),_,debug,proceed).
+kahinasicstus:breakpoint_action_hook(exception(kahinaqtype_abort),_,debug,proceed,_).
 
 :- multifile kahinasicstus:instance_class_hook/1.
 
@@ -108,7 +108,8 @@ set_breakpoints_clause(Module,Head,Body) :-
   \+ not_traced(Pred),
   \+ qbreakpoint(Pred,_),
   has_subgoal(Body,msg(_,_,_)),
-  add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action],BID),
+  autoskip(Pred,Autoskip),
+  add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action(Autoskip)],BID),
   assert(qbreakpoint(Pred,BID)).
 set_breakpoints_clause(_,_,_).
 
@@ -124,6 +125,8 @@ not_traced(cmd_aux:call_prolog/1).
 %not_traced(cp_sig:cp_flubs/1).
 %not_traced(cp_sig:expand_type/2)
 %not_traced(bitsets:_/_).
+
+autoskip(_,false).
 
 module_head_pred(_,Module:Head,Module:Functor/Arity) :-
   !,
