@@ -8,7 +8,7 @@
 ktrace :-
   noktrace,
   disable_breakpoints(all),
-  add_breakpoint([\+module(ktrace),\+pred(ktrace/0),\+pred(noktrace/0),\+pred(nodebug/0),\+pred(halt/0),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action],Breakpoint),
+  add_breakpoint([\+module(ktrace),\+pred(ktrace/0),\+pred(noktrace/0),\+pred(nodebug/0),\+pred(halt/0),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action(false)],Breakpoint),
   nodebug,
   assert(kbreakpoint(Breakpoint)),
   debug.
