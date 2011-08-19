@@ -107,7 +107,7 @@ set_breakpoints_clause(Module,Head,Body) :-
   module_head_pred(Module,Head,Pred),
   \+ not_traced(Pred),
   \+ qbreakpoint(Pred,_),
-  has_subgoal(Body,msg(_,_,_)),
+  has_msg(Body,_Layer), % TODO use level for layering
   autoskip(Pred,Autoskip),
   add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action(Autoskip)],BID),
   assert(qbreakpoint(Pred,BID)).
@@ -134,11 +134,33 @@ module_head_pred(_,Module:Head,Module:Functor/Arity) :-
 module_head_pred(Module,Head,Module:Functor/Arity) :-
   functor(Head,Functor,Arity).
 
-has_subgoal((Subgoal,_),Target) :-
-  subsumes(Target,Subgoal), % can't just unify because variables could appear as subgoals
-  !.
-has_subgoal((_,Rest),Target) :-
-  has_subgoal(Rest,Target).
+has_msg(msg(_,Level,_),Layer) :-
+  clean_level(Level,Layer).
+has_msg((msg(_,Level,_),Rest),Layer) :-
+  clean_level(Level,CleanLevel),
+  !,
+  determine_layer(CleanLevel,Rest,Layer).
+has_msg((_,Rest),Layer) :-
+  has_msg(Rest,Layer).
+
+determine_layer(LowestLevel,(First,Rest),Layer) :-
+ !,
+ lowest_msg_level(LowestLevel,First,NewLowestLevel),
+ determine_layer(NewLowestLevel,Rest,Layer).
+determine_layer(LowestLevel,Last,Layer) :-
+  lowest_msg_level(LowestLevel,Last,Layer).
+
+lowest_msg_level(LowestLevel,msg(_,Level,_),NewLowestLevel) :-
+  clean_level(Level,CleanLevel),
+  !,
+  NewLowestLevel is min(LowestLevel,CleanLevel).
+lowest_msg_level(Level,_,Level).
+
+clean_level(@Level,Level) :-
+  !,
+  integer(Level).
+clean_level(Level,Level) :-
+  integer(Level).
 
 qtype_home(Home) :-
   environ('QTYPE_HOME',Home),
