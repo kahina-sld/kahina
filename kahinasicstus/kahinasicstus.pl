@@ -1,12 +1,20 @@
 :- module(kahinasicstus,[end_trace_session/0,
                          abort_hook/2,
-                         breakpoint_action_hook/4]).
+                         breakpoint_action_hook/4,
+                         add_kbreakpoint/3]).
 
 :- use_module(library(charsio)).
 :- use_module(library(lists)).
 :- use_module(library(jasper)).
 :- use_module(library(system)).
 :- use_module(library(terms)).
+
+%   add_kbreakpoint(+Tests,+Actions,?BID)
+%   Shorthand for add_breakpoint([(call;fail;exit;redo;exception;block;unblock)|Tests]-[kahina_breakpoint_action|Actions],BID).
+%   Actions may be used to override action variable settings made by
+%   kahina_breakpoint_action in accordance to the response from the GUI.
+add_kbreakpoint(Tests,Actions,BID) :-
+  add_breakpoint([(call;fail;exit;redo;exception;block;unblock)|Tests]-[kahina_breakpoint_action|Actions],BID).
 
 :- multifile user:breakpoint_expansion/2.
 
