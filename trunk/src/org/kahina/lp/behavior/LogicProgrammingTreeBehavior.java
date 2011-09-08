@@ -16,6 +16,8 @@ import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaStepDescriptionEvent;
 import org.kahina.core.event.KahinaSystemEvent;
+import org.kahina.core.event.KahinaTreeEvent;
+import org.kahina.core.event.KahinaTreeEventType;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
@@ -55,9 +57,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		}
 		this.secondaryTree = secondaryTree;
 		this.lastActiveID = -1;
-		KahinaRunner.getControl().registerListener("logic programming bridge", this);
-		KahinaRunner.getControl().registerListener("system", this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.LPBRIDGE, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.STEP_DESCRIPTION, this);
+		KahinaRunner.getControl().registerListener(KahinaEventTypes.TREE, this);
 		primaryBreakpoints = new ArrayList<TreeAutomaton>();
 		initializePrimaryBreakpoints();
 		compilePrimaryBreakpoints();
@@ -418,6 +421,13 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		newStepIDByLastStepID.put(lastStepID, newStepID);
 		// TODO: make this unnecessary if possible
 		secondaryTree.addNode(object.getNodeCaption(lastStepID), "", LogicProgrammingStepType.REDO);
+		
+		// copy layer information
+		int layer = secondaryTree.getLayer(lastStepID);
+		if (layer != -1)
+		{
+			secondaryTree.setLayer(newStepID, layer);
+		}
 
 		// TODO Do we really want to do this? Pro: no bright green steps
 		// flashing where there is no open choicepoint. Contra: while
@@ -543,12 +553,27 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		if (e instanceof LogicProgrammingBridgeEvent)
 		{
 			processLogicProgrammingBridgeEvent((LogicProgrammingBridgeEvent) e);
-		} else if (e instanceof KahinaSystemEvent)
-		{
-			processSystemEvent((KahinaSystemEvent) e);
 		} else if (e instanceof KahinaStepDescriptionEvent)
 		{
 			processStepDescriptionEvent((KahinaStepDescriptionEvent) e);
+		} else if (e instanceof KahinaTreeEvent)
+		{
+			processTreeEvent((KahinaTreeEvent) e);
+		} else if (e instanceof KahinaSystemEvent)
+		{
+			processSystemEvent((KahinaSystemEvent) e);
+		}
+	}
+
+	private void processTreeEvent(KahinaTreeEvent e)
+	{
+		if (e.getTreeEventType() == KahinaTreeEventType.LAYER)
+		{
+			if (VERBOSE)
+			{
+				System.err.println("Setting layer of node " + e.getFirstID() + " to " + e.getSecondID());
+			}
+			secondaryTree.setLayer(e.getFirstID(), e.getSecondID());
 		}
 	}
 

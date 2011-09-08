@@ -16,4 +16,5 @@ public interface KahinaEventTypes
 	public static final String REDRAW = "redraw";
 	public static final String WINDOW = "window";
 	public static final String STEP_DESCRIPTION = "stepdescription";
+	public static final String LPBRIDGE = "logic programming bridge";
 }

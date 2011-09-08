@@ -109,7 +109,7 @@ set_breakpoints_clause(Module,Head,Body) :-
   \+ qbreakpoint(Pred,_),
   has_msg(Body,_Layer), % TODO use level for layering
   autoskip(Pred,Autoskip),
-  add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action(Autoskip)],BID),
+  add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action([autoskip(Autoskip)])],BID),
   assert(qbreakpoint(Pred,BID)).
 set_breakpoints_clause(_,_,_).
 

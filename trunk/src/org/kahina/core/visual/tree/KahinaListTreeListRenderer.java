@@ -42,18 +42,18 @@ public class KahinaListTreeListRenderer extends DefaultListCellRenderer
 		cellPanel.setLayout(new BoxLayout(cellPanel, BoxLayout.X_AXIS));
 		cellPanel.setSize(200, 20);
 		KahinaListTreeListEntry entry = (KahinaListTreeListEntry) value;
-		if (entry == null)
+		if (entry.far)
 		{
 			cellPanel.setBackground(Color.white);
-			JButton leftButton = new JButton("<<");
-			leftButton.setMargin(new Insets(0, 0, 0, 0));
-			leftButton.setPreferredSize(new Dimension(36, 15));
-			// TODO disable if appropriate
-			cellPanel.add(leftButton);
+			JButton farLeftButton = new JButton("<<");
+			farLeftButton.setMargin(new Insets(0, 0, 0, 0));
+			farLeftButton.setPreferredSize(new Dimension(36, 15));
+			farLeftButton.setEnabled(entry.farLeftEnabled);
+			cellPanel.add(farLeftButton);
 			JButton farRightButton = new JButton(">>");
 			farRightButton.setMargin(new Insets(0, 0, 0, 0));
 			farRightButton.setPreferredSize(new Dimension(36, 15));
-			// TODO disable if appropriate
+			farRightButton.setEnabled(entry.farRightEnabled);
 			cellPanel.add(farRightButton);
 			return cellPanel;
 		}

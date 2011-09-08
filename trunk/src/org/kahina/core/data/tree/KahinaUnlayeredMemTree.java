@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kahina.core.KahinaException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -30,6 +31,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     protected Map<Integer, String> edgeLabels; //labels are displayed on the edges to the parent
     protected Map<Integer, Integer> status; //appearance of nodes can be steered by appearance
     protected Set<Integer> collapsed; //node collapsing is stored in the model, not in individual views!
+    protected Map<Integer, Integer> layers; // layer by node, whether this is used depends on the application
     
     //store the ID of the next node that is going to be added
     private int nextID = 0;
@@ -48,6 +50,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         edgeLabels = new HashMap<Integer, String>();
         status = new HashMap<Integer, Integer>();
         collapsed = new HashSet<Integer>();
+        layers = new HashMap<Integer, Integer>();
     }
     
     @Override
@@ -83,6 +86,23 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 	public int getBestEquivalent(int nodeID, int layerID)
     {
     	return nodeID;
+    }
+    
+    @Override
+    public int getLayer(int nodeID)
+    {
+    	Integer result = layers.get(nodeID);
+    	if (result == null)
+    	{
+    		result = -1;
+    	}
+    	return result;
+    }
+    
+    @Override
+    public void setLayer(int nodeID, int layer)
+    {
+    	layers.put(nodeID, layer);
     }
     
     @Override

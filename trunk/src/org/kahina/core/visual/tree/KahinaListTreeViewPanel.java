@@ -144,7 +144,9 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private ListModel createListModel(int layer, int root)
 	{
 		DefaultListModel result = new DefaultListModel();
-		result.addElement(null); // represents far left/far right buttons
+		KahinaListTreeListEntry farLeftRightEntry = new KahinaListTreeListEntry();
+		farLeftRightEntry.far = true;
+		result.addElement(farLeftRightEntry);
 
 		// Step 1: traversal of the secondary tree, filtering nodes according to
 		// layer and visibility
@@ -161,6 +163,8 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			if (virtualSecondaryDescendants.contains(node))
 			{
 				// display this node, and any alternatives we have collected
+				farLeftRightEntry.farLeftEnabled = farLeftRightEntry.farLeftEnabled || !currentLeftAlternatives.isEmpty();
+				farLeftRightEntry.farRightEnabled = farLeftRightEntry.farRightEnabled || !currentRightAlternatives.isEmpty();
 				addNodeToListModel(node, result, indentations.get(node), currentLeftAlternatives, currentRightAlternatives, false);
 			}
 			List<Integer> children = view.getTreeModel().getChildren(node);
@@ -192,10 +196,12 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			// indentation doesn't matter for ghosts, at least for the current
 			// way to display them
+			farLeftRightEntry.farLeftEnabled = farLeftRightEntry.farLeftEnabled || !currentLeftAlternatives.isEmpty();
+			farLeftRightEntry.farRightEnabled = farLeftRightEntry.farRightEnabled || !currentRightAlternatives.isEmpty();
 			addNodeToListModel(node, result, 0, currentLeftAlternatives, currentRightAlternatives, true);
 		}
 
-		result.addElement(null); // represents far left/far right buttons
+		result.addElement(farLeftRightEntry);
 		return result;
 	}
 
@@ -366,7 +372,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			return;
 		}
 		KahinaListTreeListEntry clickedEntry = (KahinaListTreeListEntry) model.getElementAt(clickedIndex);
-		if (clickedEntry == null)
+		if (clickedEntry.far)
 		{
 			if (isFarLeftButtonPosition(e.getPoint(), list))
 			{
