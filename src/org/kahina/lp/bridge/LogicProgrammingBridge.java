@@ -204,6 +204,22 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
+	public void registerLayer(int extID, int layer)
+	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".registerLayer(" + extID + ", " + layer + ")");
+		}
+		try
+		{
+			KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.LAYER, convertStepID(extID), layer));
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+
 	/**
 	 * Called, typically following a call to
 	 * {@link #step(int, String, Stirng, String)} very soon, to indicate that

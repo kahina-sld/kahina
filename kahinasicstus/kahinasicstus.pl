@@ -11,7 +11,13 @@
 
 :- multifile user:breakpoint_expansion/2.
 
-user:breakpoint_expansion(kahina_breakpoint_action(Autoskip),[
+% Valid Options:
+%   autoskip(Autoskip) - If this breakpoint matches at a call or redo port, the
+%       called/redone step will be skipped automatically if Autoskip is true.
+%       Default is false.
+%   layer(Layer) - If this option is given and Layer is an integer, it will be
+%       registered with Kahina as the layer of this step at call ports.
+user:breakpoint_expansion(kahina_breakpoint_action(Options),[
     % The three action variables Show, Mode, Command control Prolog's behavior
     % on encountering a breakpoint. We use show/1, mode/1, command/1 terms to
     % set their values. We always set Show to silent (no output on console). The
@@ -21,20 +27,23 @@ user:breakpoint_expansion(kahina_breakpoint_action(Autoskip),[
     show(silent),
     inv(Inv),
     port(Port),
-    true(kahinasicstus:kahina_breakpoint_action(Inv,Port,Mode,Command,Autoskip)),
+    true(kahinasicstus:kahina_breakpoint_action(Inv,Port,Mode,Command,Options)),
     mode(Mode),
     command(Command)]).
 
 :- multifile breakpoint_action_hook/4.
 
-kahina_breakpoint_action(Inv,Port,Mode,Command,Autoskip) :-
-  breakpoint_action_hook(Port,Inv,Mode,Command,Autoskip),
+kahina_breakpoint_action(Inv,Port,Mode,Command,Options) :-
+  breakpoint_action_hook(Port,Inv,Mode,Command,Options),
   !.
-kahina_breakpoint_action(Inv,Port,Mode,Command,Autoskip) :-
+kahina_breakpoint_action(Inv,Port,Mode,Command,Options) :-
   get_bridge(Inv,Port,Bridge),
   get_jvm(JVM),
-  act(Port,Inv,Bridge,JVM),
+  act(Port,Inv,Bridge,JVM,Options),
   get_action(Port,Bridge,JVM,Action),
+  (memberchkid(autoskip(true),Options)
+  -> Autoskip = true
+   ; Autoskip = false),
   action_mode_command(Action,Mode,Command,Inv,Port,Autoskip).
 
 :- multifile abort_hook/2.
@@ -59,14 +68,14 @@ action_mode_command(_,debug,proceed,_Inv,_Port,_Autoskip).        % creep
 
 :- dynamic unblocked_pseudostep_waiting_for_link/1.
 
-act(call,Inv,Bridge,JVM) :-
+act(call,Inv,Bridge,JVM,Options) :-
   retract(unblock_pseudostep_waiting_for_link(UnblockingID)),
   execution_state(goal(Module:Goal)),
   recall_blocked_goal(Module:Goal,BlockingID),
   !,
   link_nodes(Bridge,JVM,UnblockingID,BlockingID),
-  act(call,Inv,Bridge,JVM). % Continue with second clause. Can't just fail because recall_blocked_goal/2 is supposed to change the execution state.
-act(call,Inv,Bridge,JVM) :-
+  act(call,Inv,Bridge,JVM,Options). % Continue with second clause. Can't just fail because recall_blocked_goal/2 is supposed to change the execution state.
+act(call,Inv,Bridge,JVM,Options) :-
   top_start(Inv),
   execution_state(pred(Module:Pred)),	% "module qualified goal template", see manual
   write_to_chars(Module:Pred,PredChars),
@@ -78,13 +87,17 @@ act(call,Inv,Bridge,JVM) :-
   -> write_to_chars(File,FileChars),
      register_source_code_location(Bridge,JVM,Inv,FileChars,Line)
    ; true),
+  (memberchk(layer(Layer),Options),
+   integer(Layer)
+   -> register_layer(Bridge,JVM,Inv,Layer)
+    ; true),
   act_call(Bridge,JVM,Inv),
   perhaps(send_variable_bindings(Bridge,JVM,Inv,call)).
-act(fail,Inv,Bridge,JVM) :-
+act(fail,Inv,Bridge,JVM,_Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   act_fail(Bridge,JVM,Inv),
   top_end(Inv,Bridge,JVM).
-act(exit(DetFlag),Inv,Bridge,JVM) :-
+act(exit(DetFlag),Inv,Bridge,JVM,_Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   execution_state(pred(Module:_)),
   execution_state(goal(_:Goal)),
@@ -94,16 +107,16 @@ act(exit(DetFlag),Inv,Bridge,JVM) :-
   act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
   perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(DetFlag))),
   top_end(Inv,Bridge,JVM).
-act(redo,Inv,Bridge,JVM) :-
+act(redo,Inv,Bridge,JVM,Options) :-
   top_start(Inv),
   retractall(unblock_pseudostep_waiting_for_link(_)),
   act_redo(Bridge,JVM,Inv).
-act(exception(Exception),Inv,Bridge,JVM) :-
+act(exception(Exception),Inv,Bridge,JVM,_Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   write_to_chars(Exception,ExceptionChars),
   act_exception(Bridge,JVM,Inv,ExceptionChars),
   top_end(Inv,Bridge,JVM).
-act(block,_,Bridge,JVM) :-
+act(block,_,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)), % TODO What if the unblocked step is immediately blocked, e.g. in freeze(X,freeze(Y,...))? freeze/2 isn't called, so we would have to do the linking here.
   execution_state(goal(Module:Goal)),
   remember_blocked_goal(Module:Goal,ID),
@@ -112,9 +125,13 @@ act(block,_,Bridge,JVM) :-
   goal_desc(Module,Goal,GoalDesc),
   write_to_chars(GoalDesc,GoalDescChars),
   act_step(Bridge,JVM,ID,[98,108,111,99,107,32|PredChars],[98,108,111,99,107,32|GoalDescChars]), % 'block '
+  (memberchk(layer(Layer),Options),
+   integer(Layer)
+   -> register_layer(Bridge,JVM,Inv,Layer)
+    ; true),
   act_call(Bridge,JVM,ID),
   act_exit(Bridge,JVM,ID,true).
-act(unblock,_,Bridge,JVM) :-
+act(unblock,_,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   get_next_pseudostep_id(ID),
   execution_state(pred(Module:Pred)),
@@ -123,6 +140,10 @@ act(unblock,_,Bridge,JVM) :-
   goal_desc(Module,Goal,GoalDesc),
   write_to_chars(GoalDesc,GoalDescChars),
   act_step(Bridge,JVM,ID,[117,110,98,108,111,99,107,32|PredChars],[117,110,98,108,111,99,107,32|GoalDescChars]), % 'unblock '
+  (memberchk(layer(Layer),Options),
+   integer(Layer)
+   -> register_layer(Bridge,JVM,Inv,Layer)
+    ; true),
   act_call(Bridge,JVM,ID),
   act_exit(Bridge,JVM,ID,true),
   % Would be nicer to have the unblocked steps as children of the unblock step
@@ -197,6 +218,13 @@ register_source_code_location(Bridge,JVM,Inv,FileChars,Line) :-
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','registerStepSourceCodeLocation',[instance]),
       register_step_source_code_location(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+chars,+integer),
       register_step_source_code_location(Bridge,Inv,FileChars,Line)).
+
+register_layer(Bridge,JVM,Inv,Layer) :-
+  get_jvm(JVM),
+  jasper_call(JVM,
+      method('org/kahina/sicstus/bridge/SICStusPrologBridge','registerLayer',[instance]),
+      register_layer(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+integer),
+      register_layer(Bridge,Inv,Layer)).
 
 link_nodes(Bridge,JVM,Anchor,Target) :-
   jasper_call(JVM,
@@ -292,6 +320,7 @@ start_new_kahina_session(Bridge,JVM) :-
   assert(bridge(Bridge)),
   write_to_chars('[query]',RootLabelChars),
   act_step(Bridge,JVM,0,RootLabelChars,RootLabelChars),
+  register_layer(Bridge,JVM,0,0),
   act_call(Bridge,JVM,0).
 
 % retract and delete all bridge references
@@ -586,3 +615,13 @@ goal_desc(Module,Goal,Module:Goal).
 
 detflag_det(det,true).
 detflag_det(nondet,false).
+
+memberchkid(Element,List) :-
+  is_list(List),
+  memberchkid_act(Element,List).
+
+memberchkid_act(Element,[First|_]) :-
+  Element == First,
+  !.
+memberchkid_act(Element,[_|Rest]) :-
+  memberchkid_act(Element,Rest).
