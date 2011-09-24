@@ -253,6 +253,10 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	 */
 	private boolean findAlternatives(int node, List<Integer> alternatives, Set<Integer> virtualSecondaryDescendants)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".findAlternatives(" + node + ", " + alternatives + ", " + virtualSecondaryDescendants + ")");
+		}
 		if (virtualSecondaryDescendants.contains(node))
 		{
 			alternatives.add(node);
