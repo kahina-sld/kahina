@@ -107,7 +107,7 @@ act(exit(DetFlag),Inv,Bridge,JVM,_Options) :-
   act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
   perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(DetFlag))),
   top_end(Inv,Bridge,JVM).
-act(redo,Inv,Bridge,JVM,Options) :-
+act(redo,Inv,Bridge,JVM,_Options) :-
   top_start(Inv),
   retractall(unblock_pseudostep_waiting_for_link(_)),
   act_redo(Bridge,JVM,Inv).
@@ -116,7 +116,7 @@ act(exception(Exception),Inv,Bridge,JVM,_Options) :-
   write_to_chars(Exception,ExceptionChars),
   act_exception(Bridge,JVM,Inv,ExceptionChars),
   top_end(Inv,Bridge,JVM).
-act(block,_,Bridge,JVM,Options) :-
+act(block,Inv,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)), % TODO What if the unblocked step is immediately blocked, e.g. in freeze(X,freeze(Y,...))? freeze/2 isn't called, so we would have to do the linking here.
   execution_state(goal(Module:Goal)),
   remember_blocked_goal(Module:Goal,ID),
@@ -131,7 +131,7 @@ act(block,_,Bridge,JVM,Options) :-
     ; true),
   act_call(Bridge,JVM,ID),
   act_exit(Bridge,JVM,ID,true).
-act(unblock,_,Bridge,JVM,Options) :-
+act(unblock,Inv,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   get_next_pseudostep_id(ID),
   execution_state(pred(Module:Pred)),
