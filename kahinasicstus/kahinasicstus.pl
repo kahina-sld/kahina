@@ -17,6 +17,11 @@
 %       Default is false.
 %   layer(Layer) - If this option is given and Layer is an integer, it will be
 %       registered with Kahina as the layer of this step at call ports.
+%   source_code_location(Callback,File,Line) - Can be given to specify custom
+%       source code locations for goals matching the breakpoint. On a match,
+%       the goal Callback will be called. If it succeeds, File is used as the
+%       absolute path of the corresponding source file and Line is used as the
+%       corresponding line number in that file.
 user:breakpoint_expansion(kahina_breakpoint_action(Options),[
     % The three action variables Show, Mode, Command control Prolog's behavior
     % on encountering a breakpoint. We use show/1, mode/1, command/1 terms to
@@ -83,10 +88,15 @@ act(call,Inv,Bridge,JVM,Options) :-
   goal_desc(Module,Goal,GoalDesc),
   write_to_chars(GoalDesc,GoalDescChars),
   act_step(Bridge,JVM,Inv,PredChars,GoalDescChars),
-  (execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
-  -> write_to_chars(File,FileChars),
-     register_source_code_location(Bridge,JVM,Inv,FileChars,Line)
-   ; true),
+  ((memberchk(source_code_location(Callback,File,Line),Options),
+    Callback
+    -> true
+     ; execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
+       -> true
+        ; fail)
+   -> write_to_chars(File,FileChars),
+      register_source_code_location(Bridge,JVM,Inv,FileChars,Line)
+    ; true),
   (memberchk(layer(Layer),Options),
    integer(Layer)
    -> register_layer(Bridge,JVM,Inv,Layer)
