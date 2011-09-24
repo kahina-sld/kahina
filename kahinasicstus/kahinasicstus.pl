@@ -365,7 +365,7 @@ get_jvm(JVM) :-
   jvm(JVM),
   !.
 get_jvm(JVM) :-
-  jasper_initialize(JVM), % TODO classpath, heap size?
+  jasper_initialize(['-Xss2m'],JVM), % TODO classpath, heap size?
   assert(jvm(JVM)).
 
 % ------------------------------------------------------------------------------
