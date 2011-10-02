@@ -41,14 +41,14 @@ public class QTypeLayerDecider extends LayerDecider
 		return layer;
 	}
 
-	public int doDecideOnLayer(int nodeID, KahinaTree tree)
+	private int doDecideOnLayer(int nodeID, KahinaTree tree)
 	{
 		if (VERBOSE)
 		{
 			System.err.println(this + ".doDecideOnLayer(" + nodeID + ", [tree]");
 		}
 		String caption = tree.getNodeCaption(nodeID);
-		if (caption.contains("compile_grammar("))
+		if (caption.contains("compile_grammar(") || caption.contains(" lc(") || caption.contains(" lc_complete(") || caption.contains(" lc_list(") || caption.contains(" db_rule("))
 		{
 			return 0;
 		}

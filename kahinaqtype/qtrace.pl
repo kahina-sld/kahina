@@ -98,7 +98,7 @@ set_breakpoints(_) :-
   add_qbreakpoint(parser:lc_list/5,[]),
   fail.
 set_breakpoints(_) :-
-  add_qbreakpoint(grammar:db_rule/4,[,source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
+  add_qbreakpoint(grammar:db_rule/4,[source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
   fail.
 set_breakpoints(Home) :-
   directory_files(Home,Files),

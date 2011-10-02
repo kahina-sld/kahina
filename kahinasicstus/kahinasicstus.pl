@@ -16,7 +16,8 @@
 %       called/redone step will be skipped automatically if Autoskip is true.
 %       Default is false.
 %   layer(Layer) - If this option is given and Layer is an integer, it will be
-%       registered with Kahina as the layer of this step at call ports.
+%       registered with Kahina as the layer of this step at call ports. Note
+%       that Kahina may ignore this, depending on the layer decider used.
 %   source_code_location(Callback,File,Line) - Can be given to specify custom
 %       source code locations for goals matching the breakpoint. On a match,
 %       the goal Callback will be called. If it succeeds, File is used as the
