@@ -73,6 +73,8 @@ action_mode_command(_,debug,proceed,_Inv,_Port,_Autoskip).        % creep
 
 :- dynamic unblocked_pseudostep_waiting_for_link/1.
 
+% TODO act/5 and its delegates need refactoring.
+
 act(call,Inv,Bridge,JVM,Options) :-
   retract(unblock_pseudostep_waiting_for_link(UnblockingID)),
   execution_state(goal(Module:Goal)),
@@ -88,26 +90,19 @@ act(call,Inv,Bridge,JVM,Options) :-
   goal_desc(Module,Goal,GoalDesc),
   write_to_chars(GoalDesc,GoalDescChars),
   act_step(Bridge,JVM,Inv,PredChars,GoalDescChars),
-  ((memberchk(source_code_location(Callback,File,Line),Options),
-    Callback
-    -> true
-     ; execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
-       -> true
-        ; fail)
-   -> write_to_chars(File,FileChars),
-      register_source_code_location(Bridge,JVM,Inv,FileChars,Line)
-    ; true),
+  act_source_code_location(Bridge,JVM,Inv,Options),
   (memberchk(layer(Layer),Options),
    integer(Layer)
    -> register_layer(Bridge,JVM,Inv,Layer)
     ; true),
   act_call(Bridge,JVM,Inv),
   perhaps(send_variable_bindings(Bridge,JVM,Inv,call)).
-act(fail,Inv,Bridge,JVM,_Options) :-
+act(fail,Inv,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   act_fail(Bridge,JVM,Inv),
+  act_source_code_location(Bridge,JVM,Inv,Options),
   top_end(Inv,Bridge,JVM).
-act(exit(DetFlag),Inv,Bridge,JVM,_Options) :-
+act(exit(DetFlag),Inv,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   execution_state(pred(Module:_)),
   execution_state(goal(_:Goal)),
@@ -115,16 +110,19 @@ act(exit(DetFlag),Inv,Bridge,JVM,_Options) :-
   write_to_chars(GoalDesc,GoalDescChars),
   detflag_det(DetFlag,Det), % translates det/nondet to true/false
   act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
+  act_source_code_location(Bridge,JVM,Inv,Options),
   perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(DetFlag))),
   top_end(Inv,Bridge,JVM).
-act(redo,Inv,Bridge,JVM,_Options) :-
+act(redo,Inv,Bridge,JVM,Options) :-
   top_start(Inv),
   retractall(unblock_pseudostep_waiting_for_link(_)),
-  act_redo(Bridge,JVM,Inv).
-act(exception(Exception),Inv,Bridge,JVM,_Options) :-
+  act_redo(Bridge,JVM,Inv),
+  act_source_code_location(Bridge,JVM,Inv,Options).
+act(exception(Exception),Inv,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   write_to_chars(Exception,ExceptionChars),
   act_exception(Bridge,JVM,Inv,ExceptionChars),
+  act_source_code_location(Bridge,JVM,Inv,Options),
   top_end(Inv,Bridge,JVM).
 act(block,Inv,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)), % TODO What if the unblocked step is immediately blocked, e.g. in freeze(X,freeze(Y,...))? freeze/2 isn't called, so we would have to do the linking here.
@@ -159,6 +157,22 @@ act(unblock,Inv,Bridge,JVM,Options) :-
   % Would be nicer to have the unblocked steps as children of the unblock step
   % rather than siblings, but we don't know how many there are.
   assert(unblock_pseudostep_waiting_for_link(ID)).
+
+% This is currently called from act/5 at every port except block, unblock ports.
+% For non-custom source code locations, it would suffice to do it at call ports
+% since they are always the same for all ports of a procedure box. If this is
+% believed to be a performance issue (Jasper calls are relatively expensive),
+% future developers might want to devise something clever to avoid it.
+act_source_code_location(Bridge,JVM,Inv,Options) :-
+  ((memberchk(source_code_location(Callback,File,Line),Options),
+    Callback
+    -> true
+     ; execution_state(line(File,Line))	% The source_info flag has to be set to on or to emacs and not all goals have line information associated with them.
+       -> true
+        ; fail)
+   -> write_to_chars(File,FileChars),
+      register_source_code_location(Bridge,JVM,Inv,FileChars,Line)
+    ; true).
 
 :- dynamic top/1.
 :- dynamic end_det/0.
