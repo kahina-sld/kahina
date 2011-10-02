@@ -48,6 +48,8 @@ kahinasicstus:instance_class_hook('org/kahina/qtype/QTypeDebuggerInstance').
 % PUBLIC PREDICATES
 % ------------------------------------------------------------------------------
 
+:- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
+
 % First approximation to a QType-specific tracer:
 % Sets a breakpoint with kahina_breakpoint_action on every QType predicate with
 % at least one clause that has an immediate msg/3 subgoal.
@@ -70,14 +72,17 @@ source_code_location(File,Line) :-
 % SETTING BREAKPOINTS FOR QTYPE
 % ------------------------------------------------------------------------------
 
-:- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
+% always succeeds
+add_qbreakpoint(Pred,Options) :-
+  \+ qbreakpoint(Pred,_),
+  !,
+  add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action(Options)],BID),
+  assert(qbreakpoint(Pred,BID)).
+add_qbreakpoint(_,_).
 
 % failure-driven
-% TODO factoring needed
 set_breakpoints(_) :-
-  \+ qbreakpoint(grammar:db_rule/4,_),
-  add_breakpoint([pred(grammar:db_rule/4),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action([source_code_location(qtrace:source_code_location(File,Line),File,Line)])],BID),
-  assert(qbreakpoint(grammar:db_rule/4,BID)),
+  add_qbreakpoint(grammar:db_rule/4,[source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
   fail.
 set_breakpoints(Home) :-
   directory_files(Home,Files),
@@ -122,11 +127,10 @@ set_breakpoints_term(_,_).
 set_breakpoints_clause(Module,Head,Body) :-
   module_head_pred(Module,Head,Pred),
   \+ not_traced(Pred),
-  \+ qbreakpoint(Pred,_),
-  has_msg(Body,_Layer), % TODO use level for layering
+  has_msg(Body,_Layer),
+  !,
   autoskip(Pred,Autoskip),
-  add_breakpoint([pred(Pred),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action([autoskip(Autoskip)])],BID),
-  assert(qbreakpoint(Pred,BID)).
+  add_qbreakpoint(Pred,[autoskip(Autoskip)]).
 set_breakpoints_clause(_,_,_).
 
 % ------------------------------------------------------------------------------
