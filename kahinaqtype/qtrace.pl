@@ -1,5 +1,6 @@
 :- module(qtrace,[qtrace/0,
-                  noqtrace/0]).
+                  noqtrace/0,
+                  source_code_location/2]).
 
 :- use_module('../kahinasicstus/kahinasicstus').
 :- use_module(library(lists)).
@@ -14,7 +15,8 @@
 
 :- environ('QTYPE_HOME',_)
    -> ( use_module('$QTYPE_HOME/atts'),
-        use_module('$QTYPE_HOME/ops') )
+        use_module('$QTYPE_HOME/ops'),
+        use_module('$QTYPE_HOME/auxlib',[default_extension/3]))
     ; raise_exception(qtype_home_not_set).
 
 % ------------------------------------------------------------------------------
@@ -43,10 +45,8 @@ kahinasicstus:breakpoint_action_hook(exception(kahinaqtype_abort),_,debug,procee
 kahinasicstus:instance_class_hook('org/kahina/qtype/QTypeDebuggerInstance').
 
 % ------------------------------------------------------------------------------
-% MAIN CODE
+% PUBLIC PREDICATES
 % ------------------------------------------------------------------------------
-
-:- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
 
 % First approximation to a QType-specific tracer:
 % Sets a breakpoint with kahina_breakpoint_action on every QType predicate with
@@ -62,7 +62,23 @@ noqtrace :-
   fail.
 noqtrace.
 
+source_code_location(File,Line) :-
+  execution_state(goal(Module:Goal)),
+  goal_source_code_location(Module:Goal,File,Line).
+
+% ------------------------------------------------------------------------------
+% SETTING BREAKPOINTS FOR QTYPE
+% ------------------------------------------------------------------------------
+
+:- dynamic qbreakpoint/2. % qbreakpoint(Module:Functor/Arity,BID)
+
 % failure-driven
+% TODO factoring needed
+set_breakpoints(_) :-
+  \+ qbreakpoint(grammar:db_rule/4,_),
+  add_breakpoint([pred(grammar:db_rule/4),(call;fail;exit;redo;exception;block;unblock)]-[kahina_breakpoint_action([source_code_location(qtrace:source_code_location(File,Line),File,Line)])],BID),
+  assert(qbreakpoint(grammar:db_rule/4,BID)),
+  fail.
 set_breakpoints(Home) :-
   directory_files(Home,Files),
   atom_codes('.pl',ExtensionCodes),
@@ -113,6 +129,10 @@ set_breakpoints_clause(Module,Head,Body) :-
   assert(qbreakpoint(Pred,BID)).
 set_breakpoints_clause(_,_,_).
 
+% ------------------------------------------------------------------------------
+% DATA
+% ------------------------------------------------------------------------------
+
 not_traced(timer:msg_timer/_).
 not_traced(timer:msg_timer2/_).
 not_traced(cmd_aux:call_prolog/1).
@@ -128,11 +148,14 @@ not_traced(cmd_aux:call_prolog/1).
 
 autoskip(_,false).
 
-module_head_pred(_,Module:Head,Module:Functor/Arity) :-
-  !,
-  functor(Head,Functor,Arity).
-module_head_pred(Module,Head,Module:Functor/Arity) :-
-  functor(Head,Functor,Arity).
+goal_source_code_location(grammar:db_rule(_,_,_,Line),File,Line) :-
+  nonvar(Line),
+  clause(cmd_aux:current_compilefile(File0),_),
+  default_extension(File0,grm,File).
+
+% ------------------------------------------------------------------------------
+% HELPERS (KAHINAQTYPE-SPECIFIC)
+% ------------------------------------------------------------------------------
 
 has_msg(msg(_,Level,_),Layer) :-
   clean_level(Level,Layer).
@@ -167,6 +190,16 @@ qtype_home(Home) :-
   !.
 qtype_home(_) :-
   raise_exception(qtype_home_not_set).
+
+% ------------------------------------------------------------------------------
+% HELPERS (GENERAL)
+% ------------------------------------------------------------------------------
+
+module_head_pred(_,Module:Head,Module:Functor/Arity) :-
+  !,
+  functor(Head,Functor,Arity).
+module_head_pred(Module,Head,Module:Functor/Arity) :-
+  functor(Head,Functor,Arity).
 
 ends_with(List,List) :-
   !.
