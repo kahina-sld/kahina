@@ -11,9 +11,9 @@ public class TraleSLDFeatureStructureViewPanel extends KahinaViewPanel<TraleSLDF
 {
 	private static final long serialVersionUID = -8507986910087886388L;
 
-	private JPanel innerPanel;
+	protected JPanel innerPanel;
 
-	private VisualizationUtility util;
+	protected VisualizationUtility util;
 
 	private static final boolean verbose = false;
 
