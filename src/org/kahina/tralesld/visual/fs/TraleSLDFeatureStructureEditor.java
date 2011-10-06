@@ -1,5 +1,7 @@
 package org.kahina.tralesld.visual.fs;
 
+import gralej.blocks.BlockPanel;
+
 import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
@@ -14,9 +16,12 @@ import javax.swing.JPanel;
 
 public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureViewPanel
 {
+	BlockPanel blockPanel;
+	
 	public TraleSLDFeatureStructureEditor()
 	{
-		super();	
+		super();
+		blockPanel = null;
 	}
 	
 	@Override
@@ -30,8 +35,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		} 
 		else
 		{
-			JPanel blockCanvas = util.visualize(grisuMessage).getCanvas();
-			blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener());
+			blockPanel = util.visualize(grisuMessage);
+			JPanel blockCanvas = blockPanel.getCanvas();
+			blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(blockPanel));
 			innerPanel.add(blockCanvas);
 		}
 		innerPanel.repaint();
