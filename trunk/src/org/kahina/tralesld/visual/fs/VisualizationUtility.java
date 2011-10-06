@@ -68,21 +68,26 @@ public class VisualizationUtility
 	 */
 	public BlockPanel visualize(String grisuMessage)
 	{
+		BlockPanel blockPanel = null;
 		try
 		{
 			if (verbose)
 			{
 				System.err.println(this + ".visualize(" + grisuMessage + ")");
 			}
-			return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView();
+			blockPanel = parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView();
 		} 
 		catch (Exception e)
 		{
 			JPanel result = new JPanel();
 			result.add(new JLabel("Parse error: \n" + e.getMessage() + "\nGrisu message was: \n" + grisuMessage));
 			//TODO: restore display of error messages; display empty list as temporary solution
-			return new BlockPanel(EntityFactory.getInstance().newList());
+			blockPanel = new BlockPanel(EntityFactory.getInstance().newList());
 		}
+		//TODO: talk with Martin about elegant ways of modifying the default mouse behavior
+		blockPanel.getCanvas().removeMouseListener(blockPanel.getCanvas().getMouseListeners()[0]);
+		
+		return blockPanel;
 	}
 	
 	/**

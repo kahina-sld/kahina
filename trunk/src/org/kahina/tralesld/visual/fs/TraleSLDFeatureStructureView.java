@@ -18,7 +18,9 @@ public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS>
 	@Override
 	public JComponent wrapInPanel(KahinaController control)
     {
-        TraleSLDFeatureStructureViewPanel panel = new TraleSLDFeatureStructureViewPanel();
+		//TODO: do not make all feature structures editable by default
+		//should probably introduce distinction like wrapInEditablePanel vs. wrapInPanel
+        TraleSLDFeatureStructureViewPanel panel = new TraleSLDFeatureStructureEditor();
         control.registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
