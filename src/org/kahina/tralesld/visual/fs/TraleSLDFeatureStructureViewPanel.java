@@ -41,7 +41,7 @@ public class TraleSLDFeatureStructureViewPanel extends KahinaViewPanel<TraleSLDF
 			innerPanel.add(new JLabel("No feature structures (yet) at this port."));
 		} else
 		{
-			innerPanel.add(util.visualize(grisuMessage));
+			innerPanel.add(util.visualize(grisuMessage).getCanvas());
 		}
 		innerPanel.repaint();
 	}
