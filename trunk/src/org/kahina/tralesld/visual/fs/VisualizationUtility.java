@@ -1,7 +1,9 @@
 package org.kahina.tralesld.visual.fs;
 
 import gralej.Config;
+import gralej.blocks.BlockPanel;
 import gralej.controller.StreamInfo;
+import gralej.om.EntityFactory;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IGraleParser;
 import gralej.parsers.ParseException;
@@ -60,12 +62,11 @@ public class VisualizationUtility
 	 * 
 	 * @param grisuMessage
 	 *            A typed feature structure or tree in Grisu format.
-	 * @return An object representing the visualization of the feature
-	 *         structure, providing various methods to control rendering, and a
+	 * @return A GraleJ block panel, providing various methods to control rendering, and a
 	 *         method called <code>getCanvas()</code> to obtain the actual
 	 *         {@link JPanel}.
 	 */
-	public JPanel visualize(String grisuMessage)
+	public BlockPanel visualize(String grisuMessage)
 	{
 		try
 		{
@@ -73,13 +74,14 @@ public class VisualizationUtility
 			{
 				System.err.println(this + ".visualize(" + grisuMessage + ")");
 			}
-			return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView().getCanvas();
+			return parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView();
 		} 
 		catch (Exception e)
 		{
 			JPanel result = new JPanel();
 			result.add(new JLabel("Parse error: \n" + e.getMessage() + "\nGrisu message was: \n" + grisuMessage));
-			return result;
+			//TODO: restore display of error messages; display empty list as temporary solution
+			return new BlockPanel(EntityFactory.getInstance().newList());
 		}
 	}
 	
