@@ -85,7 +85,7 @@ public class VisualizationUtility
 			blockPanel = new BlockPanel(EntityFactory.getInstance().newList());
 		}
 		//TODO: talk with Martin about elegant ways of modifying the default mouse behavior
-		blockPanel.getCanvas().removeMouseListener(blockPanel.getCanvas().getMouseListeners()[0]);
+		//blockPanel.getCanvas().removeMouseListener(blockPanel.getCanvas().getMouseListeners()[0]);
 		
 		return blockPanel;
 	}
