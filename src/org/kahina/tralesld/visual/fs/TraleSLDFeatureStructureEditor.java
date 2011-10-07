@@ -7,6 +7,8 @@ import java.awt.event.MouseListener;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.kahina.tralesld.data.signature.TraleSLDSignature;
+
 /**
  * first attempt at minimally invasive editor layer on FS visualization
  * 
@@ -17,6 +19,8 @@ import javax.swing.JPanel;
 public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureViewPanel
 {
 	BlockPanel blockPanel;
+	//TODO: get the signature from somewhere
+	TraleSLDSignature sig;
 	
 	public TraleSLDFeatureStructureEditor()
 	{
@@ -37,7 +41,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			blockPanel = util.visualize(grisuMessage);
 			JPanel blockCanvas = blockPanel.getCanvas();
-			blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(blockPanel));
+			blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(blockPanel, sig));
 			innerPanel.add(blockCanvas);
 		}
 		innerPanel.repaint();
