@@ -8,13 +8,17 @@ import gralej.om.ITypedFeatureStructure;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import org.kahina.tralesld.data.signature.TraleSLDSignature;
+
 public class TraleSLDFeatureStructureEditorMouseListener implements MouseListener
 {
 	BlockPanel blockPanel;
+	TraleSLDSignature sig;
 	
-	public TraleSLDFeatureStructureEditorMouseListener(BlockPanel blockPanel)
+	public TraleSLDFeatureStructureEditorMouseListener(BlockPanel blockPanel, TraleSLDSignature sig)
 	{
 		this.blockPanel = blockPanel;
+		this.sig = sig;
 	}
 	
 	@Override
