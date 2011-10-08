@@ -32,12 +32,18 @@ public class TraleSLDFeatureStructureEditorMouseListener implements MouseListene
 			if (selectedEntity instanceof IType)
 			{
 				IType selectedType = (IType) selectedEntity;
-				System.err.println("  is of type " + selectedType.typeName());
+				String type = selectedType.typeName();
+				System.err.println("  " + type);
+				System.err.println("     Specialize: " + sig.getSubtypes(type));
+				System.err.println("     Generalize: " + sig.getSupertypes(type));
 			}
 			else if (selectedEntity instanceof ITypedFeatureStructure)
 			{
 				ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) selectedEntity;
-				System.err.println("  is a FS of type " + selectedFS.type().typeName());
+				String type = selectedFS.type().typeName();
+				System.err.println("  " + type);
+				System.err.println("     Specialize: " + sig.getSubtypes(type));
+				System.err.println("     Generalize: " + sig.getSupertypes(type));
 			}
 		}
 	}
