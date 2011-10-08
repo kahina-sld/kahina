@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.chart.KahinaChartEdgeDisplayDecider;
 import org.kahina.core.visual.chart.KahinaChartViewConfiguration;
@@ -90,7 +91,7 @@ public class TraleSLDSignatureUsageView extends KahinaView<TraleSLDSignature>
     }
 
 	@Override
-	public JComponent wrapInPanel(KahinaController control) 
+	public JComponent makePanel(KahinaGUI gui)
 	{
         TraleSLDSignatureUsageViewPanel panel = new TraleSLDSignatureUsageViewPanel(control);
         control.registerListener("redraw", panel);

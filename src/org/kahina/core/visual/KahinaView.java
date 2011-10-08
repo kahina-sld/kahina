@@ -7,6 +7,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
@@ -21,10 +22,12 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	protected KahinaViewConfiguration config;
 
 	protected T model;
+	
+	protected KahinaController control;
 
 	public KahinaView(KahinaController control)
 	{
-		// do nothing
+		this.control = control;
 	}
 
 	public void processEvent(KahinaEvent e)
@@ -93,9 +96,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	 * @param control
 	 * @return
 	 */
-	// TODO rename to makePanel to emphasize that the view is boss and it
-	// uses the panel to be represented in the GUI.
-	public abstract JComponent wrapInPanel(KahinaController control);
+	public abstract JComponent makePanel(KahinaGUI gui);
 
 	public String getTitle()
 	{
