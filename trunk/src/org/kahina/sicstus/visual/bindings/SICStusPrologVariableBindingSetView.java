@@ -4,6 +4,7 @@ import javax.swing.JComponent;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.sicstus.data.bindings.SICStusPrologVariableBindingSet;
 
@@ -16,7 +17,7 @@ public class SICStusPrologVariableBindingSetView extends KahinaView<SICStusProlo
 	}
 
 	@Override
-	public JComponent wrapInPanel(KahinaController control)
+	public JComponent makePanel(KahinaGUI gui)
 	{
 		SICStusPrologVariableBindingSetViewPanel panel = new SICStusPrologVariableBindingSetViewPanel();
         control.registerListener(KahinaEventTypes.REDRAW, panel);

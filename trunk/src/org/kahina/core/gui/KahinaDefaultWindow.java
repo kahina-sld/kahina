@@ -13,23 +13,22 @@ public class KahinaDefaultWindow extends KahinaWindow
 	public KahinaDefaultWindow(KahinaView<?> v, KahinaWindowManager wm)
 	{
 		super(wm);
-		setContent(v, wm.control);
+		setContent(v, wm.gui);
 		setTitle(v.getTitle());
 	}
 
 	public KahinaDefaultWindow(KahinaView<?> v, KahinaWindowManager wm, int winID)
 	{
 		super(wm, winID);
-		setContent(v, wm.control);
+		setContent(v, wm.gui);
 		setTitle(v.getTitle());
 	}
 
-	public void setContent(final KahinaView<?> v, final KahinaController control)
+	public void setContent(final KahinaView<?> v, final KahinaGUI gui)
 	{
 		this.v = v;
 		mainPanel.removeAll();
-		mainPanel.add(v.wrapInPanel(control));
-
+		mainPanel.add(v.makePanel(gui));
 	}
 
 	public KahinaView<?> getContent()

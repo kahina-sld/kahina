@@ -6,6 +6,7 @@ import javax.swing.JComponent;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaViewConfiguration;
 
@@ -117,7 +118,7 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 	}
 
 	@Override
-	public JComponent wrapInPanel(KahinaController control)
+	public JComponent makePanel(KahinaGUI gui)
 	{
 		marker = new KahinaTreeViewMarker(model, secondaryModel);
 		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(views.length, marker, control, orientation);

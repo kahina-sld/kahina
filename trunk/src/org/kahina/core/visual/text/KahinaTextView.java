@@ -13,6 +13,7 @@ import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaMessageEvent;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
 import org.kahina.core.visual.KahinaView;
 
@@ -51,7 +52,7 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
     }
     
     @Override
-    public JComponent wrapInPanel(KahinaController control)
+	public JComponent makePanel(KahinaGUI gui)
     {
         KahinaTextViewPanel panel = new KahinaTextViewPanel();
         control.registerListener("redraw", panel);

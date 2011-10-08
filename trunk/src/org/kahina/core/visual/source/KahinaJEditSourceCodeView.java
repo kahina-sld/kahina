@@ -4,6 +4,7 @@ import javax.swing.JComponent;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaJEditSourceCodeView extends KahinaView<KahinaSourceCodeLocation>
@@ -15,7 +16,7 @@ public class KahinaJEditSourceCodeView extends KahinaView<KahinaSourceCodeLocati
 	}
 
 	@Override
-	public JComponent wrapInPanel(KahinaController control)
+	public JComponent makePanel(KahinaGUI gui)
 	{
 		KahinaJEditSourceCodeViewPanel panel = createPanel();
         control.registerListener("redraw", panel);

@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
@@ -568,7 +569,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     }
 
     @Override
-    public JComponent wrapInPanel(KahinaController control)
+	public JComponent makePanel(KahinaGUI gui)
     {
         KahinaDAGViewPanel panel = new KahinaDAGViewPanel(control);
         control.registerListener("redraw", panel);

@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 
@@ -767,7 +768,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     }
     
     @Override
-    public JComponent wrapInPanel(KahinaController control)
+	public JComponent makePanel(KahinaGUI gui)
     {
         KahinaChartViewPanel panel = new KahinaChartViewPanel();
         control.registerListener("redraw", panel);

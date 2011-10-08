@@ -11,6 +11,7 @@ import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 import org.kahina.tralesld.event.TraleSLDTypeSelectionEvent;
@@ -138,7 +139,7 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
     }
 
 	@Override
-	public JComponent wrapInPanel(KahinaController control) 
+	public JComponent makePanel(KahinaGUI gui)
 	{
         TraleSLDSignatureHierarchyViewPanel panel = new TraleSLDSignatureHierarchyViewPanel(control);
         control.registerListener("redraw", panel);

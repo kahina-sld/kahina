@@ -4,6 +4,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
 
@@ -16,7 +17,7 @@ public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS>
 	}
 
 	@Override
-	public JComponent wrapInPanel(KahinaController control)
+	public JComponent makePanel(KahinaGUI gui)
     {
 		//TODO: do not make all feature structures editable by default
 		//should probably introduce distinction like wrapInEditablePanel vs. wrapInPanel

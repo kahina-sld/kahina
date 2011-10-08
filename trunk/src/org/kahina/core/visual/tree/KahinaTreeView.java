@@ -19,6 +19,7 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.gui.KahinaGUI;
 
 // TODO Second dimension sometimes isn't properly displayed when there is no
 // second-dimension root of the nodes in one view. Test case: set goal nodes to
@@ -825,7 +826,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	}
 
 	@Override
-	public JComponent wrapInPanel(KahinaController control)
+	public JComponent makePanel(KahinaGUI gui)
 	{
 		KahinaTreeViewPanel panel = new KahinaTreeViewPanel(control);
 		control.registerListener("redraw", panel);

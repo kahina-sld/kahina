@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 
@@ -211,7 +212,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	}
 
 	@Override
-	public JComponent wrapInPanel(KahinaController control)
+	public JComponent makePanel(KahinaGUI gui)
 	{
 		KahinaListTreeViewPanel panel = new KahinaListTreeViewPanel(layers.length, control);
 		control.registerListener("redraw", panel);

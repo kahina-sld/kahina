@@ -9,6 +9,7 @@ import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 import org.kahina.tralesld.event.TraleSLDTypeSelectionEvent;
@@ -83,7 +84,7 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
     }
 
 	@Override
-	public JComponent wrapInPanel(KahinaController control) 
+	public JComponent makePanel(KahinaGUI gui)
 	{
         TraleSLDSignatureAppropriatenessViewPanel panel = new TraleSLDSignatureAppropriatenessViewPanel(control);
         control.registerListener("redraw", panel);
