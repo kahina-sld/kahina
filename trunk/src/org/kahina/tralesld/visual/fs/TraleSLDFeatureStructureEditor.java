@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
 /**
@@ -19,18 +20,22 @@ import org.kahina.tralesld.data.signature.TraleSLDSignature;
 public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureViewPanel
 {
 	BlockPanel blockPanel;
-	//TODO: get the signature from somewhere
+	TraleSLDState state;
 	TraleSLDSignature sig;
 	
-	public TraleSLDFeatureStructureEditor()
+	public TraleSLDFeatureStructureEditor(TraleSLDState state)
 	{
 		super();
 		blockPanel = null;
+		this.state = state;
+		this.sig = state.getSignature();
 	}
 	
 	@Override
 	public void updateDisplay()
 	{
+		//TODO: find a better solution for ensuring the signature is always up-to-date
+		sig = state.getSignature();
 		innerPanel.removeAll();
 		String grisuMessage;
 		if (view == null || (grisuMessage = view.getGrisuMessage()) == null)

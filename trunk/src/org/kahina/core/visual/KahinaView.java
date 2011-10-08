@@ -1,5 +1,7 @@
 package org.kahina.core.visual;
 
+import java.awt.Component;
+
 import javax.swing.JComponent;
 
 import org.kahina.core.KahinaRunner;
@@ -116,5 +118,10 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	public KahinaViewConfiguration getConfig()
 	{
 		return config;
+	}
+
+	public Component makeEditorPanel(KahinaGUI gui) 
+	{
+		return makePanel(gui);
 	}
 }

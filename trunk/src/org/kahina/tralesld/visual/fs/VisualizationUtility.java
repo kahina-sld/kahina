@@ -84,9 +84,6 @@ public class VisualizationUtility
 			//TODO: restore display of error messages; display empty list as temporary solution
 			blockPanel = new BlockPanel(EntityFactory.getInstance().newList());
 		}
-		//TODO: talk with Martin about elegant ways of modifying the default mouse behavior
-		//blockPanel.getCanvas().removeMouseListener(blockPanel.getCanvas().getMouseListeners()[0]);
-		
 		return blockPanel;
 	}
 	

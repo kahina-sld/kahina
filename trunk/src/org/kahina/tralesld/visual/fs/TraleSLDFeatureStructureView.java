@@ -6,7 +6,9 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
+import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
+import org.kahina.tralesld.gui.TraleSLDGUI;
 
 public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS>
 {
@@ -19,13 +21,21 @@ public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS>
 	@Override
 	public JComponent makePanel(KahinaGUI gui)
     {
-		//TODO: do not make all feature structures editable by default
-		//should probably introduce distinction like wrapInEditablePanel vs. wrapInPanel
-        TraleSLDFeatureStructureViewPanel panel = new TraleSLDFeatureStructureEditor();
+        TraleSLDFeatureStructureViewPanel panel = new TraleSLDFeatureStructureViewPanel();
         control.registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
     }
+	
+	public JComponent makeEditorPanel(KahinaGUI gui)
+	{
+		//TODO: make state handling conceptually cleaner
+		TraleSLDState state = (TraleSLDState) gui.getKahinaInstance().getState();
+        TraleSLDFeatureStructureViewPanel panel = new TraleSLDFeatureStructureEditor(state);
+        control.registerListener("redraw", panel);
+        panel.setView(this);
+        return new JScrollPane(panel);
+	}
 
     public String getGrisuMessage()
     {
