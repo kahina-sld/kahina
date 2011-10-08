@@ -301,6 +301,8 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	{
 		synchronized (traleCommands)
 		{
+			//TODO: make sure the signature is retained across parses; requires major restructuring
+			traleCommands.add("query send_signature.");
 			traleCommands.add("query drec[" + Utilities.join(",", words) + "].");
 		}
 	}
