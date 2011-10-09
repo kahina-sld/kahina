@@ -62,6 +62,18 @@ public class LogicProgrammingState extends KahinaState
         profile = new LogicProgrammingProfile();
     }
     
+	public void reset() 
+	{
+        super.reset();
+        stepTree = new KahinaMemTree();
+        secondaryStepTree = new KahinaMemTree();
+        anchorsByTarget = new HashMap<Integer, List<Integer>>();
+        targetByAnchor = new HashMap<Integer, Integer>();
+        hiddenSteps = new HashSet<Integer>();
+        profile = new LogicProgrammingProfile();	
+        //keep all breakpoints across parses
+	}
+    
     public void breakpointConsoleMessage(int stepID, String message)
     {
         int lineID = consoleMessages.text.addLine(message);
