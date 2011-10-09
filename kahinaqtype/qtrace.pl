@@ -81,7 +81,6 @@ add_qbreakpoint(Pred,Options) :-
 add_qbreakpoint(_,_).
 
 % failure-driven
-
 set_breakpoints(_) :-
   add_qbreakpoint(parser:lc/1,[]),
   fail.
@@ -98,7 +97,13 @@ set_breakpoints(_) :-
   add_qbreakpoint(parser:lc_list/5,[]),
   fail.
 set_breakpoints(_) :-
+  add_qbreakpoint(grammar:db_word/4,[source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
+  fail.
+set_breakpoints(_) :-
   add_qbreakpoint(grammar:db_rule/4,[source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
+  fail.
+set_breakpoints(_) :-
+  add_qbreakpoint(grammar:db_macro/5,[source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
   fail.
 set_breakpoints(Home) :-
   directory_files(Home,Files),
@@ -168,10 +173,12 @@ not_traced(cmd_aux:call_prolog/1).
 
 autoskip(_,false).
 
+goal_source_code_location(grammar:db_word(_,_,_,Line),File,Line) :-
+  line_source_code_location(File,Line).
 goal_source_code_location(grammar:db_rule(_,_,_,Line),File,Line) :-
-  nonvar(Line),
-  clause(cmd_aux:current_compilefile(File0),_),
-  default_extension(File0,grm,File).
+  line_source_code_location(File,Line).
+goal_source_code_location(grammar:db_macro(_,_,_,_,Line),File,Line) :-
+  line_source_code_location(File,Line).
 
 % ------------------------------------------------------------------------------
 % HELPERS (KAHINAQTYPE-SPECIFIC)
@@ -210,6 +217,11 @@ qtype_home(Home) :-
   !.
 qtype_home(_) :-
   raise_exception(qtype_home_not_set).
+
+line_source_code_location(File,Line) :-
+  nonvar(Line),
+  clause(cmd_aux:current_compilefile(File0),_),
+  default_extension(File0,grm,File).
 
 % ------------------------------------------------------------------------------
 % HELPERS (GENERAL)
