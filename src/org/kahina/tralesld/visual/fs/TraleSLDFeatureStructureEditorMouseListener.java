@@ -25,7 +25,7 @@ public class TraleSLDFeatureStructureEditorMouseListener implements MouseListene
 	public void mouseClicked(MouseEvent arg0) 
 	{
 		//System.err.println("Editor clicked at position (" + arg0.getX() + "," + arg0.getY() + ")");
-		if (blockPanel.getSelectedBlock() != null)
+		if (arg0.getButton() == MouseEvent.BUTTON2 && blockPanel.getSelectedBlock() != null)
 		{
 			IEntity selectedEntity = blockPanel.getSelectedBlock().getModel();
 			System.err.println("Selected entity: " + selectedEntity.getClass().getCanonicalName() + " " + selectedEntity.text());
