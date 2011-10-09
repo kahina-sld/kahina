@@ -17,15 +17,25 @@ public class TraleSLDState extends LogicProgrammingState
 	KahinaChart chart;
 	TraleSLDSignature signature;
 
-	// coordination between tree and chart
+	//coordination between tree and chart
 	HashMap<Integer, Integer> edgeToNode;
 	HashMap<Integer, Integer> nodeToEdge;
 
 	public TraleSLDState()
 	{
 		super();
+		System.err.println("New TraleSLDState() and empty signature");
 		chart = new KahinaMemChart();
 		signature = new TraleSLDSignature();
+		edgeToNode = new HashMap<Integer, Integer>();
+		nodeToEdge = new HashMap<Integer, Integer>();
+	}
+	
+	public void reset()
+	{
+		super.reset();
+		//keep signature (constant across parses)
+		chart = new KahinaMemChart();
 		edgeToNode = new HashMap<Integer, Integer>();
 		nodeToEdge = new HashMap<Integer, Integer>();
 	}

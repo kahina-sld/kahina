@@ -118,7 +118,14 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		controller.registerListener(KahinaEventTypes.UPDATE, this);
 		controller.registerListener(KahinaEventTypes.SESSION, this);
 		controller.registerListener(KahinaEventTypes.SYSTEM, this);
-		state = createState();
+		if (state != null)
+		{
+			state.reset();
+		}
+		else
+		{
+			state = createState();
+		}
 		bridge = createBridge();
 		createTreeBehavior();
 		createWarner();

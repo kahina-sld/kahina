@@ -35,13 +35,13 @@ public class KahinaState implements Serializable, KahinaListener
 	private static final boolean VERBOSE = false;
 	
 	//the messages that will be stored in the console
-    protected final KahinaTextModel consoleMessages;
+    protected KahinaTextModel consoleMessages;
     //map from stepIDs to lines in console
-    protected final Map<Integer,Set<KahinaLineReference>> consoleLines;
+    protected Map<Integer,Set<KahinaLineReference>> consoleLines;
     
-    protected final Map<KahinaBreakpoint, Integer> warnThresholdByBreakpoint;
+    protected Map<KahinaBreakpoint, Integer> warnThresholdByBreakpoint;
     
-    protected final Map<KahinaBreakpoint, Integer> matchCountByBreakpoint;
+    protected Map<KahinaBreakpoint, Integer> matchCountByBreakpoint;
     
     private int selectedStepID = -1;
     
@@ -55,6 +55,16 @@ public class KahinaState implements Serializable, KahinaListener
         matchCountByBreakpoint = new HashMap<KahinaBreakpoint, Integer>();
         KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
     }
+    
+	public void reset() 
+	{
+		//console is refilled for each new process
+		//TODO: think about an additional console for global events (warnings etc.)
+        consoleMessages = new KahinaTextModel();
+        consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
+        warnThresholdByBreakpoint = new HashMap<KahinaBreakpoint, Integer>();
+        matchCountByBreakpoint = new HashMap<KahinaBreakpoint, Integer>();
+	}
     
     public int nextStepID()
     {
