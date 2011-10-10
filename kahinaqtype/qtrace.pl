@@ -105,6 +105,12 @@ set_breakpoints(_) :-
 set_breakpoints(_) :-
   add_qbreakpoint(grammar:db_macro/5,[source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
   fail.
+set_breakpoints(_) :-
+  add_qbreakpoint(lexrules:apply_lexrules/4,[source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
+  fail.
+set_breakpoints(_) :-
+  add_qbreakpoint(grammar:db_lexrule/4,[source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
+  fail.
 set_breakpoints(Home) :-
   directory_files(Home,Files),
   atom_codes('.pl',ExtensionCodes),
@@ -178,6 +184,10 @@ goal_source_code_location(grammar:db_word(_,_,_,Line),File,Line) :-
 goal_source_code_location(grammar:db_rule(_,_,_,Line),File,Line) :-
   line_source_code_location(File,Line).
 goal_source_code_location(grammar:db_macro(_,_,_,_,Line),File,Line) :-
+  line_source_code_location(File,Line).
+goal_source_code_location(lexrule:apply_lexrules(_,_,_,Line),File,Line) :-
+  line_source_code_location(File,Line).
+goal_source_code_location(grammar:db_lexrule(_,_,_,Line),File,Line) :-
   line_source_code_location(File,Line).
 
 % ------------------------------------------------------------------------------
