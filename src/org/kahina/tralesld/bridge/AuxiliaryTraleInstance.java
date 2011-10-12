@@ -22,19 +22,21 @@ public class AuxiliaryTraleInstance
 			sp = new SICStus();
 		    sp.load("/opt/trale2/startup.pl");
 		    SPPredicate compileGramPred = new SPPredicate(sp, "compile_gram", 1, "");
-		    //TODO: find out how TRALE handles paths, help it to find the signature
-		    /*SPTerm pathTerm = new SPTerm(sp, "/home/kahina/pro/test/nomi/theory.pl");
+		    //TODO: find a way to set the environment from inside this class
+		    SPTerm pathTerm = new SPTerm(sp, "theory.pl");
 		    SPQuery compileQuery = sp.openQuery(compileGramPred, new SPTerm[] { pathTerm });	      
 		    while (compileQuery.nextSolution())
 		    {
 		    	System.out.println("Theory compiled, back in AuxiliaryTraleInstance!");
-		    }*/
-		    SPPredicate dgoPred = new SPPredicate(sp, "dgo", 0, "");
+		    }	    
+		    		    
+		    //TEST: loading another instance of Kahina from inside the embedding instance
+		    /*SPPredicate dgoPred = new SPPredicate(sp, "dgo", 0, "");
 		    SPQuery dgoQuery = sp.openQuery(dgoPred, new SPTerm[] {});	      
 		    while (dgoQuery.nextSolution())
 		    {
 		    	System.out.println("Embedded Kahina closed, back in AuxiliaryTraleInstance!");
-		    }
+		    }*/
 		}
 		catch ( Exception e )
 		{
@@ -44,6 +46,11 @@ public class AuxiliaryTraleInstance
 	
 	public static void main(String[] args)
 	{
+		//the following environment is necessary for this demo to emulate the startup script:
+		// * working directory set to where the files theory.pl and signature reside
+		// * TRALE_HOME pointing to the root directory
+		//for the embedding demo, the environment must be configured with
+		// * TRALE_ACTIVATE_DEBUGGER set to true
 		AuxiliaryTraleInstance trale = new AuxiliaryTraleInstance();
 	}
 }
