@@ -20,21 +20,21 @@ public class AuxiliaryTraleInstance
 		try 
 		{
 			sp = new SICStus();
-		    sp.load("/opt/trale2/trale.pl");
+		    sp.load("/opt/trale2/startup.pl");
 		    SPPredicate compileGramPred = new SPPredicate(sp, "compile_gram", 1, "");
 		    //TODO: find out how TRALE handles paths, help it to find the signature
-		    SPTerm pathTerm = new SPTerm(sp, "/home/kahina/pro/test/nomi/theory.pl");
+		    /*SPTerm pathTerm = new SPTerm(sp, "/home/kahina/pro/test/nomi/theory.pl");
 		    SPQuery compileQuery = sp.openQuery(compileGramPred, new SPTerm[] { pathTerm });	      
 		    while (compileQuery.nextSolution())
 		    {
 		    	System.out.println("Theory compiled, back in AuxiliaryTraleInstance!");
-		    }
-		    /*SPPredicate dgoPred = new SPPredicate(sp, "dgo", 0, "");
+		    }*/
+		    SPPredicate dgoPred = new SPPredicate(sp, "dgo", 0, "");
 		    SPQuery dgoQuery = sp.openQuery(dgoPred, new SPTerm[] {});	      
 		    while (dgoQuery.nextSolution())
 		    {
 		    	System.out.println("Embedded Kahina closed, back in AuxiliaryTraleInstance!");
-		    }*/
+		    }
 		}
 		catch ( Exception e )
 		{
