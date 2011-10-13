@@ -34,26 +34,14 @@ public class TraleSLDFeatureStructureEditorMouseListener implements MouseListene
 		if (blockPanel.getSelectedBlock() != null)
 		{
 			IEntity selectedEntity = blockPanel.getSelectedBlock().getModel();
+			editor.processContextStructure(selectedEntity);
 			System.err.println("Selected entity: " + selectedEntity.getClass().getCanonicalName() + " " + selectedEntity.text());
-			String type = "bot";
-			if (selectedEntity instanceof IType)
+			String type = editor.getContextStructureType();
+			if (!type.equals("?"))
 			{
-				IType selectedType = (IType) selectedEntity;
-				type = selectedType.typeName();
-				System.err.println("  " + type);
-				System.err.println("     Specialize: " + sig.getSubtypes(type));
-				System.err.println("     Generalize: " + sig.getSupertypes(type));
+				//generate context menu for type manipulation
+				editor.createContextMenu().show(e.getComponent(),e.getX(), e.getY());
 			}
-			else if (selectedEntity instanceof ITypedFeatureStructure)
-			{
-				ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) selectedEntity;
-				type = selectedFS.type().typeName();
-				System.err.println("  " + type);
-				System.err.println("     Specialize: " + sig.getSubtypes(type));
-				System.err.println("     Generalize: " + sig.getSupertypes(type));
-			}
-			//generate context menu for type manipulation
-			new TraleSLDFeatureStructureEditorMenu(editor, sig.getSubtypes(type), sig.getSupertypes(type), sig.getSiblingTypes(type)).show(e.getComponent(),e.getX(), e.getY());
 		}
 	}
 
