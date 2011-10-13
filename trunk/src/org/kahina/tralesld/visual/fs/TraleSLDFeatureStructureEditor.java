@@ -2,6 +2,8 @@ package org.kahina.tralesld.visual.fs;
 
 import gralej.blocks.BlockPanel;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 
 import javax.swing.JLabel;
@@ -17,7 +19,7 @@ import org.kahina.tralesld.data.signature.TraleSLDSignature;
  *
  */
 
-public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureViewPanel
+public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureViewPanel implements ActionListener
 {
 	BlockPanel blockPanel;
 	TraleSLDState state;
@@ -46,9 +48,18 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			blockPanel = util.visualize(grisuMessage);
 			JPanel blockCanvas = blockPanel.getCanvas();
-			blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(blockPanel, sig));
+			blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(this, blockPanel));
 			innerPanel.add(blockCanvas);
 		}
 		innerPanel.repaint();
+	}
+
+	@Override
+	//only type of action at the moment are the type manipulation instructions from context menu
+	//action commands are therefore simply type names; might have to be extended in the future
+	public void actionPerformed(ActionEvent e) 
+	{
+		String type = e.getActionCommand();
+		//TODO: take the cached structure and switch its type; adapt structure accordingly
 	}
 }
