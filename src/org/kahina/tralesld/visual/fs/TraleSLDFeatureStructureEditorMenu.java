@@ -17,7 +17,7 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		for (String type : subtypes)
 		{
 			JMenuItem typeItem = new JMenuItem(type);
-			specializeMenu.addActionListener(editor);
+			typeItem.addActionListener(editor);
 			specializeMenu.add(typeItem);
 		}
 		add(specializeMenu);
@@ -25,7 +25,7 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		for (String type : supertypes)
 		{
 			JMenuItem typeItem = new JMenuItem(type);
-			generalizeMenu.addActionListener(editor);
+			typeItem.addActionListener(editor);
 			generalizeMenu.add(typeItem);
 		}
 		add(generalizeMenu);
@@ -33,7 +33,7 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		for (String type : siblingTypes)
 		{
 			JMenuItem typeItem = new JMenuItem(type);
-			switchMenu.addActionListener(editor);
+			typeItem.addActionListener(editor);
 			switchMenu.add(typeItem);
 		}
 		add(switchMenu);

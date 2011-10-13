@@ -109,17 +109,20 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	public void actionPerformed(ActionEvent e) 
 	{
 		String type = e.getActionCommand();
-		//TODO: take the cached structure and switch its type; adapt structure accordingly
 		if (contextStructure instanceof IType)
 		{
 			IType selectedType = (IType) contextStructure;
-			contextStructureType = selectedType.typeName();
+			selectedType.setTypeName(type);
 		}
 		else if (contextStructure instanceof ITypedFeatureStructure)
 		{
 			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
-			//TODO: find out how to generate a good type
+			//TODO: find out how to generate an IType object that can be used here
 			selectedFS.setType(null);
 		}
+		//TODO: after switching the type adapt structure accordingly
+		//TODO: find out how redrawing works; feed the changes back into stored date
+		blockPanel.getContent().update();
+		blockPanel.getCanvas().repaint();
 	}
 }
