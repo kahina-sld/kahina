@@ -10,6 +10,14 @@ import javax.swing.table.TableModel;
 
 import org.kahina.core.visual.KahinaViewPanel;
 
+/**
+ * A feature workbench window, with list of objects on the left, 
+ * a toolbar with functionality such as unification and diff, 
+ * and an editing component on the right.
+ * 
+ * @author jdellert
+ *
+ */
 public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchView> implements ListSelectionListener
 {
 	private final JTable table;
