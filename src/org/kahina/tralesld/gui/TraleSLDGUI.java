@@ -39,6 +39,8 @@ import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.data.FeatureWorkbench;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
+import org.kahina.tralesld.data.fs.TraleSLDFS;
+import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
 import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
 import org.kahina.tralesld.event.TraleSLDControlEventCommands;
 import org.kahina.tralesld.event.TraleSLDTypeSelectionEvent;
@@ -180,6 +182,8 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		public void actionPerformed(ActionEvent e)
 		{
 			FeatureWorkbench workbench = new FeatureWorkbench();
+			//add a few feature structures for testing purposes until dragging is possible
+			workbench.storeStructure("sample", new TraleSLDPackedFSTerminal("bla"));
 			FeatureWorkbenchView workbenchView = new FeatureWorkbenchView(control);
 			workbenchView.display(workbench);
 			workbenchView.setTitle("Feature Workbench");

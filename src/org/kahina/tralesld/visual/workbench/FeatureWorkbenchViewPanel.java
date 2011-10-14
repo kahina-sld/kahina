@@ -6,14 +6,15 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
+import javax.swing.DefaultListModel;
 
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.tralesld.TraleSLDState;
+import org.kahina.tralesld.data.fs.TraleSLDFS;
+import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditor;
 
 /**
@@ -27,9 +28,9 @@ import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditor;
 public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchView> implements ListSelectionListener
 {
 	private final JLabel msgLabel;
-	private final JTable table;
+	private final JList list;
 	private final TraleSLDFeatureStructureEditor editor;
-	private final TableModel tableModel = new DefaultTableModel();
+	private final FeatureStructureListModel listModel;
 	
 	public FeatureWorkbenchViewPanel(TraleSLDState state)
 	{
@@ -63,32 +64,39 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
 		
-		table = new JTable(tableModel);
-		table.getSelectionModel().addListSelectionListener(this);
-		JScrollPane tableScrollPane = new JScrollPane(table);
-		table.setFillsViewportHeight(true);
+		listModel = new FeatureStructureListModel();
+		list = new JList(listModel);
+		list.getSelectionModel().addListSelectionListener(this);
+		JScrollPane tableScrollPane = new JScrollPane(list);
 		contentPanel.add(tableScrollPane);
 		
 		editor = new TraleSLDFeatureStructureEditor(state);
-		table.getSelectionModel().addListSelectionListener(this);
 		JScrollPane editorScrollPane = new JScrollPane(editor);
 		contentPanel.add(editorScrollPane);
 		
 		add(contentPanel);
 	}
+	
+	//TODO: override display method to adapt list model
 
 	@Override
 	public void updateDisplay() 
 	{
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) 
 	{
-		// TODO Auto-generated method stub
-		
+		editor.view.display(listModel.getStructureAt(arg0.getFirstIndex()));	
+	}
+	
+	private class FeatureStructureListModel extends DefaultListModel
+	{
+		public TraleSLDFS getStructureAt(int i)
+		{
+			return new TraleSLDPackedFSTerminal("ad_hoc_terminal");
+		}
 	}
 
 }
