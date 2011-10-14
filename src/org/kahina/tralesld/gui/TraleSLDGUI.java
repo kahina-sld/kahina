@@ -23,6 +23,7 @@ import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
+import org.kahina.core.gui.KahinaWindow;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
@@ -36,6 +37,7 @@ import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStepType;
+import org.kahina.tralesld.data.FeatureWorkbench;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
 import org.kahina.tralesld.event.TraleSLDControlEventCommands;
@@ -45,6 +47,7 @@ import org.kahina.tralesld.visual.chart.TraleSLDChartEdgeDisplayDecider;
 import org.kahina.tralesld.visual.signature.TraleSLDSignatureAppropriatenessView;
 import org.kahina.tralesld.visual.signature.TraleSLDSignatureHierarchyView;
 import org.kahina.tralesld.visual.signature.TraleSLDSignatureUsageView;
+import org.kahina.tralesld.visual.workbench.FeatureWorkbenchView;
 
 public class TraleSLDGUI extends LogicProgrammingGUI
 {
@@ -55,11 +58,15 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	protected TraleSLDSignatureHierarchyView signatureHierarchyView;
 	protected TraleSLDSignatureAppropriatenessView signatureAppropriatenessView;
 	protected TraleSLDSignatureUsageView signatureUsageView;
+	
+	//needed to generate additional views (e.g. workbenches) after initialization
+	protected KahinaController control;
 
 	public TraleSLDGUI(Class<? extends KahinaStep> stepType, TraleSLDInstance instance, KahinaController control)
 	{
 		super(stepType, instance, control);
 		this.instance = instance;
+		this.control = control;
 
 		mainChartView = new KahinaChartView(control);
 		mainChartView.setTitle("Chart");
@@ -162,6 +169,9 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		return new TraleSLDProfileEntryMapper();
 	}
 	
+	/**
+	 * initialises a new feature workbench and creates a window for it
+	 */
 	public final Action NEW_WORKBENCH_ACTION = new AbstractAction("New Feature Workbench")
 	{
 		private static final long serialVersionUID = -5054097578696268196L;
@@ -169,9 +179,18 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			//TODO: generate and register new workbench window
+			FeatureWorkbench workbench = new FeatureWorkbench();
+			FeatureWorkbenchView workbenchView = new FeatureWorkbenchView(control);
+			workbenchView.display(workbench);
+			workbenchView.setTitle("Feature Workbench");
+			views.add(workbenchView);
+			//TODO: this should be done more systematically
+			KahinaWindow workbenchWindow = windowManager.integrateInDefaultWindow(workbenchView);
+			windowManager.registerWindow(workbenchWindow);
+			workbenchWindow.setSize(300, 100);
+			workbenchWindow.setLocation(200, 200);
+			workbenchWindow.setVisible(true);
 		}
-
 	};
 
 	@Override
