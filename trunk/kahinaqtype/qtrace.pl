@@ -16,7 +16,9 @@
 :- environ('QTYPE_HOME',_)
    -> ( use_module('$QTYPE_HOME/atts'),
         use_module('$QTYPE_HOME/ops'),
-        use_module('$QTYPE_HOME/auxlib',[default_extension/3]))
+        use_module('$QTYPE_HOME/auxlib',[default_extension/3]),
+        use_module('$QTYPE_HOME/bitsets',[make_bitset/2,
+                                          make_type/2]))
     ; raise_exception(qtype_home_not_set).
 
 % ------------------------------------------------------------------------------
@@ -191,6 +193,59 @@ goal_source_code_location(grammar:db_lexrule(_,_,_,Line),File,Line) :-
   line_source_code_location(File,Line).
 
 % ------------------------------------------------------------------------------
+% FEATURE STRUCTURES
+% Converting features structures from QType's term representation to the Grisu
+% format understood by Gralej.
+% ------------------------------------------------------------------------------
+
+fs_grisu(FS,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO labels?
+  fs_grisu(FS,0,_,Grisu,[]). % first ID, close difference list
+
+% The last two arguments of the following predicates represent difference lists,
+% used to recursively construct Grisu messages.
+
+% feature structure
+fs_grisu(Type=FVPs,ID0,ID,[40,83|Grisu0],Grisu) :- % (S
+  id_grisu(ID0,ID1,Grisu0,Grisu1),
+  type_grisu(Type,ID1,ID2,Grisu1,Grisu2),
+  fvps_grisu(FVPs,ID2,ID,Grisu2,[41|Grisu]). % )
+
+% type
+type_grisu(Type,ID0,ID,[40|Grisu0],Grisu) :- % (
+  id_grisu(ID0,ID,Grisu0,Grisu1),
+  make_bitset(Type,Bitset), % now typically, Type==Bitset
+  make_type(Bitset,TypeName),
+  string_grisu(TypeName,Grisu1,[41|Grisu]). % )
+
+% (open-ended) list of feature-value pairs
+fvps_grisu(End,ID,ID,Grisu,Grisu) :-
+  var(End),
+  !.
+fvps_grisu([F:V|Rest],ID0,ID,[40,86|Grisu0],Grisu) :- % (V
+  id_grisu(ID0,ID1,Grisu0,Grisu1),
+  string_grisu(F,Grisu1,Grisu2),
+  fs_grisu(V,ID1,ID2,Grisu2,Grisu3),
+  fvps_grisu(Rest,ID2,ID,Grisu3,[41|Grisu]). % )
+
+% numeric ID
+id_grisu(ID0,ID,Grisu0,Grisu) :-
+  number_codes(ID0,ID0Codes),
+  open_list(ID0Codes,Grisu0,Grisu),
+  ID is ID0 + 1.
+
+% string, such as a type or feature name
+% the character " may not appear in Grisu string literals, at least
+% gralej.parser.TraleMsgLexer doesn't support it. So no escaping here.
+string_grisu(Atom,[34|Grisu0],Grisu) :- % "
+  atom_codes(Atom,Codes),
+  open_list(Codes,Grisu0,[34|Grisu]). % "
+
+% No special treatment for atoms needed - they are just types with no features
+% (thus empty features lists), conventionally immediate subtypes of the built-in
+% type atom and inferred by QType from usage in the grammar rather than
+% declared.
+
+% ------------------------------------------------------------------------------
 % HELPERS (KAHINAQTYPE-SPECIFIC)
 % ------------------------------------------------------------------------------
 
@@ -252,3 +307,8 @@ hint_module(Hint,user) :-
   var(Hint),
   !.
 hint_module(Module,Module).
+
+% proper list -> difference list
+open_list([First|Rest],[First|NewRest],End) :-
+  open_list(Rest,NewRest,End).
+open_list([],End,End).
