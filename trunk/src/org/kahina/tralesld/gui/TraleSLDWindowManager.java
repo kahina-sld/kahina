@@ -14,7 +14,16 @@ public class TraleSLDWindowManager extends KahinaWindowManager
     
     protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager)
 	{
-		return new TraleSLDMainWindow(windowManager);
+    	if (windowManager instanceof TraleSLDWindowManager)
+    	{
+    		return new TraleSLDMainWindow((TraleSLDWindowManager) windowManager);
+    	}
+    	else
+    	{
+    		System.err.println("FATAL ERROR: TraleSLDWindowManager could not create main window!");
+    		System.err.println("             Building default window with dummy functionality instead.");
+    		return new KahinaMainWindow(windowManager);
+    	}
 	}
     
     protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, int winID)

@@ -12,12 +12,12 @@ public class TraleSLDMainWindow extends LogicProgrammingMainWindow
 {
 	private static final long serialVersionUID = -8044329699904664157L;
 
-	public TraleSLDMainWindow(KahinaWindowManager windowManager)
+	public TraleSLDMainWindow(TraleSLDWindowManager windowManager)
 	{
 		super(windowManager);
 	}
 	
-	public TraleSLDMainWindow(KahinaWindowManager windowManager, int winID)
+	public TraleSLDMainWindow(TraleSLDWindowManager windowManager, int winID)
 	{
 		super(windowManager, winID);
 	}
@@ -25,6 +25,7 @@ public class TraleSLDMainWindow extends LogicProgrammingMainWindow
 	protected void addAdditionalMenus()
 	{
 		menuBar.add(new TraleSLDParseMenu(wm.gui.getKahinaInstance()));
+		menuBar.add(new TraleSLDWorkbenchMenu(((TraleSLDGUI) wm.gui)));
 		super.addAdditionalMenus();
 	}
 

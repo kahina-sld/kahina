@@ -3,12 +3,15 @@ package org.kahina.tralesld.gui;
 import gralej.controller.Controller;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -140,8 +143,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		{
 			displayMainViews();
 
-			// TODO: load last perspective instead of only default perspective
-			// from XML
+			// TODO: load last perspective instead of only default perspective from XML
 			InputStream xmlStream = new BufferedInputStream(TraleSLDGUI.class.getResourceAsStream("tralesld-manywindows.xml"));
 			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLStream(xmlStream, false).getDocumentElement()));
 			xmlStream.close();
@@ -159,6 +161,18 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	{
 		return new TraleSLDProfileEntryMapper();
 	}
+	
+	public final Action NEW_WORKBENCH_ACTION = new AbstractAction("New Feature Workbench")
+	{
+		private static final long serialVersionUID = -5054097578696268196L;
+
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			//TODO: generate and register new workbench window
+		}
+
+	};
 
 	@Override
 	protected void processEvent(KahinaDialogEvent e)
