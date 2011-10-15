@@ -208,7 +208,6 @@ fs_grisu(FS,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO lab
 % The last two arguments of the following predicates represent difference lists,
 % used to recursively construct Grisu messages.
 
-% TODO variables! How are they represented? As Prolog variables?
 % TODO re-entrancies! How are they represented?! Wrappers? Attributes?!
 
 % non-empty list
@@ -231,15 +230,18 @@ fs_grisu(Type=FVPs,ID0,ID,[40,83|Grisu0],Grisu) :- % (S
   type_grisu(Type,ID1,ID2,Grisu1,Grisu2),
   fvps_grisu(FVPs,ID2,ID,Grisu2,[41|Grisu]). % )
 
+% empty tail
 tail_grisu(Type=_,ID,ID,Grisu,Grisu) :-
   is_nil_type(Type),
   !.
+% non-empty tail
 tail_grisu(Type=FVPs,ID0,ID,Grisu0,Grisu) :-
   is_nel_type(Type),
   !,
   remove(FVPs,'FI':First,['RE':Rest]),
   fs_grisu(First,ID0,ID1,Grisu0,Grisu1),
   tail_grisu(Rest,ID1,ID,Grisu1,Grisu).
+% open end
 tail_grisu(FS,ID0,ID,[40,90|Grisu0],Grisu) :- % (Z
   id_grisu(ID0,ID1,Grisu0,Grisu1),
   fs_grisu(FS,ID1,ID,Grisu1,[41|Grisu]). % )
