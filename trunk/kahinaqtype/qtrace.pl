@@ -205,17 +205,45 @@ goal_source_code_location(grammar:db_lexrule(_,_,_,Line),File,Line) :-
 % Using rest-lists as in QType, TODO check if this hurts performance too badly.
 
 fs_grisu(T=FL,DGs,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO labels?
-  prepare_delayed_goals_for_pp(DGs,DGFSL,Reent,1), % TODO delayed goals
   get_one_fs(T=FL),
+  % Collect re-entrancies of FS:
   get_coins_to_show(T=FL,VL),
   list_to_ord_set(VL,VL1),
+  % Convert delayed goals to FS-like representation, collect re-entrancies:
+  prepare_delayed_goals_for_pp(DGs,DGFSL,Reent,1),
   list_to_ord_set(Reent,Reent1),
+  % Merge both sets of re-entrancies:
   ord_union(VL1,Reent1,EVL0),
-  enum_coins(EVL0, EVL, 1),
-  %add_dgs_to_fl(FL,DGFSL),
+  % Assign tag numbers:
+  enum_coins(EVL0,TL,1),
+  % Portray FS:
   empty_assoc(TD),
-  fs_grisu(T=FL,EVL,TD,0,_,Grisu,[]). % first ID, close difference list
+  fs_grisu(T=FL,TL,TD,0,ID1,Grisu,Grisu1),
+  % Portray delayed goals:
+  dgs_grisu(DGFSL,TL,TD,ID1,_,Grisu1,[]).
 
+% explicitly tagged FS: portraying unconditionally, not marking as portrayed
+fs_grisu(displayreent(Type,FS),TL,TD,ID0,ID,[40,82|Grisu0],Grisu) :- % (R
+  !,
+  my_vmember((Type,Tag),TL), % retrieve re-entrancy tag
+  id_grisu(ID0,ID1,Grisu0,[32|Grisu1]), % space
+  number_grisu(Tag,Grisu1,Grisu2),
+  fs_grisu(FS,TL,TD,ID1,ID,Grisu2,[41|Grisu]). % )
+% conjunction
+fs_grisu(displayconj(GoalA,GoalB),TL,TD,ID0,ID,[40,67|Grisu0],Grisu) :- % (C
+  !,
+  id_grisu(ID0,ID1,Grisu0,Grisu1),
+  fs_grisu(GoalA,TL,TD,ID1,ID2,Grisu1,Grisu2),
+  fs_grisu(GoalB,TL,TD,ID2,ID,Grisu2,[41|Grisu]). % )
+% goal
+fs_grisu(Type=FL,TL,TD,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
+  nonvar(Type),
+  Type=displaytype(@Functor),
+  !,
+  id_grisu(ID0,ID1,Grisu0,Grisu1),
+  atom_concat('@',Functor,AtFunctor),
+  string_grisu(AtFunctor,Grisu1,Grisu2),
+  arglist_grisu(FL,TL,TD,ID1,ID,Grisu2,[41|Grisu]). % )
 % re-entrancy tag
 fs_grisu(Type=_,TL,TD,ID0,ID,[40,35|Grisu0],Grisu) :- % (#
   my_vmember((Type,Tag),TL), % FS is re-entrant
@@ -232,8 +260,8 @@ fs_grisu(Type=FL,TL,TD,ID0,ID,[40,82|Grisu0],Grisu) :- % (R
   number_grisu(Tag,Grisu1,Grisu2),
   fs_grisu_nr(Type=FL,TL,TD,ID1,ID,Grisu2,[41|Grisu]). % )
 % non-re-entrant FS
-fs_grisu(FS,TL,TD,ID0,ID,Grisu0,Grisu) :-
-  fs_grisu_nr(FS,TL,TD,ID0,ID,Grisu0,Grisu).
+fs_grisu(Type=FL,TL,TD,ID0,ID,Grisu0,Grisu) :-
+  fs_grisu_nr(Type=FL,TL,TD,ID0,ID,Grisu0,Grisu).
 
 % non-empty list
 % TODO nel not distinguished from its subtypes in visualization.
@@ -255,6 +283,12 @@ fs_grisu_nr(Type=FL,TL,TD,ID0,ID,[40,83|Grisu0],Grisu) :- % (S
   type_grisu(Type,ID1,ID2,Grisu1,Grisu2),
   fl_grisu(FL,TL,TD,ID2,ID,Grisu2,[41|Grisu]). % )
 
+% re-entrant tail
+tail_grisu(Type=FS,TL,TD,ID0,ID,[40,90|Grisu0],Grisu) :- % (Z
+  my_vmember((Type,_),TL),
+  !,
+  id_grisu(ID0,ID1,Grisu0,Grisu1),
+  fs_grisu(FS,TL,TD,ID1,ID,Grisu1,[41|Grisu]). % )
 % empty tail
 tail_grisu(Type=_,_,_,ID,ID,Grisu,Grisu) :-
   is_nil_type(Type),
@@ -266,10 +300,6 @@ tail_grisu(Type=FL,TL,TD,ID0,ID,Grisu0,Grisu) :-
   remove(FL,'FI':First,['RE':Rest]),
   fs_grisu(First,TL,TD,ID0,ID1,Grisu0,Grisu1),
   tail_grisu(Rest,TL,TD,ID1,ID,Grisu1,Grisu).
-% open end
-tail_grisu(FS,TL,TD,ID0,ID,[40,90|Grisu0],Grisu) :- % (Z
-  id_grisu(ID0,ID1,Grisu0,Grisu1),
-  fs_grisu(FS,TL,TD,ID1,ID,Grisu1,[41|Grisu]). % )
 
 % type
 type_grisu(Type,ID0,ID,[40|Grisu0],Grisu) :- % (
@@ -287,7 +317,27 @@ fl_grisu([F:V|Rest],TL,TD,ID0,ID,[40,86|Grisu0],Grisu) :- % (V
   fs_grisu(V,TL,TD,ID1,ID2,Grisu2,Grisu3),
   fl_grisu(Rest,TL,TD,ID2,ID,Grisu3,[41|Grisu]). % )
 
-% numeric ID
+% (open-ended) delayed goal ist, disguised as a feature list (we don't care
+% about the feature names, they just go DG1, DG2...)
+dgs_grisu([],_,_,ID,ID,Grisu,Grisu) :-
+  !. % no special part of Grisu string needed if there are no delayed goals
+dgs_grisu(DGFSL,TL,TD,ID0,ID,[32,47|Grisu0],Grisu) :- %  /
+  dgs_grisu_aux(DGFSL,TL,TD,ID0,ID,Grisu0,Grisu).
+
+dgs_grisu_aux(DGFSL,_,_,ID,ID,Grisu,Grisu) :-
+  var(DGFSL), % open list end reached
+  !.
+dgs_grisu_aux([_:DG|DGFSL],TL,TD,ID0,ID,[32|Grisu0],Grisu) :- % space
+  fs_grisu(DG,TL,TD,ID0,ID1,Grisu0,Grisu1),
+  dgs_grisu_aux(DGFSL,TL,TD,ID1,ID,Grisu1,Grisu).
+
+% (proper) list of arguments
+arglist_grisu([Arg|Args],TL,TD,ID0,ID,Grisu0,Grisu) :-
+  fs_grisu(Arg,TL,TD,ID0,ID1,Grisu0,Grisu1),
+  arglist_grisu(Args,TL,TD,ID1,ID,Grisu1,Grisu).
+arglist_grisu([],_,_,ID,ID,Grisu,Grisu).
+
+% ID (increments ID counter)
 id_grisu(ID0,ID,Grisu0,Grisu) :-
   number_grisu(ID0,Grisu0,Grisu),
   ID is ID0 + 1.
@@ -297,7 +347,7 @@ number_grisu(Number,Grisu0,Grisu) :-
   number_codes(Number,Codes),
   open_list(Codes,Grisu0,Grisu).
 
-% string, such as a type or feature name
+% string, such as a type, feature or functor
 % the character " may not appear in Grisu string literals, at least
 % gralej.parser.TraleMsgLexer doesn't support it. So no escaping here.
 string_grisu(Atom,[34|Grisu0],Grisu) :- % "
