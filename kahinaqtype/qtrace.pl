@@ -202,49 +202,74 @@ goal_source_code_location(grammar:db_lexrule(_,_,_,Line),File,Line) :-
 % format understood by Gralej.
 % ------------------------------------------------------------------------------
 
-fs_grisu(FS,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO labels?
-  fs_grisu(FS,0,_,Grisu,[]). % first ID, close difference list
+% Using rest-lists as in QType, TODO check if this hurts performance too badly.
 
-% The last two arguments of the following predicates represent difference lists,
-% used to recursively construct Grisu messages.
+fs_grisu(T=FL,DGs,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO labels?
+  prepare_delayed_goals_for_pp(DGs,DGFSL,Reent,1), % TODO delayed goals
+  get_one_fs(T=FL),
+  get_coins_to_show(T=FL,VL),
+  list_to_ord_set(VL,VL1),
+  list_to_ord_set(Reent,Reent1),
+  ord_union(VL1,Reent1,EVL0),
+  enum_coins(EVL0, EVL, 1),
+  %add_dgs_to_fl(FL,DGFSL),
+  empty_assoc(TD),
+  fs_grisu(T=FL,EVL,TD,0,_,Grisu,[]). % first ID, close difference list
 
-% TODO re-entrancies! How are they represented?! Wrappers? Attributes?!
+% re-entrancy tag
+fs_grisu(Type=_,TL,TD,ID0,ID,[40,35|Grisu0],Grisu) :- % (#
+  my_vmember((Type,Tag),TL), % FS is re-entrant
+  rlmember(Tag,TD),          % has already been portrayed
+  !,
+  id_grisu(ID0,ID,Grisu0,[32|Grisu1]), % space
+  number_grisu(Tag,Grisu1,[41|Grisu]). % )
+% re-entrant FS
+fs_grisu(Type=FL,TL,TD,ID0,ID,[40,82|Grisu0],Grisu) :- % (R
+  my_vmember((Type,Tag),TL), % FS is re-entrant
+  !,
+  mark_tagged(Tag,TD),       % mark as portrayed
+  id_grisu(ID0,ID1,Grisu0,[32|Grisu1]), % space
+  number_grisu(Tag,Grisu1,Grisu2),
+  fs_grisu_nr(Type=FL,TL,TD,ID1,ID,Grisu2,[41|Grisu]). % )
+% non-re-entrant FS
+fs_grisu(FS,TL,TD,ID0,ID,Grisu0,Grisu) :-
+  fs_grisu_nr(FS,TL,TD,ID0,ID,Grisu0,Grisu).
 
 % non-empty list
 % TODO nel not distinguished from its subtypes in visualization.
-fs_grisu(Type=FVPs,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
+fs_grisu_nr(Type=FL,TL,TD,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
   is_nel_type(Type),
   !,
   id_grisu(ID0,ID1,Grisu0,Grisu1),
-  remove(FVPs,'FI':First,['RE':Rest]),
-  fs_grisu(First,ID1,ID2,Grisu1,Grisu2),
-  tail_grisu(Rest,ID2,ID,Grisu2,[41|Grisu]). % )
+  remove(FL,'FI':First,['RE':Rest]),
+  fs_grisu(First,TL,TD,ID1,ID2,Grisu1,Grisu2),
+  tail_grisu(Rest,TL,TD,ID2,ID,Grisu2,[41|Grisu]). % )
 % empty list
-fs_grisu(Type=_,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
+fs_grisu_nr(Type=_,_,_,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
   is_nil_type(Type),
   !,
   id_grisu(ID0,ID,Grisu0,[41|Grisu]). % )
 % other feature structure
-fs_grisu(Type=FVPs,ID0,ID,[40,83|Grisu0],Grisu) :- % (S
+fs_grisu_nr(Type=FL,TL,TD,ID0,ID,[40,83|Grisu0],Grisu) :- % (S
   id_grisu(ID0,ID1,Grisu0,Grisu1),
   type_grisu(Type,ID1,ID2,Grisu1,Grisu2),
-  fvps_grisu(FVPs,ID2,ID,Grisu2,[41|Grisu]). % )
+  fl_grisu(FL,TL,TD,ID2,ID,Grisu2,[41|Grisu]). % )
 
 % empty tail
-tail_grisu(Type=_,ID,ID,Grisu,Grisu) :-
+tail_grisu(Type=_,_,_,ID,ID,Grisu,Grisu) :-
   is_nil_type(Type),
   !.
 % non-empty tail
-tail_grisu(Type=FVPs,ID0,ID,Grisu0,Grisu) :-
+tail_grisu(Type=FL,TL,TD,ID0,ID,Grisu0,Grisu) :-
   is_nel_type(Type),
   !,
-  remove(FVPs,'FI':First,['RE':Rest]),
-  fs_grisu(First,ID0,ID1,Grisu0,Grisu1),
-  tail_grisu(Rest,ID1,ID,Grisu1,Grisu).
+  remove(FL,'FI':First,['RE':Rest]),
+  fs_grisu(First,TL,TD,ID0,ID1,Grisu0,Grisu1),
+  tail_grisu(Rest,TL,TD,ID1,ID,Grisu1,Grisu).
 % open end
-tail_grisu(FS,ID0,ID,[40,90|Grisu0],Grisu) :- % (Z
+tail_grisu(FS,TL,TD,ID0,ID,[40,90|Grisu0],Grisu) :- % (Z
   id_grisu(ID0,ID1,Grisu0,Grisu1),
-  fs_grisu(FS,ID1,ID,Grisu1,[41|Grisu]). % )
+  fs_grisu(FS,TL,TD,ID1,ID,Grisu1,[41|Grisu]). % )
 
 % type
 type_grisu(Type,ID0,ID,[40|Grisu0],Grisu) :- % (
@@ -253,20 +278,24 @@ type_grisu(Type,ID0,ID,[40|Grisu0],Grisu) :- % (
   string_grisu(TypeName,Grisu1,[41|Grisu]). % )
 
 % (open-ended) list of feature-value pairs
-fvps_grisu(End,ID,ID,Grisu,Grisu) :-
+fl_grisu(End,_,_,ID,ID,Grisu,Grisu) :-
   var(End),
   !.
-fvps_grisu([F:V|Rest],ID0,ID,[40,86|Grisu0],Grisu) :- % (V
+fl_grisu([F:V|Rest],TL,TD,ID0,ID,[40,86|Grisu0],Grisu) :- % (V
   id_grisu(ID0,ID1,Grisu0,Grisu1),
   string_grisu(F,Grisu1,Grisu2),
-  fs_grisu(V,ID1,ID2,Grisu2,Grisu3),
-  fvps_grisu(Rest,ID2,ID,Grisu3,[41|Grisu]). % )
+  fs_grisu(V,TL,TD,ID1,ID2,Grisu2,Grisu3),
+  fl_grisu(Rest,TL,TD,ID2,ID,Grisu3,[41|Grisu]). % )
 
 % numeric ID
 id_grisu(ID0,ID,Grisu0,Grisu) :-
-  number_codes(ID0,ID0Codes),
-  open_list(ID0Codes,Grisu0,Grisu),
+  number_grisu(ID0,Grisu0,Grisu),
   ID is ID0 + 1.
+
+% number, such as an ID or re-entrancy tag
+number_grisu(Number,Grisu0,Grisu) :-
+  number_codes(Number,Codes),
+  open_list(Codes,Grisu0,Grisu).
 
 % string, such as a type or feature name
 % the character " may not appear in Grisu string literals, at least
