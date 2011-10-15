@@ -4,6 +4,7 @@
 
 :- use_module('../kahinasicstus/kahinasicstus').
 :- use_module(library(lists)).
+:- use_module(library(ordsets)).
 :- use_module(library(system)).
 :- use_module(library(terms)).
 
@@ -16,13 +17,19 @@
 :- environ('QTYPE_HOME',_)
    -> ( use_module('$QTYPE_HOME/atts'),
         use_module('$QTYPE_HOME/ops'),
-        use_module('$QTYPE_HOME/auxlib',[default_extension/3]),
+        use_module('$QTYPE_HOME/auxlib',[default_extension/3,
+                                         rlmember/2]),
         use_module('$QTYPE_HOME/bitsets',[make_type/2,
                                           make_bitset/2,
                                           bs_subsumes/2]),
         use_module('$QTYPE_HOME/sign',[features/2,
                                        subtype/2,
-                                       subtypes/2]) )
+                                       subtypes/2]),
+        use_module('$QTYPE_HOME/display',[get_one_fs/1,
+                                          get_coins_to_show/2,
+                                          prepare_delayed_goals_for_pp/4,
+                                          enum_coins/3,
+                                          my_vmember/2]) )
     ; raise_exception(qtype_home_not_set).
 
 % ------------------------------------------------------------------------------
