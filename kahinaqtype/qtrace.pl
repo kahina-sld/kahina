@@ -17,8 +17,12 @@
    -> ( use_module('$QTYPE_HOME/atts'),
         use_module('$QTYPE_HOME/ops'),
         use_module('$QTYPE_HOME/auxlib',[default_extension/3]),
-        use_module('$QTYPE_HOME/bitsets',[make_bitset/2,
-                                          make_type/2]))
+        use_module('$QTYPE_HOME/bitsets',[make_type/2,
+                                          make_bitset/2,
+                                          bs_subsumes/2]),
+        use_module('$QTYPE_HOME/sign',[features/2,
+                                       subtype/2,
+                                       subtypes/2]) )
     ; raise_exception(qtype_home_not_set).
 
 % ------------------------------------------------------------------------------
@@ -204,17 +208,46 @@ fs_grisu(FS,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO lab
 % The last two arguments of the following predicates represent difference lists,
 % used to recursively construct Grisu messages.
 
-% feature structure
+% TODO variables! How are they represented? As Prolog variables?
+% TODO re-entrancies! How are they represented?! Wrappers? Attributes?!
+
+% non-empty list
+% TODO nel not distinguished from its subtypes in visualization.
+fs_grisu(Type=FVPs,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
+  is_nel_type(Type),
+  !,
+  id_grisu(ID0,ID1,Grisu0,Grisu1),
+  remove(FVPs,'FI':First,['RE':Rest]),
+  fs_grisu(First,ID1,ID2,Grisu1,Grisu2),
+  tail_grisu(Rest,ID2,ID,Grisu2,[41|Grisu]). % )
+% empty list
+fs_grisu(Type=_,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
+  is_nil_type(Type),
+  !,
+  id_grisu(ID0,ID,Grisu0,[41|Grisu]). % )
+% other feature structure
 fs_grisu(Type=FVPs,ID0,ID,[40,83|Grisu0],Grisu) :- % (S
   id_grisu(ID0,ID1,Grisu0,Grisu1),
   type_grisu(Type,ID1,ID2,Grisu1,Grisu2),
   fvps_grisu(FVPs,ID2,ID,Grisu2,[41|Grisu]). % )
 
+tail_grisu(Type=_,ID,ID,Grisu,Grisu) :-
+  is_nil_type(Type),
+  !.
+tail_grisu(Type=FVPs,ID0,ID,Grisu0,Grisu) :-
+  is_nel_type(Type),
+  !,
+  remove(FVPs,'FI':First,['RE':Rest]),
+  fs_grisu(First,ID0,ID1,Grisu0,Grisu1),
+  tail_grisu(Rest,ID1,ID,Grisu1,Grisu).
+tail_grisu(FS,ID0,ID,[40,90|Grisu0],Grisu) :- % (Z
+  id_grisu(ID0,ID1,Grisu0,Grisu1),
+  fs_grisu(FS,ID1,ID,Grisu1,[41|Grisu]). % )
+
 % type
 type_grisu(Type,ID0,ID,[40|Grisu0],Grisu) :- % (
   id_grisu(ID0,ID,Grisu0,Grisu1),
-  make_bitset(Type,Bitset), % now typically, Type==Bitset
-  make_type(Bitset,TypeName),
+  make_type(Type,TypeName),
   string_grisu(TypeName,Grisu1,[41|Grisu]). % )
 
 % (open-ended) list of feature-value pairs
@@ -288,6 +321,33 @@ line_source_code_location(File,Line) :-
   clause(cmd_aux:current_compilefile(File0),_),
   default_extension(File0,grm,File).
 
+nel_type(Nel) :-
+  grammar:bs_type(list,_,List),
+  grammar:bs_type(nel,_,Nel),
+  bs_subsumes(List,Nel).
+
+nil_type(Nil) :-
+  grammar:bs_type(list,_,List),
+  grammar:bs_type(nil,_,Nil),
+  bs_subsumes(List,Nil),
+  subtypes(nil,[nil]),
+  features(nil,[]).  
+
+% succeeds iff 1) lists are defined in the conventional way and 2) the type
+% represented by TypeOrName is subsumed by nel and 3) its features are exactly
+% FI and RE where RE has a subtype of list as type.
+is_nel_type(TypeOrName) :-
+  nel_type(Nel),
+  make_type(TypeOrName,Type),
+  bs_subsumes(Nel,Type),
+  features(nel,Features),
+  remove(Features,'FI':_,['RE':ReType]),
+  subtype(ReType,list).
+
+is_nil_type(Type) :-
+  nil_type(Nil),
+  bs_subsumes(Nil,Type).
+
 % ------------------------------------------------------------------------------
 % HELPERS (GENERAL)
 % ------------------------------------------------------------------------------
@@ -312,3 +372,10 @@ hint_module(Module,Module).
 open_list([First|Rest],[First|NewRest],End) :-
   open_list(Rest,NewRest,End).
 open_list([],End,End).
+
+% removes the first occurrence (=) of an element from a list
+remove([Element|Rest],Element,Rest) :-
+  !.
+remove([_|Rest0],Element,Rest) :-
+  remove(Element,Rest0,Rest).
+remove([],_,[]).
