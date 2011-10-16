@@ -1,5 +1,7 @@
 package org.kahina.tralesld.visual.workbench;
 
+import java.util.List;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,6 +15,7 @@ import javax.swing.DefaultListModel;
 
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.tralesld.TraleSLDState;
+import org.kahina.tralesld.data.FeatureWorkbench;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditor;
@@ -64,7 +67,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
 		
-		listModel = new FeatureStructureListModel();
+		listModel = new FeatureStructureListModel(this.view);
 		list = new JList(listModel);
 		list.getSelectionModel().addListSelectionListener(this);
 		JScrollPane tableScrollPane = new JScrollPane(list);
@@ -93,6 +96,13 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	private class FeatureStructureListModel extends DefaultListModel
 	{
+		FeatureWorkbenchView workbenchView;
+		
+		public FeatureStructureListModel(FeatureWorkbenchView workbench)
+		{
+			this.workbenchView = workbenchView;
+		}
+		
 		public TraleSLDFS getStructureAt(int i)
 		{
 			return new TraleSLDPackedFSTerminal("ad_hoc_terminal");
