@@ -10,7 +10,6 @@ import org.kahina.tralesld.data.FeatureWorkbench;
 
 public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 {
-
 	public FeatureWorkbenchView(KahinaController control)
 	{
 		super(control);

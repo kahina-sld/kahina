@@ -26,20 +26,36 @@ import org.kahina.tralesld.data.signature.TraleSLDSignature;
 public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureViewPanel implements ActionListener
 {
 	BlockPanel blockPanel;
+	
 	TraleSLDState state;
 	TraleSLDSignature sig;
 	
+	String grisuString;
 	IEntity contextStructure;
 	String contextStructureType;
 	
 	public TraleSLDFeatureStructureEditor(TraleSLDState state)
 	{
 		super();
+		
 		blockPanel = null;
+		
 		this.state = state;
 		this.sig = state.getSignature();
+		
+		this.grisuString = null;
 		this.contextStructure = null;
 		this.contextStructureType = "?";
+	}
+	
+	/**
+	 * Display a feature structure directly, shortcutting FS compression.
+	 * This also works when no view is set.
+	 * @param grisuString a feature structure in GRISU format
+	 */
+	public void loadGrisu(String grisuString)
+	{
+		this.grisuString = grisuString;
 	}
 	
 	public String getContextStructureType()
@@ -53,14 +69,27 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		//TODO: find a better solution for ensuring the signature is always up-to-date
 		sig = state.getSignature();
 		innerPanel.removeAll();
-		String grisuMessage;
-		if (view == null || (grisuMessage = view.getGrisuMessage()) == null)
+		if (view == null)
+		{
+			if (grisuString == null)
+			{
+				innerPanel.add(new JLabel("No feature structures (yet) at this port."));
+			}
+			else
+			{
+				blockPanel = util.visualize(grisuString);
+				JPanel blockCanvas = blockPanel.getCanvas();
+				blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(this, blockPanel));
+				innerPanel.add(blockCanvas);
+			}
+		} 
+		else if ((grisuString = view.getGrisuMessage()) == null)
 		{
 			innerPanel.add(new JLabel("No feature structures (yet) at this port."));
-		} 
+		}
 		else
 		{
-			blockPanel = util.visualize(grisuMessage);
+			blockPanel = util.visualize(grisuString);
 			JPanel blockCanvas = blockPanel.getCanvas();
 			blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(this, blockPanel));
 			innerPanel.add(blockCanvas);
