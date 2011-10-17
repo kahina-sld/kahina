@@ -7,7 +7,6 @@ import gralej.om.EntityFactory;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IGraleParser;
 import gralej.parsers.ParseException;
-import gralej.parsers.SimpleFormatParser;
 import gralej.parsers.UnsupportedProtocolException;
 
 import java.io.ByteArrayInputStream;
@@ -21,12 +20,11 @@ import javax.swing.JPanel;
  */
 public class VisualizationUtility
 {
-	private static final boolean verbose = false;
+	private static final boolean verbose = true;
 
 	private static VisualizationUtility def;
 
 	private IGraleParser parser;
-	private IGraleParser descParser;
 
 	public static VisualizationUtility getDefault()
 	{
@@ -42,8 +40,6 @@ public class VisualizationUtility
 		try
 		{
 			parser = GraleParserFactory.createParser(StreamInfo.GRISU);
-			//TODO: not yet implemented in GraleJ version 0.8.2, with 0.9 both have trouble
-			//descParser = GraleParserFactory.createParser(StreamInfo.GRALEJ_SIMPLE);
 		} 
 		catch (UnsupportedProtocolException e)
 		{
@@ -77,7 +73,7 @@ public class VisualizationUtility
 			}
 			blockPanel = parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView();
 		} 
-		catch (Exception e)
+		catch (ParseException e)
 		{
 			JPanel result = new JPanel();
 			result.add(new JLabel("Parse error: \n" + e.getMessage() + "\nGrisu message was: \n" + grisuMessage));
@@ -86,32 +82,4 @@ public class VisualizationUtility
 		}
 		return blockPanel;
 	}
-	
-	/**
-	 * 
-	 * @param grisuMessage
-	 *            A typed feature structure in description language format.
-	 * @return An object representing the visualization of the feature
-	 *         structure, providing various methods to control rendering, and a
-	 *         method called <code>getCanvas()</code> to obtain the actual
-	 *         {@link JPanel}.
-	 */
-	public JPanel visualizeDescription(String description)
-	{
-		try
-		{
-			if (verbose)
-			{
-				System.err.println(this + ".visualizeDescription(" + description + ")");
-			}
-			return descParser.parseAll(new ByteArrayInputStream(description.getBytes()), StreamInfo.GRALEJ_SIMPLE).get(0).createView().getCanvas();
-		} 
-		catch (Exception e)
-		{
-			JPanel result = new JPanel();
-			result.add(new JLabel("Parse error: \n" + e.getMessage() + "\nDescription was: \n" + description));
-			return result;
-		}
-	}
-
 }
