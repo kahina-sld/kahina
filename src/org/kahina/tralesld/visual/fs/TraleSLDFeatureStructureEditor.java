@@ -142,8 +142,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			IType selectedType = (IType) contextStructure;
 			selectedType.setTypeName(type);
+			//TODO: find out why the model is empty here
 			//TODO: find out why this leads to a null pointer exception
 			//TODO: how do we get back the edited structure in GRISU format?
+			System.err.println(".getModel()   : " + blockPanel.getContent().getRoot().getModel());
 			System.err.println("new content model: " + blockPanel.getContent().getRoot().getModel().text());
 		}
 		else if (contextStructure instanceof ITypedFeatureStructure)
