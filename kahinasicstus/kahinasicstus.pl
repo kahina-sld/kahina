@@ -37,9 +37,10 @@ user:breakpoint_expansion(kahina_breakpoint_action(Options),[
     mode(Mode),
     command(Command)]).
 
-:- multifile breakpoint_action_hook/4.
+:- multifile breakpoint_action_hook/5.
 
 kahina_breakpoint_action(Inv,Port,Mode,Command,Options) :-
+  current_predicate(breakpoint_action_hook,breakpoint_action_hook(_,_,_,_,_)),
   breakpoint_action_hook(Port,Inv,Mode,Command,Options),
   !.
 kahina_breakpoint_action(Inv,Port,Mode,Command,Options) :-
@@ -75,7 +76,6 @@ action_mode_command(_,debug,proceed,_Inv,_Port,_Autoskip).        % creep
 :- dynamic unblocked_pseudostep_waiting_for_link/1.
 
 % TODO act/5 and its delegates need refactoring.
-% TODO write_to_chars/2 doesn't handle cycles!
 
 act(call,Inv,Bridge,JVM,Options) :-
   retract(unblock_pseudostep_waiting_for_link(UnblockingID)),
@@ -87,10 +87,10 @@ act(call,Inv,Bridge,JVM,Options) :-
 act(call,Inv,Bridge,JVM,Options) :-
   top_start(Inv),
   execution_state(pred(Module:Pred)),	% "module qualified goal template", see manual
-  write_to_chars(Module:Pred,PredChars),
+  write_term_to_chars(Module:Pred,PredChars,[max_depth(5)]),
   execution_state(goal(_:Goal)),
   goal_desc(Module,Goal,GoalDesc),
-  write_to_chars(GoalDesc,GoalDescChars),
+  write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   act_step(Bridge,JVM,Inv,PredChars,GoalDescChars),
   act_source_code_location(Bridge,JVM,Inv,Options),
   (memberchk(layer(Layer),Options),
@@ -109,7 +109,7 @@ act(exit(DetFlag),Inv,Bridge,JVM,Options) :-
   execution_state(pred(Module:_)),
   execution_state(goal(_:Goal)),
   goal_desc(Module,Goal,GoalDesc),
-  write_to_chars(GoalDesc,GoalDescChars),
+  write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   detflag_det(DetFlag,Det), % translates det/nondet to true/false
   act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
   act_source_code_location(Bridge,JVM,Inv,Options),
@@ -122,7 +122,7 @@ act(redo,Inv,Bridge,JVM,Options) :-
   act_source_code_location(Bridge,JVM,Inv,Options).
 act(exception(Exception),Inv,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
-  write_to_chars(Exception,ExceptionChars),
+  write_term_to_chars(Exception,ExceptionChars,[max_depth(5)]),
   act_exception(Bridge,JVM,Inv,ExceptionChars),
   act_source_code_location(Bridge,JVM,Inv,Options),
   top_end(Inv,Bridge,JVM).
@@ -131,9 +131,9 @@ act(block,Inv,Bridge,JVM,Options) :-
   execution_state(goal(Module:Goal)),
   remember_blocked_goal(Module:Goal,ID),
   execution_state(pred(_:Pred)),
-  write_to_chars(Module:Pred,PredChars),
+  write_term_to_chars(Module:Pred,PredChars,[max_depth(5)]),
   goal_desc(Module,Goal,GoalDesc),
-  write_to_chars(GoalDesc,GoalDescChars),
+  write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   act_step(Bridge,JVM,ID,[98,108,111,99,107,32|PredChars],[98,108,111,99,107,32|GoalDescChars]), % 'block '
   (memberchk(layer(Layer),Options),
    integer(Layer)
@@ -145,10 +145,10 @@ act(unblock,Inv,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   get_next_pseudostep_id(ID),
   execution_state(pred(Module:Pred)),
-  write_to_chars(Module:Pred,PredChars),
+  write_term_to_chars(Module:Pred,PredChars,[max_depth(5)]),
   execution_state(goal(_:Goal)),
   goal_desc(Module,Goal,GoalDesc),
-  write_to_chars(GoalDesc,GoalDescChars),
+  write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   act_step(Bridge,JVM,ID,[117,110,98,108,111,99,107,32|PredChars],[117,110,98,108,111,99,107,32|GoalDescChars]), % 'unblock '
   (memberchk(layer(Layer),Options),
    integer(Layer)
@@ -267,7 +267,7 @@ send_variable_binding(_,_,_).
 send_variable_binding(Bridge,JVM,Inv,Port,Name,Value) :-
   port_direction(Port,DirectionChars),
   write_to_chars(Name,NameChars),
-  write_to_chars(Value,ValueChars),
+  write_term_to_chars(Value,ValueChars,[max_depth(5)]),
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','registerBinding',[instance]),
       register_bindings(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+chars,+chars,+chars),
