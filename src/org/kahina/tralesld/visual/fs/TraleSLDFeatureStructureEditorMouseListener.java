@@ -1,5 +1,6 @@
 package org.kahina.tralesld.visual.fs;
 
+import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
 import gralej.om.IEntity;
 import gralej.om.IType;
@@ -33,9 +34,8 @@ public class TraleSLDFeatureStructureEditorMouseListener implements MouseListene
 		//TODO: might be too obnoxious, perhaps change this into a double click
 		if (blockPanel.getSelectedBlock() != null)
 		{
-			IEntity selectedEntity = blockPanel.getSelectedBlock().getModel();
-			editor.processContextStructure(selectedEntity);
-			System.err.println("Selected entity: " + selectedEntity.getClass().getCanonicalName() + " " + selectedEntity.text());
+			Block selectedBlock = blockPanel.getSelectedBlock();
+			editor.processContextStructure(selectedBlock);
 			String type = editor.getContextStructureType();
 			if (!type.equals("?"))
 			{
