@@ -75,6 +75,7 @@ action_mode_command(_,debug,proceed,_Inv,_Port,_Autoskip).        % creep
 :- dynamic unblocked_pseudostep_waiting_for_link/1.
 
 % TODO act/5 and its delegates need refactoring.
+% TODO write_to_chars/2 doesn't handle cycles!
 
 act(call,Inv,Bridge,JVM,Options) :-
   retract(unblock_pseudostep_waiting_for_link(UnblockingID)),

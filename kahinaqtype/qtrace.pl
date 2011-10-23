@@ -229,7 +229,7 @@ fs_grisu(T=FL,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO l
   empty_assoc(TD),
   fs_grisu(T=FL,TL,TD,0,ID1,Grisu,Grisu1).
 
-term_grisu(Term,TL,TD,ID0,ID,Grisu0,Grisu) :-
+term_grisu(Term,TL,TD,ID0,ID,Grisu0,Grisu) :- % TODO handle re-entrancies (or at least cycles)!
   fs_grisu(Term,TL,TD,ID0,ID,Grisu0,Grisu),
   !.
 term_grisu(Term,TL,TD,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
