@@ -2,6 +2,7 @@ package org.kahina.tralesld.visual.fs;
 
 import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
+import gralej.om.Entities;
 import gralej.om.IEntity;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
@@ -172,12 +173,13 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			IType selectedType = (IType) contextStructure;
 			selectedType.setTypeName(type);
-			contextBlock.setModel(selectedType);
 
-			//trying to get back the edited structure in GRISU format
-			//TODO: find out how the data package can be manipulated via the GUI
-			//data = new DataPackage();
-			OutputFormatter.getInstance().save(System.err, data, blockPanel, OutputFormatter.TRALEFormat);
+			//get back the edited structure in TRALE desc format
+			//System.err.println("TRALE desc for content structure: " + Entities.toTraleDesc((IEntity) data.getModel()));
+			
+			//	failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
+			//  simply prints out the stored chars, which cannot be manipulated!
+			//OutputFormatter.getInstance().save(System.err, data, blockPanel, OutputFormatter.TRALEFormat);
 		}
 		else if (contextStructure instanceof ITypedFeatureStructure)
 		{
