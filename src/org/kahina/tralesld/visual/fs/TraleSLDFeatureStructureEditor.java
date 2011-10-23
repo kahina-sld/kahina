@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.kahina.tralesld.TraleSLDState;
+import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
@@ -175,7 +176,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			selectedType.setTypeName(type);
 
 			//get back the edited structure in TRALE desc format
-			//System.err.println("TRALE desc for content structure: " + Entities.toTraleDesc((IEntity) data.getModel()));
+			String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
+			//use TRALE instance to retrieve the grisuString for the description's MGS
+			grisuString = AuxiliaryTraleInstance.descToMgsGrisu(traleDesc);
 			
 			//	failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
 			//  simply prints out the stored chars, which cannot be manipulated!
@@ -189,6 +192,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		//TODO: after switching the type adapt structure accordingly
 		//TODO: find out how redrawing works; feed the changes back into stored date
+		this.updateDisplay();
 		blockPanel.getContent().update();
 		blockPanel.getCanvas().repaint();
 	}
