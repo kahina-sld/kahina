@@ -1,9 +1,12 @@
 package org.kahina.tralesld.visual.fs;
 
+import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
 import gralej.om.IEntity;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
+import gralej.parsers.IDataPackage;
+import gralej.parsers.OutputFormatter;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,6 +18,8 @@ import javax.swing.JPanel;
 
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
+
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 /**
  * first attempt at minimally invasive editor layer on FS visualization
@@ -31,6 +36,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	TraleSLDSignature sig;
 	
 	String grisuString;
+	IDataPackage data;
+	
+	Block contextBlock;
 	IEntity contextStructure;
 	String contextStructureType;
 	
@@ -44,6 +52,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		this.sig = state.getSignature();
 		
 		this.grisuString = null;
+		this.data = null;
+		
+		this.contextBlock = null;
 		this.contextStructure = null;
 		this.contextStructureType = "?";
 	}
@@ -77,7 +88,16 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			}
 			else
 			{
-				blockPanel = util.visualize(grisuString);
+				try
+				{
+					data = util.parseGrisu(grisuString);
+				}
+				catch (gralej.parsers.ParseException e) 
+				{
+					e.printStackTrace();
+					return;
+				}
+				blockPanel = data.createView();
 				JPanel blockCanvas = blockPanel.getCanvas();
 				blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(this, blockPanel));
 				innerPanel.add(blockCanvas);
@@ -88,8 +108,17 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			innerPanel.add(new JLabel("No feature structures (yet) at this port."));
 		}
 		else
-		{
-			blockPanel = util.visualize(grisuString);
+		{	
+			try
+			{
+				data = util.parseGrisu(grisuString);
+			}
+			catch (gralej.parsers.ParseException e) 
+			{
+				e.printStackTrace();
+				return;
+			}
+			blockPanel = data.createView();
 			JPanel blockCanvas = blockPanel.getCanvas();
 			blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(this, blockPanel));
 			innerPanel.add(blockCanvas);
@@ -97,17 +126,18 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		innerPanel.repaint();
 	}
 	
-	public void processContextStructure(IEntity entity)
+	public void processContextStructure(Block block)
 	{
-		this.contextStructure = entity;
-		if (entity instanceof IType)
+		this.contextBlock = block;
+		this.contextStructure = block.getModel();
+		if (contextStructure instanceof IType)
 		{
-			IType selectedType = (IType) entity;
+			IType selectedType = (IType) contextStructure;
 			contextStructureType = selectedType.typeName();
 		}
-		else if (entity instanceof ITypedFeatureStructure)
+		else if (contextStructure instanceof ITypedFeatureStructure)
 		{
-			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) entity;
+			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
 			contextStructureType = selectedFS.type().typeName();
 		}
 	}
@@ -142,11 +172,12 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			IType selectedType = (IType) contextStructure;
 			selectedType.setTypeName(type);
-			//TODO: find out why the model is empty here
-			//TODO: find out why this leads to a null pointer exception
-			//TODO: how do we get back the edited structure in GRISU format?
-			System.err.println(".getModel()   : " + blockPanel.getContent().getRoot().getModel());
-			System.err.println("new content model: " + blockPanel.getContent().getRoot().getModel().text());
+			contextBlock.setModel(selectedType);
+
+			//trying to get back the edited structure in GRISU format
+			//TODO: find out how the data package can be manipulated via the GUI
+			//data = new DataPackage();
+			OutputFormatter.getInstance().save(System.err, data, blockPanel, OutputFormatter.TRALEFormat);
 		}
 		else if (contextStructure instanceof ITypedFeatureStructure)
 		{

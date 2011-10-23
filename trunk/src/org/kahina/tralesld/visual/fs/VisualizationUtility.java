@@ -5,6 +5,7 @@ import gralej.blocks.BlockPanel;
 import gralej.controller.StreamInfo;
 import gralej.om.EntityFactory;
 import gralej.parsers.GraleParserFactory;
+import gralej.parsers.IDataPackage;
 import gralej.parsers.IGraleParser;
 import gralej.parsers.ParseException;
 import gralej.parsers.UnsupportedProtocolException;
@@ -53,6 +54,29 @@ public class VisualizationUtility
 		config.set("behavior.autoexpandtags", true);
 		config.set("behavior.alwaysfitsize", false);
 	}
+	
+	public IDataPackage parseGrisu(String grisuMessage) throws ParseException
+	{
+		IDataPackage dataPackage = null;
+		try
+		{
+			if (verbose)
+			{
+				System.err.println(this + ".parseGrisu(" + grisuMessage + ")");
+			}
+			dataPackage = parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0);
+		} 
+		catch (ParseException e)
+		{
+			JPanel result = new JPanel();
+			result.add(new JLabel("Parse error: \n" + e.getMessage() + "\nGrisu message was: \n" + grisuMessage));
+			//TODO: handle error message
+			System.err.println("GRISU parse error!");
+			throw e;
+		}
+		return dataPackage;
+	}
+	
 
 	/**
 	 * 
@@ -71,7 +95,7 @@ public class VisualizationUtility
 			{
 				System.err.println(this + ".visualize(" + grisuMessage + ")");
 			}
-			blockPanel = parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0).createView();
+			blockPanel = parseGrisu(grisuMessage).createView();
 		} 
 		catch (ParseException e)
 		{
