@@ -44,6 +44,15 @@ public class AuxiliaryTraleInstance
 		}
 	}
 	
+	public static String descToMgsGrisu(String descString)
+	{
+		//TODO: generate theory file around descString
+		//TODO: let the instance compile the theory and output MGS in GRISU format to temporary file
+		//TODO: read in temporary file to retrieve GRISU string
+		//stub behavior for now: return GRISU string for trivial structure
+		return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+	}
+	
 	public static void main(String[] args)
 	{
 		//the following environment is necessary for this demo to emulate the startup script:
