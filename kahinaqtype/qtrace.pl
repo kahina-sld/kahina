@@ -218,7 +218,6 @@ goal_source_code_location(descr:start_constraint(Line),File,Line) :-
 
 % TODO extend to non-FS terms - first find FSs in arguments, then collect
 % re-entrancies, then portray everything recursively?
-
 fs_grisu(T=FL,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO labels?
   get_one_fs(T=FL),
   % Collect re-entrancies of FS:
@@ -229,6 +228,20 @@ fs_grisu(T=FL,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO l
   % Portray FS:
   empty_assoc(TD),
   fs_grisu(T=FL,TL,TD,0,ID1,Grisu,Grisu1).
+
+term_grisu(Term,TL,TD,ID0,ID,Grisu0,Grisu) :-
+  fs_grisu(Term,TL,TD,ID0,ID,Grisu0,Grisu),
+  !.
+term_grisu(Term,TL,TD,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
+  Term =.. [Functor|Args],
+  id_grisu(ID0,ID1,Grisu0,Grisu1),
+  string_grisu(Functor,Grisu1,Grisu2),
+  args_grisu(Args,TL,TD,ID1,ID,Grisu2,[41|Grisu]). % )
+
+args_grisu([Arg|Args],TL,TD,ID0,ID,Grisu0,Grisu) :-
+  term_grisu(Arg,TL,TD,ID0,ID1,Grisu0,Grisu1),
+  args_grisu(Args,TL,TD,ID1,ID,Grisu1,Grisu).
+args_grisu([],_,_,ID,ID,Grisu,Grisu).
 
 % re-entrancy tag
 fs_grisu(Type=_,TL,TD,ID0,ID,[40,35|Grisu0],Grisu) :- % (#
