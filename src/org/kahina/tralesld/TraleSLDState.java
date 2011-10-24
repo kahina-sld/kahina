@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.data.chart.KahinaMemChart;
 import org.kahina.lp.LogicProgrammingState;
+import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
 public class TraleSLDState extends LogicProgrammingState
@@ -16,6 +17,7 @@ public class TraleSLDState extends LogicProgrammingState
 
 	KahinaChart chart;
 	TraleSLDSignature signature;
+	AuxiliaryTraleInstance trale;
 
 	//coordination between tree and chart
 	HashMap<Integer, Integer> edgeToNode;
@@ -25,8 +27,11 @@ public class TraleSLDState extends LogicProgrammingState
 	{
 		super();
 		System.err.println("New TraleSLDState() and empty signature");
+		System.err.println("Current heap size: " + Runtime.getRuntime().totalMemory());
+		trale = new AuxiliaryTraleInstance(true);
 		chart = new KahinaMemChart();
 		signature = new TraleSLDSignature();
+			
 		edgeToNode = new HashMap<Integer, Integer>();
 		nodeToEdge = new HashMap<Integer, Integer>();
 	}
@@ -34,7 +39,7 @@ public class TraleSLDState extends LogicProgrammingState
 	public void reset()
 	{
 		super.reset();
-		//keep signature (constant across parses)
+		//keep signature and auxiliary instance (constant across parses)
 		chart = new KahinaMemChart();
 		edgeToNode = new HashMap<Integer, Integer>();
 		nodeToEdge = new HashMap<Integer, Integer>();
@@ -48,6 +53,11 @@ public class TraleSLDState extends LogicProgrammingState
 	public TraleSLDSignature getSignature()
 	{
 		return signature;
+	}
+	
+	public AuxiliaryTraleInstance getTrale()
+	{
+		return trale;
 	}
 
 	public void linkEdgeToNode(int edgeID, int nodeID)
