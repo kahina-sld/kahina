@@ -1,5 +1,11 @@
 package org.kahina.tralesld.bridge;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import javax.swing.SwingUtilities;
+
 import se.sics.jasper.*;
 
 /**
@@ -14,9 +20,8 @@ public class AuxiliaryTraleInstance
 	SICStus sp;
 	
 	/**
-	 * crudely gains access to some SICStus instance (caller or new)
-	 * severe problem with the embedded version: the caller instance does not allow
-	 * access by this thread (it is occupied running Kahina), and no second instance is allowed
+	 * Crudely gains access to some SICStus instance (caller or new) and stores it for operations.
+	 * Creating a second instance requires the environment variable PROLOGMAXSIZE to be set
 	 */
 	public AuxiliaryTraleInstance(boolean newInstance)
 	{
@@ -48,7 +53,7 @@ public class AuxiliaryTraleInstance
 		{
 			SPPredicate compileGramPred = new SPPredicate(sp, "compile_gram", 1, "");
 			//TODO: find a way to set the environment from inside this class
-			SPTerm pathTerm = new SPTerm(sp, "theory.pl");
+			SPTerm pathTerm = new SPTerm(sp, fileName);
 			SPQuery compileQuery = sp.openQuery(compileGramPred, new SPTerm[] { pathTerm });	      
 			while (compileQuery.nextSolution())
 			{
@@ -87,8 +92,22 @@ public class AuxiliaryTraleInstance
 	
 	public String descToMgsGrisu(String descString)
 	{
-		//TODO: generate theory file around descString
+		//generate theory file around descString
+		//TODO: clean out the atomic values that TRALE refuses to accept as part of the signature
+		String theoryString = "sign *> " + descString + ".";
+		try
+		{
+			FileWriter writer = new FileWriter(new File("aux_theory.pl"));
+			writer.append(theoryString);
+			writer.flush();
+		}
+		catch (IOException e)
+		{
+			System.err.println("WARNING: could not create auxiliary theory file!");
+		}
 		//TODO: let the instance compile the theory and output MGS in GRISU format to temporary file
+		compileGrammar("aux_theory.pl");
+
 		//TODO: read in temporary file to retrieve GRISU string
 		//stub behavior for now: return GRISU string for trivial structure
 		return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
