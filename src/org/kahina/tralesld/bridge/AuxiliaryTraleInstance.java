@@ -15,15 +15,31 @@ import se.sics.jasper.*;
  * @author jdellert
  */
 
-public class AuxiliaryTraleInstance 
+public class AuxiliaryTraleInstance extends Thread
 {
 	SICStus sp;
+	boolean newInstance;
+	
+	String instruction;
+	String toProcess;
+	String result;
 	
 	/**
 	 * Crudely gains access to some SICStus instance (caller or new) and stores it for operations.
 	 * Creating a second instance requires the environment variable PROLOGMAXSIZE to be set
 	 */
 	public AuxiliaryTraleInstance(boolean newInstance)
+	{
+		this.newInstance = newInstance;
+		this.setName("AuxiliaryTraleThread");
+		
+		this.instruction = "";
+		this.toProcess = "";
+		this.result = "";
+	}
+	
+	@Override
+	public void run() 
 	{
 		//testing whether SICStus can be loaded (to be removed later)
 		//SICStus.main(new String[] {});
@@ -35,11 +51,29 @@ public class AuxiliaryTraleInstance
 				sp = new SICStus();
 			}
 		    sp.load("/opt/trale2/startup.pl");
+		    synchronized(instruction)
+		    {
+		    	try
+		    	{
+		    		instruction.wait();
+		    	}
+		    	catch (InterruptedException e)
+		    	{
+		    		
+		    	}
+		    	
+		    	if (instruction.equals("mgs"))
+		    	{
+		    		result = executeMGS(toProcess);
+		    		instruction = null;
+		    		result.notify();
+		    	}
+		    }
 		}
 		catch ( Exception e )
 		{
 			e.printStackTrace();
-		}
+		}	
 	}
 	
 	/**
@@ -92,6 +126,31 @@ public class AuxiliaryTraleInstance
 	
 	public String descToMgsGrisu(String descString)
 	{
+		synchronized(instruction)
+		{
+			instruction = "mgs";
+			toProcess = descString;
+			instruction.notify();
+		}
+		
+	    synchronized(result)
+	    {
+	    	try
+	    	{
+	    		result.wait();
+	    	}
+	    	catch (InterruptedException e)
+	    	{
+	    		
+	    	} 	
+	    	return result;
+	    }
+		//stub behavior for now: return GRISU string for trivial structure
+		//return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+	}
+	
+	private String executeMGS(String descString)
+	{
 		//generate theory file around descString
 		//TODO: clean out the atomic values that TRALE refuses to accept as part of the signature
 		String theoryString = "sign *> " + descString + ".";
@@ -119,6 +178,15 @@ public class AuxiliaryTraleInstance
 		// * working directory set to where the files theory.pl and signature reside
 		// * TRALE_HOME pointing to the root directory
 		AuxiliaryTraleInstance trale = new AuxiliaryTraleInstance(true);
+		trale.start();
+		try
+		{
+			trale.join();
+		}
+		catch (InterruptedException e)
+		{
+			
+		}
 		trale.compileGrammar("theory.pl");
 	}
 }

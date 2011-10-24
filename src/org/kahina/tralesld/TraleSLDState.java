@@ -29,6 +29,7 @@ public class TraleSLDState extends LogicProgrammingState
 		System.err.println("New TraleSLDState() and empty signature");
 		System.err.println("Current heap size: " + Runtime.getRuntime().totalMemory());
 		trale = new AuxiliaryTraleInstance(true);
+		trale.start();
 		chart = new KahinaMemChart();
 		signature = new TraleSLDSignature();
 			
