@@ -14,6 +14,8 @@
 % STARTUP TEST
 % ------------------------------------------------------------------------------
 
+% TODO many of these imported predicates are private, get rid of warnings... one
+% way or another...
 :- environ('QTYPE_HOME',_)
    -> ( use_module('$QTYPE_HOME/atts'),
         use_module('$QTYPE_HOME/ops'),
@@ -48,7 +50,7 @@ user:generate_message_hook(qtype_home_not_set,[format('ERROR: Environment variab
 % We want to return to QType prompt, not SICStus prompt:
 kahinasicstus:abort_hook(trace,raise(kahinaqtype_abort)).
 
-:- multifile kahinasicstus:breakpoint_action_hook/4.
+:- multifile kahinasicstus:breakpoint_action_hook/5.
 
 % This exception has a special meaning and should not be traced:
 kahinasicstus:breakpoint_action_hook(exception(kahinaqtype_abort),_,debug,proceed,_).
@@ -216,33 +218,44 @@ goal_source_code_location(descr:start_constraint(Line),File,Line) :-
 
 % Using rest-lists as in QType, TODO check if this hurts performance too badly.
 
-% TODO extend to non-FS terms - first find FSs in arguments, then collect
-% re-entrancies, then portray everything recursively?
-fs_grisu(T=FL,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO labels?
-  get_one_fs(T=FL),
-  % Collect re-entrancies of FS:
-  get_coins_to_show(T=FL,VL),
-  list_to_ord_set(VL,VL1),
-  % Assign tag numbers:
-  enum_coins(VL1,TL,1),
-  % Portray FS:
-  empty_assoc(TD),
-  fs_grisu(T=FL,TL,TD,0,ID1,Grisu,Grisu1).
+% term_grisu(?Term,+Label,-Grisu)
+% TODO
 
-term_grisu(Term,TL,TD,ID0,ID,Grisu0,Grisu) :- % TODO handle re-entrancies (or at least cycles)!
+% first find FSs in arguments, then collect
+% re-entrancies, then portray everything recursively?
+%fs_grisu(T=FL,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO labels?
+%  get_one_fs(T=FL),
+%  % Collect re-entrancies of FS:
+%  get_coins_to_show(T=FL,VL),
+%  list_to_ord_set(VL,VL1),
+%  % Assign tag numbers:
+%  enum_coins(VL1,TL,1),
+%  % Portray FS:
+%  empty_assoc(TD),
+%  fs_grisu(T=FL,TL,TD,0,_,Grisu,_).
+
+term_grisu(Term,_,TL,TD,ID0,ID,Grisu0,Grisu) :-
   fs_grisu(Term,TL,TD,ID0,ID,Grisu0,Grisu),
   !.
-term_grisu(Term,TL,TD,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
+term_grisu(Term,Depth,TL,TD,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
   Term =.. [Functor|Args],
   id_grisu(ID0,ID1,Grisu0,Grisu1),
   string_grisu(Functor,Grisu1,Grisu2),
-  args_grisu(Args,TL,TD,ID1,ID,Grisu2,[41|Grisu]). % )
+  args_grisu(Args,Depth,TL,TD,ID1,ID,Grisu2,[41|Grisu]). % )
 
-args_grisu([Arg|Args],TL,TD,ID0,ID,Grisu0,Grisu) :-
-  term_grisu(Arg,TL,TD,ID0,ID1,Grisu0,Grisu1),
-  args_grisu(Args,TL,TD,ID1,ID,Grisu1,Grisu).
 args_grisu([],_,_,ID,ID,Grisu,Grisu).
+% Enforce depth limit using "arglist" made of a single 0-ary fake relation '...'
+args_grisu([_|_],0,_,_,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
+  !,
+  id_grisu(ID0,ID,Grisu0,Grisu1), % ...
+  string_grisu('...',Grisu1,[41|Grisu]). % )
+args_grisu([Arg|Args],Depth,TL,TD,ID0,ID,Grisu0,Grisu) :-
+  NewDepth is Depth - 1,
+  term_grisu(Arg,NewDepth,TL,TD,ID0,ID1,Grisu0,Grisu1),
+  args_grisu(Args,TL,TD,ID1,ID,Grisu1,Grisu).
 
+% TODO can we trust FS terms to be acylic just because QType disallows cyclic
+% FSs?
 % re-entrancy tag
 fs_grisu(Type=_,TL,TD,ID0,ID,[40,35|Grisu0],Grisu) :- % (#
   my_vmember((Type,Tag),TL), % FS is re-entrant
