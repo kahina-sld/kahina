@@ -21,7 +21,9 @@
         use_module('$QTYPE_HOME/ops'),
         use_module('$QTYPE_HOME/auxlib',[default_extension/3]),
         use_module('$QTYPE_HOME/bitsets',[make_type/2,
-                                          bs_subsumes/2]),
+                                          bs_subsumes/2,
+                                          is_var_and_attr/1,
+                                          is_virtual_type/1]),
         use_module('$QTYPE_HOME/sign',[features/2,
                                        subtype/2,
                                        subtypes/2]) )
@@ -386,9 +388,8 @@ string_grisu(Atom,[34|Grisu0],Grisu) :- % "
 should_be_attempted_to_portray_as_fs(Term) :-
   nonvar(Term),
   Term=(T=_),
-  type_bitset(_,T). % do not attempt to portray "descriptions" for now, if I may
-       % call terms T=FL so where T is an atomic type name. This call may print
-       % a message if it fails, yuck, but okay.
+  is_var_and_attr(T),
+  \+ is_virtual_type(T).
 
 % ------------------------------------------------------------------------------
 % HELPERS (KAHINAQTYPE-SPECIFIC)
