@@ -172,7 +172,7 @@ public class AuxiliaryTraleInstance extends Thread
 	private String executeMGS(String descString)
 	{
 		//TODO: handle the atomic values (such as "cruel") that TRALE refuses to accept as part of a description
-		
+		//SOLUTION: instead of just "cruel", GraleJ should produce (a_ cruel)
 		//generate theory file around descString
 		String theoryString = "sign *> " + descString + ".";
 		try
