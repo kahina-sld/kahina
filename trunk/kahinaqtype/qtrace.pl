@@ -19,19 +19,12 @@
 :- environ('QTYPE_HOME',_)
    -> ( use_module('$QTYPE_HOME/atts'),
         use_module('$QTYPE_HOME/ops'),
-        use_module('$QTYPE_HOME/auxlib',[default_extension/3,
-                                         rlmember/2]),
+        use_module('$QTYPE_HOME/auxlib',[default_extension/3]),
         use_module('$QTYPE_HOME/bitsets',[make_type/2,
-                                          make_bitset/2,
                                           bs_subsumes/2]),
         use_module('$QTYPE_HOME/sign',[features/2,
                                        subtype/2,
-                                       subtypes/2]),
-        use_module('$QTYPE_HOME/display',[get_one_fs/1,
-                                          get_coins_to_show/2,
-                                          prepare_delayed_goals_for_pp/4,
-                                          enum_coins/3,
-                                          my_vmember/2]) )
+                                       subtypes/2]) )
     ; raise_exception(qtype_home_not_set).
 
 % ------------------------------------------------------------------------------
@@ -216,118 +209,157 @@ goal_source_code_location(descr:start_constraint(Line),File,Line) :-
 % format understood by Gralej.
 % ------------------------------------------------------------------------------
 
-% Using rest-lists as in QType, TODO check if this hurts performance too badly.
+% term_grisu(+Term,+Label,-Grisu)
+%   Term: A Prolog term. May be a QType FS or contain such.
+%   Label: A label for output, given as an atom.
+%   Grisu: A code-list representing the Grisu message needed.
 
-% term_grisu(?Term,+Label,-Grisu)
-% TODO
+term_grisu(Term,Label,[33,110,101,119,100,97,116,97,34|Grisu0]) :- % !newdata
+  string_grisu(Label,Grisu0,[34|Grisu1]), % "
+  empty_assoc(Empty),
+  term_coins(Term,1,_,Empty,_,Empty,Coins),
+  term_grisu(Term,Coins,0,_,Grisu1,[10]). % LF; close list
 
-% first find FSs in arguments, then collect
-% re-entrancies, then portray everything recursively?
-%fs_grisu(T=FL,[33,110,101,119,100,97,116,97,34,34|Grisu]) :- % !newdata"" TODO labels?
-%  get_one_fs(T=FL),
-%  % Collect re-entrancies of FS:
-%  get_coins_to_show(T=FL,VL),
-%  list_to_ord_set(VL,VL1),
-%  % Assign tag numbers:
-%  enum_coins(VL1,TL,1),
-%  % Portray FS:
-%  empty_assoc(TD),
-%  fs_grisu(T=FL,TL,TD,0,_,Grisu,_).
+% Collect re-entrancies, or "coins", as in "coindexed":
 
-term_grisu(Term,_,TL,TD,ID0,ID,Grisu0,Grisu) :-
-  fs_grisu(Term,TL,TD,ID0,ID,Grisu0,Grisu),
+term_coins(Term,Num,Num,Seen,Seen,Coins,Coins) :-
+  var(Term),
   !.
-term_grisu(Term,Depth,TL,TD,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
+term_coins(Term,Num0,Num,Seen0,Seen,Coins0,Coins) :-
+  fs_coins(Term,Num0,Num,Seen0,Seen,Coins0,Coins),
+  !.
+term_coins(Term,Num0,Num,Seen0,Seen,Coins0,Coins) :-
+  Term =.. [_|Args],
+  arglist_coins(Args,Num0,Num,Seen0,Seen,Coins0,Coins).
+
+arglist_coins([],Num,Num,Seen,Seen,Coins,Coins).
+arglist_coins([Arg|Args],Num0,Num,Seen0,Seen,Coins0,Coins) :-
+  term_coins(Arg,Num0,Num1,Seen0,Seen1,Coins0,Coins1),
+  arglist_coins(Args,Num1,Num,Seen1,Seen,Coins1,Coins).
+
+fs_coins(Term,_,_,_,_,_,_) :-
+  var(Term),
+  !,
+  fail.
+fs_coins(T=_,Num,Num,Seen,Seen,Coins,Coins) :-
+  get_assoc(T,Coins,_),
+  !.
+fs_coins(T=_,Num0,Num,Seen,Seen,Coins0,Coins) :-
+  get_assoc(T,Seen,_),
+  put_assoc(T,Coins0,coin(Num0,_),Coins), % could delete T from Seen now
+  Num is Num0 + 1.
+fs_coins(T=FL,Num0,Num,Seen0,Seen,Coins0,Coins) :-
+  should_be_attempted_to_portray_as_fs(T=FL),
+  put_assoc(T,Seen0,_,Seen1),
+  fl_coins(FL,Num0,Num,Seen1,Seen,Coins0,Coins).
+
+fl_coins(End,Num,Num,Seen,Seen,Coins,Coins) :-
+  var(End),
+  !.
+fl_coins([_:FS|Rest],Num0,Num,Seen0,Seen,Coins0,Coins) :-
+  fs_coins(FS,Num0,Num1,Seen0,Seen1,Coins0,Coins1),
+  fl_coins(Rest,Num1,Num,Seen1,Seen,Coins1,Coins).
+
+% The actual portraying:
+
+term_grisu(Term,_,Coins,ID0,ID,Grisu0,Grisu) :-
+  should_be_attempted_to_portray_as_fs(Term), % looks like a good FS on the surface
+  fs_grisu(Term,Coins,ID0,ID,Grisu0,Grisu), % may still fail, naughty FSs may be hidden inside
+  !.
+term_grisu(Term,Depth,Coins,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
   Term =.. [Functor|Args],
   id_grisu(ID0,ID1,Grisu0,Grisu1),
   string_grisu(Functor,Grisu1,Grisu2),
-  args_grisu(Args,Depth,TL,TD,ID1,ID,Grisu2,[41|Grisu]). % )
+  arglist_grisu(Args,Depth,Coins,ID1,ID,Grisu2,[41|Grisu]). % )
 
-args_grisu([],_,_,ID,ID,Grisu,Grisu).
+arglist_grisu([],_,_,ID,ID,Grisu,Grisu).
 % Enforce depth limit using "arglist" made of a single 0-ary fake relation '...'
-args_grisu([_|_],0,_,_,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
+arglist_grisu([_|_],0,_,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
   !,
   id_grisu(ID0,ID,Grisu0,Grisu1), % ...
   string_grisu('...',Grisu1,[41|Grisu]). % )
-args_grisu([Arg|Args],Depth,TL,TD,ID0,ID,Grisu0,Grisu) :-
+arglist_grisu([Arg|Args],Depth,Coins,ID0,ID,Grisu0,Grisu) :-
   NewDepth is Depth - 1,
-  term_grisu(Arg,NewDepth,TL,TD,ID0,ID1,Grisu0,Grisu1),
-  args_grisu(Args,TL,TD,ID1,ID,Grisu1,Grisu).
+  term_grisu(Arg,NewDepth,Coins,ID0,ID1,Grisu0,Grisu1),
+  arglist_grisu(Args,Depth,Coins,ID1,ID,Grisu1,Grisu).
+
+% Handling re-entrant FSs:
 
 % TODO can we trust FS terms to be acylic just because QType disallows cyclic
 % FSs?
 % re-entrancy tag
-fs_grisu(Type=_,TL,TD,ID0,ID,[40,35|Grisu0],Grisu) :- % (#
-  my_vmember((Type,Tag),TL), % FS is re-entrant
-  rlmember(Tag,TD),          % has already been portrayed
+fs_grisu(T=_,Coins,ID0,ID,[40,35|Grisu0],Grisu) :- % (#
+  get_assoc(T,Coins,coin(Tag,Marker)), % FS is re-entrant
+  nonvar(Marker),                      % has already been portrayed
   !,
   id_grisu(ID0,ID,Grisu0,[32|Grisu1]), % space
   number_grisu(Tag,Grisu1,[41|Grisu]). % )
 % re-entrant FS
-fs_grisu(Type=FL,TL,TD,ID0,ID,[40,82|Grisu0],Grisu) :- % (R
-  my_vmember((Type,Tag),TL), % FS is re-entrant
+fs_grisu(T=FL,Coins,ID0,ID,[40,82|Grisu0],Grisu) :- % (R
+  get_assoc(T,Coins,coin(Tag,marker)), % FS is re-entrant; mark as portrayed
   !,
-  mark_tagged(Tag,TD),       % mark as portrayed
   id_grisu(ID0,ID1,Grisu0,[32|Grisu1]), % space
   number_grisu(Tag,Grisu1,Grisu2),
-  fs_grisu_nr(Type=FL,TL,TD,ID1,ID,Grisu2,[41|Grisu]). % )
+  fs_grisu_nr(T=FL,Coins,ID1,ID,Grisu2,[41|Grisu]). % )
 % non-re-entrant FS
-fs_grisu(Type=FL,TL,TD,ID0,ID,Grisu0,Grisu) :-
-  fs_grisu_nr(Type=FL,TL,TD,ID0,ID,Grisu0,Grisu).
+fs_grisu(T=FL,Coins,ID0,ID,Grisu0,Grisu) :-
+  fs_grisu_nr(T=FL,Coins,ID0,ID,Grisu0,Grisu).
+
+% Portraying FSs, after handling re-entrancies:
 
 % non-empty list
 % TODO nel not distinguished from its subtypes in visualization.
-fs_grisu_nr(Type=FL,TL,TD,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
-  is_nel_type(Type),
+fs_grisu_nr(T=FL,Coins,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
+  is_nel_type(T),
   !,
   id_grisu(ID0,ID1,Grisu0,Grisu1),
   remove(FL,'FI':First,['RE':Rest]),
-  fs_grisu(First,TL,TD,ID1,ID2,Grisu1,Grisu2),
-  tail_grisu(Rest,TL,TD,ID2,ID,Grisu2,[41|Grisu]). % )
+  fs_grisu(First,Coins,ID1,ID2,Grisu1,Grisu2),
+  tail_grisu(Rest,Coins,ID2,ID,Grisu2,[41|Grisu]). % )
 % empty list
-fs_grisu_nr(Type=_,_,_,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
-  is_nil_type(Type),
+fs_grisu_nr(T=_,_,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
+  is_nil_type(T),
   !,
   id_grisu(ID0,ID,Grisu0,[41|Grisu]). % )
 % other feature structure
-fs_grisu_nr(Type=FL,TL,TD,ID0,ID,[40,83|Grisu0],Grisu) :- % (S
+fs_grisu_nr(T=FL,Coins,ID0,ID,[40,83|Grisu0],Grisu) :- % (S
   id_grisu(ID0,ID1,Grisu0,Grisu1),
-  type_grisu(Type,ID1,ID2,Grisu1,Grisu2),
-  fl_grisu(FL,TL,TD,ID2,ID,Grisu2,[41|Grisu]). % )
+  type_grisu(T,ID1,ID2,Grisu1,Grisu2),
+  fl_grisu(FL,Coins,ID2,ID,Grisu2,[41|Grisu]). % )
 
 % re-entrant tail
-tail_grisu(Type=FS,TL,TD,ID0,ID,[40,90|Grisu0],Grisu) :- % (Z
-  my_vmember((Type,_),TL),
+tail_grisu(T=FS,Coins,ID0,ID,[40,90|Grisu0],Grisu) :- % (Z
+  get_assoc(T,Coins,_),
   !,
   id_grisu(ID0,ID1,Grisu0,Grisu1),
-  fs_grisu(FS,TL,TD,ID1,ID,Grisu1,[41|Grisu]). % )
+  fs_grisu(FS,Coins,ID1,ID,Grisu1,[41|Grisu]). % )
 % empty tail
-tail_grisu(Type=_,_,_,ID,ID,Grisu,Grisu) :-
-  is_nil_type(Type),
+tail_grisu(T=_,_,ID,ID,Grisu,Grisu) :-
+  is_nil_type(T),
   !.
 % non-empty tail
-tail_grisu(Type=FL,TL,TD,ID0,ID,Grisu0,Grisu) :-
-  is_nel_type(Type),
+tail_grisu(T=FL,Coins,ID0,ID,Grisu0,Grisu) :-
+  is_nel_type(T),
   !,
   remove(FL,'FI':First,['RE':Rest]),
-  fs_grisu(First,TL,TD,ID0,ID1,Grisu0,Grisu1),
-  tail_grisu(Rest,TL,TD,ID1,ID,Grisu1,Grisu).
+  fs_grisu(First,Coins,ID0,ID1,Grisu0,Grisu1),
+  tail_grisu(Rest,Coins,ID1,ID,Grisu1,Grisu).
 
 % type
-type_grisu(Type,ID0,ID,[40|Grisu0],Grisu) :- % (
+type_grisu(T,ID0,ID,[40|Grisu0],Grisu) :- % (
   id_grisu(ID0,ID,Grisu0,Grisu1),
-  make_type(Type,TypeName),
+  make_type(T,TypeName),
   string_grisu(TypeName,Grisu1,[41|Grisu]). % )
 
 % (open-ended) list of feature-value pairs
-fl_grisu(End,_,_,ID,ID,Grisu,Grisu) :-
+fl_grisu(End,_,ID,ID,Grisu,Grisu) :-
   var(End),
   !.
-fl_grisu([F:V|Rest],TL,TD,ID0,ID,[40,86|Grisu0],Grisu) :- % (V
+fl_grisu([F:V|Rest],Coins,ID0,ID,[40,86|Grisu0],Grisu) :- % (V
   id_grisu(ID0,ID1,Grisu0,Grisu1),
   string_grisu(F,Grisu1,Grisu2),
-  fs_grisu(V,TL,TD,ID1,ID2,Grisu2,Grisu3),
-  fl_grisu(Rest,TL,TD,ID2,ID,Grisu3,[41|Grisu]). % )
+  fs_grisu(V,Coins,ID1,ID2,Grisu2,Grisu3),
+  fl_grisu(Rest,Coins,ID2,ID,Grisu3,[41|Grisu]). % )
 
 % ID (increments ID counter)
 id_grisu(ID0,ID,Grisu0,Grisu) :-
@@ -350,6 +382,13 @@ string_grisu(Atom,[34|Grisu0],Grisu) :- % "
 % (thus empty feature lists), conventionally immediate subtypes of the built-in
 % type atom and inferred by QType from usage in the grammar rather than
 % declared.
+
+should_be_attempted_to_portray_as_fs(Term) :-
+  nonvar(Term),
+  Term=(T=_),
+  type_bitset(_,T). % do not attempt to portray "descriptions" for now, if I may
+       % call terms T=FL so where T is an atomic type name. This call may print
+       % a message if it fails, yuck, but okay.
 
 % ------------------------------------------------------------------------------
 % HELPERS (KAHINAQTYPE-SPECIFIC)
