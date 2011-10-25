@@ -171,8 +171,9 @@ public class AuxiliaryTraleInstance extends Thread
 	
 	private String executeMGS(String descString)
 	{
+		//TODO: handle the atomic values (such as "cruel") that TRALE refuses to accept as part of a description
+		
 		//generate theory file around descString
-		//TODO: clean out the atomic values that TRALE refuses to accept as part of the signature
 		String theoryString = "sign *> " + descString + ".";
 		try
 		{
@@ -184,9 +185,9 @@ public class AuxiliaryTraleInstance extends Thread
 		{
 			System.err.println("WARNING: could not create auxiliary theory file!");
 		}
-		//TODO: let the instance compile the theory and output MGS in GRISU format to temporary file
+		//let the instance compile the theory
 		compileTraleGrammar("aux_theory.pl");
-
+		//TODO: output MGS in GRISU format to temporary file (requires work on Prolog side)
 		//TODO: read in temporary file to retrieve GRISU string
 		//stub behavior for now: return GRISU string for trivial structure
 		return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
