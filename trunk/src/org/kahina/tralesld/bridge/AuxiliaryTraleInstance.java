@@ -20,9 +20,7 @@ public class AuxiliaryTraleInstance extends Thread
 	SICStus sp;
 	boolean newInstance;
 	
-	String instruction;
-	String toProcess;
-	String result;
+	TraleTask task;
 	
 	/**
 	 * Crudely gains access to some SICStus instance (caller or new) and stores it for operations.
@@ -33,9 +31,7 @@ public class AuxiliaryTraleInstance extends Thread
 		this.newInstance = newInstance;
 		this.setName("AuxiliaryTraleThread");
 		
-		this.instruction = "";
-		this.toProcess = "";
-		this.result = "";
+		this.task = new TraleTask();
 	}
 	
 	@Override
@@ -51,24 +47,32 @@ public class AuxiliaryTraleInstance extends Thread
 				sp = new SICStus();
 			}
 		    sp.load("/opt/trale2/startup.pl");
-		    synchronized(instruction)
+		    synchronized(task)
 		    {
-		    	try
+		    	while (task.getInstruction() == null)
 		    	{
-		    		instruction.wait();
+			    	try
+			    	{
+			    		task.wait();
+			    	}
+			    	catch (InterruptedException e)
+			    	{
+			    		
+			    	}
 		    	}
-		    	catch (InterruptedException e)
+		    	if (task.getInstruction().equals("mgs"))
 		    	{
-		    		
+		    		task.setResult(executeMGS(task.getToProcess()));
+		    		task.setInstruction(null);
+		    		task.notify();
 		    	}
-		    	
-		    	if (instruction.equals("mgs"))
+		    	else if (task.getInstruction().equals("compile"))
 		    	{
-		    		result = executeMGS(toProcess);
-		    		instruction = null;
-		    		result.notify();
+		    		task.setResult(compileTraleGrammar(task.getToProcess()) + "");
+		    		task.setInstruction(null);
+		    		task.notify();
 		    	}
-		    }
+		    }	
 		}
 		catch ( Exception e )
 		{
@@ -83,22 +87,20 @@ public class AuxiliaryTraleInstance extends Thread
 	 */
 	public boolean compileGrammar(String fileName)
 	{
-		try 
+		synchronized(task)
 		{
-			SPPredicate compileGramPred = new SPPredicate(sp, "compile_gram", 1, "");
-			//TODO: find a way to set the environment from inside this class
-			SPTerm pathTerm = new SPTerm(sp, fileName);
-			SPQuery compileQuery = sp.openQuery(compileGramPred, new SPTerm[] { pathTerm });	      
-			while (compileQuery.nextSolution())
-			{
-				System.err.println("AuxiliaryTraleInstance compiled theory!");
-			}
-			return true;
-		}
-		catch ( Exception e )
-		{
-			e.printStackTrace();
-			return false;
+			task.setInstruction("compile");
+			task.setToProcess(fileName);
+			task.notify();
+	    	try
+	    	{
+	    		task.wait();
+	    	}
+	    	catch (InterruptedException e)
+	    	{
+	    		
+	    	} 	
+	    	return task.getResult().equals("true");
 		}
 	}
 	
@@ -126,27 +128,45 @@ public class AuxiliaryTraleInstance extends Thread
 	
 	public String descToMgsGrisu(String descString)
 	{
-		synchronized(instruction)
+		synchronized(task)
 		{
-			instruction = "mgs";
-			toProcess = descString;
-			instruction.notify();
-		}
-		
-	    synchronized(result)
-	    {
+			task.setInstruction("mgs");
+			task.setToProcess(descString);
+			task.notify();
 	    	try
 	    	{
-	    		result.wait();
+	    		task.wait();
 	    	}
 	    	catch (InterruptedException e)
 	    	{
 	    		
 	    	} 	
-	    	return result;
-	    }
+	    	return task.getResult();
+		}
+		
 		//stub behavior for now: return GRISU string for trivial structure
 		//return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+	}
+	
+	private boolean compileTraleGrammar(String fileName)
+	{
+		try 
+		{
+			SPPredicate compileGramPred = new SPPredicate(sp, "compile_gram", 1, "");
+			//TODO: find a way to set the environment from inside this class
+			SPTerm pathTerm = new SPTerm(sp, fileName);
+			SPQuery compileQuery = sp.openQuery(compileGramPred, new SPTerm[] { pathTerm });	      
+			while (compileQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance compiled theory!");
+			}
+			return true;
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	private String executeMGS(String descString)
@@ -165,7 +185,7 @@ public class AuxiliaryTraleInstance extends Thread
 			System.err.println("WARNING: could not create auxiliary theory file!");
 		}
 		//TODO: let the instance compile the theory and output MGS in GRISU format to temporary file
-		compileGrammar("aux_theory.pl");
+		compileTraleGrammar("aux_theory.pl");
 
 		//TODO: read in temporary file to retrieve GRISU string
 		//stub behavior for now: return GRISU string for trivial structure
@@ -176,17 +196,46 @@ public class AuxiliaryTraleInstance extends Thread
 	{
 		//the following environment is necessary for this demo to emulate the startup script:
 		// * working directory set to where the files theory.pl and signature reside
-		// * TRALE_HOME pointing to the root directory
+		// * TRALE_HOME pointing to the Trale root directory
 		AuxiliaryTraleInstance trale = new AuxiliaryTraleInstance(true);
 		trale.start();
-		try
-		{
-			trale.join();
-		}
-		catch (InterruptedException e)
-		{
-			
-		}
 		trale.compileGrammar("theory.pl");
+	}
+	
+	private class TraleTask
+	{
+		String instruction = null;
+		String toProcess = null;
+		String result = null;
+		
+		public String getInstruction() 
+		{
+			return instruction;
+		}
+		
+		public void setInstruction(String instruction) 
+		{
+			this.instruction = instruction;
+		}
+		
+		public String getToProcess() 
+		{
+			return toProcess;
+		}
+		
+		public void setToProcess(String toProcess) 
+		{
+			this.toProcess = toProcess;
+		}
+		
+		public String getResult() 
+		{
+			return result;
+		}
+		
+		public void setResult(String result) 
+		{
+			this.result = result;
+		}	
 	}
 }
