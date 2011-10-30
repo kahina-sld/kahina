@@ -188,10 +188,13 @@ public class AuxiliaryTraleInstance extends Thread
 		//HACK FOR NOW: manipulate the phon value accordingly
 		//TODO: extend this to more than one list element
 		int phonPosition = descString.indexOf("phon");
-		int leftOfList = descString.indexOf("[",phonPosition);
-		descString = descString.substring(0, leftOfList + 1) + "(a_ " + descString.substring(leftOfList + 1);
-		int rightOfList = descString.indexOf("]",phonPosition);
-		descString = descString.substring(0, rightOfList) + ")" + descString.substring(rightOfList);
+		if (phonPosition != -1)
+		{
+			int leftOfList = descString.indexOf("[",phonPosition);
+			descString = descString.substring(0, leftOfList + 1) + "(a_ " + descString.substring(leftOfList + 1);
+			int rightOfList = descString.indexOf("]",phonPosition);
+			descString = descString.substring(0, rightOfList) + ")" + descString.substring(rightOfList);
+		}
 		//generate theory file around descString
 		String theoryString = "sign *> " + descString + ".";
 		try
