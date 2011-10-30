@@ -25,7 +25,7 @@ public class TraleSLDMainWindow extends LogicProgrammingMainWindow
 	protected void addAdditionalMenus()
 	{
 		menuBar.add(new TraleSLDParseMenu(wm.gui.getKahinaInstance()));
-		menuBar.add(new TraleSLDWorkbenchMenu(((TraleSLDGUI) wm.gui)));
+		//menuBar.add(new TraleSLDWorkbenchMenu(((TraleSLDGUI) wm.gui)));
 		super.addAdditionalMenus();
 	}
 
