@@ -50,4 +50,32 @@ public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 		return panel;
 	}
 
+	public String getSignatureFileName() 
+	{
+		if (model == null)
+		{
+			return "none (no workbench loaded)";		
+		}
+		String signatureFile = model.getSignatureFileName();
+		if (signatureFile == null)
+		{
+			return "none (signature not specified or not yet loaded)";
+		}
+		return signatureFile;
+	}
+	
+	public String getTheoryFileName() 
+	{
+		if (model == null)
+		{
+			return "none (no workbench loaded)";		
+		}
+		String signatureFile = model.getSignatureFileName();
+		if (signatureFile == null)
+		{
+			return "none (theory not specified or not yet loaded)";
+		}
+		return signatureFile;
+	}
+
 }

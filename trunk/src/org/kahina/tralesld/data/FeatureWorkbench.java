@@ -11,6 +11,9 @@ public class FeatureWorkbench extends KahinaObject
 	//the feature structures on the workbench, accessible via string IDs for now
 	private HashMap<String, String> obj;
 	
+	private String signatureFile = null;
+	private String theoryFile = null;
+	
 	public FeatureWorkbench()
 	{
 		obj = new HashMap<String, String>();
@@ -29,5 +32,25 @@ public class FeatureWorkbench extends KahinaObject
 	public Set<String> getNames() 
 	{
 		return obj.keySet();
+	}
+
+	public String getSignatureFileName() 
+	{
+		return signatureFile;
+	}
+
+	public void setSignatureFileName(String signatureFile) 
+	{
+		this.signatureFile = signatureFile;
+	}
+
+	public String getTheoryFileName() 
+	{
+		return theoryFile;
+	}
+
+	public void setTheoryFileName(String theoryFile) 
+	{
+		this.theoryFile = theoryFile;
 	}
 }
