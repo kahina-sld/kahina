@@ -7,6 +7,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -34,6 +37,9 @@ import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
 public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchView> implements ListSelectionListener
 {
 	private final JLabel msgLabel;
+	private final JLabel signatureFileLabel;
+	private final JLabel theoryFileLabel;
+	
 	private final JList list;
 	private final TraleSLDFeatureStructureEditor editor;
 	private final FeatureStructureListModel listModel;
@@ -42,25 +48,65 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setMinimumSize(new Dimension(200,50));
+		menuBar.setMaximumSize(new Dimension(500,50));
+		
+		JMenu workbenchMenu = new JMenu("Workbench");
+		
+		JMenuItem newWorkbenchItem = new JMenuItem("New Workbench");
+		workbenchMenu.add(newWorkbenchItem);
+		
+		JMenuItem importWorkbenchItem = new JMenuItem("Import Workbench");
+		workbenchMenu.add(importWorkbenchItem);
+		
+		JMenuItem exportWorkbenchItem = new JMenuItem("Export Workbench");
+		workbenchMenu.add(exportWorkbenchItem);
+		
+		JMenuItem exportSelectionItem = new JMenuItem("Export Selection to Workbench");
+		workbenchMenu.add(exportSelectionItem);
+		
+		menuBar.add(workbenchMenu);
+		
+		JMenu fsMenu = new JMenu("Feature Structure");
+		
+		JMenu newTypeInstance = new JMenu("New FS of type ...");
+		fsMenu.add(newTypeInstance);
+		
+		JMenuItem fsClipboardItem = new JMenuItem("Paste FS from clipboard");
+		fsMenu.add(fsClipboardItem);
+		
+		fsMenu.addSeparator();
+		
+		JMenuItem fsFileItem = new JMenuItem("Load FS from GRISU file");
+		fsMenu.add(fsFileItem);
+		
+		JMenuItem exportFSItem = new JMenuItem("Save FS to GRISU file");
+		fsMenu.add(exportFSItem);
+		
+		fsMenu.addSeparator();
+		
+		JMenuItem theoryMGSItem = new JMenuItem("Add MGS according to theory");
+		fsMenu.add(theoryMGSItem);
+		
+		JMenuItem sigMGUItem = new JMenuItem("Add MGU (signature only)");
+		fsMenu.add(sigMGUItem);
+		
+		JMenuItem theMGUItem = new JMenuItem("Add MGU according to theory");
+		fsMenu.add(theMGUItem);
+		
+		menuBar.add(fsMenu);
+		
+		this.add(menuBar);
+		
 		JPanel controlPanel = new JPanel();
-		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
+		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
 		
-		String[] dummyEntries = { "lexicon", "entry1", "entry2", "entry3" };
+		signatureFileLabel = new JLabel("Signature file: ");
+		controlPanel.add(signatureFileLabel);
 		
-		JComboBox lexBox = new JComboBox(dummyEntries);
-		controlPanel.add(lexBox);
-		
-		JButton diffButton = new JButton("diff");
-		controlPanel.add(diffButton);
-		
-		JButton mgsButton = new JButton("satisfy_the");
-		controlPanel.add(mgsButton);
-		
-		JButton mguSigButton = new JButton("unify_sig");
-		controlPanel.add(mguSigButton);
-		
-		JButton mguTheButton = new JButton("unify_the");
-		controlPanel.add(mguTheButton);
+		theoryFileLabel = new JLabel("Theory file: ");
+		controlPanel.add(theoryFileLabel);
 		
 		msgLabel = new JLabel("Drag feature structures into this window.");
 		controlPanel.add(msgLabel);
@@ -89,7 +135,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	@Override
 	public void updateDisplay() 
 	{
-		
+		signatureFileLabel.setText("Signature file: " + view.getSignatureFileName());
+		theoryFileLabel.setText("Theory file: " + view.getTheoryFileName());
 	}
 
 	@Override

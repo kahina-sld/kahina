@@ -39,8 +39,6 @@ public class AuxiliaryTraleInstance extends Thread
 	@Override
 	public void run() 
 	{
-		//testing whether SICStus can be loaded (to be removed later)
-		//SICStus.main(new String[] {});
 		try 
 		{
 			sp = SICStus.getCaller();
