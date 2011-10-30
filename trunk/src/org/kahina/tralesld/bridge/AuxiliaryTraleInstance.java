@@ -1,6 +1,8 @@
 package org.kahina.tralesld.bridge;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -213,10 +215,34 @@ public class AuxiliaryTraleInstance extends Thread
 			//TODO: useful error handling
 			return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
 		}
-		//TODO: read in temporary file to retrieve GRISU string
-		//stub behavior for now: return GRISU string for trivial structure
-		return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+		//read in temporary file to retrieve GRISU string
+		String grisu = null;
+		try
+		{
+			grisu = slurpFile("grisu.tmp");
+		}
+		catch (IOException e)
+		{
+			System.err.println("Could not read grisu.tmp! Returning default GRISU string!");
+			//stub behavior for now: return GRISU string for trivial structure
+			grisu = "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+		}
+		return grisu;
 	}
+	
+	private String slurpFile( String file ) throws IOException 
+	{
+	    BufferedReader reader = new BufferedReader( new FileReader (file));
+	    String line  = null;
+	    StringBuilder stringBuilder = new StringBuilder();
+	    String ls = System.getProperty("line.separator");
+	    while( ( line = reader.readLine() ) != null ) {
+	        stringBuilder.append( line );
+	        stringBuilder.append( ls );
+	    }
+	    return stringBuilder.toString();
+	 }
+
 	
 	public static void main(String[] args)
 	{
