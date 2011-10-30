@@ -194,7 +194,25 @@ public class AuxiliaryTraleInstance extends Thread
 		}
 		//let the instance compile the theory
 		compileTraleGrammar("aux_theory.pl");
-		//TODO: output MGS in GRISU format to temporary file (requires work on Prolog side)
+		//let TRALE output MGS in GRISU format to temporary file
+		try
+		{
+			SPPredicate mgsPred = new SPPredicate(sp, "mgs_to_tempfile", 2, "");
+			SPTerm descTerm = new SPTerm(sp, "sign");
+			SPTerm fileNameTerm = new SPTerm(sp, "grisu.tmp");
+			SPQuery mgsQuery = sp.openQuery(mgsPred, new SPTerm[] { descTerm, fileNameTerm });	      
+			if (mgsQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance stored MGS in temporary file.");
+			}
+		}
+		catch (SPException e)
+		{
+			System.err.println("SPException: " + e.toString());
+			e.printStackTrace();
+			//TODO: useful error handling
+			return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+		}
 		//TODO: read in temporary file to retrieve GRISU string
 		//stub behavior for now: return GRISU string for trivial structure
 		return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
