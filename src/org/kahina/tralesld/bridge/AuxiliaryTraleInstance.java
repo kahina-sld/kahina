@@ -49,32 +49,35 @@ public class AuxiliaryTraleInstance extends Thread
 				sp = new SICStus();
 			}
 		    sp.load("/opt/trale2/startup.pl");
-		    synchronized(task)
+		    while (true)
 		    {
-		    	while (task.getInstruction() == null)
-		    	{
-			    	try
+			    synchronized(task)
+			    {
+			    	while (task.getInstruction() == null)
 			    	{
-			    		task.wait();
+				    	try
+				    	{
+				    		task.wait();
+				    	}
+				    	catch (InterruptedException e)
+				    	{
+				    		
+				    	}
 			    	}
-			    	catch (InterruptedException e)
+			    	if (task.getInstruction().equals("mgs"))
 			    	{
-			    		
+			    		task.setResult(executeMGS(task.getToProcess()));
+			    		task.setInstruction(null);
+			    		task.notify();
 			    	}
-		    	}
-		    	if (task.getInstruction().equals("mgs"))
-		    	{
-		    		task.setResult(executeMGS(task.getToProcess()));
-		    		task.setInstruction(null);
-		    		task.notify();
-		    	}
-		    	else if (task.getInstruction().equals("compile"))
-		    	{
-		    		task.setResult(compileTraleGrammar(task.getToProcess()) + "");
-		    		task.setInstruction(null);
-		    		task.notify();
-		    	}
-		    }	
+			    	else if (task.getInstruction().equals("compile"))
+			    	{
+			    		task.setResult(compileTraleGrammar(task.getToProcess()) + "");
+			    		task.setInstruction(null);
+			    		task.notify();
+			    	}
+			    }
+		    }
 		}
 		catch ( Exception e )
 		{
@@ -154,13 +157,22 @@ public class AuxiliaryTraleInstance extends Thread
 	{
 		try 
 		{
+			//abolish *> clauses to avoid Prolog-side warning message when a new grammar is compiled
+			//TODO: see whether this can be done automatically when executing compile_gram/0
+			SPPredicate abolishPred = new SPPredicate(sp, "abolish_user_preds", 1, "");
+			SPTerm consTerm = new SPTerm(sp, "cons");
+			SPQuery abolishQuery = sp.openQuery(abolishPred, new SPTerm[] { consTerm });	      
+			while (abolishQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance discarded old *> database.");
+			}
 			SPPredicate compileGramPred = new SPPredicate(sp, "compile_gram", 1, "");
 			//TODO: find a way to set the environment from inside this class
 			SPTerm pathTerm = new SPTerm(sp, fileName);
 			SPQuery compileQuery = sp.openQuery(compileGramPred, new SPTerm[] { pathTerm });	      
 			while (compileQuery.nextSolution())
 			{
-				System.err.println("AuxiliaryTraleInstance compiled theory!");
+				System.err.println("AuxiliaryTraleInstance compiled theory.");
 			}
 			return true;
 		}
@@ -230,7 +242,7 @@ public class AuxiliaryTraleInstance extends Thread
 		return grisu;
 	}
 	
-	private String slurpFile( String file ) throws IOException 
+	private String slurpFile(String file) throws IOException 
 	{
 	    BufferedReader reader = new BufferedReader( new FileReader (file));
 	    String line  = null;
