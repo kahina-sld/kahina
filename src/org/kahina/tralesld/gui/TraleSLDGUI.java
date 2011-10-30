@@ -159,7 +159,6 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	
 	public void signatureUpdate()
 	{
-		System.err.println("TraleSLDGUI.signatureUpdate()");
 		signatureHierarchyView.display(instance.getState().getSignature());
 		signatureAppropriatenessView.display(instance.getState().getSignature());
 		signatureUsageView.display(instance.getState().getSignature());

@@ -1,6 +1,9 @@
 package org.kahina.tralesld.visual.workbench;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.BoxLayout;
@@ -20,6 +23,7 @@ import javax.swing.DefaultListModel;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.tralesld.TraleSLDState;
+import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.data.FeatureWorkbench;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
@@ -34,18 +38,23 @@ import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
  * @author jdellert
  *
  */
-public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchView> implements ListSelectionListener
+public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchView> implements ListSelectionListener, ActionListener
 {
 	private final JLabel msgLabel;
 	private final JLabel signatureFileLabel;
 	private final JLabel theoryFileLabel;
 	
+	private JMenu newTypeInstanceMenu;
+	
 	private final JList list;
 	private final TraleSLDFeatureStructureEditor editor;
-	private final FeatureStructureListModel listModel;
+	
+	private AuxiliaryTraleInstance trale;
 	
 	public FeatureWorkbenchViewPanel(TraleSLDState state)
-	{
+	{	
+		this.trale = state.getTrale();
+		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -70,8 +79,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		
 		JMenu fsMenu = new JMenu("Feature Structure");
 		
-		JMenu newTypeInstance = new JMenu("New FS of type ...");
-		fsMenu.add(newTypeInstance);
+		newTypeInstanceMenu = new JMenu("New FS of type ...");
+		fsMenu.add(newTypeInstanceMenu);
 		
 		JMenuItem fsClipboardItem = new JMenuItem("Paste FS from clipboard");
 		fsMenu.add(fsClipboardItem);
@@ -116,8 +125,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
 		
-		listModel = new FeatureStructureListModel();
-		list = new JList(listModel);
+		list = new JList();
 		list.getSelectionModel().addListSelectionListener(this);
 		JScrollPane listScroller = new JScrollPane(list);
 		listScroller.setPreferredSize(new Dimension(250, 80));
@@ -135,16 +143,37 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	@Override
 	public void updateDisplay() 
 	{
+		view.recalculate();
+		list.setListData(view.getNameList().toArray());
 		signatureFileLabel.setText("Signature file: " + view.getSignatureFileName());
 		theoryFileLabel.setText("Theory file: " + view.getTheoryFileName());
+		if (view.getModel().getSignature() != null)
+		{
+			for (String type : view.getModel().getSignature().getTypes())
+			{
+				JMenuItem typeItem = new JMenuItem(type);
+				typeItem.addActionListener(this);
+				newTypeInstanceMenu.add(typeItem);
+			}
+		}
+		this.repaint();
 	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) 
 	{
-		String name = listModel.getElementAt(list.getSelectedIndex());
+		String name = (String) list.getSelectedValue();;
 		editor.loadGrisu(view.getModel().getStructure(name));	
 		editor.updateDisplay();
+	}
+	
+	public void actionPerformed(ActionEvent e)
+	{
+		String action = e.getActionCommand();
+		//default: interpret action command as type ID
+		String grisuString = trale.descToMgsGrisu(action);
+		view.getModel().storeStructure("base: " + action, grisuString);
+		updateDisplay();
 	}
 	
 	private class FeatureStructureListModel extends DefaultListModel
@@ -152,6 +181,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		public int getSize()
 		{
 			return view.getNameList().size();
+		}
+		
+		public Enumeration<String> elements()
+		{
+			return (Enumeration<String>) view.getNameList();
 		}
 		
 		public String getElementAt(int i)
