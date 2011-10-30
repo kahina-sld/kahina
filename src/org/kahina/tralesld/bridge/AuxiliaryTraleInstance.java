@@ -171,8 +171,15 @@ public class AuxiliaryTraleInstance extends Thread
 	
 	private String executeMGS(String descString)
 	{
-		//TODO: handle the atomic values (such as "cruel") that TRALE refuses to accept as part of a description
-		//SOLUTION: instead of just "cruel", GraleJ should produce (a_ cruel)
+		//handle the atomic values (such as "cruel") that TRALE refuses to accept as part of a description
+		//FUTURE SOLUTION: instead of just "cruel", GraleJ should produce (a_ cruel)
+		//HACK FOR NOW: manipulate the phon value accordingly
+		//TODO: extend this to more than one list element
+		int phonPosition = descString.indexOf("phon");
+		int leftOfList = descString.indexOf("[",phonPosition);
+		descString = descString.substring(0, leftOfList + 1) + "(a_ " + descString.substring(leftOfList + 1);
+		int rightOfList = descString.indexOf("]",phonPosition);
+		descString = descString.substring(0, rightOfList) + ")" + descString.substring(rightOfList);
 		//generate theory file around descString
 		String theoryString = "sign *> " + descString + ".";
 		try
