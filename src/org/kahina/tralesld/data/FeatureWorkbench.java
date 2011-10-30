@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.kahina.core.data.KahinaObject;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
+import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
 public class FeatureWorkbench extends KahinaObject
 {
@@ -13,6 +14,8 @@ public class FeatureWorkbench extends KahinaObject
 	
 	private String signatureFile = null;
 	private String theoryFile = null;
+	
+	private TraleSLDSignature signature;
 	
 	public FeatureWorkbench()
 	{
@@ -52,5 +55,15 @@ public class FeatureWorkbench extends KahinaObject
 	public void setTheoryFileName(String theoryFile) 
 	{
 		this.theoryFile = theoryFile;
+	}
+	
+	public TraleSLDSignature getSignature()
+	{
+		return signature;
+	}
+	
+	public void setSignature(TraleSLDSignature signature)
+	{
+		this.signature = signature;
 	}
 }
