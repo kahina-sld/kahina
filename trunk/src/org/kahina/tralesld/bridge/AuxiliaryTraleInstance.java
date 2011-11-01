@@ -5,6 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 import javax.swing.SwingUtilities;
 
@@ -185,8 +188,75 @@ public class AuxiliaryTraleInstance extends Thread
 	
 	private TraleSLDSignature extractSignature(String fileName)
 	{
+		//let TRALE compile the signature
+		try 
+		{
+			//abolish sig clauses to avoid Prolog-side warning message when a new signature is compiled
+			//TODO: see whether this can be done automatically when executing compile_sig/1
+			SPPredicate abolishPred = new SPPredicate(sp, "abolish_user_preds", 1, "");
+			SPTerm consTerm = new SPTerm(sp, "sig");
+			SPQuery abolishQuery = sp.openQuery(abolishPred, new SPTerm[] { consTerm });	      
+			while (abolishQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance discarded old sig database.");
+			}
+			SPPredicate compileSigPred = new SPPredicate(sp, "compile_sig", 1, "");
+			//TODO: find a way to set the environment from inside this class
+			SPTerm pathTerm = new SPTerm(sp, fileName);
+			SPQuery compileQuery = sp.openQuery(compileSigPred, new SPTerm[] { pathTerm });	      
+			while (compileQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance compiled signature.");
+			}
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
+		}
+		//construct the TraleSLDSignature object by reading out the compiled signature
 		TraleSLDSignature signature = new TraleSLDSignature();
+		LinkedList<String> agenda = new LinkedList<String>();
+		agenda.add("bot");
+		while (agenda.size() > 0)
+		{
+			String type = agenda.removeFirst();
+			System.err.println("AuxiliaryTraleInstance now processing type: " + type);
+			List<String> subtypes = immediateSubtypes(type);
+			for (String subtype : subtypes)
+			{
+				signature.addSubtypeRelation(type, subtype);
+			}
+			agenda.addAll(subtypes);
+		}
 		return signature;
+	}
+	
+	private List<String> immediateSubtypes(String type)
+	{
+		LinkedList<String> subtypes = new LinkedList<String>();
+		try
+		{
+			SPPredicate subtypePred = new SPPredicate(sp, "immed_subtypes", 2, "");
+			SPTerm typeTerm = new SPTerm(sp, type);
+			SPTerm subtypeVar = new SPTerm(sp).putVariable();
+			SPQuery subtypeQuery = sp.openQuery(subtypePred, new SPTerm[] { typeTerm, subtypeVar });	
+			while (subtypeQuery.nextSolution())
+			{
+				if (!subtypeVar.toString().equals("[]"))
+				{
+					SPTerm[] subtypeTerms = subtypeVar.toTermArray();
+					for (SPTerm term : subtypeTerms)
+					{
+						subtypes.add(term.toString());
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return subtypes;
 	}
 	
 	private boolean compileTraleGrammar(String fileName)
@@ -194,7 +264,7 @@ public class AuxiliaryTraleInstance extends Thread
 		try 
 		{
 			//abolish *> clauses to avoid Prolog-side warning message when a new grammar is compiled
-			//TODO: see whether this can be done automatically when executing compile_gram/0
+			//TODO: see whether this can be done automatically when executing compile_gram/1
 			SPPredicate abolishPred = new SPPredicate(sp, "abolish_user_preds", 1, "");
 			SPTerm consTerm = new SPTerm(sp, "cons");
 			SPQuery abolishQuery = sp.openQuery(abolishPred, new SPTerm[] { consTerm });	      
