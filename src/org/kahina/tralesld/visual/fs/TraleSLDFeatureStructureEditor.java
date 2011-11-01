@@ -226,7 +226,17 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			//get back the edited structure in TRALE desc format
 			String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
 			//use TRALE instance to retrieve the grisuString for the description's MGS
-			grisuString = trale.descToMgsGrisu(traleDesc);
+
+			String result = trale.descToMgsGrisu(traleDesc);
+			if (result.startsWith("error"))
+			{
+				failureMessage(result);
+			}
+			else
+			{
+				successMessage("Editing operation successful.");
+				grisuString = result;
+			}
 			//trale.loadEmbeddedKahinaInstance();
 			
 			//	failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 

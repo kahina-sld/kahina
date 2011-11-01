@@ -52,6 +52,7 @@ public class AuxiliaryTraleInstance extends Thread
 				sp = new SICStus();
 			}
 		    sp.load("/opt/trale2/startup.pl");
+		    //compileTrivialGrammar();
 		    while (true)
 		    {
 			    synchronized(task)
@@ -220,7 +221,6 @@ public class AuxiliaryTraleInstance extends Thread
 		while (agenda.size() > 0)
 		{
 			String type = agenda.removeFirst();
-			System.err.println("AuxiliaryTraleInstance now processing type: " + type);
 			List<String> subtypes = immediateSubtypes(type);
 			for (String subtype : subtypes)
 			{
@@ -384,7 +384,7 @@ public class AuxiliaryTraleInstance extends Thread
 		}
 		catch (IOException e)
 		{
-			System.err.println("WARNING: could not create auxiliary theory file!");
+			return "ERROR: Could not create aux_theory.pl!";
 		}
 		//let the instance compile the theory
 		compileTraleGrammar("aux_theory.pl");
@@ -402,10 +402,7 @@ public class AuxiliaryTraleInstance extends Thread
 		}
 		catch (SPException e)
 		{
-			System.err.println("SPException: " + e.toString());
-			e.printStackTrace();
-			//TODO: useful error handling
-			return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+			return "ERROR: SPException " + e.toString();
 		}
 		//read in temporary file to retrieve GRISU string
 		String grisu = null;
@@ -415,9 +412,7 @@ public class AuxiliaryTraleInstance extends Thread
 		}
 		catch (IOException e)
 		{
-			System.err.println("Could not read grisu.tmp! Returning default GRISU string!");
-			//stub behavior for now: return GRISU string for trivial structure
-			grisu = "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+			grisu = "ERROR: Could not read tmp.grisu!";
 		}
 		return grisu;
 	}
@@ -436,7 +431,7 @@ public class AuxiliaryTraleInstance extends Thread
 	 }
 	
 	//new version (does not compile anything, always uses the current theory)
-	//does not work because SPTerm can only be constructed out of atoms, not out of Prolog terms as strings
+	//does not work because Jasper cannot build SPTerms out of descriptions by default
 	//TODO: use this to achieve speedup: let GraleJ generate descriptions as SPTerms 
 	/*private String executeMGS(String descString)
 	{
@@ -456,8 +451,8 @@ public class AuxiliaryTraleInstance extends Thread
 		try
 		{
 			SPPredicate mgsPred = new SPPredicate(sp, "mgs_to_tempfile", 2, "");
-			SPTerm descTerm = new SPTerm(sp, descString);
-			SPTerm fileNameTerm = new SPTerm(sp, "grisu.tmp");
+			SPTerm descTerm = sp.readFromString(descString);
+			SPTerm fileNameTerm = new SPTerm(sp, "tmp.grisu");
 			SPQuery mgsQuery = sp.openQuery(mgsPred, new SPTerm[] { descTerm, fileNameTerm });	      
 			if (mgsQuery.nextSolution())
 			{
@@ -475,7 +470,7 @@ public class AuxiliaryTraleInstance extends Thread
 		String grisu = null;
 		try
 		{
-			grisu = slurpFile("grisu.tmp");
+			grisu = slurpFile("tmp.grisu");
 		}
 		catch (IOException e)
 		{
