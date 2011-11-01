@@ -179,7 +179,7 @@ public class AuxiliaryTraleInstance extends Thread
 			}
 			SPPredicate compileGramPred = new SPPredicate(sp, "compile_gram", 1, "");
 			//TODO: find a way to set the environment from inside this class
-			SPTerm pathTerm = new SPTerm(sp, "empty_theory.pl");
+			SPTerm pathTerm = new SPTerm(sp, "empty_theory");
 			SPQuery compileQuery = sp.openQuery(compileGramPred, new SPTerm[] { pathTerm });	      
 			while (compileQuery.nextSolution())
 			{
@@ -225,7 +225,8 @@ public class AuxiliaryTraleInstance extends Thread
 	}
 	
 	//new version (does not compile anything, always uses the current theory)
-	private String executeMGS(String descString)
+	//does not work because SPTerm can only be constructed out of atoms, not out of strings
+	/*private String executeMGS(String descString)
 	{
 		//handle the atomic values (such as "cruel") that TRALE refuses to accept as part of a description
 		//FUTURE SOLUTION: instead of just "cruel", GraleJ should produce (a_ cruel)
@@ -271,10 +272,10 @@ public class AuxiliaryTraleInstance extends Thread
 			grisu = "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
 		}
 		return grisu;
-	}
+	}*/
 	
 	//old version, being superseded at the moment
-	/*private String executeMGS(String descString)
+	private String executeMGS(String descString)
 	{
 		//handle the atomic values (such as "cruel") that TRALE refuses to accept as part of a description
 		//FUTURE SOLUTION: instead of just "cruel", GraleJ should produce (a_ cruel)
@@ -334,7 +335,7 @@ public class AuxiliaryTraleInstance extends Thread
 			grisu = "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
 		}
 		return grisu;
-	}*/
+	}
 	
 	private String slurpFile(String file) throws IOException 
 	{
@@ -357,7 +358,7 @@ public class AuxiliaryTraleInstance extends Thread
 		// * TRALE_HOME pointing to the Trale root directory
 		AuxiliaryTraleInstance trale = new AuxiliaryTraleInstance(true);
 		trale.start();
-		trale.compileGrammar("theory.pl");
+		trale.compileGrammar("theory");
 	}
 	
 	private class TraleTask
