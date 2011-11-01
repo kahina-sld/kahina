@@ -82,4 +82,9 @@ public class KahinaRunner // TODO get rid of this class, make everything non-sta
 	{
 		KahinaRunner.guiController = guiController;
 	}
+	
+	public static KahinaController getGUIControl()
+	{
+		return guiController;
+	}
 }

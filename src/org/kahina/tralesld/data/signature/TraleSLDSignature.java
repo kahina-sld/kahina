@@ -108,11 +108,15 @@ public class TraleSLDSignature extends KahinaObject
 	public Set<String> getSiblingTypes(String type)
 	{
 		HashSet<String> siblingTypes = new HashSet<String>();
-		for (String supertype : getSupertypes(type))
+		Set<String> supertypes = getSupertypes(type);
+		if (supertypes != null)
 		{
-			siblingTypes.addAll(getSubtypes(supertype));
+			for (String supertype : getSupertypes(type))
+			{
+				siblingTypes.addAll(getSubtypes(supertype));
+			}
+			siblingTypes.remove(type);
 		}
-		siblingTypes.remove(type);
 		return siblingTypes;
 	}
 	

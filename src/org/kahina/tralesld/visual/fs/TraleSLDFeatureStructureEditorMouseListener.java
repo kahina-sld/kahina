@@ -29,7 +29,6 @@ public class TraleSLDFeatureStructureEditorMouseListener implements MouseListene
 	@Override
 	public void mouseClicked(MouseEvent e) 
 	{
-		System.err.println("Editor clicked at position (" + e.getX() + "," + e.getY() + ")");
 		//react to left click by offering a menu of options for type manipulation
 		//TODO: might be too obnoxious, perhaps change this into a double click
 		if (blockPanel.getSelectedBlock() != null)
@@ -40,7 +39,12 @@ public class TraleSLDFeatureStructureEditorMouseListener implements MouseListene
 			if (!type.equals("?"))
 			{
 				//generate context menu for type manipulation
-				editor.createContextMenu().show(e.getComponent(),e.getX(), e.getY());
+				TraleSLDFeatureStructureEditorMenu menu = editor.createContextMenu();
+				//in case of no signature or unknown type, the menu will be null
+				if (menu != null)
+				{
+					menu.show(e.getComponent(),e.getX(), e.getY());
+				}
 			}
 		}
 	}
