@@ -1,11 +1,13 @@
 package org.kahina.tralesld.visual.workbench;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -60,7 +62,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setMinimumSize(new Dimension(200,50));
-		menuBar.setMaximumSize(new Dimension(500,50));
+		menuBar.setMaximumSize(new Dimension(2000,50));
 		
 		JMenu workbenchMenu = new JMenu("Workbench");
 		
@@ -118,21 +120,36 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		
 		menuBar.add(fsMenu);
 		
+		menuBar.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(menuBar);
 		
-		JPanel controlPanel = new JPanel();
-		controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.Y_AXIS));
+		JPanel infoPanel = new JPanel();
+		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 		
 		signatureFileLabel = new JLabel("Signature file: ");
-		controlPanel.add(signatureFileLabel);
+		signatureFileLabel.setAlignmentX(LEFT_ALIGNMENT);
+
+		infoPanel.add(signatureFileLabel);
 		
 		theoryFileLabel = new JLabel("Theory file: ");
-		controlPanel.add(theoryFileLabel);
+		theoryFileLabel.setAlignmentX(LEFT_ALIGNMENT);
+		infoPanel.add(theoryFileLabel);
 		
-		msgLabel = new JLabel("Drag feature structures into this window.");
-		controlPanel.add(msgLabel);
+		infoPanel.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(infoPanel);
 		
-		add(controlPanel);
+		JPanel messagePanel = new JPanel();
+		messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
+		
+		msgLabel = new JLabel("No message.");
+		msgLabel.setAlignmentX(CENTER_ALIGNMENT);
+		messagePanel.add(msgLabel);
+		
+		messagePanel.setAlignmentX(LEFT_ALIGNMENT);
+		messagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		messagePanel.setMinimumSize(new Dimension(200,50));
+		messagePanel.setMaximumSize(new Dimension(2000,50));
+		this.add(messagePanel);
 		
 		JPanel contentPanel = new JPanel();
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.X_AXIS));
@@ -150,7 +167,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		JScrollPane editorScrollPane = new JScrollPane(editor);
 		contentPanel.add(editorScrollPane);
 		
-		add(contentPanel);
+		contentPanel.setAlignmentX(LEFT_ALIGNMENT);
+		this.add(contentPanel);
 	}
 
 	@Override
