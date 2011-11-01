@@ -227,6 +227,11 @@ public class AuxiliaryTraleInstance extends Thread
 				signature.addSubtypeRelation(type, subtype);
 			}
 			agenda.addAll(subtypes);
+			List<String> feats = appropriateFeatures(type);
+			for (String feat : feats)
+			{
+				signature.addAppropriateFeature(type, feat, valueRestriction(type,feat));
+			}
 		}
 		return signature;
 	}
@@ -257,6 +262,56 @@ public class AuxiliaryTraleInstance extends Thread
 			e.printStackTrace();
 		}
 		return subtypes;
+	}
+	
+	private List<String> appropriateFeatures(String type)
+	{
+		LinkedList<String> feats = new LinkedList<String>();
+		try
+		{
+			SPPredicate featsPred = new SPPredicate(sp, "approp_feats", 2, "");
+			SPTerm typeTerm = new SPTerm(sp, type);
+			SPTerm featsVar = new SPTerm(sp).putVariable();
+			SPQuery featsQuery = sp.openQuery(featsPred, new SPTerm[] { typeTerm, featsVar });	
+			while (featsQuery.nextSolution())
+			{
+				if (!featsVar.toString().equals("[]"))
+				{
+					SPTerm[] featTerms = featsVar.toTermArray();
+					for (SPTerm feat : featTerms)
+					{
+						feats.add(feat.toString());
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return feats;
+	}
+	
+	private String valueRestriction(String type, String feat)
+	{
+		String restr = "bot";
+		try
+		{
+			SPPredicate restrPred = new SPPredicate(sp, "approp", 3, "");
+			SPTerm featTerm = new SPTerm(sp, feat);
+			SPTerm typeTerm = new SPTerm(sp, type);
+			SPTerm restrVar = new SPTerm(sp).putVariable();
+			SPQuery restrQuery = sp.openQuery(restrPred, new SPTerm[] { featTerm, typeTerm, restrVar });	
+			while (restrQuery.nextSolution())
+			{
+				restr = restrVar.toString();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return restr;
 	}
 	
 	private boolean compileTraleGrammar(String fileName)
