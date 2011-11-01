@@ -45,6 +45,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	private final JLabel theoryFileLabel;
 	
 	private JMenu newTypeInstanceMenu;
+	private JMenu newLexiconInstanceMenu;
 	
 	private final JList list;
 	private final TraleSLDFeatureStructureEditor editor;
@@ -75,22 +76,33 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		JMenuItem exportSelectionItem = new JMenuItem("Export Selection to Workbench");
 		workbenchMenu.add(exportSelectionItem);
 		
+		workbenchMenu.addSeparator();
+		
+		JMenuItem loadSignatureItem = new JMenuItem("Load Signature ...");
+		workbenchMenu.add(loadSignatureItem);
+		
+		JMenuItem compileTheoryItem = new JMenuItem("Compile Theory ...");
+		workbenchMenu.add(compileTheoryItem);
+		
 		menuBar.add(workbenchMenu);
 		
 		JMenu fsMenu = new JMenu("Feature Structure");
 		
-		newTypeInstanceMenu = new JMenu("New FS of type ...");
+		newTypeInstanceMenu = new JMenu("Add minimal FS of type ...");
 		fsMenu.add(newTypeInstanceMenu);
+		
+		newLexiconInstanceMenu = new JMenu("Add FS for lexical entry ...");
+		fsMenu.add(newLexiconInstanceMenu);
 		
 		JMenuItem fsClipboardItem = new JMenuItem("Paste FS from clipboard");
 		fsMenu.add(fsClipboardItem);
 		
 		fsMenu.addSeparator();
 		
-		JMenuItem fsFileItem = new JMenuItem("Load FS from GRISU file");
+		JMenuItem fsFileItem = new JMenuItem("Add FS from GRISU file");
 		fsMenu.add(fsFileItem);
 		
-		JMenuItem exportFSItem = new JMenuItem("Save FS to GRISU file");
+		JMenuItem exportFSItem = new JMenuItem("Save current FS to GRISU file");
 		fsMenu.add(exportFSItem);
 		
 		fsMenu.addSeparator();
@@ -172,7 +184,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		String action = e.getActionCommand();
 		//default: interpret action command as type ID
 		String grisuString = trale.descToMgsGrisu(action);
-		view.getModel().storeStructure("base: " + action, grisuString);
+		view.getModel().storeStructure("mgs:" + action, grisuString);
 		updateDisplay();
 	}
 	
