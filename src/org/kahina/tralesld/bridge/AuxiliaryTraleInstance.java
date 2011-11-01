@@ -8,6 +8,8 @@ import java.io.IOException;
 
 import javax.swing.SwingUtilities;
 
+import org.kahina.tralesld.data.signature.TraleSLDSignature;
+
 import se.sics.jasper.*;
 
 /**
@@ -74,6 +76,12 @@ public class AuxiliaryTraleInstance extends Thread
 			    		task.setInstruction(null);
 			    		task.notify();
 			    	}
+			    	else if (task.getInstruction().equals("signature"))
+			    	{
+			    		task.setSignatureResult(extractSignature(task.getToProcess()));
+			    		task.setInstruction(null);
+			    		task.notify();
+			    	}
 			    }
 		    }
 		}
@@ -104,6 +112,30 @@ public class AuxiliaryTraleInstance extends Thread
 	    		
 	    	} 	
 	    	return task.getResult().equals("true");
+		}
+	}
+	
+	/**
+	 * Lets the instance compile and return a signature from a file.
+	 * @param fileName the file name
+	 * @return a TraleSLDSignature object representing the signature in the file.
+	 */
+	public TraleSLDSignature getSignature(String fileName)
+	{
+		synchronized(task)
+		{
+			task.setInstruction("signature");
+			task.setToProcess(fileName);
+			task.notify();
+	    	try
+	    	{
+	    		task.wait();
+	    	}
+	    	catch (InterruptedException e)
+	    	{
+	    		
+	    	} 	
+	    	return task.getSignatureResult();
 		}
 	}
 	
@@ -149,6 +181,12 @@ public class AuxiliaryTraleInstance extends Thread
 		
 		//stub behavior for now: return GRISU string for trivial structure
 		//return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+	}
+	
+	private TraleSLDSignature extractSignature(String fileName)
+	{
+		TraleSLDSignature signature = new TraleSLDSignature();
+		return signature;
 	}
 	
 	private boolean compileTraleGrammar(String fileName)
@@ -382,7 +420,8 @@ public class AuxiliaryTraleInstance extends Thread
 		String instruction = null;
 		String toProcess = null;
 		String result = null;
-		
+		TraleSLDSignature signatureResult = null;
+
 		public String getInstruction() 
 		{
 			return instruction;
@@ -412,5 +451,15 @@ public class AuxiliaryTraleInstance extends Thread
 		{
 			this.result = result;
 		}	
+		
+		public TraleSLDSignature getSignatureResult() 
+		{
+			return signatureResult;
+		}
+
+		public void setSignatureResult(TraleSLDSignature signatureResult) 
+		{
+			this.signatureResult = signatureResult;
+		}
 	}
 }
