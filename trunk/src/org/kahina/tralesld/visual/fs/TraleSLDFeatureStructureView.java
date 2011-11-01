@@ -31,7 +31,8 @@ public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS>
 	{
 		//TODO: make state handling conceptually cleaner
 		TraleSLDState state = (TraleSLDState) gui.getKahinaInstance().getState();
-        TraleSLDFeatureStructureViewPanel panel = new TraleSLDFeatureStructureEditor(state);
+        TraleSLDFeatureStructureEditor panel = new TraleSLDFeatureStructureEditor(state.getTrale());
+        panel.setSignature(state.getSignature());
         control.registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
