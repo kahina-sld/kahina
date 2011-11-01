@@ -225,7 +225,8 @@ public class AuxiliaryTraleInstance extends Thread
 	}
 	
 	//new version (does not compile anything, always uses the current theory)
-	//does not work because SPTerm can only be constructed out of atoms, not out of strings
+	//does not work because SPTerm can only be constructed out of atoms, not out of Prolog terms as strings
+	//TODO: use this to achieve speedup: let GraleJ generate descriptions as SPTerms 
 	/*private String executeMGS(String descString)
 	{
 		//handle the atomic values (such as "cruel") that TRALE refuses to accept as part of a description
@@ -274,7 +275,6 @@ public class AuxiliaryTraleInstance extends Thread
 		return grisu;
 	}*/
 	
-	//old version, being superseded at the moment
 	private String executeMGS(String descString)
 	{
 		//handle the atomic values (such as "cruel") that TRALE refuses to accept as part of a description
@@ -289,8 +289,24 @@ public class AuxiliaryTraleInstance extends Thread
 			int rightOfList = descString.indexOf("]",phonPosition);
 			descString = descString.substring(0, rightOfList) + ")" + descString.substring(rightOfList);
 		}
+		//HACK: extract head type from the description (necessary for theory)
+		//      (alternatively, one could hand over the type as a second argument)
+		//		(but that would mean extracting and handing over information twice
+		//cannot use "bot" as default because Trale refuses to accept constraints on bot
+		String typeString = "sign"; 
+		int commaPosition = descString.indexOf(",");
+		if (commaPosition != -1)
+		{
+			typeString = descString.substring(0,commaPosition);
+		}
+		else
+		{
+			typeString = descString;
+		}
+		if (typeString.startsWith("(")) typeString = typeString.substring(1);
+		if (typeString.endsWith(")")) typeString = typeString.substring(0,typeString.length() - 1);
 		//generate theory file around descString
-		String theoryString = "sign *> " + descString + ".";
+		String theoryString = typeString + " *> " + descString + ".";
 		try
 		{
 			FileWriter writer = new FileWriter(new File("aux_theory.pl"));
@@ -307,7 +323,7 @@ public class AuxiliaryTraleInstance extends Thread
 		try
 		{
 			SPPredicate mgsPred = new SPPredicate(sp, "mgs_to_tempfile", 2, "");
-			SPTerm descTerm = new SPTerm(sp, "sign");
+			SPTerm descTerm = new SPTerm(sp, typeString);
 			SPTerm fileNameTerm = new SPTerm(sp, "grisu.tmp");
 			SPQuery mgsQuery = sp.openQuery(mgsPred, new SPTerm[] { descTerm, fileNameTerm });	      
 			if (mgsQuery.nextSolution())
