@@ -47,7 +47,6 @@ public class AuxiliaryTraleInstance extends Thread
 				sp = new SICStus();
 			}
 		    sp.load("/opt/trale2/startup.pl");
-			compileTrivialGrammar();
 		    while (true)
 		    {
 			    synchronized(task)
@@ -152,48 +151,6 @@ public class AuxiliaryTraleInstance extends Thread
 		//return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
 	}
 	
-	private boolean compileTrivialGrammar()
-	{
-		try 
-		{
-			//abolish *> clauses to avoid Prolog-side warning message when a new grammar is compiled
-			//TODO: see whether this can be done automatically when executing compile_gram/0
-			SPPredicate abolishPred = new SPPredicate(sp, "abolish_user_preds", 1, "");
-			SPTerm consTerm = new SPTerm(sp, "cons");
-			SPQuery abolishQuery = sp.openQuery(abolishPred, new SPTerm[] { consTerm });	      
-			while (abolishQuery.nextSolution())
-			{
-				System.err.println("AuxiliaryTraleInstance discarded old *> database.");
-			}
-			//generate empty theory file (against signature file in current dir)
-			String theoryString = "signature(signature).\n";
-			try
-			{
-				FileWriter writer = new FileWriter(new File("empty_theory.pl"));
-				writer.append(theoryString);
-				writer.flush();
-			}
-			catch (IOException e)
-			{
-				System.err.println("WARNING: could not create empty theory file!");
-			}
-			SPPredicate compileGramPred = new SPPredicate(sp, "compile_gram", 1, "");
-			//TODO: find a way to set the environment from inside this class
-			SPTerm pathTerm = new SPTerm(sp, "empty_theory");
-			SPQuery compileQuery = sp.openQuery(compileGramPred, new SPTerm[] { pathTerm });	      
-			while (compileQuery.nextSolution())
-			{
-				System.err.println("AuxiliaryTraleInstance compiled empty theory.");
-			}
-			return true;
-		}
-		catch ( Exception e )
-		{
-			e.printStackTrace();
-			return false;
-		}
-	}
-	
 	private boolean compileTraleGrammar(String fileName)
 	{
 		try 
@@ -223,6 +180,97 @@ public class AuxiliaryTraleInstance extends Thread
 			return false;
 		}
 	}
+	
+	private String executeMGS(String descString)
+	{
+		//handle the atomic values (such as "cruel") that TRALE refuses to accept as part of a description
+		//FUTURE SOLUTION: instead of just "cruel", GraleJ should produce (a_ cruel)
+		//HACK FOR NOW: manipulate the phon value accordingly
+		//TODO: extend this to more than one list element
+		int phonPosition = descString.indexOf("phon");
+		if (phonPosition != -1)
+		{
+			int leftOfList = descString.indexOf("[",phonPosition);
+			descString = descString.substring(0, leftOfList + 1) + "(a_ " + descString.substring(leftOfList + 1);
+			int rightOfList = descString.indexOf("]",phonPosition);
+			descString = descString.substring(0, rightOfList) + ")" + descString.substring(rightOfList);
+		}
+		//HACK: extract head type from the description (necessary for theory)
+		//      (alternatively, one could hand over the type as a second argument)
+		//		(but that would mean extracting and handing over information twice
+		//cannot use "bot" as default because Trale refuses to accept constraints on bot
+		String typeString = "sign"; 
+		int commaPosition = descString.indexOf(",");
+		if (commaPosition != -1)
+		{
+			typeString = descString.substring(0,commaPosition);
+		}
+		else
+		{
+			typeString = descString;
+		}
+		if (typeString.startsWith("(")) typeString = typeString.substring(1);
+		if (typeString.endsWith(")")) typeString = typeString.substring(0,typeString.length() - 1);
+		//generate theory file around descString
+		String theoryString = typeString + " *> " + descString + ".";
+		try
+		{
+			FileWriter writer = new FileWriter(new File("aux_theory.pl"));
+			writer.append(theoryString);
+			writer.flush();
+		}
+		catch (IOException e)
+		{
+			System.err.println("WARNING: could not create auxiliary theory file!");
+		}
+		//let the instance compile the theory
+		compileTraleGrammar("aux_theory.pl");
+		//let TRALE output MGS in GRISU format to temporary file
+		try
+		{
+			SPPredicate mgsPred = new SPPredicate(sp, "mgs_to_tempfile", 2, "");
+			SPTerm descTerm = new SPTerm(sp, typeString);
+			SPTerm fileNameTerm = new SPTerm(sp, "tmp.grisu");
+			SPQuery mgsQuery = sp.openQuery(mgsPred, new SPTerm[] { descTerm, fileNameTerm });	      
+			if (mgsQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance stored MGS in temporary file.");
+			}
+		}
+		catch (SPException e)
+		{
+			System.err.println("SPException: " + e.toString());
+			e.printStackTrace();
+			//TODO: useful error handling
+			return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+		}
+		//read in temporary file to retrieve GRISU string
+		String grisu = null;
+		try
+		{
+			grisu = slurpFile("tmp.grisu");
+		}
+		catch (IOException e)
+		{
+			System.err.println("Could not read grisu.tmp! Returning default GRISU string!");
+			//stub behavior for now: return GRISU string for trivial structure
+			grisu = "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+		}
+		return grisu;
+	}
+	
+	private String slurpFile(String file) throws IOException 
+	{
+	    BufferedReader reader = new BufferedReader( new FileReader (file));
+	    String line  = null;
+	    StringBuilder stringBuilder = new StringBuilder();
+	    String ls = System.getProperty("line.separator");
+	    while( ( line = reader.readLine() ) != null ) {
+	        stringBuilder.append( line );
+	        stringBuilder.append( ls );
+	    }
+	    return stringBuilder.toString();
+	 }
 	
 	//new version (does not compile anything, always uses the current theory)
 	//does not work because SPTerm can only be constructed out of atoms, not out of Prolog terms as strings
@@ -275,96 +323,48 @@ public class AuxiliaryTraleInstance extends Thread
 		return grisu;
 	}*/
 	
-	private String executeMGS(String descString)
+	//not useful at the moment, will be needed once the new version of executeMGS works
+	/*private boolean compileTrivialGrammar()
 	{
-		//handle the atomic values (such as "cruel") that TRALE refuses to accept as part of a description
-		//FUTURE SOLUTION: instead of just "cruel", GraleJ should produce (a_ cruel)
-		//HACK FOR NOW: manipulate the phon value accordingly
-		//TODO: extend this to more than one list element
-		int phonPosition = descString.indexOf("phon");
-		if (phonPosition != -1)
+		try 
 		{
-			int leftOfList = descString.indexOf("[",phonPosition);
-			descString = descString.substring(0, leftOfList + 1) + "(a_ " + descString.substring(leftOfList + 1);
-			int rightOfList = descString.indexOf("]",phonPosition);
-			descString = descString.substring(0, rightOfList) + ")" + descString.substring(rightOfList);
-		}
-		//HACK: extract head type from the description (necessary for theory)
-		//      (alternatively, one could hand over the type as a second argument)
-		//		(but that would mean extracting and handing over information twice
-		//cannot use "bot" as default because Trale refuses to accept constraints on bot
-		String typeString = "sign"; 
-		int commaPosition = descString.indexOf(",");
-		if (commaPosition != -1)
-		{
-			typeString = descString.substring(0,commaPosition);
-		}
-		else
-		{
-			typeString = descString;
-		}
-		if (typeString.startsWith("(")) typeString = typeString.substring(1);
-		if (typeString.endsWith(")")) typeString = typeString.substring(0,typeString.length() - 1);
-		//generate theory file around descString
-		String theoryString = typeString + " *> " + descString + ".";
-		try
-		{
-			FileWriter writer = new FileWriter(new File("aux_theory.pl"));
-			writer.append(theoryString);
-			writer.flush();
-		}
-		catch (IOException e)
-		{
-			System.err.println("WARNING: could not create auxiliary theory file!");
-		}
-		//let the instance compile the theory
-		compileTraleGrammar("aux_theory.pl");
-		//let TRALE output MGS in GRISU format to temporary file
-		try
-		{
-			SPPredicate mgsPred = new SPPredicate(sp, "mgs_to_tempfile", 2, "");
-			SPTerm descTerm = new SPTerm(sp, typeString);
-			SPTerm fileNameTerm = new SPTerm(sp, "grisu.tmp");
-			SPQuery mgsQuery = sp.openQuery(mgsPred, new SPTerm[] { descTerm, fileNameTerm });	      
-			if (mgsQuery.nextSolution())
+			//abolish *> clauses to avoid Prolog-side warning message when a new grammar is compiled
+			//TODO: see whether this can be done automatically when executing compile_gram/0
+			SPPredicate abolishPred = new SPPredicate(sp, "abolish_user_preds", 1, "");
+			SPTerm consTerm = new SPTerm(sp, "cons");
+			SPQuery abolishQuery = sp.openQuery(abolishPred, new SPTerm[] { consTerm });	      
+			while (abolishQuery.nextSolution())
 			{
-				System.err.println("AuxiliaryTraleInstance stored MGS in temporary file.");
+				System.err.println("AuxiliaryTraleInstance discarded old *> database.");
 			}
+			//generate empty theory file (against signature file in current dir)
+			String theoryString = "signature(signature).\n";
+			try
+			{
+				FileWriter writer = new FileWriter(new File("empty_theory.pl"));
+				writer.append(theoryString);
+				writer.flush();
+			}
+			catch (IOException e)
+			{
+				System.err.println("WARNING: could not create empty theory file!");
+			}
+			SPPredicate compileGramPred = new SPPredicate(sp, "compile_gram", 1, "");
+			//TODO: find a way to set the environment from inside this class
+			SPTerm pathTerm = new SPTerm(sp, "empty_theory");
+			SPQuery compileQuery = sp.openQuery(compileGramPred, new SPTerm[] { pathTerm });	      
+			while (compileQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance compiled empty theory.");
+			}
+			return true;
 		}
-		catch (SPException e)
+		catch ( Exception e )
 		{
-			System.err.println("SPException: " + e.toString());
 			e.printStackTrace();
-			//TODO: useful error handling
-			return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+			return false;
 		}
-		//read in temporary file to retrieve GRISU string
-		String grisu = null;
-		try
-		{
-			grisu = slurpFile("grisu.tmp");
-		}
-		catch (IOException e)
-		{
-			System.err.println("Could not read grisu.tmp! Returning default GRISU string!");
-			//stub behavior for now: return GRISU string for trivial structure
-			grisu = "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
-		}
-		return grisu;
-	}
-	
-	private String slurpFile(String file) throws IOException 
-	{
-	    BufferedReader reader = new BufferedReader( new FileReader (file));
-	    String line  = null;
-	    StringBuilder stringBuilder = new StringBuilder();
-	    String ls = System.getProperty("line.separator");
-	    while( ( line = reader.readLine() ) != null ) {
-	        stringBuilder.append( line );
-	        stringBuilder.append( ls );
-	    }
-	    return stringBuilder.toString();
-	 }
+	}*/
 
 	
 	public static void main(String[] args)
