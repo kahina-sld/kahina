@@ -18,9 +18,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
+import org.kahina.tralesld.event.TraleSLDFeatureEditEvent;
 
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
@@ -170,7 +172,44 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	public TraleSLDFeatureStructureEditorMenu createContextMenu()
 	{
-		return new TraleSLDFeatureStructureEditorMenu(this, getContextSubtypes(), getContextSupertypes(), getContextSiblingTypes());
+		Set<String> subtypes = getContextSubtypes();
+		Set<String> supertypes = getContextSupertypes();
+		Set<String> siblingTypes = getContextSiblingTypes();
+		if (sig == null)
+		{
+			warningMessage("No signature loaded. Cannot edit.");
+			return null;
+		}
+		else if (supertypes == null)
+		{
+			failureMessage("No info on this type in signature, cannot edit.");
+			return null;
+		}
+		else
+		{
+			infoMessage("Modifying structure of type: " + contextStructureType);
+			return new TraleSLDFeatureStructureEditorMenu(this, subtypes, supertypes, siblingTypes);
+		}
+	}
+	
+	private void infoMessage(String desc)
+	{
+		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.INFO_MESSAGE));
+	}
+	
+	private void successMessage(String desc)
+	{
+		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+	}
+	
+	private void failureMessage(String desc)
+	{
+		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+	}
+	
+	private void warningMessage(String desc)
+	{
+		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.WARNING_MESSAGE));
 	}
 
 	@Override

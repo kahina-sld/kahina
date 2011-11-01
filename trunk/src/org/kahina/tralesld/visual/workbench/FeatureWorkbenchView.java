@@ -14,6 +14,7 @@ import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.data.FeatureWorkbench;
+import org.kahina.tralesld.event.TraleSLDEventTypes;
 
 public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 {
@@ -59,6 +60,7 @@ public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 	{
 		FeatureWorkbenchViewPanel panel = new FeatureWorkbenchViewPanel(trale);
         control.registerListener("redraw", panel);
+        control.registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, panel);
 		panel.setView(this);
 		return panel;
 	}
