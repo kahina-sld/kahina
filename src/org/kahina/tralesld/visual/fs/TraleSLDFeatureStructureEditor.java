@@ -35,7 +35,6 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 {
 	BlockPanel blockPanel;
 	
-	TraleSLDState state;
 	TraleSLDSignature sig;
 	
 	String grisuString;
@@ -47,14 +46,13 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	AuxiliaryTraleInstance trale;
 	
-	public TraleSLDFeatureStructureEditor(TraleSLDState state)
+	public TraleSLDFeatureStructureEditor(AuxiliaryTraleInstance trale)
 	{
 		super();
 		
 		blockPanel = null;
 		
-		this.state = state;
-		this.sig = state.getSignature();
+		this.sig = null;
 		
 		this.grisuString = null;
 		this.data = null;
@@ -63,7 +61,12 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		this.contextStructure = null;
 		this.contextStructureType = "?";
 		
-		this.trale = state.getTrale();
+		this.trale = trale;
+	}
+	
+	public void setSignature(TraleSLDSignature sig)
+	{
+		this.sig = sig;
 	}
 	
 	/**
@@ -84,8 +87,6 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	@Override
 	public void updateDisplay()
 	{
-		//TODO: find a better solution for ensuring the signature is always up-to-date
-		sig = state.getSignature();
 		innerPanel.removeAll();
 		if (view == null)
 		{
@@ -151,16 +152,19 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	public Set<String> getContextSubtypes()
 	{
+		if (sig == null) return null;
 		return sig.getSubtypes(contextStructureType);
 	}
 	
 	public Set<String> getContextSupertypes()
 	{
+		if (sig == null) return null;
 		return sig.getSupertypes(contextStructureType);
 	}
 	
 	public Set<String> getContextSiblingTypes()
 	{
+		if (sig == null) return null;
 		return sig.getSiblingTypes(contextStructureType);
 	}
 	

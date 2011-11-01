@@ -45,7 +45,27 @@ public class KahinaWindowManager implements KahinaListener
 	public KahinaGUI gui;
 
 	KahinaController control;
+	
+	/**
+	 * Create a simple window manager for stand-alone applications.
+	 * @param control A KahinaController instance for event handling.
+	 */
+	public KahinaWindowManager(KahinaController control)
+	{
+		this.gui = null;
+		this.control = control;
+		
+		psp = new KahinaPerspective("Default", "default");
+		arr = psp.getArrangement();
 
+		this.windowByID = new HashMap<Integer, KahinaWindow>();
+	}
+
+	/**
+	 * Create a window manager for a fully-fledged Kahina instance using a complex GUI.
+	 * @param gui A KahinaGUI instance containing instructions about display of step information.
+	 * @param control A KahinaController instance for event handling.
+	 */
 	public KahinaWindowManager(KahinaGUI gui, KahinaController control)
 	{
 		this.gui = gui;
@@ -369,9 +389,10 @@ public class KahinaWindowManager implements KahinaListener
 			System.err.println("A default perspective can be generated via KahinaPerspective.generateDefaultPerspective()");
 			System.err.println("Unable to display windows, quitting.");
 			System.exit(1);
-		} else
+		} 
+		else
 		{
-			displayWindow(mainWindow);
+			if (mainWindow != null) displayWindow(mainWindow);
 			for (int winID : arr.getTopLevelWindows())
 			{
 				displayWindow(getWindowByID(winID));

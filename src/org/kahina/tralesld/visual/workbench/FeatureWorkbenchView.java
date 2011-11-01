@@ -12,15 +12,29 @@ import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.TraleSLDState;
+import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.data.FeatureWorkbench;
 
 public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 {
 	private List<String> nameList;
 	
-	public FeatureWorkbenchView(KahinaController control)
+	private AuxiliaryTraleInstance trale;
+	
+	public FeatureWorkbenchView(KahinaController control, AuxiliaryTraleInstance trale)
 	{
 		super(control);
+		this.trale = trale;
+	}
+	
+	public AuxiliaryTraleInstance getTrale() 
+	{
+		return trale;
+	}
+
+	public void setTrale(AuxiliaryTraleInstance trale) 
+	{
+		this.trale = trale;
 	}
 	
 	public List<String> getNameList()
@@ -43,9 +57,7 @@ public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 	@Override
 	public JComponent makePanel(KahinaGUI gui)
 	{
-		//TODO: make state handling conceptually cleaner
-		TraleSLDState state = (TraleSLDState) gui.getKahinaInstance().getState();
-		FeatureWorkbenchViewPanel panel = new FeatureWorkbenchViewPanel(state);
+		FeatureWorkbenchViewPanel panel = new FeatureWorkbenchViewPanel(trale);
         control.registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;
@@ -78,5 +90,4 @@ public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 		}
 		return signatureFile;
 	}
-
 }
