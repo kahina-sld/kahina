@@ -399,6 +399,10 @@ public class AuxiliaryTraleInstance extends Thread
 			{
 				System.err.println("AuxiliaryTraleInstance stored MGS in temporary file.");
 			}
+			else
+			{
+				return "ERROR: Modified description was not satisfiable!";
+			}
 		}
 		catch (SPException e)
 		{
