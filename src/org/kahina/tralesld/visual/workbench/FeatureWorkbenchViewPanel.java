@@ -64,8 +64,9 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setMinimumSize(new Dimension(200,50));
-		menuBar.setMaximumSize(new Dimension(2000,50));
+		menuBar.setMinimumSize(new Dimension(200,18));
+		menuBar.setPreferredSize(new Dimension(500,18));
+		menuBar.setMaximumSize(new Dimension(2000,18));
 		
 		JMenu workbenchMenu = new JMenu("Workbench");
 		
@@ -151,8 +152,9 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		
 		messagePanel.setAlignmentX(LEFT_ALIGNMENT);
 		messagePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		messagePanel.setMinimumSize(new Dimension(200,50));
-		messagePanel.setMaximumSize(new Dimension(2000,50));
+		messagePanel.setMinimumSize(new Dimension(200,30));
+		messagePanel.setPreferredSize(new Dimension(500,30));
+		messagePanel.setMaximumSize(new Dimension(2000,30));
 		this.add(messagePanel);
 		
 		JPanel contentPanel = new JPanel();
