@@ -85,11 +85,11 @@ public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 		{
 			return "none (no workbench loaded)";		
 		}
-		String signatureFile = model.getSignatureFileName();
-		if (signatureFile == null)
+		String theoryFile = model.getTheoryFileName();
+		if (theoryFile == null)
 		{
 			return "none (theory not specified or not yet loaded)";
 		}
-		return signatureFile;
+		return theoryFile;
 	}
 }
