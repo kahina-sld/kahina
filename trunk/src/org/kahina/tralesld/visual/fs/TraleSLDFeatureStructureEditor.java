@@ -12,6 +12,7 @@ import gralej.parsers.OutputFormatter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JLabel;
@@ -46,6 +47,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	IEntity contextStructure;
 	String contextStructureType;
 	
+	Block contextParentBlock;
+	IEntity contextParentStructure;
+	String contextParentStructureType;
+	
 	AuxiliaryTraleInstance trale;
 	
 	public TraleSLDFeatureStructureEditor(AuxiliaryTraleInstance trale)
@@ -62,6 +67,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		this.contextBlock = null;
 		this.contextStructure = null;
 		this.contextStructureType = "?";
+		
+		this.contextParentBlock = null;
+		this.contextParentStructure = null;
+		this.contextParentStructureType = "?";
 		
 		this.trale = trale;
 	}
@@ -84,6 +93,11 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	public String getContextStructureType()
 	{
 		return contextStructureType;
+	}
+	
+	public String getContextParentStructureType()
+	{
+		return contextParentStructureType;
 	}
 	
 	@Override
@@ -138,23 +152,42 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	public void processContextStructure(Block block)
 	{
-		this.contextBlock = block;
-		this.contextStructure = block.getModel();
-		if (contextStructure instanceof IType)
+		contextBlock = block;
+		contextStructure = block.getModel();
+		contextStructureType = determineType(contextStructure);
+		
+		contextParentBlock = block.getParent();
+		if (contextParentBlock == null)
 		{
-			IType selectedType = (IType) contextStructure;
-			contextStructureType = selectedType.typeName();
+			contextParentStructure = null;
+			contextParentStructureType = "?";
 		}
-		else if (contextStructure instanceof ITypedFeatureStructure)
+		else
 		{
-			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
-			contextStructureType = selectedFS.type().typeName();
+			contextParentStructure = contextParentBlock.getModel();
+			contextParentStructureType = determineType(contextParentStructure);
+		}
+	}
+	
+	private String determineType(IEntity ent)
+	{
+		String type = "?";
+		if (ent instanceof IType)
+		{
+			IType selectedType = (IType) ent;
+			type = selectedType.typeName();
+		}
+		else if (ent instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) ent;
+			type = selectedFS.type().typeName();
 		}
 		//the way to deal with mgsat(Type) for the moment
-		if (contextStructureType.startsWith("mgsat("))
+		if (type.startsWith("mgsat("))
 		{
-			contextStructureType = contextStructureType.substring(6, contextStructureType.length() - 1);
+			type = type.substring(6, type.length() - 1);
 		}
+		return type;
 	}
 	
 	public Set<String> getContextSubtypes()
@@ -166,7 +199,13 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	public Set<String> getContextSupertypes()
 	{
 		if (sig == null) return null;
-		return sig.getSupertypes(contextStructureType);
+		Set<String> possSupertypes = new HashSet<String>();
+		for (String supertype : sig.getSupertypes(contextStructureType))
+		{
+			possSupertypes.add(supertype);
+			//sig.getAppropriateness(type);
+		}
+		return possSupertypes;
 	}
 	
 	public Set<String> getContextSiblingTypes()
@@ -192,7 +231,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else
 		{
-			infoMessage("Modifying structure of type: " + contextStructureType);
+			infoMessage("Modifying structure of type \"" + contextStructureType + "\" under \"" + contextParentStructureType + "\"");
 			return new TraleSLDFeatureStructureEditorMenu(this, subtypes, supertypes, siblingTypes);
 		}
 	}
