@@ -150,6 +150,11 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
 			contextStructureType = selectedFS.type().typeName();
 		}
+		//the way to deal with mgsat(Type) for the moment
+		if (contextStructureType.startsWith("mgsat("))
+		{
+			contextStructureType = contextStructureType.substring(6, contextStructureType.length() - 1);
+		}
 	}
 	
 	public Set<String> getContextSubtypes()
