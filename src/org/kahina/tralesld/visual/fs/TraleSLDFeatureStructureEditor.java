@@ -4,6 +4,7 @@ import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
 import gralej.om.Entities;
 import gralej.om.IEntity;
+import gralej.om.IFeatureValuePair;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
 import gralej.parsers.IDataPackage;
@@ -47,6 +48,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	IEntity contextStructure;
 	String contextStructureType;
 	
+	Block contextAttrBlock;
+	IEntity contextAttrModel;
+	String contextAttr;
+	
 	Block contextParentBlock;
 	IEntity contextParentStructure;
 	String contextParentStructureType;
@@ -67,6 +72,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		this.contextBlock = null;
 		this.contextStructure = null;
 		this.contextStructureType = "?";
+		
+		this.contextAttrBlock = null;
+		this.contextAttrModel = null;
+		this.contextAttr = "?";
 		
 		this.contextParentBlock = null;
 		this.contextParentStructure = null;
@@ -156,7 +165,11 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		contextStructure = block.getModel();
 		contextStructureType = determineType(contextStructure);
 		
-		contextParentBlock = block.getParent();
+		contextAttrBlock = block.getParent();
+		contextAttrModel = block.getModel();
+		contextAttr = determineType(contextAttrModel);
+		
+		contextParentBlock = contextAttrBlock.getParent();
 		if (contextParentBlock == null)
 		{
 			contextParentStructure = null;
@@ -181,6 +194,11 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) ent;
 			type = selectedFS.type().typeName();
+		}
+		else if (ent instanceof IFeatureValuePair)
+		{
+			IFeatureValuePair selectedAttr = (IFeatureValuePair) ent;
+			type = selectedAttr.feature();
 		}
 		//the way to deal with mgsat(Type) for the moment
 		if (type.startsWith("mgsat("))
@@ -231,7 +249,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else
 		{
-			infoMessage("Modifying structure of type \"" + contextStructureType + "\" under \"" + contextParentStructureType + "\"");
+			infoMessage("Modifying structure " + contextParentStructureType + ":" + contextAttr + ":" + contextStructureType);
 			return new TraleSLDFeatureStructureEditorMenu(this, subtypes, supertypes, siblingTypes);
 		}
 	}
