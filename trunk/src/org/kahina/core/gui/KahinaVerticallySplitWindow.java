@@ -24,15 +24,19 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     JSplitPane splitPane;
     
-    public KahinaVerticallySplitWindow(KahinaWindowManager wm)
+    private double resizeWeight;
+    
+    public KahinaVerticallySplitWindow(KahinaWindowManager wm, double resizeWeight)
     {
     	super(wm);
+    	this.resizeWeight = resizeWeight;
     	this.initialize();
     }
     
-    public KahinaVerticallySplitWindow(KahinaWindowManager wm, int winID)
+    public KahinaVerticallySplitWindow(KahinaWindowManager wm, int winID, double resizeWeight)
     {
     	super(wm,winID);
+    	this.resizeWeight = resizeWeight;
     	this.initialize();
     }
     
@@ -44,7 +48,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.Y_AXIS));
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topPanel, bottomPanel);
         splitPane.setDividerSize(2);
-        splitPane.setResizeWeight(.5);
+        splitPane.setResizeWeight(resizeWeight);
         splitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, 
         	new PropertyChangeListener() 
         	{
@@ -107,7 +111,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	if (upperWindow != null) upperHeight = wm.arr.getHeight(upperWindow.getID());
     	//System.err.println("adaptVerticalDividerLocation(" + windowID + "," + upperHeight + ")");
     	splitPane.setDividerLocation(upperHeight);
-        splitPane.setResizeWeight(0.5);
+        splitPane.setResizeWeight(resizeWeight);
     }
     
     public KahinaWindow getReplacementAfterRelease(KahinaWindow removedWindow)
@@ -193,7 +197,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public KahinaWindow createDynamicClone()
     {
-    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm);
+    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm, resizeWeight);
     	cloneWindow.cloned = true;
     	cloneWindow.setTitle(getTitle() + " (clone)");
     	cloneWindow.setUpperWindow(upperWindow.createDynamicClone());
@@ -205,7 +209,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public KahinaWindow createSnapshotClone()
     {
-    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm);
+    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm, resizeWeight);
     	cloneWindow.cloned = true;
     	cloneWindow.setTitle(getTitle() + " (at step " + wm.gui.kahina.getState().nextStepID() + ")");
     	cloneWindow.setUpperWindow(upperWindow.createSnapshotClone());
