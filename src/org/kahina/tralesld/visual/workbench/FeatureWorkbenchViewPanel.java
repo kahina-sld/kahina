@@ -6,11 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -184,16 +186,39 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		list.setListData(view.getNameList().toArray());
 		signatureFileLabel.setText("Signature file: " + view.getSignatureFileName());
 		theoryFileLabel.setText("Theory file: " + view.getTheoryFileName());
+		newTypeInstanceMenu.removeAll();
 		if (view.getModel().getSignature() != null)
 		{
-			for (String type : view.getModel().getSignature().getTypes())
+			TraleSLDSignature sig = view.getModel().getSignature();
+			Set<String> baseTypes = sig.getSubtypes("bot");
+			for (String type : baseTypes)
 			{
-				JMenuItem typeItem = new JMenuItem(type);
-				typeItem.addActionListener(this);
-				newTypeInstanceMenu.add(typeItem);
+				newTypeInstanceMenu.add(buildTypeMenu(sig,type));
 			}
 		}
 		this.repaint();
+	}
+	
+	private JComponent buildTypeMenu(TraleSLDSignature sig, String type)
+	{
+		Set<String> subtypes = sig.getSubtypes(type);
+		if (subtypes.isEmpty())
+		{
+			JMenuItem typeItem = new JMenuItem(type);
+			typeItem.addActionListener(this);
+			return typeItem;
+		}
+		else
+		{
+			JMenu subtypeMenu = new JMenu(type);
+			subtypeMenu.setActionCommand(type);
+			subtypeMenu.addActionListener(this);
+			for (String subtype : subtypes)
+			{
+				subtypeMenu.add(buildTypeMenu(sig,subtype));
+			}
+			return subtypeMenu;
+		}
 	}
 
 	@Override
@@ -216,6 +241,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		String grisuString = view.getTrale().descToMgsGrisu(action);
 		view.getModel().storeStructure("mgs:" + action, grisuString);
 		updateDisplay();
+		list.setSelectedValue("mgs:" + action, true);
 	}
 	
 	public void processEvent(KahinaEvent event)
