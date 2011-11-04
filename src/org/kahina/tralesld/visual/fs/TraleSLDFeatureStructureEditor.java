@@ -99,6 +99,11 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		this.grisuString = grisuString;
 	}
 	
+	public String getGrisuString()
+	{
+		return grisuString;
+	}
+	
 	public String getContextStructureType()
 	{
 		return contextStructureType;
@@ -344,7 +349,6 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (contextStructure instanceof ITypedFeatureStructure)
 		{
 			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
-			//TODO: find out how to generate an IType object that can be used here
 			selectedFS.type().setTypeName(type);
 		}
 		//get back the edited structure in TRALE desc format
@@ -357,13 +361,12 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else
 		{
-			successMessage("Editing operation successful.");
 			grisuString = result;
+			successMessage("Editing operation successful.");
 		}
-		//trale.loadEmbeddedKahinaInstance();
 		
-		//	failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
-		//  simply prints out the stored chars, which cannot be manipulated!
+		//failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
+		//simply prints out the stored chars, which cannot be manipulated!
 		//OutputFormatter.getInstance().save(System.err, data, blockPanel, OutputFormatter.TRALEFormat);
 
 		this.updateDisplay();

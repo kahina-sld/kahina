@@ -199,9 +199,14 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) 
 	{
-		String name = (String) list.getSelectedValue();;
+		String name = getPrimarySelectionID();
 		editor.loadGrisu(view.getModel().getStructure(name));	
 		editor.updateDisplay();
+	}
+	
+	public String getPrimarySelectionID()
+	{
+		return (String) list.getSelectedValue();
 	}
 	
 	public void actionPerformed(ActionEvent e)
@@ -229,6 +234,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 				case TraleSLDFeatureEditEvent.SUCCESS_MESSAGE:
 				{
 					msgLabel.setBackground(Color.GREEN);
+					view.getModel().storeStructure(getPrimarySelectionID(), editor.getGrisuString());
 					break;
 				}
 				case TraleSLDFeatureEditEvent.FAILURE_MESSAGE:
