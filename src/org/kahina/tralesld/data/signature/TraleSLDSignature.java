@@ -135,6 +135,17 @@ public class TraleSLDSignature extends KahinaObject
 		return paths.get(type);
 	}
 	
+	public boolean dominates(String domer, String domee)
+	{
+		if (domer.equals(domee)) return true;
+		if (getSupertypes(domee) == null) return false;
+		for (String supertype : getSupertypes(domee))
+		{
+			if (dominates(domer, supertype)) return true;
+		}
+		return false;
+	}
+	
 	/**
 	 * Fills the introFeats map. 
 	 * This needs to be called once for the visualization to work.
