@@ -267,7 +267,23 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	public Set<String> getContextSiblingTypes()
 	{
 		if (sig == null) return null;
-		return sig.getSiblingTypes(contextStructureType);
+		Set<String> possSiblings = new HashSet<String>();
+		for (String sibling : sig.getSiblingTypes(contextStructureType))
+		{
+			if (contextParentStructureType.isEmpty())
+			{
+				possSiblings.add(sibling);
+			}
+			else
+			{
+				String approType = sig.getAppropriateness(contextParentStructureType).get(contextAttr);
+				if (sig.dominates(approType,sibling))
+				{
+					possSiblings.add(sibling);
+				}
+			}
+		}
+		return possSiblings;
 	}
 	
 	public TraleSLDFeatureStructureEditorMenu createContextMenu()
