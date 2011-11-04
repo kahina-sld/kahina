@@ -49,7 +49,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	String contextStructureType;
 	
 	Block contextAttrBlock;
-	IEntity contextAttrModel;
+	IFeatureValuePair contextAttrModel;
 	String contextAttr;
 	
 	Block contextParentBlock;
@@ -165,21 +165,50 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		contextStructure = block.getModel();
 		contextStructureType = determineType(contextStructure);
 		
-		contextAttrBlock = block.getParent();
-		contextAttrModel = block.getModel();
-		contextAttr = determineType(contextAttrModel);
-		
-		contextParentBlock = contextAttrBlock.getParent();
-		if (contextParentBlock == null)
+		contextAttrBlock = getAttrParent(block);
+		if (contextAttrBlock == null)
 		{
+			contextAttrModel = null;
+			contextAttr = "ROOT";
+			
 			contextParentStructure = null;
-			contextParentStructureType = "?";
+			contextParentStructureType = "";
 		}
 		else
 		{
-			contextParentStructure = contextParentBlock.getModel();
-			contextParentStructureType = determineType(contextParentStructure);
+			contextAttrModel = (IFeatureValuePair) contextAttrBlock.getModel();
+			contextAttr = contextAttrModel.feature();
+		
+			contextParentBlock = getTypeParent(contextAttrBlock);
+			if (contextParentBlock == null)
+			{
+				contextParentStructure = null;
+				contextParentStructureType = "?";
+			}
+			else
+			{
+				contextParentStructure = contextParentBlock.getModel();
+				contextParentStructureType = determineType(contextParentStructure);
+			}
 		}
+	}
+	
+	private Block getAttrParent(Block block)
+	{
+		while(block != null && !(block.getModel() instanceof IFeatureValuePair))
+		{
+			block = block.getParent();
+		}
+		return block;
+	}
+	
+	private Block getTypeParent(Block block)
+	{
+		while(block != null && ((block.getModel() == null) || !(block.getModel() instanceof ITypedFeatureStructure)))
+		{
+			block = block.getParent();
+		}
+		return block;
 	}
 	
 	private String determineType(IEntity ent)
@@ -195,10 +224,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) ent;
 			type = selectedFS.type().typeName();
 		}
-		else if (ent instanceof IFeatureValuePair)
+		else
 		{
-			IFeatureValuePair selectedAttr = (IFeatureValuePair) ent;
-			type = selectedAttr.feature();
+			System.err.println(ent);
 		}
 		//the way to deal with mgsat(Type) for the moment
 		if (type.startsWith("mgsat("))
@@ -249,7 +277,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else
 		{
-			infoMessage("Modifying structure " + contextParentStructureType + ":" + contextAttr + ":" + contextStructureType);
+			infoMessage("Modifying structure " + contextParentStructureType + ":" + contextAttr.toUpperCase() + ":" + contextStructureType);
 			return new TraleSLDFeatureStructureEditorMenu(this, subtypes, supertypes, siblingTypes);
 		}
 	}
