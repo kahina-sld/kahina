@@ -248,8 +248,18 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		Set<String> possSupertypes = new HashSet<String>();
 		for (String supertype : sig.getSupertypes(contextStructureType))
 		{
-			possSupertypes.add(supertype);
-			//sig.getAppropriateness(type);
+			if (contextParentStructureType.isEmpty())
+			{
+				possSupertypes.add(supertype);
+			}
+			else
+			{
+				String approType = sig.getAppropriateness(contextParentStructureType).get(contextAttr);
+				if (sig.dominates(approType,supertype))
+				{
+					possSupertypes.add(supertype);
+				}
+			}
 		}
 		return possSupertypes;
 	}
