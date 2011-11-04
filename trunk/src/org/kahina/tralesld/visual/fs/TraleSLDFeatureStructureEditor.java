@@ -245,8 +245,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	public Set<String> getContextSupertypes()
 	{
 		if (sig == null) return null;
+		Set<String> supertypes = (sig.getSupertypes(contextStructureType));
+		if (supertypes == null) return null;
 		Set<String> possSupertypes = new HashSet<String>();
-		for (String supertype : sig.getSupertypes(contextStructureType))
+		for (String supertype : supertypes)
 		{
 			if (contextParentStructureType.isEmpty())
 			{
@@ -338,35 +340,32 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			IType selectedType = (IType) contextStructure;
 			selectedType.setTypeName(type);
-
-			//get back the edited structure in TRALE desc format
-			String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
-			//use TRALE instance to retrieve the grisuString for the description's MGS
-
-			String result = trale.descToMgsGrisu(traleDesc);
-			if (result.startsWith("error"))
-			{
-				failureMessage(result);
-			}
-			else
-			{
-				successMessage("Editing operation successful.");
-				grisuString = result;
-			}
-			//trale.loadEmbeddedKahinaInstance();
-			
-			//	failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
-			//  simply prints out the stored chars, which cannot be manipulated!
-			//OutputFormatter.getInstance().save(System.err, data, blockPanel, OutputFormatter.TRALEFormat);
 		}
 		else if (contextStructure instanceof ITypedFeatureStructure)
 		{
 			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
 			//TODO: find out how to generate an IType object that can be used here
-			selectedFS.setType(null);
+			selectedFS.type().setTypeName(type);
 		}
-		//TODO: after switching the type adapt structure accordingly
-		//TODO: find out how redrawing works; feed the changes back into stored date
+		//get back the edited structure in TRALE desc format
+		String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
+		//use TRALE instance to retrieve the grisuString for the description's MGS
+		String result = trale.descToMgsGrisu(traleDesc);
+		if (result.startsWith("error"))
+		{
+			failureMessage(result);
+		}
+		else
+		{
+			successMessage("Editing operation successful.");
+			grisuString = result;
+		}
+		//trale.loadEmbeddedKahinaInstance();
+		
+		//	failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
+		//  simply prints out the stored chars, which cannot be manipulated!
+		//OutputFormatter.getInstance().save(System.err, data, blockPanel, OutputFormatter.TRALEFormat);
+
 		this.updateDisplay();
 		blockPanel.getContent().update();
 		blockPanel.getCanvas().repaint();
