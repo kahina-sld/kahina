@@ -320,9 +320,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.INFO_MESSAGE));
 	}
 	
-	private void successMessage(String desc)
+	private void success(String desc)
 	{
-		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.SUCCESS));
 	}
 	
 	private void failureMessage(String desc)
@@ -362,7 +362,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else
 		{
 			grisuString = result;
-			successMessage("Editing operation successful.");
+			success("Editing operation successful.");
 		}
 		
 		//failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 

@@ -12,6 +12,8 @@ public class TraleSLDFeatureEditEvent extends KahinaEvent
 	public static final int SUCCESS_MESSAGE = 1;
 	public static final int FAILURE_MESSAGE = 2;
 	public static final int WARNING_MESSAGE = 3;
+	//encodes SUCCESS_MESSAGE plus instruction to add a new feature structure
+	public static final int SUCCESS = 4;
 	    
 	public TraleSLDFeatureEditEvent(String editMessage, int msgType)
 	{
