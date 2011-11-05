@@ -84,18 +84,10 @@ public class TraleSLDVariableBindingSetViewPanel extends KahinaViewPanel<TraleSL
 		{
 			String varName = tableModel.getValueAt(i, 0);
 			String grisuMessage = tableModel.getGrisuMessage(i);
-			innerPanel.add(createFSFrame(varName, grisuMessage));
+			innerPanel.add(util.createFSFrame(varName, grisuMessage));
 		}
 		innerPanel.repaint();
 		innerPanel.revalidate();
-	}
-
-	private JPanel createFSFrame(String varName, String grisuMessage)
-	{
-		JPanel result = new JPanel();
-		result.add(util.visualize(grisuMessage).getCanvas());
-		result.setBorder(BorderFactory.createTitledBorder(varName));
-		return result;
 	}
 
 }
