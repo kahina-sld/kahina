@@ -270,6 +270,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
         		}
         	}
 			updateDisplay();
+			list.setSelectedValue(name, true);
 		}
 		else
 		{
@@ -300,6 +301,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 					break;
 				}
 				case TraleSLDFeatureEditEvent.SUCCESS_MESSAGE:
+				{
+					msgLabel.setBackground(Color.GREEN);
+					break;
+				}
+				case TraleSLDFeatureEditEvent.SUCCESS:
 				{
 					msgLabel.setBackground(Color.GREEN);
 					view.getModel().storeStructure(getPrimarySelectionID(), editor.getGrisuString());
@@ -345,7 +351,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		}
 		else if (e.getComponent() instanceof JMenu)
 		{
-			//HACK: hide the menu even though no JMenuItem was clicked
+			//Swing hack: hide the menu even though no JMenuItem was clicked
 			MenuSelectionManager.defaultManager().clearSelectedPath();
 			
 			String type = ((JMenu) e.getComponent()).getText();
@@ -355,25 +361,21 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 	
