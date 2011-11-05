@@ -1,6 +1,7 @@
 package org.kahina.tralesld.visual.workbench;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -24,10 +25,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
+import javax.swing.MenuSelectionManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.DefaultListModel;
 
+import org.gjt.sp.jedit.bsh.This;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaEvent;
@@ -62,6 +65,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	private final JLabel signatureFileLabel;
 	private final JLabel theoryFileLabel;
 	
+	private JMenu fsMenu;
 	private JMenu newTypeInstanceMenu;
 	private JMenu newLexiconInstanceMenu;
 	
@@ -101,7 +105,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		
 		menuBar.add(workbenchMenu);
 		
-		JMenu fsMenu = new JMenu("Feature Structure");
+		fsMenu = new JMenu("Feature Structure");
 		
 		newTypeInstanceMenu = new JMenu("Add minimal FS of type ...");
 		fsMenu.add(newTypeInstanceMenu);
@@ -220,7 +224,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		{
 			JMenu subtypeMenu = new JMenu(type);
 			subtypeMenu.setActionCommand(type);
-			subtypeMenu.addActionListener(this);
+			subtypeMenu.addMouseListener(this);
 			for (String subtype : subtypes)
 			{
 				subtypeMenu.add(buildTypeMenu(sig,subtype));
@@ -270,11 +274,16 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		else
 		{
 			//default: interpret action command as type ID
-			String grisuString = view.getTrale().descToMgsGrisu(action);
-			view.getModel().storeStructure("mgs:" + action, grisuString);
-			updateDisplay();
-			list.setSelectedValue("mgs:" + action, true);
+			addTypeMGS(action);
 		}
+	}
+	
+	public void addTypeMGS(String type)
+	{
+		String grisuString = view.getTrale().descToMgsGrisu(type);
+		view.getModel().storeStructure("mgs:" + type, grisuString);
+		updateDisplay();
+		list.setSelectedValue("mgs:" + type, true);
 	}
 	
 	public void processEvent(KahinaEvent event)
@@ -323,6 +332,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	@Override
 	public void mouseClicked(MouseEvent e) 
 	{
+		
 		if (e.getComponent() == list && e.getButton() == MouseEvent.BUTTON3)
 		{
 			//generate context menu for type manipulation
@@ -333,7 +343,14 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 			int listY = e.getY() - list.getY();
 			list.setSelectedIndex(list.locationToIndex(new Point(listX,listY)));
 		}
-		
+		else if (e.getComponent() instanceof JMenu)
+		{
+			//HACK: hide the menu even though no JMenuItem was clicked
+			MenuSelectionManager.defaultManager().clearSelectedPath();
+			
+			String type = ((JMenu) e.getComponent()).getText();
+			addTypeMGS(type);
+		}
 	}
 
 	@Override
