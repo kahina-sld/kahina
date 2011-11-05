@@ -12,6 +12,7 @@ import gralej.parsers.UnsupportedProtocolException;
 
 import java.io.ByteArrayInputStream;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -105,5 +106,13 @@ public class VisualizationUtility
 			blockPanel = new BlockPanel(EntityFactory.getInstance().newList());
 		}
 		return blockPanel;
+	}
+
+	public JPanel createFSFrame(String varName, String grisuMessage)
+	{
+		JPanel result = new JPanel();
+		result.add(visualize(grisuMessage).getCanvas());
+		result.setBorder(BorderFactory.createTitledBorder(varName));
+		return result;
 	}
 }
