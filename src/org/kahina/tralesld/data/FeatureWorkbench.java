@@ -31,6 +31,11 @@ public class FeatureWorkbench extends KahinaObject
 	{
 		return obj.get(id);
 	}
+	
+	public String removeStructure(String id)
+	{
+		return obj.remove(id);
+	}
 
 	public Set<String> getNames() 
 	{

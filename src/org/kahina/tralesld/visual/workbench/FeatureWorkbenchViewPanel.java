@@ -2,8 +2,11 @@ package org.kahina.tralesld.visual.workbench;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
@@ -27,6 +31,8 @@ import javax.swing.DefaultListModel;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaWindowEvent;
+import org.kahina.core.event.KahinaWindowEventType;
 import org.kahina.core.gui.KahinaWindow;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
@@ -39,6 +45,7 @@ import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 import org.kahina.tralesld.event.TraleSLDFeatureEditEvent;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditor;
+import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditorMenu;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
 
 /**
@@ -49,7 +56,7 @@ import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
  * @author jdellert
  *
  */
-public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchView> implements ListSelectionListener, ActionListener
+public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchView> implements ListSelectionListener, ActionListener, MouseListener
 {
 	private final JLabel msgLabel;
 	private final JLabel signatureFileLabel;
@@ -163,6 +170,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		
 		list = new JList();
 		list.getSelectionModel().addListSelectionListener(this);
+		list.addMouseListener(this);
 		JScrollPane listScroller = new JScrollPane(list);
 		listScroller.setPreferredSize(new Dimension(250, 80));
 		listScroller.setMaximumSize(new Dimension(300, 1000));
@@ -237,11 +245,36 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	public void actionPerformed(ActionEvent e)
 	{
 		String action = e.getActionCommand();
-		//default: interpret action command as type ID
-		String grisuString = view.getTrale().descToMgsGrisu(action);
-		view.getModel().storeStructure("mgs:" + action, grisuString);
-		updateDisplay();
-		list.setSelectedValue("mgs:" + action, true);
+		if (action.equals("Rename"))
+		{
+        	String name = getNewName("Enter a new name for the structure.", "Rename feature structure.");
+        	if (name == null || view.getModel().getStructure(name) != null)
+        	{
+        		this.processEvent(new TraleSLDFeatureEditEvent("Rename failed: no name specified, or new name already exists!", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+        	}
+        	else
+        	{
+        		String structure = view.getModel().removeStructure((String) list.getSelectedValue());
+        		if (structure != null)
+        		{
+        			view.getModel().storeStructure(name, structure);
+        			this.processEvent(new TraleSLDFeatureEditEvent("Structure renamed.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+        		}
+        		else
+        		{
+        			this.processEvent(new TraleSLDFeatureEditEvent("Rename failed: could not determine structure to be renamed.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+        		}
+        	}
+			updateDisplay();
+		}
+		else
+		{
+			//default: interpret action command as type ID
+			String grisuString = view.getTrale().descToMgsGrisu(action);
+			view.getModel().storeStructure("mgs:" + action, grisuString);
+			updateDisplay();
+			list.setSelectedValue("mgs:" + action, true);
+		}
 	}
 	
 	public void processEvent(KahinaEvent event)
@@ -279,22 +312,52 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		}
 	}
 	
-	private class FeatureStructureListModel extends DefaultListModel
-	{	
-		public int getSize()
+	private String getNewName(String description, String dialogTitle)
+	{
+		return (String) JOptionPane.showInputDialog(this,
+                description,
+                dialogTitle,
+                JOptionPane.PLAIN_MESSAGE);
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) 
+	{
+		if (e.getComponent() == list && e.getButton() == MouseEvent.BUTTON3)
 		{
-			return view.getNameList().size();
+			//generate context menu for type manipulation
+			FeatureWorkbenchContextMenu menu = new FeatureWorkbenchContextMenu(this);
+			menu.show(e.getComponent(),e.getX(), e.getY());
+			//make sure (somewhat inefficient, but does not seem to be a problem)
+			int listX = e.getX() - list.getX();
+			int listY = e.getY() - list.getY();
+			list.setSelectedIndex(list.locationToIndex(new Point(listX,listY)));
 		}
 		
-		public Enumeration<String> elements()
-		{
-			return (Enumeration<String>) view.getNameList();
-		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		// TODO Auto-generated method stub
 		
-		public String getElementAt(int i)
-		{
-			return view.getNameList().get(i);
-		}
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	public static void main(String[] args)
