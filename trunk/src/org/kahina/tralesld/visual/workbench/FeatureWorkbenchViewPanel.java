@@ -272,6 +272,19 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 			updateDisplay();
 			list.setSelectedValue(name, true);
 		}
+		else if (action.equals("Remove"))
+		{
+			String structure = view.getModel().removeStructure((String) list.getSelectedValue());
+    		if (structure != null)
+    		{
+    			this.processEvent(new TraleSLDFeatureEditEvent("Structure removed.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+    		}
+    		else
+    		{
+    			this.processEvent(new TraleSLDFeatureEditEvent("Removal failed: could not determine structure to be removed.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+    		}
+    		updateDisplay();
+		}
 		else
 		{
 			//default: interpret action command as type ID
