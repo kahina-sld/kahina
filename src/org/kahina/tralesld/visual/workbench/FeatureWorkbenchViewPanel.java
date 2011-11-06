@@ -46,6 +46,7 @@ import org.kahina.tralesld.data.FeatureWorkbench;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
+import org.kahina.tralesld.event.TraleSLDEventTypes;
 import org.kahina.tralesld.event.TraleSLDFeatureEditEvent;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditor;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditorMenu;
@@ -186,6 +187,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		
 		editor = new TraleSLDFeatureStructureEditor(trale);
 		editor.setSignature(new TraleSLDSignature());
+        KahinaRunner.getGUIControl().registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, editor);
 		JScrollPane editorScrollPane = new JScrollPane(editor);
 		contentPanel.add(editorScrollPane);
 		
@@ -300,10 +302,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		}
 		else if (action.equals("Copy"))
 		{
-			bufferedStructure = view.getModel().getStructure((String) list.getSelectedValue());
-    		if (bufferedStructure != null)
+			String copiedStructure  = view.getModel().getStructure((String) list.getSelectedValue());
+    		if (copiedStructure != null)
     		{
     			this.processEvent(new TraleSLDFeatureEditEvent("Structure copied.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+    			KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(copiedStructure, TraleSLDFeatureEditEvent.COPY_FS));
     		}
     		else
     		{
@@ -351,31 +354,40 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 				case TraleSLDFeatureEditEvent.INFO_MESSAGE:
 				{
 					msgLabel.setBackground(Color.WHITE);
+					msgLabel.setText(editEvent.getEditMessage());
 					break;
 				}
 				case TraleSLDFeatureEditEvent.SUCCESS_MESSAGE:
 				{
 					msgLabel.setBackground(Color.GREEN);
+					msgLabel.setText(editEvent.getEditMessage());
 					break;
 				}
 				case TraleSLDFeatureEditEvent.SUCCESS:
 				{
 					msgLabel.setBackground(Color.GREEN);
 					view.getModel().storeStructure(getPrimarySelectionID(), editor.getGrisuString());
+					msgLabel.setText(editEvent.getEditMessage());
 					break;
 				}
 				case TraleSLDFeatureEditEvent.FAILURE_MESSAGE:
 				{
 					msgLabel.setBackground(Color.RED);
+					msgLabel.setText(editEvent.getEditMessage());
 					break;
 				}
 				case TraleSLDFeatureEditEvent.WARNING_MESSAGE:
 				{
 					msgLabel.setBackground(Color.YELLOW);
+					msgLabel.setText(editEvent.getEditMessage());
+					break;
+				}
+				case TraleSLDFeatureEditEvent.COPY_FS:
+				{
+					bufferedStructure = editEvent.getEditMessage();
 					break;
 				}
 			}
-			msgLabel.setText(editEvent.getEditMessage());
 			this.repaint();
 		}
 	}

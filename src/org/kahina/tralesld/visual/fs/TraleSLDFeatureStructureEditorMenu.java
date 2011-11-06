@@ -52,5 +52,19 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 			switchMenu.add(typeItem);
 		}
 		add(switchMenu);
+		
+		addSeparator();
+		
+		JMenuItem copyItem = new JMenuItem("Copy");
+		copyItem.addActionListener(editor);
+		add(copyItem);
+		
+		JMenuItem pasteItem = new JMenuItem("Paste");
+		pasteItem.addActionListener(editor);
+		if (editor.getBufferedStructure() == null)
+		{
+			pasteItem.setEnabled(false);
+		}
+		add(pasteItem);
 	}
 }
