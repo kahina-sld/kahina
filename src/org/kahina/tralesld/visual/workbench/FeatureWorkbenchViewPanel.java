@@ -72,6 +72,9 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	private final JList list;
 	private final TraleSLDFeatureStructureEditor editor;
 	
+	//buffered structure for copy & paste
+	private String bufferedStructure = null;
+
 	public FeatureWorkbenchViewPanel(AuxiliaryTraleInstance trale)
 	{		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -189,6 +192,16 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		contentPanel.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(contentPanel);
 	}
+	
+	public String getBufferedStructure() 
+	{
+		return bufferedStructure;
+	}
+
+	public void setBufferedStructure(String bufferedStructure) 
+	{
+		this.bufferedStructure = bufferedStructure;
+	}
 
 	@Override
 	public void updateDisplay() 
@@ -284,6 +297,33 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     			this.processEvent(new TraleSLDFeatureEditEvent("Removal failed: could not determine structure to be removed.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
     		}
     		updateDisplay();
+		}
+		else if (action.equals("Copy"))
+		{
+			bufferedStructure = view.getModel().getStructure((String) list.getSelectedValue());
+    		if (bufferedStructure != null)
+    		{
+    			this.processEvent(new TraleSLDFeatureEditEvent("Structure copied.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+    		}
+    		else
+    		{
+    			this.processEvent(new TraleSLDFeatureEditEvent("Copying failed: could not determine structure to copy.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+    		}
+		}
+		else if (action.equals("Paste"))
+		{
+			String name = getNewName("Enter a new name for the pasted structure.", "Paste feature structure into workbench");
+        	if (name == null || view.getModel().getStructure(name) != null)
+        	{
+        		this.processEvent(new TraleSLDFeatureEditEvent("Paste failed: no name specified, or new name already exists!", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+        	}
+        	else
+        	{
+        		view.getModel().storeStructure(name, bufferedStructure);
+        		this.processEvent(new TraleSLDFeatureEditEvent("Structure pasted.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+        	}
+			updateDisplay();
+			list.setSelectedValue(name, true);
 		}
 		else
 		{

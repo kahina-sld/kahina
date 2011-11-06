@@ -23,6 +23,10 @@ public class FeatureWorkbenchContextMenu extends JPopupMenu
 		
 		JMenuItem pasteItem = new JMenuItem("Paste");
 		pasteItem.addActionListener(viewPanel);
+		if (viewPanel.getBufferedStructure() == null)
+		{
+			pasteItem.setEnabled(false);
+		}
 		add(pasteItem);
 	}
 }
