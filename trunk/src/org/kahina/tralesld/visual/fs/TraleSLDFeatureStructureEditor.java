@@ -390,7 +390,33 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else if (command.equals("Paste"))
 		{
-			//TODO: copy from FeatureWorkbench
+			IDataPackage toCopyData = null;
+			try
+			{
+				toCopyData = util.parseGrisu(grisuString);
+			}
+			catch (gralej.parsers.ParseException pe) 
+			{
+				failureMessage("Paste failed: GRISU string could not be parsed.");
+				return;
+			}
+			//TODO: check whether types are compatible
+			//TODO: find out about weird behavior, and why the second option leads to parse errors
+			contextBlock.setModel((IEntity) toCopyData.getModel());
+			//contextAttrModel.setValue((IEntity) toCopyData.getModel());
+			//get back the edited structure in TRALE desc format
+			String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
+			//use TRALE instance to retrieve the grisuString for the description's MGS
+			String result = trale.descToMgsGrisu(traleDesc);
+			if (result.startsWith("error"))
+			{
+				failureMessage("Paste failed with " + result);
+			}
+			else
+			{
+				grisuString = result;
+				success("Paste successful.");
+			}
 		}
 		else
 		{
