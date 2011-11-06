@@ -1,13 +1,21 @@
 :- module(kahinasicstus,[end_trace_session/0,
+                         add_kbreakpoint/3,
                          abort_hook/2,
                          breakpoint_action_hook/5,
-                         add_kbreakpoint/3]).
+                         post_step_hook/5,
+                         post_exit_hook/5]).
 
 :- use_module(library(charsio)).
 :- use_module(library(lists)).
 :- use_module(library(jasper)).
 :- use_module(library(system)).
 :- use_module(library(terms)).
+
+% ------------------------------------------------------------------------------
+% BREAKPOINT EXPANSION
+% The interface between SICStus Prolog's tracer and kahinasicstus. Defines the
+% breakpoint action kahina_breakpoint_action/1.
+% ------------------------------------------------------------------------------
 
 :- multifile user:breakpoint_expansion/2.
 
@@ -37,10 +45,16 @@ user:breakpoint_expansion(kahina_breakpoint_action(Options),[
     mode(Mode),
     command(Command)]).
 
+% ------------------------------------------------------------------------------
+% HOOKS
+% Predicates whose behavior can be influenced using hooks, and corresponding
+% multifile declarations.
+% ------------------------------------------------------------------------------
+
 :- multifile breakpoint_action_hook/5.
 
+% kahina_breakpoint_action(+Inv,+Port,-Mode,-Command,+Options)
 kahina_breakpoint_action(Inv,Port,Mode,Command,Options) :-
-  current_predicate(breakpoint_action_hook,breakpoint_action_hook(_,_,_,_,_)),
   breakpoint_action_hook(Port,Inv,Mode,Command,Options),
   !.
 kahina_breakpoint_action(Inv,Port,Mode,Command,Options) :-
@@ -55,6 +69,7 @@ kahina_breakpoint_action(Inv,Port,Mode,Command,Options) :-
 
 :- multifile abort_hook/2.
 
+% action_mode_command(+ActionCode,-Mode,-Command,+Inv,+Port,+Autoskip)
 action_mode_command(115,skip(Inv),proceed,Inv,_Port,_Autoskip) :- % s(kip)
   !.
 action_mode_command(102,trace,proceed,_Inv,fail,_Autoskip) :-     % f(ail) at fail ports TODO what about exception ports?
@@ -73,9 +88,41 @@ action_mode_command(_,skip(Inv),proceed,Inv,redo,true) :-         % autoskip at 
   !.
 action_mode_command(_,debug,proceed,_Inv,_Port,_Autoskip).        % creep
 
-:- dynamic unblocked_pseudostep_waiting_for_link/1.
+:- multifile post_step_hook/5.
 
-% TODO act/5 and its delegates need refactoring.
+run_post_step_hooks(Bridge,JVM,Inv,PredChars,GoalDescChars) :-
+  post_step_hook(Bridge,JVM,Inv,PredChars,GoalDescChars),
+  !.
+run_post_step_hooks(Bridge,JVM,Inv,PredChars,GoalDescChars) :-
+  post_step_hook_default(Bridge,JVM,Inv,PredChars,GoalDescChars).
+
+post_step_hook_default(_,_,_,_,_).
+
+:- multifile post_exit_hook/5.
+
+run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDescChars) :-
+  post_exit_hook(Bridge,JVM,Inv,Det,GoalDescChars),
+  !.
+run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDescChars) :-
+  post_exit_hook_default(Bridge,JVM,Inv,Det,GoalDescChars).
+
+post_exit_hook_default(_,_,_,_,_).
+
+:- multifile classpath_element/1.
+
+classpath(Classpath) :-
+  bagof(Element,classpath_element(Element),Classpath),
+  !.
+classpath([]).
+
+% ------------------------------------------------------------------------------
+% TRACING
+% Predicates that define what kahinasicstus does at individual ports.
+% TODO This part, especially act/5, has a lot of redundancy, is on the verge of
+% becoming a maintenance nightmare and needs refactoring.
+% ------------------------------------------------------------------------------
+
+:- dynamic unblocked_pseudostep_waiting_for_link/1.
 
 act(call,Inv,Bridge,JVM,Options) :-
   retract(unblock_pseudostep_waiting_for_link(UnblockingID)),
@@ -92,6 +139,8 @@ act(call,Inv,Bridge,JVM,Options) :-
   goal_desc(Module,Goal,GoalDesc),
   write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   act_step(Bridge,JVM,Inv,PredChars,GoalDescChars),
+  run_post_step_hooks(Bridge,JVM,Inv,PredChars,GoalDescChars),
+  % TODO make the following into hooks
   act_source_code_location(Bridge,JVM,Inv,Options),
   (memberchk(layer(Layer),Options),
    integer(Layer)
@@ -112,6 +161,8 @@ act(exit(DetFlag),Inv,Bridge,JVM,Options) :-
   write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   detflag_det(DetFlag,Det), % translates det/nondet to true/false
   act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
+  run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDescChars),
+  % TODO make the following into hooks
   act_source_code_location(Bridge,JVM,Inv,Options),
   perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(DetFlag))),
   top_end(Inv,Bridge,JVM).
@@ -239,14 +290,12 @@ act_redo(Bridge,JVM,Inv) :-
       redo(Bridge,Inv)).
 
 register_source_code_location(Bridge,JVM,Inv,FileChars,Line) :-
-  get_jvm(JVM),
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','registerStepSourceCodeLocation',[instance]),
       register_step_source_code_location(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+chars,+integer),
       register_step_source_code_location(Bridge,Inv,FileChars,Line)).
 
 register_layer(Bridge,JVM,Inv,Layer) :-
-  get_jvm(JVM),
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','registerLayer',[instance]),
       register_layer(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer,+integer),
@@ -338,10 +387,13 @@ start_new_kahina_session(Bridge,JVM) :-
   retractall(source_read(_)),
   retractall(source_clause(_,_,_,_)),
   get_kahina_instance(Instance,JVM),
+catch(
   jasper_call(JVM,
       method('org/kahina/sicstus/SICStusPrologDebuggerInstance','startNewSession',[instance]),
       start_new_session(+object('org/kahina/sicstus/SICStusPrologDebuggerInstance'),[-object('org/kahina/sicstus/bridge/SICStusPrologBridge')]),
       start_new_session(Instance,LocalBridge)),
+E,
+print_exception_info(JVM,E)),
   jasper_create_global_ref(JVM,LocalBridge,Bridge),
   assert(bridge(Bridge)),
   write_to_chars('[query]',RootLabelChars),
@@ -381,7 +433,8 @@ get_jvm(JVM) :-
   jvm(JVM),
   !.
 get_jvm(JVM) :-
-  jasper_initialize(['-Xss2m'],JVM), % TODO classpath, heap size?
+  classpath(Classpath),
+  jasper_initialize([classpath(Classpath),'-Xss2m'],JVM), % TODO classpath, heap size?
   assert(jvm(JVM)).
 
 % ------------------------------------------------------------------------------
@@ -651,3 +704,71 @@ memberchkid_act(Element,[First|_]) :-
   !.
 memberchkid_act(Element,[_|Rest]) :-
   memberchkid_act(Element,Rest).
+
+
+
+
+
+
+
+
+
+
+% ------------------------------------------------------------------------------
+% EXCEPTION HANDLING
+% ------------------------------------------------------------------------------
+
+is_java_exception(_JVM, Thing) :- var(Thing), !, fail.
+is_java_exception(_JVM, Thing) :-
+   Thing = java_exception(_),      % misc error in Java/Prolog glue
+   !.
+is_java_exception(JVM, Thing) :-
+   jasper_is_object(JVM, Thing),
+   jasper_is_instance_of(JVM, Thing, 'java/lang/Throwable').
+
+print_exception_info(_JVM, java_exception(Message)) :- !,
+   format(user_error, '~NJasper exception: ~w~n', [Message]).
+print_exception_info(JVM, Excp) :-
+   /*
+   // Approximate Java code
+   {
+      String messageChars = excp.getMessage();
+   }
+   */
+   jasper_call(JVM,
+               method('java/lang/Throwable', 'getMessage', [instance]),
+               get_message(+object('java/lang/Throwable'), [-chars]),
+               get_message(Excp, MessageChars)),
+   /* // Approximate Java code
+   {
+      StringWriter stringWriter = new StringWriter();
+      PrintWriter printWriter = new PrintWriter(stringWriter);
+      excp.printStackTrace(printWriter);
+      printWriter.close();
+      stackTraceChars = StringWriter.toString();
+   }
+   */
+   jasper_new_object(JVM, 'java/io/StringWriter',
+                     init, init, StringWriter),
+   jasper_new_object(JVM, 'java/io/PrintWriter',
+                     init(+object('java/io/Writer')),
+                     init(StringWriter), PrintWriter),
+   jasper_call(JVM,
+               method('java/lang/Throwable', 'printStackTrace', [instance]),
+               print_stack_trace(+object('java/lang/Throwable'),
+                                 +object('java/io/PrintWriter')),
+               print_stack_trace(Excp, PrintWriter)),
+   jasper_call(JVM,
+               method('java/io/PrintWriter','close',[instance]),
+               close(+object('java/io/PrintWriter')),
+               close(PrintWriter)),
+   jasper_call(JVM,
+               method('java/io/StringWriter','toString',[instance]),
+               to_string(+object('java/io/StringWriter'),[-chars]),
+               to_string(StringWriter, StackTraceChars)),
+   jasper_delete_local_ref(JVM, PrintWriter),
+   jasper_delete_local_ref(JVM, StringWriter),
+   %% ! exceptions are thrown as global references
+   jasper_delete_global_ref(JVM, Excp),
+   format(user_error, '~NJava Exception: ~s\nStackTrace: ~s~n',
+          [MessageChars, StackTraceChars]).

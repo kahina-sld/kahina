@@ -8,15 +8,20 @@ import org.kahina.qtype.data.bindings.QTypeGoal;
 import org.kahina.qtype.gui.QTypeGUI;
 import org.kahina.qtype.visual.bindings.QTypeGoalView;
 import org.kahina.sicstus.SICStusPrologDebuggerInstance;
-import org.kahina.sicstus.SICStusPrologStep;
 
 public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 {
+	
+	@Override
+	public QTypeBridge startNewSession()
+	{
+		return (QTypeBridge) super.startNewSession();
+	}
 
 	@Override
 	protected QTypeGUI createGUI(KahinaController guiController)
 	{
-		return new QTypeGUI(SICStusPrologStep.class, this, guiController);
+		return new QTypeGUI(QTypeStep.class, this, guiController);
 	}
 
 	@Override

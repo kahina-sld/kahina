@@ -7,15 +7,15 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.visual.tree.KahinaListTreeView;
+import org.kahina.qtype.QTypeDebuggerInstance;
+import org.kahina.qtype.QTypeStep;
 import org.kahina.qtype.data.tree.QTypeLayerDecider;
-import org.kahina.sicstus.SICStusPrologDebuggerInstance;
-import org.kahina.sicstus.SICStusPrologStep;
 import org.kahina.sicstus.gui.SICStusPrologGUI;
 
 public class QTypeGUI extends SICStusPrologGUI
 {
 
-	public QTypeGUI(Class<? extends SICStusPrologStep> stepType, SICStusPrologDebuggerInstance instance, KahinaController control)
+	public QTypeGUI(Class<? extends QTypeStep> stepType, QTypeDebuggerInstance instance, KahinaController control)
 	{
 		super(stepType, instance, control);
 	}
