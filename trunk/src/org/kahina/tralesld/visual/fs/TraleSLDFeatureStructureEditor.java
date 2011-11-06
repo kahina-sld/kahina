@@ -10,6 +10,7 @@ import gralej.om.ITypedFeatureStructure;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.OutputFormatter;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
@@ -21,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.event.KahinaEvent;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
@@ -56,6 +58,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	IEntity contextParentStructure;
 	String contextParentStructureType;
 	
+	//buffered structure for copy & paste
+	private String bufferedStructure = null;
+
 	AuxiliaryTraleInstance trale;
 	
 	public TraleSLDFeatureStructureEditor(AuxiliaryTraleInstance trale)
@@ -114,6 +119,16 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		return contextParentStructureType;
 	}
 	
+	public String getBufferedStructure() 
+	{
+		return bufferedStructure;
+	}
+
+	public void setBufferedStructure(String bufferedStructure) 
+	{
+		this.bufferedStructure = bufferedStructure;
+	}
+	
 	@Override
 	public void updateDisplay()
 	{
@@ -162,6 +177,24 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			innerPanel.add(blockCanvas);
 		}
 		innerPanel.repaint();
+	}
+	
+	public void processEvent(KahinaEvent event)
+	{
+		super.processEvent(event);
+		if (event instanceof TraleSLDFeatureEditEvent)
+		{
+			TraleSLDFeatureEditEvent editEvent = (TraleSLDFeatureEditEvent) event;
+			switch (editEvent.getMessageType())
+			{
+				case TraleSLDFeatureEditEvent.COPY_FS:
+				{
+					bufferedStructure = editEvent.getEditMessage();
+					break;
+				}
+			}
+			this.repaint();
+		}
 	}
 	
 	public void processContextStructure(Block block)
@@ -336,39 +369,61 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	}
 
 	@Override
-	//only type of action at the moment are the type manipulation instructions from context menu
-	//action commands are therefore simply type names; might have to be extended in the future
+	
 	public void actionPerformed(ActionEvent e) 
 	{
-		String type = e.getActionCommand();
-		if (contextStructure instanceof IType)
+		String command = e.getActionCommand();
+		if (command.equals("Copy"))
 		{
-			IType selectedType = (IType) contextStructure;
-			selectedType.setTypeName(type);
+			String traleDesc = Entities.toTraleDesc(contextStructure);
+			//use TRALE instance to retrieve the grisuString for the description's MGS
+			String result = trale.descToMgsGrisu(traleDesc);
+			if (result.startsWith("error"))
+			{
+				failureMessage(result);
+			}
+			else
+			{
+				success("Copying operation successful.");
+			}
+			KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.COPY_FS));
 		}
-		else if (contextStructure instanceof ITypedFeatureStructure)
+		else if (command.equals("Paste"))
 		{
-			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
-			selectedFS.type().setTypeName(type);
-		}
-		//get back the edited structure in TRALE desc format
-		String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
-		//use TRALE instance to retrieve the grisuString for the description's MGS
-		String result = trale.descToMgsGrisu(traleDesc);
-		if (result.startsWith("error"))
-		{
-			failureMessage(result);
+			//TODO: copy from FeatureWorkbench
 		}
 		else
 		{
-			grisuString = result;
-			success("Editing operation successful.");
+			//other action commands are simply type names for type manipulation instructions from context menu
+			String type = command;
+			if (contextStructure instanceof IType)
+			{
+				IType selectedType = (IType) contextStructure;
+				selectedType.setTypeName(type);
+			}
+			else if (contextStructure instanceof ITypedFeatureStructure)
+			{
+				ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
+				selectedFS.type().setTypeName(type);
+			}
+			//get back the edited structure in TRALE desc format
+			String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
+			//use TRALE instance to retrieve the grisuString for the description's MGS
+			String result = trale.descToMgsGrisu(traleDesc);
+			if (result.startsWith("error"))
+			{
+				failureMessage(result);
+			}
+			else
+			{
+				grisuString = result;
+				success("Editing operation successful.");
+			}
+			
+			//failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
+			//simply prints out the stored chars, which cannot be manipulated!
+			//OutputFormatter.getInstance().save(System.err, data, blockPanel, OutputFormatter.TRALEFormat);
 		}
-		
-		//failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
-		//simply prints out the stored chars, which cannot be manipulated!
-		//OutputFormatter.getInstance().save(System.err, data, blockPanel, OutputFormatter.TRALEFormat);
-
 		this.updateDisplay();
 		blockPanel.getContent().update();
 		blockPanel.getCanvas().repaint();
