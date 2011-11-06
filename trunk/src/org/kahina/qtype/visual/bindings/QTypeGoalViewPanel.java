@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.visual.KahinaViewPanel;
+import org.kahina.qtype.data.bindings.QTypeGoal;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.visual.fs.VisualizationUtility;
 
@@ -26,9 +27,15 @@ public class QTypeGoalViewPanel extends KahinaViewPanel<QTypeGoalView>
 	@Override
 	public void updateDisplay()
 	{
-		innerPanel.removeAll();
-		TraleSLDFS in = view.getModel().getIn();
-		TraleSLDFS out = view.getModel().getOut();
+		QTypeGoal model = view.getModel();
+		
+		if (model == null)
+		{
+			return;
+		}
+		
+		TraleSLDFS in = model.getIn();
+		TraleSLDFS out = model.getOut();
 		
 		if (in != null)
 		{

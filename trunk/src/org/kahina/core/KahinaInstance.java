@@ -60,10 +60,18 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	public KahinaInstance()
 	{
-		fillViewRegistry();
-		initializeNewSession(); // dummy session so views have something (empty)
-								// to show
 		guiController = new KahinaController();
+		try
+		{
+			fillViewRegistry();
+			initializeNewSession(); // dummy session so views have something
+									// (empty)
+									// to show
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(-1);
+		}
 	}
 
 	/**
@@ -92,8 +100,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			gui.displayMainViews();
 			gui.show();
 			KahinaRunner.processEvent(new KahinaSelectionEvent(-1));
-		} 
-        catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -121,8 +128,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		if (state != null)
 		{
 			state.reset();
-		}
-		else
+		} else
 		{
 			state = createState();
 		}

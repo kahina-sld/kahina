@@ -42,8 +42,7 @@ public class VisualizationUtility
 		try
 		{
 			parser = GraleParserFactory.createParser(StreamInfo.GRISU);
-		} 
-		catch (UnsupportedProtocolException e)
+		} catch (UnsupportedProtocolException e)
 		{
 			throw new RuntimeException("could not create Grisu format parser", e);
 		}
@@ -55,7 +54,7 @@ public class VisualizationUtility
 		config.set("behavior.autoexpandtags", true);
 		config.set("behavior.alwaysfitsize", false);
 	}
-	
+
 	public IDataPackage parseGrisu(String grisuMessage) throws ParseException
 	{
 		IDataPackage dataPackage = null;
@@ -66,26 +65,24 @@ public class VisualizationUtility
 				System.err.println(this + ".parseGrisu(" + grisuMessage + ")");
 			}
 			dataPackage = parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0);
-		} 
-		catch (ParseException e)
+		} catch (ParseException e)
 		{
 			JPanel result = new JPanel();
 			result.add(new JLabel("Parse error: \n" + e.getMessage() + "\nGrisu message was: \n" + grisuMessage));
-			//TODO: handle error message
+			// TODO: handle error message
 			System.err.println("GRISU parse error!");
 			throw e;
 		}
 		return dataPackage;
 	}
-	
 
 	/**
 	 * 
 	 * @param grisuMessage
 	 *            A typed feature structure or tree in Grisu format.
-	 * @return A GraleJ block panel, providing various methods to control rendering, and a
-	 *         method called <code>getCanvas()</code> to obtain the actual
-	 *         {@link JPanel}.
+	 * @return A GraleJ block panel, providing various methods to control
+	 *         rendering, and a method called <code>getCanvas()</code> to obtain
+	 *         the actual {@link JPanel}.
 	 */
 	public BlockPanel visualize(String grisuMessage)
 	{
@@ -97,21 +94,32 @@ public class VisualizationUtility
 				System.err.println(this + ".visualize(" + grisuMessage + ")");
 			}
 			blockPanel = parseGrisu(grisuMessage).createView();
-		} 
-		catch (ParseException e)
+		} catch (ParseException e)
 		{
-			JPanel result = new JPanel();
-			result.add(new JLabel("Parse error: \n" + e.getMessage() + "\nGrisu message was: \n" + grisuMessage));
-			//TODO: restore display of error messages; display empty list as temporary solution
+			// TODO: restore display of error messages; display empty list as
+			// temporary solution
 			blockPanel = new BlockPanel(EntityFactory.getInstance().newList());
 		}
 		return blockPanel;
 	}
 
+	public JPanel makeJPanel(String grisuMessage)
+	{
+		try
+		{
+			return parseGrisu(grisuMessage).createView().getCanvas();
+		} catch (ParseException e)
+		{
+			JPanel errorPanel = new JPanel();
+			errorPanel.add(new JLabel("Parse error: \n" + e.getMessage() + "\nGrisu message was: \n" + grisuMessage));
+			return errorPanel;
+		}
+	}
+
 	public JPanel createFSFrame(String varName, String grisuMessage)
 	{
 		JPanel result = new JPanel();
-		result.add(visualize(grisuMessage).getCanvas());
+		result.add(makeJPanel(grisuMessage));
 		result.setBorder(BorderFactory.createTitledBorder(varName));
 		return result;
 	}

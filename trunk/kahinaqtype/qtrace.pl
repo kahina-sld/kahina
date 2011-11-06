@@ -3,6 +3,8 @@
                   source_code_location/2]).
 
 :- use_module('../kahinasicstus/kahinasicstus').
+:- use_module(library(assoc)).
+:- use_module(library(jasper)).
 :- use_module(library(lists)).
 :- use_module(library(ordsets)).
 :- use_module(library(system)).
@@ -53,6 +55,30 @@ kahinasicstus:breakpoint_action_hook(exception(kahinaqtype_abort),_,debug,procee
 :- multifile kahinasicstus:instance_class_hook/1.
 
 kahinasicstus:instance_class_hook('org/kahina/qtype/QTypeDebuggerInstance').
+
+:- multifile kahinasicstus:post_step_hook/5.
+
+kahinasicstus:post_step_hook(Bridge,JVM,Inv,_,_) :-
+  execution_state(goal(_:Goal)),write(Goal),nl,
+  term_grisu(Goal,'',Grisu),atom_codes(Atom,Grisu),write(Atom),nl,
+  register_goal(Bridge,JVM,Inv,[105,110],Grisu). % in
+
+:- multifile kahinasicstus:post_exit_hook/5.
+
+kahinasicstus:post_exit_hook(Bridge,JVM,Inv,_,_) :-
+  execution_state(goal(_:Goal)),
+  term_grisu(Goal,[],Grisu),
+  register_goal(Bridge,JVM,Inv,[111,117,116],Grisu). % out
+
+register_goal(Bridge,JVM,Inv,KeyChars,Grisu) :-
+  jasper_call(JVM,
+      method('org/kahina/qtype/bridge/QTypeBridge','registerGoal',[instance]),
+      register_goal(+object('org/kahina/qtype/bridge/QTypeBridge'),+integer,+chars,+chars),
+      register_goal(Bridge,Inv,KeyChars,Grisu)).
+
+:- multifile kahinasicstus:classpath_element/1.
+
+kahinasicstus:classpath_element('$KAHINA_HOME/lib/gralej/gralej.jar'). % TODO check for $KAHINA_HOME
 
 % ------------------------------------------------------------------------------
 % PUBLIC PREDICATES
@@ -216,11 +242,11 @@ goal_source_code_location(descr:start_constraint(Line),File,Line) :-
 %   Label: A label for output, given as an atom.
 %   Grisu: A code-list representing the Grisu message needed.
 
-term_grisu(Term,Label,[33,110,101,119,100,97,116,97,34|Grisu0]) :- % !newdata
-  string_grisu(Label,Grisu0,[34|Grisu1]), % "
+term_grisu(Term,Label,[33,110,101,119,100,97,116,97|Grisu0]) :- % !newdata
+  string_grisu(Label,Grisu0,[Grisu1]),
   empty_assoc(Empty),
   term_coins(Term,1,_,Empty,_,Empty,Coins),
-  term_grisu(Term,Coins,0,_,Grisu1,[10]). % LF; close list
+  term_grisu(Term,5,Coins,0,_,Grisu1,[10]). % LF; close list
 
 % Collect re-entrancies, or "coins", as in "coindexed":
 

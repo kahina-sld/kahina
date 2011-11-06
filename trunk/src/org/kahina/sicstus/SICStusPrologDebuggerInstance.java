@@ -15,15 +15,23 @@ import org.kahina.sicstus.visual.bindings.SICStusPrologVariableBindingSetView;
 
 public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SICStusPrologGUI, SICStusPrologBridge>
 {
-	
+
 	PrologProfiler profiler;
-	
+
 	@Override
 	public SICStusPrologBridge startNewSession()
 	{
-		super.startNewSession();
-		profiler = new PrologProfiler(state.getFullProfile());
-		return bridge;
+		try
+		{
+			super.startNewSession();
+			profiler = new PrologProfiler(state.getFullProfile());
+			return bridge;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		return null;
 	}
 
 	@Override
@@ -49,7 +57,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 	{
 		return new LogicProgrammingState();
 	}
-	
+
 	@Override
 	protected void fillViewRegistry()
 	{
@@ -57,7 +65,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 		KahinaViewRegistry.registerMapping(SICStusPrologVariableBindingSet.class, SICStusPrologVariableBindingSetView.class);
 		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, PrologJEditSourceCodeView.class);
 	}
-	
+
 	public static void main(String[] args)
 	{
 		(new SICStusPrologDebuggerInstance()).start(args);
