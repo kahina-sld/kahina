@@ -37,12 +37,14 @@ import org.gjt.sp.jedit.bsh.This;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaPerspectiveEvent;
 import org.kahina.core.event.KahinaWindowEvent;
 import org.kahina.core.event.KahinaWindowEventType;
 import org.kahina.core.gui.KahinaWindow;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.io.util.FileUtilities;
+import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
@@ -55,6 +57,7 @@ import org.kahina.tralesld.event.TraleSLDFeatureEditEvent;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditor;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditorMenu;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
+import org.w3c.dom.Element;
 
 /**
  * A feature workbench window, with list of objects on the left, 
@@ -100,7 +103,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		workbenchMenu.add(importWorkbenchItem);
 		
 		JMenuItem exportWorkbenchItem = new JMenuItem("Save Workbench");
-		exportWorkbenchItem.setEnabled(false);
+		exportWorkbenchItem.addActionListener(this);
 		workbenchMenu.add(exportWorkbenchItem);
 		
 		JMenuItem exportSelectionItem = new JMenuItem("Export Selection to Workbench");
@@ -384,6 +387,15 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             {
             	this.processEvent(new TraleSLDFeatureEditEvent("ERROR: could not save to GRISU file.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
             }
+		}
+		else if (action.equals("Save Workbench"))
+		{
+			JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.setDialogTitle("Save Workbench As");
+            chooser.showSaveDialog(this);
+            File dataFile = chooser.getSelectedFile();
+            Element el = view.getModel().exportXML(XMLUtilities.newEmptyDocument());
+            XMLUtilities.writeXML(el, dataFile.getAbsolutePath());
 		}
 		else
 		{
