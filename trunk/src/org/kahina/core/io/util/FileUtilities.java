@@ -1,7 +1,9 @@
 package org.kahina.core.io.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileUtilities 
@@ -16,6 +18,14 @@ public class FileUtilities
 	        stringBuilder.append( line );
 	        stringBuilder.append( ls );
 	    }
+	    reader.close();
 	    return stringBuilder.toString();
+	 }
+	
+	public static void writeStringToFile(String string, String file) throws IOException 
+	{
+	    BufferedWriter writer = new BufferedWriter( new FileWriter (file));
+	    writer.append(string);
+	    writer.close();
 	 }
 }
