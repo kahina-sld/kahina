@@ -92,23 +92,29 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		JMenu workbenchMenu = new JMenu("Workbench");
 		
 		JMenuItem newWorkbenchItem = new JMenuItem("New Workbench");
+		newWorkbenchItem.setEnabled(false);
 		workbenchMenu.add(newWorkbenchItem);
 		
 		JMenuItem importWorkbenchItem = new JMenuItem("Open Workbench");
+		importWorkbenchItem.setEnabled(false);
 		workbenchMenu.add(importWorkbenchItem);
 		
 		JMenuItem exportWorkbenchItem = new JMenuItem("Save Workbench");
+		exportWorkbenchItem.setEnabled(false);
 		workbenchMenu.add(exportWorkbenchItem);
 		
 		JMenuItem exportSelectionItem = new JMenuItem("Export Selection to Workbench");
+		exportSelectionItem.setEnabled(false);
 		workbenchMenu.add(exportSelectionItem);
 		
 		workbenchMenu.addSeparator();
 		
 		JMenuItem loadSignatureItem = new JMenuItem("Load Signature ...");
+		loadSignatureItem.setEnabled(false);
 		workbenchMenu.add(loadSignatureItem);
 		
 		JMenuItem compileTheoryItem = new JMenuItem("Compile Theory ...");
+		compileTheoryItem.setEnabled(false);
 		workbenchMenu.add(compileTheoryItem);
 		
 		menuBar.add(workbenchMenu);
@@ -119,10 +125,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		fsMenu.add(newTypeInstanceMenu);
 		
 		newLexiconInstanceMenu = new JMenu("Add FS for lexical entry ...");
+		newLexiconInstanceMenu.setEnabled(false);
 		fsMenu.add(newLexiconInstanceMenu);
-		
-		JMenuItem fsClipboardItem = new JMenuItem("Paste FS from clipboard");
-		fsMenu.add(fsClipboardItem);
 		
 		fsMenu.addSeparator();
 		
@@ -137,12 +141,15 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		fsMenu.addSeparator();
 		
 		JMenuItem theoryMGSItem = new JMenuItem("Add MGS according to theory");
+		theoryMGSItem.setEnabled(false);
 		fsMenu.add(theoryMGSItem);
 		
 		JMenuItem sigMGUItem = new JMenuItem("Add MGU (signature only)");
+		sigMGUItem.setEnabled(false);
 		fsMenu.add(sigMGUItem);
 		
 		JMenuItem theMGUItem = new JMenuItem("Add MGU according to theory");
+		theMGUItem.setEnabled(false);
 		fsMenu.add(theMGUItem);
 		
 		menuBar.add(fsMenu);
@@ -387,10 +394,18 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	public void addTypeMGS(String type)
 	{
-		String grisuString = view.getTrale().descToMgsGrisu(type);
-		view.getModel().storeStructure("mgs:" + type, grisuString);
-		updateDisplay();
-		list.setSelectedValue("mgs:" + type, true);
+		String result = view.getTrale().descToMgsGrisu(type);
+		if (result.startsWith("ERROR"))
+		{
+        	this.processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+		}
+		else
+		{
+        	this.processEvent(new TraleSLDFeatureEditEvent("Type MGS successfully added.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+    		view.getModel().storeStructure("mgs:" + type, result);
+    		updateDisplay();
+    		list.setSelectedValue("mgs:" + type, true);
+		}
 	}
 	
 	public void processEvent(KahinaEvent event)

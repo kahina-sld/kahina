@@ -378,15 +378,15 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			String traleDesc = Entities.toTraleDesc(contextStructure);
 			//use TRALE instance to retrieve the grisuString for the description's MGS
 			String result = trale.descToMgsGrisu(traleDesc);
-			if (result.startsWith("error"))
+			if (result.startsWith("ERROR"))
 			{
 				failureMessage(result);
 			}
 			else
 			{
 				success("Copying operation successful.");
-			}
-			KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.COPY_FS));
+				KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.COPY_FS));
+			}		
 		}
 		else if (command.equals("Paste"))
 		{
