@@ -310,7 +310,8 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 			activateBreakpointButton.setEnabled(false);
 			deactivateBreakpointButton.setEnabled(false);
 			editPanel.setEnabled(false);
-		} else
+		} 
+		else
 		{
 			if (breakpoints.get(curID).isActive())
 			{

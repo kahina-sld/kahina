@@ -11,6 +11,7 @@ import java.util.Queue;
 
 import javax.swing.SwingUtilities;
 
+import org.kahina.core.io.util.FileUtilities;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
 import se.sics.jasper.*;
@@ -412,7 +413,7 @@ public class AuxiliaryTraleInstance extends Thread
 		String grisu = null;
 		try
 		{
-			grisu = slurpFile("tmp.grisu");
+			grisu = FileUtilities.slurpFile("tmp.grisu");
 		}
 		catch (IOException e)
 		{
@@ -420,19 +421,6 @@ public class AuxiliaryTraleInstance extends Thread
 		}
 		return grisu;
 	}
-	
-	private String slurpFile(String file) throws IOException 
-	{
-	    BufferedReader reader = new BufferedReader( new FileReader (file));
-	    String line  = null;
-	    StringBuilder stringBuilder = new StringBuilder();
-	    String ls = System.getProperty("line.separator");
-	    while( ( line = reader.readLine() ) != null ) {
-	        stringBuilder.append( line );
-	        stringBuilder.append( ls );
-	    }
-	    return stringBuilder.toString();
-	 }
 	
 	//new version (does not compile anything, always uses the current theory)
 	//does not work because Jasper cannot build SPTerms out of descriptions by default

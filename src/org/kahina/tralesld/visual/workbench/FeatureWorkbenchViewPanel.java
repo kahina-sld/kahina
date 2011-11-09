@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
@@ -17,6 +19,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -39,6 +42,7 @@ import org.kahina.core.event.KahinaWindowEventType;
 import org.kahina.core.gui.KahinaWindow;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
+import org.kahina.core.io.util.FileUtilities;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
@@ -90,10 +94,10 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		JMenuItem newWorkbenchItem = new JMenuItem("New Workbench");
 		workbenchMenu.add(newWorkbenchItem);
 		
-		JMenuItem importWorkbenchItem = new JMenuItem("Import Workbench");
+		JMenuItem importWorkbenchItem = new JMenuItem("Open Workbench");
 		workbenchMenu.add(importWorkbenchItem);
 		
-		JMenuItem exportWorkbenchItem = new JMenuItem("Export Workbench");
+		JMenuItem exportWorkbenchItem = new JMenuItem("Save Workbench");
 		workbenchMenu.add(exportWorkbenchItem);
 		
 		JMenuItem exportSelectionItem = new JMenuItem("Export Selection to Workbench");
@@ -123,6 +127,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		fsMenu.addSeparator();
 		
 		JMenuItem fsFileItem = new JMenuItem("Add FS from GRISU file");
+		fsFileItem.addActionListener(this);
 		fsMenu.add(fsFileItem);
 		
 		JMenuItem exportFSItem = new JMenuItem("Save current FS to GRISU file");
@@ -327,6 +332,33 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
         	}
 			updateDisplay();
 			list.setSelectedValue(name, true);
+		}
+		else if (action.equals("Add FS from GRISU file"))
+		{
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.setDialogTitle("Load GRISU file");
+            chooser.showSaveDialog(this);
+            File grisuFile = chooser.getSelectedFile();
+            try
+            {
+            	String grisuString = FileUtilities.slurpFile(grisuFile.getAbsolutePath());
+            	String name = getNewName("Enter a new name for the imported feature structure.", "Load feature structure from GRISU file");
+            	if (name == null || view.getModel().getStructure(name) != null)
+            	{
+            		this.processEvent(new TraleSLDFeatureEditEvent("Integration failed: no name specified, or new name already exists!", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+            	}
+            	else
+            	{
+            		view.getModel().storeStructure(name, grisuString);
+            		this.processEvent(new TraleSLDFeatureEditEvent("Feature structure successfully loaded.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+            	}
+    			updateDisplay();
+    			list.setSelectedValue(name, true);
+            }
+            catch (IOException ioe)
+            {
+            	this.processEvent(new TraleSLDFeatureEditEvent("ERROR: could not load GRISU file.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+            }
 		}
 		else
 		{
