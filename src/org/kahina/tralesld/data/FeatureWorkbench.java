@@ -81,46 +81,33 @@ public class FeatureWorkbench extends KahinaObject
 		this.signature = signature;
 	}
 	
-	/*public static KahinaPerspective importXML(Element topEl)
+	public static FeatureWorkbench importXML(Element topEl)
 	{
-		String appID = XMLUtilities.attrStrVal(topEl, "kahina:appID");
-		String name = XMLUtilities.attrStrVal(topEl, "kahina:name");
-		KahinaPerspective perspective = new KahinaPerspective(appID, name);
-		NodeList nl = topEl.getElementsByTagName("kahina:arrangement");
-		perspective.arr = KahinaArrangement.importXML((Element) nl.item(0));
-		nl = topEl.getElementsByTagName("kahina:configuration");
-		Element configEl;
-		//simply process all the configurations
+		FeatureWorkbench workbench = new FeatureWorkbench();
+		NodeList nl = topEl.getElementsByTagName("tralesld:file");
 		for (int i = 0; i < nl.getLength(); i++)
 		{
-			configEl = (Element) nl.item(i);
-			int viewID = XMLUtilities.attrIntVal(configEl, "kahina:viewid");
-			String type = XMLUtilities.attrStrVal(configEl, "kahina:type");
-			try
+			Element fileEl = ((Element) nl.item(i));
+			String filetype = fileEl.getAttribute("tralesld:filetype");
+			if (filetype.equals("signature"))
 			{
-				Method importMethod = Class.forName(type).getMethod("importXML", Element.class);
-				KahinaViewConfiguration viewConfig = (KahinaViewConfiguration) importMethod.invoke(null, configEl);
-				perspective.setConfiguration(viewID, viewConfig);
+				workbench.setSignatureFileName(fileEl.getAttribute("tralesld:path"));
 			}
-			catch (ClassNotFoundException e)
+			else if (filetype.equals("theory"))
 			{
-				System.err.println("ERROR in loading configuration: could not find class " + type);
-			}
-			catch (NoSuchMethodException e)
-			{
-				System.err.println("ERROR in loading configuration: class " + type + " does not implement importXML(Element e).");
-			}
-			catch (InvocationTargetException e)
-			{
-				System.err.println("InvocationTargetException while loading configuration for " + type);
-			}
-			catch (IllegalAccessException e)
-			{
-				System.err.println("IllegalAccessException while loading configuration for " + type);
+				workbench.setTheoryFileName(fileEl.getAttribute("tralesld:path"));
 			}
 		}
-		return perspective;
-	}*/
+		nl = topEl.getElementsByTagName("tralesld:fs");
+		Element fsEl;
+		//simply process all the FS elements
+		for (int i = 0; i < nl.getLength(); i++)
+		{
+			fsEl = (Element) nl.item(i);
+			workbench.storeStructure(fsEl.getAttribute("tralesld:name"), fsEl.getAttribute("tralesld:grisu"));
+		}
+		return workbench;
+	}
 	
 	public Element exportXML(Document dom)
 	{
