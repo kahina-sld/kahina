@@ -131,6 +131,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		fsMenu.add(fsFileItem);
 		
 		JMenuItem exportFSItem = new JMenuItem("Save current FS to GRISU file");
+		exportFSItem.addActionListener(this);
 		fsMenu.add(exportFSItem);
 		
 		fsMenu.addSeparator();
@@ -337,7 +338,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		{
             JFileChooser chooser = new JFileChooser(new File("."));
             chooser.setDialogTitle("Load GRISU file");
-            chooser.showSaveDialog(this);
+            chooser.showOpenDialog(this);
             File grisuFile = chooser.getSelectedFile();
             try
             {
@@ -358,6 +359,23 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             catch (IOException ioe)
             {
             	this.processEvent(new TraleSLDFeatureEditEvent("ERROR: could not load GRISU file.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+            }
+		}
+		else if (action.equals("Save current FS to GRISU file"))
+		{
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.setDialogTitle("Save FS to GRISU file");
+            chooser.showSaveDialog(this);
+            File grisuFile = chooser.getSelectedFile();
+            try
+            {
+            	String grisuString = view.getModel().getStructure((String) list.getSelectedValue());
+            	FileUtilities.writeStringToFile(grisuString,grisuFile.getAbsolutePath());
+            	this.processEvent(new TraleSLDFeatureEditEvent("Feature structure successfully saved.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+            }
+            catch (IOException ioe)
+            {
+            	this.processEvent(new TraleSLDFeatureEditEvent("ERROR: could not save to GRISU file.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
             }
 		}
 		else
