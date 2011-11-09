@@ -8,7 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
@@ -57,7 +61,10 @@ import org.kahina.tralesld.event.TraleSLDFeatureEditEvent;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditor;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditorMenu;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.ParseException;
 
 /**
  * A feature workbench window, with list of objects on the left, 
@@ -95,11 +102,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		JMenu workbenchMenu = new JMenu("Workbench");
 		
 		JMenuItem newWorkbenchItem = new JMenuItem("New Workbench");
-		newWorkbenchItem.setEnabled(false);
+		newWorkbenchItem.addActionListener(this);
 		workbenchMenu.add(newWorkbenchItem);
 		
-		JMenuItem importWorkbenchItem = new JMenuItem("Open Workbench");
-		importWorkbenchItem.setEnabled(false);
+		JMenuItem importWorkbenchItem = new JMenuItem("Load Workbench");
+		importWorkbenchItem.addActionListener(this);
 		workbenchMenu.add(importWorkbenchItem);
 		
 		JMenuItem exportWorkbenchItem = new JMenuItem("Save Workbench");
@@ -388,6 +395,36 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             	this.processEvent(new TraleSLDFeatureEditEvent("ERROR: could not save to GRISU file.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
             }
 		}
+		else if (action.equals("New Workbench"))
+		{
+			view.display(new FeatureWorkbench());
+            this.processEvent(new TraleSLDFeatureEditEvent("New workbench created.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+            updateDisplay();
+		}
+		else if (action.equals("Load Workbench"))
+		{
+			JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.setDialogTitle("Load Workbench");
+            chooser.showOpenDialog(this);
+            File dataFile = chooser.getSelectedFile();
+            try
+            {
+            	Document doc = XMLUtilities.parseXMLStream(new BufferedInputStream(new FileInputStream(dataFile)), false);
+            	FeatureWorkbench workbench = FeatureWorkbench.importXML(doc.getDocumentElement());
+            	view.display(workbench);
+            	String sigFileName = view.getModel().getSignatureFileName();
+            	if (sigFileName != null)
+            	{
+            		view.getModel().setSignature(view.getTrale().getSignature(sigFileName));
+            	}
+            	this.processEvent(new TraleSLDFeatureEditEvent("Workbench loaded.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+            }
+            catch (FileNotFoundException ex)
+            {
+            	this.processEvent(new TraleSLDFeatureEditEvent("ERROR: file not found!", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+            }
+            updateDisplay();
+		}
 		else if (action.equals("Save Workbench"))
 		{
 			JFileChooser chooser = new JFileChooser(new File("."));
@@ -396,6 +433,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             File dataFile = chooser.getSelectedFile();
             Element el = view.getModel().exportXML(XMLUtilities.newEmptyDocument());
             XMLUtilities.writeXML(el, dataFile.getAbsolutePath());
+            this.processEvent(new TraleSLDFeatureEditEvent("Workbench saved.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 		}
 		else
 		{
