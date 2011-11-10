@@ -84,6 +84,10 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	private JMenu fsMenu;
 	private JMenu newTypeInstanceMenu;
 	private JMenu newLexiconInstanceMenu;
+	private JMenuItem exportFSItem;
+	private JMenuItem theoryMGSItem;
+	private JMenuItem sigMGUItem;
+	private JMenuItem theMGUItem;
 	
 	private final JList list;
 	private final TraleSLDFeatureStructureEditor editor;
@@ -143,24 +147,26 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		fsMenu.addSeparator();
 		
 		JMenuItem fsFileItem = new JMenuItem("Add FS from GRISU file");
+		fsFileItem.setEnabled(true);
 		fsFileItem.addActionListener(this);
 		fsMenu.add(fsFileItem);
 		
-		JMenuItem exportFSItem = new JMenuItem("Save current FS to GRISU file");
+		exportFSItem = new JMenuItem("Save current FS to GRISU file");
+		exportFSItem.setEnabled(false);
 		exportFSItem.addActionListener(this);
 		fsMenu.add(exportFSItem);
 		
 		fsMenu.addSeparator();
 		
-		JMenuItem theoryMGSItem = new JMenuItem("Add MGS according to theory");
+		theoryMGSItem = new JMenuItem("Add MGS according to theory");
 		theoryMGSItem.setEnabled(false);
 		fsMenu.add(theoryMGSItem);
 		
-		JMenuItem sigMGUItem = new JMenuItem("Add MGU (signature only)");
+		sigMGUItem = new JMenuItem("Add MGU (signature only)");
 		sigMGUItem.setEnabled(false);
 		fsMenu.add(sigMGUItem);
 		
-		JMenuItem theMGUItem = new JMenuItem("Add MGU according to theory");
+		theMGUItem = new JMenuItem("Add MGU according to theory");
 		theMGUItem.setEnabled(false);
 		fsMenu.add(theMGUItem);
 		
@@ -276,16 +282,48 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) 
 	{
-		if (list.getSelectedIndices().length > 0)
+		int selections = list.getSelectedIndices().length;
+		switch (selections)
 		{
-			exportSelectionItem.setEnabled(true);
-			String name = getPrimarySelectionID();
-			editor.loadGrisu(view.getModel().getStructure(name));	
-			editor.updateDisplay();
-		}
-		else
-		{
-			exportSelectionItem.setEnabled(false);
+			case 0:
+			{
+				exportSelectionItem.setEnabled(false);
+				exportFSItem.setEnabled(false);
+				theoryMGSItem.setEnabled(false);
+				sigMGUItem.setEnabled(false);
+				theMGUItem.setEnabled(false);
+				break;
+			}
+			case 1:
+			{
+				exportSelectionItem.setEnabled(true);
+				exportFSItem.setEnabled(true);
+				if (view.getModel().getTheoryFileName() != null) theoryMGSItem.setEnabled(true);
+				sigMGUItem.setEnabled(false);
+				theMGUItem.setEnabled(false);
+				String name = getPrimarySelectionID();
+				editor.loadGrisu(view.getModel().getStructure(name));	
+				editor.updateDisplay();
+				break;
+			}
+			case 2:
+			{
+				exportSelectionItem.setEnabled(true);
+				exportFSItem.setEnabled(false);
+				theoryMGSItem.setEnabled(false);
+				sigMGUItem.setEnabled(true);
+				if (view.getModel().getTheoryFileName() != null) theMGUItem.setEnabled(true);
+				break;
+			}
+			default:
+			{
+				exportSelectionItem.setEnabled(true);
+				exportFSItem.setEnabled(false);
+				theoryMGSItem.setEnabled(false);
+				sigMGUItem.setEnabled(false);
+				theMGUItem.setEnabled(false);
+				break;
+			}
 		}
 	}
 	
