@@ -80,6 +80,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	private final JLabel signatureFileLabel;
 	private final JLabel theoryFileLabel;
 	
+	private JMenuItem exportSelectionItem;
 	private JMenu fsMenu;
 	private JMenu newTypeInstanceMenu;
 	private JMenu newLexiconInstanceMenu;
@@ -113,8 +114,9 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		exportWorkbenchItem.addActionListener(this);
 		workbenchMenu.add(exportWorkbenchItem);
 		
-		JMenuItem exportSelectionItem = new JMenuItem("Export Selection to Workbench");
+		exportSelectionItem = new JMenuItem("Export Selection to Workbench");
 		exportSelectionItem.setEnabled(false);
+		exportSelectionItem.addActionListener(this);
 		workbenchMenu.add(exportSelectionItem);
 		
 		workbenchMenu.addSeparator();
@@ -274,9 +276,17 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) 
 	{
-		String name = getPrimarySelectionID();
-		editor.loadGrisu(view.getModel().getStructure(name));	
-		editor.updateDisplay();
+		if (list.getSelectedIndices().length > 0)
+		{
+			exportSelectionItem.setEnabled(true);
+			String name = getPrimarySelectionID();
+			editor.loadGrisu(view.getModel().getStructure(name));	
+			editor.updateDisplay();
+		}
+		else
+		{
+			exportSelectionItem.setEnabled(false);
+		}
 	}
 	
 	public String getPrimarySelectionID()
@@ -434,6 +444,23 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             Element el = view.getModel().exportXML(XMLUtilities.newEmptyDocument());
             XMLUtilities.writeXML(el, dataFile.getAbsolutePath());
             this.processEvent(new TraleSLDFeatureEditEvent("Workbench saved.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+		}
+		else if (action.equals("Export Selection to Workbench"))
+		{
+			FeatureWorkbench workbench = new FeatureWorkbench();
+			workbench.setSignatureFileName(view.getModel().getSignatureFileName());
+			workbench.setTheoryFileName(view.getModel().getTheoryFileName());
+			for (Object s : list.getSelectedValues())
+			{
+				workbench.storeStructure((String) s, view.getModel().getStructure((String) s));
+			}
+			JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.setDialogTitle("Save Subset Workbench As");
+            chooser.showSaveDialog(this);
+            File dataFile = chooser.getSelectedFile();
+            Element el = workbench.exportXML(XMLUtilities.newEmptyDocument());
+            XMLUtilities.writeXML(el, dataFile.getAbsolutePath());
+            this.processEvent(new TraleSLDFeatureEditEvent("Selection exported.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 		}
 		else
 		{
