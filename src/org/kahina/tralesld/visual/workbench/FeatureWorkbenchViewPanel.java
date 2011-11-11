@@ -81,6 +81,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	private final JLabel theoryFileLabel;
 	
 	private JMenuItem exportSelectionItem;
+	private JMenuItem loadSignatureItem;
+	private JMenuItem compileTheoryItem;
+	private JMenuItem discardTheoryItem;
+	private JMenuItem reloadSignatureItem;
+	private JMenuItem recompileTheoryItem;
 	private JMenu fsMenu;
 	private JMenu newTypeInstanceMenu;
 	private JMenu newLexiconInstanceMenu;
@@ -125,13 +130,29 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		
 		workbenchMenu.addSeparator();
 		
-		JMenuItem loadSignatureItem = new JMenuItem("Load Signature ...");
+		loadSignatureItem = new JMenuItem("Load Signature ...");
 		loadSignatureItem.addActionListener(this);
 		workbenchMenu.add(loadSignatureItem);
 		
-		JMenuItem compileTheoryItem = new JMenuItem("Compile Theory ...");
-		compileTheoryItem.setEnabled(false);
+		compileTheoryItem = new JMenuItem("Compile Theory ...");
+		loadSignatureItem.addActionListener(this);
 		workbenchMenu.add(compileTheoryItem);
+		
+		discardTheoryItem = new JMenuItem("Discard Theory");
+		discardTheoryItem.setEnabled(false);
+		workbenchMenu.add(discardTheoryItem);
+		
+		workbenchMenu.addSeparator();
+		
+		reloadSignatureItem = new JMenuItem("Reload signature");
+		reloadSignatureItem.setEnabled(false);
+		reloadSignatureItem.addActionListener(this);
+		workbenchMenu.add(reloadSignatureItem);
+		
+		recompileTheoryItem = new JMenuItem("Recompile theory");
+		recompileTheoryItem.setEnabled(false);
+		recompileTheoryItem.addActionListener(this);
+		workbenchMenu.add(recompileTheoryItem);
 		
 		menuBar.add(workbenchMenu);
 		
@@ -244,6 +265,12 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		list.setListData(view.getNameList().toArray());
 		signatureFileLabel.setText("Signature file: " + view.getSignatureFileName());
 		theoryFileLabel.setText("Theory file: " + view.getTheoryFileName());
+		updateMenus();
+		this.repaint();
+	}
+	
+	private void updateMenus()
+	{
 		newTypeInstanceMenu.removeAll();
 		if (view.getModel().getSignature() != null)
 		{
@@ -254,7 +281,29 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 				newTypeInstanceMenu.add(buildTypeMenu(sig,type));
 			}
 		}
-		this.repaint();
+		if (view.getModel().getTheoryFileName() == null)
+		{
+			loadSignatureItem.setEnabled(true);
+			compileTheoryItem.setEnabled(true);
+			discardTheoryItem.setEnabled(false);
+			recompileTheoryItem.setEnabled(false);	
+			if (view.getModel().getSignatureFileName() == null)
+			{
+				reloadSignatureItem.setEnabled(false);
+			}
+			else
+			{
+				reloadSignatureItem.setEnabled(true);
+			}
+		}
+		else
+		{
+			loadSignatureItem.setEnabled(false);
+			compileTheoryItem.setEnabled(true);
+			discardTheoryItem.setEnabled(true);
+			reloadSignatureItem.setEnabled(false);
+			recompileTheoryItem.setEnabled(true);
+		}
 	}
 	
 	private JComponent buildTypeMenu(TraleSLDSignature sig, String type)
