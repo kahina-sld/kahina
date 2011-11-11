@@ -355,9 +355,12 @@ public class AuxiliaryTraleInstance extends Thread
 		if (phonPosition != -1)
 		{
 			int leftOfList = descString.indexOf("[",phonPosition);
-			descString = descString.substring(0, leftOfList + 1) + "(a_ " + descString.substring(leftOfList + 1);
-			int rightOfList = descString.indexOf("]",phonPosition);
-			descString = descString.substring(0, rightOfList) + ")" + descString.substring(rightOfList);
+			if (leftOfList != -1)
+			{
+				descString = descString.substring(0, leftOfList + 1) + "(a_ " + descString.substring(leftOfList + 1);
+				int rightOfList = descString.indexOf("]",phonPosition);
+				descString = descString.substring(0, rightOfList) + ")" + descString.substring(rightOfList);
+			}
 		}
 		//HACK: extract head type from the description (necessary for theory)
 		//      (alternatively, one could hand over the type as a second argument)
