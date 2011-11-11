@@ -569,7 +569,10 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	public void addTypeMGS(String type)
 	{
-		String result = view.getTrale().descToMgsGrisu(type);
+		//the good old way via the AuxiliaryTraleInstance
+		//String result = view.getTrale().descToMgsGrisu(type);
+		String result = "!newdata\"current\"" + view.getModel().getSignature().computeGrisuMGS(type) + "\n";
+		
 		if (result.startsWith("ERROR"))
 		{
         	this.processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));

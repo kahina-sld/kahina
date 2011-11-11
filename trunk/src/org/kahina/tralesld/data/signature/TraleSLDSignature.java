@@ -1,5 +1,6 @@
 package org.kahina.tralesld.data.signature;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -144,6 +145,31 @@ public class TraleSLDSignature extends KahinaObject
 			if (dominates(domer, supertype)) return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Compute the most general satisifier of a type as a GRISU string.
+	 * @param type a type defined in this signature.
+	 * @return a GRISU string representing the MGS.
+	 */
+	public String computeGrisuMGS(String type)
+	{
+		if (!types.contains(type))
+		{
+			return "ERROR: no type information in signature!";
+		}
+		String output = "(S1(0\"" + type + "\")";
+		Map<String,String> appropFeats = typeRestr.get(type);
+		//TODO: inefficient; precompute lists or entire MGSs
+		List<String> appropFeatsList = new LinkedList<String>();
+		appropFeatsList.addAll(appropFeats.keySet());
+		Collections.sort(appropFeatsList);
+		for (String feat : appropFeatsList)
+		{
+			output += "(V2\"" + feat + "\"" + computeGrisuMGS(appropFeats.get(feat)) + ")";
+		}
+		output += ")";
+		return output;
 	}
 	
 	/**
