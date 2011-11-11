@@ -148,7 +148,7 @@ public class TraleSLDSignature extends KahinaObject
 	}
 	
 	/**
-	 * Compute the most general satisifier of a type as a GRISU string.
+	 * Compute the most general satisfier of a type as a GRISU string.
 	 * @param type a type defined in this signature.
 	 * @return a GRISU string representing the MGS.
 	 */
@@ -170,6 +170,29 @@ public class TraleSLDSignature extends KahinaObject
 		}
 		output += ")";
 		return output;
+	}
+	
+	/**
+	 * Resolves mgsat/1 instances in a GRISU string
+	 * @param grisuString
+	 * @return the grisuString with mgsat/1 clauses resolved
+	 */
+	public String resolveMGSs(String grisu)
+	{
+		while (grisu.contains("mgsat("))
+		{
+			int mgsExpStart = grisu.indexOf("mgsat(");
+			//extract the type name
+			int mgsExpEnd = grisu.indexOf(")", mgsExpStart);
+			String type = grisu.substring(mgsExpStart + 6, mgsExpEnd);
+			String mgsGrisu = computeGrisuMGS(type);
+			//find the left and right boundaries of the replacement string
+			int repExpStart = grisu.lastIndexOf("(",grisu.lastIndexOf("(", mgsExpStart) - 1);
+			int repExpEnd = grisu.indexOf(")",grisu.indexOf(")", mgsExpEnd + 1) + 1) + 1;
+			//insert MGS GRISU string for (S1(0"mgsat(type)"))
+			grisu = grisu.substring(0,repExpStart) + mgsGrisu + grisu.substring(repExpEnd);
+		}
+		return grisu;
 	}
 	
 	/**

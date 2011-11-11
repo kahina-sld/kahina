@@ -378,6 +378,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			String traleDesc = Entities.toTraleDesc(contextStructure);
 			//use TRALE instance to retrieve the grisuString for the description's MGS
 			String result = trale.descToMgsGrisu(traleDesc);
+			result = sig.resolveMGSs(result);
 			if (result.startsWith("ERROR"))
 			{
 				failureMessage(result);
@@ -436,7 +437,8 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
 			//use TRALE instance to retrieve the grisuString for the description's MGS
 			String result = trale.descToMgsGrisu(traleDesc);
-			if (result.startsWith("error"))
+			result = sig.resolveMGSs(result);
+			if (result.startsWith("ERROR"))
 			{
 				failureMessage(result);
 			}
