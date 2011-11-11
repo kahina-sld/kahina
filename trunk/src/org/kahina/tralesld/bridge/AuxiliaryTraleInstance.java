@@ -129,8 +129,8 @@ public class AuxiliaryTraleInstance extends Thread
 	{
 		synchronized(task)
 		{
-			task.setInstruction("signature");
 			task.setToProcess(fileName);
+			task.setInstruction("signature");
 			task.notify();
 	    	try
 	    	{
