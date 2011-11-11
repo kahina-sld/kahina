@@ -387,10 +387,15 @@ start_new_kahina_session(Bridge,JVM) :-
   retractall(source_read(_)),
   retractall(source_clause(_,_,_,_)),
   get_kahina_instance(Instance,JVM),
-  jasper_call(JVM,
-      method('org/kahina/sicstus/SICStusPrologDebuggerInstance','startNewSession',[instance]),
-      start_new_session(+object('org/kahina/sicstus/SICStusPrologDebuggerInstance'),[-object('org/kahina/sicstus/bridge/SICStusPrologBridge')]),
-      start_new_session(Instance,LocalBridge)),
+  catch(
+      jasper_call(JVM,
+              method('org/kahina/sicstus/SICStusPrologDebuggerInstance','startNewSession',[instance]),
+              start_new_session(+object('org/kahina/sicstus/SICStusPrologDebuggerInstance'),[-object('org/kahina/sicstus/bridge/SICStusPrologBridge')]),
+              start_new_session(Instance,LocalBridge)),
+      E,
+      (is_java_exception(JVM,E)
+      -> print_exception_info(JVM,E)
+       ; raise(E))),
   jasper_create_global_ref(JVM,LocalBridge,Bridge),
   assert(bridge(Bridge)),
   write_to_chars('[query]',RootLabelChars),
@@ -701,3 +706,63 @@ memberchkid_act(Element,[First|_]) :-
   !.
 memberchkid_act(Element,[_|Rest]) :-
   memberchkid_act(Element,Rest).
+
+% ------------------------------------------------------------------------------
+% EXCEPTION HANDLING
+% from SICStus manual
+% ------------------------------------------------------------------------------
+
+is_java_exception(_JVM, Thing) :- var(Thing), !, fail.
+is_java_exception(_JVM, Thing) :-
+   Thing = java_exception(_),      % misc error in Java/Prolog glue
+   !.
+is_java_exception(JVM, Thing) :-
+   jasper_is_object(JVM, Thing),
+   jasper_is_instance_of(JVM, Thing, 'java/lang/Throwable').
+
+print_exception_info(_JVM, java_exception(Message)) :- !,
+   format(user_error, '~NJasper exception: ~w~n', [Message]).
+print_exception_info(JVM, Excp) :-
+   /*
+   // Approximate Java code
+   {
+      String messageChars = excp.getMessage();
+   }
+   */
+   jasper_call(JVM,
+               method('java/lang/Throwable', 'getMessage', [instance]),
+               get_message(+object('java/lang/Throwable'), [-chars]),
+               get_message(Excp, MessageChars)),
+   /* // Approximate Java code
+   {
+      StringWriter stringWriter = new StringWriter();
+      PrintWriter printWriter = new PrintWriter(stringWriter);
+      excp.printStackTrace(printWriter);
+      printWriter.close();
+      stackTraceChars = StringWriter.toString();
+   }
+   */
+   jasper_new_object(JVM, 'java/io/StringWriter',
+                     init, init, StringWriter),
+   jasper_new_object(JVM, 'java/io/PrintWriter',
+                     init(+object('java/io/Writer')),
+                     init(StringWriter), PrintWriter),
+   jasper_call(JVM,
+               method('java/lang/Throwable', 'printStackTrace', [instance]),
+               print_stack_trace(+object('java/lang/Throwable'),
+                                 +object('java/io/PrintWriter')),
+               print_stack_trace(Excp, PrintWriter)),
+   jasper_call(JVM,
+               method('java/io/PrintWriter','close',[instance]),
+               close(+object('java/io/PrintWriter')),
+               close(PrintWriter)),
+   jasper_call(JVM,
+               method('java/io/StringWriter','toString',[instance]),
+               to_string(+object('java/io/StringWriter'),[-chars]),
+               to_string(StringWriter, StackTraceChars)),
+   jasper_delete_local_ref(JVM, PrintWriter),
+   jasper_delete_local_ref(JVM, StringWriter),
+   %% ! exceptions are thrown as global references
+   jasper_delete_global_ref(JVM, Excp),
+   format(user_error, '~NJava Exception: ~s\nStackTrace: ~s~n',
+          [MessageChars, StackTraceChars]).

@@ -4,6 +4,7 @@
 
 :- use_module('../kahinasicstus/kahinasicstus').
 :- use_module(library(assoc)).
+:- use_module(library(charsio)).
 :- use_module(library(jasper)).
 :- use_module(library(lists)).
 :- use_module(library(ordsets)).
@@ -59,8 +60,8 @@ kahinasicstus:instance_class_hook('org/kahina/qtype/QTypeDebuggerInstance').
 :- multifile kahinasicstus:post_step_hook/5.
 
 kahinasicstus:post_step_hook(Bridge,JVM,Inv,_,_) :-
-  execution_state(goal(_:Goal)),write(Goal),nl,
-  term_grisu(Goal,'',Grisu),atom_codes(Atom,Grisu),write(Atom),nl,
+  execution_state(goal(_:Goal)),
+  term_grisu(Goal,'',Grisu),
   register_goal(Bridge,JVM,Inv,[105,110],Grisu). % in
 
 :- multifile kahinasicstus:post_exit_hook/5.
@@ -79,6 +80,7 @@ register_goal(Bridge,JVM,Inv,KeyChars,Grisu) :-
 :- multifile kahinasicstus:classpath_element/1.
 
 kahinasicstus:classpath_element('$KAHINA_HOME/lib/gralej/gralej.jar'). % TODO check for $KAHINA_HOME
+kahinasicstus:classpath_element('$KAHINA_HOME/lib/gralej/lib/tomato.jar').
 
 % ------------------------------------------------------------------------------
 % PUBLIC PREDICATES
@@ -243,7 +245,7 @@ goal_source_code_location(descr:start_constraint(Line),File,Line) :-
 %   Grisu: A code-list representing the Grisu message needed.
 
 term_grisu(Term,Label,[33,110,101,119,100,97,116,97|Grisu0]) :- % !newdata
-  string_grisu(Label,Grisu0,[Grisu1]),
+  string_grisu(Label,Grisu0,Grisu1),
   empty_assoc(Empty),
   term_coins(Term,1,_,Empty,_,Empty,Coins),
   term_grisu(Term,5,Coins,0,_,Grisu1,[10]). % LF; close list
@@ -290,12 +292,20 @@ fl_coins([_:FS|Rest],Num0,Num,Seen0,Seen,Coins0,Coins) :-
 
 % The actual portraying:
 
-term_grisu(Term,_,Coins,ID0,ID,Grisu0,Grisu) :-
+term_grisu(Term,_Depth,Coins,ID0,ID,Grisu0,Grisu) :-
   should_be_attempted_to_portray_as_fs(Term), % looks like a good FS on the surface
   fs_grisu(Term,Coins,ID0,ID,Grisu0,Grisu), % may still fail, naughty FSs may be hidden inside
   !.
+term_grisu(Term,_Depth,_Coins,ID0,ID,Grisu0,Grisu) :-
+  var(Term),
+  !,
+  var_grisu(Term,ID0,ID,Grisu0,Grisu).
+term_grisu(Term,_Depth,_Coins,ID0,ID,Grisu0,Grisu) :-
+  number(Term),
+  !,
+  numberliteral_grisu(Term,ID0,ID,Grisu0,Grisu).
 term_grisu(Term,Depth,Coins,ID0,ID,[40,68|Grisu0],Grisu) :- % (D
-  Term =.. [Functor|Args],
+  Term =.. [Functor|Args], 
   id_grisu(ID0,ID1,Grisu0,Grisu1),
   string_grisu(Functor,Grisu1,Grisu2),
   arglist_grisu(Args,Depth,Coins,ID1,ID,Grisu2,[41|Grisu]). % )
@@ -398,6 +408,16 @@ id_grisu(ID0,ID,Grisu0,Grisu) :-
 number_grisu(Number,Grisu0,Grisu) :-
   number_codes(Number,Codes),
   open_list(Codes,Grisu0,Grisu).
+
+var_grisu(Var,ID0,ID,[40,65,34|Grisu0],Grisu) :- % (A
+  id_grisu(ID0,ID,Grisu0,[34|Grisu1]), % "
+  write_to_chars(Var,Codes),
+  open_list(Codes,Grisu1,[34,41|Grisu]). % ")
+
+numberliteral_grisu(Number,ID0,ID,[40,65|Grisu0],Grisu) :- % (A
+  id_grisu(ID0,ID,Grisu0,[34|Grisu1]), % "
+  number_codes(Number,Codes),
+  open_list(Codes,Grisu1,[34,41|Grisu]). % ")
 
 % string, such as a type, feature or functor
 % the character " may not appear in Grisu string literals, at least

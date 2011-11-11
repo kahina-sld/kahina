@@ -19,14 +19,16 @@ public class QTypeGoalViewPanel extends KahinaViewPanel<QTypeGoalView>
 
 	public QTypeGoalViewPanel()
 	{
-		setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		innerPanel = new JPanel();
+		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
 		add(new JScrollPane(innerPanel));
 	}
 
 	@Override
 	public void updateDisplay()
 	{
+		innerPanel.removeAll();
 		QTypeGoal model = view.getModel();
 		
 		if (model == null)

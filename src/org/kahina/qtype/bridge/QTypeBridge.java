@@ -37,6 +37,8 @@ public class QTypeBridge extends SICStusPrologBridge
 			{
 				goal.setOut(packer.pack(grisu));
 			}
+			
+			selectIfPaused(convertStepID(extID));
 		} catch (Exception e)
 		{
 			e.printStackTrace();
