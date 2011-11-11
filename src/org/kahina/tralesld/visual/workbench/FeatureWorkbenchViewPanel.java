@@ -14,7 +14,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -135,7 +137,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		workbenchMenu.add(loadSignatureItem);
 		
 		compileTheoryItem = new JMenuItem("Compile Theory ...");
-		loadSignatureItem.addActionListener(this);
+		compileTheoryItem.addActionListener(this);
 		workbenchMenu.add(compileTheoryItem);
 		
 		discardTheoryItem = new JMenuItem("Discard Theory");
@@ -144,12 +146,12 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		
 		workbenchMenu.addSeparator();
 		
-		reloadSignatureItem = new JMenuItem("Reload signature");
+		reloadSignatureItem = new JMenuItem("Reload Signature");
 		reloadSignatureItem.setEnabled(false);
 		reloadSignatureItem.addActionListener(this);
 		workbenchMenu.add(reloadSignatureItem);
 		
-		recompileTheoryItem = new JMenuItem("Recompile theory");
+		recompileTheoryItem = new JMenuItem("Recompile Theory");
 		recompileTheoryItem.setEnabled(false);
 		recompileTheoryItem.addActionListener(this);
 		workbenchMenu.add(recompileTheoryItem);
@@ -199,11 +201,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		JPanel infoPanel = new JPanel();
 		infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 		
-		signatureFileLabel = new JLabel("Signature file: ");
+		signatureFileLabel = new JLabel("Signature file: none (signature not specified or not yet loaded)");
 		signatureFileLabel.setAlignmentX(LEFT_ALIGNMENT);
 		infoPanel.add(signatureFileLabel);
 		
-		theoryFileLabel = new JLabel("Theory file: ");
+		theoryFileLabel = new JLabel("Theory file: none (theory not specified or not yet loaded)");
 		theoryFileLabel.setAlignmentX(LEFT_ALIGNMENT);
 		infoPanel.add(theoryFileLabel);
 		
@@ -247,6 +249,68 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		this.add(contentPanel);
 	}
 	
+	public void loadSignature(String sigFileName)
+	{
+    	if (sigFileName != null)
+    	{
+    		TraleSLDSignature sig = view.getTrale().getSignature(sigFileName);
+    		if (sig != null)
+    		{
+	    		view.getModel().setSignatureFileName(sigFileName);
+	    		view.getModel().setSignature(sig);
+	    		editor.setSignature(view.getModel().getSignature());
+	    		signatureFileLabel.setText("Signature file: " + view.getSignatureFileName());
+	    		newTypeInstanceMenu.removeAll();
+	    		if (view.getModel().getSignature() != null)
+	    		{
+	    			Set<String> baseTypes = sig.getSubtypes("bot");
+	    			List<String> baseTypesList = new LinkedList<String>();
+	    			baseTypesList.addAll(baseTypes);
+	    			Collections.sort(baseTypesList);
+	    			for (String type : baseTypesList)
+	    			{
+	    				newTypeInstanceMenu.add(buildTypeMenu(sig,type));
+	    			}
+	    		}
+	    		this.processEvent(new TraleSLDFeatureEditEvent("Signature loaded.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+    		}
+    		else
+    		{
+	    		this.processEvent(new TraleSLDFeatureEditEvent("Signature compilation failed!", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+    		}
+    	}
+    	else
+    	{
+    		this.processEvent(new TraleSLDFeatureEditEvent("Signature file name invalid: " + sigFileName, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+    	}
+	}
+	
+	private JComponent buildTypeMenu(TraleSLDSignature sig, String type)
+	{
+		Set<String> subtypes = sig.getSubtypes(type);
+		if (subtypes.isEmpty())
+		{
+			JMenuItem typeItem = new JMenuItem(type);
+			typeItem.addActionListener(this);
+			return typeItem;
+		}
+		else
+		{
+			JMenu subtypeMenu = new JMenu(type);
+			subtypeMenu.setActionCommand(type);
+			subtypeMenu.addMouseListener(this);
+			List<String> subtypesList = new LinkedList<String>();
+			subtypesList.addAll(subtypes);
+			Collections.sort(subtypesList);
+			for (String subtype : subtypesList)
+			{
+				subtypeMenu.add(buildTypeMenu(sig,subtype));
+			}
+			return subtypeMenu;
+		}
+	}
+
+	
 	public String getBufferedStructure() 
 	{
 		return bufferedStructure;
@@ -260,10 +324,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	@Override
 	public void updateDisplay() 
 	{
-		editor.setSignature(view.getModel().getSignature());
 		view.recalculate();
 		list.setListData(view.getNameList().toArray());
-		signatureFileLabel.setText("Signature file: " + view.getSignatureFileName());
 		theoryFileLabel.setText("Theory file: " + view.getTheoryFileName());
 		updateMenus();
 		this.repaint();
@@ -271,16 +333,6 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	private void updateMenus()
 	{
-		newTypeInstanceMenu.removeAll();
-		if (view.getModel().getSignature() != null)
-		{
-			TraleSLDSignature sig = view.getModel().getSignature();
-			Set<String> baseTypes = sig.getSubtypes("bot");
-			for (String type : baseTypes)
-			{
-				newTypeInstanceMenu.add(buildTypeMenu(sig,type));
-			}
-		}
 		if (view.getModel().getTheoryFileName() == null)
 		{
 			loadSignatureItem.setEnabled(true);
@@ -306,28 +358,6 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		}
 	}
 	
-	private JComponent buildTypeMenu(TraleSLDSignature sig, String type)
-	{
-		Set<String> subtypes = sig.getSubtypes(type);
-		if (subtypes.isEmpty())
-		{
-			JMenuItem typeItem = new JMenuItem(type);
-			typeItem.addActionListener(this);
-			return typeItem;
-		}
-		else
-		{
-			JMenu subtypeMenu = new JMenu(type);
-			subtypeMenu.setActionCommand(type);
-			subtypeMenu.addMouseListener(this);
-			for (String subtype : subtypes)
-			{
-				subtypeMenu.add(buildTypeMenu(sig,subtype));
-			}
-			return subtypeMenu;
-		}
-	}
-
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) 
 	{
@@ -509,11 +539,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             	Document doc = XMLUtilities.parseXMLStream(new BufferedInputStream(new FileInputStream(dataFile)), false);
             	FeatureWorkbench workbench = FeatureWorkbench.importXML(doc.getDocumentElement());
             	view.display(workbench);
-            	String sigFileName = view.getModel().getSignatureFileName();
-            	if (sigFileName != null)
-            	{
-            		view.getModel().setSignature(view.getTrale().getSignature(sigFileName));
-            	}
+            	loadSignature(view.getModel().getSignatureFileName());
             	this.processEvent(new TraleSLDFeatureEditEvent("Workbench loaded.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
             }
             catch (FileNotFoundException ex)
@@ -555,10 +581,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             chooser.setDialogTitle("Load Signature");
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
-            String signatureFileName = dataFile.getAbsolutePath();
-			view.getModel().setSignatureFileName(signatureFileName);
-			view.getModel().setSignature(view.getTrale().getSignature(signatureFileName));
-			this.processEvent(new TraleSLDFeatureEditEvent("Signature loaded.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+            loadSignature(dataFile.getAbsolutePath());
+		}
+		else if (action.equals("Reload Signature"))
+		{
+            loadSignature(view.getModel().getSignatureFileName());
 		}
 		else
 		{
@@ -695,8 +722,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		AuxiliaryTraleInstance trale = new AuxiliaryTraleInstance(true);
 		trale.start();
 		FeatureWorkbench workbench = new FeatureWorkbench();
-		workbench.setSignatureFileName(System.getProperty("user.dir") + "/signature");
-		workbench.setSignature(trale.getSignature(System.getProperty("user.dir") + "/signature"));
+		//workbench.setSignatureFileName(System.getProperty("user.dir") + "/signature");
+		//workbench.setSignature(trale.getSignature(System.getProperty("user.dir") + "/signature"));
 		//add a few feature structures for testing purposes
 		workbench.storeStructure("complex", "!newdata\"Edge\"(S1(0\"word\")(V2\"phon\"(L3(S5(4\"cruel\"))))(V6\"qstore\"(S8(7\"list\")))(V9\"synsem\"(S11(10\"synsem\")(V12\"loc\"(S14(13\"loc\")(V15\"cat\"(S17(16\"cat\")(V18\"determined\"(S20(19\"boolean\")))(V21\"head\"(S23(22\"adj\")(V24\"mod\"(S26(25\"synsem\")(V27\"loc\"(S29(28\"loc\")(V30\"cat\"(S32(31\"cat\")(V33\"determined\"(S35(34\"minus\")))(V36\"head\"(S38(37\"noun\")(V39\"case\"(S41(40\"case\")))(V42\"mod\"(S44(43\"synsem_none\")))(V45\"pred\"(S47(46\"boolean\")))))(V48\"val\"(S50(49\"mgsat(val)\")))))(V51\"cont\"(S53(52\"nom_obj\")(V54\"index\"(#55 1))(V56\"restr\"(#57 2))))))(V58\"nonloc\"(S60(59\"mgsat(nonloc)\")))))(V61\"pred\"(S63(62\"minus\")))))(V64\"val\"(S66(65\"val\")(V67\"subj\"(L68))(V69\"comps\"(#70 0))))))(V71\"cont\"(S73(72\"nom_obj\")(V74\"index\"(#75 1))(V76\"restr\"(L77(S79(78\"psoa\")(V80\"nucleus\"(S82(81\"adjmod\")(V83\"inst\"(#84 1))(V85\"relationname\"(S87(86\"bot\")))(V88\"soa_arg\"(S90(89\"mgsat(psoa)\")))))(V91\"quants\"(L92)))(Z93(#94 2))))))))(V95\"nonloc\"(S97(96\"mgsat(nonloc)\")))))(V98\"arg_st\"(#99 0)))(R100 2(S2(101\"list\")))(R102 0(L0))(R103 1(S1(104\"index\")(V105\"gen\"(S107(106\"gen\")))(V108\"num\"(S110(109\"num\")))(V111\"pers\"(S113(112\"pers\")))(V114\"sort\"(S116(115\"bot\")))))\n");
 		workbench.storeStructure("cruel", "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n");
