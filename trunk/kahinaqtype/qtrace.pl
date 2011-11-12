@@ -409,7 +409,7 @@ number_grisu(Number,Grisu0,Grisu) :-
   number_codes(Number,Codes),
   open_list(Codes,Grisu0,Grisu).
 
-var_grisu(Var,ID0,ID,[40,65,34|Grisu0],Grisu) :- % (A
+var_grisu(Var,ID0,ID,[40,65|Grisu0],Grisu) :- % (A
   id_grisu(ID0,ID,Grisu0,[34|Grisu1]), % "
   write_to_chars(Var,Codes),
   open_list(Codes,Grisu1,[34,41|Grisu]). % ")
