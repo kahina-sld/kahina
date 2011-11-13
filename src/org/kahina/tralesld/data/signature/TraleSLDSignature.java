@@ -121,6 +121,11 @@ public class TraleSLDSignature extends KahinaObject
 		return siblingTypes;
 	}
 	
+	public Map<String,String> getTypeRestrictions(String type)
+	{
+		return typeRestr.get(type);
+	}
+	
 	public Set<String> getUses(String type)
 	{
 		return usage.get(type);

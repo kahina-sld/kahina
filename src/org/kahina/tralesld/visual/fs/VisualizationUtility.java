@@ -6,6 +6,7 @@ import gralej.controller.StreamInfo;
 import gralej.om.EntityFactory;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
+import gralej.om.IList;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
 import gralej.parsers.GraleParserFactory;
@@ -139,7 +140,18 @@ public class VisualizationUtility
 	
 	private static void graleJToGrisu(IEntity ent, StringBuilder s, int[] counter)
 	{
-		if (ent instanceof ITypedFeatureStructure)
+		if (ent instanceof IList)
+		{
+			IList list = (IList) ent;
+			s.append("(L");
+			s.append(counter[0]++);
+			for (IEntity lEnt : list.elements())
+			{
+				s.append(lEnt);
+			}
+			s.append(")");
+		}
+		else if (ent instanceof ITypedFeatureStructure)
 		{
 			ITypedFeatureStructure tfs = (ITypedFeatureStructure) ent;
 			s.append("(S" + (counter[0] + 1));
