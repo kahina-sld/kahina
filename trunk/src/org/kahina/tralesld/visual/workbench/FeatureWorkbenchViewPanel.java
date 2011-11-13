@@ -1,5 +1,7 @@
 package org.kahina.tralesld.visual.workbench;
 
+import gralej.parsers.EntityFactory;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -63,6 +65,7 @@ import org.kahina.tralesld.event.TraleSLDFeatureEditEvent;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditor;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditorMenu;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
+import org.kahina.tralesld.visual.fs.VisualizationUtility;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -596,10 +599,13 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	public void addTypeMGS(String type)
 	{
-		//the good old way via the AuxiliaryTraleInstance
+		//the good (or bad) old way via the AuxiliaryTraleInstance
 		//String result = view.getTrale().descToMgsGrisu(type);
-		String result = "!newdata\"current\"" + view.getModel().getSignature().computeGrisuMGS(type) + "\n";
+		//the newer variant via direct GRISU computation
+		//String result = "!newdata\"current\"" + view.getModel().getSignature().computeGrisuMGS(type) + "\n";
 		
+		//the most recent and most general way via IEntity construction
+		String result = VisualizationUtility.convertGraleJToGrisu(editor.generateSignatureMGS(type, EntityFactory.getInstance()));
 		if (result.startsWith("ERROR"))
 		{
         	this.processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));

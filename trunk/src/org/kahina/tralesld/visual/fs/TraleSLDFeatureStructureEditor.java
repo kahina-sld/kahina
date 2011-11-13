@@ -3,6 +3,7 @@ package org.kahina.tralesld.visual.fs;
 import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
 import gralej.om.Entities;
+import gralej.om.EntityFactory;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IType;
@@ -14,7 +15,11 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JLabel;
@@ -324,6 +329,40 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			}
 		}
 		return possSiblings;
+	}
+	
+	public IEntity generateSignatureMGS(String type, EntityFactory ent)
+	{
+		if (!sig.getTypes().contains(type))
+		{
+			return ent.newType("mgsat(" + type + ")");
+		}
+		IEntity struct;
+		if (type.equals("e_list"))
+		{
+			struct = ent.newList();
+		}
+		else if (type.equals("ne_list"))
+		{
+			List<IEntity> botList = new LinkedList<IEntity>();
+			botList.add(ent.newTFS("bot"));
+			botList.add(ent.newTFS("list"));
+			struct = ent.newList(botList);
+		}
+		else
+		{
+			List<IFeatureValuePair> fvList = new LinkedList<IFeatureValuePair>();
+			Map<String,String> appropFeats = sig.getTypeRestrictions(type);
+			List<String> appropFeatsList = new LinkedList<String>();
+			appropFeatsList.addAll(appropFeats.keySet());
+			Collections.sort(appropFeatsList);
+			for (String feat : appropFeatsList)
+			{
+				fvList.add(ent.newFeatVal(feat, generateSignatureMGS(appropFeats.get(feat), ent)));
+			}
+			struct = ent.newTFS(type,fvList);
+		}
+		return struct;
 	}
 	
 	public TraleSLDFeatureStructureEditorMenu createContextMenu()
