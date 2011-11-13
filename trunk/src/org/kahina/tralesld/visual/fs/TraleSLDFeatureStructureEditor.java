@@ -433,11 +433,14 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
 				selectedFS.type().setTypeName(type);
 			}
-			//get back the edited structure in TRALE desc format
+			//THE OLD WAY: editing via AuxiliaryTraleInstance
+			/*//get back the edited structure in TRALE desc format
 			String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
 			//use TRALE instance to retrieve the grisuString for the description's MGS
 			String result = trale.descToMgsGrisu(traleDesc);
-			result = sig.resolveMGSs(result);
+			result = sig.resolveMGSs(result);*/
+			//THE NEW WAY: render edited structure into grisu
+			String result = VisualizationUtility.convertGraleJToGrisu((IEntity) data.getModel());
 			if (result.startsWith("ERROR"))
 			{
 				failureMessage(result);

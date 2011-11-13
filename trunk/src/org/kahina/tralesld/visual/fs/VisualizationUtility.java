@@ -4,6 +4,10 @@ import gralej.Config;
 import gralej.blocks.BlockPanel;
 import gralej.controller.StreamInfo;
 import gralej.om.EntityFactory;
+import gralej.om.IEntity;
+import gralej.om.IFeatureValuePair;
+import gralej.om.IType;
+import gralej.om.ITypedFeatureStructure;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.IGraleParser;
@@ -122,5 +126,51 @@ public class VisualizationUtility
 		result.add(makeJPanel(grisuMessage));
 		result.setBorder(BorderFactory.createTitledBorder(varName));
 		return result;
+	}
+	
+	public static String convertGraleJToGrisu(IEntity ent)
+	{
+		int[] counter = {0};
+		StringBuilder s = new StringBuilder("!newdata\"grisu\"");
+		graleJToGrisu(ent, s, counter);
+		s.append("\n");
+		return s.toString();
+	}
+	
+	private static void graleJToGrisu(IEntity ent, StringBuilder s, int[] counter)
+	{
+		if (ent instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure tfs = (ITypedFeatureStructure) ent;
+			s.append("(S" + (counter[0] + 1));
+			graleJToGrisu(tfs.type(), s, counter);
+			counter[0]++;
+			for (IFeatureValuePair fv : tfs.featureValuePairs())
+			{
+				graleJToGrisu(fv, s, counter);
+			}
+			s.append(")");
+		}
+		else if (ent instanceof IType)
+		{
+			IType type = (IType) ent;
+			s.append("(");
+			s.append(counter[0]++);
+			s.append("\"");
+			s.append(type.text());
+			s.append("\"");
+			s.append(")");
+		}
+		else if (ent instanceof IFeatureValuePair)
+		{
+			IFeatureValuePair fv = (IFeatureValuePair) ent;
+			s.append("(V");
+			s.append(counter[0]++);
+			s.append("\"");
+			s.append(fv.feature());
+			s.append("\"");
+			graleJToGrisu(fv.value(), s, counter);
+			s.append(")");
+		}
 	}
 }
