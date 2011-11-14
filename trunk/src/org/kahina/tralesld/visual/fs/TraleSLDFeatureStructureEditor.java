@@ -6,6 +6,7 @@ import gralej.om.Entities;
 import gralej.om.EntityFactory;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
+import gralej.om.IList;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
 import gralej.parsers.IDataPackage;
@@ -346,8 +347,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			List<IEntity> botList = new LinkedList<IEntity>();
 			botList.add(ent.newTFS("bot"));
-			botList.add(ent.newTFS("list"));
-			struct = ent.newList(botList);
+			IList list = ent.newList(botList);
+			list.setTail(ent.newList());
+			struct = list;
 		}
 		else
 		{

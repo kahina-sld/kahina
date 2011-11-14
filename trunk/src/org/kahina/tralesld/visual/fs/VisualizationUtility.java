@@ -147,7 +147,7 @@ public class VisualizationUtility
 			s.append(counter[0]++);
 			for (IEntity lEnt : list.elements())
 			{
-				s.append(lEnt);
+				graleJToGrisu(lEnt, s, counter);
 			}
 			s.append(")");
 		}
