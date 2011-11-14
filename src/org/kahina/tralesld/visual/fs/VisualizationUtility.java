@@ -4,6 +4,7 @@ import gralej.Config;
 import gralej.blocks.BlockPanel;
 import gralej.controller.StreamInfo;
 import gralej.om.EntityFactory;
+import gralej.om.IAny;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
@@ -151,6 +152,17 @@ public class VisualizationUtility
 			}
 			s.append(")");
 		}
+		/*else if (ent instanceof IAny)
+		{
+			IList list = (IList) ent;
+			s.append("(L");
+			s.append(counter[0]++);
+			for (IEntity lEnt : list.elements())
+			{
+				graleJToGrisu(lEnt, s, counter);
+			}
+			s.append(")");
+		}*/
 		else if (ent instanceof ITypedFeatureStructure)
 		{
 			ITypedFeatureStructure tfs = (ITypedFeatureStructure) ent;

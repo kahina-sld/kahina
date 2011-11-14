@@ -205,8 +205,8 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	public void processContextStructure(Block block)
 	{
-		contextBlock = block;
-		contextStructure = block.getModel();
+		contextBlock = getStructureParent(block);
+		contextStructure = contextBlock.getModel();
 		contextStructureType = determineType(contextStructure);
 		
 		contextAttrBlock = getAttrParent(block);
@@ -235,6 +235,15 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				contextParentStructureType = determineType(contextParentStructure);
 			}
 		}
+	}
+	
+	private Block getStructureParent(Block block)
+	{
+		while(block != null && !(block.getModel() instanceof ITypedFeatureStructure))
+		{
+			block = block.getParent();
+		}
+		return block;
 	}
 	
 	private Block getAttrParent(Block block)
@@ -345,10 +354,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else if (type.equals("ne_list"))
 		{
-			List<IEntity> botList = new LinkedList<IEntity>();
-			botList.add(ent.newTFS("bot"));
-			IList list = ent.newList(botList);
-			list.setTail(ent.newList());
+			IList list = ent.newList();
+			list.append(ent.newTFS("bot"));
+			list.setTail(ent.newTFS("list"));
 			struct = list;
 		}
 		else
@@ -471,8 +479,18 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			}
 			else if (contextStructure instanceof ITypedFeatureStructure)
 			{
+				EntityFactory ent = EntityFactory.getInstance();
 				ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
 				selectedFS.type().setTypeName(type);
+				Map<String,String> appropFeats = sig.getTypeRestrictions(type);
+				List<String> appropFeatsList = new LinkedList<String>();
+				appropFeatsList.addAll(appropFeats.keySet());
+				Collections.sort(appropFeatsList);
+				//TODO: do not duplicate structure that already existed
+				for (String feat : appropFeatsList)
+				{
+					selectedFS.addFeatureValue(ent.newFeatVal(feat, generateSignatureMGS(appropFeats.get(feat), ent)));
+				}
 			}
 			//THE OLD WAY: editing via AuxiliaryTraleInstance
 			/*//get back the edited structure in TRALE desc format
