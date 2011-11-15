@@ -205,7 +205,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	public void processContextStructure(Block block)
 	{
-		contextBlock = getStructureParent(block);
+		contextBlock = block;
 		contextStructure = contextBlock.getModel();
 		contextStructureType = determineType(contextStructure);
 		
