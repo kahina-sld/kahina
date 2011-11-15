@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -486,10 +487,24 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				List<String> appropFeatsList = new LinkedList<String>();
 				appropFeatsList.addAll(appropFeats.keySet());
 				Collections.sort(appropFeatsList);
-				//TODO: do not duplicate structure that already existed
+				Map<String,IFeatureValuePair> featureMap = new HashMap<String,IFeatureValuePair>();
+				for (IFeatureValuePair pair : selectedFS.featureValuePairs())
+				{
+					featureMap.put(pair.text(), pair);
+				}
+				//TODO: subsumption check to determine whether feature values are specific enough
 				for (String feat : appropFeatsList)
 				{
-					selectedFS.addFeatureValue(ent.newFeatVal(feat, generateSignatureMGS(appropFeats.get(feat), ent)));
+					IFeatureValuePair fv = featureMap.remove(feat);
+					if (fv == null)
+					{
+						selectedFS.addFeatureValue(ent.newFeatVal(feat, generateSignatureMGS(appropFeats.get(feat), ent)));
+					}
+				}
+				//remove superfluous features
+				for (IFeatureValuePair fv : featureMap.values())
+				{
+					selectedFS.featureValuePairs().remove(fv);
 				}
 			}
 			//THE OLD WAY: editing via AuxiliaryTraleInstance
