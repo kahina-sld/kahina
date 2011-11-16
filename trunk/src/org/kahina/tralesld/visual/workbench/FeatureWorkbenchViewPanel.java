@@ -589,7 +589,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		else if (action.equals("Reload Signature"))
 		{
             loadSignature(view.getModel().getSignatureFileName());
-            //System.err.println(view.getModel().getSignature().formalRepresentation());
+            //System.err.println(view.getModel().getSignature().graphViz());
 		}
 		else
 		{
