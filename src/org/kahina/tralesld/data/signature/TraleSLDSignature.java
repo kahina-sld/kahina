@@ -303,7 +303,28 @@ public class TraleSLDSignature extends KahinaObject
 	 */
 	public String graphViz()
 	{
-		StringBuilder builder = new StringBuilder("⟨");
+		StringBuilder builder = new StringBuilder("digraph signature{\n    node [shape=plaintext];\n");
+		for (String type : types)
+		{
+			builder.append(type + " [label=<");
+			builder.append(type + "<BR/>");
+			List<String> featList = new LinkedList<String>();
+			featList.addAll(typeRestr.get(type).keySet());
+			Collections.sort(featList);
+			for (String feat : featList)
+			{
+				builder.append(feat.toUpperCase() + ":" + typeRestr.get(type).get(feat) + "<BR/>");
+			}
+			builder.append(">];\n");
+		}
+		for (String type : types)
+		{
+			for (String subtype : subtypes.get(type))
+			{
+				builder.append("    " + type + " -> " + subtype + ";\n");
+			}
+		}
+		builder.append("}\n");
 		return builder.toString();
 	}
 }
