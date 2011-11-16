@@ -229,4 +229,81 @@ public class TraleSLDSignature extends KahinaObject
 			}
 		}
 	}
+	
+	/**
+	 * Prints out the signature in formal notation according to Carpenter 1992.
+	 * @return the formal representation as a String;
+	 */
+	public String formalRepresentation()
+	{
+		StringBuilder builder = new StringBuilder("⟨");
+		//print set of types in alphabetical order
+		List<String> typeList = new LinkedList<String>();
+		typeList.addAll(types);
+		Collections.sort(typeList);
+		builder.append("{");
+		for (String type : typeList)
+		{
+			builder.append(type + ",");		
+		}
+		builder.deleteCharAt(builder.length() - 1);
+		builder.append("}");
+		//print out pairs of subsumption relation in alphabetical order (brute force!)
+		builder.append("{");
+		for (String type1 : typeList)
+		{
+			for (String type2 : typeList)
+			{
+				if (dominates(type1, type2))
+				{
+					builder.append("(" + type1 + "," + type2 + "),");
+				}
+			}
+		}
+		builder.deleteCharAt(builder.length() - 1);
+		builder.append("}");
+		//collect all features and print out feature set
+		Set<String> feats = new HashSet<String>();
+		for (String type : types)
+		{
+			feats.addAll(typeRestr.get(type).keySet());
+		}
+		List<String> featList = new LinkedList<String>();
+		featList.addAll(feats);
+		Collections.sort(featList);
+		builder.append("{");
+		for (String feat : featList)
+		{
+			builder.append(feat + ",");		
+		}
+		builder.deleteCharAt(builder.length() - 1);
+		builder.append("}");
+		//print out appropriateness function (again brute force!)
+		builder.append("{");
+		for (String feat : featList)
+		{
+			for (String type : typeList)
+			{
+				String valType = typeRestr.get(type).get(feat);
+				if (valType != null)
+				{
+					builder.append("(" + feat + "," + type + ") ↦ " + valType + ",");
+				}
+			}
+		}
+		builder.deleteCharAt(builder.length() - 1);
+		builder.append("}");
+		builder.append("⟩");
+		return builder.toString();
+	}
+	
+	/**
+	 * Prints out a graph representation in GraphViz DOT format.
+	 * @return a representation of the signature in DOT format.
+	 */
+	public String graphViz()
+	{
+		StringBuilder builder = new StringBuilder("⟨");
+		return builder.toString();
+	}
 }
