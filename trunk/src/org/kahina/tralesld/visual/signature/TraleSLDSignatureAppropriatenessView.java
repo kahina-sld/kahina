@@ -1,6 +1,9 @@
 package org.kahina.tralesld.visual.signature;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -49,9 +52,12 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
     		//System.err.println("Producing feature appropriateness HTML for type: " + type);
     		htmlBuilder = new StringBuilder("<u>Appropriate features for type <b>" + type + "</b>:</u><br/><br/>");
     		Map<String,String> approp = model.getAppropriateness(type);
-    		for (Entry<String,String> condition : approp.entrySet())
+    		List<String> featList = new ArrayList<String>();
+    		featList.addAll(approp.keySet());
+    		Collections.sort(featList);
+    		for (String feat : featList)
     		{
-    			htmlBuilder.append(condition.getKey().toUpperCase() + ": <a href=\"type:" + condition.getValue() + "\">" + condition.getValue() + "</a><br/> ");
+    			htmlBuilder.append(feat.toUpperCase() + ": <a href=\"type:" + approp.get(feat) + "\">" + approp.get(feat) + "</a><br/> ");
     		}
     		htmlForType.put(type, htmlBuilder.toString());
     	}

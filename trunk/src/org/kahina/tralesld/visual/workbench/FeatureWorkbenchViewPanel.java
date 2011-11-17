@@ -66,6 +66,9 @@ import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditor;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditorMenu;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
 import org.kahina.tralesld.visual.fs.VisualizationUtility;
+import org.kahina.tralesld.visual.signature.TraleSLDSignatureAppropriatenessView;
+import org.kahina.tralesld.visual.signature.TraleSLDSignatureHierarchyView;
+import org.kahina.tralesld.visual.signature.TraleSLDSignatureUsageView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -731,15 +734,42 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		FeatureWorkbench workbench = new FeatureWorkbench();
 		workbench.setSignatureFileName(System.getProperty("user.dir") + "/signature");
 		workbench.setSignature(trale.getSignature(System.getProperty("user.dir") + "/signature"));
+		workbench.getSignature().inferCachedInformation();
+
+		KahinaWindowManager wManager = new KahinaWindowManager(control);
+		
+		//generate a signature view window
+		TraleSLDSignatureAppropriatenessView appro = new TraleSLDSignatureAppropriatenessView(control);
+		appro.display(workbench.getSignature());
+		TraleSLDSignatureHierarchyView hiera = new TraleSLDSignatureHierarchyView(control);
+		hiera.display(workbench.getSignature());
+		TraleSLDSignatureUsageView usage = new TraleSLDSignatureUsageView(control);
+		usage.display(workbench.getSignature());
+		
+		KahinaWindow hieraWindow = wManager.integrateInDefaultWindow(hiera);
+		hieraWindow.setTitle("Type hierarchy");
+		KahinaWindow approWindow = wManager.integrateInDefaultWindow(appro);
+		approWindow.setTitle("Appropriateness");
+		KahinaWindow upperWindow = wManager.integrateInHorizontallySplitWindow(hieraWindow.getID(), approWindow.getID(), "Hierarchy & Appropriateness", control);
+		upperWindow.setBorder(false);
+		KahinaWindow usageWindow = wManager.integrateInDefaultWindow(usage);
+		usageWindow.setTitle("Usage");
+		KahinaWindow signatureWindow = wManager.integrateInVerticallySplitWindow(upperWindow.getID(), usageWindow.getID(), "Signature Inspection", control);
+		signatureWindow.setBorder(false);
+		signatureWindow.setSize(800, 500);
+		signatureWindow.setLocation(400, 300);
+		signatureWindow.setVisible(true);
+		
+		//generate the main feature workbench window
 		FeatureWorkbenchView workbenchView = new FeatureWorkbenchView(control, trale);
 		workbenchView.setTitle("Feature Workbench");
 		workbenchView.display(workbench);
-		KahinaWindowManager wManager = new KahinaWindowManager(control);
+		
 		KahinaWindow workbenchWindow = wManager.integrateInDefaultWindow(workbenchView);
 		wManager.registerWindow(workbenchWindow);
 		wManager.displayWindows();
 		workbenchWindow.setSize(800, 500);
-		workbenchWindow.setLocation(200, 200);
+		workbenchWindow.setLocation(200, 100);
 		workbenchWindow.setVisible(true);
 	}
 }
