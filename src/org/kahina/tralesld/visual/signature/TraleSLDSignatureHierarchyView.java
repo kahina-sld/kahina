@@ -1,6 +1,9 @@
 package org.kahina.tralesld.visual.signature;
 
 import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +62,11 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
     		else
     		{
     			htmlBuilder.append("<b>Immediate supertypes: </b>");
-    		}		
-    		for (String supertype : supertypes)
+    		}
+    		List<String> supertypeList = new ArrayList<String>();
+    		supertypeList.addAll(supertypes);
+    		Collections.sort(supertypeList);
+    		for (String supertype : supertypeList)
     		{
     			htmlBuilder.append("<a href=\"type:" + supertype + "\">" + supertype + "</a> ");
     		}
@@ -72,7 +78,10 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
     		else
     		{
 	    		htmlBuilder.append("<br/><b>Immediate subtypes: </b>");
-	    		for (String subtype : subtypes)
+	    		List<String> subtypeList = new ArrayList<String>();
+	    		subtypeList.addAll(subtypes);
+	    		Collections.sort(subtypeList);
+	    		for (String subtype : subtypeList)
 	    		{
 	    			htmlBuilder.append("<a href=\"type:" + subtype + "\">" + subtype + "</a> ");
 	    		}
@@ -88,7 +97,10 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
 	    			{
 	    				htmlBuilder.append("--none--");
 	    			}
-	    			for (String siblingType : siblingTypes)
+	        		List<String> siblingList = new ArrayList<String>();
+	        		siblingList.addAll(siblingTypes);
+	        		Collections.sort(siblingList);
+	    			for (String siblingType : siblingList)
 	    			{
 	    				if (!type.equals(siblingType))
 	    				{
@@ -99,8 +111,11 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
 	    		}
     		}	
     		
-    		htmlBuilder.append("<br/><b>Paths: </b><br/>");	
-    		for (List<String> path : model.getPaths(type))
+    		htmlBuilder.append("<br/><b>Paths: </b><br/>");
+    		List<List<String>> pathList = new ArrayList<List<String>>();
+    		pathList.addAll(model.getPaths(type));
+    		Collections.sort(pathList, new ListComparator());
+    		for (List<String> path : pathList)
     		{
     			for (String pathElement : path)
     			{
@@ -110,6 +125,26 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
     		}
     		htmlForType.put(type, htmlBuilder.toString());
     	}
+    }
+    
+    private class ListComparator implements Comparator<List<String>>
+    {
+		@Override
+		public int compare(List<String> list0, List<String> list1) 
+		{
+			int i = 0;
+			int list0size = list0.size();
+			int list1size = list1.size();			
+			while (i < list0.size() && i < list1.size())
+			{
+				int compare = list0.get(i).compareTo(list1.get(i));
+				if (compare != 0) return compare;
+				i++;
+			}
+			if (list0size < list1size) return -1;
+			if (list0size > list1size) return 1;
+			return 0;
+		} 	
     }
     
     public String getCurrentType()

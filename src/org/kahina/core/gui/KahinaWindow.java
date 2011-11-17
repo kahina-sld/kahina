@@ -110,7 +110,8 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     public void setTitle(String title)
     {
     	super.setTitle(title);
-    	mainPanel.setTitle(title + " (" + windowID + ")");
+    	mainPanel.setTitle(title);
+    	//mainPanel.setTitle(title + " (" + windowID + ")");
     	wm.arr.setTitle(windowID, title);
     }
     

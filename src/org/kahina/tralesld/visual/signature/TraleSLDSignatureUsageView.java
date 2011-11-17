@@ -3,7 +3,10 @@ package org.kahina.tralesld.visual.signature;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Stroke;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -55,7 +58,10 @@ public class TraleSLDSignatureUsageView extends KahinaView<TraleSLDSignature>
     	{
     		//System.err.println("Producing feature appropriateness HTML for type: " + type);
     		htmlBuilder = new StringBuilder("<u>Type <b>" + type + "</b> is valid for:</u><br/><br/>");
-    		for (String entry : model.getUses(type))
+    		List<String> usesList = new ArrayList<String>();
+    		usesList.addAll(model.getUses(type));
+    		Collections.sort(usesList);
+    		for (String entry : usesList)
     		{
     			String[] tyAndF = entry.split(":");
     			htmlBuilder.append("<a href=\"type:" + tyAndF[0] + "\">" + tyAndF[0] + "</a>:" + tyAndF[1].toUpperCase() + ":" + type + "<br/> ");
