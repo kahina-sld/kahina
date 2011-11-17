@@ -225,8 +225,9 @@ public class TraleSLDSignature extends KahinaObject
 			buildPaths(paths.get("bot"), type);
 		}
 		
+		//TODO: take tightening of appropriateness conditions into account
+		
 		//fill featIntroType in a rather brute-force manner
-		//TODO: implement a way to also display where a condition was tightened
 		//for each appropriateness condition ...
 		for (String type : types)
 		{
@@ -234,6 +235,25 @@ public class TraleSLDSignature extends KahinaObject
 			{
 				//... find out the type where it was introduced
 				featIntroType.get(type).put(feat, findIntroducer(type,feat));
+			}
+		}
+		
+		//enrich usage information to also include subtypes of value restrictions
+		for (String type : types)
+		{
+			for (String feat : typeRestr.get(type).keySet())
+			{
+				if (featIntroType.get(type).get(feat).equals(type))
+				{
+					List<String> subtypeList = new LinkedList<String>();
+					subtypeList.add(typeRestr.get(type).get(feat));
+					while (subtypeList.size() > 0)
+					{
+						String subtype = subtypeList.remove(0);
+						usage.get(subtype).add(type + ":" + feat);
+						subtypeList.addAll(subtypes.get(subtype));
+					}
+				}
 			}
 		}
 	}
