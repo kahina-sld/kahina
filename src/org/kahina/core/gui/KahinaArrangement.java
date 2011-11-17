@@ -194,7 +194,14 @@ public class KahinaArrangement
 			System.err.println("WARNING: removing a primary window! Inconsistencies may arise!");
 			primaryWindow.remove(winIDToBinding.get(winID));
 		}
-		windowIDs.remove(winID);
+		if (winID < windowIDs.size())
+		{
+			windowIDs.remove(winID);
+		}
+		else
+		{
+			System.err.println("WARNING: disposing of a window that was not part of the arrangement!");
+		}
 		xPos.remove(winID);
 		yPos.remove(winID);
 		height.remove(winID);
@@ -315,7 +322,6 @@ public class KahinaArrangement
 
 	public Set<Integer> getContentWindowsWithoutMainWindow()
 	{
-
 		return winIDToBinding.keySet();
 	}
 
