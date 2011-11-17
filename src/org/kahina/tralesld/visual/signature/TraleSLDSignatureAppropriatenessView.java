@@ -57,7 +57,20 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
     		Collections.sort(featList);
     		for (String feat : featList)
     		{
-    			htmlBuilder.append(feat.toUpperCase() + ": <a href=\"type:" + approp.get(feat) + "\">" + approp.get(feat) + "</a><br/> ");
+    			htmlBuilder.append(feat.toUpperCase() + ": <a href=\"type:" + approp.get(feat) + "\">" + approp.get(feat) + "</a>");
+    			String introducer = model.getIntroducer(type,feat);
+    			if (introducer == null)
+    			{
+    				htmlBuilder.append(" (WARNING: introducer unknown!) <br/>");
+    			}
+    			else if (type.equals(introducer))
+    			{
+        			htmlBuilder.append(" (introduced here) <br/>");
+    			}
+    			else
+    			{
+    				htmlBuilder.append(" (introduced by <a href=\"type:" + introducer + "\">" + introducer +  "</a>) <br/>");
+    			}
     		}
     		htmlForType.put(type, htmlBuilder.toString());
     	}

@@ -200,6 +200,13 @@ public class TraleSLDSignature extends KahinaObject
 		return grisu;
 	}
 	
+	public String getIntroducer(String type, String feat)
+	{
+		Map<String,String> feats = featIntroType.get(type);
+		if (feats == null) return null;
+		return feats.get(feat);
+	}
+	
 	/**
 	 * Fills the introFeats map. 
 	 * This needs to be called once for the visualization to work.
@@ -209,15 +216,38 @@ public class TraleSLDSignature extends KahinaObject
 	//		- another indexing structure that makes all type restrictions for a feature explicit
 	public void inferCachedInformation()
 	{
-		//dynamic programming, reuse paths and featIntro information from higher types
+		//generate path information via a depth-first traversal of the type hierarchy
 		LinkedList<String> botPath = new LinkedList<String>();
 		botPath.add("bot");
 		paths.get("bot").add(botPath);
-		//generate the paths via a depth-first traversal of the type hierarchy
 		for (String type : subtypes.get("bot"))
 		{
 			buildPaths(paths.get("bot"), type);
 		}
+		
+		//fill featIntroType in a rather brute-force manner
+		//TODO: implement a way to also display where a condition was tightened
+		//for each appropriateness condition ...
+		for (String type : types)
+		{
+			for (String feat : typeRestr.get(type).keySet())
+			{
+				//... find out the type where it was introduced
+				featIntroType.get(type).put(feat, findIntroducer(type,feat));
+			}
+		}
+	}
+	
+	private String findIntroducer(String type, String feat)
+	{
+		for (String supertype : supertypes.get(type))
+		{
+			if (typeRestr.get(supertype).get(feat) != null)
+			{
+				return findIntroducer(supertype, feat);
+			}
+		}
+		return type;
 	}
 	
 	private void buildPaths(Set<List<String>> superpaths, String type)
