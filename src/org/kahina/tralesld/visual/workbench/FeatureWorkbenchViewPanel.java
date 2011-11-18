@@ -291,6 +291,19 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     	}
 	}
 	
+	public void compileTheory(String theFileName)
+	{
+    	if (theFileName != null)
+    	{
+    		view.getTrale().compileGrammar(theFileName);
+    		this.processEvent(new TraleSLDFeatureEditEvent("Theory compiled.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+    	}
+    	else
+    	{
+    		this.processEvent(new TraleSLDFeatureEditEvent("Theory file name invalid: " + theFileName, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+    	}
+	}
+	
 	private JComponent buildTypeMenu(TraleSLDSignature sig, String type)
 	{
 		Set<String> subtypes = sig.getSubtypes(type);
@@ -589,6 +602,14 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             File dataFile = chooser.getSelectedFile();
             loadSignature(dataFile.getAbsolutePath());
 		}
+		else if (action.equals("Compile Theory ..."))
+		{
+			JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.setDialogTitle("Compile Theory");
+            chooser.showOpenDialog(this);
+            File dataFile = chooser.getSelectedFile();
+            compileTheory(dataFile.getAbsolutePath());
+		}
 		else if (action.equals("Reload Signature"))
 		{
             loadSignature(view.getModel().getSignatureFileName());
@@ -766,6 +787,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		workbenchView.display(workbench);
 		
 		KahinaWindow workbenchWindow = wManager.integrateInDefaultWindow(workbenchView);
+		workbenchWindow.setBorder(false);
 		wManager.registerWindow(workbenchWindow);
 		wManager.displayWindows();
 		workbenchWindow.setSize(800, 500);
