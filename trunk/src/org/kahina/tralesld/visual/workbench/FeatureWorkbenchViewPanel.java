@@ -296,6 +296,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     	if (theFileName != null)
     	{
     		view.getTrale().compileGrammar(theFileName);
+    		view.getModel().setTheoryFileName(theFileName);
+    		theoryFileLabel.setText("Theory file: " + view.getTheoryFileName());
     		this.processEvent(new TraleSLDFeatureEditEvent("Theory compiled.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
     	}
     	else
