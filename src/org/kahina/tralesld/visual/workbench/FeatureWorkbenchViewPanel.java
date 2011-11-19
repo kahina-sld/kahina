@@ -299,14 +299,43 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     		view.getModel().setTheoryFileName(theFileName);
     		theoryFileLabel.setText("Theory file: " + view.getTheoryFileName());
     		newLexiconInstanceMenu.removeAll();
+    		String[] lemmata = view.getTrale().getLemmata().split(":");
 			//Set<String> baseTypes = sig.getSubtypes("bot");
 			List<String> lemmaList = new LinkedList<String>();
-			lemmaList.add("she");
+			String previous = null;
+			String current = null;
+			int occurrenceCounter = 0;
+			for (int i = 0; i <= lemmata.length; i++)
+			{
+				if (i < lemmata.length)
+				{
+					current = lemmata[i];
+					occurrenceCounter++;
+				}
+				if (!current.equals(previous) && previous != null)
+				{
+					if (occurrenceCounter > 1)
+					{
+						//abuse "previous" to store lemma extended by multiple
+						previous += " (" + occurrenceCounter + " x)";
+					}
+					lemmaList.add(previous);
+					occurrenceCounter = 0;
+				}
+				previous = current;
+			}
 			Collections.sort(lemmaList);
 			for (String lemma : lemmaList)
 			{
 				JMenuItem lexItem = new JMenuItem(lemma);
-				lexItem.setActionCommand("lex:" + lemma);
+				//the added multiples must be removed again (the pragmatic way)
+				String lemmaWithoutMultiples = new String(lemma);
+				int parIndex = lemmaWithoutMultiples.indexOf("(");
+				if (parIndex != -1)
+				{
+					lemmaWithoutMultiples = lemmaWithoutMultiples.substring(0, parIndex - 1);
+				}
+				lexItem.setActionCommand("lex:" + lemmaWithoutMultiples);
 				lexItem.addActionListener(this);
 				newLexiconInstanceMenu.add(lexItem);
 			}
