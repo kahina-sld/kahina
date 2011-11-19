@@ -81,15 +81,21 @@ public class AuxiliaryTraleInstance extends Thread
 			    		task.setInstruction(null);
 			    		task.notify();
 			    	}
+			    	else if (task.getInstruction().equals("signature"))
+			    	{
+			    		task.setSignatureResult(extractSignature(task.getToProcess()));
+			    		task.setInstruction(null);
+			    		task.notify();
+			    	}
 			    	else if (task.getInstruction().equals("compile"))
 			    	{
 			    		task.setResult(compileTraleGrammar(task.getToProcess()) + "");
 			    		task.setInstruction(null);
 			    		task.notify();
 			    	}
-			    	else if (task.getInstruction().equals("signature"))
+			    	else if (task.getInstruction().equals("lemmata"))
 			    	{
-			    		task.setSignatureResult(extractSignature(task.getToProcess()));
+			    		task.setResult(extractLemmata());
 			    		task.setInstruction(null);
 			    		task.notify();
 			    	}
@@ -123,6 +129,29 @@ public class AuxiliaryTraleInstance extends Thread
 	    		
 	    	} 	
 	    	return task.getResult().equals("true");
+		}
+	}
+	
+	/**
+	 * Returns all the lemmata defined in the current theory.
+	 * @return a String of lemma strings separated by colons
+	 */
+	public String getLemmata()
+	{
+		synchronized(task)
+		{
+			task.setToProcess(null);
+			task.setInstruction("lemmata");
+			task.notify();
+	    	try
+	    	{
+	    		task.wait();
+	    	}
+	    	catch (InterruptedException e)
+	    	{
+	    		
+	    	} 	
+	    	return task.getResult();
 		}
 	}
 	
@@ -263,6 +292,27 @@ public class AuxiliaryTraleInstance extends Thread
 			}
 		}
 		return signature;
+	}
+	
+	private String extractLemmata()
+	{
+		String lemmata = "";
+		try
+		{
+			SPPredicate subtypePred = new SPPredicate(sp, "lex", 2, "");
+			SPTerm lemmaVar = new SPTerm(sp).putVariable();
+			SPTerm irrelevantVar = new SPTerm(sp).putVariable();
+			SPQuery subtypeQuery = sp.openQuery(subtypePred, new SPTerm[] { lemmaVar, irrelevantVar });	
+			while (subtypeQuery.nextSolution())
+			{
+				lemmata += lemmaVar.toString() + ":";
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return lemmata;
 	}
 	
 	private List<String> immediateSubtypes(String type)
