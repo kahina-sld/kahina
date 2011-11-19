@@ -75,6 +75,12 @@ public class AuxiliaryTraleInstance extends Thread
 			    		task.setInstruction(null);
 			    		task.notify();
 			    	}
+			    	else if (task.getInstruction().equals("lex"))
+			    	{
+			    		task.setResult(executeLex(task.getToProcess()));
+			    		task.setInstruction(null);
+			    		task.notify();
+			    	}
 			    	else if (task.getInstruction().equals("compile"))
 			    	{
 			    		task.setResult(compileTraleGrammar(task.getToProcess()) + "");
@@ -164,6 +170,28 @@ public class AuxiliaryTraleInstance extends Thread
 			System.err.println("Failed to load an embedded Kahina instance.");
 			e.printStackTrace();
 		}
+	}
+	
+	public String lexEntryGrisu(String lemma)
+	{
+		synchronized(task)
+		{
+			task.setInstruction("lex");
+			task.setToProcess(lemma);
+			task.notify();
+	    	try
+	    	{
+	    		task.wait();
+	    	}
+	    	catch (InterruptedException e)
+	    	{
+	    		
+	    	} 	
+	    	return task.getResult();
+		}
+		
+		//stub behavior for now: return GRISU string for trivial structure
+		//return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
 	}
 	
 	public String descToMgsGrisu(String descString)
@@ -343,6 +371,41 @@ public class AuxiliaryTraleInstance extends Thread
 			e.printStackTrace();
 			return false;
 		}
+	}
+	
+	private String executeLex(String lemma)
+	{
+		//let TRALE output MGS in GRISU format to temporary file
+		try
+		{
+			SPPredicate mgsPred = new SPPredicate(sp, "lex_to_tempfile", 2, "");
+			SPTerm descTerm = new SPTerm(sp, lemma);
+			SPTerm fileNameTerm = new SPTerm(sp, "lex.grisu");
+			SPQuery mgsQuery = sp.openQuery(mgsPred, new SPTerm[] { descTerm, fileNameTerm });	      
+			if (mgsQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance stored lex entry in temporary file.");
+			}
+			else
+			{
+				return "ERROR: Lexical entry not found!";
+			}
+		}
+		catch (SPException e)
+		{
+			return "ERROR: SPException " + e.toString();
+		}
+		//read in temporary file to retrieve GRISU string
+		String grisu = null;
+		try
+		{
+			grisu = FileUtilities.slurpFile("lex.grisu");
+		}
+		catch (IOException e)
+		{
+			grisu = "ERROR: Could not read lex.grisu!";
+		}
+		return grisu;
 	}
 	
 	private String executeMGS(String descString)
