@@ -265,19 +265,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	    		view.getModel().setSignatureFileName(sigFileName);
 	    		view.getModel().setSignature(sig);
 	    		editor.setSignature(view.getModel().getSignature());
-	    		signatureFileLabel.setText("Signature file: " + view.getSignatureFileName());
-	    		newTypeInstanceMenu.removeAll();
-	    		if (view.getModel().getSignature() != null)
-	    		{
-	    			Set<String> baseTypes = sig.getSubtypes("bot");
-	    			List<String> baseTypesList = new LinkedList<String>();
-	    			baseTypesList.addAll(baseTypes);
-	    			Collections.sort(baseTypesList);
-	    			for (String type : baseTypesList)
-	    			{
-	    				newTypeInstanceMenu.add(buildTypeMenu(sig,type));
-	    			}
-	    		}
+	    		adaptSignatureMenu(sig);
 	    		this.processEvent(new TraleSLDFeatureEditEvent("Signature loaded.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
     		}
     		else
@@ -289,6 +277,23 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     	{
     		this.processEvent(new TraleSLDFeatureEditEvent("Signature file name invalid: " + sigFileName, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
     	}
+	}
+	
+	private void adaptSignatureMenu(TraleSLDSignature sig)
+	{
+		signatureFileLabel.setText("Signature file: " + view.getSignatureFileName());
+		newTypeInstanceMenu.removeAll();
+		if (view.getModel().getSignature() != null)
+		{
+			Set<String> baseTypes = sig.getSubtypes("bot");
+			List<String> baseTypesList = new LinkedList<String>();
+			baseTypesList.addAll(baseTypes);
+			Collections.sort(baseTypesList);
+			for (String type : baseTypesList)
+			{
+				newTypeInstanceMenu.add(buildTypeMenu(sig,type));
+			}
+		}
 	}
 	
 	public void compileTheory(String theFileName)
@@ -658,6 +663,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
             compileTheory(dataFile.getAbsolutePath());
+            TraleSLDSignature sig = view.getTrale().getCurrentSignature();
+            view.getModel().setSignatureFileName("(determined by theory)");
+    		view.getModel().setSignature(sig);
+    		editor.setSignature(sig);
+    		adaptSignatureMenu(sig);
             updateDisplay();
 		}
 		else if (action.equals("Reload Signature"))

@@ -180,6 +180,15 @@ public class AuxiliaryTraleInstance extends Thread
 	}
 	
 	/**
+	 * Reads out the current signature (usually after theory compilation).
+	 * @return a TraleSLDSignature object representing the current signature;
+	 */
+	public TraleSLDSignature getCurrentSignature()
+	{
+		return getSignature(null);
+	}
+	
+	/**
 	 * For testing purposes: Loads another instance of Kahina inside the embedding instance.
 	 * The environment must be configured with TRALE_ACTIVATE_DEBUGGER set to true.
 	 */
@@ -247,30 +256,34 @@ public class AuxiliaryTraleInstance extends Thread
 	
 	private TraleSLDSignature extractSignature(String fileName)
 	{
-		//let TRALE compile the signature
-		try 
+		//we can retrieve the current signature by handing over a null argument
+		if (fileName != null)
 		{
-			//abolish sig clauses to avoid Prolog-side warning message when a new signature is compiled
-			//TODO: see whether this can be done automatically when executing compile_sig/1
-			SPPredicate abolishPred = new SPPredicate(sp, "abolish_user_preds", 1, "");
-			SPTerm consTerm = new SPTerm(sp, "sig");
-			SPQuery abolishQuery = sp.openQuery(abolishPred, new SPTerm[] { consTerm });	      
-			while (abolishQuery.nextSolution())
+			//let TRALE compile the signature
+			try 
 			{
-				System.err.println("AuxiliaryTraleInstance discarded old sig database.");
+				//abolish sig clauses to avoid Prolog-side warning message when a new signature is compiled
+				//TODO: see whether this can be done automatically when executing compile_sig/1
+				SPPredicate abolishPred = new SPPredicate(sp, "abolish_user_preds", 1, "");
+				SPTerm consTerm = new SPTerm(sp, "sig");
+				SPQuery abolishQuery = sp.openQuery(abolishPred, new SPTerm[] { consTerm });	      
+				while (abolishQuery.nextSolution())
+				{
+					System.err.println("AuxiliaryTraleInstance discarded old sig database.");
+				}
+				SPPredicate compileSigPred = new SPPredicate(sp, "compile_sig", 1, "");
+				//TODO: find a way to set the environment from inside this class
+				SPTerm pathTerm = new SPTerm(sp, fileName);
+				SPQuery compileQuery = sp.openQuery(compileSigPred, new SPTerm[] { pathTerm });	      
+				while (compileQuery.nextSolution())
+				{
+					System.err.println("AuxiliaryTraleInstance compiled signature.");
+				}
 			}
-			SPPredicate compileSigPred = new SPPredicate(sp, "compile_sig", 1, "");
-			//TODO: find a way to set the environment from inside this class
-			SPTerm pathTerm = new SPTerm(sp, fileName);
-			SPQuery compileQuery = sp.openQuery(compileSigPred, new SPTerm[] { pathTerm });	      
-			while (compileQuery.nextSolution())
+			catch ( Exception e )
 			{
-				System.err.println("AuxiliaryTraleInstance compiled signature.");
+				e.printStackTrace();
 			}
-		}
-		catch ( Exception e )
-		{
-			e.printStackTrace();
 		}
 		//construct the TraleSLDSignature object by reading out the compiled signature
 		TraleSLDSignature signature = new TraleSLDSignature();
