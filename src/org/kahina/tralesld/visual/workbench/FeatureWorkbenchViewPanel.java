@@ -298,6 +298,18 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     		view.getTrale().compileGrammar(theFileName);
     		view.getModel().setTheoryFileName(theFileName);
     		theoryFileLabel.setText("Theory file: " + view.getTheoryFileName());
+    		newLexiconInstanceMenu.removeAll();
+			//Set<String> baseTypes = sig.getSubtypes("bot");
+			List<String> lemmaList = new LinkedList<String>();
+			lemmaList.add("she");
+			Collections.sort(lemmaList);
+			for (String lemma : lemmaList)
+			{
+				JMenuItem lexItem = new JMenuItem(lemma);
+				lexItem.setActionCommand("lex:" + lemma);
+				lexItem.addActionListener(this);
+				newLexiconInstanceMenu.add(lexItem);
+			}
     		this.processEvent(new TraleSLDFeatureEditEvent("Theory compiled.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
     	}
     	else
@@ -347,7 +359,6 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	{
 		view.recalculate();
 		list.setListData(view.getNameList().toArray());
-		theoryFileLabel.setText("Theory file: " + view.getTheoryFileName());
 		updateMenus();
 		this.repaint();
 	}
@@ -360,6 +371,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 			compileTheoryItem.setEnabled(true);
 			discardTheoryItem.setEnabled(false);
 			recompileTheoryItem.setEnabled(false);	
+			newLexiconInstanceMenu.setEnabled(false);
 			if (view.getModel().getSignatureFileName() == null)
 			{
 				reloadSignatureItem.setEnabled(false);
@@ -375,7 +387,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 			compileTheoryItem.setEnabled(true);
 			discardTheoryItem.setEnabled(true);
 			reloadSignatureItem.setEnabled(false);
-			recompileTheoryItem.setEnabled(true);
+			recompileTheoryItem.setEnabled(true);		
+			newLexiconInstanceMenu.setEnabled(true);
 		}
 	}
 	
@@ -603,6 +616,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
             loadSignature(dataFile.getAbsolutePath());
+            updateDisplay();
 		}
 		else if (action.equals("Compile Theory ..."))
 		{
@@ -611,11 +625,15 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
             compileTheory(dataFile.getAbsolutePath());
+            updateDisplay();
 		}
 		else if (action.equals("Reload Signature"))
 		{
             loadSignature(view.getModel().getSignatureFileName());
-            //System.err.println(view.getModel().getSignature().graphViz());
+		}
+		else if (action.startsWith("lex:"))
+		{
+			addLexEntry(action.substring(4));
 		}
 		else
 		{
@@ -643,6 +661,23 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     		view.getModel().storeStructure("mgs:" + type, result);
     		updateDisplay();
     		list.setSelectedValue("mgs:" + type, true);
+		}
+	}
+	
+	public void addLexEntry(String lemma)
+	{
+		String result = view.getTrale().lexEntryGrisu(lemma);
+
+		if (result.startsWith("ERROR"))
+		{
+        	this.processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+		}
+		else
+		{
+        	this.processEvent(new TraleSLDFeatureEditEvent("Type MGS successfully added.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+    		view.getModel().storeStructure("lex:" + lemma, result);
+    		updateDisplay();
+    		list.setSelectedValue("lex:" + lemma, true);
 		}
 	}
 	
