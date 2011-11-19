@@ -304,13 +304,17 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 			List<String> lemmaList = new LinkedList<String>();
 			String previous = null;
 			String current = null;
-			int occurrenceCounter = 0;
+			int occurrenceCounter = -1;
 			for (int i = 0; i <= lemmata.length; i++)
 			{
 				if (i < lemmata.length)
 				{
 					current = lemmata[i];
 					occurrenceCounter++;
+				}
+				else
+				{
+					current = "EOL";
 				}
 				if (!current.equals(previous) && previous != null)
 				{
