@@ -9,6 +9,7 @@ import gralej.om.EntityFactory;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
+import gralej.om.ITag;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
 
@@ -16,27 +17,31 @@ public class GraleJUtility
 {
 	static EntityFactory ent = EntityFactory.getInstance();
 	
-	public static boolean specialize(IEntity e, String ty, TraleSLDSignature sig)
+	public static IEntity specialize(IEntity e, String ty, TraleSLDSignature sig)
 	{
 		String eType = getType(e);
 		if (eType != null && sig.dominates(eType,ty))
 		{
-			return setType(e,ty);
+			setType(e,ty);
+			return e;
 		}
-		return false;
+		System.err.println("Operation failed: specialize");
+		return e;
 	}
 	
-	public static boolean generalize(IEntity e, String ty, TraleSLDSignature sig)
+	public static IEntity generalize(IEntity e, String ty, TraleSLDSignature sig)
 	{
 		String eType = getType(e);
 		if (eType != null && sig.dominates(ty,eType))
 		{
-			return setType(e,ty);
+			setType(e,ty);
+			return e;
 		}
-		return false;
+		System.err.println("Operation failed: generalize");
+		return e;
 	}
 	
-	public static boolean introFeat(IEntity e, String feat, IEntity val, TraleSLDSignature sig)
+	public static IEntity introFeat(IEntity e, String feat, IEntity val, TraleSLDSignature sig)
 	{
 		IFeatureValuePair fv = ent.newFeatVal(feat, val); 
 		if (e instanceof IType)
@@ -45,19 +50,19 @@ public class GraleJUtility
 			fvList.add(fv);
 			IType type = (IType) e;
 			ITypedFeatureStructure replacement = ent.newTFS(type, fvList);
-			//TODO: cover this case, perhaps return IEntities, as in formal definitions?
-			return true;
+			return replacement;
 		}
 		else if (e instanceof ITypedFeatureStructure)
 		{
 			ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
 			fs.addFeatureValue(fv);
-			return true;
+			return fs;
 		}
-		return false;
+		System.err.println("Operation failed: introFeat");
+		return e;
 	}
 	
-	public static boolean remFeat(IEntity e, String feat)
+	public static IEntity remFeat(IEntity e, String feat)
 	{
 		if (e  instanceof ITypedFeatureStructure)
 		{
@@ -67,11 +72,29 @@ public class GraleJUtility
 				if (fs.featureValuePairs().get(i).feature().equals(feat))
 				{
 					fs.featureValuePairs().remove(i);
-					return true;
+					return fs;
 				}
 			}
 		}
-		return false;
+		System.err.println("Operation failed: remFeat");
+		return e;
+	}
+	
+	//TODO: makes this functional
+	public static IEntity introIdent(IEntity e, IEntity e1, IEntity e2, TraleSLDSignature sig)
+	{
+		ent.newTag(0, e2);
+		return e;
+	}
+	
+	//TODO: makes this functional
+	public static IEntity remIdent(IEntity e, IEntity e1)
+	{
+		if (e1 instanceof ITag)
+		{
+			return ((ITag) e).target();
+		}
+		return e1;
 	}
 	
 	private static boolean setType(IEntity e, String ty)
