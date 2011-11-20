@@ -514,7 +514,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			String result = trale.descToMgsGrisu(traleDesc);
 			result = sig.resolveMGSs(result);*/
 			//THE NEW WAY: render edited structure into grisu
-			String result = VisualizationUtility.convertGraleJToGrisu((IEntity) data.getModel());
+			String result = GraleJUtility.convertGraleJToGrisu((IEntity) data.getModel());
 			if (result.startsWith("ERROR"))
 			{
 				failureMessage(result);
