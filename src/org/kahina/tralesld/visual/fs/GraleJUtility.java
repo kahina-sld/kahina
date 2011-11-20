@@ -1,5 +1,8 @@
 package org.kahina.tralesld.visual.fs;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
 import gralej.om.EntityFactory;
@@ -11,6 +14,7 @@ import gralej.om.ITypedFeatureStructure;
 
 public class GraleJUtility 
 {
+	static EntityFactory ent = EntityFactory.getInstance();
 	
 	public static boolean specialize(IEntity e, String ty, TraleSLDSignature sig)
 	{
@@ -32,15 +36,43 @@ public class GraleJUtility
 		return false;
 	}
 	
-	/*public static boolean introFeat(IEntity e, String feat, TraleSLDSignature sig)
+	public static boolean introFeat(IEntity e, String feat, IEntity val, TraleSLDSignature sig)
 	{
-		
+		IFeatureValuePair fv = ent.newFeatVal(feat, val); 
+		if (e instanceof IType)
+		{
+			List<IFeatureValuePair> fvList = new LinkedList<IFeatureValuePair>();
+			fvList.add(fv);
+			IType type = (IType) e;
+			ITypedFeatureStructure replacement = ent.newTFS(type, fvList);
+			//TODO: cover this case, perhaps return IEntities, as in formal definitions?
+			return true;
+		}
+		else if (e instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+			fs.addFeatureValue(fv);
+			return true;
+		}
+		return false;
 	}
 	
 	public static boolean remFeat(IEntity e, String feat)
 	{
-		
-	}*/
+		if (e  instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+			for (int i = 0; i < fs.featureValuePairs().size(); i++)
+			{
+				if (fs.featureValuePairs().get(i).feature().equals(feat))
+				{
+					fs.featureValuePairs().remove(i);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	private static boolean setType(IEntity e, String ty)
 	{
