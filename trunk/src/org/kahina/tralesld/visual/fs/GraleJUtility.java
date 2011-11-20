@@ -1,5 +1,8 @@
 package org.kahina.tralesld.visual.fs;
 
+import org.kahina.tralesld.data.signature.TraleSLDSignature;
+
+import gralej.om.EntityFactory;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
@@ -8,6 +11,69 @@ import gralej.om.ITypedFeatureStructure;
 
 public class GraleJUtility 
 {
+	
+	public static boolean specialize(IEntity e, String ty, TraleSLDSignature sig)
+	{
+		String eType = getType(e);
+		if (eType != null && sig.dominates(eType,ty))
+		{
+			return setType(e,ty);
+		}
+		return false;
+	}
+	
+	public static boolean generalize(IEntity e, String ty, TraleSLDSignature sig)
+	{
+		String eType = getType(e);
+		if (eType != null && sig.dominates(ty,eType))
+		{
+			return setType(e,ty);
+		}
+		return false;
+	}
+	
+	/*public static boolean introFeat(IEntity e, String feat, TraleSLDSignature sig)
+	{
+		
+	}
+	
+	public static boolean remFeat(IEntity e, String feat)
+	{
+		
+	}*/
+	
+	private static boolean setType(IEntity e, String ty)
+	{
+		if (e instanceof IType)
+		{
+			IType type = (IType) e;
+			type.setTypeName(ty);
+			return true;
+		}
+		else if (e instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+			fs.type().setTypeName(ty);
+			return true;
+		}
+		return false;
+	}
+	
+	public static String getType(IEntity e)
+	{
+		if (e instanceof IType)
+		{
+			IType type = (IType) e;
+			return type.text();
+		}
+		else if (e instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+			return fs.typeName();
+		}
+		return null;
+	}
+	
 	public static String convertGraleJToGrisu(IEntity ent)
 	{
 		int[] counter = {0};
