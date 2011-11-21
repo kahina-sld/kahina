@@ -97,6 +97,51 @@ public class GraleJUtility
 		return e1;
 	}
 	
+	/**
+	 * Retrieves the substructure of an IEntity at a given a path.
+	 * @param e the entity to address into
+	 * @param path - a list of strings encoding a path of features
+	 * @return the IEntity at the path in e, null if no such structure was found
+	 */
+	public static IEntity go(IEntity e, List<String> path)
+	{
+		return goSubpath(e,path,0,path.size());
+	}
+	
+	private static IEntity goSubpath(IEntity e, List<String> path, int start, int end)
+	{
+		if (start == end)
+		{
+			return e;
+		}
+		else
+		{
+			if (e  instanceof ITypedFeatureStructure)
+			{
+				String feat = path.get(start);
+				ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+				for (int i = 0; i < fs.featureValuePairs().size(); i++)
+				{
+					if (fs.featureValuePairs().get(i).feature().equals(feat))
+					{
+						return goSubpath(fs.featureValuePairs().get(i).value(), path, start+1, end);
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
+	public static IEntity goUpToLast(IEntity e, List<String> path)
+	{
+		return goSubpath(e,path,0, path.size() - 1);
+	}
+	
+	public static IEntity goLast(IEntity e, List<String> path)
+	{
+		return goSubpath(e,path,path.size() - 1, path.size());
+	}
+	
 	private static boolean setType(IEntity e, String ty)
 	{
 		if (e instanceof IType)
