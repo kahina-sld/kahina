@@ -53,6 +53,8 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	String grisuString;
 	IDataPackage data;
 	
+	List<String> contextPath;
+	
 	Block contextBlock;
 	IEntity contextStructure;
 	String contextStructureType;
@@ -83,6 +85,8 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		
 		this.grisuString = null;
 		this.data = null;
+		
+		this.contextPath = null;
 		
 		this.contextBlock = null;
 		this.contextStructure = null;
@@ -208,10 +212,12 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	}
 	
 	public void processContextStructure(Block block)
-	{
+	{	
 		contextBlock = block;
 		contextStructure = contextBlock.getModel();
 		contextStructureType = determineType(contextStructure);
+		
+		contextPath = determinePath(block);
 		
 		contextAttrBlock = getAttrParent(block);
 		if (contextAttrBlock == null)
@@ -239,6 +245,33 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				contextParentStructureType = determineType(contextParentStructure);
 			}
 		}
+	}
+	
+	private List<String> determinePath(Block block)
+	{
+		List<String> path = new LinkedList<String>();
+		Block secondToLastBlock = null;
+		Block lastBlock = null;
+		while (block != null)
+		{
+			if (block.getModel() instanceof IFeatureValuePair)
+			{
+				path.add(0,((IFeatureValuePair) block.getModel()).feature());
+			}
+			else if (block.getModel() instanceof IList)
+			{
+				IList listModel = (IList) block.getModel();
+				for (IEntity ent : listModel.elements())
+				{
+					path.add(0,"hd");
+					if (ent == secondToLastBlock.getModel()) break;
+				}
+			}
+			secondToLastBlock = lastBlock;
+			lastBlock = block;
+			block = block.getParent();
+		}
+		return path;
 	}
 	
 	private Block getStructureParent(Block block)
@@ -414,7 +447,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else
 		{
-			infoMessage("Modifying structure " + contextParentStructureType + ":" + contextAttr.toUpperCase() + ":" + contextStructureType);
+			infoMessage("Modifying at path: " + contextPath);
 			return TraleSLDFeatureStructureEditorMenu.newTypeMenu(this, subtypes, supertypes, siblingTypes, introFeatures, totallyWellTypedEditing);
 		}
 	}
@@ -552,8 +585,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			String result = trale.descToMgsGrisu(traleDesc);
 			result = sig.resolveMGSs(result);*/
 			//THE NEW WAY: render edited structure into grisu
-			reconvert();
-			
+			reconvert();	
 			//failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
 			//simply prints out the stored chars, which cannot be manipulated!
 			//OutputFormatter.getInstance().save(System.err, data, blockPanel, OutputFormatter.TRALEFormat);
