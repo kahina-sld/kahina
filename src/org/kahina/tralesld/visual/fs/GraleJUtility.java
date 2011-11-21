@@ -1,7 +1,10 @@
 package org.kahina.tralesld.visual.fs;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
@@ -17,27 +20,43 @@ public class GraleJUtility
 {
 	static EntityFactory ent = EntityFactory.getInstance();
 	
-	public static IEntity specialize(IEntity e, String ty, TraleSLDSignature sig)
+	public static IEntity specialize(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
 	{
-		String eType = getType(e);
-		if (eType != null && sig.dominates(eType,ty))
+		IEntity ent = go(e,path);
+		if (ent == null)
 		{
-			setType(e,ty);
+			System.err.println("Specialize failed: Unable to evaluate address!");
 			return e;
 		}
-		System.err.println("Operation failed: specialize");
+		String eType = getType(ent);
+		if (eType != null && sig.dominates(eType,ty))
+		{
+			setType(ent,ty);
+		}
+		else
+		{
+			System.err.println("Specialize failed: Dominance condition violated!");
+		}
 		return e;
 	}
 	
-	public static IEntity generalize(IEntity e, String ty, TraleSLDSignature sig)
+	public static IEntity generalize(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
 	{
-		String eType = getType(e);
-		if (eType != null && sig.dominates(ty,eType))
+		IEntity ent = go(e,path);
+		if (ent == null)
 		{
-			setType(e,ty);
+			System.err.println("Generalize failed: Unable to evaluate address!");
 			return e;
 		}
-		System.err.println("Operation failed: generalize");
+		String eType = getType(ent);
+		if (eType != null && sig.dominates(ty,eType))
+		{
+			setType(ent,ty);
+		}
+		else
+		{
+			System.err.println("Specialize failed: Dominance condition violated!");
+		}
 		return e;
 	}
 	
@@ -128,6 +147,23 @@ public class GraleJUtility
 					}
 				}
 			}
+			else if (e instanceof IList)
+			{
+				int i = 0;
+				Iterator<IEntity> entIt = ((IList) e).elements().iterator();
+				IEntity selectedItem = entIt.next();
+				while (path.get(start + i).equals("tl"))
+				{
+					selectedItem = entIt.next();
+					i++;
+				}
+				if (!path.get(start + i).equals("hd")) return null;
+				return goSubpath(selectedItem,path,start+i+1,end);
+			}
+			else if (e instanceof ITag)
+			{
+				return goSubpath(((ITag) e).target(),path,start,end);
+			}
 		}
 		return null;
 	}
@@ -192,12 +228,29 @@ public class GraleJUtility
 	{
 		int[] counter = {0};
 		StringBuilder s = new StringBuilder("!newdata\"grisu\"");
-		graleJToGrisu(ent, s, counter);
+		HashMap<Integer,IEntity> ref = new HashMap<Integer,IEntity>();
+		graleJToGrisu(ent, s, counter, ref);
+		while (ref.size() > 0)
+		{
+			resolveReferenced(s,counter,ref);
+		}
 		s.append("\n");
 		return s.toString();
 	}
 	
-	private static void graleJToGrisu(IEntity ent, StringBuilder s, int[] counter)
+	private static void resolveReferenced(StringBuilder s, int[] counter, Map<Integer,IEntity> ref)
+	{
+		int number = ref.keySet().iterator().next();
+		IEntity target = ref.remove(number);
+		s.append("(R");
+		s.append(counter[0]++);
+		s.append(" ");
+		s.append(number);
+		graleJToGrisu(target,s,counter,ref);
+		s.append(")");
+	}
+	
+	private static void graleJToGrisu(IEntity ent, StringBuilder s, int[] counter, Map<Integer,IEntity> ref)
 	{
 		if (ent instanceof IList)
 		{
@@ -206,30 +259,29 @@ public class GraleJUtility
 			s.append(counter[0]++);
 			for (IEntity lEnt : list.elements())
 			{
-				graleJToGrisu(lEnt, s, counter);
+				graleJToGrisu(lEnt, s, counter, ref);
 			}
 			s.append(")");
 		}
-		/*else if (ent instanceof IAny)
+		else if (ent instanceof ITag)
 		{
-			IList list = (IList) ent;
-			s.append("(L");
+			ITag tag = (ITag) ent;
+			s.append("(#");
 			s.append(counter[0]++);
-			for (IEntity lEnt : list.elements())
-			{
-				graleJToGrisu(lEnt, s, counter);
-			}
+			s.append(" ");
+			s.append(tag.number());
+			ref.put(tag.number(), tag.target());
 			s.append(")");
-		}*/
+		}
 		else if (ent instanceof ITypedFeatureStructure)
 		{
 			ITypedFeatureStructure tfs = (ITypedFeatureStructure) ent;
 			s.append("(S" + (counter[0] + 1));
-			graleJToGrisu(tfs.type(), s, counter);
+			graleJToGrisu(tfs.type(), s, counter, ref);
 			counter[0]++;
 			for (IFeatureValuePair fv : tfs.featureValuePairs())
 			{
-				graleJToGrisu(fv, s, counter);
+				graleJToGrisu(fv, s, counter, ref);
 			}
 			s.append(")");
 		}
@@ -251,7 +303,7 @@ public class GraleJUtility
 			s.append("\"");
 			s.append(fv.feature());
 			s.append("\"");
-			graleJToGrisu(fv.value(), s, counter);
+			graleJToGrisu(fv.value(), s, counter, ref);
 			s.append(")");
 		}
 	}

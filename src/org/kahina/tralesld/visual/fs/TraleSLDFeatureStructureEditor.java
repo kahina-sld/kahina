@@ -261,10 +261,16 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			else if (block.getModel() instanceof IList)
 			{
 				IList listModel = (IList) block.getModel();
+				int i = 0;
 				for (IEntity ent : listModel.elements())
-				{
-					path.add(0,"hd");
-					if (ent == secondToLastBlock.getModel()) break;
+				{		
+					if (ent == secondToLastBlock.getModel())
+					{
+						path.add(i,"hd");
+						break;
+					}
+					path.add(0,"tl");
+					i++;
 				}
 			}
 			secondToLastBlock = lastBlock;
@@ -526,13 +532,13 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.startsWith("spe:"))
 		{
 			String tau = command.substring(4);
-			GraleJUtility.specialize(contextStructure, tau, sig);
+			GraleJUtility.specialize((IEntity) data.getModel(), contextPath, tau, sig);
 			reconvert();
 		}
 		else if (command.startsWith("gen:"))
 		{
 			String tau = command.substring(4);
-			GraleJUtility.generalize(contextStructure, tau, sig);
+			GraleJUtility.generalize((IEntity) data.getModel(), contextPath, tau, sig);
 			reconvert();
 		}
 		else if (command.startsWith("swi:"))
@@ -598,6 +604,21 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	private void reconvert()
 	{
 		String result = GraleJUtility.convertGraleJToGrisu((IEntity) data.getModel());
+		System.err.println(result);
+		if (result.startsWith("ERROR"))
+		{
+			failureMessage(result);
+		}
+		else
+		{
+			grisuString = result;
+			success("Editing operation successful.");
+		}
+	}
+	
+	private void reconvert(IEntity newRoot)
+	{
+		String result = GraleJUtility.convertGraleJToGrisu(newRoot);
 		if (result.startsWith("ERROR"))
 		{
 			failureMessage(result);
