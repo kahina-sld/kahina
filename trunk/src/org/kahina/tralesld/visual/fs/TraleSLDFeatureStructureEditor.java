@@ -547,6 +547,12 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			//GraleJUtility.switch(contextStructure, tau, sig);
 			reconvert();
 		}
+		else if (command.startsWith("fea:"))
+		{
+			String f = command.substring(4);
+			IEntity result = GraleJUtility.introFeat((IEntity) data.getModel(), contextPath, f, generateSignatureMGS("case", EntityFactory.getInstance()), sig);
+			reconvert(result);
+		}
 		else //LEGACY CODE, ONLY HERE FOR REFERENCE
 		{
 			String type = command;

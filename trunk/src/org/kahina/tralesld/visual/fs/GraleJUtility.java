@@ -60,24 +60,32 @@ public class GraleJUtility
 		return e;
 	}
 	
-	public static IEntity introFeat(IEntity e, String feat, IEntity val, TraleSLDSignature sig)
+	public static IEntity introFeat(IEntity e, List<String> path, String feat, IEntity val, TraleSLDSignature sig)
 	{
+		IEntity parent = goUpToLast(e,path);
+		IEntity et = goLast(parent,path);
+		if (et == null)
+		{
+			System.err.println("Feature introduction failed: Unable to evaluate address!");
+			return e;
+		}
 		IFeatureValuePair fv = ent.newFeatVal(feat, val); 
-		if (e instanceof IType)
+		if (et instanceof IType)
 		{
 			List<IFeatureValuePair> fvList = new LinkedList<IFeatureValuePair>();
 			fvList.add(fv);
-			IType type = (IType) e;
+			IType type = (IType) et;
 			ITypedFeatureStructure replacement = ent.newTFS(type, fvList);
-			return replacement;
+			if (parent == null) return replacement;
+			replace(parent,et,replacement);
 		}
-		else if (e instanceof ITypedFeatureStructure)
+		else if (et instanceof ITypedFeatureStructure)
 		{
-			ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
 			fs.addFeatureValue(fv);
 			return fs;
 		}
-		System.err.println("Operation failed: introFeat");
+		System.err.println("Feature introduction failed: not possible in context.");
 		return e;
 	}
 	
@@ -129,6 +137,7 @@ public class GraleJUtility
 	
 	private static IEntity goSubpath(IEntity e, List<String> path, int start, int end)
 	{
+		if (start < 0 || end < start) return null;
 		if (start == end)
 		{
 			return e;
@@ -193,6 +202,11 @@ public class GraleJUtility
 			return true;
 		}
 		return false;
+	}
+	
+	private static void replace(IEntity parent, IEntity ent, IEntity replacement)
+	{
+		//TODO: implement
 	}
 	
 	public static String getType(IEntity e)
