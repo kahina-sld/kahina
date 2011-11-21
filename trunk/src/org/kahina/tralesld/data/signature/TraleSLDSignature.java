@@ -18,9 +18,10 @@ public class TraleSLDSignature extends KahinaObject
 	 */
 	private static final long serialVersionUID = 7411049956894696227L;
 
-	//types can simply be stored as strings because they have unique names
-	//this list defines the order in which types are displayed
+	//types and features can simply be stored as strings because they have unique names
+	//these lists define the order in which they are displayed
 	List<String> types;
+	List<String> features;
 	
 	//the immediate subtypes and supertypes for each type are stored here
 	//this also implicitly encodes the sibling relation used by the signature-enhanced editor
@@ -41,6 +42,7 @@ public class TraleSLDSignature extends KahinaObject
 	{
 
 		types = new LinkedList<String>();
+		features = new LinkedList<String>();
 		subtypes = new HashMap<String,Set<String>>();
 		supertypes = new HashMap<String,Set<String>>();
 		paths = new HashMap<String,Set<List<String>>>();
@@ -50,6 +52,11 @@ public class TraleSLDSignature extends KahinaObject
 		
 		//the empty signature contains the root type "bot" without features
 		registerType("bot");
+	}
+	
+	public void registerFeature(String feature)
+	{
+		features.add(feature);
 	}
 	
 	public void registerType(String type)
@@ -87,6 +94,10 @@ public class TraleSLDSignature extends KahinaObject
 		{
 			registerType(valueRestr);
 		}
+		if (!features.contains(feature))
+		{
+			registerFeature(feature);
+		}
 		typeRestr.get(type).put(feature,valueRestr);
 		usage.get(valueRestr).add(type + ":" + feature);
 	}
@@ -94,6 +105,11 @@ public class TraleSLDSignature extends KahinaObject
 	public List<String> getTypes()
 	{
 		return types;
+	}
+	
+	public List<String> getFeatures()
+	{
+		return features;
 	}
 	
 	public Set<String> getSubtypes(String type)

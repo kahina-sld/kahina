@@ -9,10 +9,16 @@ import javax.swing.JPopupMenu;
 
 public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 {
-	public TraleSLDFeatureStructureEditorMenu(TraleSLDFeatureStructureEditor editor,
-			Set<String> subtypes, Set<String> supertypes, Set<String> siblingTypes)
+	public TraleSLDFeatureStructureEditorMenu()
 	{
 		super();
+	}
+	
+	public static TraleSLDFeatureStructureEditorMenu newTypeMenu(TraleSLDFeatureStructureEditor editor,
+			List<String> subtypes, List<String> supertypes, List<String> siblingTypes,
+			List<String> features, boolean totallyWellTyped)
+	{
+		TraleSLDFeatureStructureEditorMenu menu = new TraleSLDFeatureStructureEditorMenu();
 		
 		JMenu specializeMenu = new JMenu("Specialize to");
 		if (subtypes.size() == 0)
@@ -22,10 +28,11 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		else for (String type : subtypes)
 		{
 			JMenuItem typeItem = new JMenuItem(type);
+			typeItem.setActionCommand("spe:" + type);
 			typeItem.addActionListener(editor);
 			specializeMenu.add(typeItem);
 		}
-		add(specializeMenu);
+		menu.add(specializeMenu);
 		
 		JMenu generalizeMenu = new JMenu("Generalize to");
 		if (supertypes.size() == 0)
@@ -35,10 +42,11 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		else for (String type : supertypes)
 		{
 			JMenuItem typeItem = new JMenuItem(type);
+			typeItem.setActionCommand("gen:" + type);
 			typeItem.addActionListener(editor);
 			generalizeMenu.add(typeItem);
 		}
-		add(generalizeMenu);
+		menu.add(generalizeMenu);
 		
 		JMenu switchMenu = new JMenu("Switch to");
 		if (siblingTypes.size() == 0)
@@ -48,16 +56,35 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		else for (String type : siblingTypes)
 		{
 			JMenuItem typeItem = new JMenuItem(type);
+			typeItem.setActionCommand("swi:" + type);
 			typeItem.addActionListener(editor);
 			switchMenu.add(typeItem);
 		}
-		add(switchMenu);
+		menu.add(switchMenu);
 		
-		addSeparator();
+		menu.addSeparator();
+		
+		if (!totallyWellTyped)
+		{
+			JMenu featMenu = new JMenu("Add feature");
+			if (features.size() == 0)
+			{
+				featMenu.setEnabled(false);
+			}
+			else for (String feat : features)
+			{
+				JMenuItem featItem = new JMenuItem(feat);
+				featItem.setActionCommand("fea:" + feat);
+				featItem.addActionListener(editor);
+				featMenu.add(featItem);
+			}
+			menu.add(featMenu);
+			menu.addSeparator();
+		}
 		
 		JMenuItem copyItem = new JMenuItem("Copy");
 		copyItem.addActionListener(editor);
-		add(copyItem);
+		menu.add(copyItem);
 		
 		JMenuItem pasteItem = new JMenuItem("Paste");
 		pasteItem.addActionListener(editor);
@@ -65,6 +92,7 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		{
 			pasteItem.setEnabled(false);
 		}
-		add(pasteItem);
+		menu.add(pasteItem);
+		return menu;
 	}
 }
