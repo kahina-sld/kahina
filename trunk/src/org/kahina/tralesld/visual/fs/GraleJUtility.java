@@ -78,14 +78,15 @@ public class GraleJUtility
 			ITypedFeatureStructure replacement = ent.newTFS(type, fvList);
 			if (parent == null) return replacement;
 			replace(parent,et,replacement);
+			return e;
 		}
 		else if (et instanceof ITypedFeatureStructure)
 		{
 			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
 			fs.addFeatureValue(fv);
-			return fs;
+			return e;
 		}
-		System.err.println("Feature introduction failed: not possible in context.");
+		System.err.println("Feature introduction failed: not possible in context " + et + ".");
 		return e;
 	}
 	
@@ -140,6 +141,7 @@ public class GraleJUtility
 		if (start < 0 || end < start) return null;
 		if (start == end)
 		{
+			if (e instanceof ITag) return ((ITag) e).target();
 			return e;
 		}
 		else
@@ -204,9 +206,41 @@ public class GraleJUtility
 		return false;
 	}
 	
-	private static void replace(IEntity parent, IEntity ent, IEntity replacement)
+	private static void replace(IEntity parent, IEntity e, IEntity replacement)
 	{
-		//TODO: implement
+		if (parent instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) parent;
+			for (IFeatureValuePair fv : fs.featureValuePairs())
+			{
+				if (fv.value() == e)
+				{
+					fv.setValue(replacement);
+					return;
+				}
+			}
+		}
+		else if (parent instanceof IList)
+		{
+			IList list = (IList) parent;
+			List<IEntity> elList = new LinkedList<IEntity>();
+			for (IEntity el : list.elements())
+			{
+				if (el != e)
+				{
+					elList.add(e);
+				}
+			}
+			list.clear();
+			for (IEntity el : elList)
+			{
+				list.append(el);
+			}
+		}
+		else if (parent instanceof ITag)
+		{
+			((ITag) parent).setTarget(replacement);
+		}
 	}
 	
 	public static String getType(IEntity e)
