@@ -70,6 +70,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 
 	AuxiliaryTraleInstance trale;
 	
+	//option for naive editing versus totally-well-typed editing
+	boolean totallyWellTypedEditing = false;
+	
 	public TraleSLDFeatureStructureEditor(AuxiliaryTraleInstance trale)
 	{
 		super();
@@ -290,18 +293,21 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		return type;
 	}
 	
-	public Set<String> getContextSubtypes()
+	public List<String> getContextSubtypes()
 	{
 		if (sig == null) return null;
-		return sig.getSubtypes(contextStructureType);
+		List<String> subtypes = new LinkedList<String>();
+		subtypes.addAll(sig.getSubtypes(contextStructureType));
+		Collections.sort(subtypes);
+		return subtypes;
 	}
 	
-	public Set<String> getContextSupertypes()
+	public List<String> getContextSupertypes()
 	{
 		if (sig == null) return null;
 		Set<String> supertypes = (sig.getSupertypes(contextStructureType));
 		if (supertypes == null) return null;
-		Set<String> possSupertypes = new HashSet<String>();
+		List<String> possSupertypes = new LinkedList<String>();
 		for (String supertype : supertypes)
 		{
 			if (contextParentStructureType.isEmpty())
@@ -317,13 +323,14 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				}
 			}
 		}
+		Collections.sort(possSupertypes);
 		return possSupertypes;
 	}
 	
-	public Set<String> getContextSiblingTypes()
+	public List<String> getContextSiblingTypes()
 	{
 		if (sig == null) return null;
-		Set<String> possSiblings = new HashSet<String>();
+		List<String> possSiblings = new LinkedList<String>();
 		for (String sibling : sig.getSiblingTypes(contextStructureType))
 		{
 			if (contextParentStructureType.isEmpty())
@@ -339,7 +346,20 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				}
 			}
 		}
+		Collections.sort(possSiblings);
 		return possSiblings;
+	}
+	
+	public List<String> getContextFeatures()
+	{
+		List<String> features = new LinkedList<String>();
+		features.addAll(sig.getFeatures());
+		for (String feat : GraleJUtility.listFeatures(contextStructure))
+		{
+			features.remove(feat);
+		}
+		Collections.sort(features);
+		return features;
 	}
 	
 	public IEntity generateSignatureMGS(String type, EntityFactory ent)
@@ -376,11 +396,12 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		return struct;
 	}
 	
-	public TraleSLDFeatureStructureEditorMenu createContextMenu()
+	public TraleSLDFeatureStructureEditorMenu createTypeContextMenu()
 	{
-		Set<String> subtypes = getContextSubtypes();
-		Set<String> supertypes = getContextSupertypes();
-		Set<String> siblingTypes = getContextSiblingTypes();
+		List<String> subtypes = getContextSubtypes();
+		List<String> supertypes = getContextSupertypes();
+		List<String> siblingTypes = getContextSiblingTypes();
+		List<String> introFeatures = getContextFeatures();
 		if (sig == null)
 		{
 			warningMessage("No signature loaded. Cannot edit.");
@@ -394,7 +415,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else
 		{
 			infoMessage("Modifying structure " + contextParentStructureType + ":" + contextAttr.toUpperCase() + ":" + contextStructureType);
-			return new TraleSLDFeatureStructureEditorMenu(this, subtypes, supertypes, siblingTypes);
+			return TraleSLDFeatureStructureEditorMenu.newTypeMenu(this, subtypes, supertypes, siblingTypes, introFeatures, totallyWellTypedEditing);
 		}
 	}
 	
@@ -469,9 +490,26 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				success("Paste successful.");
 			}
 		}
-		else
+		else if (command.startsWith("spe:"))
 		{
-			//other action commands are simply type names for type manipulation instructions from context menu
+			String tau = command.substring(4);
+			GraleJUtility.specialize(contextStructure, tau, sig);
+			reconvert();
+		}
+		else if (command.startsWith("gen:"))
+		{
+			String tau = command.substring(4);
+			GraleJUtility.generalize(contextStructure, tau, sig);
+			reconvert();
+		}
+		else if (command.startsWith("swi:"))
+		{
+			String tau = command.substring(4);
+			//GraleJUtility.switch(contextStructure, tau, sig);
+			reconvert();
+		}
+		else //LEGACY CODE, ONLY HERE FOR REFERENCE
+		{
 			String type = command;
 			if (contextStructure instanceof IType)
 			{
@@ -514,16 +552,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			String result = trale.descToMgsGrisu(traleDesc);
 			result = sig.resolveMGSs(result);*/
 			//THE NEW WAY: render edited structure into grisu
-			String result = GraleJUtility.convertGraleJToGrisu((IEntity) data.getModel());
-			if (result.startsWith("ERROR"))
-			{
-				failureMessage(result);
-			}
-			else
-			{
-				grisuString = result;
-				success("Editing operation successful.");
-			}
+			reconvert();
 			
 			//failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
 			//simply prints out the stored chars, which cannot be manipulated!
@@ -532,5 +561,19 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		this.updateDisplay();
 		blockPanel.getContent().update();
 		blockPanel.getCanvas().repaint();
+	}
+	
+	private void reconvert()
+	{
+		String result = GraleJUtility.convertGraleJToGrisu((IEntity) data.getModel());
+		if (result.startsWith("ERROR"))
+		{
+			failureMessage(result);
+		}
+		else
+		{
+			grisuString = result;
+			success("Editing operation successful.");
+		}
 	}
 }

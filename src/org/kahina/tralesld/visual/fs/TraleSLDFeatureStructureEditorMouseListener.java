@@ -39,7 +39,7 @@ public class TraleSLDFeatureStructureEditorMouseListener implements MouseListene
 			if (!type.equals("?"))
 			{
 				//generate context menu for type manipulation
-				TraleSLDFeatureStructureEditorMenu menu = editor.createContextMenu();
+				TraleSLDFeatureStructureEditorMenu menu = editor.createTypeContextMenu();
 				//in case of no signature or unknown type, the menu will be null
 				if (menu != null)
 				{

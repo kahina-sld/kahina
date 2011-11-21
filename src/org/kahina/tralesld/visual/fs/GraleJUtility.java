@@ -174,6 +174,20 @@ public class GraleJUtility
 		return null;
 	}
 	
+	public static List<String> listFeatures(IEntity e)
+	{
+		List<String> features = new LinkedList<String>();
+		if (e instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+			for (IFeatureValuePair fv : fs.featureValuePairs())
+			{
+				features.add(fv.feature());
+			}
+		}
+		return features;
+	}
+	
 	public static String convertGraleJToGrisu(IEntity ent)
 	{
 		int[] counter = {0};
