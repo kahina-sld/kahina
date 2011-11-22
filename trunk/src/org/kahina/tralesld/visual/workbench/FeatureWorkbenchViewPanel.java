@@ -694,7 +694,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		//String result = "!newdata\"current\"" + view.getModel().getSignature().computeGrisuMGS(type) + "\n";
 		
 		//the most recent and most general way via IEntity construction
-		String result = GraleJUtility.convertGraleJToGrisu(editor.generateSignatureMGS(type, EntityFactory.getInstance()));
+		String result = GraleJUtility.convertGraleJToGrisu(GraleJUtility.signatureMGS(type, view.getModel().getSignature()));
 		if (result.startsWith("ERROR"))
 		{
         	this.processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));

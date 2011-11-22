@@ -2,6 +2,7 @@ package org.kahina.tralesld.visual.fs;
 
 import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
+import gralej.blocks.ContainerBlock;
 import gralej.om.Entities;
 import gralej.om.EntityFactory;
 import gralej.om.IEntity;
@@ -70,6 +71,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	//buffered structure for copy & paste
 	private String bufferedStructure = null;
+	private boolean identityMode = false;
 
 	AuxiliaryTraleInstance trale;
 	
@@ -255,7 +257,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		Block lastBlock = null;
 		while (block != null)
 		{
-			if (block.getModel() instanceof IFeatureValuePair)
+			if (block.getModel() instanceof IFeatureValuePair && block instanceof ContainerBlock)
 			{
 				path.add(0,((IFeatureValuePair) block.getModel()).feature());
 			}
@@ -320,10 +322,6 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) ent;
 			type = selectedFS.type().typeName();
-		}
-		else
-		{
-			System.err.println(ent);
 		}
 		//the way to deal with mgsat(Type) for the moment
 		if (type.startsWith("mgsat("))
@@ -402,39 +400,6 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		return features;
 	}
 	
-	public IEntity generateSignatureMGS(String type, EntityFactory ent)
-	{
-		if (!sig.getTypes().contains(type))
-		{
-			return ent.newType("mgsat(" + type + ")");
-		}
-		IEntity struct;
-		if (type.equals("e_list"))
-		{
-			struct = ent.newList();
-		}
-		else if (type.equals("ne_list"))
-		{
-			IList list = ent.newList();
-			list.append(ent.newTFS("bot"));
-			list.setTail(ent.newTFS("list"));
-			struct = list;
-		}
-		else
-		{
-			List<IFeatureValuePair> fvList = new LinkedList<IFeatureValuePair>();
-			Map<String,String> appropFeats = sig.getTypeRestrictions(type);
-			List<String> appropFeatsList = new LinkedList<String>();
-			appropFeatsList.addAll(appropFeats.keySet());
-			Collections.sort(appropFeatsList);
-			for (String feat : appropFeatsList)
-			{
-				fvList.add(ent.newFeatVal(feat, generateSignatureMGS(appropFeats.get(feat), ent)));
-			}
-			struct = ent.newTFS(type,fvList);
-		}
-		return struct;
-	}
 	
 	public TraleSLDFeatureStructureEditorMenu createAppropriateContextMenu()
 	{
@@ -472,7 +437,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else
 		{
 			infoMessage("Modifying structure at path: " + contextPath);
-			return TraleSLDFeatureStructureEditorMenu.newTypeMenu(this, subtypes, supertypes, siblingTypes, introFeatures, totallyWellTypedEditing);
+			return TraleSLDFeatureStructureEditorMenu.newTypeMenu(this, subtypes, supertypes, siblingTypes, introFeatures, totallyWellTypedEditing, identityMode);
 		}
 	}
 	
@@ -580,8 +545,26 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.startsWith("fea:"))
 		{
 			String f = command.substring(4);
-			IEntity result = GraleJUtility.introFeat((IEntity) data.getModel(), contextPath, f, generateSignatureMGS("case", EntityFactory.getInstance()), sig);
+			IEntity result = GraleJUtility.introFeat((IEntity) data.getModel(), contextPath, f, GraleJUtility.signatureMGS("case", sig), sig);
 			reconvert(result);
+		}
+		else if (command.equals("Remove"))
+		{
+			String feat = ((IFeatureValuePair) contextStructure).feature(); 
+			GraleJUtility.remFeat((IEntity) data.getModel(), contextPath, feat);
+			reconvert();
+		}
+		else if (command.equals("Reset"))
+		{
+			
+		}
+		else if (command.equals("Begin"))
+		{
+			identityMode = true;
+		}
+		else if (command.equals("Identity"))
+		{
+			identityMode = false;
 		}
 		else //LEGACY CODE, ONLY HERE FOR REFERENCE
 		{
@@ -611,7 +594,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 					IFeatureValuePair fv = featureMap.remove(feat);
 					if (fv == null)
 					{
-						selectedFS.addFeatureValue(ent.newFeatVal(feat, generateSignatureMGS(appropFeats.get(feat), ent)));
+						selectedFS.addFeatureValue(ent.newFeatVal(feat, GraleJUtility.signatureMGS(appropFeats.get(feat), sig)));
 					}
 				}
 				//remove superfluous features
