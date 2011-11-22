@@ -114,6 +114,108 @@ public class GraleJUtility
 		return e;
 	}
 	
+	public static IEntity specializeTTF(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
+	{
+		e = specialize(e,path,ty,sig);
+		IEntity et = go(e,path);
+		if (et == null)
+		{
+			failMsg("TTF specialization failed: Unable to evaluate address!");
+			return e;
+		}
+		if (et instanceof ITag)
+		{
+			et = ((ITag) et).target();
+		}
+		if (et instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
+			enforceTTF(fs,sig);
+		}
+		else
+		{
+			failMsg("TTF specialization failed: not a typed feature structure!");
+		}
+		return e;
+	}
+	
+	public static IEntity generalizeTTF(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
+	{
+		e = generalize(e,path,ty,sig);
+		IEntity et = go(e,path);
+		if (et == null)
+		{
+			failMsg("TTF generalization failed: Unable to evaluate address!");
+			return e;
+		}
+		if (et instanceof ITag)
+		{
+			et = ((ITag) et).target();
+		}
+		if (et instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
+			enforceTTF(fs,sig);
+		}
+		else
+		{
+			failMsg("TTF generalization failed: not a typed feature structure!");
+		}
+		return e;
+	}
+	
+	public static IEntity switchTTF(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
+	{
+		e = switchType(e,path,ty,sig);
+		IEntity et = go(e,path);
+		if (et == null)
+		{
+			failMsg("TTF type switch failed: Unable to evaluate address!");
+			return e;
+		}
+		if (et instanceof ITag)
+		{
+			et = ((ITag) et).target();
+		}
+		if (et instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
+			enforceTTF(fs,sig);
+		}
+		else
+		{
+			failMsg("TTF type switch failed: not a typed feature structure!");
+		}
+		return e;
+	}
+	
+	private static void enforceTTF(ITypedFeatureStructure fs, TraleSLDSignature sig)
+	{
+		Map<String,String> appropFeats = sig.getTypeRestrictions(fs.typeName());
+		List<String> appropFeatsList = new LinkedList<String>();
+		appropFeatsList.addAll(appropFeats.keySet());
+		Collections.sort(appropFeatsList);
+		Map<String,IFeatureValuePair> featureMap = new HashMap<String,IFeatureValuePair>();
+		for (IFeatureValuePair pair : fs.featureValuePairs())
+		{
+			featureMap.put(pair.text(), pair);
+		}
+		//TODO: subsumption check to determine whether feature values are specific enough
+		for (String feat : appropFeatsList)
+		{
+			IFeatureValuePair fv = featureMap.remove(feat);
+			if (fv == null)
+			{
+				fs.addFeatureValue(ent.newFeatVal(feat, signatureMGS(appropFeats.get(feat), sig)));
+			}
+		}
+		//remove superfluous features
+		for (IFeatureValuePair fv : featureMap.values())
+		{
+			fs.featureValuePairs().remove(fv);
+		}
+	}
+	
 	public static IEntity introFeat(IEntity e, List<String> path, String feat, IEntity val, TraleSLDSignature sig)
 	{
 		IEntity parent = goUpToLast(e,path);

@@ -559,19 +559,40 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.startsWith("spe:"))
 		{
 			String tau = command.substring(4);
-			GraleJUtility.specialize((IEntity) data.getModel(), contextPath, tau, sig);
+			if (editingMode == TTF_MODE)
+			{
+				GraleJUtility.specializeTTF((IEntity) data.getModel(), contextPath, tau, sig);
+			}
+			else
+			{
+				GraleJUtility.specialize((IEntity) data.getModel(), contextPath, tau, sig);
+			}
 			reconvert();
 		}
 		else if (command.startsWith("gen:"))
 		{
 			String tau = command.substring(4);
-			GraleJUtility.generalize((IEntity) data.getModel(), contextPath, tau, sig);
+			if (editingMode == TTF_MODE)
+			{
+				GraleJUtility.generalizeTTF((IEntity) data.getModel(), contextPath, tau, sig);
+			}
+			else
+			{
+				GraleJUtility.generalize((IEntity) data.getModel(), contextPath, tau, sig);
+			}
 			reconvert();
 		}
 		else if (command.startsWith("swi:"))
 		{
 			String tau = command.substring(4);
-			GraleJUtility.switchType((IEntity) data.getModel(), contextPath, tau, sig);
+			if (editingMode == TTF_MODE)
+			{
+				GraleJUtility.switchTTF((IEntity) data.getModel(), contextPath, tau, sig);
+			}
+			else
+			{
+				GraleJUtility.switchType((IEntity) data.getModel(), contextPath, tau, sig);
+			}
 			reconvert();
 		}
 		else if (command.startsWith("fea:"))
