@@ -95,4 +95,33 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		menu.add(pasteItem);
 		return menu;
 	}
+	
+	public static TraleSLDFeatureStructureEditorMenu newFeatureMenu(TraleSLDFeatureStructureEditor editor, boolean totallyWellTyped)
+	{
+		TraleSLDFeatureStructureEditorMenu menu = new TraleSLDFeatureStructureEditorMenu();
+		if (!totallyWellTyped)
+		{
+			JMenuItem removeItem = new JMenuItem("Remove");
+			removeItem.addActionListener(editor);
+			menu.add(removeItem);
+			
+			menu.addSeparator();
+		}
+		
+		JMenuItem resetItem = new JMenuItem("Reset to type MGS");
+		resetItem.setActionCommand("Reset");
+		resetItem.addActionListener(editor);
+		menu.add(resetItem);
+		return menu;
+	}
+	
+	public static TraleSLDFeatureStructureEditorMenu newTagMenu(TraleSLDFeatureStructureEditor editor)
+	{
+		TraleSLDFeatureStructureEditorMenu menu = new TraleSLDFeatureStructureEditorMenu();	
+		JMenuItem dissolveIdentityItem = new JMenuItem("Dissolve Identity");
+		dissolveIdentityItem.setActionCommand("Dissolve");
+		dissolveIdentityItem.addActionListener(editor);
+		menu.add(dissolveIdentityItem);
+		return menu;
+	}
 }
