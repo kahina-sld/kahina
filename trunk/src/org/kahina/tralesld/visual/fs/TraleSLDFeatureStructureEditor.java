@@ -74,6 +74,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	//buffered structure for copy & paste
 	private String bufferedStructure = null;
 	private boolean identityMode = false;
+	List<String> cachedPath = new LinkedList<String>();
 
 	AuxiliaryTraleInstance trale;
 	
@@ -623,9 +624,15 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.equals("Begin"))
 		{
 			identityMode = true;
+			cachedPath = contextPath;
 		}
 		else if (command.equals("Identity"))
 		{
+			IEntity result = GraleJUtility.makeIdent((IEntity) data.getModel(), cachedPath, contextPath, sig);
+			if (result != null)
+			{
+				reconvert();
+			}
 			identityMode = false;
 		}
 		else //LEGACY CODE, ONLY HERE FOR REFERENCE
