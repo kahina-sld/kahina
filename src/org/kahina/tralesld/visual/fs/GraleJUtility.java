@@ -119,6 +119,25 @@ public class GraleJUtility
 		return e;
 	}
 	
+	public static IEntity resetFeat(IEntity e, List<String> path, String feat, TraleSLDSignature sig)
+	{
+		IEntity parent = goUpToLast(e,path);
+		IEntity et = goLast(parent,path);
+		if (et instanceof ITag)
+		{
+			parent = et;
+			et = ((ITag) et).target();
+		}
+		if (et == null || parent == null)
+		{
+			System.err.println("Feature reset failed: Unable to evaluate addresses!");
+			return e;
+		}
+		IEntity replacement = signatureMGS(getType(et), sig);
+		replace(parent,et,replacement);
+		return e;
+	}
+	
 	//TODO: makes this functional
 	public static IEntity introIdent(IEntity e, IEntity e1, IEntity e2, TraleSLDSignature sig)
 	{
@@ -266,6 +285,10 @@ public class GraleJUtility
 		{
 			ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
 			return fs.typeName();
+		}
+		else if (e instanceof IList)
+		{
+			return "list";
 		}
 		return null;
 	}

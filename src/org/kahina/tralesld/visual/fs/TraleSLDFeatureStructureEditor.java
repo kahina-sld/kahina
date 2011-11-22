@@ -556,7 +556,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else if (command.equals("Reset"))
 		{
-			
+			String feat = ((IFeatureValuePair) contextStructure).feature(); 
+			GraleJUtility.resetFeat((IEntity) data.getModel(), contextPath, feat, sig);
+			reconvert();
 		}
 		else if (command.equals("Begin"))
 		{
