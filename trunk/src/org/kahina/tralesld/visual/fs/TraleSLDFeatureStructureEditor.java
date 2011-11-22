@@ -361,7 +361,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		List<String> possSupertypes = new LinkedList<String>();
 		for (String supertype : supertypes)
 		{
-			if (contextParentStructureType.isEmpty())
+			if (contextParentStructureType.isEmpty() || editingMode == FREE_MODE)
 			{
 				possSupertypes.add(supertype);
 			}
@@ -384,7 +384,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		List<String> possSiblings = new LinkedList<String>();
 		for (String sibling : sig.getSiblingTypes(contextStructureType))
 		{
-			if (contextParentStructureType.isEmpty())
+			if (contextParentStructureType.isEmpty() || editingMode == FREE_MODE)
 			{
 				possSiblings.add(sibling);
 			}
@@ -404,10 +404,21 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	public List<String> getContextFeatures()
 	{
 		List<String> features = new LinkedList<String>();
-		features.addAll(sig.getFeatures());
-		for (String feat : GraleJUtility.listFeatures(contextStructure))
+		if (editingMode == FREE_MODE)
 		{
-			features.remove(feat);
+			features.addAll(sig.getFeatures());
+			for (String feat : GraleJUtility.listFeatures(contextStructure))
+			{
+				features.remove(feat);
+			}
+		}
+		else if (editingMode == TF_MODE)
+		{
+			features.addAll(sig.getAppropriateness(contextStructureType).keySet());
+			for (String feat : GraleJUtility.listFeatures(contextStructure))
+			{
+				features.remove(feat);
+			}
 		}
 		Collections.sort(features);
 		return features;
