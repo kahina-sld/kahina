@@ -1,5 +1,7 @@
 package org.kahina.tralesld.bridge;
 
+import gralej.om.IEntity;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -13,6 +15,7 @@ import javax.swing.SwingUtilities;
 
 import org.kahina.core.io.util.FileUtilities;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
+import org.kahina.tralesld.visual.fs.GraleJUtility;
 
 import se.sics.jasper.*;
 
@@ -252,6 +255,11 @@ public class AuxiliaryTraleInstance extends Thread
 		
 		//stub behavior for now: return GRISU string for trivial structure
 		//return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+	}
+	
+	public String entToMgsGrisu(IEntity ent)
+	{
+		return GraleJUtility.convertGraleJToGrisu(ent);
 	}
 	
 	private TraleSLDSignature extractSignature(String fileName)

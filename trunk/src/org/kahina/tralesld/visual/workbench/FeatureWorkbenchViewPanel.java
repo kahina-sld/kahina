@@ -196,7 +196,9 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		fsMenu.addSeparator();
 		
 		theoryMGSItem = new JMenuItem("Add MGS according to theory");
+		theoryMGSItem.setActionCommand("theMGS");
 		theoryMGSItem.setEnabled(false);
+		theoryMGSItem.addActionListener(this);
 		fsMenu.add(theoryMGSItem);
 		
 		sigMGUItem = new JMenuItem("Add MGU (signature only)");
@@ -669,6 +671,23 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 					this.processEvent(new TraleSLDFeatureEditEvent("MGU computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 	    			updateDisplay();
 	    			list.setSelectedValue("mgu(" + name1 + "," + name2 + ")", true);
+				}
+			}
+		}
+		else if (action.equals("theMGS"))
+		{
+			String name = (String) list.getSelectedValues()[0];
+			String grisu = view.getModel().getStructure(name);
+			IEntity ent = GraleJUtility.grisuToGraleJ(grisu);
+			if (ent != null)
+			{
+				IEntity mgs = GraleJUtility.grisuToGraleJ(view.getTrale().entToMgsGrisu(ent));
+				if (mgs != null)
+				{
+					view.getModel().storeStructure("mgs(" + name +  ")", GraleJUtility.convertGraleJToGrisu(mgs));
+					this.processEvent(new TraleSLDFeatureEditEvent("Theory MGS computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+	    			updateDisplay();
+	    			list.setSelectedValue("mgs(" + name +  ")", true);
 				}
 			}
 		}
