@@ -453,22 +453,22 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		return TraleSLDFeatureStructureEditorMenu.newTagMenu(this);
 	}
 	
-	private void infoMessage(String desc)
+	public void infoMessage(String desc)
 	{
 		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.INFO_MESSAGE));
 	}
 	
-	private void success(String desc)
+	public void success(String desc)
 	{
 		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.SUCCESS));
 	}
 	
-	private void failureMessage(String desc)
+	public void failureMessage(String desc)
 	{
 		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
 	}
 	
-	private void warningMessage(String desc)
+	public void warningMessage(String desc)
 	{
 		KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.WARNING_MESSAGE));
 	}
@@ -560,6 +560,11 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			GraleJUtility.resetFeat((IEntity) data.getModel(), contextPath, feat, sig);
 			reconvert();
 		}
+		else if (command.equals("Dissolve"))
+		{
+			GraleJUtility.remIdent((IEntity) data.getModel(), contextPath);
+			reconvert();
+		}
 		else if (command.equals("Begin"))
 		{
 			identityMode = true;
@@ -633,7 +638,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else
 		{
 			grisuString = result;
-			success("Editing operation successful.");
+			//success("Editing operation successful.");
 		}
 	}
 	
@@ -647,7 +652,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else
 		{
 			grisuString = result;
-			success("Editing operation successful.");
+			//success("Editing operation successful.");
 		}
 	}
 }

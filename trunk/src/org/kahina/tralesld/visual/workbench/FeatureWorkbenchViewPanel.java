@@ -247,6 +247,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		contentPanel.add(listScroller);
 		
 		editor = new TraleSLDFeatureStructureEditor(trale);
+		GraleJUtility.setFeatureStructureEditor(editor);
 		editor.setSignature(new TraleSLDSignature());
         KahinaRunner.getGUIControl().registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, editor);
 		JScrollPane editorScrollPane = new JScrollPane(editor);
