@@ -790,6 +790,7 @@ public class GraleJUtility
 			{
 				graleJToGrisu(lEnt, s, counter, ref);
 			}
+			//TODO: correct treatment of the tail when processing lists
 			s.append(")");
 		}
 		else if (ent instanceof ITag)
