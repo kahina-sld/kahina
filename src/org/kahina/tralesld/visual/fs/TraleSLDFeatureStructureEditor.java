@@ -32,10 +32,12 @@ import javax.swing.SwingUtilities;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 import org.kahina.tralesld.event.TraleSLDFeatureEditEvent;
+import org.kahina.tralesld.event.TraleSLDTypeSelectionEvent;
 
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
@@ -233,6 +235,12 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		contextStructure = contextBlock.getModel();
 		contextStructureType = determineType(contextStructure);
 		
+		if (!contextStructureType.equals("?"))
+		{
+			KahinaRunner.processEvent(new TraleSLDTypeSelectionEvent(contextStructureType));
+			KahinaRunner.processEvent(new KahinaRedrawEvent());
+		}
+		
 		contextPath = determinePath(block);
 		
 		contextAttrBlock = getAttrParent(block);
@@ -367,7 +375,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			}
 			else
 			{
-				String approType = sig.getAppropriateness(contextParentStructureType).get(contextAttr);
+				String approType = sig.getAppropriateValueType(contextParentStructureType,contextAttr);
 				if (sig.dominates(approType,supertype))
 				{
 					possSupertypes.add(supertype);
@@ -390,7 +398,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			}
 			else
 			{
-				String approType = sig.getAppropriateness(contextParentStructureType).get(contextAttr);
+				String approType = sig.getAppropriateValueType(contextParentStructureType,contextAttr);
 				if (sig.dominates(approType,sibling))
 				{
 					possSiblings.add(sibling);
@@ -563,13 +571,15 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.startsWith("swi:"))
 		{
 			String tau = command.substring(4);
-			//GraleJUtility.switch(contextStructure, tau, sig);
+			GraleJUtility.switchType((IEntity) data.getModel(), contextPath, tau, sig);
 			reconvert();
 		}
 		else if (command.startsWith("fea:"))
 		{
 			String f = command.substring(4);
-			IEntity result = GraleJUtility.introFeat((IEntity) data.getModel(), contextPath, f, GraleJUtility.signatureMGS("case", sig), sig);
+			String parentType = contextParentStructureType;
+			IEntity mgs = GraleJUtility.signatureMGS(sig.getAppropriateValueType(parentType, f), sig);
+			IEntity result = GraleJUtility.introFeat((IEntity) data.getModel(), contextPath, f, mgs, sig);
 			reconvert(result);
 		}
 		else if (command.equals("Remove"))
@@ -662,7 +672,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else
 		{
 			grisuString = result;
-			//success("Editing operation successful.");
+			KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(null, TraleSLDFeatureEditEvent.UPDATE_FS));
 		}
 	}
 	
@@ -676,7 +686,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else
 		{
 			grisuString = result;
-			//success("Editing operation successful.");
+			KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(null, TraleSLDFeatureEditEvent.UPDATE_FS));
 		}
 	}
 }
