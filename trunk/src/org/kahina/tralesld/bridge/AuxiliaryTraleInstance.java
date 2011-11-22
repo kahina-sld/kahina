@@ -626,13 +626,14 @@ public class AuxiliaryTraleInstance extends Thread
 			{
 				System.err.println("AuxiliaryTraleInstance stored MGS in temporary file.");
 			}
+			else
+			{
+				return "ERROR: No MGS could be found!";
+			}
 		}
 		catch (SPException e)
 		{
-			System.err.println("SPException: " + e.toString());
-			e.printStackTrace();
-			//TODO: useful error handling
-			return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+			return "ERROR: SPException: " + e.toString();
 		}
 		//read in temporary file to retrieve GRISU string
 		String grisu = null;
@@ -642,9 +643,7 @@ public class AuxiliaryTraleInstance extends Thread
 		}
 		catch (IOException e)
 		{
-			System.err.println("Could not read tmp.grisu! Returning default GRISU string!");
-			//stub behavior for now: return GRISU string for trivial structure
-			grisu = "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+			grisu = "ERROR: Could not read tmp.grisu! ";
 		}
 		return grisu;
 	}
@@ -693,7 +692,16 @@ public class AuxiliaryTraleInstance extends Thread
 		{
 			try
 			{
-				result = (SPTerm) sp.newTerm(((IType) ent).typeName());
+				String tyName = ((IType) ent).typeName();
+				result = (SPTerm) sp.newTerm(tyName);
+				if (task.getSignatureResult().getSupertypes(tyName) == null)
+				{
+					result = (SPTerm) sp.newTerm("a_", new Term[] { result });
+				}
+			}
+			catch (IllegalTermException e)
+			{		
+				System.err.println("Illegal term while translating IType!");
 			}
 			catch (ConversionFailedException e)
 			{		
@@ -757,9 +765,11 @@ public class AuxiliaryTraleInstance extends Thread
 		}
 		else if (ent instanceof IAny)
 		{
+			System.err.println("Translating any!");
 			try
 			{
 				result = (SPTerm) sp.newTerm("a_", new Term[] { new SPTerm(sp,((IAny) ent).value())});
+				//result = (SPTerm) sp.newTerm("a_", new Term[] { new SPTerm(sp,"_" + ((IAny) ent).value())});
 			}
 			catch (IllegalTermException e)
 			{			
@@ -778,7 +788,12 @@ public class AuxiliaryTraleInstance extends Thread
 				int numFVs = tfs.featureValuePairs().size();
 				if (tfs.type() != null) 
 				{
-	                result = (SPTerm) sp.newTerm(tfs.type().typeName());
+					String tyName = tfs.typeName();
+					result = (SPTerm) sp.newTerm(tyName);
+					if (task.getSignatureResult().getSupertypes(tyName) == null)
+					{
+						result = (SPTerm) sp.newTerm("a_", new Term[] { result });
+					}
 	                if (numFVs == 0 && tfs.type().typeName().startsWith("mgsat"))
 	            	{
 	                	//anonymous variable

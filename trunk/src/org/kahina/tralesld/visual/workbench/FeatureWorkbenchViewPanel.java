@@ -711,13 +711,21 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 			IEntity ent = GraleJUtility.grisuToGraleJ(grisu);
 			if (ent != null)
 			{
-				IEntity mgs = GraleJUtility.grisuToGraleJ(view.getTrale().entToMgsGrisu(ent));
-				if (mgs != null)
+				String mgsGrisu = view.getTrale().entToMgsGrisu(ent);
+				if (mgsGrisu.startsWith("ERROR"))
 				{
-					view.getModel().storeStructure("mgs(" + name +  ")", GraleJUtility.convertGraleJToGrisu(mgs));
-					this.processEvent(new TraleSLDFeatureEditEvent("Theory MGS computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
-	    			updateDisplay();
-	    			list.setSelectedValue("mgs(" + name +  ")", true);
+					this.processEvent(new TraleSLDFeatureEditEvent(mgsGrisu, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+				}
+				else
+				{
+					IEntity mgs = GraleJUtility.grisuToGraleJ(view.getTrale().entToMgsGrisu(ent));
+					if (mgs != null)
+					{
+						view.getModel().storeStructure("mgs(" + name +  ")", GraleJUtility.convertGraleJToGrisu(mgs));
+						this.processEvent(new TraleSLDFeatureEditEvent("Theory MGS computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+		    			updateDisplay();
+		    			list.setSelectedValue("mgs(" + name +  ")", true);
+					}
 				}
 			}
 		}
