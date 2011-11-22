@@ -195,7 +195,7 @@ public class GraleJUtility
 	
 	private static void enforceTTF(ITypedFeatureStructure fs, TraleSLDSignature sig)
 	{
-		Map<String,String> appropFeats = sig.getTypeRestrictions(fs.typeName());
+		Map<String,String> appropFeats = sig.getTypeRestrictions(getType(fs));
 		List<String> appropFeatsList = new LinkedList<String>();
 		appropFeatsList.addAll(appropFeats.keySet());
 		Collections.sort(appropFeatsList);
@@ -439,8 +439,8 @@ public class GraleJUtility
 	
 	private static IEntity unify(ITypedFeatureStructure tfs1, ITypedFeatureStructure tfs2, TraleSLDSignature sig)
 	{
-		String type1 = tfs1.typeName();
-		String type2 = tfs2.typeName();
+		String type1 = getType(tfs1);
+		String type2 = getType(tfs2);
 		String unifType = null;
 		if (sig.dominates(type1,type2))
 		{
@@ -531,7 +531,7 @@ public class GraleJUtility
 		int number2 = ((ITag) t2).number();
 		int newNumber = number1;
 		if (number2 < number1) newNumber = number2;
-		return ent.newTag(number2,res);
+		return ent.newTag(newNumber,res);
 	}
 	
 	private static Map<String,IEntity> featValMap(ITypedFeatureStructure fs)
@@ -667,21 +667,27 @@ public class GraleJUtility
 	
 	public static String getType(IEntity e)
 	{
+		String type = "?";
 		if (e instanceof IType)
 		{
-			IType type = (IType) e;
-			return type.text();
+			IType ty = (IType) e;
+			type = ty.typeName();
 		}
 		else if (e instanceof ITypedFeatureStructure)
 		{
 			ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
-			return fs.typeName();
+			type = fs.typeName();
 		}
 		else if (e instanceof IList)
 		{
-			return "list";
+			type = "list";
 		}
-		return null;
+		//the way to deal with mgsat(Type) for the moment
+		if (type.startsWith("mgsat("))
+		{
+			type = type.substring(6, type.length() - 1);
+		}
+		return type;
 	}
 	
 	public static List<String> listFeatures(IEntity e)

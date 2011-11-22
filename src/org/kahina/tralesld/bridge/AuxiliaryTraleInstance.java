@@ -1,14 +1,22 @@
 package org.kahina.tralesld.bridge;
 
+import gralej.om.IAny;
 import gralej.om.IEntity;
+import gralej.om.IFeatureValuePair;
+import gralej.om.IList;
+import gralej.om.ITag;
+import gralej.om.IType;
+import gralej.om.ITypedFeatureStructure;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import javax.swing.SwingUtilities;
@@ -75,6 +83,12 @@ public class AuxiliaryTraleInstance extends Thread
 			    	if (task.getInstruction().equals("mgs"))
 			    	{
 			    		task.setResult(executeMGS(task.getToProcess()));
+			    		task.setInstruction(null);
+			    		task.notify();
+			    	}
+			    	if (task.getInstruction().equals("tmgs"))
+			    	{
+			    		task.setResult(executeTheoryMGS(task.getEntity()));
 			    		task.setInstruction(null);
 			    		task.notify();
 			    	}
@@ -259,7 +273,21 @@ public class AuxiliaryTraleInstance extends Thread
 	
 	public String entToMgsGrisu(IEntity ent)
 	{
-		return GraleJUtility.convertGraleJToGrisu(ent);
+		synchronized(task)
+		{
+			task.setInstruction("tmgs");
+			task.setEntity(ent);
+			task.notify();
+	    	try
+	    	{
+	    		task.wait();
+	    	}
+	    	catch (InterruptedException e)
+	    	{
+	    		
+	    	} 	
+	    	return task.getResult();
+		}
 	}
 	
 	private TraleSLDSignature extractSignature(String fileName)
@@ -559,6 +587,177 @@ public class AuxiliaryTraleInstance extends Thread
 		return grisu;
 	}
 	
+	private String executeTheoryMGS(IEntity ent)
+	{
+		//let TRALE output MGS in GRISU format to temporary file
+		try
+		{
+			SPPredicate mgsPred = new SPPredicate(sp, "mgs_to_tempfile", 2, "");
+			SPTerm descTerm = graleJToDescTerm(ent, new HashMap<Integer,SPTerm>());
+			SPTerm fileNameTerm = new SPTerm(sp, "tmp.grisu");
+			SPQuery mgsQuery = sp.openQuery(mgsPred, new SPTerm[] { descTerm, fileNameTerm });	      
+			if (mgsQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance stored MGS in temporary file.");
+			}
+		}
+		catch (SPException e)
+		{
+			System.err.println("SPException: " + e.toString());
+			e.printStackTrace();
+			//TODO: useful error handling
+			return "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+		}
+		//read in temporary file to retrieve GRISU string
+		String grisu = null;
+		try
+		{
+			grisu = FileUtilities.slurpFile("tmp.grisu");
+		}
+		catch (IOException e)
+		{
+			System.err.println("Could not read tmp.grisu! Returning default GRISU string!");
+			//stub behavior for now: return GRISU string for trivial structure
+			grisu = "!newdata \"cruel\" (S1(0\"mgsat\"))(T2 \"head_subject:cruel\" 1)\n";
+		}
+		return grisu;
+	}
+	
+	private SPTerm graleJToDescTerm(IEntity ent, Map<Integer,SPTerm> tagVariables)
+	{
+		SPTerm result = (SPTerm) sp.newTerm();
+		if (ent instanceof IType)
+		{
+			try
+			{
+				result = (SPTerm) sp.newTerm(((IType) ent).typeName());
+			}
+			catch (ConversionFailedException e)
+			{		
+				System.err.println("Conversion failed while translating IType!");
+			}
+		}
+		else if (ent instanceof ITag)
+		{
+			try
+			{
+				ITag tag = (ITag) ent;
+				SPTerm var = tagVariables.get(tag.number());
+				if (var == null)
+				{
+					var = (SPTerm) sp.newVariable();
+					tagVariables.put(tag.number(), var);
+					SPTerm targetTerm = graleJToDescTerm(tag.target(), tagVariables);
+					result = (SPTerm) sp.newTerm(",", new Term[] {var, targetTerm});
+				}
+				else
+				{
+					result = var;
+				}
+			}
+			catch (IllegalTermException e)
+			{		
+				System.err.println("Illegal term while translating ITag!");
+			}
+			catch (ConversionFailedException e)
+			{		
+				System.err.println("Conversion failed while translating ITag!");
+			}
+		}
+		else if (ent instanceof IList)
+		{
+			try
+			{	
+				List<SPTerm> elementTermStack = new LinkedList<SPTerm>();
+				IList ls = (IList) ent;
+				for (IEntity el : ls.elements()) 
+				{
+                    elementTermStack.add(0,graleJToDescTerm(el, tagVariables));
+                }
+                if (ls.tail() != null) 
+                {
+                    result = graleJToDescTerm(ls.tail(), tagVariables);
+                }
+                while (elementTermStack.size() > 0)
+                {
+                	result.consList(elementTermStack.remove(0), result);
+                }
+			}
+			catch (IllegalTermException e)
+			{			
+				System.err.println("Illegal term while translating IList!");
+			}
+			catch (ConversionFailedException e)
+			{		
+				System.err.println("Conversion failed while translating IList!");
+			}
+		}
+		else if (ent instanceof IAny)
+		{
+			try
+			{
+				result = (SPTerm) sp.newTerm("a_", new Term[] { new SPTerm(sp,((IAny) ent).value())});
+			}
+			catch (IllegalTermException e)
+			{			
+				System.err.println("Illegal term while translating IAny!");
+			}
+			catch (ConversionFailedException e)
+			{		
+				System.err.println("Conversion failed while translating IAny!");
+			}
+		}
+		else if (ent instanceof ITypedFeatureStructure)
+		{
+			try
+			{
+				ITypedFeatureStructure tfs = (ITypedFeatureStructure) ent;
+				int numFVs = tfs.featureValuePairs().size();
+				if (tfs.type() != null) 
+				{
+	                result = (SPTerm) sp.newTerm(tfs.type().typeName());
+	                if (numFVs == 0 && tfs.type().typeName().startsWith("mgsat"))
+	            	{
+	                	//anonymous variable
+	            		result = (SPTerm) sp.newVariable();
+	            	}
+	                if (numFVs > 0)
+	                {
+	                	for (IFeatureValuePair fv : tfs.featureValuePairs()) 
+	                	{
+	                        result = (SPTerm) sp.newTerm(",", new Term[] {result, graleJToDescTerm(fv, tagVariables)});
+	                    }
+	                }
+	            }
+			}
+			catch (IllegalTermException e)
+			{			
+				System.err.println("Illegal term while translating ITypedFeatureStructure!");
+			}
+			catch (ConversionFailedException e)
+			{		
+				System.err.println("Conversion failed while translating ITypedFeatureStructure!");
+			}
+		}
+		else if (ent instanceof IFeatureValuePair)
+		{
+			try
+			{
+				IFeatureValuePair fv = (IFeatureValuePair) ent;
+				result = (SPTerm) sp.newTerm(":", new Term[] {sp.newTerm(fv.feature()),graleJToDescTerm(fv.value(), tagVariables)});
+			}
+			catch (IllegalTermException e)
+			{			
+				System.err.println("Illegal term while translating IFeatureValuePair!");
+			}
+			catch (ConversionFailedException e)
+			{		
+				System.err.println("Conversion failed while translating IFeatureValuePair!");
+			}
+		}
+		return result;
+	}
+	
 	//new version (does not compile anything, always uses the current theory)
 	//does not work because Jasper cannot build SPTerms out of descriptions by default
 	//TODO: use this to achieve speedup: let GraleJ generate descriptions as SPTerms 
@@ -668,6 +867,8 @@ public class AuxiliaryTraleInstance extends Thread
 	{
 		String instruction = null;
 		String toProcess = null;
+		IEntity entity = null;
+
 		String result = null;
 		TraleSLDSignature signatureResult = null;
 
@@ -689,6 +890,16 @@ public class AuxiliaryTraleInstance extends Thread
 		public void setToProcess(String toProcess) 
 		{
 			this.toProcess = toProcess;
+		}
+		
+		public IEntity getEntity() 
+		{
+			return entity;
+		}
+
+		public void setEntity(IEntity entity) 
+		{
+			this.entity = entity;
 		}
 		
 		public String getResult() 

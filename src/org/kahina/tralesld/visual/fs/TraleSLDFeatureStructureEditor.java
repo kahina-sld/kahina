@@ -234,7 +234,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	{	
 		contextBlock = block;
 		contextStructure = contextBlock.getModel();
-		contextStructureType = determineType(contextStructure);
+		contextStructureType = GraleJUtility.getType(contextStructure);
 		
 		if (!contextStructureType.equals("?"))
 		{
@@ -267,7 +267,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			else
 			{
 				contextParentStructure = contextParentBlock.getModel();
-				contextParentStructureType = determineType(contextParentStructure);
+				contextParentStructureType = GraleJUtility.getType(contextParentStructure);
 			}
 		}
 	}
@@ -330,27 +330,6 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			block = block.getParent();
 		}
 		return block;
-	}
-	
-	private String determineType(IEntity ent)
-	{
-		String type = "?";
-		if (ent instanceof IType)
-		{
-			IType selectedType = (IType) ent;
-			type = selectedType.typeName();
-		}
-		else if (ent instanceof ITypedFeatureStructure)
-		{
-			ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) ent;
-			type = selectedFS.type().typeName();
-		}
-		//the way to deal with mgsat(Type) for the moment
-		if (type.startsWith("mgsat("))
-		{
-			type = type.substring(6, type.length() - 1);
-		}
-		return type;
 	}
 	
 	public List<String> getContextSubtypes()
