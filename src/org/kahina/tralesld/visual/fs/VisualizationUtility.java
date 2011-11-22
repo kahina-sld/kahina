@@ -71,7 +71,8 @@ public class VisualizationUtility
 				System.err.println(this + ".parseGrisu(" + grisuMessage + ")");
 			}
 			dataPackage = parser.parseAll(new ByteArrayInputStream(grisuMessage.getBytes()), StreamInfo.GRISU).get(0);
-		} catch (ParseException e)
+		} 
+		catch (ParseException e)
 		{
 			JPanel result = new JPanel();
 			result.add(new JLabel("Parse error: \n" + e.getMessage() + "\nGrisu message was: \n" + grisuMessage));
@@ -100,7 +101,8 @@ public class VisualizationUtility
 				System.err.println(this + ".visualize(" + grisuMessage + ")");
 			}
 			blockPanel = parseGrisu(grisuMessage).createView();
-		} catch (ParseException e)
+		} 
+		catch (ParseException e)
 		{
 			// TODO: restore display of error messages; display empty list as
 			// temporary solution
