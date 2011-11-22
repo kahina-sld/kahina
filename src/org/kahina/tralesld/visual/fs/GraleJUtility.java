@@ -336,6 +336,152 @@ public class GraleJUtility
 		return e;
 	}
 	
+	public static IEntity unify(IEntity e1, IEntity e2, TraleSLDSignature sig)
+	{
+		if (e1 instanceof ITypedFeatureStructure && e2 instanceof ITypedFeatureStructure)
+		{
+			return unify((ITypedFeatureStructure) e1, (ITypedFeatureStructure) e2, sig);
+		}
+		else if (e1 instanceof IList && e2 instanceof IList)
+		{
+			return unify((IList) e1, (IList) e2, sig);
+		}
+		else if (e1 instanceof ITag && e2 instanceof ITag)
+		{
+			return unify((ITag) e1, (ITag) e2, sig);
+		}
+		else if (e1 instanceof ITag)
+		{
+			IEntity res = unify(((ITag) e1).target(),e2, sig);
+			if (res != null)
+			{
+				return ent.newTag(((ITag) e1).number(), res);
+			}
+			else
+			{
+				return null;
+			}
+		}
+		else if (e2 instanceof ITag)
+		{
+			IEntity res = unify(((ITag) e2).target(),e1, sig);
+			if (res != null)
+			{
+				return ent.newTag(((ITag) e2).number(), res);
+			}
+			else
+			{
+				return null;
+			}
+		}
+		else
+		{
+			failMsg("Unification failed: lists and other structures are incompatible.");
+			return null;
+		}
+	}
+	
+	private static IEntity unify(ITypedFeatureStructure tfs1, ITypedFeatureStructure tfs2, TraleSLDSignature sig)
+	{
+		String type1 = tfs1.typeName();
+		String type2 = tfs2.typeName();
+		String unifType = null;
+		if (sig.dominates(type1,type2))
+		{
+			unifType = type2;
+		}
+		else if (sig.dominates(type2,type1))
+		{
+			unifType = type1;
+		}
+		else
+		{
+			failMsg("Unification failed: types " + type1 + " and " + type2 + " are incompatible.");
+			return null;
+		}
+		Map<String,IEntity> featVals1 = featValMap(tfs1);
+		Map<String,IEntity> featVals2 = featValMap(tfs2);
+		Map<String,IEntity> unifFeatVals = new HashMap<String,IEntity>();
+		for (String feat : sig.getAppropriateness(unifType).keySet())
+		{
+			IEntity ent1 = featVals1.get(feat);
+			IEntity ent2 = featVals2.get(feat);
+			if (ent1 == null && ent2 == null)
+			{
+				unifFeatVals.put(feat, signatureMGS(sig.getAppropriateValueType(unifType,feat), sig));
+			}
+			else if (ent2 == null)
+			{
+				//TODO: enforce type restriction if necessary (via TTF specialization)
+				unifFeatVals.put(feat, ent1);
+			}
+			else if (ent1 == null)
+			{
+				//TODO: enforce type restriction if necessary (via TTF specialization)
+				unifFeatVals.put(feat, ent2);
+			}
+			else
+			{
+				//unification of the two values
+				IEntity res = unify(ent1,ent2,sig);
+				if (res == null) return null;
+				unifFeatVals.put(feat, res);
+			}
+		}
+		List<IFeatureValuePair> unifFeatVal = new LinkedList<IFeatureValuePair>();
+		for (String feat : unifFeatVals.keySet())
+		{
+			unifFeatVal.add(ent.newFeatVal(feat, unifFeatVals.get(feat)));
+		}
+		return ent.newTFS(unifType, unifFeatVal);
+	}
+	
+	private static IEntity unify(IList l1, IList l2, TraleSLDSignature sig)
+	{
+		IList resultList = ent.newList();
+		List<IEntity> ents1 = new LinkedList<IEntity>();
+		int i = 0;
+		for (IEntity ent2 : l2.elements())
+		{
+			if (i >= ents1.size())
+			{
+				resultList.append(ent2);
+			}
+			IEntity res = unify(ents1.get(i), ent2, sig);
+			if (res == null) return null;
+			resultList.append(res);
+			i++;
+		}
+		while (i < ents1.size())
+		{
+			resultList.append(ents1.get(i));
+			i++;
+		}
+		return resultList;
+	}
+	
+	private static IEntity unify(ITag t1, ITag t2, TraleSLDSignature sig)
+	{
+		IEntity res = unify(((ITag) t1).target(), ((ITag) t2).target(), sig);
+		if (res == null) return null;
+		//TODO: equate the tag numbers throughout the structure, not only locally
+		int number1 = ((ITag) t1).number();
+		int number2 = ((ITag) t2).number();
+		int newNumber = number1;
+		if (number2 < number1) newNumber = number2;
+		return ent.newTag(number2,res);
+	}
+	
+	private static Map<String,IEntity> featValMap(ITypedFeatureStructure fs)
+	{
+		HashMap<String,IEntity> featValMap = new HashMap<String,IEntity>();
+		for (IFeatureValuePair fval : fs.featureValuePairs())
+		{
+			featValMap.put(fval.feature(), fval.value());
+		}
+		return featValMap;
+	}
+	
 	/**
 	 * Retrieves the substructure of an IEntity at a given a path.
 	 * @param e the entity to address into
