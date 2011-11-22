@@ -86,9 +86,15 @@ public class AuxiliaryTraleInstance extends Thread
 			    		task.setInstruction(null);
 			    		task.notify();
 			    	}
-			    	if (task.getInstruction().equals("tmgs"))
+			    	else if (task.getInstruction().equals("tmgs"))
 			    	{
-			    		task.setResult(executeTheoryMGS(task.getEntity()));
+			    		task.setResult(executeTheoryMGS(task.getEntity1()));
+			    		task.setInstruction(null);
+			    		task.notify();
+			    	}
+			    	else if (task.getInstruction().equals("tmgu"))
+			    	{
+			    		task.setResult(executeTheoryMGU(task.getEntity1(), task.getEntity2()));
 			    		task.setInstruction(null);
 			    		task.notify();
 			    	}
@@ -276,7 +282,27 @@ public class AuxiliaryTraleInstance extends Thread
 		synchronized(task)
 		{
 			task.setInstruction("tmgs");
-			task.setEntity(ent);
+			task.setEntity1(ent);
+			task.notify();
+	    	try
+	    	{
+	    		task.wait();
+	    	}
+	    	catch (InterruptedException e)
+	    	{
+	    		
+	    	} 	
+	    	return task.getResult();
+		}
+	}
+	
+	public String entsToMguGrisu(IEntity ent1, IEntity ent2)
+	{
+		synchronized(task)
+		{
+			task.setInstruction("tmgu");
+			task.setEntity1(ent2);
+			task.setEntity2(ent1);
 			task.notify();
 	    	try
 	    	{
@@ -623,6 +649,43 @@ public class AuxiliaryTraleInstance extends Thread
 		return grisu;
 	}
 	
+	private String executeTheoryMGU(IEntity ent1, IEntity ent2)
+	{
+		//let TRALE output MGS in GRISU format to temporary file
+		try
+		{
+			SPPredicate mgsPred = new SPPredicate(sp, "mgs_to_tempfile", 2, "");
+			SPTerm desc1Term = graleJToDescTerm(ent1, new HashMap<Integer,SPTerm>());
+			SPTerm desc2Term = graleJToDescTerm(ent2, new HashMap<Integer,SPTerm>());
+			SPTerm descTerm = (SPTerm) sp.newTerm(",", new Term[] {desc1Term, desc2Term});
+			SPTerm fileNameTerm = new SPTerm(sp, "tmp.grisu");
+			SPQuery mgsQuery = sp.openQuery(mgsPred, new SPTerm[] { descTerm, fileNameTerm });	      
+			if (mgsQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance stored MGS in temporary file.");
+			}
+			else
+			{
+				return "ERROR: Unification failed!";
+			}
+		}
+		catch (SPException e)
+		{
+			return "ERROR: SPException: " + e.toString();
+		}
+		//read in temporary file to retrieve GRISU string
+		String grisu = null;
+		try
+		{
+			grisu = FileUtilities.slurpFile("tmp.grisu");
+		}
+		catch (IOException e)
+		{
+			grisu = "ERROR: Could not read tmp.grisu! ";
+		}
+		return grisu;
+	}
+	
 	private SPTerm graleJToDescTerm(IEntity ent, Map<Integer,SPTerm> tagVariables)
 	{
 		SPTerm result = (SPTerm) sp.newTerm();
@@ -867,7 +930,8 @@ public class AuxiliaryTraleInstance extends Thread
 	{
 		String instruction = null;
 		String toProcess = null;
-		IEntity entity = null;
+		IEntity entity1 = null;
+		IEntity entity2 = null;
 
 		String result = null;
 		TraleSLDSignature signatureResult = null;
@@ -892,14 +956,24 @@ public class AuxiliaryTraleInstance extends Thread
 			this.toProcess = toProcess;
 		}
 		
-		public IEntity getEntity() 
+		public IEntity getEntity1() 
 		{
-			return entity;
+			return entity1;
 		}
 
-		public void setEntity(IEntity entity) 
+		public void setEntity1(IEntity entity) 
 		{
-			this.entity = entity;
+			this.entity1 = entity;
+		}
+		
+		public IEntity getEntity2() 
+		{
+			return entity2;
+		}
+
+		public void setEntity2(IEntity entity) 
+		{
+			this.entity2 = entity;
 		}
 		
 		public String getResult() 

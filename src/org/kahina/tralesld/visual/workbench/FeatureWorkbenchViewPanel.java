@@ -208,7 +208,9 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		fsMenu.add(sigMGUItem);
 		
 		theMGUItem = new JMenuItem("Add MGU according to theory");
+		theMGUItem.setActionCommand("theMGU");
 		theMGUItem.setEnabled(false);
+		theMGUItem.addActionListener(this);
 		fsMenu.add(theMGUItem);
 		
 		menuBar.add(fsMenu);
@@ -671,6 +673,34 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 					this.processEvent(new TraleSLDFeatureEditEvent("MGU computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 	    			updateDisplay();
 	    			list.setSelectedValue("mgu(" + name1 + "," + name2 + ")", true);
+				}
+			}
+		}
+		else if (action.equals("theMGU"))
+		{
+			String name1 = (String) list.getSelectedValues()[0];
+			String name2 = (String) list.getSelectedValues()[1];
+			String grisu1 = view.getModel().getStructure(name1);
+			String grisu2 = view.getModel().getStructure(name2);
+			IEntity ent1 = GraleJUtility.grisuToGraleJ(grisu1);
+			IEntity ent2 = GraleJUtility.grisuToGraleJ(grisu2);
+			if (ent1 != null && ent2 != null)
+			{
+				String mguGrisu = view.getTrale().entsToMguGrisu(ent1, ent2);
+				if (mguGrisu.startsWith("ERROR"))
+				{
+					this.processEvent(new TraleSLDFeatureEditEvent(mguGrisu, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+				}
+				else
+				{
+					IEntity mgu = GraleJUtility.grisuToGraleJ(mguGrisu);
+					if (mgu != null)
+					{
+						view.getModel().storeStructure("mgu(" + name1 + "," + name2 + ")", GraleJUtility.convertGraleJToGrisu(mgu));
+						this.processEvent(new TraleSLDFeatureEditEvent("MGU computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+		    			updateDisplay();
+		    			list.setSelectedValue("mgu(" + name1 + "," + name2 + ")", true);
+					}
 				}
 			}
 		}
