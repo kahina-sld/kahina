@@ -520,6 +520,8 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			}
 			//TODO: check whether types are compatible
 			//TODO: find out about weird behavior, and why the second option leads to parse errors
+			
+			
 			contextBlock.setModel((IEntity) toCopyData.getModel());
 			//contextAttrModel.setValue((IEntity) toCopyData.getModel());
 			//get back the edited structure in TRALE desc format
