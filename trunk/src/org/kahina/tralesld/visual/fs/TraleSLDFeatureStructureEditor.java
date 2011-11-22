@@ -492,18 +492,15 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		String command = e.getActionCommand();
 		if (command.equals("Copy"))
 		{
-			String traleDesc = Entities.toTraleDesc(contextStructure);
-			//use TRALE instance to retrieve the grisuString for the description's MGS
-			String result = trale.descToMgsGrisu(traleDesc);
-			result = sig.resolveMGSs(result);
-			if (result.startsWith("ERROR"))
+			String copyGrisu = GraleJUtility.convertGraleJToGrisu(contextStructure);
+			if (copyGrisu.startsWith("ERROR"))
 			{
-				failureMessage(result);
+				failureMessage(copyGrisu);
 			}
 			else
 			{
 				success("Copying operation successful.");
-				KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.COPY_FS));
+				KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(copyGrisu, TraleSLDFeatureEditEvent.COPY_FS));
 			}		
 		}
 		else if (command.equals("Paste"))
@@ -511,7 +508,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			IDataPackage toCopyData = null;
 			try
 			{
-				toCopyData = util.parseGrisu(grisuString);
+				toCopyData = util.parseGrisu(bufferedStructure);
 			}
 			catch (gralej.parsers.ParseException pe) 
 			{
@@ -519,24 +516,11 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				return;
 			}
 			//TODO: check whether types are compatible
-			//TODO: find out about weird behavior, and why the second option leads to parse errors
+			//TODO: find out about weird behavior, and why the second option leads to parse errors	
 			
-			
-			contextBlock.setModel((IEntity) toCopyData.getModel());
-			//contextAttrModel.setValue((IEntity) toCopyData.getModel());
-			//get back the edited structure in TRALE desc format
-			String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
-			//use TRALE instance to retrieve the grisuString for the description's MGS
-			String result = trale.descToMgsGrisu(traleDesc);
-			if (result.startsWith("error"))
-			{
-				failureMessage("Paste failed with " + result);
-			}
-			else
-			{
-				grisuString = result;
-				success("Paste successful.");
-			}
+			//contextBlock.setModel((IEntity) toCopyData.getModel());
+			contextAttrModel.setValue((IEntity) toCopyData.getModel());
+			reconvert();
 		}
 		else if (command.startsWith("spe:"))
 		{
