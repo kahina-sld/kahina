@@ -20,23 +20,34 @@ import gralej.om.ITypedFeatureStructure;
 public class GraleJUtility 
 {
 	static EntityFactory ent = EntityFactory.getInstance();
+	static TraleSLDFeatureStructureEditor editor = null;
+	
+	public static void setFeatureStructureEditor(TraleSLDFeatureStructureEditor e)
+	{
+		editor = e;
+	}
 	
 	public static IEntity specialize(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
 	{
 		IEntity ent = go(e,path);
 		if (ent == null)
 		{
-			System.err.println("Specialize failed: Unable to evaluate address!");
+			failMsg("Specialize failed: Unable to evaluate address!");
 			return e;
+		}
+		if (ent instanceof ITag)
+		{
+			ent = ((ITag) ent).target();
 		}
 		String eType = getType(ent);
 		if (eType != null && sig.dominates(eType,ty))
 		{
 			setType(ent,ty);
+			successMsg("Type specialization successful!");
 		}
 		else
 		{
-			System.err.println("Specialize failed: Dominance condition violated!");
+			failMsg("Specialize failed: Dominance condition violated!");
 		}
 		return e;
 	}
@@ -46,17 +57,22 @@ public class GraleJUtility
 		IEntity ent = go(e,path);
 		if (ent == null)
 		{
-			System.err.println("Generalize failed: Unable to evaluate address!");
+			failMsg("Generalize failed: Unable to evaluate address!");
 			return e;
+		}
+		if (ent instanceof ITag)
+		{
+			ent = ((ITag) ent).target();
 		}
 		String eType = getType(ent);
 		if (eType != null && sig.dominates(ty,eType))
 		{
 			setType(ent,ty);
+			successMsg("Type generalization successful!");
 		}
 		else
 		{
-			System.err.println("Specialize failed: Dominance condition violated!");
+			failMsg("Specialize failed: Dominance condition violated!");
 		}
 		return e;
 	}
@@ -68,8 +84,13 @@ public class GraleJUtility
 		if (parent == null) et = e;	
 		if (et == null)
 		{
-			System.err.println("Feature introduction failed: Unable to evaluate address!");
+			failMsg("Feature introduction failed: Unable to evaluate address!");
 			return e;
+		}
+		if (et instanceof ITag)
+		{
+			parent = et;
+			et = ((ITag) et).target();
 		}
 		IFeatureValuePair fv = ent.newFeatVal(feat, val); 
 		if (et instanceof IType)
@@ -78,6 +99,7 @@ public class GraleJUtility
 			fvList.add(fv);
 			IType type = (IType) et;
 			ITypedFeatureStructure replacement = ent.newTFS(type, fvList);
+			successMsg("Feature introduction successful!");
 			if (parent == null) return replacement;
 			replace(parent,et,replacement);
 			return e;
@@ -86,9 +108,10 @@ public class GraleJUtility
 		{
 			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
 			fs.addFeatureValue(fv);
+			successMsg("Feature introduction successful!");
 			return e;
 		}
-		System.err.println("Feature introduction failed: not possible in context " + et + ".");
+		failMsg("Feature introduction failed: not possible in context " + et + ".");
 		return e;
 	}
 	
@@ -97,7 +120,7 @@ public class GraleJUtility
 		IEntity et = goUpToLast(e,path);
 		if (et == null)
 		{
-			System.err.println("Feature removal failed: Unable to evaluate address!");
+			failMsg("Feature removal failed: Unable to evaluate address!");
 			return e;
 		}
 		if (et  instanceof ITypedFeatureStructure)
@@ -108,13 +131,14 @@ public class GraleJUtility
 				if (fs.featureValuePairs().get(i).feature().equals(feat))
 				{
 					fs.featureValuePairs().remove(i);
+					successMsg("Feature removal successful!");
 					return e;
 				}
 			}
 		}
 		else
 		{
-			System.err.println("Feature removal failed: not a typed feature structure!");
+			failMsg("Feature removal failed: not a typed feature structure!");
 		}
 		return e;
 	}
@@ -130,11 +154,12 @@ public class GraleJUtility
 		}
 		if (et == null || parent == null)
 		{
-			System.err.println("Feature reset failed: Unable to evaluate addresses!");
+			failMsg("Feature reset failed: Unable to evaluate addresses!");
 			return e;
 		}
 		IEntity replacement = signatureMGS(getType(et), sig);
 		replace(parent,et,replacement);
+		successMsg("Feature reset successful!");
 		return e;
 	}
 	
@@ -145,14 +170,31 @@ public class GraleJUtility
 		return e;
 	}
 	
-	//TODO: makes this functional
-	public static IEntity remIdent(IEntity e, IEntity e1)
+	public static IEntity remIdent(IEntity e, List<String> path)
 	{
-		if (e1 instanceof ITag)
+		IEntity parent = goUpToLast(e,path);
+		IEntity et = goLast(parent,path);
+		if (et == null)
 		{
-			return ((ITag) e).target();
+			failMsg("Identity dissolval failed: Unable to evaluate address!");
+			return e;
 		}
-		return e1;
+		if (et instanceof ITag)
+		{
+			IEntity replacement = copy(((ITag) et).target());
+			replace(parent,et,replacement);
+			successMsg("Identity dissolval successful!");
+		}
+		else
+		{
+			failMsg("Identity dissolval failed: No reentrancy at this address!");
+		}
+		return e;
+	}
+	
+	public static IEntity copy(IEntity e)
+	{
+		return e;
 	}
 	
 	/**
@@ -168,11 +210,11 @@ public class GraleJUtility
 	
 	private static IEntity goSubpath(IEntity e, List<String> path, int start, int end)
 	{
-		//System.err.println("goSubpath(" + e + "," + path + "," + start + "," + end + ")");
+		//failMsg("goSubpath(" + e + "," + path + "," + start + "," + end + ")");
 		if (start < 0 || end < start) return null;
 		if (start == end)
 		{
-			if (e instanceof ITag) return ((ITag) e).target();
+			//if (e instanceof ITag) return ((ITag) e).target();
 			return e;
 		}
 		else
@@ -239,8 +281,10 @@ public class GraleJUtility
 	
 	private static void replace(IEntity parent, IEntity e, IEntity replacement)
 	{
+
 		if (parent instanceof ITypedFeatureStructure)
 		{
+			
 			ITypedFeatureStructure fs = (ITypedFeatureStructure) parent;
 			for (IFeatureValuePair fv : fs.featureValuePairs())
 			{
@@ -422,6 +466,30 @@ public class GraleJUtility
 			s.append("\"");
 			graleJToGrisu(fv.value(), s, counter, ref);
 			s.append(")");
+		}
+	}
+	
+	private static void failMsg(String string)
+	{
+		if (editor != null)
+		{
+			editor.failureMessage(string);
+		}
+		else
+		{
+			System.err.println(string);
+		}
+	}
+	
+	private static void successMsg(String string)
+	{
+		if (editor != null)
+		{
+			editor.success(string);
+		}
+		else
+		{
+			failMsg(string);
 		}
 	}
 }
