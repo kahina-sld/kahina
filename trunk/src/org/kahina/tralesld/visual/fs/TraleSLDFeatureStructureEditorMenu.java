@@ -16,7 +16,7 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 	
 	public static TraleSLDFeatureStructureEditorMenu newTypeMenu(TraleSLDFeatureStructureEditor editor,
 			List<String> subtypes, List<String> supertypes, List<String> siblingTypes,
-			List<String> features, boolean totallyWellTyped, boolean identityMode)
+			List<String> features, int editingMode, boolean identityMode)
 	{
 		TraleSLDFeatureStructureEditorMenu menu = new TraleSLDFeatureStructureEditorMenu();
 		
@@ -64,7 +64,7 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		
 		menu.addSeparator();
 		
-		if (!totallyWellTyped)
+		if (editingMode != TraleSLDFeatureStructureEditor.TTF_MODE)
 		{
 			JMenu featMenu = new JMenu("Add feature");
 			if (features.size() == 0)
@@ -109,22 +109,28 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		return menu;
 	}
 	
-	public static TraleSLDFeatureStructureEditorMenu newFeatureMenu(TraleSLDFeatureStructureEditor editor, boolean totallyWellTyped)
+	public static TraleSLDFeatureStructureEditorMenu newFeatureMenu(TraleSLDFeatureStructureEditor editor, int editingMode)
 	{
 		TraleSLDFeatureStructureEditorMenu menu = new TraleSLDFeatureStructureEditorMenu();
-		if (!totallyWellTyped)
+		if (editingMode != TraleSLDFeatureStructureEditor.TTF_MODE)
 		{
 			JMenuItem removeItem = new JMenuItem("Remove");
 			removeItem.addActionListener(editor);
-			menu.add(removeItem);
-			
+			menu.add(removeItem);			
+		}
+		
+		if (editingMode == TraleSLDFeatureStructureEditor.TF_MODE)
+		{
 			menu.addSeparator();
 		}
 		
-		JMenuItem resetItem = new JMenuItem("Reset to type MGS");
-		resetItem.setActionCommand("Reset");
-		resetItem.addActionListener(editor);
-		menu.add(resetItem);
+		if (editingMode != TraleSLDFeatureStructureEditor.FREE_MODE)
+		{
+			JMenuItem resetItem = new JMenuItem("Reset to type MGS");
+			resetItem.setActionCommand("Reset");
+			resetItem.addActionListener(editor);
+			menu.add(resetItem);
+		}
 		return menu;
 	}
 	
