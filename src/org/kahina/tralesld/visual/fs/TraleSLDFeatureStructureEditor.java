@@ -657,7 +657,6 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	private void reconvert()
 	{
 		String result = GraleJUtility.convertGraleJToGrisu((IEntity) data.getModel());
-		System.err.println(result);
 		if (result.startsWith("ERROR"))
 		{
 			failureMessage(result);
