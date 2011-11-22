@@ -35,16 +35,13 @@ public class TraleSLDFeatureStructureEditorMouseListener implements MouseListene
 		{
 			Block selectedBlock = blockPanel.getSelectedBlock();
 			editor.processContextStructure(selectedBlock);
-			String type = editor.getContextStructureType();
-			if (!type.equals("?"))
+
+			//generate context menu for structure manipulation
+			TraleSLDFeatureStructureEditorMenu menu = editor.createAppropriateContextMenu();
+			//in case of no signature or unknown type, the menu will be null
+			if (menu != null)
 			{
-				//generate context menu for type manipulation
-				TraleSLDFeatureStructureEditorMenu menu = editor.createTypeContextMenu();
-				//in case of no signature or unknown type, the menu will be null
-				if (menu != null)
-				{
-					menu.show(e.getComponent(),e.getX(), e.getY());
-				}
+				menu.show(e.getComponent(),e.getX(), e.getY());
 			}
 		}
 	}

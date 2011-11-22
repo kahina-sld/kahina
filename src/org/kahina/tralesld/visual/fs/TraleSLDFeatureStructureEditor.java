@@ -7,6 +7,7 @@ import gralej.om.EntityFactory;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
+import gralej.om.ITag;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
 import gralej.parsers.IDataPackage;
@@ -435,6 +436,23 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		return struct;
 	}
 	
+	public TraleSLDFeatureStructureEditorMenu createAppropriateContextMenu()
+	{
+		if (contextStructure instanceof IType || contextStructure instanceof ITypedFeatureStructure)
+		{
+			return createTypeContextMenu();
+		}
+		if (contextStructure instanceof IFeatureValuePair)
+		{
+			return createFeatureContextMenu();
+		}
+		if (contextStructure instanceof ITag)
+		{
+			return createTagContextMenu();
+		}
+		return null;
+	}
+	
 	public TraleSLDFeatureStructureEditorMenu createTypeContextMenu()
 	{
 		List<String> subtypes = getContextSubtypes();
@@ -453,9 +471,21 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else
 		{
-			infoMessage("Modifying at path: " + contextPath);
+			infoMessage("Modifying structure at path: " + contextPath);
 			return TraleSLDFeatureStructureEditorMenu.newTypeMenu(this, subtypes, supertypes, siblingTypes, introFeatures, totallyWellTypedEditing);
 		}
+	}
+	
+	public TraleSLDFeatureStructureEditorMenu createFeatureContextMenu()
+	{
+		infoMessage("Modifying feature at path: " + contextPath);
+		return TraleSLDFeatureStructureEditorMenu.newFeatureMenu(this,totallyWellTypedEditing);
+	}
+	
+	public TraleSLDFeatureStructureEditorMenu createTagContextMenu()
+	{
+		infoMessage("Modifying tag at path: " + contextPath);
+		return TraleSLDFeatureStructureEditorMenu.newTagMenu(this);
 	}
 	
 	private void infoMessage(String desc)
