@@ -16,7 +16,7 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 	
 	public static TraleSLDFeatureStructureEditorMenu newTypeMenu(TraleSLDFeatureStructureEditor editor,
 			List<String> subtypes, List<String> supertypes, List<String> siblingTypes,
-			List<String> features, boolean totallyWellTyped)
+			List<String> features, boolean totallyWellTyped, boolean identityMode)
 	{
 		TraleSLDFeatureStructureEditorMenu menu = new TraleSLDFeatureStructureEditorMenu();
 		
@@ -81,6 +81,19 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 			menu.add(featMenu);
 			menu.addSeparator();
 		}
+		
+		JMenuItem beginIdentityItem = new JMenuItem("Begin identity");
+		beginIdentityItem.setActionCommand("Begin");
+		beginIdentityItem.addActionListener(editor);
+		menu.add(beginIdentityItem);
+		
+		JMenuItem createIdentityItem = new JMenuItem("Finish identity");
+		createIdentityItem.setActionCommand("Identity");
+		createIdentityItem.addActionListener(editor);
+		if (!identityMode) createIdentityItem.setEnabled(false);
+		menu.add(createIdentityItem);
+			
+		menu.addSeparator();
 		
 		JMenuItem copyItem = new JMenuItem("Copy");
 		copyItem.addActionListener(editor);

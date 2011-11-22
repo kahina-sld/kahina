@@ -1,5 +1,6 @@
 package org.kahina.tralesld.visual.fs;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -64,6 +65,7 @@ public class GraleJUtility
 	{
 		IEntity parent = goUpToLast(e,path);
 		IEntity et = goLast(parent,path);
+		if (parent == null) et = e;	
 		if (et == null)
 		{
 			System.err.println("Feature introduction failed: Unable to evaluate address!");
@@ -90,21 +92,30 @@ public class GraleJUtility
 		return e;
 	}
 	
-	public static IEntity remFeat(IEntity e, String feat)
+	public static IEntity remFeat(IEntity e, List<String> path, String feat)
 	{
-		if (e  instanceof ITypedFeatureStructure)
+		IEntity et = goUpToLast(e,path);
+		if (et == null)
 		{
-			ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+			System.err.println("Feature removal failed: Unable to evaluate address!");
+			return e;
+		}
+		if (et  instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
 			for (int i = 0; i < fs.featureValuePairs().size(); i++)
 			{
 				if (fs.featureValuePairs().get(i).feature().equals(feat))
 				{
 					fs.featureValuePairs().remove(i);
-					return fs;
+					return e;
 				}
 			}
 		}
-		System.err.println("Operation failed: remFeat");
+		else
+		{
+			System.err.println("Feature removal failed: not a typed feature structure!");
+		}
 		return e;
 	}
 	
@@ -138,6 +149,7 @@ public class GraleJUtility
 	
 	private static IEntity goSubpath(IEntity e, List<String> path, int start, int end)
 	{
+		//System.err.println("goSubpath(" + e + "," + path + "," + start + "," + end + ")");
 		if (start < 0 || end < start) return null;
 		if (start == end)
 		{
@@ -270,6 +282,40 @@ public class GraleJUtility
 			}
 		}
 		return features;
+	}
+	
+	public static IEntity signatureMGS(String type, TraleSLDSignature sig)
+	{
+		if (!sig.getTypes().contains(type))
+		{
+			return ent.newType("mgsat(" + type + ")");
+		}
+		IEntity struct;
+		if (type.equals("e_list"))
+		{
+			struct = ent.newList();
+		}
+		else if (type.equals("ne_list"))
+		{
+			IList list = ent.newList();
+			list.append(ent.newTFS("bot"));
+			list.setTail(ent.newTFS("list"));
+			struct = list;
+		}
+		else
+		{
+			List<IFeatureValuePair> fvList = new LinkedList<IFeatureValuePair>();
+			Map<String,String> appropFeats = sig.getTypeRestrictions(type);
+			List<String> appropFeatsList = new LinkedList<String>();
+			appropFeatsList.addAll(appropFeats.keySet());
+			Collections.sort(appropFeatsList);
+			for (String feat : appropFeatsList)
+			{
+				fvList.add(ent.newFeatVal(feat, signatureMGS(appropFeats.get(feat), sig)));
+			}
+			struct = ent.newTFS(type,fvList);
+		}
+		return struct;
 	}
 	
 	public static String convertGraleJToGrisu(IEntity ent)
