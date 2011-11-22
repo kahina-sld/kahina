@@ -152,6 +152,14 @@ public class TraleSLDSignature extends KahinaObject
 		return typeRestr.get(type);
 	}
 	
+	public String getAppropriateValueType(String type, String feat)
+	{
+		Map<String,String> appro = getAppropriateness(type);
+		String val = appro.get(feat);
+		if (val == null) return "bot";
+		return val;
+	}
+	
 	public Set<List<String>> getPaths(String type)
 	{
 		return paths.get(type);

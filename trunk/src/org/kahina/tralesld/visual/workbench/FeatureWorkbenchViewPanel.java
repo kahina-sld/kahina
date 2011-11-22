@@ -112,6 +112,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	//buffered structure for copy & paste
 	private String bufferedStructure = null;
+	
+	private String lastDisplayID = null;
 
 	public FeatureWorkbenchViewPanel(AuxiliaryTraleInstance trale)
 	{		
@@ -505,8 +507,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 				if (view.getModel().getTheoryFileName() != null) theoryMGSItem.setEnabled(true);
 				sigMGUItem.setEnabled(false);
 				theMGUItem.setEnabled(false);
-				String name = getPrimarySelectionID();
-				editor.loadGrisu(view.getModel().getStructure(name));	
+				lastDisplayID = getPrimarySelectionID();
+				editor.loadGrisu(view.getModel().getStructure(lastDisplayID));	
 				editor.updateDisplay();
 				break;
 			}
@@ -815,7 +817,6 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 				case TraleSLDFeatureEditEvent.SUCCESS:
 				{
 					msgLabel.setBackground(Color.GREEN);
-					view.getModel().storeStructure(getPrimarySelectionID(), editor.getGrisuString());
 					msgLabel.setText(editEvent.getEditMessage());
 					break;
 				}
@@ -829,6 +830,18 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 				{
 					msgLabel.setBackground(Color.YELLOW);
 					msgLabel.setText(editEvent.getEditMessage());
+					break;
+				}
+				case TraleSLDFeatureEditEvent.UPDATE_FS:
+				{
+					if (lastDisplayID != null)
+					{
+						view.getModel().storeStructure(lastDisplayID, editor.getGrisuString());
+					}
+					else
+					{
+						this.processEvent(new TraleSLDFeatureEditEvent("ERROR: tried to store edited structure under null ID.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+					}
 					break;
 				}
 				case TraleSLDFeatureEditEvent.COPY_FS:

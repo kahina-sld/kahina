@@ -77,6 +77,43 @@ public class GraleJUtility
 		return e;
 	}
 	
+	public static IEntity switchType(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
+	{
+		IEntity ent = go(e,path);
+		if (ent == null)
+		{
+			failMsg("Switching failed: Unable to evaluate address!");
+			return e;
+		}
+		if (ent instanceof ITag)
+		{
+			ent = ((ITag) ent).target();
+		}
+		String oldType = getType(ent);
+		String commonSupertype = null;
+		//find common ancestor
+		for (String supertype : sig.getSupertypes(getType(ent)))
+		{
+			if (sig.getSubtypes(supertype).contains(ty))
+			{
+				commonSupertype = supertype;
+				break;
+			}
+		}
+		if (commonSupertype == null)
+		{
+			failMsg("Switching failed: No common supertype found for types " + oldType + " and " + ty + "!");
+		}
+		else
+		{
+			//use sequence of generalization and specialization (inefficient, but clean)
+			generalize(e,path,commonSupertype,sig);
+			specialize(e,path,ty,sig);
+			successMsg("Type switching successful!");
+		}
+		return e;
+	}
+	
 	public static IEntity introFeat(IEntity e, List<String> path, String feat, IEntity val, TraleSLDSignature sig)
 	{
 		IEntity parent = goUpToLast(e,path);
