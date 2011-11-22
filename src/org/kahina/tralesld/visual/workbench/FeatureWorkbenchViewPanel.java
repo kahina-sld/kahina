@@ -102,6 +102,10 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	private JMenuItem theoryMGSItem;
 	private JMenuItem sigMGUItem;
 	private JMenuItem theMGUItem;
+	private JMenu editModeMenu;
+	private JMenuItem freeModeItem;
+	private JMenuItem tfModeItem;
+	private JMenuItem ttfModeItem;
 	
 	private final JList list;
 	private final TraleSLDFeatureStructureEditor editor;
@@ -201,6 +205,29 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		fsMenu.add(theMGUItem);
 		
 		menuBar.add(fsMenu);
+		
+		JMenu optionsMenu = new JMenu("Options");
+		
+		editModeMenu = new JMenu("Editing Mode");
+		
+		freeModeItem = new JMenuItem("Free Mode");
+		freeModeItem.setEnabled(false);
+		freeModeItem.addActionListener(this);
+		editModeMenu.add(freeModeItem);
+		
+		tfModeItem = new JMenuItem("TF Mode");
+		tfModeItem.setEnabled(false);
+		tfModeItem.addActionListener(this);
+		editModeMenu.add(tfModeItem);
+		
+		ttfModeItem = new JMenuItem("TTF Mode");
+		ttfModeItem.setEnabled(false);
+		ttfModeItem.addActionListener(this);
+		editModeMenu.add(ttfModeItem);
+		
+		optionsMenu.add(editModeMenu);
+		
+		menuBar.add(optionsMenu);
 		
 		menuBar.setAlignmentX(LEFT_ALIGNMENT);
 		this.add(menuBar);
@@ -429,6 +456,30 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 			reloadSignatureItem.setEnabled(false);
 			recompileTheoryItem.setEnabled(true);		
 			newLexiconInstanceMenu.setEnabled(true);
+		}
+		if (editor != null)
+		{
+			freeModeItem.setEnabled(true);
+			tfModeItem.setEnabled(true);
+			ttfModeItem.setEnabled(true);
+			switch (editor.getEditingMode())
+			{
+				case TraleSLDFeatureStructureEditor.FREE_MODE:
+				{
+					freeModeItem.setEnabled(false);
+					break;
+				}
+				case TraleSLDFeatureStructureEditor.TF_MODE:
+				{
+					tfModeItem.setEnabled(false);
+					break;
+				}
+				case TraleSLDFeatureStructureEditor.TTF_MODE:
+				{
+					ttfModeItem.setEnabled(false);
+					break;
+				}
+			}
 		}
 	}
 	
@@ -675,6 +726,21 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		else if (action.equals("Reload Signature"))
 		{
             loadSignature(view.getModel().getSignatureFileName());
+		}
+		else if (action.equals("Free Mode"))
+		{
+			editor.setEditingMode(TraleSLDFeatureStructureEditor.FREE_MODE);
+			updateMenus();
+		}
+		else if (action.equals("TF Mode"))
+		{
+			editor.setEditingMode(TraleSLDFeatureStructureEditor.TF_MODE);
+			updateMenus();
+		}
+		else if (action.equals("TTF Mode"))
+		{
+			editor.setEditingMode(TraleSLDFeatureStructureEditor.TTF_MODE);
+			updateMenus();
 		}
 		else if (action.startsWith("lex:"))
 		{

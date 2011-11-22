@@ -76,7 +76,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	AuxiliaryTraleInstance trale;
 	
 	//option for naive editing versus totally-well-typed editing
-	boolean totallyWellTypedEditing = false;
+	int editingMode = FREE_MODE;
+	public static final int FREE_MODE = 0;
+	public static final int TF_MODE = 1;
+	public static final int TTF_MODE = 2;
 	
 	public TraleSLDFeatureStructureEditor(AuxiliaryTraleInstance trale)
 	{
@@ -111,6 +114,16 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		this.sig = sig;
 	}
 	
+	public int getEditingMode() 
+	{
+		return editingMode;
+	}
+
+	public void setEditingMode(int editingMode) 
+	{
+		this.editingMode = editingMode;
+	}
+
 	/**
 	 * Display a feature structure directly, shortcutting FS compression.
 	 * This also works when no view is set.
@@ -437,14 +450,14 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else
 		{
 			infoMessage("Modifying structure at path: " + contextPath);
-			return TraleSLDFeatureStructureEditorMenu.newTypeMenu(this, subtypes, supertypes, siblingTypes, introFeatures, totallyWellTypedEditing, identityMode);
+			return TraleSLDFeatureStructureEditorMenu.newTypeMenu(this, subtypes, supertypes, siblingTypes, introFeatures, editingMode, identityMode);
 		}
 	}
 	
 	public TraleSLDFeatureStructureEditorMenu createFeatureContextMenu()
 	{
 		infoMessage("Modifying feature at path: " + contextPath);
-		return TraleSLDFeatureStructureEditorMenu.newFeatureMenu(this,totallyWellTypedEditing);
+		return TraleSLDFeatureStructureEditorMenu.newFeatureMenu(this,editingMode);
 	}
 	
 	public TraleSLDFeatureStructureEditorMenu createTagContextMenu()
