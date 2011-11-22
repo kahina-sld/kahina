@@ -1,5 +1,6 @@
 package org.kahina.tralesld.visual.workbench;
 
+import gralej.om.IEntity;
 import gralej.parsers.EntityFactory;
 
 import java.awt.Color;
@@ -199,7 +200,9 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		fsMenu.add(theoryMGSItem);
 		
 		sigMGUItem = new JMenuItem("Add MGU (signature only)");
+		sigMGUItem.setActionCommand("sigMGU");
 		sigMGUItem.setEnabled(false);
+		sigMGUItem.addActionListener(this);
 		fsMenu.add(sigMGUItem);
 		
 		theMGUItem = new JMenuItem("Add MGU according to theory");
@@ -648,6 +651,26 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             {
             	this.processEvent(new TraleSLDFeatureEditEvent("ERROR: could not save to GRISU file.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
             }
+		}
+		else if (action.equals("sigMGU"))
+		{
+			String name1 = (String) list.getSelectedValues()[0];
+			String name2 = (String) list.getSelectedValues()[1];
+			String grisu1 = view.getModel().getStructure(name1);
+			String grisu2 = view.getModel().getStructure(name2);
+			IEntity ent1 = GraleJUtility.grisuToGraleJ(grisu1);
+			IEntity ent2 = GraleJUtility.grisuToGraleJ(grisu2);
+			if (ent1 != null && ent2 != null)
+			{
+				IEntity mgu = GraleJUtility.unify(ent1, ent2, view.getModel().getSignature());
+				if (mgu != null)
+				{
+					view.getModel().storeStructure("mgu(" + name1 + "," + name2 + ")", GraleJUtility.convertGraleJToGrisu(mgu));
+					this.processEvent(new TraleSLDFeatureEditEvent("MGU computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
+	    			updateDisplay();
+	    			list.setSelectedValue("mgu(" + name1 + "," + name2 + ")", true);
+				}
+			}
 		}
 		else if (action.equals("New Workbench"))
 		{

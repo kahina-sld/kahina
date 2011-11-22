@@ -1,5 +1,6 @@
 package org.kahina.tralesld.visual.fs;
 
+import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
+import gralej.controller.StreamInfo;
 import gralej.om.EntityFactory;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
@@ -16,6 +18,8 @@ import gralej.om.IList;
 import gralej.om.ITag;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
+import gralej.parsers.IDataPackage;
+import gralej.parsers.ParseException;
 
 public class GraleJUtility 
 {
@@ -346,6 +350,18 @@ public class GraleJUtility
 		{
 			return unify((IList) e1, (IList) e2, sig);
 		}
+		else if (e1 instanceof IList && e2 instanceof ITypedFeatureStructure)
+		{
+			if (getType(e2).equals("list")) return e1;
+			failMsg("Unification failed: lists and other structures are incompatible.");
+			return null;
+		}
+		else if (e2 instanceof IList && e1 instanceof IList)
+		{
+			if (getType(e1).equals("list")) return e2;
+			failMsg("Unification failed: lists and other structures are incompatible.");
+			return null;
+		}
 		else if (e1 instanceof ITag && e2 instanceof ITag)
 		{
 			return unify((ITag) e1, (ITag) e2, sig);
@@ -428,8 +444,11 @@ public class GraleJUtility
 				unifFeatVals.put(feat, res);
 			}
 		}
+		List<String> featList = new LinkedList<String>();
+		featList.addAll(unifFeatVals.keySet());
+		Collections.sort(featList);
 		List<IFeatureValuePair> unifFeatVal = new LinkedList<IFeatureValuePair>();
-		for (String feat : unifFeatVals.keySet())
+		for (String feat : featList)
 		{
 			unifFeatVal.add(ent.newFeatVal(feat, unifFeatVals.get(feat)));
 		}
@@ -447,9 +466,12 @@ public class GraleJUtility
 			{
 				resultList.append(ent2);
 			}
-			IEntity res = unify(ents1.get(i), ent2, sig);
-			if (res == null) return null;
-			resultList.append(res);
+			else
+			{
+				IEntity res = unify(ents1.get(i), ent2, sig);
+				if (res == null) return null;
+				resultList.append(res);
+			}
 			i++;
 		}
 		while (i < ents1.size())
@@ -668,6 +690,21 @@ public class GraleJUtility
 			struct = ent.newTFS(type,fvList);
 		}
 		return struct;
+	}
+	
+	public static IEntity grisuToGraleJ(String grisu)
+	{
+		IDataPackage data = null;
+		try
+		{
+			data = VisualizationUtility.getDefault().parseGrisu(grisu);
+		}
+		catch (ParseException e)
+		{
+			failMsg("Parsing of GRISU string failed!" + e.getMessage());
+			return null;
+		}
+		return (IEntity) data.getModel();
 	}
 	
 	public static String convertGraleJToGrisu(IEntity ent)
