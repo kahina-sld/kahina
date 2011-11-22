@@ -340,6 +340,46 @@ public class GraleJUtility
 		return e;
 	}
 	
+	public static IEntity makeIdent(IEntity e, List<String> path1, List<String> path2, TraleSLDSignature sig)
+	{
+		if (inOnePath(path1, path2))
+		{
+			failMsg("Identity introduction failed: this would cause a cycle!");
+			return null;
+		}
+		else
+		{
+			IEntity ent1 = go(e,path1);
+			IEntity ent2 = go(e,path2);
+			if (ent1 == null || ent2 == null)
+			{
+				failMsg("Identity introduction failed: Unable to evaluate address!");
+				return null;
+			}
+			IEntity mgu = unify(ent1,ent2,sig);
+			if (mgu == null) return null;
+
+			IEntity parent1 = goUpToLast(e,path1);
+			IEntity parent2 = goUpToLast(e,path2);
+			//TODO: handle tag numbers, avoid spurious unifications!
+			replace(parent1,ent1,ent.newTag(5,mgu));
+			replace(parent2,ent2,ent.newTag(5,mgu));
+			successMsg("Identity introduction successful!");
+			return e;
+		}
+	}
+	
+	private static boolean inOnePath(List<String> path1, List<String> path2)
+	{
+		int length = path1.size();
+		if (path2.size() < length) length = path2.size();
+		for (int i = 0; i < length; i++)
+		{
+			if (!path1.get(i).equals(path2.get(i))) return false;
+		}
+		return true;
+	}
+	
 	public static IEntity unify(IEntity e1, IEntity e2, TraleSLDSignature sig)
 	{
 		if (e1 instanceof ITypedFeatureStructure && e2 instanceof ITypedFeatureStructure)
