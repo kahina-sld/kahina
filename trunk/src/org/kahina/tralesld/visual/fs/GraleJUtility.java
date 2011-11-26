@@ -743,6 +743,17 @@ public class GraleJUtility
 		}
 	}
 	
+	public static int listLength(IList list)
+	{
+		int i = 0;
+		//the selected block is ">"; set index to end of list
+		for (@SuppressWarnings("unused") IEntity e : list.elements())
+		{
+			i++;
+		}
+		return i;
+	}
+	
 	public static String getType(IEntity e)
 	{
 		String type = "?";
