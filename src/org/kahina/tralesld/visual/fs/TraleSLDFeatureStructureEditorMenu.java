@@ -157,4 +157,32 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		menu.add(generalizeAtomItem);
 		return menu;
 	}
+	
+	public static TraleSLDFeatureStructureEditorMenu newListMenu(TraleSLDFeatureStructureEditor editor, int listIndex, int listLength)
+	{
+		TraleSLDFeatureStructureEditorMenu menu = new TraleSLDFeatureStructureEditorMenu();	
+		
+		JMenuItem addElementItem = new JMenuItem("Add entry");
+		addElementItem.setActionCommand("ListAdd");
+		addElementItem.addActionListener(editor);
+		menu.add(addElementItem);
+		
+		if (listLength > 0 && listIndex < listLength)
+		{
+			JMenuItem removeElementItem = new JMenuItem("Remove next entry");
+			removeElementItem.setActionCommand("ListRemove");
+			removeElementItem.addActionListener(editor);
+			menu.add(removeElementItem);
+		}
+		
+		if (listIndex == 0)
+		{
+			JMenuItem clearListItem = new JMenuItem("Clear list");
+			clearListItem.setActionCommand("ListClear");
+			clearListItem.addActionListener(editor);
+			menu.add(clearListItem);
+		}
+
+		return menu;
+	}
 }

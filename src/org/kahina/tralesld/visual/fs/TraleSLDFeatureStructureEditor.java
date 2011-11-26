@@ -267,7 +267,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			{
 				ListContentBlock lcBlock = (ListContentBlock) contextBlock;
 				contextBlock = block.getParent();
-				contextStructure = contextBlock.getModel();
+				contextStructure = contextBlock.getParent().getModel();
 				//compute position of the selected "," in the list
 				contextListIndex = (lcBlock.getChildren().indexOf(block) + 1) / 2;
 			}
@@ -494,6 +494,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			return createTagContextMenu();
 		}
+		if (contextStructure instanceof IList)
+		{
+			return createListContextMenu();
+		}
 		return null;
 	}
 	
@@ -528,13 +532,20 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	public TraleSLDFeatureStructureEditorMenu createFeatureContextMenu()
 	{
 		infoMessage("Modifying feature at path: " + contextPath);
-		return TraleSLDFeatureStructureEditorMenu.newFeatureMenu(this,editingMode);
+		return TraleSLDFeatureStructureEditorMenu.newFeatureMenu(this, editingMode);
 	}
 	
 	public TraleSLDFeatureStructureEditorMenu createTagContextMenu()
 	{
 		infoMessage("Modifying tag at path: " + contextPath);
 		return TraleSLDFeatureStructureEditorMenu.newTagMenu(this);
+	}
+	
+	public TraleSLDFeatureStructureEditorMenu createListContextMenu()
+	{
+		infoMessage("Modifying list at path: " + contextPath);
+		int contextListLength = GraleJUtility.listLength((IList) contextStructure);
+		return TraleSLDFeatureStructureEditorMenu.newListMenu(this, contextListIndex, contextListLength);
 	}
 	
 	public void infoMessage(String desc)

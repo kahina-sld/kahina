@@ -37,7 +37,6 @@ public class TraleSLDFeatureStructureEditorMouseListener implements MouseListene
 			Block selectedBlock = blockPanel.containingBlock(e.getX(), e.getY());
 			if (selectedBlock == lastSelectedBlock)
 			{		
-				System.err.println("Selected block: " + selectedBlock);
 				if (selectedBlock != null)
 				{
 					editor.processContextStructure(selectedBlock);
