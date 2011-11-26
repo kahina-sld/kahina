@@ -143,4 +143,18 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		menu.add(dissolveIdentityItem);
 		return menu;
 	}
+	
+	public static TraleSLDFeatureStructureEditorMenu newAtomMenu(TraleSLDFeatureStructureEditor editor)
+	{
+		TraleSLDFeatureStructureEditorMenu menu = new TraleSLDFeatureStructureEditorMenu();	
+		JMenuItem changeAtomItem = new JMenuItem("Change Atom");
+		changeAtomItem.setActionCommand("ChangeAtom");
+		changeAtomItem.addActionListener(editor);
+		menu.add(changeAtomItem);
+		JMenuItem generalizeAtomItem = new JMenuItem("Generalize to bot");
+		generalizeAtomItem.setActionCommand("GezAtom");
+		generalizeAtomItem.addActionListener(editor);
+		menu.add(generalizeAtomItem);
+		return menu;
+	}
 }

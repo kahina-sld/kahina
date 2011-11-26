@@ -1,10 +1,15 @@
 package org.kahina.tralesld.visual.fs;
 
+import gralej.blocks.AVMBlock;
 import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
 import gralej.blocks.ContainerBlock;
+import gralej.blocks.Label;
+import gralej.blocks.ListBlock;
+import gralej.blocks.ListContentBlock;
 import gralej.om.Entities;
 import gralej.om.EntityFactory;
+import gralej.om.IAny;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
@@ -27,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -281,28 +287,54 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			if (block.getModel() instanceof IFeatureValuePair && block instanceof ContainerBlock)
 			{
+				//System.err.println("  path: " + ((IFeatureValuePair) block.getModel()).feature());
 				path.add(0,((IFeatureValuePair) block.getModel()).feature());
 			}
-			else if (block.getModel() instanceof IList)
+			else if (block instanceof ListBlock)
 			{
-				IList listModel = (IList) block.getModel();
+				ListBlock listBlock = (ListBlock) block;
 				int i = 0;
-				for (IEntity ent : listModel.elements())
+				for (Block bl : listBlock.getChildren())
 				{		
-					if (ent == secondToLastBlock.getModel())
+					//System.err.println("  bl: " + bl);
+					if (bl instanceof ListContentBlock)
 					{
-						path.add(i,"hd");
-						break;
+						ListContentBlock cbl = (ListContentBlock) bl;
+						for (Block bbl : cbl.getChildren())
+						{
+							//System.err.println("     bbl: " + bbl);
+							if (bbl == secondToLastBlock)
+							{
+								path.add(i,"hd");
+								break;
+							}
+							if (trueListContentBlock(bbl))
+							{
+								path.add(0,"tl");
+								i++;
+							}
+						}
 					}
-					path.add(0,"tl");
-					i++;
 				}
 			}
 			secondToLastBlock = lastBlock;
 			lastBlock = block;
 			block = block.getParent();
+			//System.err.println("block: " + block + " lastBlock: " + lastBlock + " secondToLastBlock: " + secondToLastBlock);
 		}
 		return path;
+	}
+	
+	private boolean trueListContentBlock(Block b)
+	{
+		if (b instanceof AVMBlock) return true;
+		if (b instanceof Label)
+		{
+			Label l = (Label) b;
+			if (l.getText().equals(",")) return false;
+			return true;
+		}
+		return false;
 	}
 	
 	private Block getStructureParent(Block block)
@@ -419,6 +451,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			return createTypeContextMenu();
 		}
+		if (contextStructure instanceof IAny)
+		{
+			return createAtomContextMenu();
+		}
 		if (contextStructure instanceof IFeatureValuePair)
 		{
 			return createFeatureContextMenu();
@@ -432,10 +468,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	public TraleSLDFeatureStructureEditorMenu createTypeContextMenu()
 	{
-		List<String> subtypes = getContextSubtypes();
 		List<String> supertypes = getContextSupertypes();
-		List<String> siblingTypes = getContextSiblingTypes();
-		List<String> introFeatures = getContextFeatures();
 		if (sig == null)
 		{
 			warningMessage("No signature loaded. Cannot edit.");
@@ -443,14 +476,22 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else if (supertypes == null)
 		{
-			failureMessage("No info on this type in signature, cannot edit.");
-			return null;
+			return createAtomContextMenu();
 		}
 		else
 		{
+			List<String> subtypes = getContextSubtypes();
+			List<String> siblingTypes = getContextSiblingTypes();
+			List<String> introFeatures = getContextFeatures();
 			infoMessage("Modifying structure at path: " + contextPath);
 			return TraleSLDFeatureStructureEditorMenu.newTypeMenu(this, subtypes, supertypes, siblingTypes, introFeatures, editingMode, identityMode);
 		}
+	}
+	
+	public TraleSLDFeatureStructureEditorMenu createAtomContextMenu()
+	{
+		infoMessage("Modyfing atom at path: " + contextPath);
+		return TraleSLDFeatureStructureEditorMenu.newAtomMenu(this);
 	}
 	
 	public TraleSLDFeatureStructureEditorMenu createFeatureContextMenu()
@@ -599,6 +640,31 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				reconvert();
 			}
 			identityMode = false;
+		}
+		else if (command.equals("ChangeAtom"))
+		{
+			String newName = (String) JOptionPane.showInputDialog(this,
+					"Enter the new string (no type name)",
+	                "Change Atom",
+	                JOptionPane.PLAIN_MESSAGE);
+			if (newName == null)
+			{
+				failureMessage("ERROR: No new string for the atom defined!");
+			}
+			else if (sig.getTypes().contains(newName))
+			{
+				failureMessage("ERROR: \"" + newName + "\" is a type name and therefore cannot be an atomic string.");
+			}
+			else
+			{
+				IEntity res = GraleJUtility.changeAtom((IEntity) data.getModel(), contextPath, newName, sig);
+				reconvert(res);
+			}
+		}
+		else if (command.equals("GezAtom"))
+		{
+			IEntity res = GraleJUtility.generalizeAtom((IEntity) data.getModel(), contextPath, sig);
+			reconvert(res);
 		}
 		else //LEGACY CODE, ONLY HERE FOR REFERENCE
 		{

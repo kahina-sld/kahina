@@ -12,6 +12,7 @@ import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
 import gralej.controller.StreamInfo;
 import gralej.om.EntityFactory;
+import gralej.om.IAny;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
@@ -115,6 +116,75 @@ public class GraleJUtility
 			specialize(e,path,ty,sig);
 			successMsg("Type switching successful!");
 		}
+		return e;
+	}
+	
+	public static IEntity changeAtom(IEntity e, List<String> path, String newName, TraleSLDSignature sig)
+	{
+		IEntity parent = goUpToLast(e,path);
+		IEntity et = goLast(parent,path);
+		if (parent == null) et = e;	
+		if (et == null)
+		{
+			failMsg("Atom change failed: Unable to evaluate address!");
+			return e;
+		}
+		if (et instanceof ITag)
+		{
+			parent = et;
+			et = ((ITag) et).target();
+		}
+		if (et instanceof ITypedFeatureStructure)
+		{
+			IAny replacement = ent.newAny(newName);
+			successMsg("Atom change successful!");
+			if (parent == null) return replacement;
+			replace(parent,et,replacement);
+			return e;
+		}
+		else if (et instanceof IAny)
+		{
+			IAny atom = (IAny) et;
+			atom.setValue(newName);
+			successMsg("Atom change successful!");
+			return e;
+		}
+		failMsg("Atom change failed: not possible in context " + et + ".");
+		return e;
+	}
+	
+	public static IEntity generalizeAtom(IEntity e, List<String> path, TraleSLDSignature sig)
+	{
+		IEntity parent = goUpToLast(e,path);
+		IEntity et = goLast(parent,path);
+		if (parent == null) et = e;	
+		if (et == null)
+		{
+			failMsg("Atom generalization failed: Unable to evaluate address!");
+			return e;
+		}
+		if (et instanceof ITag)
+		{
+			parent = et;
+			et = ((ITag) et).target();
+		}
+		if (et instanceof IAny)
+		{
+			ITypedFeatureStructure replacement = ent.newTFS("bot");
+			successMsg("Atom generalization successful!");
+			if (parent == null) return replacement;
+			replace(parent,et,replacement);
+			return e;
+		}
+		else if (et instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
+			fs.featureValuePairs().clear();
+			fs.setType(ent.newType("bot"));
+			successMsg("Atom generalization successful!");
+			return e;
+		}
+		failMsg("Atom generalization failed: not possible in context " + et + ".");
 		return e;
 	}
 	
