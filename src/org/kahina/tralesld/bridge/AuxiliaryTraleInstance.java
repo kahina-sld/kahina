@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.regex.Pattern;
 
 import javax.swing.SwingUtilities;
 
@@ -357,7 +358,11 @@ public class AuxiliaryTraleInstance extends Thread
 			List<String> subtypes = immediateSubtypes(type);
 			for (String subtype : subtypes)
 			{
-				signature.addSubtypeRelation(type, subtype);
+				//do not process atoms of form a_(_NUM)
+				if (!isAtomicTypeRepresentation(subtype))
+				{
+					signature.addSubtypeRelation(type, subtype);
+				}	
 			}
 			agenda.addAll(subtypes);
 			List<String> feats = appropriateFeatures(type);
@@ -367,6 +372,12 @@ public class AuxiliaryTraleInstance extends Thread
 			}
 		}
 		return signature;
+	}
+	
+	//recognize Trale-specific format for types from the atom hierarchy
+	private boolean isAtomicTypeRepresentation(String type)
+	{
+		return Pattern.matches("a_\\(_[0-9]+\\)", type);
 	}
 	
 	private String extractLemmata()
