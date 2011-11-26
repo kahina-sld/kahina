@@ -56,7 +56,7 @@ import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureViewPanel implements ActionListener
 {
-	BlockPanel blockPanel;
+	GraleJEditorBlockPanel blockPanel;
 	
 	TraleSLDSignature sig;
 	
@@ -189,7 +189,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 					e.printStackTrace();
 					return;
 				}
-				blockPanel = data.createView();
+				blockPanel = VisualizationUtility.buildEditor(data);
 				JPanel blockCanvas = blockPanel.getCanvas();
 				blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(this, blockPanel));
 				innerPanel.add(blockCanvas);
@@ -210,7 +210,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				e.printStackTrace();
 				return;
 			}
-			blockPanel = data.createView();
+			blockPanel = VisualizationUtility.buildEditor(data);
 			JPanel blockCanvas = blockPanel.getCanvas();
 			blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(this, blockPanel));
 			innerPanel.add(blockCanvas);

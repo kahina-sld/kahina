@@ -82,6 +82,11 @@ public class VisualizationUtility
 		}
 		return dataPackage;
 	}
+	
+	public static GraleJEditorBlockPanel buildEditor(IDataPackage data)
+	{
+		return new GraleJEditorBlockPanel(data.getModel(), data.getResidue(), data.getInequations());
+	}
 
 	/**
 	 * 

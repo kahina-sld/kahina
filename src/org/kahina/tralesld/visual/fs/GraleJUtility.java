@@ -797,7 +797,6 @@ public class GraleJUtility
 		{
 			IList list = ent.newList();
 			list.append(ent.newTFS("bot"));
-			list.setTail(ent.newTFS("list"));
 			struct = list;
 		}
 		else
