@@ -50,8 +50,9 @@ public class TraleSLDSignature extends KahinaObject
 		typeRestr = new HashMap<String,Map<String,String>>();
 		usage = new HashMap<String,Set<String>>();
 		
-		//the empty signature contains the root type "bot" without features
-		registerType("bot");
+		//the empty signature contains the root type "bot" without features,
+		//and a special pseudo-type (atom) to represent unconstrained strings
+		addSubtypeRelation("bot","(atom)");
 	}
 	
 	public void registerFeature(String feature)
