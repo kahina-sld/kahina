@@ -15,11 +15,13 @@ import org.kahina.tralesld.data.signature.TraleSLDSignature;
 public class TraleSLDFeatureStructureEditorMouseListener implements MouseListener
 {
 	TraleSLDFeatureStructureEditor editor;
-	BlockPanel blockPanel;
+	GraleJEditorBlockPanel blockPanel;
 	TraleSLDSignature sig;
 	
+	private Block lastSelectedBlock = null;
+	
 	public TraleSLDFeatureStructureEditorMouseListener(TraleSLDFeatureStructureEditor editor,
-			BlockPanel blockPanel)
+			GraleJEditorBlockPanel blockPanel)
 	{
 		this.editor = editor;
 		this.blockPanel = blockPanel;
@@ -29,20 +31,27 @@ public class TraleSLDFeatureStructureEditorMouseListener implements MouseListene
 	@Override
 	public void mouseClicked(MouseEvent e) 
 	{
-		//react to left click by offering a menu of options for type manipulation
-		//TODO: might be too obnoxious, perhaps change this into a double click
-		if (blockPanel.getSelectedBlock() != null)
+		if (e.getButton() == MouseEvent.BUTTON1) 
 		{
-			Block selectedBlock = blockPanel.getSelectedBlock();
-			editor.processContextStructure(selectedBlock);
-
-			//generate context menu for structure manipulation
-			TraleSLDFeatureStructureEditorMenu menu = editor.createAppropriateContextMenu();
-			//in case of no signature or unknown type, the menu will be null
-			if (menu != null)
-			{
-				menu.show(e.getComponent(),e.getX(), e.getY());
+			//react to second click on selection by offering a menu of options for type manipulation		
+			Block selectedBlock = blockPanel.containingBlock(e.getX(), e.getY());
+			if (selectedBlock == lastSelectedBlock)
+			{		
+				System.err.println("Selected block: " + selectedBlock);
+				if (selectedBlock != null)
+				{
+					editor.processContextStructure(selectedBlock);
+		
+					//generate context menu for structure manipulation
+					TraleSLDFeatureStructureEditorMenu menu = editor.createAppropriateContextMenu();
+					//in case of no signature or unknown type, the menu will be null
+					if (menu != null)
+					{
+						menu.show(e.getComponent(),e.getX(), e.getY());
+					}
+				}
 			}
+			lastSelectedBlock = selectedBlock;
 		}
 	}
 
