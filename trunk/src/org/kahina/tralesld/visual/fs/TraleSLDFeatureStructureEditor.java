@@ -566,15 +566,38 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.startsWith("spe:"))
 		{
 			String tau = command.substring(4);
-			if (editingMode == TTF_MODE)
+			if (tau.equals("(atom)"))
 			{
-				GraleJUtility.specializeTTF((IEntity) data.getModel(), contextPath, tau, sig);
+				String newName = (String) JOptionPane.showInputDialog(this,
+						"Enter the new string (no type name)",
+		                "Build Atom",
+		                JOptionPane.PLAIN_MESSAGE);
+				if (newName == null)
+				{
+					failureMessage("ERROR: No new string for the atom defined!");
+				}
+				else if (sig.getTypes().contains(newName))
+				{
+					failureMessage("ERROR: \"" + newName + "\" is a type name and therefore cannot be an atomic string.");
+				}
+				else
+				{
+					IEntity res = GraleJUtility.changeAtom((IEntity) data.getModel(), contextPath, newName, sig);
+					reconvert(res);
+				}
 			}
-			else
+			else 
 			{
-				GraleJUtility.specialize((IEntity) data.getModel(), contextPath, tau, sig);
+				if (editingMode == TTF_MODE)
+				{
+					GraleJUtility.specializeTTF((IEntity) data.getModel(), contextPath, tau, sig);
+				}
+				else
+				{
+					GraleJUtility.specialize((IEntity) data.getModel(), contextPath, tau, sig);
+				}
+				reconvert();
 			}
-			reconvert();
 		}
 		else if (command.startsWith("gen:"))
 		{

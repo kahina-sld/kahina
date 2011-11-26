@@ -837,13 +837,37 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	public void addTypeMGS(String type)
 	{
-		//the good (or bad) old way via the AuxiliaryTraleInstance
-		//String result = view.getTrale().descToMgsGrisu(type);
-		//the newer variant via direct GRISU computation
-		//String result = "!newdata\"current\"" + view.getModel().getSignature().computeGrisuMGS(type) + "\n";
-		
+		IEntity resultEnt = null;
+		String structureName = "";
+		if (type.equals("(atom)"))
+		{
+			String newName = (String) JOptionPane.showInputDialog(this,
+					"Enter the new string (no type name)",
+	                "Build Atom",
+	                JOptionPane.PLAIN_MESSAGE);
+			if (newName == null)
+			{
+				this.processEvent(new TraleSLDFeatureEditEvent("ERROR: No new string for the atom defined!", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+				return;
+			}
+			else if (view.getModel().getSignature().getTypes().contains(newName))
+			{
+				this.processEvent(new TraleSLDFeatureEditEvent("ERROR: \"" + newName + "\" is a type name and therefore cannot be an atomic string.", TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+				return;
+			}
+			else
+			{
+				resultEnt = GraleJUtility.newAtom(newName);		
+				structureName = "atom:" + newName + "";
+			}
+		}
+		else
+		{
+			resultEnt = GraleJUtility.signatureMGS(type, view.getModel().getSignature());
+			structureName = "mgs:" + type;
+		}
 		//the most recent and most general way via IEntity construction
-		String result = GraleJUtility.convertGraleJToGrisu(GraleJUtility.signatureMGS(type, view.getModel().getSignature()));
+		String result = GraleJUtility.convertGraleJToGrisu(resultEnt);
 		if (result.startsWith("ERROR"))
 		{
         	this.processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
@@ -851,9 +875,9 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		else
 		{
         	this.processEvent(new TraleSLDFeatureEditEvent("Type MGS successfully added.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
-    		view.getModel().storeStructure("mgs:" + type, result);
+    		view.getModel().storeStructure(structureName, result);
     		updateDisplay();
-    		list.setSelectedValue("mgs:" + type, true);
+    		list.setSelectedValue(structureName, true);
 		}
 	}
 	

@@ -410,6 +410,11 @@ public class GraleJUtility
 		return e;
 	}
 	
+	public static IEntity newAtom(String name)
+	{
+		return ent.newAny(name);
+	}
+	
 	public static IEntity makeIdent(IEntity e, List<String> path1, List<String> path2, TraleSLDSignature sig)
 	{
 		if (inOnePath(path1, path2))
@@ -698,7 +703,6 @@ public class GraleJUtility
 	
 	private static void replace(IEntity parent, IEntity e, IEntity replacement)
 	{
-
 		if (parent instanceof ITypedFeatureStructure)
 		{
 			
@@ -718,7 +722,11 @@ public class GraleJUtility
 			List<IEntity> elList = new LinkedList<IEntity>();
 			for (IEntity el : list.elements())
 			{
-				if (el != e)
+				if (el == e)
+				{
+					elList.add(replacement);
+				}
+				else
 				{
 					elList.add(e);
 				}
@@ -862,6 +870,18 @@ public class GraleJUtility
 			}
 			//TODO: correct treatment of the tail when processing lists
 			s.append(")");
+		}
+		else if (ent instanceof IAny)
+		{
+			IAny atom = (IAny) ent;
+			s.append("(S");
+			s.append(counter[0]++);
+			s.append("(");
+			s.append(counter[0]++);
+			s.append("\"");
+			s.append(atom.value());
+			s.append("\"");
+			s.append("))");
 		}
 		else if (ent instanceof ITag)
 		{
