@@ -77,6 +77,8 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	IEntity contextParentStructure;
 	String contextParentStructureType;
 	
+	int contextListIndex = -1;
+	
 	//buffered structure for copy & paste
 	private String bufferedStructure = null;
 	private boolean identityMode = false;
@@ -242,6 +244,44 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		contextStructure = contextBlock.getModel();
 		contextStructureType = GraleJUtility.getType(contextStructure);
 		
+		//special and somewhat roundabout treatment for visible parts of lists: < , >
+		if (block instanceof Label && contextStructure == null)
+		{
+			contextBlock = block.getParent();
+			if (contextBlock instanceof ListBlock)
+			{
+				ListBlock liBlock = (ListBlock) contextBlock;
+				contextStructure = liBlock.getModel();
+				//assume that selected block is "<"; set index to beginning of list
+				contextListIndex = 0;
+				if (liBlock.getChildren().get(0) != block)
+				{
+					//the selected block is ">"; set index to end of list
+					for (@SuppressWarnings("unused") IEntity e : ((IList) contextStructure).elements())
+					{
+						contextListIndex++;
+					}
+				}
+			}
+			else if (contextBlock instanceof ListContentBlock)
+			{
+				ListContentBlock lcBlock = (ListContentBlock) contextBlock;
+				contextBlock = block.getParent();
+				contextStructure = contextBlock.getModel();
+				//compute position of the selected "," in the list
+				contextListIndex = (lcBlock.getChildren().indexOf(block) + 1) / 2;
+			}
+			else
+			{
+				System.err.println("WARNING: unknown non-content label!");
+				contextListIndex = -1;
+			}
+		}
+		else
+		{
+			contextListIndex = -1;
+		}
+		
 		if (!contextStructureType.equals("?"))
 		{
 			KahinaRunner.processEvent(new TraleSLDTypeSelectionEvent(contextStructureType));
@@ -335,15 +375,6 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			return true;
 		}
 		return false;
-	}
-	
-	private Block getStructureParent(Block block)
-	{
-		while(block != null && !(block.getModel() instanceof ITypedFeatureStructure))
-		{
-			block = block.getParent();
-		}
-		return block;
 	}
 	
 	private Block getAttrParent(Block block)
@@ -688,55 +719,6 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			IEntity res = GraleJUtility.generalizeAtom((IEntity) data.getModel(), contextPath, sig);
 			reconvert(res);
-		}
-		else //LEGACY CODE, ONLY HERE FOR REFERENCE
-		{
-			String type = command;
-			if (contextStructure instanceof IType)
-			{
-				IType selectedType = (IType) contextStructure;
-				selectedType.setTypeName(type);
-			}
-			else if (contextStructure instanceof ITypedFeatureStructure)
-			{
-				EntityFactory ent = EntityFactory.getInstance();
-				ITypedFeatureStructure selectedFS = (ITypedFeatureStructure) contextStructure;
-				selectedFS.type().setTypeName(type);
-				Map<String,String> appropFeats = sig.getTypeRestrictions(type);
-				List<String> appropFeatsList = new LinkedList<String>();
-				appropFeatsList.addAll(appropFeats.keySet());
-				Collections.sort(appropFeatsList);
-				Map<String,IFeatureValuePair> featureMap = new HashMap<String,IFeatureValuePair>();
-				for (IFeatureValuePair pair : selectedFS.featureValuePairs())
-				{
-					featureMap.put(pair.text(), pair);
-				}
-				//TODO: subsumption check to determine whether feature values are specific enough
-				for (String feat : appropFeatsList)
-				{
-					IFeatureValuePair fv = featureMap.remove(feat);
-					if (fv == null)
-					{
-						selectedFS.addFeatureValue(ent.newFeatVal(feat, GraleJUtility.signatureMGS(appropFeats.get(feat), sig)));
-					}
-				}
-				//remove superfluous features
-				for (IFeatureValuePair fv : featureMap.values())
-				{
-					selectedFS.featureValuePairs().remove(fv);
-				}
-			}
-			//THE OLD WAY: editing via AuxiliaryTraleInstance
-			/*//get back the edited structure in TRALE desc format
-			String traleDesc = Entities.toTraleDesc((IEntity) data.getModel());
-			//use TRALE instance to retrieve the grisuString for the description's MGS
-			String result = trale.descToMgsGrisu(traleDesc);
-			result = sig.resolveMGSs(result);*/
-			//THE NEW WAY: render edited structure into grisu
-			reconvert();	
-			//failed attempt: data package cannot be manipulated via the GUI, the toTRALE-method 
-			//simply prints out the stored chars, which cannot be manipulated!
-			//OutputFormatter.getInstance().save(System.err, data, blockPanel, OutputFormatter.TRALEFormat);
 		}
 		this.updateDisplay();
 		blockPanel.getContent().update();
