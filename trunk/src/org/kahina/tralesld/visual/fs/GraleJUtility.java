@@ -34,21 +34,40 @@ public class GraleJUtility
 	
 	public static IEntity specialize(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
 	{
-		IEntity ent = go(e,path);
-		if (ent == null)
+		IEntity et = go(e,path);
+		if (et == null)
 		{
 			failMsg("Specialize failed: Unable to evaluate address!");
 			return e;
 		}
-		if (ent instanceof ITag)
+		if (et instanceof ITag)
 		{
-			ent = ((ITag) ent).target();
+			et = ((ITag) et).target();
 		}
-		String eType = getType(ent);
+		String eType = getType(et);
 		if (eType != null && sig.dominates(eType,ty))
 		{
-			setType(ent,ty);
-			successMsg("Type specialization successful!");
+			if (eType.equals("list"))
+			{
+				IEntity parent = goUpToLast(e,path);
+				if (parent instanceof ITag)
+				{
+					parent = ((ITag) parent).target();
+				}
+				IList list = ent.newList();
+				if (ty.equals("ne_list"))
+				{
+					list.append(signatureMGS("bot", sig));
+				}
+				successMsg("List specialization successful!");
+				if (parent == null) return list;
+				replace(parent,et,list);
+			}
+			else
+			{
+				setType(et,ty);
+				successMsg("Type specialization successful!");
+			}
 		}
 		else
 		{
@@ -206,7 +225,7 @@ public class GraleJUtility
 			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
 			enforceTTF(fs,sig);
 		}
-		else
+		else if (!(et instanceof IList))
 		{
 			failMsg("TTF specialization failed: not a typed feature structure!");
 		}
@@ -402,6 +421,96 @@ public class GraleJUtility
 		{
 			failMsg("Identity dissolval failed: No reentrancy at this address!");
 		}
+		return e;
+	}
+	
+	public static IEntity addListElement(IEntity e, List<String> path, int listIndex, TraleSLDSignature sig)
+	{
+		IEntity ent = go(e,path);
+		if (ent == null)
+		{
+			failMsg("List manipulation failed: Unable to evaluate address!");
+			return e;
+		}
+		if (ent instanceof ITag)
+		{
+			ent = ((ITag) ent).target();
+		}
+		if (!(ent instanceof IList))
+		{
+			failMsg("List manipulation failed: No list at this address!");
+			return e;
+		}
+		IEntity newElement = signatureMGS("bot",sig);
+		IList list = (IList) ent;
+		List<IEntity> listEl = new LinkedList<IEntity>();
+		for (IEntity el : list.elements())
+		{
+			listEl.add(el);
+		}
+		listEl.add(listIndex, newElement);
+		list.clear();
+		for (IEntity el : listEl)
+		{
+			list.append(el);
+		}
+		successMsg("New list element successfully added.");
+		return e;
+	}
+	
+	public static IEntity removeListElement(IEntity e, List<String> path, int listIndex, TraleSLDSignature sig)
+	{
+		IEntity ent = go(e,path);
+		if (ent == null)
+		{
+			failMsg("List manipulation failed: Unable to evaluate address!");
+			return e;
+		}
+		if (ent instanceof ITag)
+		{
+			ent = ((ITag) ent).target();
+		}
+		if (!(ent instanceof IList))
+		{
+			failMsg("List manipulation failed: No list at this address!");
+			return e;
+		}
+		IList list = (IList) ent;
+		List<IEntity> listEl = new LinkedList<IEntity>();
+		for (IEntity el : list.elements())
+		{
+			listEl.add(el);
+		}
+		listEl.remove(listIndex);
+		list.clear();
+		for (IEntity el : listEl)
+		{
+			list.append(el);
+		}
+		successMsg("List element successfully removed.");
+		return e;
+	}
+	
+	public static IEntity clearList(IEntity e, List<String> path, TraleSLDSignature sig)
+	{
+		IEntity ent = go(e,path);
+		if (ent == null)
+		{
+			failMsg("List manipulation failed: Unable to evaluate address!");
+			return e;
+		}
+		if (ent instanceof ITag)
+		{
+			ent = ((ITag) ent).target();
+		}
+		if (!(ent instanceof IList))
+		{
+			failMsg("List manipulation failed: No list at this address!");
+			return e;
+		}
+		IList list = (IList) ent;
+		list.clear();
+		successMsg("List successfully cleared.");
 		return e;
 	}
 	
@@ -740,6 +849,10 @@ public class GraleJUtility
 		else if (parent instanceof ITag)
 		{
 			((ITag) parent).setTarget(replacement);
+		}
+		else
+		{
+			System.err.println("Replace failed at " + parent);
 		}
 	}
 	
