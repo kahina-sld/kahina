@@ -266,8 +266,8 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			else if (contextBlock instanceof ListContentBlock)
 			{
 				ListContentBlock lcBlock = (ListContentBlock) contextBlock;
-				contextBlock = block.getParent();
-				contextStructure = contextBlock.getParent().getModel();
+				contextBlock = lcBlock.getParent();
+				contextStructure = contextBlock.getModel();
 				//compute position of the selected "," in the list
 				contextListIndex = (lcBlock.getChildren().indexOf(block) + 1) / 2;
 			}
@@ -288,7 +288,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			KahinaRunner.processEvent(new KahinaRedrawEvent());
 		}
 		
-		contextPath = determinePath(block);
+		contextPath = determinePath(contextBlock);
 		
 		contextAttrBlock = getAttrParent(block);
 		if (contextAttrBlock == null)
@@ -330,7 +330,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				//System.err.println("  path: " + ((IFeatureValuePair) block.getModel()).feature());
 				path.add(0,((IFeatureValuePair) block.getModel()).feature());
 			}
-			else if (block instanceof ListBlock)
+			else if (block instanceof ListBlock && contextBlock != block)
 			{
 				ListBlock listBlock = (ListBlock) block;
 				int i = 0;
