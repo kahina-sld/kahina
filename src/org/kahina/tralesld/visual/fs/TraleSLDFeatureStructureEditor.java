@@ -630,15 +630,16 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			}
 			else 
 			{
+				IEntity res;
 				if (editingMode == TTF_MODE)
 				{
-					GraleJUtility.specializeTTF((IEntity) data.getModel(), contextPath, tau, sig);
+					res = GraleJUtility.specializeTTF((IEntity) data.getModel(), contextPath, tau, sig);
 				}
 				else
 				{
-					GraleJUtility.specialize((IEntity) data.getModel(), contextPath, tau, sig);
+					res = GraleJUtility.specialize((IEntity) data.getModel(), contextPath, tau, sig);
 				}
-				reconvert();
+				reconvert(res);
 			}
 		}
 		else if (command.startsWith("gen:"))
@@ -729,6 +730,21 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.equals("GezAtom"))
 		{
 			IEntity res = GraleJUtility.generalizeAtom((IEntity) data.getModel(), contextPath, sig);
+			reconvert(res);
+		}
+		else if (command.equals("ListAdd"))
+		{
+			IEntity res = GraleJUtility.addListElement((IEntity) data.getModel(), contextPath, contextListIndex, sig);
+			reconvert(res);
+		}
+		else if (command.equals("ListRemove"))
+		{
+			IEntity res = GraleJUtility.removeListElement((IEntity) data.getModel(), contextPath, contextListIndex, sig);
+			reconvert(res);
+		}
+		else if (command.equals("ListClear"))
+		{
+			IEntity res = GraleJUtility.clearList((IEntity) data.getModel(), contextPath, sig);
 			reconvert(res);
 		}
 		this.updateDisplay();
