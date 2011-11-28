@@ -396,13 +396,6 @@ public class GraleJUtility
 		return e;
 	}
 	
-	//TODO: makes this functional
-	public static IEntity introIdent(IEntity e, IEntity e1, IEntity e2, TraleSLDSignature sig)
-	{
-		ent.newTag(0, e2);
-		return e;
-	}
-	
 	public static IEntity remIdent(IEntity e, List<String> path)
 	{
 		Map<Integer,List<List<String>>> identities = getIdentities(e);
@@ -557,31 +550,84 @@ public class GraleJUtility
 	
 	public static IEntity makeIdent(IEntity e, List<String> path1, List<String> path2, TraleSLDSignature sig)
 	{
-		if (inOnePath(path1, path2))
+		IEntity ent1 = go(e,path1);
+		IEntity ent2 = go(e,path2);
+		if (ent1 == null || ent2 == null)
 		{
-			failMsg("Identity introduction failed: this would cause a cycle!");
+			failMsg("Identity introduction failed: Unable to evaluate address!");
 			return null;
 		}
-		else
+		IEntity parent1 = goUpToLast(e,path1);
+		IEntity parent2 = goUpToLast(e,path2);
+		if (ent1 instanceof ITag)
 		{
-			IEntity ent1 = go(e,path1);
-			IEntity ent2 = go(e,path2);
-			if (ent1 == null || ent2 == null)
-			{
-				failMsg("Identity introduction failed: Unable to evaluate address!");
-				return null;
-			}
-			IEntity mgu = unify(ent1,ent2,sig);
-			if (mgu == null) return null;
-
-			IEntity parent1 = goUpToLast(e,path1);
-			IEntity parent2 = goUpToLast(e,path2);
-			//TODO: handle tag numbers, avoid spurious unifications!
-			replace(parent1,ent1,ent.newTag(5,mgu));
-			replace(parent2,ent2,ent.newTag(5,mgu));
-			successMsg("Identity introduction successful!");
-			return e;
+			parent1 = ent1;
+			ent1 = ((ITag) ent1).target();
 		}
+		if (ent2 instanceof ITag)
+		{
+			parent2 = ent2;
+			ent2 = ((ITag) ent2).target();
+		}
+		IEntity mgu = unify(ent1,ent2,sig);
+		if (mgu == null) return null;
+		Map<Integer,List<List<String>>> identities = getIdentities(e);
+		int number = getFreeTagID(identities);
+		replace(parent1,ent1,ent.newTag(number,mgu));
+		replace(parent2,ent2,ent.newTag(number,mgu));
+		if (contractTags(e, parent1) && contractTags(e, parent2))
+		{
+			successMsg("Identity introduction successful!");
+		}
+		return e;
+	}
+	
+	private static int getFreeTagID(Map<Integer,List<List<String>>> identities)
+	{
+		for (int i = 0; ; i++)
+		{
+			if (identities.get(i) == null) return i;
+		}
+	}
+	
+	private static boolean contractTags(IEntity e, IEntity ent)
+	{
+		Map<Integer,List<List<String>>> identities = getIdentities(e);
+		if (ent instanceof ITag)
+		{
+			ITag tag1 = (ITag) ent;
+			if (tag1.target() instanceof ITag)
+			{
+				ITag tag2 = (ITag) tag1.target();
+				int lowerNumber = tag1.number();
+				int higherNumber = tag2.number();
+				if (lowerNumber > higherNumber)
+				{
+					lowerNumber = tag2.number();
+					higherNumber = tag1.number();
+				}
+				replace(tag1,tag2,tag2.target());
+				for (List<String> path : identities.get(higherNumber))
+				{
+					IEntity otherE = go(e,path);
+					if (otherE instanceof ITag)
+					{
+						((ITag) otherE).setNumber(lowerNumber);
+					}
+					else
+					{
+						failMsg("Failed to rename tag at path: " + path);
+						return false;
+					}
+				}
+			}
+			else
+			{
+				failMsg("Expected double tag was not encountered!");
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	private static boolean inOnePath(List<String> path1, List<String> path2)
@@ -928,6 +974,10 @@ public class GraleJUtility
 		Map<Integer,List<List<String>>> identities = new HashMap<Integer,List<List<String>>>();
 		List<String> currentPath = new LinkedList<String>();
 		fillIdentities(e,currentPath,identities);
+		/*for (Integer i : identities.keySet())
+		{
+			System.err.println(i + " -> " + identities.get(i));
+		}*/
 		return identities;
 	}
 	
