@@ -11,6 +11,7 @@ import java.util.Map;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
 import gralej.controller.StreamInfo;
+import gralej.om.Entities;
 import gralej.om.EntityFactory;
 import gralej.om.IAny;
 import gralej.om.IEntity;
@@ -404,6 +405,7 @@ public class GraleJUtility
 	
 	public static IEntity remIdent(IEntity e, List<String> path)
 	{
+		Map<Integer,List<List<String>>> identities = getIdentities(e);
 		IEntity parent = goUpToLast(e,path);
 		IEntity et = goLast(parent,path);
 		if (et == null)
@@ -413,13 +415,42 @@ public class GraleJUtility
 		}
 		if (et instanceof ITag)
 		{
-			IEntity replacement = copy(((ITag) et).target());
-			replace(parent,et,replacement);
+			ITag tag = (ITag) et;
+			identities.get(tag.number()).remove(path);
+			e = removeTag(e, path);
+			if (identities.get(tag.number()).size() == 1)
+			{
+				List<String> otherPath = identities.get(tag.number()).get(0);
+				e = removeTag(e,otherPath);
+				identities.remove(tag.number());
+			}
 			successMsg("Identity dissolval successful!");
 		}
 		else
 		{
 			failMsg("Identity dissolval failed: No reentrancy at this address!");
+		}
+		return e;
+	}
+	
+	private static IEntity removeTag(IEntity e, List<String> path)
+	{
+		IEntity parent = goUpToLast(e,path);
+		IEntity et = goLast(parent,path);
+		if (et == null)
+		{
+			failMsg("Tag removal failed: Unable to evaluate address!");
+			return e;
+		}
+		if (et instanceof ITag)
+		{
+			ITag tag = (ITag) et;
+			IEntity replacement = copy(tag.target());
+			replace(parent,et,replacement);
+		}
+		else
+		{
+			failMsg("Tag removal failed: No tag at address " + path);
 		}
 		return e;
 	}
@@ -890,6 +921,65 @@ public class GraleJUtility
 			type = type.substring(6, type.length() - 1);
 		}
 		return type;
+	}
+	
+	public static Map<Integer,List<List<String>>> getIdentities(IEntity e)
+	{
+		Map<Integer,List<List<String>>> identities = new HashMap<Integer,List<List<String>>>();
+		List<String> currentPath = new LinkedList<String>();
+		fillIdentities(e,currentPath,identities);
+		return identities;
+	}
+	
+	private static void fillIdentities(IEntity ent, List<String> path, Map<Integer,List<List<String>>> identities)
+	{
+		List<String> currentPath = new LinkedList<String>();
+		currentPath.addAll(path);
+		if (ent instanceof ITag)
+		{
+			ITag tag = (ITag) ent;
+			int i = tag.number();
+			List<List<String>> paths = identities.get(i);
+			if (paths == null)
+			{
+				paths = new LinkedList<List<String>>();
+				identities.put(i, paths);
+			}
+			paths.add(currentPath);
+			fillIdentities(tag.target(),currentPath,identities);
+		}
+		else if (ent instanceof IAny)
+		{
+
+		}
+		else if (ent instanceof IList)
+		{
+			IList list = (IList) ent;
+			currentPath.add("hd");
+			for (IEntity lEnt : list.elements())
+			{
+				fillIdentities(lEnt, currentPath, identities);
+				currentPath.add(currentPath.size() - 1, "tl");
+			}
+		}
+		else if (ent instanceof ITypedFeatureStructure)
+		{
+			ITypedFeatureStructure tfs = (ITypedFeatureStructure) ent;
+			for (IFeatureValuePair fv : tfs.featureValuePairs())
+			{
+				fillIdentities(fv, currentPath, identities);
+			}
+		}
+		else if (ent instanceof IType)
+		{
+
+		}
+		else if (ent instanceof IFeatureValuePair)
+		{
+			IFeatureValuePair fv = (IFeatureValuePair) ent;
+			currentPath.add(fv.feature());
+			fillIdentities(fv.value(), currentPath, identities);
+		}
 	}
 	
 	public static List<String> listFeatures(IEntity e)
