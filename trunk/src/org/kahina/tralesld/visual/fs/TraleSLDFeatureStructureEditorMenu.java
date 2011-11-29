@@ -99,13 +99,24 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		copyItem.addActionListener(editor);
 		menu.add(copyItem);
 		
-		JMenuItem pasteItem = new JMenuItem("Paste");
-		pasteItem.addActionListener(editor);
+		JMenuItem replacePasteItem = new JMenuItem("Replacement Paste");
+		replacePasteItem.setActionCommand("replPaste");
+		replacePasteItem.addActionListener(editor);
 		if (editor.getBufferedStructure() == null)
 		{
-			pasteItem.setEnabled(false);
+			replacePasteItem.setEnabled(false);
 		}
-		menu.add(pasteItem);
+		menu.add(replacePasteItem);
+		
+		JMenuItem unifyPasteItem = new JMenuItem("Unifying Paste");
+		unifyPasteItem.setActionCommand("unifPaste");
+		unifyPasteItem.addActionListener(editor);
+		if (editor.getBufferedStructure() == null)
+		{
+			unifyPasteItem.setEnabled(false);
+		}
+		menu.add(unifyPasteItem);
+		
 		return menu;
 	}
 	
@@ -166,6 +177,15 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		addElementItem.setActionCommand("ListAdd");
 		addElementItem.addActionListener(editor);
 		menu.add(addElementItem);
+		
+		JMenuItem listPasteItem = new JMenuItem("Paste As Entry");
+		listPasteItem.setActionCommand("listPaste");
+		listPasteItem.addActionListener(editor);
+		if (editor.getBufferedStructure() == null)
+		{
+			listPasteItem.setEnabled(false);
+		}
+		menu.add(listPasteItem);
 		
 		if (listLength > 0 && listIndex < listLength)
 		{
