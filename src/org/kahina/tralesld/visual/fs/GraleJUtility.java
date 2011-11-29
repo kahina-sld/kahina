@@ -862,12 +862,42 @@ public class GraleJUtility
 	
 	public static IEntity goUpToLast(IEntity e, List<String> path)
 	{
-		return goSubpath(e,path,0, path.size() - 1);
+		//special treatment for list case
+		int lastBeforeList = path.size() - 1;
+		if (path.get(lastBeforeList).equals("hd"))
+		{
+			lastBeforeList--;
+			while (path.get(lastBeforeList).equals("tl"))
+			{
+				lastBeforeList--;
+			}
+			//System.err.println("upToLast: " + path.subList(0, lastBeforeList + 1));
+			return goSubpath(e,path,0, lastBeforeList + 1);
+		}
+		else
+		{
+			return goSubpath(e,path,0, path.size() - 1);
+		}
 	}
 	
 	public static IEntity goLast(IEntity e, List<String> path)
 	{
-		return goSubpath(e,path,path.size() - 1, path.size());
+		//special treatment for list case
+		int lastBeforeList = path.size() - 1;
+		if (path.get(lastBeforeList).equals("hd"))
+		{
+			lastBeforeList--;
+			while (path.get(lastBeforeList).equals("tl"))
+			{
+				lastBeforeList--;
+			}
+			//System.err.println("last: " + path.subList(lastBeforeList + 1, path.size()));
+			return goSubpath(e,path,lastBeforeList + 1, path.size());
+		}
+		else
+		{
+			return goSubpath(e,path,path.size() - 1, path.size());
+		}
 	}
 	
 	private static boolean setType(IEntity e, String ty)
@@ -887,8 +917,33 @@ public class GraleJUtility
 		return false;
 	}
 	
+	public static IEntity replacePaste(IEntity e, List<String> path, IEntity paste, TraleSLDSignature sig)
+	{
+		//System.err.println("replacePaste(" + e + "," + path + "," + paste + "," + sig + ");");
+		IEntity parent = goUpToLast(e,path);
+		IEntity et = goLast(parent,path);
+		if (parent == null) et = e;	
+		if (et == null)
+		{
+			failMsg("Paste failed: Unable to evaluate address!");
+			return e;
+		}
+		if (et instanceof ITag)
+		{
+			parent = et;
+			et = ((ITag) et).target();
+		}
+		//System.err.println("parent = " + parent);
+		//System.err.println("et = " + et);
+		successMsg("Replacement paste successful.");
+		if (parent == null) return paste;
+		replace(parent,et,paste);
+		return e;
+	}
+	
 	private static void replace(IEntity parent, IEntity e, IEntity replacement)
 	{
+		//System.err.println("replace(" + parent + "," + e + "," + replacement + ");");
 		if (parent instanceof ITypedFeatureStructure)
 		{
 			
@@ -914,7 +969,7 @@ public class GraleJUtility
 				}
 				else
 				{
-					elList.add(e);
+					elList.add(el);
 				}
 			}
 			list.clear();

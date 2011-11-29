@@ -588,22 +588,19 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else if (command.equals("Paste"))
 		{
-			IDataPackage toCopyData = null;
-			try
-			{
-				toCopyData = util.parseGrisu(bufferedStructure);
-			}
-			catch (gralej.parsers.ParseException pe) 
+			IEntity pasteStruct = prepareStructure(bufferedStructure);
+			if (pasteStruct == null)
 			{
 				failureMessage("Paste failed: GRISU string could not be parsed.");
-				return;
 			}
-			//TODO: check whether types are compatible
-			//TODO: find out about weird behavior, and why the second option leads to parse errors	
-			
-			//contextBlock.setModel((IEntity) toCopyData.getModel());
-			contextAttrModel.setValue((IEntity) toCopyData.getModel());
-			reconvert();
+			else
+			{
+				//TODO: check whether types are compatible
+				//TODO: find out about weird behavior, and why the second option leads to parse errors	
+				//contextBlock.setModel((IEntity) toCopyData.getModel());
+				contextAttrModel.setValue(pasteStruct);
+				reconvert();
+			}
 		}
 		else if (command.startsWith("spe:"))
 		{
@@ -737,6 +734,27 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			IEntity res = GraleJUtility.addListElement((IEntity) data.getModel(), contextPath, contextListIndex, sig);
 			reconvert(res);
 		}
+		else if (command.equals("ListPaste"))
+		{
+			IEntity pasteStruct = prepareStructure(bufferedStructure);
+			if (pasteStruct == null)
+			{
+				failureMessage("Paste failed: GRISU string could not be parsed.");
+			}
+			else
+			{
+				IEntity res = GraleJUtility.addListElement((IEntity) data.getModel(), contextPath, contextListIndex, sig);
+				List<String> listEntryPath = new LinkedList<String>();
+				listEntryPath.addAll(contextPath);
+				for (int i = 0; i < contextListIndex; i++)
+				{
+					listEntryPath.add("tl");
+				}
+				listEntryPath.add("hd");
+				res = GraleJUtility.replacePaste(res, listEntryPath, pasteStruct, sig);
+				reconvert(res);
+			}
+		}
 		else if (command.equals("ListRemove"))
 		{
 			IEntity res = GraleJUtility.removeListElement((IEntity) data.getModel(), contextPath, contextListIndex, sig);
@@ -750,6 +768,20 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		this.updateDisplay();
 		blockPanel.getContent().update();
 		blockPanel.getCanvas().repaint();
+	}
+	
+	private IEntity prepareStructure(String grisu)
+	{
+		IDataPackage toCopyData = null;
+		try
+		{
+			toCopyData = util.parseGrisu(bufferedStructure);
+		}
+		catch (gralej.parsers.ParseException pe) 
+		{
+			return null;
+		}
+		return (IEntity) toCopyData.getModel();
 	}
 	
 	private void reconvert()

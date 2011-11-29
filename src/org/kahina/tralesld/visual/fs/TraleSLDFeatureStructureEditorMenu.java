@@ -178,14 +178,19 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 		addElementItem.addActionListener(editor);
 		menu.add(addElementItem);
 		
-		JMenuItem listPasteItem = new JMenuItem("Paste As Entry");
-		listPasteItem.setActionCommand("listPaste");
+		JMenuItem listPasteItem = new JMenuItem("Paste as entry");
+		listPasteItem.setActionCommand("ListPaste");
 		listPasteItem.addActionListener(editor);
 		if (editor.getBufferedStructure() == null)
 		{
 			listPasteItem.setEnabled(false);
 		}
 		menu.add(listPasteItem);
+		
+		if (listIndex < listLength)
+		{
+			menu.addSeparator();
+		}
 		
 		if (listLength > 0 && listIndex < listLength)
 		{
@@ -195,7 +200,7 @@ public class TraleSLDFeatureStructureEditorMenu extends JPopupMenu
 			menu.add(removeElementItem);
 		}
 		
-		if (listIndex == 0)
+		if (listIndex == 0 && listLength > 0)
 		{
 			JMenuItem clearListItem = new JMenuItem("Clear list");
 			clearListItem.setActionCommand("ListClear");
