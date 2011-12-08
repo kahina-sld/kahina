@@ -10,6 +10,7 @@ import org.kahina.core.breakpoint.KahinaBreakpoint;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.event.KahinaBridgePauseEvent;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.event.KahinaStepDescriptionEvent;
@@ -436,10 +437,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 			// Stop autocomplete/leap when we're done. Also, set to creep so
 			// we're sure to see the result and get the prompt back.
-			if (deterministic && stepID == state.getStepTree().getRootID())
+			if (isQueryRoot(stepID))
 			{
+				KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
-				bridgeState = 'c';
+				if (deterministic)
+				{
+					bridgeState = 'c';
+				}
 			}
 
 			selectIfPaused(stepID);
@@ -448,6 +453,18 @@ public class LogicProgrammingBridge extends KahinaBridge
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	/**
+	 * Call to check if a given step has the special property of being the query
+	 * root, i.e. when it exits (deterministically) or fails, the whole session
+	 * is over.
+	 * @param stepID
+	 * @return
+	 */
+	protected boolean isQueryRoot(int stepID)
+	{
+		return stepID == state.getStepTree().getRootID(); // TODO memoize?
 	}
 
 	/**
@@ -479,8 +496,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 			// Stop autocomplete/leap when we're done. Also, set to creep so
 			// we're sure to see the result and get the prompt back.
-			if (stepID == state.getStepTree().getRootID())
+			if (isQueryRoot(stepID))
 			{
+				KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
@@ -520,8 +538,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 			// Stop autocomplete/leap when we're done. Also, set to creep so
 			// we're sure to see the result and get the prompt back.
-			if (stepID == state.getStepTree().getRootID())
+			if (isQueryRoot(stepID))
 			{
+				KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
@@ -572,6 +591,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
+			KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 			bridgeState = 'n';
 			KahinaRunner.processEvent(new KahinaSelectionEvent(currentID));
 		} catch (Exception e)
@@ -653,6 +673,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					System.err.println("Bridge state/pressed button: c/c");
 				}
+				KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 				bridgeState = 'n';
 				return 'c';
 			}
@@ -662,6 +683,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					System.err.println("Bridge state/pressed button: f/f");
 				}
+				KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 				bridgeState = 'n';
 				return 'f';
 			}
@@ -692,6 +714,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 						System.err.println("Bridge state/pressed button: s/n");
 					}
 					skipID = -1;
+					KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 					bridgeState = 'n';
 					KahinaRunner.processEvent(new KahinaSelectionEvent(currentID));
 					return 'n';
@@ -718,6 +741,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					System.err.println("Bridge state/pressed button: " + bridgeState + "/n");
 				}
+				KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 				bridgeState = 'n';
 				return 'n';
 			}
@@ -799,6 +823,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	@Override
 	protected void processWarnEvent(KahinaWarnEvent e)
 	{
+		KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 		bridgeState = 'n';
 		selectIfPaused(currentID);
 	}
@@ -987,6 +1012,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	@Override
 	protected void processBreakPointMatch(int nodeID, KahinaBreakpoint bp)
 	{
+		KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 		// TODO: temporarily mark matching node in the breakpoint's signal color
 		// same reaction as in pause mode
 		if (bridgeState == 't')

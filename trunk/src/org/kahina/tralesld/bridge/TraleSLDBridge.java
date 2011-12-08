@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.event.KahinaBridgePauseEvent;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
@@ -436,6 +437,15 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				System.err.println("Bridge state after chart edge was marked as failed: " + bridgeState);
 			}
 
+			// Stop autocomplete/leap when we're done. Also, set to creep so
+			// we're sure to see the result and get the prompt back.
+			if (isQueryRoot(stepID))
+			{
+				KahinaRunner.processEvent(new KahinaBridgePauseEvent());
+				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+				bridgeState = 'c';
+			}
+
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
@@ -467,8 +477,9 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 			// Stop autocomplete/leap when we're done. Also, set to creep so
 			// we're sure to see the result and get the prompt back.
-			if (stepID == state.getStepTree().getRootID())
+			if (isQueryRoot(stepID))
 			{
+				KahinaRunner.processEvent(new KahinaBridgePauseEvent());
 				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}

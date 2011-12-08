@@ -3,10 +3,10 @@ package org.kahina.swi.bridge;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.lp.LogicProgrammingState;
-import org.kahina.lp.bridge.LogicProgrammingBridge;
+import org.kahina.prolog.bridge.PrologBridge;
 import org.kahina.swi.SWIPrologStep;
 
-public class SWIPrologBridge extends LogicProgrammingBridge
+public class SWIPrologBridge extends PrologBridge
 {
 
 	public SWIPrologBridge(LogicProgrammingState state)
