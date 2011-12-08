@@ -12,6 +12,9 @@ import javax.swing.JComponent;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.event.KahinaBridgePauseEvent;
+import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
@@ -48,6 +51,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	public KahinaListTreeView(KahinaController control, int... layers)
 	{
 		super(control);
+		control.registerListener(KahinaEventTypes.BRIDGE_PAUSE, this);
 		this.layers = layers;
 		nodeBorderColor = new HashMap<Integer, Color>();
 		statusNodeColorEncoding = new HashMap<Integer, Color>();
@@ -302,6 +306,16 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	public KahinaTree getSecondaryModel()
 	{
 		return secondaryTreeModel;
+	}
+	
+	@Override
+	public void processEvent(KahinaEvent e)
+	{
+		if (e instanceof KahinaBridgePauseEvent) {
+			autospineRight();
+		} else {
+			super.processEvent(e);
+		}
 	}
 
 	@Override
