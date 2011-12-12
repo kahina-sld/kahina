@@ -1,7 +1,7 @@
 main :-
   findall(X,a(X),_).
 
-a(e(X)) :-
+a(X) :-
   b(X),
   c(X).
 
