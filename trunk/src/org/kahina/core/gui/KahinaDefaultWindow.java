@@ -28,7 +28,7 @@ public class KahinaDefaultWindow extends KahinaWindow
 	{
 		this.v = v;
 		mainPanel.removeAll();
-		mainPanel.add(v.makeEditorPanel(gui));
+		mainPanel.add(v.makePanel(gui));
 	}
 
 	public KahinaView<?> getContent()

@@ -61,7 +61,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	protected TraleSLDSignatureAppropriatenessView signatureAppropriatenessView;
 	protected TraleSLDSignatureUsageView signatureUsageView;
 	
-	private boolean withWorkbench = true;
+	private boolean withWorkbench = false;
 	protected FeatureWorkbenchView workbenchView;
 	
 	//needed to generate additional views (e.g. workbenches) after initialization
