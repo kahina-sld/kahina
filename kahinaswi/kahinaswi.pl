@@ -56,13 +56,17 @@ get_bridge(Bridge) :-
   start(Bridge).
 
 user:prolog_trace_interception(Port,Frame,_Choice,Action) :-
-  % TODO check if Kahina-SWI is switched on, there should be some flag.
-  % TODO what's with notrace?
   notrace((get_bridge(Bridge),
   act(Port,Frame,Bridge),
   get_gui_action(Bridge,GUIAction),
   fix_action(Port,GUIAction,FixedGUIAction),
   map_action(FixedGUIAction,_,Action))).
+
+ignore_frame(Frame) :-
+  prolog_frame_attribute(Frame,goal,Goal),
+  ignore_goal(Goal).
+
+ignore_goal('$expand':_).
 
 act(call,Frame,Bridge) :-
   %log(call,Frame),

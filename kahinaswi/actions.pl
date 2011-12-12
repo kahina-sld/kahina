@@ -30,6 +30,8 @@
 
 :- module(actions,[map_action/3,fix_action/3]).
 
+:- use_module(library(debug)).
+
 %%	map_action(+GuiAction, +Frame, -Action) is det.
 %
 %	Map the abstract action of the gui-tracer into actions for the
