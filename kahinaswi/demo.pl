@@ -1,4 +1,4 @@
 :- use_module(kahinaswi).
-:- [test].
+:- ['examples/example'].
 :- trace.
 :- main.

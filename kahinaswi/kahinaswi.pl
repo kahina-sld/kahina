@@ -2,7 +2,7 @@
     for SWI-Prolog in the Kahina framework.
 
     Author:        Kilian Evang
-    E-mail:        kevang ät sfs döt uni-tuebingen döt de
+    E-mail:        firstname ät lastname döt name
     WWW:           http://kahina.org
 
     This program is free software; you can redistribute it and/or
