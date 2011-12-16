@@ -150,7 +150,9 @@ public class TraleSLDSignature extends KahinaObject
 	
 	public Map<String,String> getAppropriateness(String type)
 	{
-		return typeRestr.get(type);
+		Map<String,String> appro = typeRestr.get(type);
+		if (appro == null) appro = new HashMap<String,String>();
+		return appro;
 	}
 	
 	public String getAppropriateValueType(String type, String feat)

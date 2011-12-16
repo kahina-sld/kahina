@@ -657,7 +657,7 @@ public class GraleJUtility
 			failMsg("Unification failed: lists and other structures are incompatible.");
 			return null;
 		}
-		else if (e2 instanceof IList && e1 instanceof IList)
+		else if (e2 instanceof IList && e1 instanceof ITypedFeatureStructure)
 		{
 			if (getType(e1).equals("list")) return e2;
 			failMsg("Unification failed: lists and other structures are incompatible.");
@@ -862,6 +862,7 @@ public class GraleJUtility
 	
 	public static IEntity goUpToLast(IEntity e, List<String> path)
 	{
+		if (path.size() == 0) return null;
 		//special treatment for list case
 		int lastBeforeList = path.size() - 1;
 		if (path.get(lastBeforeList).equals("hd"))
@@ -882,6 +883,7 @@ public class GraleJUtility
 	
 	public static IEntity goLast(IEntity e, List<String> path)
 	{
+		if (path.size() == 0) return null;
 		//special treatment for list case
 		int lastBeforeList = path.size() - 1;
 		if (path.get(lastBeforeList).equals("hd"))
