@@ -1,16 +1,20 @@
 package org.kahina.swi.gui;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.visual.tree.KahinaListTreeView;
+import org.kahina.core.gui.KahinaPerspective;
+import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.visual.tree.KahinaAbstractTreeView;
+import org.kahina.core.visual.tree.KahinaLayeredTreeView;
+import org.kahina.core.visual.tree.KahinaLayeredTreeViewPanel;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.swi.SWIPrologDebuggerInstance;
 import org.kahina.swi.SWIPrologStep;
-import org.kahina.swi.data.tree.SWIPrologLayerDecider;
 
 public class SWIPrologGUI extends LogicProgrammingGUI
 {
-	
-	private static final boolean VERBOSE = false;
 
 	public SWIPrologGUI(Class<? extends SWIPrologStep> stepType, SWIPrologDebuggerInstance instance, KahinaController control)
 	{
@@ -18,29 +22,24 @@ public class SWIPrologGUI extends LogicProgrammingGUI
 	}
 	
 	@Override
-	protected KahinaListTreeView generateTreeView(KahinaController control)
+	public KahinaAbstractTreeView generateTreeView(KahinaController control)
 	{
-		return new KahinaListTreeView(control, 0, 1, 2);
+		return new KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation.HORIZONTAL, control, 0);
 	}
 
 	@Override
-	public void displayMainViews()
+	public void prepare(KahinaController control)
 	{
-		if (VERBOSE)
+		try
 		{
-			System.err.println(this + ".displayMainViews()");
+			displayMainViews();
+			// TODO: load last perspective instead of only default perspective from XML
+			InputStream xmlStream = new BufferedInputStream(SWIPrologGUI.class.getResourceAsStream("kahinaswi-integrated.xml"));
+			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLStream(xmlStream, false).getDocumentElement()));			
 		}
-		super.displayMainViews();
-		if (VERBOSE)
+		catch (NullPointerException e)
 		{
-			System.err.println("Main views displayed as far as superclass of SWIPrologGUI is concerned.");
-		}
-		//only set deciders here because the trees are generated generically by the KahinaState
-		mainTreeView.getModel().setLayerDecider(new SWIPrologLayerDecider(2));
-		mainTreeView.getSecondaryModel().setLayerDecider(new SWIPrologLayerDecider(2));
-		if (VERBOSE)
-		{
-			System.err.println("//" + this + ".displayMainViews()");
+			e.printStackTrace();
 		}
 	}
 }
