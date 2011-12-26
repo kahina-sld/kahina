@@ -40,10 +40,4 @@ public class SICStusPrologGUI extends LogicProgrammingGUI
 			e.printStackTrace();
 		}
 	}
-	
-	/*@Override
-	public KahinaAbstractTreeView generateTreeView(KahinaController control)
-	{
-		return new KahinaListTreeView(control, 0);
-	}*/
 }

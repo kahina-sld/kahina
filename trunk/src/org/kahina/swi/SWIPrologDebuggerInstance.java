@@ -15,15 +15,23 @@ import org.kahina.swi.visual.bindings.SWIPrologVariableBindingSetView;
 
 public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SWIPrologGUI, SWIPrologBridge>
 {
-	
+
 	PrologProfiler profiler;
-	
+
 	@Override
 	public SWIPrologBridge startNewSession()
 	{
-		super.startNewSession();
-		profiler = new PrologProfiler(state.getFullProfile());
-		return bridge;
+		try
+		{
+			super.startNewSession();
+			profiler = new PrologProfiler(state.getFullProfile());
+			return bridge;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+			System.exit(-1);
+		}
+		return null;
 	}
 
 	@Override
