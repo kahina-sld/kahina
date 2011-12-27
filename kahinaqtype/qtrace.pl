@@ -1,6 +1,7 @@
 :- module(qtrace,[qtrace/0,
                   noqtrace/0,
-                  source_code_location/2]).
+                  source_code_location/2,
+                  cmdline/1]).
 
 :- use_module('../kahinasicstus/kahinasicstus').
 :- use_module(library(assoc)).
@@ -105,6 +106,14 @@ noqtrace.
 source_code_location(File,Line) :-
   execution_state(goal(Module:Goal)),
   goal_source_code_location(Module:Goal,File,Line).
+
+cmdline(ASCII) :-
+  get_jvm(JVM),
+  get_kahina_instance(Instance,JVM),
+  jasper_call(JVM,
+      method('org/kahina/qtype/QTypeDebuggerInstance','getCommand',[instance]),
+      get_command(+object('org/kahina/qtype/QTypeDebuggerInstance'),[-chars]), % NoSuchMethodError although there patently is SuchAMethod. WTF.
+      get_command(Instance,ASCII)).
 
 % ------------------------------------------------------------------------------
 % SETTING BREAKPOINTS FOR QTYPE

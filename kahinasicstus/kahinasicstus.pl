@@ -3,7 +3,10 @@
                          abort_hook/2,
                          breakpoint_action_hook/5,
                          post_step_hook/5,
-                         post_exit_hook/5]).
+                         post_exit_hook/5,
+                         get_jvm/1,
+                         get_kahina_instance/2,
+                         get_bridge/3]).
 
 :- use_module(library(charsio)).
 :- use_module(library(lists)).

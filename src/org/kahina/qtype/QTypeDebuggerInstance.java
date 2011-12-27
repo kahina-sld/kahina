@@ -48,5 +48,10 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 		super.fillViewRegistry();
 		KahinaViewRegistry.registerMapping(QTypeGoal.class, QTypeGoalView.class);
 	}
+	
+	public String getCommand()
+	{
+		return "help"; // just for testing, TODO
+	}
 
 }
