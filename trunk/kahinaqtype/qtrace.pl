@@ -112,7 +112,7 @@ cmdline(ASCII) :-
   get_kahina_instance(Instance,JVM),
   jasper_call(JVM,
       method('org/kahina/qtype/QTypeDebuggerInstance','getCommand',[instance]),
-      get_command(+object('org/kahina/qtype/QTypeDebuggerInstance'),[-chars]), % NoSuchMethodError although there patently is SuchAMethod. WTF.
+      get_command(+object('org/kahina/qtype/QTypeDebuggerInstance'),[-chars]),
       get_command(Instance,ASCII)).
 
 % ------------------------------------------------------------------------------
