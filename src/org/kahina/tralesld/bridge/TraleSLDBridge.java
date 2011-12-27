@@ -363,7 +363,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			registerMessage(extID, key, varName, null, type, grisuMessage);
-			selectIfPaused(currentID);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -383,7 +382,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			int id = stepIDConv.get(extID);
 			TraleSLDStep step = TraleSLDStep.get(id);
 			TraleSLDVariableBinding binding = bindingSharer.share(new TraleSLDVariableBinding(varName, tag, type, packer.pack(grisuMessage)));
-			selectIfPaused(currentID);
 
 			if ("start".equals(key))
 			{
@@ -392,6 +390,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				step.endBindings.add(binding);
 			}
+			
+			selectIfPaused(currentID);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
