@@ -68,7 +68,7 @@ kahinasicstus:post_step_hook(Bridge,JVM,Inv,_,_) :-
 
 kahinasicstus:post_exit_hook(Bridge,JVM,Inv,_,_) :-
   execution_state(goal(_:Goal)),
-  term_grisu(Goal,[],Grisu),
+  term_grisu(Goal,'',Grisu),
   register_goal(Bridge,JVM,Inv,[111,117,116],Grisu). % out
 
 register_goal(Bridge,JVM,Inv,KeyChars,Grisu) :-
