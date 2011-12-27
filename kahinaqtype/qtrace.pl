@@ -274,9 +274,9 @@ fs_coins(Term,_,_,_,_,_,_) :-
 fs_coins(T=_,Num,Num,Seen,Seen,Coins,Coins) :-
   get_assoc(T,Coins,_),
   !.
-fs_coins(T=_,Num0,Num,Seen,Seen,Coins0,Coins) :-
+fs_coins(T=FL,Num0,Num,Seen,Seen,Coins0,Coins) :-
   get_assoc(T,Seen,_),
-  put_assoc(T,Coins0,coin(Num0,T=FS),Coins), % could delete T from Seen now
+  put_assoc(T,Coins0,coin(Num0,T=FL),Coins), % could delete T from Seen now
   Num is Num0 + 1.
 fs_coins(T=FL,Num0,Num,Seen0,Seen,Coins0,Coins) :-
   should_be_attempted_to_portray_as_fs(T=FL),
@@ -323,8 +323,6 @@ arglist_grisu([Arg|Args],Depth,Coins,ID0,ID,Grisu0,Grisu) :-
 
 % Handling re-entrant FSs:
 
-% TODO can we trust FS terms to be acylic just because QType disallows cyclic
-% FSs?
 % re-entrancy tag
 fs_grisu(T=_,Coins,ID0,ID,[40,35|Grisu0],Grisu) :- % (#
   get_assoc(T,Coins,coin(Tag,_)), % FS is re-entrant
@@ -444,14 +442,6 @@ coin_grisu(Tag,T=FL,Coins,ID0,ID,[40,82|Grisu0],Grisu) :- % (R
   id_grisu(ID0,ID1,Grisu0,[32|Grisu1]), % space
   number_grisu(Tag,Grisu1,Grisu2),
   fs_grisu_nr(T=FL,Coins,ID1,ID,Grisu2,[41|Grisu]). % )
-
-% re-entrant FS
-%fs_grisu(T=FL,Coins,ID0,ID,[40,82|Grisu0],Grisu) :- % FIXME must put tag here, re-entrant FSs at the end
-%  get_assoc(T,Coins,coin(Tag,marker)), % FS is re-entrant; mark as portrayed
-%  !,
-%  id_grisu(ID0,ID1,Grisu0,[32|Grisu1]), % space
-%  number_grisu(Tag,Grisu1,Grisu2),
-%  fs_grisu_nr(T=FL,Coins,ID1,ID,Grisu2,[41|Grisu]). % )
 
 % ------------------------------------------------------------------------------
 % HELPERS (KAHINAQTYPE-SPECIFIC)
