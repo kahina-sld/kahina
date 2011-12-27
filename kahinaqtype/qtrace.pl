@@ -243,12 +243,12 @@ goal_source_code_location(descr:start_constraint(Line),File,Line) :-
 %   Term: A Prolog term. May be a QType FS or contain such.
 %   Label: A label for output, given as an atom.
 %   Grisu: A code-list representing the Grisu message needed.
-
 term_grisu(Term,Label,[33,110,101,119,100,97,116,97|Grisu0]) :- % !newdata
   string_grisu(Label,Grisu0,Grisu1),
   empty_assoc(Empty),
   term_coins(Term,1,_,Empty,_,Empty,Coins),
-  term_grisu(Term,5,Coins,0,_,Grisu1,[10]). % LF; close list
+  term_grisu(Term,5,Coins,0,ID1,Grisu1,Grisu2),
+  coins_grisu(Coins,ID1,_,Grisu2,[10]). % LF; close list
 
 % Collect re-entrancies, or "coins", as in "coindexed":
 
@@ -276,7 +276,7 @@ fs_coins(T=_,Num,Num,Seen,Seen,Coins,Coins) :-
   !.
 fs_coins(T=_,Num0,Num,Seen,Seen,Coins0,Coins) :-
   get_assoc(T,Seen,_),
-  put_assoc(T,Coins0,coin(Num0,_),Coins), % could delete T from Seen now
+  put_assoc(T,Coins0,coin(Num0,T=FS),Coins), % could delete T from Seen now
   Num is Num0 + 1.
 fs_coins(T=FL,Num0,Num,Seen0,Seen,Coins0,Coins) :-
   should_be_attempted_to_portray_as_fs(T=FL),
@@ -327,18 +327,10 @@ arglist_grisu([Arg|Args],Depth,Coins,ID0,ID,Grisu0,Grisu) :-
 % FSs?
 % re-entrancy tag
 fs_grisu(T=_,Coins,ID0,ID,[40,35|Grisu0],Grisu) :- % (#
-  get_assoc(T,Coins,coin(Tag,Marker)), % FS is re-entrant
-  nonvar(Marker),                      % has already been portrayed
+  get_assoc(T,Coins,coin(Tag,_)), % FS is re-entrant
   !,
   id_grisu(ID0,ID,Grisu0,[32|Grisu1]), % space
   number_grisu(Tag,Grisu1,[41|Grisu]). % )
-% re-entrant FS
-fs_grisu(T=FL,Coins,ID0,ID,[40,82|Grisu0],Grisu) :- % (R
-  get_assoc(T,Coins,coin(Tag,marker)), % FS is re-entrant; mark as portrayed
-  !,
-  id_grisu(ID0,ID1,Grisu0,[32|Grisu1]), % space
-  number_grisu(Tag,Grisu1,Grisu2),
-  fs_grisu_nr(T=FL,Coins,ID1,ID,Grisu2,[41|Grisu]). % )
 % non-re-entrant FS
 fs_grisu(T=FL,Coins,ID0,ID,Grisu0,Grisu) :-
   fs_grisu_nr(T=FL,Coins,ID0,ID,Grisu0,Grisu).
@@ -436,6 +428,30 @@ should_be_attempted_to_portray_as_fs(Term) :-
   Term=(T=_),
   is_var_and_attr(T),
   \+ is_virtual_type(T).
+
+% Portraying re-entrancies:
+
+coins_grisu(Coins,ID0,ID,Grisu0,Grisu) :-
+  assoc_to_list(Coins,CoinList),
+  coinlist_grisu(CoinList,Coins,ID0,ID,Grisu0,Grisu).
+
+coinlist_grisu([],_,ID,ID,Grisu,Grisu).
+coinlist_grisu([T-coin(Tag,T=FL)|CoinList],Coins,ID0,ID,Grisu0,Grisu) :-
+  coin_grisu(Tag,T=FL,Coins,ID0,ID1,Grisu0,Grisu1),
+  coinlist_grisu(CoinList,Coins,ID1,ID,Grisu1,Grisu).
+
+coin_grisu(Tag,T=FL,Coins,ID0,ID,[40,82|Grisu0],Grisu) :- % (R
+  id_grisu(ID0,ID1,Grisu0,[32|Grisu1]), % space
+  number_grisu(Tag,Grisu1,Grisu2),
+  fs_grisu_nr(T=FL,Coins,ID1,ID,Grisu2,[41|Grisu]). % )
+
+% re-entrant FS
+%fs_grisu(T=FL,Coins,ID0,ID,[40,82|Grisu0],Grisu) :- % FIXME must put tag here, re-entrant FSs at the end
+%  get_assoc(T,Coins,coin(Tag,marker)), % FS is re-entrant; mark as portrayed
+%  !,
+%  id_grisu(ID0,ID1,Grisu0,[32|Grisu1]), % space
+%  number_grisu(Tag,Grisu1,Grisu2),
+%  fs_grisu_nr(T=FL,Coins,ID1,ID,Grisu2,[41|Grisu]). % )
 
 % ------------------------------------------------------------------------------
 % HELPERS (KAHINAQTYPE-SPECIFIC)
