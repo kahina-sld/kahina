@@ -386,8 +386,8 @@ fl_grisu(End,_,ID,ID,Grisu,Grisu) :-
 fl_grisu([F:V|Rest],Coins,ID0,ID,[40,86|Grisu0],Grisu) :- % (V
   id_grisu(ID0,ID1,Grisu0,Grisu1),
   string_grisu(F,Grisu1,Grisu2),
-  fs_grisu(V,Coins,ID1,ID2,Grisu2,Grisu3),
-  fl_grisu(Rest,Coins,ID2,ID,Grisu3,[41|Grisu]). % )
+  fs_grisu(V,Coins,ID1,ID2,Grisu2,[41|Grisu3]), % )
+  fl_grisu(Rest,Coins,ID2,ID,Grisu3,Grisu).
 
 % ID (increments ID counter)
 id_grisu(ID0,ID,Grisu0,Grisu) :-

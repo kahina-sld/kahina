@@ -4,12 +4,6 @@ import gralej.Config;
 import gralej.blocks.BlockPanel;
 import gralej.controller.StreamInfo;
 import gralej.om.EntityFactory;
-import gralej.om.IAny;
-import gralej.om.IEntity;
-import gralej.om.IFeatureValuePair;
-import gralej.om.IList;
-import gralej.om.IType;
-import gralej.om.ITypedFeatureStructure;
 import gralej.parsers.GraleParserFactory;
 import gralej.parsers.IDataPackage;
 import gralej.parsers.IGraleParser;
@@ -28,7 +22,7 @@ import javax.swing.JPanel;
  */
 public class VisualizationUtility
 {
-	private static final boolean verbose = false;
+	private static final boolean verbose = true;
 
 	private static VisualizationUtility def;
 
@@ -59,6 +53,8 @@ public class VisualizationUtility
 		config.set("behavior.nodeContentInitiallyVisible", true);
 		config.set("behavior.autoexpandtags", true);
 		config.set("behavior.alwaysfitsize", false);
+		config.set("log.message.error", "stderr");
+		config.set("log.message.critical", "stderr");
 	}
 
 	public IDataPackage parseGrisu(String grisuMessage) throws ParseException
