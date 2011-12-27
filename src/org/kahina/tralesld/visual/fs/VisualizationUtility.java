@@ -22,7 +22,7 @@ import javax.swing.JPanel;
  */
 public class VisualizationUtility
 {
-	private static final boolean verbose = true;
+	private static final boolean verbose = false;
 
 	private static VisualizationUtility def;
 
