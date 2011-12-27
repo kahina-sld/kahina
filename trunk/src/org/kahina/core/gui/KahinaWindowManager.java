@@ -96,7 +96,10 @@ public class KahinaWindowManager implements KahinaListener
 		File[] files = new File(gui.getClass().getResource(".").getFile()).listFiles(fileFilter);
 		for (File f : files)
 		{
-			System.err.println("Loading default perspective: " + f.getAbsolutePath());
+			if (VERBOSE)
+			{
+				System.err.println("Loading default perspective: " + f.getAbsolutePath());
+			}
 			defaultPerspectives.add(loadPerspective(f));
 		}
 	}
