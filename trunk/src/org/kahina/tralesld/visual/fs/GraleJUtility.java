@@ -1,6 +1,5 @@
 package org.kahina.tralesld.visual.fs;
 
-import java.io.ByteArrayInputStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -10,8 +9,6 @@ import java.util.Map;
 
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
-import gralej.controller.StreamInfo;
-import gralej.om.Entities;
 import gralej.om.EntityFactory;
 import gralej.om.IAny;
 import gralej.om.IEntity;
@@ -935,13 +932,51 @@ public class GraleJUtility
 			parent = et;
 			et = ((ITag) et).target();
 		}
-		//System.err.println("parent = " + parent);
-		//System.err.println("et = " + et);
-		successMsg("Replacement paste successful.");
-		if (parent == null) return paste;
-		replace(parent,et,paste);
+        IEntity typeParent = goUpToLast(e,path);
+        if (typeParent == null) typeParent = e;
+        String approValTy = "bot";
+        if (typeParent != null)
+        {
+            approValTy = sig.getAppropriateValueType(getType(typeParent), path.get(path.size() - 1));
+        }
+		if (sig.dominates(approValTy, getType(paste)))
+        {
+		    successMsg(approValTy + " dominates " + getType(paste) + "! Replacement paste successful.");
+		    if (parent == null) return paste;
+		    replace(parent,et,paste);
+        }
+        else
+        {
+            failMsg("Replacement paste failed: inappropriate value.");
+        }
 		return e;
 	}
+    
+    public static IEntity unifyPaste(IEntity e, List<String> path, IEntity paste, TraleSLDSignature sig)
+    {
+        //System.err.println("replacePaste(" + e + "," + path + "," + paste + "," + sig + ");");
+        IEntity parent = goUpToLast(e,path);
+        IEntity et = goLast(parent,path);
+        if (parent == null) et = e; 
+        if (et == null)
+        {
+            failMsg("Paste failed: Unable to evaluate address!");
+            return e;
+        }
+        if (et instanceof ITag)
+        {
+            parent = et;
+            et = ((ITag) et).target();
+        }
+        IEntity replacement = unify(et,paste,sig);
+        if (replacement != null)
+        {
+            successMsg("Unifying paste successful.");
+            if (parent == null) return replacement;
+            replace(parent,et,replacement);
+        }
+        return e;
+    }
 	
 	private static void replace(IEntity parent, IEntity e, IEntity replacement)
 	{
