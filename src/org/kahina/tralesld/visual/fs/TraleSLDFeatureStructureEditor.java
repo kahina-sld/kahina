@@ -586,7 +586,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(copyGrisu, TraleSLDFeatureEditEvent.COPY_FS));
 			}		
 		}
-		else if (command.equals("Paste"))
+		else if (command.equals("replPaste"))
 		{
 			IEntity pasteStruct = prepareStructure(bufferedStructure);
 			if (pasteStruct == null)
@@ -595,13 +595,29 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			}
 			else
 			{
-				//TODO: check whether types are compatible
-				//TODO: find out about weird behavior, and why the second option leads to parse errors	
-				//contextBlock.setModel((IEntity) toCopyData.getModel());
-				contextAttrModel.setValue(pasteStruct);
-				reconvert();
+				IEntity res = GraleJUtility.replacePaste((IEntity) data.getModel(), contextPath, pasteStruct, sig);
+                if (res != null)
+                {
+                    reconvert(res);
+                }
 			}
 		}
+        else if (command.equals("unifPaste"))
+        {
+            IEntity pasteStruct = prepareStructure(bufferedStructure);
+            if (pasteStruct == null)
+            {
+                failureMessage("Paste failed: GRISU string could not be parsed.");
+            }
+            else
+            {
+                IEntity res = GraleJUtility.unifyPaste((IEntity) data.getModel(), contextPath, pasteStruct, sig);
+                if (res != null)
+                {
+                    reconvert(res);
+                }
+            }
+        }
 		else if (command.startsWith("spe:"))
 		{
 			String tau = command.substring(4);
