@@ -643,14 +643,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			}
 			else 
 			{
-				IEntity res;
+				IEntity res = GraleJUtility.specialize((IEntity) data.getModel(), contextPath, tau, sig);
 				if (editingMode == TTF_MODE)
 				{
-					res = GraleJUtility.specializeTTF((IEntity) data.getModel(), contextPath, tau, sig);
-				}
-				else
-				{
-					res = GraleJUtility.specialize((IEntity) data.getModel(), contextPath, tau, sig);
+					GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
 				}
 				reconvert(res);
 			}
@@ -658,28 +654,22 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.startsWith("gen:"))
 		{
 			String tau = command.substring(4);
+            IEntity res = GraleJUtility.generalize((IEntity) data.getModel(), contextPath, tau, sig);
 			if (editingMode == TTF_MODE)
 			{
-				GraleJUtility.generalizeTTF((IEntity) data.getModel(), contextPath, tau, sig);
+                GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
 			}
-			else
-			{
-				GraleJUtility.generalize((IEntity) data.getModel(), contextPath, tau, sig);
-			}
-			reconvert();
+			reconvert(res);
 		}
 		else if (command.startsWith("swi:"))
 		{
 			String tau = command.substring(4);
+            IEntity res = GraleJUtility.switchType((IEntity) data.getModel(), contextPath, tau, sig);
 			if (editingMode == TTF_MODE)
 			{
-				GraleJUtility.switchTTF((IEntity) data.getModel(), contextPath, tau, sig);
+                GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
 			}
-			else
-			{
-				GraleJUtility.switchType((IEntity) data.getModel(), contextPath, tau, sig);
-			}
-			reconvert();
+			reconvert(res);
 		}
 		else if (command.startsWith("fea:"))
 		{

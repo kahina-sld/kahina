@@ -205,7 +205,7 @@ public class GraleJUtility
 		return e;
 	}
 	
-	public static IEntity specializeTTF(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
+	/*public static IEntity specializeTTF(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
 	{
 		e = specialize(e,path,ty,sig);
 		IEntity et = go(e,path);
@@ -278,9 +278,9 @@ public class GraleJUtility
 			failMsg("TTF type switch failed: not a typed feature structure!");
 		}
 		return e;
-	}
+	}*/
 	
-	private static void enforceTTF(ITypedFeatureStructure fs, TraleSLDSignature sig)
+	/*public static void ttf(ITypedFeatureStructure fs, TraleSLDSignature sig)
 	{
 		Map<String,String> appropFeats = sig.getTypeRestrictions(getType(fs));
 		List<String> appropFeatsList = new LinkedList<String>();
@@ -300,12 +300,107 @@ public class GraleJUtility
 				fs.addFeatureValue(ent.newFeatVal(feat, signatureMGS(appropFeats.get(feat), sig)));
 			}
 		}
-		//remove superfluous features
-		for (IFeatureValuePair fv : featureMap.values())
-		{
-			fs.featureValuePairs().remove(fv);
-		}
-	}
+        //remove superfluous features
+        for (IFeatureValuePair fv : featureMap.values())
+        {
+            fs.featureValuePairs().remove(fv);
+        }
+	}*/
+    
+    public static void ttf(IEntity fs, TraleSLDSignature sig)
+    {
+        purge(fs,sig);
+        fill(fs,sig);
+        typInf(fs,sig);
+    }
+    
+    public static void purge(IEntity e, TraleSLDSignature sig)
+    {
+        if (e instanceof ITypedFeatureStructure)
+        {
+            ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+            Map<String,String> appropFeats = sig.getTypeRestrictions(getType(fs));
+            Map<String,IFeatureValuePair> featureMap = new HashMap<String,IFeatureValuePair>();
+            for (IFeatureValuePair pair : fs.featureValuePairs())
+            {
+                featureMap.put(pair.feature(), pair);
+            }
+            for (IFeatureValuePair fv : featureMap.values())
+            {
+                if (appropFeats.get(fv.feature()) == null)
+                {
+                    fs.featureValuePairs().remove(fv);
+                }
+                else
+                {
+                    purge(fv.value(),sig);
+                }
+            }
+        }
+    }
+    
+    public static void typInf(IEntity e, TraleSLDSignature sig)
+    {
+        if (e instanceof ITypedFeatureStructure)
+        {
+            ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+            Map<String,String> appropFeats = sig.getTypeRestrictions(getType(fs));
+            List<String> appropFeatsList = new LinkedList<String>();
+            appropFeatsList.addAll(appropFeats.keySet());
+            Collections.sort(appropFeatsList);
+            Map<String,IFeatureValuePair> featureMap = new HashMap<String,IFeatureValuePair>();
+            for (IFeatureValuePair pair : fs.featureValuePairs())
+            {
+                featureMap.put(pair.feature(), pair);
+            }
+            for (String feat : appropFeatsList)
+            {
+                IFeatureValuePair fv = featureMap.get(feat);
+                if (fv != null)
+                {
+                    if (!sig.dominates(appropFeats.get(feat),getType(fv.value())))
+                    {
+                        List<String> path = new LinkedList<String>();
+                        path.add(feat);
+                        specialize(e,path,appropFeats.get(feat),sig);
+                    }
+                    typInf(fv.value(),sig);
+                }
+            }
+        }
+    }
+    
+    public static void fill(IEntity e, TraleSLDSignature sig)
+    {
+        if (e instanceof ITypedFeatureStructure)
+        {
+            ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+            Map<String,String> appropFeats = sig.getTypeRestrictions(getType(fs));
+            List<String> appropFeatsList = new LinkedList<String>();
+            appropFeatsList.addAll(appropFeats.keySet());
+            Collections.sort(appropFeatsList);
+            Map<String,IFeatureValuePair> featureMap = new HashMap<String,IFeatureValuePair>();
+            for (IFeatureValuePair pair : fs.featureValuePairs())
+            {
+                featureMap.put(pair.feature(), pair);
+            }
+            for (String feat : appropFeatsList)
+            {
+                IFeatureValuePair fv = featureMap.get(feat);
+                IEntity value;
+                if (fv == null)
+                {
+                    value =  ent.newTFS(appropFeats.get(feat));
+                    fs.addFeatureValue(ent.newFeatVal(feat,value));
+                }
+                else
+                {
+                    value = fv.value();
+                    fill(value,sig);
+                }
+            }
+        }
+    }
 	
 	public static IEntity introFeat(IEntity e, List<String> path, String feat, IEntity val, TraleSLDSignature sig)
 	{
