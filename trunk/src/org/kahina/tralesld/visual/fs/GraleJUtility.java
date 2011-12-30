@@ -2,10 +2,12 @@ package org.kahina.tralesld.visual.fs;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
@@ -862,10 +864,17 @@ public class GraleJUtility
 			failMsg("Unification failed: types " + type1 + " and " + type2 + " are incompatible.");
 			return null;
 		}
+        //horribly slow, but improvement would need specialized data structures
 		Map<String,IEntity> featVals1 = featValMap(tfs1);
 		Map<String,IEntity> featVals2 = featValMap(tfs2);
 		Map<String,IEntity> unifFeatVals = new HashMap<String,IEntity>();
-		for (String feat : sig.getAppropriateness(unifType).keySet())
+        Set<String> featSet = new HashSet<String>();
+        featSet.addAll(featVals1.keySet());
+        featSet.addAll(featVals2.keySet());
+        List<String> featList = new LinkedList<String>();
+        featList.addAll(featSet);
+        Collections.sort(featList);
+		for (String feat : featList)
 		{
 			IEntity ent1 = featVals1.get(feat);
 			IEntity ent2 = featVals2.get(feat);
@@ -889,9 +898,6 @@ public class GraleJUtility
 				unifFeatVals.put(feat, res);
 			}
 		}
-		List<String> featList = new LinkedList<String>();
-		featList.addAll(unifFeatVals.keySet());
-		Collections.sort(featList);
 		List<IFeatureValuePair> unifFeatVal = new LinkedList<IFeatureValuePair>();
 		for (String feat : featList)
 		{
