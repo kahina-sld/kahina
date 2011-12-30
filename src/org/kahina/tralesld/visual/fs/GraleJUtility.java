@@ -22,7 +22,7 @@ import gralej.parsers.ParseException;
 
 public class GraleJUtility 
 {
-	static EntityFactory ent = EntityFactory.getInstance();
+	static EntityFactory ef = EntityFactory.getInstance();
 	static TraleSLDFeatureStructureEditor editor = null;
 	
 	public static void setFeatureStructureEditor(TraleSLDFeatureStructureEditor e)
@@ -52,10 +52,10 @@ public class GraleJUtility
 				{
 					parent = ((ITag) parent).target();
 				}
-				IList list = ent.newList();
+				IList list = ef.newList();
 				if (ty.equals("ne_list"))
 				{
-					list.append(signatureMGS("bot", sig));
+					list.append(ef.newTFS("bot"));
 				}
 				successMsg("List specialization successful!");
 				if (parent == null) return list;
@@ -153,7 +153,7 @@ public class GraleJUtility
 		}
 		if (et instanceof ITypedFeatureStructure)
 		{
-			IAny replacement = ent.newAny(newName);
+			IAny replacement = ef.newAny(newName);
 			successMsg("Atom change successful!");
 			if (parent == null) return replacement;
 			replace(parent,et,replacement);
@@ -187,7 +187,7 @@ public class GraleJUtility
 		}
 		if (et instanceof IAny)
 		{
-			ITypedFeatureStructure replacement = ent.newTFS("bot");
+			ITypedFeatureStructure replacement = ef.newTFS("bot");
 			successMsg("Atom generalization successful!");
 			if (parent == null) return replacement;
 			replace(parent,et,replacement);
@@ -197,7 +197,7 @@ public class GraleJUtility
 		{
 			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
 			fs.featureValuePairs().clear();
-			fs.setType(ent.newType("bot"));
+			fs.setType(ef.newType("bot"));
 			successMsg("Atom generalization successful!");
 			return e;
 		}
@@ -412,8 +412,23 @@ public class GraleJUtility
                 IEntity value;
                 if (fv == null)
                 {
-                    value =  ent.newTFS(appropFeats.get(feat));
-                    fs.addFeatureValue(ent.newFeatVal(feat,value));
+                    String type = appropFeats.get(feat);
+
+                    if (type.equals("e_list"))
+                    {
+                        value = ef.newList();
+                    }
+                    else if (type.equals("ne_list"))
+                    {
+                        IList list = ef.newList();
+                        list.append(ef.newTFS("bot"));
+                        value = list;
+                    }
+                    else
+                    {
+                        value =  ef.newTFS(type);
+                    }
+                    fs.addFeatureValue(ef.newFeatVal(feat,value));
                 }
                 else
                 {
@@ -450,13 +465,13 @@ public class GraleJUtility
 			parent = et;
 			et = ((ITag) et).target();
 		}
-		IFeatureValuePair fv = ent.newFeatVal(feat, val); 
+		IFeatureValuePair fv = ef.newFeatVal(feat, val); 
 		if (et instanceof IType)
 		{
 			List<IFeatureValuePair> fvList = new LinkedList<IFeatureValuePair>();
 			fvList.add(fv);
 			IType type = (IType) et;
-			ITypedFeatureStructure replacement = ent.newTFS(type, fvList);
+			ITypedFeatureStructure replacement = ef.newTFS(type, fvList);
 			successMsg("Feature introduction successful!");
 			if (parent == null) return replacement;
 			replace(parent,et,replacement);
@@ -515,7 +530,7 @@ public class GraleJUtility
 			failMsg("Feature reset failed: Unable to evaluate addresses!");
 			return e;
 		}
-		IEntity replacement = signatureMGS(getType(et), sig);
+		IEntity replacement = ef.newTFS(getType(et));
 		replace(parent,et,replacement);
 		successMsg("Feature reset successful!");
 		return e;
@@ -590,7 +605,7 @@ public class GraleJUtility
 			failMsg("List manipulation failed: No list at this address!");
 			return e;
 		}
-		IEntity newElement = signatureMGS("bot",sig);
+		IEntity newElement = ef.newTFS("bot");
 		IList list = (IList) ent;
 		List<IEntity> listEl = new LinkedList<IEntity>();
 		for (IEntity el : list.elements())
@@ -670,7 +685,7 @@ public class GraleJUtility
 	
 	public static IEntity newAtom(String name)
 	{
-		return ent.newAny(name);
+		return ef.newAny(name);
 	}
 	
 	public static IEntity makeIdent(IEntity e, List<String> path1, List<String> path2, TraleSLDSignature sig)
@@ -698,8 +713,8 @@ public class GraleJUtility
 		if (mgu == null) return null;
 		Map<Integer,List<List<String>>> identities = getIdentities(e);
 		int number = getFreeTagID(identities);
-		replace(parent1,ent1,ent.newTag(number,mgu));
-		replace(parent2,ent2,ent.newTag(number,mgu));
+		replace(parent1,ent1,ef.newTag(number,mgu));
+		replace(parent2,ent2,ef.newTag(number,mgu));
 		if (contractTags(e, parent1) && contractTags(e, parent2))
 		{
 			successMsg("Identity introduction successful!");
@@ -797,7 +812,7 @@ public class GraleJUtility
 			IEntity res = unify(((ITag) e1).target(),e2, sig);
 			if (res != null)
 			{
-				return ent.newTag(((ITag) e1).number(), res);
+				return ef.newTag(((ITag) e1).number(), res);
 			}
 			else
 			{
@@ -809,7 +824,7 @@ public class GraleJUtility
 			IEntity res = unify(((ITag) e2).target(),e1, sig);
 			if (res != null)
 			{
-				return ent.newTag(((ITag) e2).number(), res);
+				return ef.newTag(((ITag) e2).number(), res);
 			}
 			else
 			{
@@ -848,18 +863,12 @@ public class GraleJUtility
 		{
 			IEntity ent1 = featVals1.get(feat);
 			IEntity ent2 = featVals2.get(feat);
-			if (ent1 == null && ent2 == null)
+			if (ent2 == null)
 			{
-				unifFeatVals.put(feat, signatureMGS(sig.getAppropriateValueType(unifType,feat), sig));
-			}
-			else if (ent2 == null)
-			{
-				//TODO: enforce type restriction if necessary (via TTF specialization)
 				unifFeatVals.put(feat, ent1);
 			}
 			else if (ent1 == null)
 			{
-				//TODO: enforce type restriction if necessary (via TTF specialization)
 				unifFeatVals.put(feat, ent2);
 			}
 			else
@@ -876,14 +885,14 @@ public class GraleJUtility
 		List<IFeatureValuePair> unifFeatVal = new LinkedList<IFeatureValuePair>();
 		for (String feat : featList)
 		{
-			unifFeatVal.add(ent.newFeatVal(feat, unifFeatVals.get(feat)));
+			unifFeatVal.add(ef.newFeatVal(feat, unifFeatVals.get(feat)));
 		}
-		return ent.newTFS(unifType, unifFeatVal);
+		return ef.newTFS(unifType, unifFeatVal);
 	}
 	
 	private static IEntity unify(IList l1, IList l2, TraleSLDSignature sig)
 	{
-		IList resultList = ent.newList();
+		IList resultList = ef.newList();
 		List<IEntity> ents1 = new LinkedList<IEntity>();
 		int i = 0;
 		for (IEntity ent2 : l2.elements())
@@ -917,7 +926,7 @@ public class GraleJUtility
 		int number2 = ((ITag) t2).number();
 		int newNumber = number1;
 		if (number2 < number1) newNumber = number2;
-		return ent.newTag(newNumber,res);
+		return ef.newTag(newNumber,res);
 	}
 	
 	private static Map<String,IEntity> featValMap(ITypedFeatureStructure fs)
@@ -1270,31 +1279,23 @@ public class GraleJUtility
 	{
 		if (!sig.getTypes().contains(type))
 		{
-			return ent.newType("mgsat(" + type + ")");
+			return ef.newType("mgsat(" + type + ")");
 		}
 		IEntity struct;
 		if (type.equals("e_list"))
 		{
-			struct = ent.newList();
+			struct = ef.newList();
 		}
 		else if (type.equals("ne_list"))
 		{
-			IList list = ent.newList();
-			list.append(ent.newTFS("bot"));
+			IList list = ef.newList();
+			list.append(ef.newTFS("bot"));
 			struct = list;
 		}
 		else
 		{
-			List<IFeatureValuePair> fvList = new LinkedList<IFeatureValuePair>();
-			Map<String,String> appropFeats = sig.getTypeRestrictions(type);
-			List<String> appropFeatsList = new LinkedList<String>();
-			appropFeatsList.addAll(appropFeats.keySet());
-			Collections.sort(appropFeatsList);
-			for (String feat : appropFeatsList)
-			{
-				fvList.add(ent.newFeatVal(feat, signatureMGS(appropFeats.get(feat), sig)));
-			}
-			struct = ent.newTFS(type,fvList);
+			struct = ef.newTFS(type);
+            ttf(struct,sig);
 		}
 		return struct;
 	}
