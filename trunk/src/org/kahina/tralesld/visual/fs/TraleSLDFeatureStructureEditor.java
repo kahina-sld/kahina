@@ -598,6 +598,14 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				IEntity res = GraleJUtility.replacePaste((IEntity) data.getModel(), contextPath, pasteStruct, sig);
                 if (res != null)
                 {
+                    if (editingMode == TTF_MODE)
+                    {
+                        GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
+                    }
+                    else if (editingMode == TF_MODE)
+                    {
+                        GraleJUtility.tf((ITypedFeatureStructure) res,sig);
+                    }
                     reconvert(res);
                 }
 			}
@@ -614,6 +622,14 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
                 IEntity res = GraleJUtility.unifyPaste((IEntity) data.getModel(), contextPath, pasteStruct, sig);
                 if (res != null)
                 {
+                    if (editingMode == TTF_MODE)
+                    {
+                        GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
+                    }
+                    else if (editingMode == TF_MODE)
+                    {
+                        GraleJUtility.tf((ITypedFeatureStructure) res,sig);
+                    }
                     reconvert(res);
                 }
             }
@@ -648,6 +664,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				{
 					GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
 				}
+                else if (editingMode == TF_MODE)
+                {
+                    GraleJUtility.tf((ITypedFeatureStructure) res,sig);
+                }
 				reconvert(res);
 			}
 		}
@@ -659,6 +679,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			{
                 GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
 			}
+            else if (editingMode == TF_MODE)
+            {
+                GraleJUtility.tf((ITypedFeatureStructure) res,sig);
+            }
 			reconvert(res);
 		}
 		else if (command.startsWith("swi:"))
@@ -669,6 +693,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			{
                 GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
 			}
+            else if (editingMode == TF_MODE)
+            {
+                GraleJUtility.tf((ITypedFeatureStructure) res,sig);
+            }
 			reconvert(res);
 		}
 		else if (command.startsWith("fea:"))
@@ -677,6 +705,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			String parentType = contextParentStructureType;
 			IEntity mgs = GraleJUtility.signatureMGS(sig.getAppropriateValueType(parentType, f), sig);
 			IEntity result = GraleJUtility.introFeat((IEntity) data.getModel(), contextPath, f, mgs, sig);
+            if (editingMode == TF_MODE)
+            {
+                GraleJUtility.tf((ITypedFeatureStructure) result,sig);
+            }
 			reconvert(result);
 		}
 		else if (command.equals("Remove"))
@@ -688,13 +720,29 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.equals("Reset"))
 		{
 			String feat = ((IFeatureValuePair) contextStructure).feature(); 
-			GraleJUtility.resetFeat((IEntity) data.getModel(), contextPath, feat, sig);
-			reconvert();
+			IEntity res = GraleJUtility.resetFeat((IEntity) data.getModel(), contextPath, feat, sig);
+            if (editingMode == TTF_MODE)
+            {
+                GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
+            }
+            else if (editingMode == TF_MODE)
+            {
+                GraleJUtility.tf((ITypedFeatureStructure) res,sig);
+            }
+			reconvert(res);
 		}
 		else if (command.equals("Dissolve"))
 		{
-			GraleJUtility.remIdent((IEntity) data.getModel(), contextPath);
-			reconvert();
+            IEntity res = GraleJUtility.remIdent((IEntity) data.getModel(), contextPath);
+            if (editingMode == TTF_MODE)
+            {
+                GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
+            }
+            else if (editingMode == TF_MODE)
+            {
+                GraleJUtility.tf((ITypedFeatureStructure) res,sig);
+            }
+			reconvert(res);
 		}
 		else if (command.equals("Begin"))
 		{
@@ -703,10 +751,18 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else if (command.equals("Identity"))
 		{
-			IEntity result = GraleJUtility.makeIdent((IEntity) data.getModel(), cachedPath, contextPath, sig);
-			if (result != null)
+			IEntity res = GraleJUtility.makeIdent((IEntity) data.getModel(), cachedPath, contextPath, sig);
+			if (res != null)
 			{
-				reconvert();
+                if (editingMode == TTF_MODE)
+                {
+                    GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
+                }
+                else if (editingMode == TF_MODE)
+                {
+                    GraleJUtility.tf((ITypedFeatureStructure) res,sig);
+                }
+				reconvert(res);
 			}
 			identityMode = false;
 		}
