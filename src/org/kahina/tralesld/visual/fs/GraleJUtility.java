@@ -307,6 +307,12 @@ public class GraleJUtility
         }
 	}*/
     
+    public static void tf(IEntity fs, TraleSLDSignature sig)
+    {
+        purge(fs,sig);
+        typInf(fs,sig);
+    }
+    
     public static void ttf(IEntity fs, TraleSLDSignature sig)
     {
         purge(fs,sig);
@@ -863,7 +869,11 @@ public class GraleJUtility
 		{
 			IEntity ent1 = featVals1.get(feat);
 			IEntity ent2 = featVals2.get(feat);
-			if (ent2 == null)
+            if (ent1 == null && ent2 == null)
+            {
+                //do nothing
+            }
+            else if (ent2 == null)
 			{
 				unifFeatVals.put(feat, ent1);
 			}

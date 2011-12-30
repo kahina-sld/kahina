@@ -1,6 +1,7 @@
 package org.kahina.tralesld.visual.workbench;
 
 import gralej.om.IEntity;
+import gralej.om.ITypedFeatureStructure;
 import gralej.parsers.EntityFactory;
 
 import java.awt.Color;
@@ -669,6 +670,14 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 				IEntity mgu = GraleJUtility.unify(ent1, ent2, view.getModel().getSignature());
 				if (mgu != null)
 				{
+                    if (editor.getEditingMode() == TraleSLDFeatureStructureEditor.TTF_MODE)
+                    {
+                        GraleJUtility.ttf((ITypedFeatureStructure) mgu,view.getModel().getSignature());
+                    }
+                    else if (editor.getEditingMode() == TraleSLDFeatureStructureEditor.TF_MODE)
+                    {
+                        GraleJUtility.tf((ITypedFeatureStructure) mgu,view.getModel().getSignature());
+                    }
 					view.getModel().storeStructure("mgu(" + name1 + "," + name2 + ")", GraleJUtility.convertGraleJToGrisu(mgu));
 					this.processEvent(new TraleSLDFeatureEditEvent("MGU computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 	    			updateDisplay();
