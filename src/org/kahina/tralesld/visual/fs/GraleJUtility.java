@@ -337,6 +337,17 @@ public class GraleJUtility
                 }
             }
         }
+        else if (e instanceof ITag)
+        {
+            purge(((ITag) e).target(),sig);
+        }
+        else if (e instanceof IList)
+        {
+            for (IEntity ent : ((IList) e).elements())
+            {
+                purge(ent,sig);
+            }
+        }
     }
     
     public static void typInf(IEntity e, TraleSLDSignature sig)
@@ -368,6 +379,17 @@ public class GraleJUtility
                 }
             }
         }
+        else if (e instanceof ITag)
+        {
+            typInf(((ITag) e).target(),sig);
+        }
+        else if (e instanceof IList)
+        {
+            for (IEntity ent : ((IList) e).elements())
+            {
+                typInf(ent,sig);
+            }
+        }
     }
     
     public static void fill(IEntity e, TraleSLDSignature sig)
@@ -396,8 +418,19 @@ public class GraleJUtility
                 else
                 {
                     value = fv.value();
-                    fill(value,sig);
                 }
+                fill(value,sig);
+            }
+        }
+        else if (e instanceof ITag)
+        {
+            fill(((ITag) e).target(),sig);
+        }
+        else if (e instanceof IList)
+        {
+            for (IEntity ent : ((IList) e).elements())
+            {
+                fill(ent,sig);
             }
         }
     }
