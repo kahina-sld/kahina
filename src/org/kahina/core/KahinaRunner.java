@@ -87,4 +87,9 @@ public class KahinaRunner // TODO get rid of this class, make everything non-sta
 	{
 		return guiController;
 	}
+
+	public static boolean isInitialized()
+	{
+		return control != null;
+	}
 }

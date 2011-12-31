@@ -1,28 +1,25 @@
 package org.kahina.core.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
+import java.awt.Component;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.TitledBorder;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaRunner;
+import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.event.KahinaWindowEvent;
 import org.kahina.core.event.KahinaWindowEventType;
 
 public class KahinaWindow extends JFrame implements WindowListener, ComponentListener
 {
 	private static final long serialVersionUID = 6613805267152521669L; 
-    private static final boolean verbose = false; 
+    private static final boolean VERBOSE = false; 
     
     private static int idCounter = 0;
     
@@ -71,7 +68,46 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
         this.addWindowListener(this);
         this.addComponentListener(this);
         wm.registerWindow(this);
+        
+        // Send a Quit system event when the main window or a window containing
+        // it is closed.
+        addWindowListener(new WindowAdapter()
+        {
+
+			@Override
+			public void windowClosing(WindowEvent e)
+			{
+				System.err.println("Trying... " + KahinaRunner.isInitialized());
+				if (KahinaRunner.isInitialized() && containsMainWindow())
+				{
+					System.err.println("...and succeeding.");
+					KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));					
+				}
+			}
+			
+		});
     }
+
+	private boolean containsMainWindow()
+	{
+		if (this instanceof KahinaMainWindow)
+		{
+			return true;
+		}
+		
+		for (Component component : getComponents())
+		{
+			if (component instanceof KahinaWindow)
+			{
+				if (((KahinaWindow) component).containsMainWindow())
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
     
     public int getID()
     {
