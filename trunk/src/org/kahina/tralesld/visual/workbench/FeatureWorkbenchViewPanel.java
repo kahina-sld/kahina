@@ -667,7 +667,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 			IEntity ent2 = GraleJUtility.grisuToGraleJ(grisu2);
 			if (ent1 != null && ent2 != null)
 			{
-				IEntity mgu = GraleJUtility.unify(ent1, ent2, view.getModel().getSignature());
+				IEntity mgu = GraleJUtility.unify(ent1, ent2, new LinkedList<String>(), new LinkedList<String>(), view.getModel().getSignature());
 				if (mgu != null)
 				{
                     if (editor.getEditingMode() == TraleSLDFeatureStructureEditor.TTF_MODE)
