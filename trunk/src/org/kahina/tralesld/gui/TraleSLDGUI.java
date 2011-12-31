@@ -233,9 +233,9 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	};
 
 	@Override
-	protected void processEvent(KahinaDialogEvent e)
+	protected void processDialogEvent(KahinaDialogEvent e)
 	{
-		super.processEvent(e);
+		super.processDialogEvent(e);
 		int type = e.getDialogEventType();
 
 		if (type == KahinaDialogEvent.COMPILE)

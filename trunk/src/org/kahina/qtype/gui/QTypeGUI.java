@@ -69,9 +69,9 @@ public class QTypeGUI extends SICStusPrologGUI
 	
 	@Override
 	// TODO factor this code out into helper class, the code used in TraleSLDGUI is almost identical.
-	protected void processEvent(KahinaDialogEvent e)
+	protected void processDialogEvent(KahinaDialogEvent e)
 	{
-		super.processEvent(e);
+		super.processDialogEvent(e);
 		int type = e.getDialogEventType();
 
 		if (type == KahinaDialogEvent.COMPILE)

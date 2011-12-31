@@ -224,7 +224,7 @@ public class KahinaGUI implements KahinaListener
 		} 
 		else if (e instanceof KahinaDialogEvent)
 		{
-			processEvent((KahinaDialogEvent) e);
+			processDialogEvent((KahinaDialogEvent) e);
 		} 
 		else if (e instanceof KahinaControlEvent)
 		{
@@ -273,7 +273,7 @@ public class KahinaGUI implements KahinaListener
 		}
 	}
 
-	protected void processEvent(KahinaDialogEvent e)
+	protected void processDialogEvent(KahinaDialogEvent e)
 	{
 		switch (e.getDialogEventType())
 		{
