@@ -1,11 +1,5 @@
 package org.kahina.tralesld.gui;
 
-import org.kahina.core.KahinaInstance;
-import org.kahina.core.control.KahinaController;
-import org.kahina.core.gui.KahinaBreakpointMenu;
-import org.kahina.core.gui.KahinaMainWindow;
-import org.kahina.core.gui.KahinaWindowManager;
-import org.kahina.core.gui.profiler.KahinaProfilerMenu;
 import org.kahina.lp.gui.LogicProgrammingMainWindow;
 
 public class TraleSLDMainWindow extends LogicProgrammingMainWindow

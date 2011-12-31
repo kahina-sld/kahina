@@ -951,6 +951,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				bridgeState = 's';
 			}
+		} else if (command.equals("abort"))
+		{
+			bridgeState = 'a';
 		}
 	}
 

@@ -64,7 +64,7 @@ public class AuxiliaryTraleInstance extends Thread
 			{
 				sp = new SICStus();
 			}
-		    sp.load("/opt/trale-wb/startup.pl");
+			sp.load(System.getenv("TRALE_HOME") + "/startup.pl");
 		    //compileTrivialGrammar();
 		    while (true)
 		    {
