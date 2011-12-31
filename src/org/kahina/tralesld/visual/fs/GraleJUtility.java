@@ -24,6 +24,7 @@ import gralej.parsers.ParseException;
 
 public class GraleJUtility 
 {
+    static boolean verbose = false;
 	static EntityFactory ef = EntityFactory.getInstance();
 	static TraleSLDFeatureStructureEditor editor = null;
 	
@@ -791,6 +792,8 @@ public class GraleJUtility
 	
 	public static IEntity unify(IEntity e1, IEntity e2, TraleSLDSignature sig)
 	{
+        if (verbose) System.err.print("e1  : " + convertGraleJToGrisu(e1));
+        if (verbose) System.err.print("e2  : " + convertGraleJToGrisu(((ITag) e2).target()));
 		if (e1 instanceof ITypedFeatureStructure && e2 instanceof ITypedFeatureStructure)
 		{
 			return unify((ITypedFeatureStructure) e1, (ITypedFeatureStructure) e2, sig);
@@ -818,6 +821,7 @@ public class GraleJUtility
 		else if (e1 instanceof ITag)
 		{
 			IEntity res = unify(((ITag) e1).target(),e2, sig);
+            if (verbose) System.err.println("unif: " + convertGraleJToGrisu(res));
 			if (res != null)
 			{
 				return ef.newTag(((ITag) e1).number(), res);
@@ -830,9 +834,10 @@ public class GraleJUtility
 		else if (e2 instanceof ITag)
 		{
 			IEntity res = unify(((ITag) e2).target(),e1, sig);
+            if (verbose) System.err.println("unif: " + convertGraleJToGrisu(res));
 			if (res != null)
 			{
-				return ef.newTag(((ITag) e2).number(), res);
+                return ef.newTag(((ITag) e2).number(), res);
 			}
 			else
 			{
@@ -876,6 +881,7 @@ public class GraleJUtility
         Collections.sort(featList);
 		for (String feat : featList)
 		{
+            //PROBLEM: this includes parallel modifications caused by reentrancies
 			IEntity ent1 = featVals1.get(feat);
 			IEntity ent2 = featVals2.get(feat);
             if (ent1 == null && ent2 == null)
@@ -903,7 +909,9 @@ public class GraleJUtility
 		{
 			unifFeatVal.add(ef.newFeatVal(feat, unifFeatVals.get(feat)));
 		}
-		return ef.newTFS(unifType, unifFeatVal);
+		IEntity result = ef.newTFS(unifType, unifFeatVal);
+        if (verbose) System.err.println("unif: " + convertGraleJToGrisu(result));
+        return result;
 	}
 	
 	private static IEntity unify(IList l1, IList l2, TraleSLDSignature sig)
@@ -930,6 +938,7 @@ public class GraleJUtility
 			resultList.append(ents1.get(i));
 			i++;
 		}
+        if (verbose) System.err.println("unif: " + convertGraleJToGrisu(resultList));
 		return resultList;
 	}
 	
@@ -942,7 +951,9 @@ public class GraleJUtility
 		int number2 = ((ITag) t2).number();
 		int newNumber = number1;
 		if (number2 < number1) newNumber = number2;
-		return ef.newTag(newNumber,res);
+		IEntity result = ef.newTag(newNumber,res);
+        if (verbose) System.err.println("unif: " + convertGraleJToGrisu(result));
+        return result;
 	}
 	
 	private static Map<String,IEntity> featValMap(ITypedFeatureStructure fs)
