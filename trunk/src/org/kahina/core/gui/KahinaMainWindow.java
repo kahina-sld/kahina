@@ -60,15 +60,6 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		wm.control.registerListener(KahinaEventTypes.SYSTEM, this);
 		wm.control.registerListener(KahinaEventTypes.SESSION, this);
-		this.addWindowListener(new WindowAdapter()
-		{
-			@Override
-			public void windowClosing(WindowEvent e)
-			{
-				KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
-			}
-
-		});
 	}
 
 	public void setSize(int width, int height)
