@@ -1139,6 +1139,7 @@ public class GraleJUtility
     {
         if (e1 == e2)
         {
+            //degenerate case: just one structure, no alpha-conversion necessary
             return getIdentities(e1);
         }
         else
@@ -1147,6 +1148,8 @@ public class GraleJUtility
             Map<Integer,List<List<String>>> identities2 = getIdentities(e2);
             Map<Integer,List<List<String>>> commonIdentities = new HashMap<Integer,List<List<String>>>();
             //TODO: perform alpha conversion, construct common path identity table
+            int nextFreeID = 0;
+            //systematically determine clashes -> rename reentrancies in identities2 to fresh symbol
             return commonIdentities;
         }
     }
