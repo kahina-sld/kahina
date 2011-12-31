@@ -103,9 +103,9 @@ public class LogicProgrammingGUI extends KahinaGUI
 	}
 
 	@Override
-	protected void processEvent(KahinaDialogEvent e)
+	protected void processDialogEvent(KahinaDialogEvent e)
 	{
-		super.processEvent(e);
+		super.processDialogEvent(e);
 		switch (e.getDialogEventType())
 		{
 			case KahinaDialogEvent.PRIMARY_BREAKPOINTS:
