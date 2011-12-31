@@ -24,7 +24,7 @@ import gralej.parsers.ParseException;
 
 public class GraleJUtility 
 {
-    static boolean verbose = false;
+    static boolean verbose = true;
 	static EntityFactory ef = EntityFactory.getInstance();
 	static TraleSLDFeatureStructureEditor editor = null;
 	
