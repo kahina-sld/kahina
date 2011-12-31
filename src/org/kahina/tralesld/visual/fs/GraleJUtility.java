@@ -24,7 +24,7 @@ import gralej.parsers.ParseException;
 
 public class GraleJUtility 
 {
-    static boolean verbose = true;
+    static boolean verbose = false;
 	static EntityFactory ef = EntityFactory.getInstance();
 	static TraleSLDFeatureStructureEditor editor = null;
 	
@@ -207,108 +207,6 @@ public class GraleJUtility
 		failMsg("Atom generalization failed: not possible in context " + et + ".");
 		return e;
 	}
-	
-	/*public static IEntity specializeTTF(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
-	{
-		e = specialize(e,path,ty,sig);
-		IEntity et = go(e,path);
-		if (et == null)
-		{
-			failMsg("TTF specialization failed: Unable to evaluate address!");
-			return e;
-		}
-		if (et instanceof ITag)
-		{
-			et = ((ITag) et).target();
-		}
-		if (et instanceof ITypedFeatureStructure)
-		{
-			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
-			enforceTTF(fs,sig);
-		}
-		else if (!(et instanceof IList))
-		{
-			failMsg("TTF specialization failed: not a typed feature structure!");
-		}
-		return e;
-	}
-	
-	public static IEntity generalizeTTF(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
-	{
-		e = generalize(e,path,ty,sig);
-		IEntity et = go(e,path);
-		if (et == null)
-		{
-			failMsg("TTF generalization failed: Unable to evaluate address!");
-			return e;
-		}
-		if (et instanceof ITag)
-		{
-			et = ((ITag) et).target();
-		}
-		if (et instanceof ITypedFeatureStructure)
-		{
-			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
-			enforceTTF(fs,sig);
-		}
-		else
-		{
-			failMsg("TTF generalization failed: not a typed feature structure!");
-		}
-		return e;
-	}
-	
-	public static IEntity switchTTF(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
-	{
-		e = switchType(e,path,ty,sig);
-		IEntity et = go(e,path);
-		if (et == null)
-		{
-			failMsg("TTF type switch failed: Unable to evaluate address!");
-			return e;
-		}
-		if (et instanceof ITag)
-		{
-			et = ((ITag) et).target();
-		}
-		if (et instanceof ITypedFeatureStructure)
-		{
-			ITypedFeatureStructure fs = (ITypedFeatureStructure) et;
-			enforceTTF(fs,sig);
-		}
-		else
-		{
-			failMsg("TTF type switch failed: not a typed feature structure!");
-		}
-		return e;
-	}*/
-	
-	/*public static void ttf(ITypedFeatureStructure fs, TraleSLDSignature sig)
-	{
-		Map<String,String> appropFeats = sig.getTypeRestrictions(getType(fs));
-		List<String> appropFeatsList = new LinkedList<String>();
-		appropFeatsList.addAll(appropFeats.keySet());
-		Collections.sort(appropFeatsList);
-		Map<String,IFeatureValuePair> featureMap = new HashMap<String,IFeatureValuePair>();
-		for (IFeatureValuePair pair : fs.featureValuePairs())
-		{
-			featureMap.put(pair.text(), pair);
-		}
-		//TODO: subsumption check to determine whether feature values are specific enough
-		for (String feat : appropFeatsList)
-		{
-			IFeatureValuePair fv = featureMap.remove(feat);
-			if (fv == null)
-			{
-				fs.addFeatureValue(ent.newFeatVal(feat, signatureMGS(appropFeats.get(feat), sig)));
-			}
-		}
-        //remove superfluous features
-        for (IFeatureValuePair fv : featureMap.values())
-        {
-            fs.featureValuePairs().remove(fv);
-        }
-	}*/
     
     public static void tf(IEntity fs, TraleSLDSignature sig)
     {
@@ -718,9 +616,9 @@ public class GraleJUtility
 			parent2 = ent2;
 			ent2 = ((ITag) ent2).target();
 		}
-		IEntity mgu = unify(ent1,ent2,sig);
+		IEntity mgu = unify(e,e,path1,path2,sig);
 		if (mgu == null) return null;
-		Map<Integer,List<List<String>>> identities = getIdentities(e);
+        Map<Integer,List<List<String>>> identities = getIdentities(e);
 		int number = getFreeTagID(identities);
 		replace(parent1,ent1,ef.newTag(number,mgu));
 		replace(parent2,ent2,ef.newTag(number,mgu));
@@ -789,18 +687,24 @@ public class GraleJUtility
 		}
 		return true;
 	}
+    
+    public static IEntity unify(IEntity e1, IEntity e2, List<String> path1, List<String> path2, TraleSLDSignature sig)
+    {
+        Map<Integer,List<List<String>>> identities = getAlphaConvertedIdentities(e1,e2);
+        return unify(go(e1,path1),go(e2,path2),identities, sig);
+    }
 	
-	public static IEntity unify(IEntity e1, IEntity e2, TraleSLDSignature sig)
+	private static IEntity unify(IEntity e1, IEntity e2, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
 	{
         if (verbose) System.err.print("e1  : " + convertGraleJToGrisu(e1));
         if (verbose) System.err.print("e2  : " + convertGraleJToGrisu(((ITag) e2).target()));
 		if (e1 instanceof ITypedFeatureStructure && e2 instanceof ITypedFeatureStructure)
 		{
-			return unify((ITypedFeatureStructure) e1, (ITypedFeatureStructure) e2, sig);
+			return unify((ITypedFeatureStructure) e1, (ITypedFeatureStructure) e2, identities, sig);
 		}
 		else if (e1 instanceof IList && e2 instanceof IList)
 		{
-			return unify((IList) e1, (IList) e2, sig);
+			return unify((IList) e1, (IList) e2, identities, sig);
 		}
 		else if (e1 instanceof IList && e2 instanceof ITypedFeatureStructure)
 		{
@@ -816,11 +720,11 @@ public class GraleJUtility
 		}
 		else if (e1 instanceof ITag && e2 instanceof ITag)
 		{
-			return unify((ITag) e1, (ITag) e2, sig);
+			return unify((ITag) e1, (ITag) e2, identities, sig);
 		}
 		else if (e1 instanceof ITag)
 		{
-			IEntity res = unify(((ITag) e1).target(),e2, sig);
+			IEntity res = unify(((ITag) e1).target(),e2, identities, sig);
             if (verbose) System.err.println("unif: " + convertGraleJToGrisu(res));
 			if (res != null)
 			{
@@ -833,7 +737,7 @@ public class GraleJUtility
 		}
 		else if (e2 instanceof ITag)
 		{
-			IEntity res = unify(((ITag) e2).target(),e1, sig);
+			IEntity res = unify(((ITag) e2).target(),e1, identities, sig);
             if (verbose) System.err.println("unif: " + convertGraleJToGrisu(res));
 			if (res != null)
 			{
@@ -851,7 +755,7 @@ public class GraleJUtility
 		}
 	}
 	
-	private static IEntity unify(ITypedFeatureStructure tfs1, ITypedFeatureStructure tfs2, TraleSLDSignature sig)
+	private static IEntity unify(ITypedFeatureStructure tfs1, ITypedFeatureStructure tfs2, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
 	{
 		String type1 = getType(tfs1);
 		String type2 = getType(tfs2);
@@ -899,7 +803,7 @@ public class GraleJUtility
 			else
 			{
 				//unification of the two values
-				IEntity res = unify(ent1,ent2,sig);
+				IEntity res = unify(ent1,ent2,identities, sig);
 				if (res == null) return null;
 				unifFeatVals.put(feat, res);
 			}
@@ -914,7 +818,7 @@ public class GraleJUtility
         return result;
 	}
 	
-	private static IEntity unify(IList l1, IList l2, TraleSLDSignature sig)
+	private static IEntity unify(IList l1, IList l2, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
 	{
 		IList resultList = ef.newList();
 		List<IEntity> ents1 = new LinkedList<IEntity>();
@@ -927,7 +831,7 @@ public class GraleJUtility
 			}
 			else
 			{
-				IEntity res = unify(ents1.get(i), ent2, sig);
+				IEntity res = unify(ents1.get(i), ent2, identities, sig);
 				if (res == null) return null;
 				resultList.append(res);
 			}
@@ -942,9 +846,9 @@ public class GraleJUtility
 		return resultList;
 	}
 	
-	private static IEntity unify(ITag t1, ITag t2, TraleSLDSignature sig)
+	private static IEntity unify(ITag t1, ITag t2, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
 	{
-		IEntity res = unify(((ITag) t1).target(), ((ITag) t2).target(), sig);
+		IEntity res = unify(((ITag) t1).target(), ((ITag) t2).target(), identities, sig);
 		if (res == null) return null;
 		//TODO: equate the tag numbers throughout the structure, not only locally
 		int number1 = ((ITag) t1).number();
@@ -1132,7 +1036,7 @@ public class GraleJUtility
             parent = et;
             et = ((ITag) et).target();
         }
-        IEntity replacement = unify(et,paste,sig);
+        IEntity replacement = unify(e,paste,path,new LinkedList<String>(),sig);
         if (replacement != null)
         {
             successMsg("Unifying paste successful.");
@@ -1224,6 +1128,28 @@ public class GraleJUtility
 		}
 		return type;
 	}
+    
+    /**
+     * Performs alpha conversion on two structures, and returns the combined identity information.
+     * @param e1 an IEntity object
+     * @param e2 an IEntity object
+     * @return The path identities in the alpha-converted structures, indexed by tag IDs.
+     */
+    public static Map<Integer,List<List<String>>> getAlphaConvertedIdentities(IEntity e1, IEntity e2)
+    {
+        if (e1 == e2)
+        {
+            return getIdentities(e1);
+        }
+        else
+        {
+            Map<Integer,List<List<String>>> identities1 = getIdentities(e1);
+            Map<Integer,List<List<String>>> identities2 = getIdentities(e2);
+            Map<Integer,List<List<String>>> commonIdentities = new HashMap<Integer,List<List<String>>>();
+            //TODO: perform alpha conversion, construct common path identity table
+            return commonIdentities;
+        }
+    }
 	
 	public static Map<Integer,List<List<String>>> getIdentities(IEntity e)
 	{
