@@ -17,7 +17,7 @@ import org.kahina.core.event.KahinaEvent;
 
 public class KahinaController
 {
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 	
     //map from types to interested listeners
     private HashMap<String,List<KahinaListener>> registry;

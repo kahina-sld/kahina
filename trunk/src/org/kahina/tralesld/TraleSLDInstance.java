@@ -39,6 +39,10 @@ import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
 
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
+	
+	// TODO extract a generic commander superclass from QTypeCommander and move
+	// the command stuff in TraleSLDInstance to a TraleSLDCommander. QTypeCommander
+	// already avoids the ugly hack used below to set the bridge to abort.
 
 	private static final boolean VERBOSE = false;
 
@@ -46,7 +50,6 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	private boolean commanding = false;
 
-	// TODO disable if there's no Prolog interface
 	public final Action COMPILE_ACTION = new AbstractAction("Compile")
 	{
 

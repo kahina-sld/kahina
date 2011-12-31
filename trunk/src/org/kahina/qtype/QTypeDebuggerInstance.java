@@ -12,10 +12,14 @@ import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 {
 	
+	private final QTypeCommander commander = new QTypeCommander();
+	
 	@Override
 	public QTypeBridge startNewSession()
 	{
-		return (QTypeBridge) super.startNewSession();
+		QTypeBridge bridge = (QTypeBridge) super.startNewSession(); 
+		commander.initializeForNewSession();
+		return bridge;
 	}
 
 	@Override
@@ -51,7 +55,12 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 	
 	public String getCommand()
 	{
-		return "help"; // just for testing, TODO
+		return commander.getCommand();
+	}
+
+	public QTypeCommander getCommander()
+	{
+		return commander;
 	}
 
 }

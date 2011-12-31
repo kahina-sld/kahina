@@ -4,13 +4,16 @@ import java.io.BufferedInputStream;
 import java.io.InputStream;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
+import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.qtype.QTypeDebuggerInstance;
 import org.kahina.qtype.QTypeStep;
 import org.kahina.qtype.data.tree.QTypeLayerDecider;
 import org.kahina.sicstus.gui.SICStusPrologGUI;
+import org.kahina.tralesld.gui.TraleSLDWindowManager;
 
 public class QTypeGUI extends SICStusPrologGUI
 {
@@ -48,6 +51,12 @@ public class QTypeGUI extends SICStusPrologGUI
 		super.displayMainViews();
 		mainTreeView.getModel().setLayerDecider(new QTypeLayerDecider());
 		mainTreeView.getSecondaryModel().setLayerDecider(new QTypeLayerDecider());
+	}
+
+	@Override
+	protected KahinaWindowManager createWindowManager(KahinaGUI gui, KahinaController control)
+	{
+		return new QTypeWindowManager(gui, control);
 	}
 
 }
