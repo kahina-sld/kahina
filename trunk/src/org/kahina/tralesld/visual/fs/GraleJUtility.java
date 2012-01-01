@@ -691,20 +691,20 @@ public class GraleJUtility
     public static IEntity unify(IEntity e1, IEntity e2, List<String> path1, List<String> path2, TraleSLDSignature sig)
     {
         Map<Integer,List<List<String>>> identities = getAlphaConvertedIdentities(e1,e2);
-        return unify(go(e1,path1),go(e2,path2),identities, sig);
+        return unify(go(e1,path1),go(e2,path2), e1, identities, sig);
     }
 	
-	private static IEntity unify(IEntity e1, IEntity e2, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
+	private static IEntity unify(IEntity e1, IEntity e2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
 	{
         if (verbose) System.err.print("e1  : " + convertGraleJToGrisu(e1));
         if (verbose) System.err.print("e2  : " + convertGraleJToGrisu(((ITag) e2).target()));
 		if (e1 instanceof ITypedFeatureStructure && e2 instanceof ITypedFeatureStructure)
 		{
-			return unify((ITypedFeatureStructure) e1, (ITypedFeatureStructure) e2, identities, sig);
+			return unify((ITypedFeatureStructure) e1, (ITypedFeatureStructure) e2, rootE, identities, sig);
 		}
 		else if (e1 instanceof IList && e2 instanceof IList)
 		{
-			return unify((IList) e1, (IList) e2, identities, sig);
+			return unify((IList) e1, (IList) e2, rootE, identities, sig);
 		}
 		else if (e1 instanceof IList && e2 instanceof ITypedFeatureStructure)
 		{
@@ -720,11 +720,11 @@ public class GraleJUtility
 		}
 		else if (e1 instanceof ITag && e2 instanceof ITag)
 		{
-			return unify((ITag) e1, (ITag) e2, identities, sig);
+			return unify((ITag) e1, (ITag) e2, rootE, identities, sig);
 		}
 		else if (e1 instanceof ITag)
 		{
-			IEntity res = unify(((ITag) e1).target(),e2, identities, sig);
+			IEntity res = unify(((ITag) e1).target(),e2, rootE, identities, sig);
             if (verbose) System.err.println("unif: " + convertGraleJToGrisu(res));
 			if (res != null)
 			{
@@ -737,7 +737,7 @@ public class GraleJUtility
 		}
 		else if (e2 instanceof ITag)
 		{
-			IEntity res = unify(((ITag) e2).target(),e1, identities, sig);
+			IEntity res = unify(((ITag) e2).target(),e1, rootE, identities, sig);
             if (verbose) System.err.println("unif: " + convertGraleJToGrisu(res));
 			if (res != null)
 			{
@@ -755,7 +755,7 @@ public class GraleJUtility
 		}
 	}
 	
-	private static IEntity unify(ITypedFeatureStructure tfs1, ITypedFeatureStructure tfs2, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
+	private static IEntity unify(ITypedFeatureStructure tfs1, ITypedFeatureStructure tfs2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
 	{
 		String type1 = getType(tfs1);
 		String type2 = getType(tfs2);
@@ -803,7 +803,7 @@ public class GraleJUtility
 			else
 			{
 				//unification of the two values
-				IEntity res = unify(ent1,ent2,identities, sig);
+				IEntity res = unify(ent1,ent2,rootE,identities, sig);
 				if (res == null) return null;
 				unifFeatVals.put(feat, res);
 			}
@@ -818,7 +818,7 @@ public class GraleJUtility
         return result;
 	}
 	
-	private static IEntity unify(IList l1, IList l2, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
+	private static IEntity unify(IList l1, IList l2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
 	{
 		IList resultList = ef.newList();
 		List<IEntity> ents1 = new LinkedList<IEntity>();
@@ -831,7 +831,7 @@ public class GraleJUtility
 			}
 			else
 			{
-				IEntity res = unify(ents1.get(i), ent2, identities, sig);
+				IEntity res = unify(ents1.get(i), ent2, rootE, identities, sig);
 				if (res == null) return null;
 				resultList.append(res);
 			}
@@ -846,18 +846,40 @@ public class GraleJUtility
 		return resultList;
 	}
 	
-	private static IEntity unify(ITag t1, ITag t2, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
+	private static IEntity unify(ITag t1, ITag t2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
 	{
-		IEntity res = unify(((ITag) t1).target(), ((ITag) t2).target(), identities, sig);
+		IEntity res = unify(((ITag) t1).target(), ((ITag) t2).target(), rootE, identities, sig);
 		if (res == null) return null;
-		//TODO: equate the tag numbers throughout the structure, not only locally
+		//equate the tag numbers throughout the structure, not only locally
 		int number1 = ((ITag) t1).number();
 		int number2 = ((ITag) t2).number();
 		int newNumber = number1;
-		if (number2 < number1) newNumber = number2;
-		IEntity result = ef.newTag(newNumber,res);
-        if (verbose) System.err.println("unif: " + convertGraleJToGrisu(result));
-        return result;
+		if (number2 > number1)
+        {
+            identities.get(number1).addAll(identities.get(number2));
+            identities.remove(number2);
+        }
+        else
+        {
+            newNumber = number2;
+            identities.get(number2).addAll(identities.get(number1));
+            identities.remove(number1);
+        }
+		for (List<String> path : identities.get(newNumber))
+        {
+            IEntity tagE = go(rootE,path);
+            if (tagE instanceof ITag)
+            {
+                ((ITag) tagE).setNumber(newNumber);
+                ((ITag) tagE).setNumber(newNumber);
+            }
+            else
+            {
+                failMsg("ERROR: no tag at path " + path + " during ITag unification!");
+            }
+        }
+        if (verbose) System.err.println("unif: " + convertGraleJToGrisu(t1));
+        return t1;
 	}
 	
 	private static Map<String,IEntity> featValMap(ITypedFeatureStructure fs)
