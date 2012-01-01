@@ -690,14 +690,76 @@ public class GraleJUtility
     
     public static IEntity unify(IEntity e1, IEntity e2, List<String> path1, List<String> path2, TraleSLDSignature sig)
     {
+        Map<String,String> pathValues1 = convertToPaths(go(e1,path1));
+        Map<String,String> pathValues2 = convertToPaths(go(e2,path2));
+        System.err.println("Path values 1:" + pathValues1);
+        System.err.println("Path values 2:" + pathValues2);
         Map<Integer,List<List<String>>> identities = getAlphaConvertedIdentities(e1,e2);
         return unify(go(e1,path1),go(e2,path2), e1, identities, sig);
+    }
+    
+    private static Map<String,String> convertToPaths(IEntity e1)
+    {
+        Map<String,String> paths = new HashMap<String,String>();
+        convertToPaths(e1,"",paths);
+        return paths;
+    }
+    
+    private static void convertToPaths(IEntity e, String path, Map<String,String> paths)
+    {
+        if (e instanceof ITag)
+        {
+            ITag tag = (ITag) e;
+            paths.put(path, "#" + tag.number());
+            if (paths.get("#" + tag.number()) == null)
+            {
+                convertToPaths(tag.target(),"#" + tag.number(), paths);
+            }
+        }
+        else if (e instanceof IAny)
+        {
+            paths.put(path, "a_" + ((IAny) e).text());
+        }
+        else if (e instanceof IList)
+        {
+            IList list = (IList) e;
+            IEntity lastElement = null;
+            String extendedPath = path;
+            for (IEntity ent : list.elements())
+            {
+                if (lastElement != null)
+                {
+                    extendedPath += ":tl";
+                    convertToPaths(lastElement,extendedPath,paths);
+                }
+                lastElement = ent;
+            }
+            if (lastElement == null)
+            {
+                paths.put(path, "e_list");
+            }
+            else
+            {
+                paths.put(path, "ne_list");
+                convertToPaths(lastElement,extendedPath + ":hd",paths);
+                paths.put(extendedPath + ":tl", "e_list");
+            }
+        }
+        else if (e instanceof ITypedFeatureStructure)
+        {
+            ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
+            paths.put(path, fs.typeName());
+            for (IFeatureValuePair fv : fs.featureValuePairs())
+            {
+                convertToPaths(fv.value(), path + ":" + fv.feature(), paths);
+            }
+        }
     }
 	
 	private static IEntity unify(IEntity e1, IEntity e2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
 	{
         if (verbose) System.err.print("e1  : " + convertGraleJToGrisu(e1));
-        if (verbose) System.err.print("e2  : " + convertGraleJToGrisu(((ITag) e2).target()));
+        if (verbose) System.err.print("e2  : " + convertGraleJToGrisu(e2));
 		if (e1 instanceof ITypedFeatureStructure && e2 instanceof ITypedFeatureStructure)
 		{
 			return unify((ITypedFeatureStructure) e1, (ITypedFeatureStructure) e2, rootE, identities, sig);
