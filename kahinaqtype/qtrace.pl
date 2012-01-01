@@ -248,6 +248,8 @@ goal_source_code_location(descr:start_constraint(Line),File,Line) :-
 % format understood by Gralej.
 % ------------------------------------------------------------------------------
 
+% TODO handle lists!
+
 % term_grisu(+Term,+Label,-Grisu)
 %   Term: A Prolog term. May be a QType FS or contain such.
 %   Label: A label for output, given as an atom.

@@ -19,14 +19,13 @@ import org.kahina.core.event.KahinaSystemEvent;
 import org.kahina.core.util.PrologUtilities;
 import org.kahina.core.util.Utilities;
 import org.kahina.qtype.event.QTypeControlEventCommands;
-import org.kahina.tralesld.event.TraleSLDControlEventCommands;
 
 public class QTypeCommander implements KahinaListener
 {
 
 	private static final boolean VERBOSE = false;
 	
-	Queue<String> commands = new ArrayDeque<String>();
+	private Queue<String> commands = new ArrayDeque<String>();
 
 	private boolean commanding = false;
 
@@ -136,7 +135,7 @@ public class QTypeCommander implements KahinaListener
 	{
 		String command = event.getCommand();
 
-		if (TraleSLDControlEventCommands.REGISTER_SENTENCE.equals(command))
+		if (QTypeControlEventCommands.REGISTER_SENTENCE.equals(command))
 		{
 			sentence = castToStringList(event.getArguments()[0]);
 			updateActions();
@@ -145,7 +144,7 @@ public class QTypeCommander implements KahinaListener
 				System.err.println("Sentence registered.");
 			}
 		} 
-		else if (TraleSLDControlEventCommands.REGISTER_GRAMMAR.equals(command))
+		else if (QTypeControlEventCommands.REGISTER_GRAMMAR.equals(command))
 		{
 			grammar = (String) event.getArguments()[0];
 			PARSE_ACTION.setEnabled(commanding);
@@ -155,7 +154,7 @@ public class QTypeCommander implements KahinaListener
 				System.err.println("Grammar registered.");
 			}
 		} 
-		else if (TraleSLDControlEventCommands.COMPILE.equals(command))
+		else if (QTypeControlEventCommands.COMPILE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
@@ -167,7 +166,7 @@ public class QTypeCommander implements KahinaListener
 				compile((String) event.getArguments()[0]);
 			}
 		} 
-		else if (TraleSLDControlEventCommands.PARSE.equals(command))
+		else if (QTypeControlEventCommands.PARSE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
@@ -179,7 +178,7 @@ public class QTypeCommander implements KahinaListener
 				parse(castToStringList(event.getArguments()[0]));
 			}
 		} 
-		else if (TraleSLDControlEventCommands.RESTART.equals(command))
+		else if (QTypeControlEventCommands.RESTART.equals(command))
 		{
 			KahinaRunner.processEvent(new KahinaControlEvent("abort"));
 			compile(grammar);
