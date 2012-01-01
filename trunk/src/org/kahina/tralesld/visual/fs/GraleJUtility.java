@@ -1147,10 +1147,69 @@ public class GraleJUtility
             Map<Integer,List<List<String>>> identities1 = getIdentities(e1);
             Map<Integer,List<List<String>>> identities2 = getIdentities(e2);
             Map<Integer,List<List<String>>> commonIdentities = new HashMap<Integer,List<List<String>>>();
-            //TODO: perform alpha conversion, construct common path identity table
+            //determine maximum tag ID
+            int maximumTagID = 0;
+            for (Integer i : identities1.keySet())
+            {
+                if (i > maximumTagID) maximumTagID = i;
+            }
+            for (Integer i : identities2.keySet())
+            {
+                if (i > maximumTagID) maximumTagID = i;
+            }
+            //go through IDs and resolve clashes
             int nextFreeID = 0;
-            //systematically determine clashes -> rename reentrancies in identities2 to fresh symbol
+            for (int i = 0; i < maximumTagID; i++)
+            {
+                List<List<String>> identI1 = identities1.get(i);
+                List<List<String>> identI2 = identities2.get(i);
+                if (identI1 != null && identI2 != null)
+                {
+                    //clash: determine next free ID (TODO: be more efficient here)
+                    while (identities1.get(nextFreeID) != null || identities2.get(nextFreeID) != null)
+                    {
+                        nextFreeID++;
+                    }
+                    //rename reentrancies in e2 to fresh tag ID
+                    alphaConvert(e2,identI2,nextFreeID);
+                    //store identities under their respective IDs
+                    commonIdentities.put(nextFreeID, identI1);
+                    commonIdentities.put(nextFreeID, identI2);
+                    //the new tag ID is now used in common identities, do not use it again
+                    nextFreeID++;
+                }
+                else if (identI1 != null)
+                {
+                    //no clash: take over path identities from e1
+                    commonIdentities.put(i, identI1);
+                }
+                else if (identI2 != null)
+                {
+                    //no clash: take over path identities from e2
+                    commonIdentities.put(i, identI2);
+                }
+                else
+                {
+                    //no identity encoded by tag ID i; do nothing
+                }
+            }
             return commonIdentities;
+        }
+    }
+    
+    private static void alphaConvert(IEntity e, List<List<String>> tagPaths, int newTagID)
+    {
+        for (List<String> path : tagPaths)
+        {
+            IEntity tagE = go(e,path);
+            if (tagE instanceof ITag)
+            {
+                ((ITag) tagE).setNumber(newTagID);
+            }
+            else
+            {
+                System.err.println("WARNING: no tag at path " + path + " -> alpha conversion failed!");
+            }
         }
     }
 	
