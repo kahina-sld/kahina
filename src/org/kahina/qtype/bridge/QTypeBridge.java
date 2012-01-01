@@ -1,5 +1,8 @@
 package org.kahina.qtype.bridge;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.util.PrologUtilities;
@@ -12,6 +15,8 @@ import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 
 public class QTypeBridge extends SICStusPrologBridge
 {
+	
+	private static final Pattern SENTENCE_PATTERN = Pattern.compile("\\[([^\\]]+)\\]");
 
 	private final TraleSLDFSPacker packer;
 
@@ -30,8 +35,12 @@ public class QTypeBridge extends SICStusPrologBridge
 			String path = PrologUtilities.atomLiteralToString(description.substring(16, description.length() - 1));
 			KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { path }));
 		} else if (description.startsWith("lc(") && description.endsWith(")")) {
-			String sentence = description.substring(3, description.length() - 1);
-			KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtilities.parsePrologStringList(sentence) }));
+			Matcher matcher = SENTENCE_PATTERN.matcher(description.substring(3, description.length() - 1));
+			
+			if (matcher.matches())
+			{
+				KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtilities.parsePrologStringList(matcher.group(0)) }));
+			}
 		}
 	}
 
