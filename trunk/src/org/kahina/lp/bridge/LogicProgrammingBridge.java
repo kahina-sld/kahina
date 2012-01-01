@@ -121,7 +121,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 *            as a prose description of what {@code append/3} does. Will be
 	 *            displayed in the message console.
 	 */
-	public void step(int extID, String type, String description, String consoleMessage)
+	public void step(int extID, String type, String description, String consoleMessage)	
 	{
 		try
 		{
