@@ -936,11 +936,13 @@ public class GraleJUtility
                 {
                     //two tags need to be unified
                     int newTag2 = Integer.parseInt(ty2.substring(1));
+                    res.put(path, "#" + newTag1);
                     unify(paths1,paths2,resP,sig,newTag1,newTag2,"","");
                 }
                 else
                 {
                     //unify tag in p1 with structure in p2
+                    res.put(path, "#" + newTag1);
                     unify(paths1,paths2,resP,sig,newTag1,tag2,"",path);
                 }
             }
@@ -948,6 +950,7 @@ public class GraleJUtility
             {
                 //unify tag in p2 with structure in p1
                 int newTag2 = Integer.parseInt(ty2.substring(1));
+                res.put(path, "#" + newTag2);
                 unify(paths1,paths2,resP,sig,tag1,newTag2,path,"");
             }
             else if (ty1.startsWith("a_"))
