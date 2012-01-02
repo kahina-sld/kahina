@@ -690,12 +690,18 @@ public class GraleJUtility
     
     public static IEntity unify(IEntity e1, IEntity e2, List<String> path1, List<String> path2, TraleSLDSignature sig)
     {
-        Map<Integer,Map<String,String>> pathValues1 = convertToPaths(go(e1,path1));
-        Map<Integer,Map<String,String>> pathValues2 = convertToPaths(go(e2,path2));
-        System.err.println("Path values 1:");
-        printPaths(pathValues1);
-        System.err.println("Path values 2:");
-        printPaths(pathValues2);
+        Map<Integer,Map<String,String>> paths1 = convertToPaths(go(e1,path1));
+        Map<Integer,Map<String,String>> paths2 = convertToPaths(go(e2,path2));
+        System.err.println("Path representation of structure 1:");
+        printPaths(paths1);
+        System.err.println("Path representation of structure 2:");
+        printPaths(paths2);
+        Map<Integer,Map<String,String>> resPaths = unify(paths1, paths2, sig);
+        if (resPaths != null)
+        {
+            System.err.println("Path representation of result structure:");
+            printPaths(resPaths);
+        }
         Map<Integer,List<List<String>>> identities = getAlphaConvertedIdentities(e1,e2);
         return unify(go(e1,path1),go(e2,path2), e1, identities, sig);
     }
@@ -782,10 +788,91 @@ public class GraleJUtility
         }
     }
     
-    private static Map<Integer,Map<String,String>> unify(Map<Integer,Map<String,String>> paths1, Map<Integer,Map<String,String>> path2)
+    private static Map<Integer,Map<String,String>> unify(Map<Integer,Map<String,String>> paths1, Map<Integer,Map<String,String>> paths2, TraleSLDSignature sig)
     {
-        Map<Integer,Map<String,String>> resStruct = new HashMap<Integer,Map<String,String>>();
-        return resStruct;
+        Map<Integer,Map<String,String>> resP = new HashMap<Integer,Map<String,String>>();
+        Map<String,String> res = new HashMap<String,String>();
+        resP.put(-1, res);
+        Map<String,String> p1 = paths1.get(-1);
+        Map<String,String> p2 = paths2.get(-1);
+        List<String> pathList = new LinkedList<String>();
+        pathList.addAll(p1.keySet());
+        pathList.addAll(p2.keySet());
+        Collections.sort(pathList);
+        for (String path : pathList)
+        {
+            String ty1 = p1.get(path);
+            String ty2 = p2.get(path);
+            if (ty1 == null)
+            {
+                res.put(path, ty2);
+            }
+            else if (ty2 == null)
+            {
+                res.put(path, ty1);
+            }
+            else if (ty1.startsWith("#"))
+            {
+                if (ty2.startsWith("#"))
+                {
+                    //two tags need to be unified
+                }
+                else
+                {
+                    //unify tag in p1 with structure in p2
+                }
+            }
+            else if (ty2.startsWith("#"))
+            {
+                //unify tag in p2 with structure in p1
+            }
+            else if (ty1.startsWith("a_"))
+            {
+                //atom in p1: can only be unified with identical atom or bot
+                if (ty1.equals(ty2) || ty2.equals("bot"))
+                {
+                    res.put(path, ty1);
+                }
+                else
+                {
+                    failMsg("Unification failed: " + ty1 + " and " + ty2 + " at path " + path + " are incompatible.");
+                    return null;
+                }
+            }
+            else if (ty2.startsWith("a_"))
+            {
+                //atom in p2, but not in p1: can only be unified with bot
+                if (ty1.equals("bot"))
+                {
+                    res.put(path, ty2);
+                }
+                else
+                {
+                    failMsg("Unification failed: " + ty1 + " and " + ty2 + " at path " + path + " are incompatible.");
+                    return null;
+                }
+            }
+            else
+            {
+                //normal types: subsumption check, select more specific one
+                String unifTy = null;
+                if (sig.dominates(ty1,ty2))
+                {
+                    unifTy = ty2;
+                }
+                else if (sig.dominates(ty2,ty1))
+                {
+                    unifTy = ty1;
+                }
+                else
+                {
+                    failMsg("Unification failed: types " + ty1 + " and " + ty2 + " at path " + path + " are incompatible.");
+                    return null;
+                }
+                res.put(path, unifTy);
+            }
+        }
+        return resP;
     }
 	
 	private static IEntity unify(IEntity e1, IEntity e2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
