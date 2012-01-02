@@ -690,8 +690,8 @@ public class GraleJUtility
     
     public static IEntity unify(IEntity e1, IEntity e2, List<String> path1, List<String> path2, TraleSLDSignature sig)
     {
-        Map<String,String> pathValues1 = convertToPaths(go(e1,path1));
-        Map<String,String> pathValues2 = convertToPaths(go(e2,path2));
+        Map<Integer,Map<String,String>> pathValues1 = convertToPaths(go(e1,path1));
+        Map<Integer,Map<String,String>> pathValues2 = convertToPaths(go(e2,path2));
         System.err.println("Path values 1:");
         printPaths(pathValues1);
         System.err.println("Path values 2:");
@@ -700,27 +700,29 @@ public class GraleJUtility
         return unify(go(e1,path1),go(e2,path2), e1, identities, sig);
     }
     
-    private static Map<String,String> convertToPaths(IEntity e1)
+    private static Map<Integer,Map<String,String>> convertToPaths(IEntity e1)
     {
-        Map<String,String> paths = new HashMap<String,String>();
-        convertToPaths(e1,"",paths);
+        Map<Integer,Map<String,String>> paths = new HashMap<Integer,Map<String,String>>();
+        paths.put(-1, new HashMap<String,String>());
+        convertToPaths(e1,"",paths, -1);
         return paths;
     }
     
-    private static void convertToPaths(IEntity e, String path, Map<String,String> paths)
+    private static void convertToPaths(IEntity e, String path, Map<Integer,Map<String,String>> paths, int i)
     {
         if (e instanceof ITag)
         {
             ITag tag = (ITag) e;
-            paths.put(path, "#" + tag.number());
-            if (paths.get("#" + tag.number()) == null)
+            paths.get(i).put(path, "#" + tag.number());
+            if (paths.get(tag.number()) == null)
             {
-                convertToPaths(tag.target(),"#" + tag.number(), paths);
+                paths.put(tag.number(), new HashMap<String,String>());
+                convertToPaths(tag.target(),"", paths, tag.number());
             }
         }
         else if (e instanceof IAny)
         {
-            paths.put(path, "a_" + ((IAny) e).text());
+            paths.get(i).put(path, "a_" + ((IAny) e).text());
         }
         else if (e instanceof IList)
         {
@@ -731,8 +733,8 @@ public class GraleJUtility
             {
                 if (lastElement != null)
                 {
-                    paths.put(extendedPath + ":hd", "ne_list");
-                    convertToPaths(lastElement,extendedPath + ":hd",paths);
+                    paths.get(i).put(extendedPath + ":hd", "ne_list");
+                    convertToPaths(lastElement,extendedPath + ":hd",paths,i);
                     extendedPath += ":tl";
                 }
                 lastElement = ent;
@@ -740,36 +742,50 @@ public class GraleJUtility
             //IList of length 0 is represented by type e_list
             if (lastElement == null)
             {
-                paths.put(path, "e_list");
+                paths.get(i).put(path, "e_list");
             }
             else
             {
-                paths.put(path, "ne_list");
-                convertToPaths(lastElement,extendedPath + ":hd",paths);
+                paths.get(i).put(path, "ne_list");
+                convertToPaths(lastElement,extendedPath + ":hd",paths,i);
                 //empty tail
-                paths.put(extendedPath + ":tl", "e_list");
+                paths.get(i).put(extendedPath + ":tl", "e_list");
             }
         }
         else if (e instanceof ITypedFeatureStructure)
         {
             ITypedFeatureStructure fs = (ITypedFeatureStructure) e;
-            paths.put(path, fs.typeName());
+            paths.get(i).put(path, fs.typeName());
             for (IFeatureValuePair fv : fs.featureValuePairs())
             {
-                convertToPaths(fv.value(), path + ":" + fv.feature(), paths);
+                convertToPaths(fv.value(), path + ":" + fv.feature(), paths, i);
             }
         }
     }
     
-    private static void printPaths(Map<String,String> paths)
+    private static void printPaths(Map<Integer,Map<String,String>> paths)
     {
-        List<String> pathList = new LinkedList<String>();
-        pathList.addAll(paths.keySet());
-        Collections.sort(pathList);
-        for (String path : pathList)
+        List<Integer> tagList = new LinkedList<Integer>();
+        tagList.addAll(paths.keySet());
+        Collections.sort(tagList);
+        for (int i : tagList)
         {
-            System.err.println(path + " -> " + paths.get(path));
+            List<String> pathList = new LinkedList<String>();
+            pathList.addAll(paths.get(i).keySet());
+            Collections.sort(pathList);
+            String tag = "";
+            if (i != -1) tag = "#" + i;
+            for (String path : pathList)
+            {
+                System.err.println(tag + path + " -> " + paths.get(i).get(path));
+            }
         }
+    }
+    
+    private static Map<Integer,Map<String,String>> unify(Map<Integer,Map<String,String>> paths1, Map<Integer,Map<String,String>> path2)
+    {
+        Map<Integer,Map<String,String>> resStruct = new HashMap<Integer,Map<String,String>>();
+        return resStruct;
     }
 	
 	private static IEntity unify(IEntity e1, IEntity e2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
