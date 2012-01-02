@@ -696,11 +696,12 @@ public class GraleJUtility
         printPaths(paths1);
         System.err.println("Path representation of structure 2:");
         printPaths(paths2);
-        Map<Integer,Map<String,String>> resPaths = unify(paths1, paths2, sig);
-        if (resPaths != null)
+        Map<Integer,Map<String,String>> resP = new HashMap<Integer,Map<String,String>>();
+        boolean success = unify(paths1, paths2, resP, sig,-1,-1,"","");
+        if (success)
         {
             System.err.println("Path representation of result structure:");
-            printPaths(resPaths);
+            printPaths(resP);
         }
         Map<Integer,List<List<String>>> identities = getAlphaConvertedIdentities(e1,e2);
         return unify(go(e1,path1),go(e2,path2), e1, identities, sig);
@@ -873,6 +874,129 @@ public class GraleJUtility
             }
         }
         return resP;
+    }
+    
+    private static boolean unify(Map<Integer,Map<String,String>> paths1, Map<Integer,Map<String,String>> paths2, Map<Integer,Map<String,String>> resP, TraleSLDSignature sig, int tag1, int tag2, String prefix1, String prefix2)
+    {
+        //determine the common tag ID for the result structure
+        int resTag = -1;
+        if (tag1 != -1)
+        {
+            resTag = tag1;
+        }
+        else if (tag2 != -1)
+        {
+            resTag = tag2;
+        }
+        //check whether the common tag ID already points to a structure
+        Map<String,String> res = resP.get(resTag);
+        if (res == null)
+        {
+            res = new HashMap<String,String>();
+            resP.put(resTag, res);
+        }
+        else
+        {
+            //TODO: unify existing structure with new structures
+        }
+        Map<String,String> p1 = paths1.get(tag1);
+        Map<String,String> p2 = paths2.get(tag2);
+        List<String> pathList = new LinkedList<String>();
+        for (String path : p1.keySet())
+        {
+            if (path.startsWith(prefix1))
+            {
+                pathList.add(path.substring(prefix1.length()));
+            }
+        }
+        for (String path : p2.keySet())
+        {
+            if (path.startsWith(prefix2))
+            {
+                pathList.add(path.substring(prefix2.length()));
+            }
+        }
+        Collections.sort(pathList);
+        for (String path : pathList)
+        {
+            String ty1 = p1.get(prefix1 + path);
+            String ty2 = p2.get(prefix2 + path);
+            if (ty1 == null)
+            {
+                res.put(path, ty2);
+            }
+            else if (ty2 == null)
+            {
+                res.put(path, ty1);
+            }
+            else if (ty1.startsWith("#"))
+            {
+                int newTag1 = Integer.parseInt(ty1.substring(1));
+                if (ty2.startsWith("#"))
+                {
+                    //two tags need to be unified
+                    int newTag2 = Integer.parseInt(ty2.substring(1));
+                    unify(paths1,paths2,resP,sig,newTag1,newTag2,"","");
+                }
+                else
+                {
+                    //unify tag in p1 with structure in p2
+                    unify(paths1,paths2,resP,sig,newTag1,tag2,"",path);
+                }
+            }
+            else if (ty2.startsWith("#"))
+            {
+                //unify tag in p2 with structure in p1
+                int newTag2 = Integer.parseInt(ty2.substring(1));
+                unify(paths1,paths2,resP,sig,tag1,newTag2,path,"");
+            }
+            else if (ty1.startsWith("a_"))
+            {
+                //atom in p1: can only be unified with identical atom or bot
+                if (ty1.equals(ty2) || ty2.equals("bot"))
+                {
+                    res.put(path, ty1);
+                }
+                else
+                {
+                    failMsg("Unification failed: " + ty1 + " and " + ty2 + " at path " + path + " are incompatible.");
+                    return false;
+                }
+            }
+            else if (ty2.startsWith("a_"))
+            {
+                //atom in p2, but not in p1: can only be unified with bot
+                if (ty1.equals("bot"))
+                {
+                    res.put(path, ty2);
+                }
+                else
+                {
+                    failMsg("Unification failed: " + ty1 + " and " + ty2 + " at path " + path + " are incompatible.");
+                    return false;
+                }
+            }
+            else
+            {
+                //normal types: subsumption check, select more specific one
+                String unifTy = null;
+                if (sig.dominates(ty1,ty2))
+                {
+                    unifTy = ty2;
+                }
+                else if (sig.dominates(ty2,ty1))
+                {
+                    unifTy = ty1;
+                }
+                else
+                {
+                    failMsg("Unification failed: types " + ty1 + " and " + ty2 + " at path " + path + " are incompatible.");
+                    return false;
+                }
+                res.put(path, unifTy);
+            }
+        }
+        return true;
     }
 	
 	private static IEntity unify(IEntity e1, IEntity e2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
