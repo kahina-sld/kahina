@@ -692,8 +692,10 @@ public class GraleJUtility
     {
         Map<String,String> pathValues1 = convertToPaths(go(e1,path1));
         Map<String,String> pathValues2 = convertToPaths(go(e2,path2));
-        System.err.println("Path values 1:" + pathValues1);
-        System.err.println("Path values 2:" + pathValues2);
+        System.err.println("Path values 1:");
+        printPaths(pathValues1);
+        System.err.println("Path values 2:");
+        printPaths(pathValues2);
         Map<Integer,List<List<String>>> identities = getAlphaConvertedIdentities(e1,e2);
         return unify(go(e1,path1),go(e2,path2), e1, identities, sig);
     }
@@ -729,11 +731,13 @@ public class GraleJUtility
             {
                 if (lastElement != null)
                 {
+                    paths.put(extendedPath + ":hd", "ne_list");
+                    convertToPaths(lastElement,extendedPath + ":hd",paths);
                     extendedPath += ":tl";
-                    convertToPaths(lastElement,extendedPath,paths);
                 }
                 lastElement = ent;
             }
+            //IList of length 0 is represented by type e_list
             if (lastElement == null)
             {
                 paths.put(path, "e_list");
@@ -742,6 +746,7 @@ public class GraleJUtility
             {
                 paths.put(path, "ne_list");
                 convertToPaths(lastElement,extendedPath + ":hd",paths);
+                //empty tail
                 paths.put(extendedPath + ":tl", "e_list");
             }
         }
@@ -753,6 +758,17 @@ public class GraleJUtility
             {
                 convertToPaths(fv.value(), path + ":" + fv.feature(), paths);
             }
+        }
+    }
+    
+    private static void printPaths(Map<String,String> paths)
+    {
+        List<String> pathList = new LinkedList<String>();
+        pathList.addAll(paths.keySet());
+        Collections.sort(pathList);
+        for (String path : pathList)
+        {
+            System.err.println(path + " -> " + paths.get(path));
         }
     }
 	
