@@ -789,6 +789,103 @@ public class GraleJUtility
         }
     }
     
+    private IEntity convertToGraleJ(Map<Integer,Map<String,String>> paths)
+    {
+        Map<Integer,List<ITag>> tagsPerIndex = new HashMap<Integer,List<ITag>>();
+        Map<Integer,IEntity> structPerIndex = new HashMap<Integer,IEntity>();
+        for (int tagID : paths.keySet())
+        {
+            IEntity struct = ef.newTFS("bot");
+            structPerIndex.put(tagID, struct);
+            Map<String,String> ps = paths.get(tagID);
+            List<String> pList = new LinkedList<String>();
+            pList.addAll(ps.keySet());
+            Collections.sort(pList);
+            for (String path : pList)
+            {
+                String[] feats = path.split(":");
+                IEntity currentStruct = struct;
+                int listCounter = 0;
+                for (int i = 0; i < feats.length; i++)
+                {
+                    if (currentStruct instanceof ITypedFeatureStructure)
+                    {
+                        ITypedFeatureStructure tfs = (ITypedFeatureStructure) currentStruct;
+                        currentStruct = null;
+                        for (IFeatureValuePair fv : tfs.featureValuePairs())
+                        {
+                            if (fv.feature().equals(feats[i]))
+                            {
+                                currentStruct = fv.value();
+                                break;
+                            }
+                        }
+                        if (currentStruct == null)
+                        {
+                            if (i == feats.length)
+                            {
+                                String type = ps.get(path);
+                                if (type.equals("ne_list"))
+                                {
+                                    
+                                }
+                                else if (type.equals("e_list"))
+                                {
+                                    
+                                }
+                                else if (type.startsWith("a_"))
+                                {
+                                    
+                                }
+                                else if (type.startsWith("#"))
+                                {
+                                    int refID = Integer.parseInt(type.substring(1));
+                                    ITag newTag = ef.newTag(refID);
+                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],newTag));
+                                    List<ITag> tagList = tagsPerIndex.get(refID);
+                                    if (tagList == null)
+                                    {
+                                        tagList = new LinkedList<ITag>();
+                                        tagsPerIndex.put(refID, tagList);
+                                    }
+                                    tagList.add(newTag);
+                                }
+                                else
+                                {
+                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newTFS(ps.get(type))));
+                                }
+                            }
+                            else
+                            {
+                                System.err.println("ERROR: attempted non-incremental construction!");
+                            }
+                        }
+                    }
+                    else if (currentStruct instanceof IList)
+                    {
+                        if (feats[i].equals("tl"))
+                        {
+                            listCounter++;
+                        }
+                        else if (feats[i].equals("hd"))
+                        {
+                            
+                        }
+                    }
+                    else if (currentStruct instanceof ITag)
+                    {
+                        //ERROR: this should not happen
+                    }
+                    else
+                    {
+                        //ERROR: this should not happen either
+                    }
+                }
+            }
+        }
+        return structPerIndex.get(-1);
+    }
+    
     private static Map<Integer,Map<String,String>> unify(Map<Integer,Map<String,String>> paths1, Map<Integer,Map<String,String>> paths2, TraleSLDSignature sig)
     {
         Map<Integer,Map<String,String>> resP = new HashMap<Integer,Map<String,String>>();
