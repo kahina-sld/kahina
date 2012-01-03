@@ -827,15 +827,15 @@ public class GraleJUtility
                                 String type = ps.get(path);
                                 if (type.equals("ne_list"))
                                 {
-                                    
+                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newList()));
                                 }
                                 else if (type.equals("e_list"))
                                 {
-                                    
+                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newList()));
                                 }
                                 else if (type.startsWith("a_"))
                                 {
-                                    
+                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newAny(type.substring(2))));
                                 }
                                 else if (type.startsWith("#"))
                                 {
@@ -852,7 +852,7 @@ public class GraleJUtility
                                 }
                                 else
                                 {
-                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newTFS(ps.get(type))));
+                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newTFS(type)));
                                 }
                             }
                             else
@@ -869,7 +869,41 @@ public class GraleJUtility
                         }
                         else if (feats[i].equals("hd"))
                         {
-                            
+                            IList list = (IList) currentStruct;
+                            IEntity newEnt = null;
+                            String type = ps.get(path);
+                            if (type.equals("ne_list"))
+                            {
+                                newEnt = ef.newList();
+                            }
+                            else if (type.equals("e_list"))
+                            {
+                                newEnt = ef.newList();
+                            }
+                            else if (type.startsWith("a_"))
+                            {
+                                newEnt = ef.newAny(type.substring(2));
+                            }
+                            else if (type.startsWith("#"))
+                            {
+                                int refID = Integer.parseInt(type.substring(1));
+                                ITag newTag = ef.newTag(refID);
+                                newEnt = newTag;
+                                List<ITag> tagList = tagsPerIndex.get(refID);
+                                if (tagList == null)
+                                {
+                                    tagList = new LinkedList<ITag>();
+                                    tagsPerIndex.put(refID, tagList);
+                                }
+                                tagList.add(newTag);
+                            }
+                            else
+                            {
+                                newEnt = ef.newTFS(type);
+                            }
+                            //do not use list counter, list elements occur in correct order because of path sorting
+                            list.append(newEnt);
+                            listCounter = 0;
                         }
                     }
                     else if (currentStruct instanceof ITag)
@@ -881,6 +915,13 @@ public class GraleJUtility
                         //ERROR: this should not happen either
                     }
                 }
+            }
+        }
+        for (Integer i : tagsPerIndex.keySet())
+        {
+            for (ITag tag : tagsPerIndex.get(i))
+            {
+                tag.setTarget(structPerIndex.get(i));
             }
         }
         return structPerIndex.get(-1);
