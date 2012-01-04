@@ -813,12 +813,15 @@ public class GraleJUtility
                 {
                     feats = path.split(":");
                 }
-                System.err.print("Processing path: ");
-                for (String feat : feats)
+                if (verbose) 
                 {
-                    System.err.print("->" + feat);
+                    System.err.print("Processing path: ");
+                    for (String feat : feats)
+                    {
+                        System.err.print("->" + feat);
+                    }
+                    System.err.println();
                 }
-                System.err.println();
                 IEntity currentStruct = struct;
                 int listCounter = 0;
                 for (int i = 0; i < feats.length; i++)
@@ -839,25 +842,56 @@ public class GraleJUtility
                         {
                             if (i == feats.length - 1)
                             {
-                                System.err.println("  Index " + i + ": " + ps.get(path));
+                                if (verbose) System.err.println("  Index " + i + ": " + ps.get(path));
                                 String type = ps.get(path);
                                 if (type.equals("ne_list"))
                                 {
-                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newList()));
+                                    if (path.equals(""))
+                                    {
+                                        struct = ef.newList();
+                                        structPerIndex.put(tagID, struct);
+                                    }
+                                    else
+                                    {
+                                        tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newList()));
+                                    }
                                 }
                                 else if (type.equals("e_list"))
                                 {
-                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newList()));
+                                    if (path.equals(""))
+                                    {
+                                        struct = ef.newList();
+                                        structPerIndex.put(tagID, struct);
+                                    }
+                                    else
+                                    {
+                                        tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newList()));
+                                    }
                                 }
                                 else if (type.startsWith("a_"))
                                 {
-                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newAny(type.substring(2))));
+                                    if (path.equals(""))
+                                    {
+                                        struct = ef.newAny(type.substring(2));
+                                        structPerIndex.put(tagID, struct);
+                                    }
+                                    else
+                                    {
+                                        tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newAny(type.substring(2))));
+                                    }
                                 }
                                 else if (type.startsWith("#"))
                                 {
                                     int refID = Integer.parseInt(type.substring(1));
                                     ITag newTag = ef.newTag(refID);
-                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],newTag));
+                                    if (path.equals(""))
+                                    {
+                                        structPerIndex.put(tagID, newTag);
+                                    }
+                                    else
+                                    {
+                                        tfs.addFeatureValue(ef.newFeatVal(feats[i],newTag));
+                                    }
                                     List<ITag> tagList = tagsPerIndex.get(refID);
                                     if (tagList == null)
                                     {
@@ -868,7 +902,14 @@ public class GraleJUtility
                                 }
                                 else
                                 {
-                                    tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newTFS(type)));
+                                    if (path.equals(""))
+                                    {
+                                        tfs.setType(ef.newType(type));
+                                    }
+                                    else
+                                    {
+                                        tfs.addFeatureValue(ef.newFeatVal(feats[i],ef.newTFS(type)));
+                                    }
                                 }
                             }
                             else
