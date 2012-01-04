@@ -703,8 +703,9 @@ public class GraleJUtility
             System.err.println("Path representation of result structure:");
             printPaths(resP);
         }
-        Map<Integer,List<List<String>>> identities = getAlphaConvertedIdentities(e1,e2);
-        return unify(go(e1,path1),go(e2,path2), e1, identities, sig);
+        return convertToGraleJ(resP);
+        //Map<Integer,List<List<String>>> identities = getAlphaConvertedIdentities(e1,e2);
+        //return unify(go(e1,path1),go(e2,path2), e1, identities, sig);
     }
     
     private static Map<Integer,Map<String,String>> convertToPaths(IEntity e1)
@@ -789,7 +790,7 @@ public class GraleJUtility
         }
     }
     
-    private IEntity convertToGraleJ(Map<Integer,Map<String,String>> paths)
+    private static IEntity convertToGraleJ(Map<Integer,Map<String,String>> paths)
     {
         Map<Integer,List<ITag>> tagsPerIndex = new HashMap<Integer,List<ITag>>();
         Map<Integer,IEntity> structPerIndex = new HashMap<Integer,IEntity>();
@@ -803,7 +804,21 @@ public class GraleJUtility
             Collections.sort(pList);
             for (String path : pList)
             {
-                String[] feats = path.split(":");
+                String[] feats;
+                if (path.startsWith(":"))
+                {
+                    feats = path.substring(1).split(":");
+                }
+                else
+                {
+                    feats = path.split(":");
+                }
+                System.err.print("Processing path: ");
+                for (String feat : feats)
+                {
+                    System.err.print("->" + feat);
+                }
+                System.err.println();
                 IEntity currentStruct = struct;
                 int listCounter = 0;
                 for (int i = 0; i < feats.length; i++)
@@ -822,8 +837,9 @@ public class GraleJUtility
                         }
                         if (currentStruct == null)
                         {
-                            if (i == feats.length)
+                            if (i == feats.length - 1)
                             {
+                                System.err.println("  Index " + i + ": " + ps.get(path));
                                 String type = ps.get(path);
                                 if (type.equals("ne_list"))
                                 {
