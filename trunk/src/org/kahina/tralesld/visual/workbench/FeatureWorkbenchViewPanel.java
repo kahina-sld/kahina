@@ -687,11 +687,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 			String name2 = (String) list.getSelectedValues()[1];
 			String grisu1 = view.getModel().getStructure(name1);
 			String grisu2 = view.getModel().getStructure(name2);
-			IEntity ent1 = GraleJUtility.grisuToGraleJ(grisu1);
-			IEntity ent2 = GraleJUtility.grisuToGraleJ(grisu2);
+			IEntity ent1 = GraleJUtility.grisuToGralej(grisu1);
+			IEntity ent2 = GraleJUtility.grisuToGralej(grisu2);
 			if (ent1 != null && ent2 != null)
 			{
-				IEntity mgu = GraleJUtility.unify(ent1, ent2, new LinkedList<String>(), new LinkedList<String>(), view.getModel().getSignature());
+				IEntity mgu = GraleJUtility.sigMGU(ent1, ent2, new LinkedList<String>(), new LinkedList<String>(), view.getModel().getSignature());
 				if (mgu != null)
 				{
                     if (editor.getEditingMode() == TraleSLDFeatureStructureEditor.TTF_MODE)
@@ -702,7 +702,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
                     {
                         GraleJUtility.tf((ITypedFeatureStructure) mgu,view.getModel().getSignature());
                     }
-					view.getModel().storeStructure("mgu(" + name1 + "," + name2 + ")", GraleJUtility.convertGraleJToGrisu(mgu));
+					view.getModel().storeStructure("mgu(" + name1 + "," + name2 + ")", GraleJUtility.gralejToGrisu(mgu));
 					this.processEvent(new TraleSLDFeatureEditEvent("MGU computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 	    			updateDisplay();
 	    			list.setSelectedValue("mgu(" + name1 + "," + name2 + ")", true);
@@ -715,8 +715,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 			String name2 = (String) list.getSelectedValues()[1];
 			String grisu1 = view.getModel().getStructure(name1);
 			String grisu2 = view.getModel().getStructure(name2);
-			IEntity ent1 = GraleJUtility.grisuToGraleJ(grisu1);
-			IEntity ent2 = GraleJUtility.grisuToGraleJ(grisu2);
+			IEntity ent1 = GraleJUtility.grisuToGralej(grisu1);
+			IEntity ent2 = GraleJUtility.grisuToGralej(grisu2);
 			if (ent1 != null && ent2 != null)
 			{
 				String mguGrisu = view.getTrale().entsToMguGrisu(ent1, ent2);
@@ -726,10 +726,10 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 				}
 				else
 				{
-					IEntity mgu = GraleJUtility.grisuToGraleJ(mguGrisu);
+					IEntity mgu = GraleJUtility.grisuToGralej(mguGrisu);
 					if (mgu != null)
 					{
-						view.getModel().storeStructure("mgu(" + name1 + "," + name2 + ")", GraleJUtility.convertGraleJToGrisu(mgu));
+						view.getModel().storeStructure("mgu(" + name1 + "," + name2 + ")", GraleJUtility.gralejToGrisu(mgu));
 						this.processEvent(new TraleSLDFeatureEditEvent("MGU computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 		    			updateDisplay();
 		    			list.setSelectedValue("mgu(" + name1 + "," + name2 + ")", true);
@@ -741,7 +741,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		{
 			String name = (String) list.getSelectedValues()[0];
 			String grisu = view.getModel().getStructure(name);
-			IEntity ent = GraleJUtility.grisuToGraleJ(grisu);
+			IEntity ent = GraleJUtility.grisuToGralej(grisu);
 			if (ent != null)
 			{
 				String mgsGrisu = view.getTrale().entToMgsGrisu(ent);
@@ -751,10 +751,10 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 				}
 				else
 				{
-					IEntity mgs = GraleJUtility.grisuToGraleJ(view.getTrale().entToMgsGrisu(ent));
+					IEntity mgs = GraleJUtility.grisuToGralej(view.getTrale().entToMgsGrisu(ent));
 					if (mgs != null)
 					{
-						view.getModel().storeStructure("mgs(" + name +  ")", GraleJUtility.convertGraleJToGrisu(mgs));
+						view.getModel().storeStructure("mgs(" + name +  ")", GraleJUtility.gralejToGrisu(mgs));
 						this.processEvent(new TraleSLDFeatureEditEvent("Theory MGS computation successful!", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 		    			updateDisplay();
 		    			list.setSelectedValue("mgs(" + name +  ")", true);
@@ -911,11 +911,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		}
 		else
 		{
-			resultEnt = GraleJUtility.signatureMGS(type, view.getModel().getSignature());
+			resultEnt = GraleJUtility.sigMGS(type, view.getModel().getSignature());
 			structureName = "mgs:" + type;
 		}
 		//the most recent and most general way via IEntity construction
-		String result = GraleJUtility.convertGraleJToGrisu(resultEnt);
+		String result = GraleJUtility.gralejToGrisu(resultEnt);
 		if (result.startsWith("ERROR"))
 		{
         	this.processEvent(new TraleSLDFeatureEditEvent(result, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
