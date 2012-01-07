@@ -156,7 +156,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		workbenchMenu.add(compileTheoryItem);
 		
 		discardTheoryItem = new JMenuItem("Discard Theory");
-		discardTheoryItem.setEnabled(false);
+		discardTheoryItem.addActionListener(this);
+		discardTheoryItem.setEnabled(true);
 		workbenchMenu.add(discardTheoryItem);
 		
 		workbenchMenu.addSeparator();
@@ -318,6 +319,15 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     	}
 	}
 	
+	private void adaptSignature()
+	{
+        TraleSLDSignature sig = view.getTrale().getCurrentSignature();
+        view.getModel().setSignatureFileName("(determined by theory)");
+		view.getModel().setSignature(sig);
+		editor.setSignature(sig);
+		adaptSignatureMenu(sig);
+	}
+	
 	private void adaptSignatureMenu(TraleSLDSignature sig)
 	{
 		signatureFileLabel.setText("Signature file: " + view.getSignatureFileName());
@@ -393,6 +403,20 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     	{
     		this.processEvent(new TraleSLDFeatureEditEvent("Theory file name invalid: " + theFileName, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
     	}
+	}
+	
+	public void discardTheory()
+	{
+		view.getTrale().discardGrammar();
+		view.getModel().setSignature(null);
+		view.getModel().setSignatureFileName(null);
+		editor.setSignature(null);
+		signatureFileLabel.setText("Signature file: none (signature not specified or not yet loaded)");
+		newTypeInstanceMenu.removeAll();
+		view.getModel().setTheoryFileName(null);
+		theoryFileLabel.setText("Theory file: none (theory not specified or not yet loaded)");
+		newLexiconInstanceMenu.removeAll();
+		this.processEvent(new TraleSLDFeatureEditEvent("Theory discarded.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 	}
 	
 	private JComponent buildTypeMenu(TraleSLDSignature sig, String type)
@@ -755,7 +779,15 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             	Document doc = XMLUtilities.parseXMLStream(new BufferedInputStream(new FileInputStream(dataFile)), false);
             	FeatureWorkbench workbench = FeatureWorkbench.importXML(doc.getDocumentElement());
             	view.display(workbench);
-            	loadSignature(view.getModel().getSignatureFileName());
+            	if (view.getModel().getTheoryFileName() != null)
+            	{
+            		compileTheory(view.getModel().getTheoryFileName());
+            	}
+            	else if (view.getModel().getSignatureFileName() != null)
+            	{
+            		loadSignature(view.getModel().getSignatureFileName());
+            	}
+            	adaptSignature();
             	this.processEvent(new TraleSLDFeatureEditEvent("Workbench loaded.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
             }
             catch (FileNotFoundException ex)
@@ -807,16 +839,23 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
             compileTheory(dataFile.getAbsolutePath());
-            TraleSLDSignature sig = view.getTrale().getCurrentSignature();
-            view.getModel().setSignatureFileName("(determined by theory)");
-    		view.getModel().setSignature(sig);
-    		editor.setSignature(sig);
-    		adaptSignatureMenu(sig);
+            adaptSignature();
+            updateDisplay();
+		}
+		else if (action.equals("Discard Theory"))
+		{
+            discardTheory();
             updateDisplay();
 		}
 		else if (action.equals("Reload Signature"))
 		{
             loadSignature(view.getModel().getSignatureFileName());
+		}
+		else if (action.equals("Recompile Theory"))
+		{
+            compileTheory(view.getModel().getTheoryFileName());
+            adaptSignature();
+            updateDisplay();
 		}
 		else if (action.equals("Free Mode"))
 		{

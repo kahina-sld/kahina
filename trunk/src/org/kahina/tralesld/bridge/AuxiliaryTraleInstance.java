@@ -117,6 +117,12 @@ public class AuxiliaryTraleInstance extends Thread
 			    		task.setInstruction(null);
 			    		task.notify();
 			    	}
+			    	else if (task.getInstruction().equals("discard"))
+			    	{
+			    		discardTraleGrammar();
+			    		task.setInstruction(null);
+			    		task.notify();
+			    	}
 			    	else if (task.getInstruction().equals("lemmata"))
 			    	{
 			    		task.setResult(extractLemmata());
@@ -153,6 +159,27 @@ public class AuxiliaryTraleInstance extends Thread
 	    		
 	    	} 	
 	    	return task.getResult().equals("true");
+		}
+	}
+	
+	/**
+	 * Lets the instance discard the currently compiled grammar.
+	 */
+	public void discardGrammar()
+	{
+		synchronized(task)
+		{
+			task.setInstruction("discard");
+			task.notify();
+	    	try
+	    	{
+	    		task.wait();
+	    	}
+	    	catch (InterruptedException e)
+	    	{
+	    		
+	    	}
+	    	return;
 		}
 	}
 	
@@ -506,6 +533,25 @@ public class AuxiliaryTraleInstance extends Thread
 		{
 			e.printStackTrace();
 			return false;
+		}
+	}
+	
+	private void discardTraleGrammar()
+	{
+		try 
+		{
+			//abolish *> clauses to remove the compiled grammar information from the instance
+			SPPredicate abolishPred = new SPPredicate(sp, "abolish_user_preds", 1, "");
+			SPTerm consTerm = new SPTerm(sp, "cons");
+			SPQuery abolishQuery = sp.openQuery(abolishPred, new SPTerm[] { consTerm });	      
+			while (abolishQuery.nextSolution())
+			{
+				System.err.println("AuxiliaryTraleInstance discarded old *> database.");
+			}
+		}
+		catch ( Exception e )
+		{
+			e.printStackTrace();
 		}
 	}
 	
