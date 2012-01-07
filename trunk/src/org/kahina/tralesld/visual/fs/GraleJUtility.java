@@ -692,20 +692,28 @@ public class GraleJUtility
     {
         Map<Integer,Map<String,String>> paths1 = convertToPaths(go(e1,path1));
         Map<Integer,Map<String,String>> paths2 = convertToPaths(go(e2,path2));
-        System.err.println("Path representation of structure 1:");
-        printPaths(paths1);
-        System.err.println("Path representation of structure 2:");
-        printPaths(paths2);
+        if (verbose)
+        {
+        	System.err.println("Path representation of structure 1:");
+        	printPaths(paths1);
+        	System.err.println("Path representation of structure 2:");
+        	printPaths(paths2);
+        }
         Map<Integer,Map<String,String>> resP = new HashMap<Integer,Map<String,String>>();
         boolean success = unify(paths1, paths2, resP, sig,-1,-1,"","");
         if (success)
         {
-            System.err.println("Path representation of result structure:");
-            printPaths(resP);
+        	if (verbose)
+        	{
+        		System.err.println("Path representation of result structure:");
+        		printPaths(resP);
+        	}
+            return convertToGraleJ(resP);
         }
-        return convertToGraleJ(resP);
-        //Map<Integer,List<List<String>>> identities = getAlphaConvertedIdentities(e1,e2);
-        //return unify(go(e1,path1),go(e2,path2), e1, identities, sig);
+        else
+        {
+        	return null;
+        }
     }
     
     private static Map<Integer,Map<String,String>> convertToPaths(IEntity e1)
@@ -994,93 +1002,6 @@ public class GraleJUtility
         return structPerIndex.get(-1);
     }
     
-    private static Map<Integer,Map<String,String>> unify(Map<Integer,Map<String,String>> paths1, Map<Integer,Map<String,String>> paths2, TraleSLDSignature sig)
-    {
-        Map<Integer,Map<String,String>> resP = new HashMap<Integer,Map<String,String>>();
-        Map<String,String> res = new HashMap<String,String>();
-        resP.put(-1, res);
-        Map<String,String> p1 = paths1.get(-1);
-        Map<String,String> p2 = paths2.get(-1);
-        List<String> pathList = new LinkedList<String>();
-        pathList.addAll(p1.keySet());
-        pathList.addAll(p2.keySet());
-        Collections.sort(pathList);
-        for (String path : pathList)
-        {
-            String ty1 = p1.get(path);
-            String ty2 = p2.get(path);
-            if (ty1 == null)
-            {
-                res.put(path, ty2);
-            }
-            else if (ty2 == null)
-            {
-                res.put(path, ty1);
-            }
-            else if (ty1.startsWith("#"))
-            {
-                if (ty2.startsWith("#"))
-                {
-                    //two tags need to be unified
-                }
-                else
-                {
-                    //unify tag in p1 with structure in p2
-                }
-            }
-            else if (ty2.startsWith("#"))
-            {
-                //unify tag in p2 with structure in p1
-            }
-            else if (ty1.startsWith("a_"))
-            {
-                //atom in p1: can only be unified with identical atom or bot
-                if (ty1.equals(ty2) || ty2.equals("bot"))
-                {
-                    res.put(path, ty1);
-                }
-                else
-                {
-                    failMsg("Unification failed: " + ty1 + " and " + ty2 + " at path " + path + " are incompatible.");
-                    return null;
-                }
-            }
-            else if (ty2.startsWith("a_"))
-            {
-                //atom in p2, but not in p1: can only be unified with bot
-                if (ty1.equals("bot"))
-                {
-                    res.put(path, ty2);
-                }
-                else
-                {
-                    failMsg("Unification failed: " + ty1 + " and " + ty2 + " at path " + path + " are incompatible.");
-                    return null;
-                }
-            }
-            else
-            {
-                //normal types: subsumption check, select more specific one
-                String unifTy = null;
-                if (sig.dominates(ty1,ty2))
-                {
-                    unifTy = ty2;
-                }
-                else if (sig.dominates(ty2,ty1))
-                {
-                    unifTy = ty1;
-                }
-                else
-                {
-                    failMsg("Unification failed: types " + ty1 + " and " + ty2 + " at path " + path + " are incompatible.");
-                    return null;
-                }
-                res.put(path, unifTy);
-            }
-        }
-        return resP;
-    }
-    
     private static boolean unify(Map<Integer,Map<String,String>> paths1, Map<Integer,Map<String,String>> paths2, Map<Integer,Map<String,String>> resP, TraleSLDSignature sig, int tag1, int tag2, String prefix1, String prefix2)
     {
         //determine the common tag ID for the result structure
@@ -1206,204 +1127,6 @@ public class GraleJUtility
         }
         return true;
     }
-	
-	private static IEntity unify(IEntity e1, IEntity e2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
-	{
-        if (verbose) System.err.print("e1  : " + convertGraleJToGrisu(e1));
-        if (verbose) System.err.print("e2  : " + convertGraleJToGrisu(e2));
-		if (e1 instanceof ITypedFeatureStructure && e2 instanceof ITypedFeatureStructure)
-		{
-			return unify((ITypedFeatureStructure) e1, (ITypedFeatureStructure) e2, rootE, identities, sig);
-		}
-		else if (e1 instanceof IList && e2 instanceof IList)
-		{
-			return unify((IList) e1, (IList) e2, rootE, identities, sig);
-		}
-		else if (e1 instanceof IList && e2 instanceof ITypedFeatureStructure)
-		{
-			if (getType(e2).equals("list")) return e1;
-			failMsg("Unification failed: lists and other structures are incompatible.");
-			return null;
-		}
-		else if (e2 instanceof IList && e1 instanceof ITypedFeatureStructure)
-		{
-			if (getType(e1).equals("list")) return e2;
-			failMsg("Unification failed: lists and other structures are incompatible.");
-			return null;
-		}
-		else if (e1 instanceof ITag && e2 instanceof ITag)
-		{
-			return unify((ITag) e1, (ITag) e2, rootE, identities, sig);
-		}
-		else if (e1 instanceof ITag)
-		{
-			IEntity res = unify(((ITag) e1).target(),e2, rootE, identities, sig);
-            if (verbose) System.err.println("unif: " + convertGraleJToGrisu(res));
-			if (res != null)
-			{
-				return ef.newTag(((ITag) e1).number(), res);
-			}
-			else
-			{
-				return null;
-			}
-		}
-		else if (e2 instanceof ITag)
-		{
-			IEntity res = unify(((ITag) e2).target(),e1, rootE, identities, sig);
-            if (verbose) System.err.println("unif: " + convertGraleJToGrisu(res));
-			if (res != null)
-			{
-                return ef.newTag(((ITag) e2).number(), res);
-			}
-			else
-			{
-				return null;
-			}
-		}
-		else
-		{
-			failMsg("Unification failed: lists and other structures are incompatible.");
-			return null;
-		}
-	}
-	
-	private static IEntity unify(ITypedFeatureStructure tfs1, ITypedFeatureStructure tfs2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
-	{
-		String type1 = getType(tfs1);
-		String type2 = getType(tfs2);
-		String unifType = null;
-		if (sig.dominates(type1,type2))
-		{
-			unifType = type2;
-		}
-		else if (sig.dominates(type2,type1))
-		{
-			unifType = type1;
-		}
-		else
-		{
-			failMsg("Unification failed: types " + type1 + " and " + type2 + " are incompatible.");
-			return null;
-		}
-        //horribly slow, but improvement would need specialized data structures
-		Map<String,IEntity> featVals1 = featValMap(tfs1);
-		Map<String,IEntity> featVals2 = featValMap(tfs2);
-		Map<String,IEntity> unifFeatVals = new HashMap<String,IEntity>();
-        Set<String> featSet = new HashSet<String>();
-        featSet.addAll(featVals1.keySet());
-        featSet.addAll(featVals2.keySet());
-        List<String> featList = new LinkedList<String>();
-        featList.addAll(featSet);
-        Collections.sort(featList);
-		for (String feat : featList)
-		{
-            //PROBLEM: this includes parallel modifications caused by reentrancies
-			IEntity ent1 = featVals1.get(feat);
-			IEntity ent2 = featVals2.get(feat);
-            if (ent1 == null && ent2 == null)
-            {
-                //do nothing
-            }
-            else if (ent2 == null)
-			{
-				unifFeatVals.put(feat, ent1);
-			}
-			else if (ent1 == null)
-			{
-				unifFeatVals.put(feat, ent2);
-			}
-			else
-			{
-				//unification of the two values
-				IEntity res = unify(ent1,ent2,rootE,identities, sig);
-				if (res == null) return null;
-				unifFeatVals.put(feat, res);
-			}
-		}
-		List<IFeatureValuePair> unifFeatVal = new LinkedList<IFeatureValuePair>();
-		for (String feat : featList)
-		{
-			unifFeatVal.add(ef.newFeatVal(feat, unifFeatVals.get(feat)));
-		}
-		IEntity result = ef.newTFS(unifType, unifFeatVal);
-        if (verbose) System.err.println("unif: " + convertGraleJToGrisu(result));
-        return result;
-	}
-	
-	private static IEntity unify(IList l1, IList l2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
-	{
-		IList resultList = ef.newList();
-		List<IEntity> ents1 = new LinkedList<IEntity>();
-		int i = 0;
-		for (IEntity ent2 : l2.elements())
-		{
-			if (i >= ents1.size())
-			{
-				resultList.append(ent2);
-			}
-			else
-			{
-				IEntity res = unify(ents1.get(i), ent2, rootE, identities, sig);
-				if (res == null) return null;
-				resultList.append(res);
-			}
-			i++;
-		}
-		while (i < ents1.size())
-		{
-			resultList.append(ents1.get(i));
-			i++;
-		}
-        if (verbose) System.err.println("unif: " + convertGraleJToGrisu(resultList));
-		return resultList;
-	}
-	
-	private static IEntity unify(ITag t1, ITag t2, IEntity rootE, Map<Integer,List<List<String>>> identities, TraleSLDSignature sig)
-	{
-		IEntity res = unify(((ITag) t1).target(), ((ITag) t2).target(), rootE, identities, sig);
-		if (res == null) return null;
-		//equate the tag numbers throughout the structure, not only locally
-		int number1 = ((ITag) t1).number();
-		int number2 = ((ITag) t2).number();
-		int newNumber = number1;
-		if (number2 > number1)
-        {
-            identities.get(number1).addAll(identities.get(number2));
-            identities.remove(number2);
-        }
-        else
-        {
-            newNumber = number2;
-            identities.get(number2).addAll(identities.get(number1));
-            identities.remove(number1);
-        }
-		for (List<String> path : identities.get(newNumber))
-        {
-            IEntity tagE = go(rootE,path);
-            if (tagE instanceof ITag)
-            {
-                ((ITag) tagE).setNumber(newNumber);
-                ((ITag) tagE).setNumber(newNumber);
-            }
-            else
-            {
-                failMsg("ERROR: no tag at path " + path + " during ITag unification!");
-            }
-        }
-        if (verbose) System.err.println("unif: " + convertGraleJToGrisu(t1));
-        return t1;
-	}
-	
-	private static Map<String,IEntity> featValMap(ITypedFeatureStructure fs)
-	{
-		HashMap<String,IEntity> featValMap = new HashMap<String,IEntity>();
-		for (IFeatureValuePair fval : fs.featureValuePairs())
-		{
-			featValMap.put(fval.feature(), fval.value());
-		}
-		return featValMap;
-	}
 	
 	/**
 	 * Retrieves the substructure of an IEntity at a given a path.
