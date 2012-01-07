@@ -575,7 +575,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		String command = e.getActionCommand();
 		if (command.equals("Copy"))
 		{
-			String copyGrisu = GraleJUtility.convertGraleJToGrisu(contextStructure);
+			String copyGrisu = GraleJUtility.gralejToGrisu(contextStructure);
 			if (copyGrisu.startsWith("ERROR"))
 			{
 				failureMessage(copyGrisu);
@@ -659,7 +659,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			}
 			else 
 			{
-				IEntity res = GraleJUtility.specialize((IEntity) data.getModel(), contextPath, tau, sig);
+				IEntity res = GraleJUtility.spz((IEntity) data.getModel(), contextPath, tau, sig);
 				if (editingMode == TTF_MODE)
 				{
 					GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
@@ -674,7 +674,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.startsWith("gen:"))
 		{
 			String tau = command.substring(4);
-            IEntity res = GraleJUtility.generalize((IEntity) data.getModel(), contextPath, tau, sig);
+            IEntity res = GraleJUtility.gez((IEntity) data.getModel(), contextPath, tau, sig);
 			if (editingMode == TTF_MODE)
 			{
                 GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
@@ -688,7 +688,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.startsWith("swi:"))
 		{
 			String tau = command.substring(4);
-            IEntity res = GraleJUtility.switchType((IEntity) data.getModel(), contextPath, tau, sig);
+            IEntity res = GraleJUtility.swi((IEntity) data.getModel(), contextPath, tau, sig);
 			if (editingMode == TTF_MODE)
 			{
                 GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
@@ -703,8 +703,8 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		{
 			String f = command.substring(4);
 			String parentType = contextParentStructureType;
-			IEntity mgs = GraleJUtility.signatureMGS(sig.getAppropriateValueType(parentType, f), sig);
-			IEntity result = GraleJUtility.introFeat((IEntity) data.getModel(), contextPath, f, mgs, sig);
+			IEntity mgs = GraleJUtility.sigMGS(sig.getAppropriateValueType(parentType, f), sig);
+			IEntity result = GraleJUtility.fin((IEntity) data.getModel(), contextPath, f, mgs, sig);
             if (editingMode == TF_MODE)
             {
                 GraleJUtility.tf((ITypedFeatureStructure) result,sig);
@@ -714,7 +714,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else if (command.equals("Remove"))
 		{
 			String feat = ((IFeatureValuePair) contextStructure).feature(); 
-			GraleJUtility.remFeat((IEntity) data.getModel(), contextPath, feat);
+			GraleJUtility.fre((IEntity) data.getModel(), contextPath, feat);
 			reconvert();
 		}
 		else if (command.equals("Reset"))
@@ -733,7 +733,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else if (command.equals("Dissolve"))
 		{
-            IEntity res = GraleJUtility.remIdent((IEntity) data.getModel(), contextPath);
+            IEntity res = GraleJUtility.ids((IEntity) data.getModel(), contextPath);
             if (editingMode == TTF_MODE)
             {
                 GraleJUtility.ttf((ITypedFeatureStructure) res,sig);
@@ -751,7 +751,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		}
 		else if (command.equals("Identity"))
 		{
-			IEntity res = GraleJUtility.makeIdent((IEntity) data.getModel(), cachedPath, contextPath, sig);
+			IEntity res = GraleJUtility.itd((IEntity) data.getModel(), cachedPath, contextPath, sig);
 			if (res != null)
 			{
                 if (editingMode == TTF_MODE)
@@ -848,7 +848,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	private void reconvert()
 	{
-		String result = GraleJUtility.convertGraleJToGrisu((IEntity) data.getModel());
+		String result = GraleJUtility.gralejToGrisu((IEntity) data.getModel());
 		if (result.startsWith("ERROR"))
 		{
 			failureMessage(result);
@@ -862,7 +862,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	private void reconvert(IEntity newRoot)
 	{
-		String result = GraleJUtility.convertGraleJToGrisu(newRoot);
+		String result = GraleJUtility.gralejToGrisu(newRoot);
 		if (result.startsWith("ERROR"))
 		{
 			failureMessage(result);

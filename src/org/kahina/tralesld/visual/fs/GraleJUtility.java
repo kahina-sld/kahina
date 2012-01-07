@@ -33,9 +33,9 @@ public class GraleJUtility
 		editor = e;
 	}
 	
-	public static IEntity specialize(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
+	public static IEntity spz(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
 	{
-		IEntity et = go(e,path);
+		IEntity et = delta(e,path);
 		if (et == null)
 		{
 			failMsg("Specialize failed: Unable to evaluate address!");
@@ -77,9 +77,9 @@ public class GraleJUtility
 		return e;
 	}
 	
-	public static IEntity generalize(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
+	public static IEntity gez(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
 	{
-		IEntity ent = go(e,path);
+		IEntity ent = delta(e,path);
 		if (ent == null)
 		{
 			failMsg("Generalize failed: Unable to evaluate address!");
@@ -102,9 +102,9 @@ public class GraleJUtility
 		return e;
 	}
 	
-	public static IEntity switchType(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
+	public static IEntity swi(IEntity e, List<String> path, String ty, TraleSLDSignature sig)
 	{
-		IEntity ent = go(e,path);
+		IEntity ent = delta(e,path);
 		if (ent == null)
 		{
 			failMsg("Switching failed: Unable to evaluate address!");
@@ -132,8 +132,8 @@ public class GraleJUtility
 		else
 		{
 			//use sequence of generalization and specialization (inefficient, but clean)
-			generalize(e,path,commonSupertype,sig);
-			specialize(e,path,ty,sig);
+			gez(e,path,commonSupertype,sig);
+			spz(e,path,ty,sig);
 			successMsg("Type switching successful!");
 		}
 		return e;
@@ -280,7 +280,7 @@ public class GraleJUtility
                     {
                         List<String> path = new LinkedList<String>();
                         path.add(feat);
-                        specialize(e,path,appropFeats.get(feat),sig);
+                        spz(e,path,appropFeats.get(feat),sig);
                     }
                     typInf(fv.value(),sig);
                 }
@@ -357,7 +357,7 @@ public class GraleJUtility
         }
     }
 	
-	public static IEntity introFeat(IEntity e, List<String> path, String feat, IEntity val, TraleSLDSignature sig)
+	public static IEntity fin(IEntity e, List<String> path, String feat, IEntity val, TraleSLDSignature sig)
 	{
 		IEntity parent = goUpToLast(e,path);
 		IEntity et = goLast(parent,path);
@@ -395,7 +395,7 @@ public class GraleJUtility
 		return e;
 	}
 	
-	public static IEntity remFeat(IEntity e, List<String> path, String feat)
+	public static IEntity fre(IEntity e, List<String> path, String feat)
 	{
 		IEntity et = goUpToLast(e,path);
 		if (et == null)
@@ -443,7 +443,7 @@ public class GraleJUtility
 		return e;
 	}
 	
-	public static IEntity remIdent(IEntity e, List<String> path)
+	public static IEntity ids(IEntity e, List<String> path)
 	{
 		Map<Integer,List<List<String>>> identities = getIdentities(e);
 		IEntity parent = goUpToLast(e,path);
@@ -497,7 +497,7 @@ public class GraleJUtility
 	
 	public static IEntity addListElement(IEntity e, List<String> path, int listIndex, TraleSLDSignature sig)
 	{
-		IEntity ent = go(e,path);
+		IEntity ent = delta(e,path);
 		if (ent == null)
 		{
 			failMsg("List manipulation failed: Unable to evaluate address!");
@@ -531,7 +531,7 @@ public class GraleJUtility
 	
 	public static IEntity removeListElement(IEntity e, List<String> path, int listIndex, TraleSLDSignature sig)
 	{
-		IEntity ent = go(e,path);
+		IEntity ent = delta(e,path);
 		if (ent == null)
 		{
 			failMsg("List manipulation failed: Unable to evaluate address!");
@@ -564,7 +564,7 @@ public class GraleJUtility
 	
 	public static IEntity clearList(IEntity e, List<String> path, TraleSLDSignature sig)
 	{
-		IEntity ent = go(e,path);
+		IEntity ent = delta(e,path);
 		if (ent == null)
 		{
 			failMsg("List manipulation failed: Unable to evaluate address!");
@@ -595,10 +595,10 @@ public class GraleJUtility
 		return ef.newAny(name);
 	}
 	
-	public static IEntity makeIdent(IEntity e, List<String> path1, List<String> path2, TraleSLDSignature sig)
+	public static IEntity itd(IEntity e, List<String> path1, List<String> path2, TraleSLDSignature sig)
 	{
-		IEntity ent1 = go(e,path1);
-		IEntity ent2 = go(e,path2);
+		IEntity ent1 = delta(e,path1);
+		IEntity ent2 = delta(e,path2);
 		if (ent1 == null || ent2 == null)
 		{
 			failMsg("Identity introduction failed: Unable to evaluate address!");
@@ -616,7 +616,7 @@ public class GraleJUtility
 			parent2 = ent2;
 			ent2 = ((ITag) ent2).target();
 		}
-		IEntity mgu = unify(e,e,path1,path2,sig);
+		IEntity mgu = sigMGU(e,e,path1,path2,sig);
 		if (mgu == null) return null;
         Map<Integer,List<List<String>>> identities = getIdentities(e);
 		int number = getFreeTagID(identities);
@@ -656,7 +656,7 @@ public class GraleJUtility
 				replace(tag1,tag2,tag2.target());
 				for (List<String> path : identities.get(higherNumber))
 				{
-					IEntity otherE = go(e,path);
+					IEntity otherE = delta(e,path);
 					if (otherE instanceof ITag)
 					{
 						((ITag) otherE).setNumber(lowerNumber);
@@ -676,22 +676,11 @@ public class GraleJUtility
 		}
 		return true;
 	}
-	
-	private static boolean inOnePath(List<String> path1, List<String> path2)
-	{
-		int length = path1.size();
-		if (path2.size() < length) length = path2.size();
-		for (int i = 0; i < length; i++)
-		{
-			if (!path1.get(i).equals(path2.get(i))) return false;
-		}
-		return true;
-	}
-    
-    public static IEntity unify(IEntity e1, IEntity e2, List<String> path1, List<String> path2, TraleSLDSignature sig)
+
+    public static IEntity sigMGU(IEntity e1, IEntity e2, List<String> path1, List<String> path2, TraleSLDSignature sig)
     {
-        Map<Integer,Map<String,String>> paths1 = convertToPaths(go(e1,path1));
-        Map<Integer,Map<String,String>> paths2 = convertToPaths(go(e2,path2));
+        Map<Integer,Map<String,String>> paths1 = convertToPaths(delta(e1,path1));
+        Map<Integer,Map<String,String>> paths2 = convertToPaths(delta(e2,path2));
         if (verbose)
         {
         	System.err.println("Path representation of structure 1:");
@@ -1134,7 +1123,7 @@ public class GraleJUtility
 	 * @param path - a list of strings encoding a path of features
 	 * @return the IEntity at the path in e, null if no such structure was found
 	 */
-	public static IEntity go(IEntity e, List<String> path)
+	public static IEntity delta(IEntity e, List<String> path)
 	{
 		return goSubpath(e,path,0,path.size());
 	}
@@ -1183,7 +1172,7 @@ public class GraleJUtility
 		return null;
 	}
 	
-	public static IEntity goUpToLast(IEntity e, List<String> path)
+	private static IEntity goUpToLast(IEntity e, List<String> path)
 	{
 		if (path.size() == 0) return null;
 		//special treatment for list case
@@ -1204,7 +1193,7 @@ public class GraleJUtility
 		}
 	}
 	
-	public static IEntity goLast(IEntity e, List<String> path)
+	private static IEntity goLast(IEntity e, List<String> path)
 	{
 		if (path.size() == 0) return null;
 		//special treatment for list case
@@ -1294,7 +1283,7 @@ public class GraleJUtility
             parent = et;
             et = ((ITag) et).target();
         }
-        IEntity replacement = unify(e,paste,path,new LinkedList<String>(),sig);
+        IEntity replacement = sigMGU(e,paste,path,new LinkedList<String>(),sig);
         if (replacement != null)
         {
             successMsg("Unifying paste successful.");
@@ -1387,13 +1376,13 @@ public class GraleJUtility
 		return type;
 	}
     
-    /**
+    /*
      * Performs alpha conversion on two structures, and returns the combined identity information.
      * @param e1 an IEntity object
      * @param e2 an IEntity object
      * @return The path identities in the alpha-converted structures, indexed by tag IDs.
      */
-    public static Map<Integer,List<List<String>>> getAlphaConvertedIdentities(IEntity e1, IEntity e2)
+    private static Map<Integer,List<List<String>>> getAlphaConvertedIdentities(IEntity e1, IEntity e2)
     {
         if (e1 == e2)
         {
@@ -1429,7 +1418,7 @@ public class GraleJUtility
                         nextFreeID++;
                     }
                     //rename reentrancies in e2 to fresh tag ID
-                    alphaConvert(e2,identI2,nextFreeID);
+                    alphaConversionStep(e2,identI2,nextFreeID);
                     //store identities under their respective IDs
                     commonIdentities.put(nextFreeID, identI1);
                     commonIdentities.put(nextFreeID, identI2);
@@ -1455,11 +1444,11 @@ public class GraleJUtility
         }
     }
     
-    private static void alphaConvert(IEntity e, List<List<String>> tagPaths, int newTagID)
+    private static void alphaConversionStep(IEntity e, List<List<String>> tagPaths, int newTagID)
     {
         for (List<String> path : tagPaths)
         {
-            IEntity tagE = go(e,path);
+            IEntity tagE = delta(e,path);
             if (tagE instanceof ITag)
             {
                 ((ITag) tagE).setNumber(newTagID);
@@ -1471,7 +1460,7 @@ public class GraleJUtility
         }
     }
 	
-	public static Map<Integer,List<List<String>>> getIdentities(IEntity e)
+	private static Map<Integer,List<List<String>>> getIdentities(IEntity e)
 	{
 		Map<Integer,List<List<String>>> identities = new HashMap<Integer,List<List<String>>>();
 		List<String> currentPath = new LinkedList<String>();
@@ -1548,7 +1537,7 @@ public class GraleJUtility
 		return features;
 	}
 	
-	public static IEntity signatureMGS(String type, TraleSLDSignature sig)
+	public static IEntity sigMGS(String type, TraleSLDSignature sig)
 	{
 		if (!sig.getTypes().contains(type))
 		{
@@ -1573,7 +1562,7 @@ public class GraleJUtility
 		return struct;
 	}
 	
-	public static IEntity grisuToGraleJ(String grisu)
+	public static IEntity grisuToGralej(String grisu)
 	{
 		IDataPackage data = null;
 		try
@@ -1588,13 +1577,13 @@ public class GraleJUtility
 		return (IEntity) data.getModel();
 	}
 	
-	public static String convertGraleJToGrisu(IEntity ent)
+	public static String gralejToGrisu(IEntity ent)
 	{
 		int[] counter = {0};
 		StringBuilder s = new StringBuilder("!newdata\"grisu\"");
 		HashMap<Integer,IEntity> ref = new HashMap<Integer,IEntity>();
 		HashSet<Integer> procRef = new HashSet<Integer>();
-		graleJToGrisu(ent, s, counter, ref, procRef);
+		gralejToGrisu(ent, s, counter, ref, procRef);
 		while (ref.size() > 0)
 		{
 			resolveReferenced(s,counter,ref, procRef);
@@ -1612,11 +1601,11 @@ public class GraleJUtility
 		s.append(counter[0]++);
 		s.append(" ");
 		s.append(number);
-		graleJToGrisu(target,s,counter,ref,procRef);
+		gralejToGrisu(target,s,counter,ref,procRef);
 		s.append(")");
 	}
 	
-	private static void graleJToGrisu(IEntity ent, StringBuilder s, int[] counter, Map<Integer,IEntity> ref, Set<Integer> procRef)
+	private static void gralejToGrisu(IEntity ent, StringBuilder s, int[] counter, Map<Integer,IEntity> ref, Set<Integer> procRef)
 	{
 		if (ent instanceof IList)
 		{
@@ -1625,7 +1614,7 @@ public class GraleJUtility
 			s.append(counter[0]++);
 			for (IEntity lEnt : list.elements())
 			{
-				graleJToGrisu(lEnt, s, counter, ref, procRef);
+				gralejToGrisu(lEnt, s, counter, ref, procRef);
 			}
 			s.append(")");
 		}
@@ -1658,11 +1647,11 @@ public class GraleJUtility
 		{
 			ITypedFeatureStructure tfs = (ITypedFeatureStructure) ent;
 			s.append("(S" + (counter[0] + 1));
-			graleJToGrisu(tfs.type(), s, counter, ref, procRef);
+			gralejToGrisu(tfs.type(), s, counter, ref, procRef);
 			counter[0]++;
 			for (IFeatureValuePair fv : tfs.featureValuePairs())
 			{
-				graleJToGrisu(fv, s, counter, ref, procRef);
+				gralejToGrisu(fv, s, counter, ref, procRef);
 			}
 			s.append(")");
 		}
@@ -1684,7 +1673,7 @@ public class GraleJUtility
 			s.append("\"");
 			s.append(fv.feature());
 			s.append("\"");
-			graleJToGrisu(fv.value(), s, counter, ref, procRef);
+			gralejToGrisu(fv.value(), s, counter, ref, procRef);
 			s.append(")");
 		}
 	}
