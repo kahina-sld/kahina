@@ -794,6 +794,7 @@ public class GraleJUtility
     {
         Map<Integer,List<ITag>> tagsPerIndex = new HashMap<Integer,List<ITag>>();
         Map<Integer,IEntity> structPerIndex = new HashMap<Integer,IEntity>();
+        String prefixUpToTag = null;
         for (int tagID : paths.keySet())
         {
             IEntity struct = ef.newTFS("bot");
@@ -805,7 +806,11 @@ public class GraleJUtility
             for (String path : pList)
             {
                 String[] feats;
-                if (path.startsWith(":"))
+                if (prefixUpToTag != null && path.startsWith(prefixUpToTag))
+                {
+                	continue;
+                }
+                else if (path.startsWith(":"))
                 {
                     feats = path.substring(1).split(":");
                 }
@@ -826,6 +831,7 @@ public class GraleJUtility
                 int listCounter = 0;
                 for (int i = 0; i < feats.length; i++)
                 {
+                	//traverse paths
                     if (currentStruct instanceof ITypedFeatureStructure)
                     {
                         ITypedFeatureStructure tfs = (ITypedFeatureStructure) currentStruct;
@@ -840,6 +846,7 @@ public class GraleJUtility
                         }
                         if (currentStruct == null)
                         {
+                        	//end of path reached
                             if (i == feats.length - 1)
                             {
                                 if (verbose) System.err.println("  Index " + i + ": " + ps.get(path));
@@ -882,6 +889,7 @@ public class GraleJUtility
                                 }
                                 else if (type.startsWith("#"))
                                 {
+                                	prefixUpToTag = path;
                                     int refID = Integer.parseInt(type.substring(1));
                                     ITag newTag = ef.newTag(refID);
                                     if (path.equals(""))
@@ -924,6 +932,7 @@ public class GraleJUtility
                         {
                             listCounter++;
                         }
+                        //addressed list element reached
                         else if (feats[i].equals("hd"))
                         {
                             IList list = (IList) currentStruct;
@@ -943,6 +952,7 @@ public class GraleJUtility
                             }
                             else if (type.startsWith("#"))
                             {
+                            	prefixUpToTag = path;
                                 int refID = Integer.parseInt(type.substring(1));
                                 ITag newTag = ef.newTag(refID);
                                 newEnt = newTag;
@@ -1860,28 +1870,30 @@ public class GraleJUtility
 		int[] counter = {0};
 		StringBuilder s = new StringBuilder("!newdata\"grisu\"");
 		HashMap<Integer,IEntity> ref = new HashMap<Integer,IEntity>();
-		graleJToGrisu(ent, s, counter, ref);
+		HashSet<Integer> procRef = new HashSet<Integer>();
+		graleJToGrisu(ent, s, counter, ref, procRef);
 		while (ref.size() > 0)
 		{
-			resolveReferenced(s,counter,ref);
+			resolveReferenced(s,counter,ref, procRef);
 		}
 		s.append("\n");
 		return s.toString();
 	}
 	
-	private static void resolveReferenced(StringBuilder s, int[] counter, Map<Integer,IEntity> ref)
+	private static void resolveReferenced(StringBuilder s, int[] counter, Map<Integer,IEntity> ref, Set<Integer> procRef)
 	{
 		int number = ref.keySet().iterator().next();
 		IEntity target = ref.remove(number);
+		procRef.add(number);
 		s.append("(R");
 		s.append(counter[0]++);
 		s.append(" ");
 		s.append(number);
-		graleJToGrisu(target,s,counter,ref);
+		graleJToGrisu(target,s,counter,ref,procRef);
 		s.append(")");
 	}
 	
-	private static void graleJToGrisu(IEntity ent, StringBuilder s, int[] counter, Map<Integer,IEntity> ref)
+	private static void graleJToGrisu(IEntity ent, StringBuilder s, int[] counter, Map<Integer,IEntity> ref, Set<Integer> procRef)
 	{
 		if (ent instanceof IList)
 		{
@@ -1890,7 +1902,7 @@ public class GraleJUtility
 			s.append(counter[0]++);
 			for (IEntity lEnt : list.elements())
 			{
-				graleJToGrisu(lEnt, s, counter, ref);
+				graleJToGrisu(lEnt, s, counter, ref, procRef);
 			}
 			s.append(")");
 		}
@@ -1913,18 +1925,21 @@ public class GraleJUtility
 			s.append(counter[0]++);
 			s.append(" ");
 			s.append(tag.number());
-			ref.put(tag.number(), tag.target());
+			if (!procRef.contains(tag.number()))
+			{
+				ref.put(tag.number(), tag.target());
+			}
 			s.append(")");
 		}
 		else if (ent instanceof ITypedFeatureStructure)
 		{
 			ITypedFeatureStructure tfs = (ITypedFeatureStructure) ent;
 			s.append("(S" + (counter[0] + 1));
-			graleJToGrisu(tfs.type(), s, counter, ref);
+			graleJToGrisu(tfs.type(), s, counter, ref, procRef);
 			counter[0]++;
 			for (IFeatureValuePair fv : tfs.featureValuePairs())
 			{
-				graleJToGrisu(fv, s, counter, ref);
+				graleJToGrisu(fv, s, counter, ref, procRef);
 			}
 			s.append(")");
 		}
@@ -1946,7 +1961,7 @@ public class GraleJUtility
 			s.append("\"");
 			s.append(fv.feature());
 			s.append("\"");
-			graleJToGrisu(fv.value(), s, counter, ref);
+			graleJToGrisu(fv.value(), s, counter, ref, procRef);
 			s.append(")");
 		}
 	}
