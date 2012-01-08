@@ -1,4 +1,4 @@
-package org.kahina.tralesld.data;
+package org.kahina.tralesld.data.workbench;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
