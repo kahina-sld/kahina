@@ -316,8 +316,6 @@ term_grisu(Term,_Depth,_Coins,ID0,ID,Grisu0,Grisu) :-
   var_grisu(Term,ID0,ID,Grisu0,Grisu).
 % FS
 term_grisu(Term,_Depth,Coins,ID0,ID,Grisu0,Grisu) :-
-  % FIXME one of the two following goals seems to fail unexpectedly in the case
-  % of certain subcat lists
   should_be_attempted_to_portray_as_fs(Term), % looks like a good FS on the surface
   fs_grisu(Term,Coins,ID0,ID,Grisu0,Grisu), % may still fail, naughty FSs may be hidden inside
   !.
@@ -403,6 +401,17 @@ fs_grisu_nr(T=FL,Coins,ID0,ID,[40,76|Grisu0],Grisu) :- % (L
   is_nel_type(T),
   !,
   id_grisu(ID0,ID1,Grisu0,Grisu1),
+  % Fun fact about QType's FS representation: for an FS T=FL, appropriate
+  % features for T need not (yet) be in FL (for now, we use a Prolog variable
+  % returned by fl_feature/3 to display unknown FI/RE values), and conversely,
+  % features in FL need not be appropriate for T (T is then more general than a
+  % type that introduces the feature). The latter is why not every list FS is
+  % displayed as a list. E.g. we could have an scl-type FS with a FI feature -
+  % it clearly represents a non-empty list, but the type does not say so. We
+  % could of course automagically infer it from the presence of the FI feature
+  % and from the fact that scl (in this example) is a subtype of list, but in
+  % the absence of strong reasons to do so I would prefer to more explicitly
+  % represent the underlying structure in such cases.
   fl_feature(FL,'FI',First),
   fl_feature(FL,'RE',Rest),
   term_grisu(First,5,Coins,ID1,ID2,Grisu1,Grisu2),
