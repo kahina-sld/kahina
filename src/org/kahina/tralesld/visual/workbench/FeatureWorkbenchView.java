@@ -13,7 +13,7 @@ import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
-import org.kahina.tralesld.data.FeatureWorkbench;
+import org.kahina.tralesld.data.workbench.FeatureWorkbench;
 import org.kahina.tralesld.event.TraleSLDEventTypes;
 
 public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
