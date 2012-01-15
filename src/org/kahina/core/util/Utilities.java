@@ -92,4 +92,19 @@ public class Utilities
 		}
 		return result;
 	}
+	
+	public static void ensureSize(List<?> list, int minSize)
+	{
+		int difference = minSize - list.size();
+		for (int i = difference; i > 0; i--)
+		{
+			list.add(null);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<String> castToStringList(Object object)
+	{
+		return (List<String>) object;
+	}
 }
