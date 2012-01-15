@@ -15,7 +15,7 @@ import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 
 public class QTypeBridge extends SICStusPrologBridge
 {
-	
+
 	private static final Pattern SENTENCE_PATTERN = Pattern.compile("\\[([^\\]]+)\\]");
 
 	private final TraleSLDFSPacker packer;
@@ -25,7 +25,7 @@ public class QTypeBridge extends SICStusPrologBridge
 		super(state);
 		packer = new TraleSLDFSPacker();
 	}
-	
+
 	@Override
 	public void step(int extID, String type, String description, String consoleMessage)
 	{
@@ -34,13 +34,28 @@ public class QTypeBridge extends SICStusPrologBridge
 		{
 			String path = PrologUtilities.atomLiteralToString(description.substring(16, description.length() - 1));
 			KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { path }));
-		} else if (description.startsWith("lc(") && description.endsWith(")")) {
+		} else if (description.startsWith("lc(") && description.endsWith(")"))
+		{
 			Matcher matcher = SENTENCE_PATTERN.matcher(description.substring(3, description.length() - 1));
-			
+
 			if (matcher.matches())
 			{
 				KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtilities.parsePrologStringList(matcher.group(0)) }));
 			}
+		}
+	}
+
+	public void registerExample(int number, String expectation, String sentence)
+	{
+		try
+		{
+			KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_EXAMPLE, new Object[] { number, expectation, PrologUtilities.parsePrologStringList(sentence) }));
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			
+			System.exit(-1);
 		}
 	}
 
@@ -63,7 +78,7 @@ public class QTypeBridge extends SICStusPrologBridge
 			{
 				goal.setOut(packer.pack(grisu));
 			}
-			
+
 			selectIfPaused(convertStepID(extID));
 		} catch (Exception e)
 		{

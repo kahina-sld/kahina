@@ -2,6 +2,7 @@ package org.kahina.qtype;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Queue;
@@ -24,7 +25,7 @@ public class QTypeCommander implements KahinaListener
 {
 
 	private static final boolean VERBOSE = false;
-	
+
 	private Queue<String> commands = new ArrayDeque<String>();
 
 	private boolean commanding = false;
@@ -33,7 +34,9 @@ public class QTypeCommander implements KahinaListener
 
 	private List<String> sentence = Collections.emptyList();
 
-	public final Action COMPILE_ACTION = new AbstractAction("Compile")
+	private List<List<String>> examples = new ArrayList<List<String>>();
+
+	public final Action COMPILE_ACTION = new AbstractAction("Compile...")
 	{
 
 		private static final long serialVersionUID = -3829326193202814557L;
@@ -46,7 +49,7 @@ public class QTypeCommander implements KahinaListener
 
 	};
 
-	public final Action PARSE_ACTION = new AbstractAction("Parse")
+	public final Action PARSE_ACTION = new AbstractAction("Parse...")
 	{
 
 		private static final long serialVersionUID = -3829326193202814557L;
@@ -112,7 +115,7 @@ public class QTypeCommander implements KahinaListener
 			processSystemEvent((KahinaSystemEvent) e);
 		}
 	}
-	
+
 	private void processSystemEvent(KahinaSystemEvent e)
 	{
 		if (VERBOSE)
@@ -137,59 +140,56 @@ public class QTypeCommander implements KahinaListener
 
 		if (QTypeControlEventCommands.REGISTER_SENTENCE.equals(command))
 		{
-			sentence = castToStringList(event.getArguments()[0]);
+			sentence = Utilities.castToStringList(event.getArguments()[0]);
 			updateActions();
 			if (VERBOSE)
 			{
 				System.err.println("Sentence registered.");
 			}
-		} 
-		else if (QTypeControlEventCommands.REGISTER_GRAMMAR.equals(command))
+		} else if (QTypeControlEventCommands.REGISTER_EXAMPLE.equals(command))
+		{
+			Object[] arguments = event.getArguments();
+			int number = (Integer) arguments[0];
+			Utilities.ensureSize(examples, number + 1);
+			examples.set(number, Utilities.castToStringList(arguments[2]));
+			KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
+		} else if (QTypeControlEventCommands.REGISTER_GRAMMAR.equals(command))
 		{
 			grammar = (String) event.getArguments()[0];
-			PARSE_ACTION.setEnabled(commanding);
+			sentence = Collections.emptyList();
+			examples = new ArrayList<List<String>>();
+			KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
 			updateActions();
 			if (VERBOSE)
 			{
 				System.err.println("Grammar registered.");
 			}
-		} 
-		else if (QTypeControlEventCommands.COMPILE.equals(command))
+		} else if (QTypeControlEventCommands.COMPILE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
 				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
-			} 
-			else
+			} else
 			{
 				KahinaRunner.processEvent(new KahinaControlEvent("abort"));
 				compile((String) event.getArguments()[0]);
 			}
-		} 
-		else if (QTypeControlEventCommands.PARSE.equals(command))
+		} else if (QTypeControlEventCommands.PARSE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
 				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { Utilities.join(" ", sentence) }));
-			} 
-			else
+			} else
 			{
 				KahinaRunner.processEvent(new KahinaControlEvent("abort"));
-				parse(castToStringList(event.getArguments()[0]));
+				parse(Utilities.castToStringList(event.getArguments()[0]));
 			}
-		} 
-		else if (QTypeControlEventCommands.RESTART.equals(command))
+		} else if (QTypeControlEventCommands.RESTART.equals(command))
 		{
 			KahinaRunner.processEvent(new KahinaControlEvent("abort"));
 			compile(grammar);
 			parse(sentence);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<String> castToStringList(Object object)
-	{
-		return (List<String>) object;
 	}
 
 	protected void compile(String absolutePath)
