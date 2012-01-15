@@ -198,6 +198,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			step.setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1));
 			currentID = stepID;
 			KahinaRunner.store(stepID, step);
+			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
