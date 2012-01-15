@@ -162,6 +162,9 @@ set_breakpoints(_) :-
 set_breakpoints(_) :-
   add_qbreakpoint(descr:start_constraint/1,[source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
   fail.
+set_breakpoints(_) :-
+  add_qbreakpoint(grammar:lexample/2,[source_code_location(qtrace:source_code_location(File,Line),File,Line)]),
+  fail.
 set_breakpoints(Home) :-
   directory_files(Home,Files),
   atom_codes('.pl',ExtensionCodes),
@@ -218,6 +221,8 @@ set_breakpoints_clause(_,_,_).
 not_traced(timer:msg_timer/_).
 not_traced(timer:msg_timer2/_).
 not_traced(cmd_aux:call_prolog/1).
+not_traced(print_a_string/1).
+not_traced(print_a_string2/1).
 %not_traced(cp_exsyn:tokenize_and_parse/0).
 %not_traced(cp_sig:define_undefined_subtypes/1). % TODO type hierarchy view with features?
 %not_traced(cp_sig:connect_homeless_types/2).
@@ -241,6 +246,8 @@ goal_source_code_location(lexrule:apply_lexrules(_,_,_,Line),File,Line) :-
 goal_source_code_location(grammar:db_lexrule(_,_,_,Line),File,Line) :-
   line_source_code_location(File,Line).
 goal_source_code_location(descr:start_constraint(Line),File,Line) :-
+  line_source_code_location(File,Line).
+goal_source_code_location(grammar:lexample(Line,_),File,Line) :-
   line_source_code_location(File,Line).
 
 % ------------------------------------------------------------------------------
