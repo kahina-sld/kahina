@@ -9,13 +9,13 @@ import javax.swing.JMenuItem;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.event.KahinaDialogEvent;
 
-public class KahinaBreakpointMenu  extends JMenu implements ActionListener
+public class KahinaControlPointMenu  extends JMenu implements ActionListener
 {
     private static final long serialVersionUID = -1290849167486564257L;
 
-    public KahinaBreakpointMenu()
+    public KahinaControlPointMenu()
     {
-        super("Breakpoints");       
+        super("Control points");       
         
         JMenuItem primaryBreakpointsItem = new JMenuItem("Breakpoints (search tree)");
         primaryBreakpointsItem.setActionCommand("editPrimaryBreakpoints");
