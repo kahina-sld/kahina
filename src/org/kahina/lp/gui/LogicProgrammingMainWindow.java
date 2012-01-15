@@ -1,7 +1,7 @@
 package org.kahina.lp.gui;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.gui.KahinaBreakpointMenu;
+import org.kahina.core.gui.KahinaControlPointMenu;
 import org.kahina.core.gui.KahinaMainWindow;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.profiler.KahinaProfilerMenu;
@@ -23,7 +23,7 @@ public class LogicProgrammingMainWindow extends KahinaMainWindow
 	
 	protected void addAdditionalMenus()
 	{
-		menuBar.add(new KahinaBreakpointMenu());
+		menuBar.add(new KahinaControlPointMenu());
 		menuBar.add(new KahinaProfilerMenu());
 	}
 }
