@@ -1,4 +1,4 @@
-package org.kahina.core.breakpoint;
+package org.kahina.core.control.patterns;
 
 import java.io.Serializable;
 import java.util.ArrayList;

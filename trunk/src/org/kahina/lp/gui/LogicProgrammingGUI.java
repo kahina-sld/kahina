@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaStep;
-import org.kahina.core.breakpoint.KahinaBreakpointType;
+import org.kahina.core.control.KahinaBreakpointType;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.event.KahinaDialogEvent;
 import org.kahina.core.event.KahinaEventTypes;

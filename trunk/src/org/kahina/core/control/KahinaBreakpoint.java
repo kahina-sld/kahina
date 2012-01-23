@@ -1,8 +1,12 @@
-package org.kahina.core.breakpoint;
+package org.kahina.core.control;
 
 import java.awt.Color;
 import java.io.Serializable;
 
+import org.kahina.core.control.patterns.TreeAutomaton;
+import org.kahina.core.control.patterns.TreeAutomatonRule;
+import org.kahina.core.control.patterns.TreePattern;
+import org.kahina.core.control.patterns.TreePatternNode;
 import org.kahina.core.io.color.ColorIO;
 import org.w3c.dom.Element;
 
@@ -60,15 +64,15 @@ public class KahinaBreakpoint implements Serializable
     {
         TreeAutomaton a = new TreeAutomaton(this);
         int rootState = compileNode(a, pattern.getRoot());
-        a.acceptingStates.add(rootState);
+        a.addAcceptingState(rootState);
         return a;
     }
     
     //recursive helper method of compile() for single nodes
     private int compileNode(TreeAutomaton a, TreePatternNode node)
     {
-        int state = a.states.size();
-        a.states.add(state);
+        int state = a.nextStateNumber();
+        a.addState(state);
         TreeAutomatonRule rule = new TreeAutomatonRule();
         rule.setAssignedLabel(state);
         rule.setPattern(node.getPattern());
@@ -76,7 +80,7 @@ public class KahinaBreakpoint implements Serializable
         {
             rule.getRequiredChildAnnotations().add(compileNode(a, child));
         }
-        a.rules.add(rule);
+        a.addRule(rule);
         return state;
     }
     

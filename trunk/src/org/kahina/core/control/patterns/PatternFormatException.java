@@ -1,4 +1,5 @@
-package org.kahina.core.breakpoint;
+package org.kahina.core.control.patterns;
+
 
 /**
  * An exception type thrown when validating the values of a {@link TreeNodePattern}.

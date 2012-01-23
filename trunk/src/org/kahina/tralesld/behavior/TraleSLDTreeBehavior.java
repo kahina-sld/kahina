@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.breakpoint.KahinaBreakpoint;
-import org.kahina.core.breakpoint.KahinaBreakpointFactory;
-import org.kahina.core.breakpoint.KahinaBreakpointType;
+import org.kahina.core.control.KahinaBreakpoint;
+import org.kahina.core.control.KahinaBreakpointFactory;
+import org.kahina.core.control.KahinaBreakpointType;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.lp.LogicProgrammingState;

@@ -1,10 +1,11 @@
-package org.kahina.core.breakpoint;
+package org.kahina.core.control.patterns;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.kahina.core.behavior.KahinaTreeBehavior;
+import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.KahinaUnlayeredMemTree;
@@ -213,6 +214,26 @@ public class TreeAutomaton
             childAnn.addAll(getAnnotations(childID));
         }
         return childAnn;
+    }
+    
+    public int nextStateNumber()
+    {
+    	return states.size();
+    }
+    
+    public void addState(int state)
+    {
+    	states.add(state);
+    }
+    
+    public void addAcceptingState(int state)
+    {
+    	acceptingStates.add(state);
+    }
+    
+    public void addRule(TreeAutomatonRule rule)
+    {
+    	rules.add(rule);
     }
     
     //the mechanism for informing the KahinaController about matches

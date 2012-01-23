@@ -11,9 +11,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.breakpoint.TreeAutomaton;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
+import org.kahina.core.control.patterns.TreeAutomaton;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.event.KahinaEvent;
