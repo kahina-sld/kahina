@@ -9,8 +9,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.event.KahinaWindowEvent;
-import org.kahina.core.event.KahinaWindowEventType;
+import org.kahina.core.gui.event.KahinaWindowEvent;
+import org.kahina.core.gui.event.KahinaWindowEventType;
 
 
 public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListener

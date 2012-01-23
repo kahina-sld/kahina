@@ -15,9 +15,9 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.patterns.TreeNodePattern;
-import org.kahina.core.event.KahinaEvent;
 
 public class BooleanConnectorPanel extends JPanel implements MouseListener, KahinaListener
 {

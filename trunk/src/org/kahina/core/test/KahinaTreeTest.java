@@ -12,10 +12,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.LayerDecider;
-import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.core.visual.tree.KahinaTreeViewMarker;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;

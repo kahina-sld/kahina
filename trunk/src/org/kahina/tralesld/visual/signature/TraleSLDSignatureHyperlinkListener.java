@@ -5,7 +5,7 @@ import javax.swing.event.HyperlinkListener;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
-import org.kahina.tralesld.event.TraleSLDTypeSelectionEvent;
+import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
 
 public class TraleSLDSignatureHyperlinkListener implements HyperlinkListener
 {

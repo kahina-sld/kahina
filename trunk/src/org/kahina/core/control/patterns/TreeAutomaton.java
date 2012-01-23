@@ -9,7 +9,6 @@ import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.KahinaUnlayeredMemTree;
-import org.kahina.core.event.KahinaTreeMatchEvent;
 
 /**
  * Implements a tree automaton as used for tree pattern matching by Kahina's breakpoint system.

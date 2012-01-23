@@ -1,15 +1,15 @@
 package org.kahina.lp.profiler;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
-import org.kahina.lp.event.LogicProgrammingBridgeEvent;
-import org.kahina.lp.event.LogicProgrammingBridgeEventType;
+import org.kahina.lp.bridge.LogicProgrammingBridgeEvent;
+import org.kahina.lp.bridge.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingProfiler implements KahinaListener
 {

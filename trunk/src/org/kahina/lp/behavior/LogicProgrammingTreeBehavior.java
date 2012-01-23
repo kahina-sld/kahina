@@ -8,21 +8,21 @@ import java.util.Map;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.behavior.KahinaTreeBehavior;
+import org.kahina.core.bridge.KahinaStepDescriptionEvent;
 import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaBreakpointType;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
+import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.control.patterns.TreeAutomaton;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.event.KahinaEventTypes;
-import org.kahina.core.event.KahinaStepDescriptionEvent;
-import org.kahina.core.event.KahinaSystemEvent;
-import org.kahina.core.event.KahinaTreeEvent;
-import org.kahina.core.event.KahinaTreeEventType;
+import org.kahina.core.data.tree.KahinaTreeEvent;
+import org.kahina.core.data.tree.KahinaTreeEventType;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
-import org.kahina.lp.event.LogicProgrammingBridgeEvent;
-import org.kahina.lp.event.LogicProgrammingBridgeEventType;
+import org.kahina.lp.bridge.LogicProgrammingBridgeEvent;
+import org.kahina.lp.bridge.LogicProgrammingBridgeEventType;
 
 public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 {

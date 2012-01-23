@@ -7,14 +7,14 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaBreakpointFactory;
 import org.kahina.core.control.KahinaBreakpointType;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.event.KahinaEvent;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.tralesld.TraleSLDStepStatus;
 import org.kahina.tralesld.TraleSLDStepType;
-import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
-import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
+import org.kahina.tralesld.bridge.TraleSLDBridgeEvent;
+import org.kahina.tralesld.bridge.TraleSLDBridgeEventType;
 
 /**
  * This is supposed to contain the logic by which TraleSLD handles its step trees.

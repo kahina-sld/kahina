@@ -4,8 +4,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.kahina.core.KahinaException;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 
 public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel implements KahinaListener

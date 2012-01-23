@@ -8,12 +8,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.event.KahinaControlEvent;
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.util.Utilities;
-import org.kahina.qtype.event.QTypeControlEventCommands;
+import org.kahina.qtype.control.QTypeControlEventCommands;
 
 public class QTypeParseExampleMenu extends JMenu implements KahinaListener
 {

@@ -7,14 +7,14 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
+import org.kahina.tralesld.control.TraleSLDEventTypes;
 import org.kahina.tralesld.data.workbench.FeatureWorkbench;
-import org.kahina.tralesld.event.TraleSLDEventTypes;
 
 public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 {

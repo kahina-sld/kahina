@@ -9,9 +9,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.event.KahinaControlEvent;
-import org.kahina.core.event.KahinaDialogEvent;
+import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
@@ -19,8 +19,8 @@ import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.qtype.QTypeDebuggerInstance;
 import org.kahina.qtype.QTypeStep;
+import org.kahina.qtype.control.QTypeControlEventCommands;
 import org.kahina.qtype.data.tree.QTypeLayerDecider;
-import org.kahina.qtype.event.QTypeControlEventCommands;
 import org.kahina.sicstus.gui.SICStusPrologGUI;
 
 public class QTypeGUI extends SICStusPrologGUI

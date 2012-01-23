@@ -12,9 +12,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.event.KahinaSystemEvent;
-import org.kahina.core.event.KahinaWindowEvent;
-import org.kahina.core.event.KahinaWindowEventType;
+import org.kahina.core.control.KahinaSystemEvent;
+import org.kahina.core.gui.event.KahinaWindowEvent;
+import org.kahina.core.gui.event.KahinaWindowEventType;
 
 public class KahinaWindow extends JFrame implements WindowListener, ComponentListener
 {

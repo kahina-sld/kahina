@@ -1,9 +1,9 @@
 package org.kahina.core.behavior;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.dag.KahinaDAG;
-import org.kahina.core.event.KahinaEvent;
 
 /**
  * The ancestor class of all DAG behavior classes.

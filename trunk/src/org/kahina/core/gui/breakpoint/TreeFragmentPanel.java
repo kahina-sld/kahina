@@ -12,10 +12,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.patterns.TreePattern;
 import org.kahina.core.control.patterns.TreePatternNode;
-import org.kahina.core.event.KahinaEvent;
 
 public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaListener
 {

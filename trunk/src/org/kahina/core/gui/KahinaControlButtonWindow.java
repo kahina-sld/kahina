@@ -9,7 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.event.KahinaControlEvent;
+import org.kahina.core.control.KahinaControlEvent;
 
 public class KahinaControlButtonWindow extends KahinaWindow implements ActionListener
 {

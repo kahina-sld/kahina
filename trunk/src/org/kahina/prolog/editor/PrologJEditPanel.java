@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import org.gjt.sp.jedit.Mode;
 import org.gjt.sp.jedit.buffer.JEditBuffer;
-import org.kahina.core.editor.KahinaJEditPanel;
+import org.kahina.core.edit.source.KahinaJEditPanel;
 import org.kahina.core.util.FileUtilities;
 
 public class PrologJEditPanel extends KahinaJEditPanel

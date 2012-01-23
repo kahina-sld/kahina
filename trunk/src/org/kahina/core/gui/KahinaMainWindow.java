@@ -8,13 +8,13 @@ import java.awt.event.WindowEvent;
 import javax.swing.JMenuBar;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.event.KahinaEventTypes;
-import org.kahina.core.event.KahinaSessionEvent;
-import org.kahina.core.event.KahinaSystemEvent;
-import org.kahina.core.event.KahinaTreeEvent;
-import org.kahina.core.event.KahinaTreeEventType;
+import org.kahina.core.control.KahinaSessionEvent;
+import org.kahina.core.control.KahinaSystemEvent;
+import org.kahina.core.data.tree.KahinaTreeEvent;
+import org.kahina.core.data.tree.KahinaTreeEventType;
 
 public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 {

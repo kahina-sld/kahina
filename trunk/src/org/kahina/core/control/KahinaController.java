@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.kahina.core.event.KahinaEvent;
 
 /**
  * the central broker for event handling and passing of messages

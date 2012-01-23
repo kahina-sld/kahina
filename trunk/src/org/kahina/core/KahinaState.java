@@ -7,12 +7,12 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kahina.core.control.KahinaBreakpoint;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaTextModel;
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.event.KahinaEventTypes;
-import org.kahina.core.event.KahinaMessageEvent;
+import org.kahina.core.gui.event.KahinaMessageEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 /**

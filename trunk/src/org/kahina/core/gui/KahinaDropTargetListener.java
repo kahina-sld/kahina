@@ -11,8 +11,8 @@ import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.event.KahinaWindowEvent;
-import org.kahina.core.event.KahinaWindowEventType;
+import org.kahina.core.gui.event.KahinaWindowEvent;
+import org.kahina.core.gui.event.KahinaWindowEventType;
 
 public class KahinaDropTargetListener implements DropTargetListener 
 {	 
