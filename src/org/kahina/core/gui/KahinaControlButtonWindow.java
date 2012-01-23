@@ -10,6 +10,8 @@ import javax.swing.JButton;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.gui.windows.KahinaWindow;
+import org.kahina.core.gui.windows.KahinaWindowType;
 
 public class KahinaControlButtonWindow extends KahinaWindow implements ActionListener
 {
@@ -23,7 +25,7 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
 	
 	public KahinaControlButtonWindow(KahinaWindowManager wm, int winID) 
 	{
-		super(wm,winID);
+		super(wm, winID);
 		buttons = new LinkedList<KahinaControlButton>();
 	}
 	

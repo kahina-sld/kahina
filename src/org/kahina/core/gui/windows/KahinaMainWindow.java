@@ -1,4 +1,4 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.windows;
 
 import java.awt.Container;
 import java.awt.dnd.DropTarget;
@@ -15,6 +15,10 @@ import org.kahina.core.control.KahinaSessionEvent;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.data.tree.KahinaTreeEvent;
 import org.kahina.core.data.tree.KahinaTreeEventType;
+import org.kahina.core.gui.KahinaSessionMenu;
+import org.kahina.core.gui.KahinaWindowManager;
+import org.kahina.core.gui.menus.KahinaHelpMenu;
+import org.kahina.core.gui.menus.KahinaViewMenu;
 
 public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 {
@@ -43,7 +47,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	private void initializeMainWindow()
 	{
 		this.setTitle("Kahina");
-		wm.control.registerListener(KahinaEventTypes.TREE, this);
+		wm.getControl().registerListener(KahinaEventTypes.TREE, this);
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Uncomment this in order to be able to profile using JRat.
 
@@ -58,8 +62,8 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
-		wm.control.registerListener(KahinaEventTypes.SYSTEM, this);
-		wm.control.registerListener(KahinaEventTypes.SESSION, this);
+		wm.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
+		wm.getControl().registerListener(KahinaEventTypes.SESSION, this);
 	}
 
 	public void setSize(int width, int height)
@@ -91,7 +95,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		{
 			System.err.println("Setting subwindow: " + w.getID());
 		}
-		wm.arr.setEmbeddingWindowID(w.getID(), windowID);
+		wm.getArrangement().setEmbeddingWindowID(w.getID(), windowID);
 		subwindow = w;
 		mainPanel.removeAll();
 		mainPanel.add(w.getContentPane());
@@ -111,7 +115,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	{
 		if (subwindow == removedWindow)
 		{
-			wm.arr.setEmbeddingWindowID(removedWindow.getID(), -1);
+			wm.getArrangement().setEmbeddingWindowID(removedWindow.getID(), -1);
 
 			// crudely determine not too surprising positions and sizes for the
 			// separate windows
@@ -131,7 +135,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	{
 		if (subwindow == oldSubwindow)
 		{
-			wm.arr.setEmbeddingWindowID(oldSubwindow.getID(), -1);
+			wm.getArrangement().setEmbeddingWindowID(oldSubwindow.getID(), -1);
 
 			setSubwindow(newSubwindow);
 		} else

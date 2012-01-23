@@ -1,4 +1,4 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -13,6 +13,8 @@ import javax.swing.JFrame;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaSystemEvent;
+import org.kahina.core.gui.KahinaTransferablePanel;
+import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.event.KahinaWindowEvent;
 import org.kahina.core.gui.event.KahinaWindowEventType;
 
@@ -23,7 +25,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     
     private static int idCounter = 0;
     
-    protected KahinaWindowManager wm;
+    public KahinaWindowManager wm;
     protected KahinaTransferablePanel mainPanel;
     
     protected final int windowID;
@@ -119,10 +121,10 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     
     public void setBorder(boolean border)
     {
-    	wm.psp.arr.setBorder(windowID, border);
+    	wm.getArrangement().setBorder(windowID, border);
     	if (border)
     	{
-        	mainPanel.setBorder(BorderFactory.createTitledBorder(mainPanel.title));
+        	mainPanel.setBorder(BorderFactory.createTitledBorder(mainPanel.getTitle()));
     	}
     	else
     	{
@@ -143,10 +145,11 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     
     public void setTitle(String title)
     {
+    	System.err.println(this + ".setTitle(" + title + ")");
     	super.setTitle(title);
     	mainPanel.setTitle(title);
     	//mainPanel.setTitle(title + " (" + windowID + ")");
-    	wm.arr.setTitle(windowID, title);
+    	wm.getArrangement().setTitle(windowID, title);
     }
     
     public boolean isTopLevelWindow()
@@ -180,7 +183,12 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     public void setSize(int width, int height)
     {
         super.setSize(width,height);
-        wm.arr.setSize(windowID,this.getWidth(),this.getHeight());
+        wm.getArrangement().setSize(windowID,this.getWidth(),this.getHeight());
+    }
+    
+    public void repaintMainPanel()
+    {
+    	mainPanel.repaint();
     }
     
     /**
@@ -211,7 +219,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
      */
     public KahinaWindow getEmbeddingWindow()
     {
-    	return wm.getWindowByID(wm.arr.getEmbeddingWindowID(windowID));
+    	return wm.getWindowByID(wm.getArrangement().getEmbeddingWindowID(windowID));
     }
     
     /**
@@ -249,7 +257,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 	@Override
 	public void windowClosing(WindowEvent e) 
 	{
-		wm.control.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE,this.getID()));
+		wm.getControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE,this.getID()));
 	}
 
 	@Override
@@ -281,15 +289,15 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 	@Override
 	public void componentMoved(ComponentEvent arg0) 
 	{
-		wm.arr.setXPos(windowID, this.getX());
-		wm.arr.setYPos(windowID, this.getY());
+		wm.getArrangement().setXPos(windowID, this.getX());
+		wm.getArrangement().setYPos(windowID, this.getY());
 	}
 
 	@Override
 	public void componentResized(ComponentEvent arg0) 
 	{
         //System.err.println("KahinaWindow " + windowID + " resized to (" + this.getWidth() + "," + this.getHeight() + ")");
-		wm.arr.setSize(windowID,this.getWidth(),this.getHeight());
+		wm.getArrangement().setSize(windowID,this.getWidth(),this.getHeight());
 	}
 
 	@Override

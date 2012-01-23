@@ -1,4 +1,4 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.windows;
 
 import java.awt.Container;
 import java.awt.dnd.DropTarget;
@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTabbedPane;
+
+import org.kahina.core.gui.KahinaWindowManager;
+import org.kahina.core.gui.KahinaWindowTransferHandler;
 
 public class KahinaTabbedWindow  extends KahinaWindow
 {
@@ -21,7 +24,7 @@ public class KahinaTabbedWindow  extends KahinaWindow
     
     public KahinaTabbedWindow(KahinaWindowManager wm, int winID)
     {
-    	super(wm, winID);
+    	super(wm);
     	this.initialize();
     }
     
@@ -37,7 +40,7 @@ public class KahinaTabbedWindow  extends KahinaWindow
     
     public boolean addSubwindow(KahinaWindow w)
     {
-    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
+    	wm.getArrangement().setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(w);
         tabbedPane.add(w.getTitle(), w.getContentPane());
         return true;
@@ -45,7 +48,7 @@ public class KahinaTabbedWindow  extends KahinaWindow
     
     public void addWindow(int index, KahinaWindow w)
     {
-    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
+    	wm.getArrangement().setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(index, w);
         tabbedPane.add(w.getTitle(), w.getContentPane());
     }
@@ -60,7 +63,7 @@ public class KahinaTabbedWindow  extends KahinaWindow
     	int index = windows.indexOf(removedWindow);
     	if (index != -1)
     	{
-    		wm.arr.setEmbeddingWindowID(removedWindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(removedWindow.getID(),-1);
 
     		//crudely determine not too surprising positions and sizes for the separate windows
     		removedWindow.setSize(tabbedPane.getComponents()[index].getSize());
@@ -81,7 +84,7 @@ public class KahinaTabbedWindow  extends KahinaWindow
     	int index = windows.indexOf(oldSubwindow);
     	if (index != -1)
     	{
-    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(oldSubwindow.getID(),-1);
     		oldSubwindow.setContentPane((Container) tabbedPane.getComponents()[index]);
     		
         	addWindow(index,newSubwindow);

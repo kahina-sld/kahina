@@ -6,6 +6,8 @@ import java.awt.datatransfer.Transferable;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
+import org.kahina.core.gui.windows.KahinaWindow;
+
 public class KahinaWindowTransferHandler extends TransferHandler
 {
 	public static DataFlavor dataFlavor;

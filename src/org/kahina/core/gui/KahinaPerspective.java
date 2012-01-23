@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kahina.core.data.KahinaObject;
+import org.kahina.core.gui.windows.KahinaWindowType;
 import org.kahina.core.io.util.XMLUtilities;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;

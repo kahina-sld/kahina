@@ -30,6 +30,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	public KahinaView(KahinaController control)
 	{
 		this.control = control;
+		this.title = "New View";
 	}
 
 	public void processEvent(KahinaEvent e)

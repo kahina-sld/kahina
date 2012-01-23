@@ -1,10 +1,11 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.windows;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.TransferHandler;
 
+import org.kahina.core.gui.menus.KahinaWindowContextMenu;
 import org.kahina.core.visual.tree.KahinaTreeViewContextMenu;
 
 public class KahinaWindowListener extends MouseAdapter

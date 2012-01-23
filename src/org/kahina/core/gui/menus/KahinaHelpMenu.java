@@ -1,4 +1,4 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.menus;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,6 +7,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.gui.KahinaDialogEvent;
 
 public class KahinaHelpMenu extends JMenu implements ActionListener
 {
