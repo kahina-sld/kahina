@@ -15,8 +15,8 @@ import java.io.IOException;
 import javax.swing.JPanel;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.event.KahinaWindowEvent;
-import org.kahina.core.event.KahinaWindowEventType;
+import org.kahina.core.gui.event.KahinaWindowEvent;
+import org.kahina.core.gui.event.KahinaWindowEventType;
 import org.kahina.core.visual.KahinaEmptyView;
 import org.kahina.core.visual.KahinaView;
 

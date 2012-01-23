@@ -4,9 +4,9 @@ import java.util.LinkedList;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaSelectionHistory implements KahinaListener

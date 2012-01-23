@@ -4,12 +4,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.event.KahinaControlEvent;
+import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.util.PrologUtilities;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.qtype.QTypeStep;
+import org.kahina.qtype.control.QTypeControlEventCommands;
 import org.kahina.qtype.data.bindings.QTypeGoal;
-import org.kahina.qtype.event.QTypeControlEventCommands;
 import org.kahina.sicstus.bridge.SICStusPrologBridge;
 import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 

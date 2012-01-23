@@ -1,6 +1,6 @@
 package org.kahina.core.gui.event;
 
-import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.control.KahinaEvent;
 
 public class KahinaRedrawEvent extends KahinaEvent
 {

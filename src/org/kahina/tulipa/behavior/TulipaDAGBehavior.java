@@ -3,12 +3,12 @@ package org.kahina.tulipa.behavior;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.behavior.KahinaDAGBehavior;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
-import org.kahina.core.event.KahinaEvent;
 import org.kahina.tulipa.TulipaStepStatus;
-import org.kahina.tulipa.event.TulipaBridgeEvent;
-import org.kahina.tulipa.event.TulipaBridgeEventType;
+import org.kahina.tulipa.bridge.TulipaBridgeEvent;
+import org.kahina.tulipa.bridge.TulipaBridgeEventType;
 
 public class TulipaDAGBehavior extends KahinaDAGBehavior
 {

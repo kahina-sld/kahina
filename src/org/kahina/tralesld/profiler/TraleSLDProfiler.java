@@ -1,16 +1,16 @@
 package org.kahina.tralesld.profiler;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.profiler.LogicProgrammingProfile;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.TraleSLDStepType;
-import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
-import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
+import org.kahina.tralesld.bridge.TraleSLDBridgeEvent;
+import org.kahina.tralesld.bridge.TraleSLDBridgeEventType;
 
 public class TraleSLDProfiler extends LogicProgrammingProfiler
 {

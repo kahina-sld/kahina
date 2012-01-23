@@ -4,12 +4,10 @@ import java.util.HashMap;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridge;
-import org.kahina.core.event.KahinaControlEvent;
+import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.tulipa.TulipaState;
 import org.kahina.tulipa.TulipaStep;
-import org.kahina.tulipa.event.TulipaBridgeEvent;
-import org.kahina.tulipa.event.TulipaBridgeEventType;
 
 public class TulipaBridge extends KahinaBridge
 {

@@ -1,7 +1,7 @@
 package org.kahina.core.gui.event;
 
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
 
 public class KahinaUpdateEvent extends KahinaEvent
 {

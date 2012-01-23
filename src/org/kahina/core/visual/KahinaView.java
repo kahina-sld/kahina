@@ -6,9 +6,9 @@ import javax.swing.JComponent;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;

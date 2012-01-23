@@ -8,9 +8,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.patterns.TreePatternNode;
-import org.kahina.core.event.KahinaEvent;
 
 public class NodeConstraintPanel extends JPanel implements ActionListener, KahinaListener
 {

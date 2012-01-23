@@ -19,8 +19,8 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.chart.KahinaChart;
-import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.visual.KahinaView;

@@ -2,7 +2,7 @@ package org.kahina.prolog.editor;
 
 import java.io.File;
 
-import org.kahina.core.editor.KahinaMultifileJEditPanel;
+import org.kahina.core.edit.source.KahinaMultifileJEditPanel;
 
 public class PrologMultifileJEditPanel extends KahinaMultifileJEditPanel
 {

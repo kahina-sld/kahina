@@ -3,7 +3,7 @@ package org.kahina.sicstus.visual.bindings;
 import javax.swing.JComponent;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.event.KahinaEventTypes;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.sicstus.data.bindings.SICStusPrologVariableBindingSet;

@@ -6,7 +6,7 @@ import java.io.File;
 import javax.swing.BoxLayout;
 
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
-import org.kahina.core.editor.KahinaMultifileJEditPanel;
+import org.kahina.core.edit.source.KahinaMultifileJEditPanel;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaJEditSourceCodeViewPanel extends KahinaViewPanel<KahinaJEditSourceCodeView>

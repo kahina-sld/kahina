@@ -9,12 +9,12 @@ import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.text.KahinaLineReference;
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.event.KahinaMessageEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
+import org.kahina.core.gui.event.KahinaMessageEvent;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T> implements KahinaListener

@@ -10,9 +10,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
-import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.KahinaDefaultWindow;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.visual.dag.KahinaDAGView;

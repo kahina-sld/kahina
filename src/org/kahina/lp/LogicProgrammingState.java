@@ -14,7 +14,7 @@ import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.event.KahinaMessageEvent;
+import org.kahina.core.gui.event.KahinaMessageEvent;
 import org.kahina.lp.data.text.LogicProgrammingLineReference;
 import org.kahina.lp.profiler.LogicProgrammingProfile;
 

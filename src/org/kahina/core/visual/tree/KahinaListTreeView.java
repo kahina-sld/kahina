@@ -10,11 +10,11 @@ import java.util.List;
 import javax.swing.JComponent;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.bridge.KahinaBridgePauseEvent;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.event.KahinaBridgePauseEvent;
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.event.KahinaEventTypes;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;

@@ -14,9 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.bridge.KahinaBridgePauseEvent;
+import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.data.chart.KahinaChart;
-import org.kahina.core.event.KahinaBridgePauseEvent;
-import org.kahina.core.event.KahinaControlEvent;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.util.PrologUtilities;
@@ -25,12 +25,10 @@ import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.TraleSLDStep;
-import org.kahina.tralesld.control.event.TraleSLDBridgeEvent;
-import org.kahina.tralesld.control.event.TraleSLDBridgeEventType;
+import org.kahina.tralesld.control.TraleSLDControlEventCommands;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
 import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBinding;
-import org.kahina.tralesld.event.TraleSLDControlEventCommands;
 
 public class TraleSLDBridge extends LogicProgrammingBridge
 {

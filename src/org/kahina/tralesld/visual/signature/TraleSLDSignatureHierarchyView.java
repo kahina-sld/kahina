@@ -13,11 +13,11 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
-import org.kahina.tralesld.event.TraleSLDTypeSelectionEvent;
+import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
 
 public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature>
 {

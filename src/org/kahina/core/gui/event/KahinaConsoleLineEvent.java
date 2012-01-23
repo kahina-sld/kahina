@@ -2,8 +2,8 @@ package org.kahina.core.gui.event;
 
 import java.util.Set;
 
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.text.KahinaLineReference;
-import org.kahina.core.event.KahinaEvent;
 
 public class KahinaConsoleLineEvent extends KahinaEvent
 {

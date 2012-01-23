@@ -7,7 +7,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.event.KahinaDialogEvent;
 
 public class KahinaHelpMenu extends JMenu implements ActionListener
 {

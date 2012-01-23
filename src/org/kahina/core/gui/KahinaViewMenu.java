@@ -13,12 +13,12 @@ import javax.swing.JOptionPane;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.event.KahinaEventTypes;
-import org.kahina.core.event.KahinaPerspectiveEvent;
-import org.kahina.core.event.KahinaWindowEvent;
-import org.kahina.core.event.KahinaWindowEventType;
+import org.kahina.core.gui.event.KahinaPerspectiveEvent;
+import org.kahina.core.gui.event.KahinaWindowEvent;
+import org.kahina.core.gui.event.KahinaWindowEventType;
 import org.kahina.core.visual.KahinaEmptyView;
 import org.kahina.core.visual.KahinaView;
 

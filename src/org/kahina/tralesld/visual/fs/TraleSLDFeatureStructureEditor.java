@@ -37,13 +37,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.event.KahinaEvent;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
-import org.kahina.tralesld.event.TraleSLDFeatureEditEvent;
-import org.kahina.tralesld.event.TraleSLDTypeSelectionEvent;
+import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
 
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 

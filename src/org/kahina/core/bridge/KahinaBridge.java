@@ -4,13 +4,13 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaBreakpointType;
+import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.event.KahinaControlEvent;
-import org.kahina.core.event.KahinaEvent;
-import org.kahina.core.event.KahinaEventTypes;
-import org.kahina.core.event.KahinaSystemEvent;
-import org.kahina.core.event.KahinaTreeMatchEvent;
-import org.kahina.core.event.KahinaWarnEvent;
+import org.kahina.core.control.KahinaSystemEvent;
+import org.kahina.core.control.KahinaWarnEvent;
+import org.kahina.core.control.patterns.KahinaTreeMatchEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 /**
