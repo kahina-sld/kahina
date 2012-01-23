@@ -1,4 +1,5 @@
-package org.kahina.core.breakpoint;
+package org.kahina.core.control;
+
 
 /**
  * A selection of constant symbols defining meaningful values for the <code>type</code> property of a {@link KahinaBreakpoint}.

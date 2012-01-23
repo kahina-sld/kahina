@@ -1,6 +1,6 @@
 package org.kahina.core.event;
 
-import org.kahina.core.breakpoint.KahinaBreakpoint;
+import org.kahina.core.control.KahinaBreakpoint;
 
 public class KahinaWarnEvent extends KahinaEvent
 {

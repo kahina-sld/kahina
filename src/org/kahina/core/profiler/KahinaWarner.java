@@ -5,7 +5,7 @@ import java.util.Map;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaState;
-import org.kahina.core.breakpoint.KahinaBreakpoint;
+import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
 import org.kahina.core.event.KahinaEventTypes;

@@ -1,7 +1,8 @@
-package org.kahina.core.breakpoint;
+package org.kahina.core.control.patterns;
 
 import java.util.HashSet;
 import java.util.Set;
+
 
 /**
  * Encodes a rule within a {@link TreeAutomaton}.

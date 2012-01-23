@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import org.kahina.core.breakpoint.KahinaBreakpoint;
+import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.event.KahinaEvent;
