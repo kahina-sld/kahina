@@ -1,4 +1,4 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.windows;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -49,7 +49,7 @@ public class KahinaDropTargetListener implements DropTargetListener
                 e.acceptDrop(DnDConstants.ACTION_MOVE);
 
                 int winID = Integer.parseInt((String) tr.getTransferData(DataFlavor.stringFlavor));
-                if (winID != w.wm.arr.mainWindowID)
+                if (winID != w.wm.getArrangement().getMainWindowID())
                 {
                 
 	                System.err.println("Moved window " + winID);
@@ -61,7 +61,7 @@ public class KahinaDropTargetListener implements DropTargetListener
 		                {
 		                	KahinaWindow embWin = w.getEmbeddingWindow();
 		                	embWin.replaceSubwindow(w, w.wm.getWindowByID(winID));
-		                	w.wm.arr.setEmbeddingWindowID(winID, embWin.getID());
+		                	w.wm.getArrangement().setEmbeddingWindowID(winID, embWin.getID());
 		                	embWin.validate();
 		                	embWin.repaint(); 
 		                    KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));

@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.kahina.core.gui.windows.KahinaWindowType;
 import org.kahina.core.io.util.XMLUtilities;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -52,7 +53,7 @@ public class KahinaArrangement
 	// with each name we associate a primary window, the others are clones;
 	// "main" reserved for main window
 	private Map<String, Integer> primaryWindow;
-	int mainWindowID;
+	private int mainWindowID;
 
 	// all the containment information is stored here, window operations
 	// manipulate this
@@ -89,7 +90,7 @@ public class KahinaArrangement
 		copy.border.putAll(border);
 		copy.winIDToBinding.putAll(winIDToBinding);
 		copy.primaryWindow.putAll(primaryWindow);
-		copy.mainWindowID = mainWindowID;
+		copy.setMainWindowID(mainWindowID);
 		copy.embeddingWindow.putAll(embeddingWindow);
 		copy.windowType.putAll(windowType);
 		return copy;
@@ -304,7 +305,7 @@ public class KahinaArrangement
 		HashSet<Integer> topLevelWindows = new HashSet<Integer>();
 		for (int winID : getAllWindows())
 		{
-			if (getEmbeddingWindowID(winID) == -1 && winID != mainWindowID)
+			if (getEmbeddingWindowID(winID) == -1 && winID != getMainWindowID())
 			{
 				topLevelWindows.add(winID);
 			}
@@ -316,7 +317,7 @@ public class KahinaArrangement
 	{
 		HashSet<Integer> contentWindows = new HashSet<Integer>();
 		contentWindows.addAll(winIDToBinding.keySet());
-		contentWindows.add(mainWindowID);
+		contentWindows.add(getMainWindowID());
 		return contentWindows;
 	}
 
@@ -391,7 +392,7 @@ public class KahinaArrangement
 					}
 				} else if (type.equals("main-window"))
 				{
-					arr.mainWindowID = winID;
+					arr.setMainWindowID(winID);
 					arr.setWindowType(winID, KahinaWindowType.MAIN_WINDOW);
 				} else if (type.equals("hori-split-window"))
 				{
@@ -524,5 +525,13 @@ public class KahinaArrangement
 			}
 		}
 		return topEl;
+	}
+
+	public void setMainWindowID(int mainWindowID) {
+		this.mainWindowID = mainWindowID;
+	}
+
+	public int getMainWindowID() {
+		return mainWindowID;
 	}
 }

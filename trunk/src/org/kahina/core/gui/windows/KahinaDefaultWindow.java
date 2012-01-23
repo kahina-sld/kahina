@@ -1,6 +1,8 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.windows;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaDefaultWindow extends KahinaWindow

@@ -1,4 +1,4 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.menus;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +11,7 @@ import javax.swing.JPopupMenu;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.gui.event.KahinaWindowEvent;
 import org.kahina.core.gui.event.KahinaWindowEventType;
+import org.kahina.core.gui.windows.KahinaWindow;
 
 
 public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListener
@@ -56,10 +57,10 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 			snapCloneItem.addActionListener(this);
 			this.add(snapCloneItem);
 			
-			if (w.getID() != w.wm.arr.mainWindowID) this.addSeparator();
+			if (w.getID() != w.wm.getArrangement().getMainWindowID()) this.addSeparator();
 		}
 		
-		if (w.getID() != w.wm.arr.mainWindowID)
+		if (w.getID() != w.wm.getArrangement().getMainWindowID())
 		{
 			JMenuItem vertSplitItem = new JMenuItem("Vertical Split");
 			vertSplitItem.addActionListener(this);
@@ -78,7 +79,7 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 			this.add(disposeItem);
 		}
 		
-		if (w.getID() != w.wm.arr.mainWindowID)
+		if (w.getID() != w.wm.getArrangement().getMainWindowID())
 		{	
 			JMenuItem closeItem = new JMenuItem("Close");
 			closeItem.addActionListener(this);

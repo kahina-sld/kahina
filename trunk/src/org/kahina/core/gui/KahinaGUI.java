@@ -41,7 +41,7 @@ public class KahinaGUI implements KahinaListener
 {
 	private static final boolean VERBOSE = false;
 
-	protected KahinaInstance<?, ?, ?> kahina;
+	public KahinaInstance<?, ?, ?> kahina;
 
 	KahinaSelectionHistory selectionHistory;
 

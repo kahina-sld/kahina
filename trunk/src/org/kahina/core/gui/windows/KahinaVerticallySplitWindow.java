@@ -1,4 +1,4 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.windows;
 
 import java.awt.Container;
 import java.beans.PropertyChangeEvent;
@@ -11,6 +11,7 @@ import javax.swing.JSplitPane;
 import javax.swing.border.TitledBorder;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.gui.KahinaWindowManager;
 
 public class KahinaVerticallySplitWindow extends KahinaWindow
 {
@@ -35,7 +36,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public KahinaVerticallySplitWindow(KahinaWindowManager wm, int winID, double resizeWeight)
     {
-    	super(wm,winID);
+    	super(wm, winID);
     	this.resizeWeight = resizeWeight;
     	this.initialize();
     }
@@ -57,11 +58,11 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
 	        		//System.err.println("changedVerticalDividerLocation(" + windowID + ")");
 	        		if (upperWindow != null)
 	        		{
-	        			wm.arr.setSize(upperWindow.windowID, getWidth(), splitPane.getDividerLocation());
+	        			wm.getArrangement().setSize(upperWindow.windowID, getWidth(), splitPane.getDividerLocation());
 	        		}
 	        		if (lowerWindow != null)
 	        		{
-	        			wm.arr.setSize(lowerWindow.windowID, getWidth(), getHeight() - splitPane.getDividerLocation());
+	        			wm.getArrangement().setSize(lowerWindow.windowID, getWidth(), getHeight() - splitPane.getDividerLocation());
 	        		}
         		}
         	}
@@ -91,7 +92,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public void setUpperWindow(KahinaWindow w)
     {
-    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
+    	wm.getArrangement().setEmbeddingWindowID(w.getID(),windowID);
     	upperWindow = w;
         topPanel.removeAll();
         topPanel.add(w.getContentPane());
@@ -99,7 +100,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public void setLowerWindow(KahinaWindow w)
     {
-    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
+    	wm.getArrangement().setEmbeddingWindowID(w.getID(),windowID);
     	lowerWindow = w;
         bottomPanel.removeAll();
         bottomPanel.add(w.getContentPane());
@@ -108,7 +109,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     private void adaptDividerLocation()
     {
     	int upperHeight = 1;
-    	if (upperWindow != null) upperHeight = wm.arr.getHeight(upperWindow.getID());
+    	if (upperWindow != null) upperHeight = wm.getArrangement().getHeight(upperWindow.getID());
     	//System.err.println("adaptVerticalDividerLocation(" + windowID + "," + upperHeight + ")");
     	splitPane.setDividerLocation(upperHeight);
         splitPane.setResizeWeight(resizeWeight);
@@ -118,9 +119,9 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     {
     	if (upperWindow == removedWindow)
     	{
-    		wm.arr.setEmbeddingWindowID(upperWindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(upperWindow.getID(),-1);
     		upperWindow.setContentPane((Container) topPanel.getComponents()[0]);		
-    		wm.arr.setEmbeddingWindowID(lowerWindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(lowerWindow.getID(),-1);
     		lowerWindow.setContentPane((Container) bottomPanel.getComponents()[0]);
     		//crudely determine not too surprising positions and sizes for the separate windows
     		upperWindow.setSize(topPanel.getSize());
@@ -131,9 +132,9 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	}
     	else if (lowerWindow == removedWindow)
     	{
-    		wm.arr.setEmbeddingWindowID(upperWindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(upperWindow.getID(),-1);
     		upperWindow.setContentPane((Container) topPanel.getComponents()[0]);		
-    		wm.arr.setEmbeddingWindowID(lowerWindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(lowerWindow.getID(),-1);
     		lowerWindow.setContentPane((Container) bottomPanel.getComponents()[0]);
     		//crudely determine not too surprising positions and sizes for the separate windows
     		upperWindow.setSize(topPanel.getSize());
@@ -153,12 +154,12 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     {
        	if (upperWindow == oldSubwindow)
     	{
-    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(oldSubwindow.getID(),-1);
        		setUpperWindow(newSubwindow);
     	}
     	else if (lowerWindow == oldSubwindow)
     	{
-    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(oldSubwindow.getID(),-1);
        		setLowerWindow(newSubwindow);
     	}
     	else
@@ -189,7 +190,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public void flipSubwindowsIfIndicatedByCoordinates()
     {
-    	if (wm.arr.getYPos(upperWindow.getID()) > wm.arr.getYPos(lowerWindow.getID()))
+    	if (wm.getArrangement().getYPos(upperWindow.getID()) > wm.getArrangement().getYPos(lowerWindow.getID()))
     	{
     		flipSubwindows();
     	}

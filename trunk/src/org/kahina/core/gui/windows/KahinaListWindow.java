@@ -1,4 +1,4 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.windows;
 
 import java.awt.Container;
 import java.awt.dnd.DropTarget;
@@ -12,6 +12,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+
+import org.kahina.core.gui.KahinaWindowManager;
+import org.kahina.core.gui.KahinaWindowTransferHandler;
 
 public class KahinaListWindow extends KahinaWindow implements MouseListener
 {
@@ -57,7 +60,7 @@ public class KahinaListWindow extends KahinaWindow implements MouseListener
     
     public boolean addSubwindow(KahinaWindow w)
     {
-    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
+    	wm.getArrangement().setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(w);
         listModel.addElement(w);
         selectWindow(windows.size() - 1);
@@ -66,7 +69,7 @@ public class KahinaListWindow extends KahinaWindow implements MouseListener
     
     public void addWindow(int index, KahinaWindow w)
     {
-    	wm.arr.setEmbeddingWindowID(w.getID(),windowID);
+    	wm.getArrangement().setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(index, w);
         listModel.insertElementAt(w,index);
     }
@@ -111,7 +114,7 @@ public class KahinaListWindow extends KahinaWindow implements MouseListener
     	int index = windows.indexOf(removedWindow);
     	if (index != -1)
     	{
-    		wm.arr.setEmbeddingWindowID(removedWindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(removedWindow.getID(),-1);
     		
     		if (index == selectedWindow)
     		{
@@ -139,14 +142,14 @@ public class KahinaListWindow extends KahinaWindow implements MouseListener
     	int index = windows.indexOf(oldSubwindow);
     	if (index == selectedWindow)
     	{
-    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(oldSubwindow.getID(),-1);
     		oldSubwindow.setContentPane((Container) displayPane.getComponents()[0]);
     		selectWindow(--selectedWindow);
         	addWindow(index,newSubwindow);
     	}
     	else if (index != -1)
     	{
-    		wm.arr.setEmbeddingWindowID(oldSubwindow.getID(),-1);
+    		wm.getArrangement().setEmbeddingWindowID(oldSubwindow.getID(),-1);
         	addWindow(index,newSubwindow);
     	}
     	else

@@ -1,4 +1,4 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.menus;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +16,8 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
+import org.kahina.core.gui.KahinaPerspective;
+import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.event.KahinaPerspectiveEvent;
 import org.kahina.core.gui.event.KahinaWindowEvent;
 import org.kahina.core.gui.event.KahinaWindowEventType;
@@ -35,7 +37,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         super("View"); 
         
         this.manager = manager;      
-        manager.control.registerListener(KahinaEventTypes.WINDOW, this);
+        manager.getControl().registerListener(KahinaEventTypes.WINDOW, this);
       
         rebuild();
     }
@@ -44,12 +46,12 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 	{
 		this.removeAll();
 		
-        for (int winID : manager.arr.getTopLevelWindowsWithoutMainWindow())
+        for (int winID : manager.getArrangement().getTopLevelWindowsWithoutMainWindow())
         {
-            JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(manager.arr.getTitle(winID));
+            JCheckBoxMenuItem windowCheckBoxItem = new JCheckBoxMenuItem(manager.getArrangement().getTitle(winID));
             windowCheckBoxItem.setActionCommand("toggleVisibility:" + winID);
             windowCheckBoxItem.addActionListener(this);
-            windowCheckBoxItem.setSelected(manager.psp.isVisible(winID));
+            windowCheckBoxItem.setSelected(manager.getPerspective().isVisible(winID));
             this.add(windowCheckBoxItem);
         }
         
@@ -84,11 +86,11 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         
         JMenu restoreFrameMenu = new JMenu("Restore Frame");
         
-        for (int winID : manager.psp.arr.getAllWindows())
+        for (int winID : manager.getArrangement().getAllWindows())
         {
-        	if (!manager.psp.arr.hasBorder(winID))
+        	if (!manager.getArrangement().hasBorder(winID))
         	{
-        		JMenuItem restoreFrameItem = new JMenuItem(manager.psp.arr.getTitle(winID));
+        		JMenuItem restoreFrameItem = new JMenuItem(manager.getArrangement().getTitle(winID));
         		restoreFrameItem.setActionCommand("restoreFrame:" + winID);
         		restoreFrameItem.addActionListener(this);
         		restoreFrameMenu.add(restoreFrameItem);
@@ -216,7 +218,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
                     JOptionPane.PLAIN_MESSAGE);
         	if (title.length() > 0)
         	{
-        		manager.psp.setName(title);
+        		manager.getPerspective().setName(title);
         	}
         	else
         	{
