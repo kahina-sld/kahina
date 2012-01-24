@@ -37,9 +37,9 @@ public class TraleSLDState extends LogicProgrammingState
 		nodeToEdge = new HashMap<Integer, Integer>();
 	}
 	
-	public void reset()
+	public void initialize()
 	{
-		super.reset();
+		super.initialize();
 		//keep signature and auxiliary instance (constant across parses)
 		chart = new KahinaMemChart();
 		edgeToNode = new HashMap<Integer, Integer>();

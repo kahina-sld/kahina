@@ -62,9 +62,9 @@ public class LogicProgrammingState extends KahinaState
         profile = new LogicProgrammingProfile();
     }
     
-	public void reset() 
+	public void initialize() 
 	{
-        super.reset();
+        super.initialize();
         stepTree = new KahinaMemTree();
         secondaryStepTree = new KahinaMemTree();
         anchorsByTarget = new HashMap<Integer, List<Integer>>();

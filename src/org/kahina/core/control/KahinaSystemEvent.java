@@ -8,6 +8,7 @@ public class KahinaSystemEvent extends KahinaEvent
     
     public static final int QUIT = 0;
     public static final int APPLY_BREAKPOINTS = 1;
+    public static final int NODE_COUNT = 2;
     
     public KahinaSystemEvent(int systemEventType)
     {
