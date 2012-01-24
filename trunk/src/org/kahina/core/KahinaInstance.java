@@ -127,7 +127,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		controller.registerListener(KahinaEventTypes.SYSTEM, this);
 		if (state != null)
 		{
-			state.reset();
+			state.initialize();
 		} else
 		{
 			state = createState();
@@ -227,6 +227,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			KahinaRunner.loadSteps(directory);
 			gui.displayMainViews();
 			KahinaRunner.processEvent(new KahinaSelectionEvent(state.getSelectedStepID()));
+			KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.NODE_COUNT, state.getStepCount()));
 		} catch (Exception e)
 		{
 			gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);

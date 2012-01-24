@@ -49,15 +49,14 @@ public class KahinaState implements Serializable, KahinaListener
     
     public KahinaState()
     {
-        consoleMessages = new KahinaTextModel();
-        consoleLines = new HashMap<Integer,Set<KahinaLineReference>>();
-        warnThresholdByBreakpoint = new HashMap<KahinaBreakpoint, Integer>();
-        matchCountByBreakpoint = new HashMap<KahinaBreakpoint, Integer>();
+        initialize();
         KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
     }
     
-	public void reset() 
+	public void initialize() 
 	{
+		selectedStepID = -1;
+		nextStepID = 1;
 		//console is refilled for each new process
 		//TODO: think about an additional console for global events (warnings etc.)
         consoleMessages = new KahinaTextModel();
@@ -73,6 +72,11 @@ public class KahinaState implements Serializable, KahinaListener
     		System.err.println(this + ".nextStepID() = " + nextStepID);
     	}
     	return nextStepID++;
+    }
+    
+    public int getStepCount()
+    {
+    	return nextStepID - 1;
     }
     
     public void processEvent(KahinaEvent event)

@@ -2,19 +2,13 @@ package org.kahina.core.gui.windows;
 
 import java.awt.Container;
 import java.awt.dnd.DropTarget;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JMenuBar;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.control.KahinaSessionEvent;
 import org.kahina.core.control.KahinaSystemEvent;
-import org.kahina.core.data.tree.KahinaTreeEvent;
-import org.kahina.core.data.tree.KahinaTreeEventType;
 import org.kahina.core.gui.KahinaSessionMenu;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.menus.KahinaHelpMenu;
@@ -47,7 +41,6 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	private void initializeMainWindow()
 	{
 		this.setTitle("Kahina");
-		wm.getControl().registerListener(KahinaEventTypes.TREE, this);
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Uncomment this in order to be able to profile using JRat.
 
@@ -63,7 +56,6 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
 		wm.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
-		wm.getControl().registerListener(KahinaEventTypes.SESSION, this);
 	}
 
 	public void setSize(int width, int height)
@@ -147,41 +139,18 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	@Override
 	public void processEvent(KahinaEvent event)
 	{
-		if (event instanceof KahinaTreeEvent)
-		{
-			processTreeEvent((KahinaTreeEvent) event);
-		} else if (event instanceof KahinaSystemEvent)
+		if (event instanceof KahinaSystemEvent)
 		{
 			processSystemEvent((KahinaSystemEvent) event);
-		} else if (event instanceof KahinaSessionEvent)
-		{
-			processSessionEvent((KahinaSessionEvent) event);
-		}
-	}
-
-	private void processSessionEvent(KahinaSessionEvent event)
-	{
-		if (event.getSessionEventType() == KahinaSessionEvent.LOAD_SESSION)
-		{
-			// TODO This is a kludge, see below.
-			setTitle("Kahina");
-		}
-	}
-
-	private void processTreeEvent(KahinaTreeEvent event)
-	{
-		if (event.getTreeEventType() == KahinaTreeEventType.NEW_NODE)
-		{
-			// TODO This is a kludge, we should synchronize the step
-			// count with the state. But first, the architecture needs to be
-			// changed to allow access to the state.
-			setTitle("Kahina (" + event.getFirstID() + ")");
 		}
 	}
 
 	private void processSystemEvent(KahinaSystemEvent event)
 	{
-		if (event.getSystemEventType() == KahinaSystemEvent.QUIT)
+		if (event.getSystemEventType() == KahinaSystemEvent.NODE_COUNT)
+		{
+			setTitle("Kahina (" + event.getIntContent() + ")");
+		} else if (event.getSystemEventType() == KahinaSystemEvent.QUIT)
 		{
 			disposeAllWindows();
 		}

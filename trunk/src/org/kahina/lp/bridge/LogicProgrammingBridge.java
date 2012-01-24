@@ -246,7 +246,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// used by tree behavior:
 			KahinaRunner.processEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, parentCandidateID));
 			// used by node counter:
-			KahinaRunner.processEvent(new KahinaTreeEvent(KahinaTreeEventType.NEW_NODE, stepID, parentCandidateID));
+			KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.NODE_COUNT, stepID));
 			currentID = stepID;
 			parentCandidateID = stepID;
 			if (VERBOSE)
