@@ -24,7 +24,7 @@ public class KahinaTabbedWindow  extends KahinaWindow
     
     public KahinaTabbedWindow(KahinaWindowManager wm, int winID)
     {
-    	super(wm);
+    	super(wm, winID);
     	this.initialize();
     }
     
