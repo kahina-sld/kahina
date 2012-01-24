@@ -18,7 +18,7 @@ public class KahinaJEditPropertyManager implements IPropertyManager
 	{
 		properties.putAll(loadProperties(TextArea.class, "/org/gjt/sp/jedit/jedit_keys.props"));
 		properties.putAll(loadProperties(TextArea.class, "/org/gjt/sp/jedit/jedit.props"));
-		properties.putAll(loadProperties(KahinaJEditPropertyManager.class, "/org/kahina/core/editor/kahina_jedit.properties"));
+		properties.putAll(loadProperties(KahinaJEditPropertyManager.class, "kahina_jedit.properties"));
 		// TODO load user-configurable properties
 	}
 
