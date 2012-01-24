@@ -4,7 +4,7 @@ import java.io.File;
 
 import javax.swing.JFrame;
 
-import org.kahina.core.editor.KahinaJEditPanel;
+import org.kahina.prolog.editor.PrologJEditPanel;
 
 //import statements
 //Check if window closes automatically. Otherwise add suitable code
@@ -21,7 +21,7 @@ public class EditorTest extends JFrame
 	EditorTest()
 	{
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		KahinaJEditPanel editPanel = new KahinaJEditPanel(new File("/home/ke/trale/test_gram/theory3.pl"));
+		PrologJEditPanel editPanel = new PrologJEditPanel(new File("/home/ke/trale/test_gram/theory3.pl"));
 		setContentPane(editPanel);
 		this.setSize(800, 600);
 		setVisible(true);
