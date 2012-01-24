@@ -49,7 +49,11 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
      * @param id the unique window ID that this window will be referred by (never use -1 or an ID that is already used!)
      */
     public KahinaWindow(KahinaWindowManager wm, int id)
-    {     
+    {
+    	if (VERBOSE)
+    	{
+    		System.err.println(this + "(" + wm + ", " + id + ")");
+    	}
     	this.wm = wm;
     	this.windowID = id;
     	//make sure the other constructor does not cause any ID clashes
