@@ -217,7 +217,9 @@ public class KahinaWindowManager implements KahinaListener
 				{
 					System.err.println("Trying to add window " + winID + " to window " + embeddingID);
 				}
-				boolean success = windowByID.get(embeddingID).addSubwindow(windowByID.get(winID));
+				KahinaWindow embeddingWindow = windowByID.get(embeddingID);
+				KahinaWindow embeddedWindow = windowByID.get(winID);
+				boolean success = embeddingWindow.addSubwindow(embeddedWindow);
 				if (!success)
 				{
 					System.err.println("ERROR: ill-defined window arrangement directly under window " + embeddingID);
