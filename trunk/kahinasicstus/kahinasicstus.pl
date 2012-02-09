@@ -93,23 +93,23 @@ action_mode_command(_,debug,proceed,_Inv,_Port,_Autoskip).        % creep
 
 :- multifile post_step_hook/5.
 
+% Calls all clauses of kahinasicstus:post_step_hook/5 in a failure-driven loop.
+% Modules can add such clauses e.g. to read additional information from a goal
+% before it is called, and pass it to Kahina. 
 run_post_step_hooks(Bridge,JVM,Inv,PredChars,GoalDescChars) :-
   post_step_hook(Bridge,JVM,Inv,PredChars,GoalDescChars),
-  !.
-run_post_step_hooks(Bridge,JVM,Inv,PredChars,GoalDescChars) :-
-  post_step_hook_default(Bridge,JVM,Inv,PredChars,GoalDescChars).
-
-post_step_hook_default(_,_,_,_,_).
+  fail.
+run_post_step_hooks(_,_,_,_,_).
 
 :- multifile post_exit_hook/5.
 
+% Calls all clauses of kahinasicstus:post_step_hook/5 in a failure-driven loop.
+% Modules can add such clauses e.g. to read additional information from a goal
+% after it exits, and pass it to Kahina. 
 run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDescChars) :-
   post_exit_hook(Bridge,JVM,Inv,Det,GoalDescChars),
-  !.
-run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDescChars) :-
-  post_exit_hook_default(Bridge,JVM,Inv,Det,GoalDescChars).
-
-post_exit_hook_default(_,_,_,_,_).
+  fail.
+run_post_exit_hooks(_,_,_,_,_).
 
 :- multifile classpath_element/1.
 
@@ -133,7 +133,7 @@ act(call,Inv,Bridge,JVM,Options) :-
   recall_blocked_goal(Module:Goal,BlockingID),
   !,
   link_nodes(Bridge,JVM,UnblockingID,BlockingID),
-  act(call,Inv,Bridge,JVM,Options). % Continue with second clause. Can't just fail because recall_blocked_goal/2 is supposed to change the execution state.
+  act(call,Inv,Bridge,JVM,Options). % Continue with second clause of act/5. Can't just fail because recall_blocked_goal/2 is supposed to change the execution state.
 act(call,Inv,Bridge,JVM,Options) :-
   top_start(Inv),
   execution_state(pred(Module:Pred)),	% "module qualified goal template", see manual
