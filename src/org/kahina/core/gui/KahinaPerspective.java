@@ -99,6 +99,7 @@ public class KahinaPerspective
         int maxY = height;
 		
         //put main window to upper left corner by default
+        psp.arr.addWindow(winID);
         psp.arr.setXPos(winID,0);
         psp.arr.setYPos(winID,0);
         psp.arr.setWidth(winID,width);
@@ -109,6 +110,7 @@ public class KahinaPerspective
         //create default arrangement for all the registered views
         for (String binding : nameToView.keySet())
         {
+            psp.arr.addWindow(winID);
         	psp.arr.setPrimaryWindow(binding, winID);
         	KahinaView<?> view = nameToView.get(binding);
         	

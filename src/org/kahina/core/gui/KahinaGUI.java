@@ -39,7 +39,7 @@ import org.kahina.core.visual.text.KahinaTextView;
 
 public class KahinaGUI implements KahinaListener
 {
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 
 	public KahinaInstance<?, ?, ?> kahina;
 

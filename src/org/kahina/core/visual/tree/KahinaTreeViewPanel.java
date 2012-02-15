@@ -461,6 +461,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
     public void scrollToNode(final int nodeID)
     {
         //System.err.println("Scrolling to node " + nodeID + " on layer " + view.treeLayer);
+        if (this.getParent() == null) return;
         final Container parent = this.getParent().getParent();
         if (nodeID != -1 && parent instanceof JScrollPane)
         {
