@@ -15,7 +15,7 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 	private int verticalDistance = 25;
 	Color bgColor = Color.WHITE;
 	private int nodeShapePolicy = KahinaTreeViewOptions.BOX_SHAPE;
-	private int edgeShapePolicy = KahinaTreeViewOptions.OVAL_SHAPE;
+    private int edgeTagPolicy = KahinaTreeViewOptions.OVAL_EDGE_TAGS;
 	private int nodeDisplayPolicy = KahinaTreeViewOptions.STATUS_DEFAULT_YES;
 	private int collapsePolicy = KahinaTreeViewOptions.COLLAPSE_SECONDARY;
 	private int terminalsPolicy = KahinaTreeViewOptions.NO_SPECIAL_TREATMENT;
@@ -179,18 +179,35 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 	
     public int getAutoscrollPolicy()
     {
-        return collapsePolicy;
+        return autoscrollPolicy;
     }
 
     public void setAutoscrollPolicy(int autoscrollPolicy)
     {
-        if (autoscrollPolicy >= 0 && autoscrollPolicy <= 2)
+        if (autoscrollPolicy >= 0 && autoscrollPolicy <= 1)
         {
             this.autoscrollPolicy = autoscrollPolicy;
         } 
         else
         {
             System.err.println("WARNING: unknown autoscroll policy value " + autoscrollPolicy);
+        }
+    }
+    
+    public int getEdgeTagPolicy()
+    {
+        return edgeTagPolicy;
+    }
+
+    public void setEdgeTagPolicy(int edgeTagPolicy)
+    {
+        if (edgeTagPolicy >= 0 && edgeTagPolicy <= 3)
+        {
+            this.edgeTagPolicy = edgeTagPolicy;
+        } 
+        else
+        {
+            System.err.println("WARNING: unknown edge tag policy value " + edgeTagPolicy);
         }
     }
 
@@ -207,22 +224,6 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 		} else
 		{
 			System.err.println("WARNING: unknown displayOrientation value " + newPolicy);
-		}
-	}
-
-	public int getEdgeShapePolicy()
-	{
-		return edgeShapePolicy;
-	}
-
-	public void setEdgeShapePolicy(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 1)
-		{
-			edgeShapePolicy = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown edge shape policy value " + newPolicy);
 		}
 	}
 
@@ -372,9 +373,9 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 			{
 				config.nodeShapePolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
 			}
-			else if (optName.equals("edgeShapePolicy"))
+			else if (optName.equals("edgeTagPolicy"))
 			{
-				config.edgeShapePolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+				config.edgeTagPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("nodeDisplayPolicy"))
 			{
@@ -452,8 +453,8 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 		el.appendChild(nodeShapePolicyEl);
 		
 		Element edgeShapePolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
-		edgeShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","edgeShapePolicy");
-		edgeShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",edgeShapePolicy + "");	
+		edgeShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","edgeTagPolicy");
+		edgeShapePolicyEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",edgeTagPolicy + "");	
 		el.appendChild(edgeShapePolicyEl);
 		
 		Element nodeDisplayPolicyEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");

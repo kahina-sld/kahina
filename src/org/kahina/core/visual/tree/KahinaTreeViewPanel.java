@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -265,29 +266,60 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
                     int y2 = view.getNodeY(nodeID);
                     if (view.getConfig().getDisplayOrientation() == KahinaTreeViewOptions.TOP_DOWN_DISPLAY)
                     {
-                        y1 += view.getNodeHeight(view.getModel().getParent(nodeID,view.getTreeLayer())) + 4 - view.getConfig().getZoomLevel();
+                        y1 += view.getNodeHeight(view.getModel().getParent(nodeID,view.getTreeLayer())) - view.getConfig().getZoomLevel();
                         y2 -= view.getConfig().getZoomLevel() - 2;
                     }
+                    String edgeTag = view.getContentfulTreeModel().getEdgeLabel(nodeID);
                     switch (view.getConfig().getLineShapePolicy())
                     {
                         case KahinaTreeViewOptions.STRAIGHT_LINES:
                         {
                             drawLineAccordingToType(canvas,view.getEdgeStyle(nodeID),x1, y1, x2, y2);
+                            printEdgeTag(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeTag);
                             break;
                         }
                         case KahinaTreeViewOptions.EDGY_LINES:
                         {
                             drawLineAccordingToType(canvas,view.getEdgeStyle(nodeID),x1, y1, x2, y1);
                             drawLineAccordingToType(canvas,view.getEdgeStyle(nodeID),x2, y1, x2, y2);
+                            printEdgeTag(canvas, new Point(x2,(y2+y1)/2),edgeTag);
                             break;
                         }
                         //third case: do not draw anything
                     }
                     //TODO: add this later
-                    //printEdgeTag(canvas,nodes.get(j),edgyLines);
                     //printEdgeArrow(canvas, nodes.get(j));             
                 }
             }
+        }
+    }
+    
+    public void printEdgeTag(Graphics canvas, Point center, String tag)
+    {
+        if (tag != null && view.getConfig().getEdgeTagPolicy() != KahinaTreeViewOptions.NO_EDGE_TAGS)
+        {
+            FontMetrics fm = canvas.getFontMetrics();
+            int width = fm.stringWidth(tag);
+            int height = fm.getHeight();
+            canvas.setColor(Color.BLACK);
+            //print edge tag
+            int x = center.x - width / 2;
+            int y = center.y;
+            if (view.getConfig().getEdgeTagPolicy() == KahinaTreeViewOptions.OVAL_EDGE_TAGS)
+            {
+                canvas.setColor(Color.WHITE);
+                canvas.fillOval(x - 2, y - height + 2, width + 4, height + 2);
+                canvas.setColor(Color.BLACK);
+                canvas.drawOval(x - 2, y - height + 2, width + 4, height + 2);
+            }
+            else if (view.getConfig().getEdgeTagPolicy() == KahinaTreeViewOptions.BOXED_EDGE_TAGS)
+            {
+                canvas.setColor(Color.WHITE);
+                canvas.fillRect(x - 2, y - height + 2, width + 4, height + 2);
+                canvas.setColor(Color.BLACK);
+                canvas.drawRect(x - 2, y - height + 2, width + 4, height + 2);
+            }
+            canvas.drawString(tag, x, y);
         }
     }
     
