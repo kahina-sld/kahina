@@ -20,6 +20,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 
 // TODO Second dimension sometimes isn't properly displayed when there is no
 // second-dimension root of the nodes in one view. Test case: set goal nodes to
@@ -857,5 +858,14 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			config.setHorizontalDistance(config.getHorizontalDistance() + 1);
 		}
 		calculateCoordinates();
+	}
+	
+	/**
+	 * HACK: if an update listener is defined on the tree view, the selected node will be marked
+	 */
+	protected void processEvent(KahinaUpdateEvent e)
+	{
+	    markedNode = e.getSelectedStep();
+	    super.processEvent(e);
 	}
 }

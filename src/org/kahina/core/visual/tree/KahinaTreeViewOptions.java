@@ -52,4 +52,8 @@ public class KahinaTreeViewOptions
     // possible values for cut policy (determines layering behavior)
     public static final int PRIMARY_CUT = 0;
     public static final int SECONDARY_CUT = 1;
+    
+    // possible values for autoscrolling policy
+    public static final int NO_AUTOSCROLL = 0;
+    public static final int AUTOSCROLL_TO_MARKED_NODE = 1;
 }
