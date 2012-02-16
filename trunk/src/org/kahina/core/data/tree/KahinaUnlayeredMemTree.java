@@ -369,4 +369,21 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 		// ad-hoc
 		return nodeCaptions.toString();
 	}
+
+    @Override
+    public boolean removeLeaf(int id)
+    {
+        if (children.get(id) == null)
+        {
+            children.get(parents.get(id)).remove(new Integer(id));
+            parents.remove(id);
+            nodeCaptions.remove(id);
+            edgeLabels.remove(id);
+            status.remove(id);
+            collapsed.remove(id);
+            layers.remove(id);
+            return true;
+        }
+        else return false;
+    }
 }

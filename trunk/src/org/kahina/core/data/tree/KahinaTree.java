@@ -59,6 +59,8 @@ public abstract class KahinaTree extends KahinaObject
     public abstract void addNode(int id, String caption, String label, int nodeStatus);
 
     public abstract int addNode(String caption, String label, int nodeStatus);
+    
+    public abstract boolean removeLeaf(int id);
 
     public abstract void decollapseAll();
 
