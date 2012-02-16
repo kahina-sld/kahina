@@ -56,4 +56,10 @@ public class KahinaTreeViewOptions
     // possible values for autoscrolling policy
     public static final int NO_AUTOSCROLL = 0;
     public static final int AUTOSCROLL_TO_MARKED_NODE = 1;
+    
+    // possible values for edge tag display policy
+    public static final int NO_EDGE_TAGS = 0;
+    public static final int SIMPLE_EDGE_TAGS = 1;
+    public static final int OVAL_EDGE_TAGS = 2;
+    public static final int BOXED_EDGE_TAGS = 3;
 }

@@ -246,26 +246,42 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         }
         add(nodeShapePolicySubmenu);
         
-        JMenu edgeShapePolicySubmenu = new JMenu("Edge label shape");
-        edgeShapePolicySubmenu.setEnabled(false);
+        JMenu edgeShapePolicySubmenu = new JMenu("Edge tags");
         ButtonGroup edgeShapePolicyGroup = new ButtonGroup();
-        boxShapeItem = new JRadioButtonMenuItem("Boxed edge labels");
-        boxShapeItem.addActionListener(l);
-        edgeShapePolicyGroup.add(boxShapeItem);
-        edgeShapePolicySubmenu.add(boxShapeItem);
-        ovalShapeItem = new JRadioButtonMenuItem("Oval edge labels");
-        ovalShapeItem.addActionListener(l);
-        edgeShapePolicyGroup.add(ovalShapeItem);
-        edgeShapePolicySubmenu.add(ovalShapeItem);
-        switch (v.getConfig().getEdgeShapePolicy())
+        JRadioButtonMenuItem noTagItem = new JRadioButtonMenuItem("No tags");
+        noTagItem.addActionListener(l);
+        edgeShapePolicyGroup.add(noTagItem);
+        edgeShapePolicySubmenu.add(noTagItem);
+        JRadioButtonMenuItem simpleTagItem = new JRadioButtonMenuItem("Simple tags");
+        simpleTagItem.addActionListener(l);
+        edgeShapePolicyGroup.add(simpleTagItem);
+        edgeShapePolicySubmenu.add(simpleTagItem);
+        JRadioButtonMenuItem ovalTagItem = new JRadioButtonMenuItem("Oval tags");
+        ovalTagItem.addActionListener(l);
+        edgeShapePolicyGroup.add(ovalTagItem);
+        edgeShapePolicySubmenu.add(ovalTagItem);
+        JRadioButtonMenuItem boxedTagItem = new JRadioButtonMenuItem("Boxed tags");
+        boxedTagItem.addActionListener(l);
+        edgeShapePolicyGroup.add(boxedTagItem);
+        edgeShapePolicySubmenu.add(boxedTagItem);
+
+        switch (v.getConfig().getEdgeTagPolicy())
         {
             case 0:
             {
-                boxShapeItem.setSelected(true); break;
+                noTagItem.setSelected(true); break;
             }
             case 1:
             {
-                ovalShapeItem.setSelected(true);
+                simpleTagItem.setSelected(true); break;
+            }
+            case 2:
+            {
+                boxShapeItem.setSelected(true); break;
+            }
+            case 3:
+            {
+                ovalTagItem.setSelected(true);
             }
         }
         add(edgeShapePolicySubmenu);
