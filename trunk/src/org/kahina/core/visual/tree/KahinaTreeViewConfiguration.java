@@ -25,6 +25,7 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 	private int antialiasingPolicy = KahinaTreeViewOptions.ANTIALIASING;
 	private int displayOrientation = KahinaTreeViewOptions.TOP_DOWN_DISPLAY;
     private int cuttingPolicy = KahinaTreeViewOptions.SECONDARY_CUT;
+    private int autoscrollPolicy = KahinaTreeViewOptions.AUTOSCROLL_TO_MARKED_NODE;
 	private boolean displaySecondDimension = true;
 	private int fontSize; // also determines zoom factor
 	
@@ -175,6 +176,23 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 			System.err.println("WARNING: unknown collapse policy value " + collapsePolicy);
 		}
 	}
+	
+    public int getAutoscrollPolicy()
+    {
+        return collapsePolicy;
+    }
+
+    public void setAutoscrollPolicy(int autoscrollPolicy)
+    {
+        if (autoscrollPolicy >= 0 && autoscrollPolicy <= 2)
+        {
+            this.autoscrollPolicy = autoscrollPolicy;
+        } 
+        else
+        {
+            System.err.println("WARNING: unknown autoscroll policy value " + autoscrollPolicy);
+        }
+    }
 
 	public int getDisplayOrientation()
 	{
