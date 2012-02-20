@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AdjacListsGraph extends KahinaGraph
 {
@@ -41,6 +42,11 @@ public class AdjacListsGraph extends KahinaGraph
         return nextIDHyp;
     }
     
+    public Set<Integer> getVertices()
+    {
+        return adjacents.keySet();
+    }
+    
     public void addVertex(int v)
     {
         if (adjacents.get(v) != null)
@@ -70,6 +76,17 @@ public class AdjacListsGraph extends KahinaGraph
         addVertex(v);
         vertexLabels.put(v,label);
         vertexStatus.put(v,status);
+    }
+    
+    public List<Integer> getNeighbors(int v)
+    {
+        List<Integer> neighbors = adjacents.get(v);
+        if (neighbors == null)
+        {
+            neighbors = new LinkedList<Integer>();
+            System.err.println("Vertex " + v + " not defined. Returning empty neighbor list.");
+        }
+        return neighbors;
     }
     
     public void addDirectedEdge(int v1, int v2)

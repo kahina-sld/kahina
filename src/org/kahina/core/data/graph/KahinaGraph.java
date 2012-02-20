@@ -1,13 +1,20 @@
 package org.kahina.core.data.graph;
 
+import java.util.List;
+import java.util.Set;
+
 import org.kahina.core.data.KahinaObject;
 
 public abstract class KahinaGraph extends KahinaObject
 {
+    public abstract Set<Integer> getVertices();
+    
     public abstract void addVertex(int v);
     public abstract void addVertex(int v, int status);
     public abstract void addVertex(int v, String label);
     public abstract void addVertex(int v, String label, int status);
+    
+    public abstract List<Integer> getNeighbors(int v);
     
     public abstract void addDirectedEdge(int v1, int v2);
     public abstract void addDirectedEdge(int v1, int v2, int status);
