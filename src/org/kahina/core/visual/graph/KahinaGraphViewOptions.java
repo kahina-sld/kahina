@@ -6,8 +6,8 @@ public class KahinaGraphViewOptions
 
     // possible values for vertex shape policy
     public static final int POINT_VERTICES = 0;
-    public static final int BOX_VERTICES = 0;
-    public static final int OVAL_VERTICES = 1;
+    public static final int BOX_VERTICES = 1;
+    public static final int OVAL_VERTICES = 2;
     
     // possible values for edge label display policy
     public static final int NO_EDGE_LABELS = 0;
