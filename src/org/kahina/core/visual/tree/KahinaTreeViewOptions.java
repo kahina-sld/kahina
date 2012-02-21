@@ -40,10 +40,10 @@ public class KahinaTreeViewOptions
 	public static final int CENTERED_NODES = 0;
 	public static final int LEFT_ALIGNED_NODES = 1;
 	public static final int RIGHT_ALIGNED_NODES = 2;
-
+	
 	// possible values for antialiasing policy
-	public static final int ANTIALIASING = 0;
-	public static final int NO_ANTIALIASING = 1;
+    public static final int ANTIALIASING = 0;
+    public static final int NO_ANTIALIASING = 1;
 
 	// possible values for line types
 	public static final int COMPLETE_LINES = 0;

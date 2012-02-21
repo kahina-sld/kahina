@@ -7,7 +7,7 @@ import org.kahina.core.data.graph.KahinaGraph;
 public abstract class KahinaGraphLayouter
 {
     //references to the relevant parts of a KahinaGraphView
-    //input
+    //these need to be updated manually if replaced in the KahinaGraphView! 
     protected KahinaGraph g;
     protected KahinaGraphViewConfiguration config;
     //output (always accessible as references from the view)
@@ -23,6 +23,9 @@ public abstract class KahinaGraphLayouter
         
         computeInitialLayout();
     }
+    
+    public abstract int getDisplayHeight();
+    public abstract int getDisplayWidth();
     
     public abstract void computeInitialLayout();
     

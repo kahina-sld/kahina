@@ -13,7 +13,7 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 	// display options
 	private int horizontalDistance = 5;
 	private int verticalDistance = 25;
-	Color bgColor = Color.WHITE;
+	private Color bgColor = Color.WHITE;
 	private int nodeShapePolicy = KahinaTreeViewOptions.BOX_SHAPE;
     private int edgeTagPolicy = KahinaTreeViewOptions.OVAL_EDGE_TAGS;
 	private int nodeDisplayPolicy = KahinaTreeViewOptions.STATUS_DEFAULT_YES;
@@ -73,7 +73,7 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 	{
 		if (bgColor == null)
 		{
-			System.err.println("WARNING: TreeView recieved null as background color! Defaulting to Color.WHITE!");
+			System.err.println("WARNING: TreeView received null as background color! Defaulting to Color.WHITE!");
 			this.bgColor = Color.WHITE;
 		}
 		else
@@ -160,6 +160,23 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 			System.err.println("No vertical distance values over 20 allowed!");
 		}
 	}
+	
+    public int getNodeShapePolicy()
+    {
+        return nodeShapePolicy;
+    }
+
+    public void setNodeShapePolicy(int newPolicy)
+    {
+        if (newPolicy >= 0 && newPolicy <= 1)
+        {
+            nodeShapePolicy = newPolicy;
+        } 
+        else
+        {
+            System.err.println("WARNING: unknown node shape policy value " + newPolicy);
+        }
+    }
 
 	public int getCollapsePolicy()
 	{
@@ -304,22 +321,6 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 		} else
 		{
 			System.err.println("WARNING: unknown node position policy value " + newPolicy);
-		}
-	}
-
-	public int getNodeShapePolicy()
-	{
-		return nodeShapePolicy;
-	}
-
-	public void setNodeShapePolicy(int newPolicy)
-	{
-		if (newPolicy >= 0 && newPolicy <= 1)
-		{
-			nodeShapePolicy = newPolicy;
-		} else
-		{
-			System.err.println("WARNING: unknown node shape policy value " + newPolicy);
 		}
 	}
 

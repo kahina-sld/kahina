@@ -351,6 +351,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			// Nodes in this view whose secondary parent is not in this view.
 			// Will start from there to display secondary tree:
 			ArrayList<Integer> indentAgenda = new ArrayList<Integer>();
+			System.err.println("-----------------------");
 			for (int i = 0; i < nodeLevels.size(); i++)
 			{
 				if (VERBOSE)
@@ -358,7 +359,14 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 				List<Integer> nodes = nodeLevels.get(i);
 				int xOffset = 0;
 				if (nodes.size() > 0)
+				{
 					xOffset = subtreeWidths.get(nodes.get(0)).maximumLeftDistance() * horizontalDistance * fontSize / 2;
+				    System.err.println(xOffset + " = " + subtreeWidths.get(nodes.get(0)).maximumLeftDistance() + " * " + horizontalDistance + " * " + fontSize + " / 2");
+				}
+				else
+				{
+				    xOffset = horizontalDistance * fontSize / 2;
+				}
 				// TODO: find out why this does not seem to have any effect
 				if (config.getNodePositionPolicy() == KahinaTreeViewOptions.CENTERED_NODES)
 				{

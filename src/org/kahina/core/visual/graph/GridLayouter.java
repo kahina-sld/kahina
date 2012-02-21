@@ -140,11 +140,29 @@ public class GridLayouter extends KahinaGraphLayouter
                 }
             }
         }
+        //compute the coordinates corresponding to the grid
+        translateToCoordinates();
     }
     
     private void translateToCoordinates()
     {
-        //TODO: fill xCoord and yCoord with the grid data according to config parameters
+        int offset = config.getZoomLevel();
+        int currentX = offset;
+        for (int i = 0; i < grid.length; i++)
+        {
+            int currentY = offset;
+            for (int j = 0; j < grid[i].length; j++)
+            {
+                int node = grid[i][j];
+                if (node != -1)
+                {
+                    xCoord.put(node, currentX);
+                    yCoord.put(node, currentY);
+                }
+                currentY += offset;
+            }
+            currentX += offset;
+        }
     }
     
     private void swapNodes(int v1, int v2)
@@ -191,5 +209,18 @@ public class GridLayouter extends KahinaGraphLayouter
     private int sumDistance(int x1, int y1, int x2, int y2)
     {
         return Math.abs(y2 - y1) + Math.abs(x2 - x1);
+    }
+
+    @Override
+    public int getDisplayHeight()
+    {
+        return grid.length * config.getZoomLevel();
+    }
+
+    @Override
+    public int getDisplayWidth()
+    {
+        if (grid.length == 0) return 0;
+        return grid[0].length * config.getZoomLevel();
     }
 }

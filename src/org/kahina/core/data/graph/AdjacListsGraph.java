@@ -157,6 +157,18 @@ public class AdjacListsGraph extends KahinaGraph
         setEdgeLabel(v2,v1,label);
     }
     
+    public void setVertexLabel(int v, String label)
+    {
+        vertexLabels.put(v, label);
+    }
+    
+    public String getVertexLabel(int v)
+    {
+        String label = vertexLabels.get(v);
+        if (label == null) return "";
+        return label;
+    }
+    
     public void setEdgeLabel(int v1, int v2, String label)
     {
         Map<Integer,String> submap = edgeLabels.get(v1);
@@ -181,6 +193,18 @@ public class AdjacListsGraph extends KahinaGraph
             if (label == null) return "";
             return label;
         }
+    }
+    
+    public void setVertexStatus(int v, int status)
+    {
+        vertexStatus.put(v, status);
+    }
+    
+    public int getVertexStatus(int v)
+    {
+        Integer status = vertexStatus.get(v);
+        if (status == null) return 0;
+        return status;
     }
     
     public void setEdgeStatus(int v1, int v2, int status)
