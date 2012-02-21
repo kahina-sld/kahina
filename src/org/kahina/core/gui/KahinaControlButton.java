@@ -3,7 +3,7 @@ package org.kahina.core.gui;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
-import org.kahina.core.gui.icons.IconUtil;
+import org.kahina.core.io.util.IconUtil;
 
 public class KahinaControlButton
 {

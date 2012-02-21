@@ -27,7 +27,7 @@ import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.gui.windows.KahinaWindow;
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.chart.KahinaChartView;
@@ -178,7 +178,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 
 			// TODO: load last perspective instead of only default perspective from XML
 			InputStream xmlStream = new BufferedInputStream(TraleSLDGUI.class.getResourceAsStream("tralesld-manywindows.xml"));
-			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLStream(xmlStream, false).getDocumentElement()));
+			windowManager.createWindows(KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement()));
 			if (withWorkbench)
 			{
 				KahinaWindow workbenchWindow = windowManager.integrateInDefaultWindow(workbenchView);

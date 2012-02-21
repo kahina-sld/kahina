@@ -30,7 +30,7 @@ import org.kahina.core.gui.windows.KahinaTabbedWindow;
 import org.kahina.core.gui.windows.KahinaVerticallySplitWindow;
 import org.kahina.core.gui.windows.KahinaWindow;
 import org.kahina.core.gui.windows.KahinaWindowType;
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.KahinaEmptyView;
 import org.kahina.core.visual.KahinaView;
 import org.w3c.dom.Node;
@@ -783,7 +783,7 @@ public class KahinaWindowManager implements KahinaListener
         try
         {
             InputStream stream = new BufferedInputStream(new FileInputStream(file));
-            KahinaPerspective result = KahinaPerspective.importXML(XMLUtilities.parseXMLStream(stream, false).getDocumentElement());
+            KahinaPerspective result = KahinaPerspective.importXML(XMLUtil.parseXMLStream(stream, false).getDocumentElement());
             stream.close();
             return result;
         }
@@ -807,8 +807,8 @@ public class KahinaWindowManager implements KahinaListener
 
     private void savePerspectiveAs(File file)
     {
-        Node node = getPerspective().exportXML(XMLUtilities.newEmptyDocument());
-        XMLUtilities.writeXML(node, file.getAbsolutePath());
+        Node node = getPerspective().exportXML(XMLUtil.newEmptyDocument());
+        XMLUtil.writeXML(node, file.getAbsolutePath());
     }
 
     public void setControl(KahinaController control)

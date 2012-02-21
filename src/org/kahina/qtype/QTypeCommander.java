@@ -17,8 +17,8 @@ import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaDialogEvent;
-import org.kahina.core.util.PrologUtilities;
-import org.kahina.core.util.Utilities;
+import org.kahina.core.util.ListUtil;
+import org.kahina.prolog.util.PrologUtil;
 import org.kahina.qtype.control.QTypeControlEventCommands;
 
 public class QTypeCommander implements KahinaListener
@@ -140,7 +140,7 @@ public class QTypeCommander implements KahinaListener
 
 		if (QTypeControlEventCommands.REGISTER_SENTENCE.equals(command))
 		{
-			sentence = Utilities.castToStringList(event.getArguments()[0]);
+			sentence = ListUtil.castToStringList(event.getArguments()[0]);
 			updateActions();
 			if (VERBOSE)
 			{
@@ -150,8 +150,8 @@ public class QTypeCommander implements KahinaListener
 		{
 			Object[] arguments = event.getArguments();
 			int number = (Integer) arguments[0];
-			Utilities.ensureSize(examples, number + 1);
-			examples.set(number, Utilities.castToStringList(arguments[2]));
+			ListUtil.ensureSize(examples, number + 1);
+			examples.set(number, ListUtil.castToStringList(arguments[2]));
 			KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
 		} else if (QTypeControlEventCommands.REGISTER_GRAMMAR.equals(command))
 		{
@@ -178,11 +178,11 @@ public class QTypeCommander implements KahinaListener
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { Utilities.join(" ", sentence) }));
+				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { ListUtil.join(" ", sentence) }));
 			} else
 			{
 				KahinaRunner.processEvent(new KahinaControlEvent("abort"));
-				parse(Utilities.castToStringList(event.getArguments()[0]));
+				parse(ListUtil.castToStringList(event.getArguments()[0]));
 			}
 		} else if (QTypeControlEventCommands.RESTART.equals(command))
 		{
@@ -200,7 +200,7 @@ public class QTypeCommander implements KahinaListener
 		}
 		synchronized (commands)
 		{
-			commands.add("query cp(" + PrologUtilities.stringToAtomLiteral(absolutePath) + ")");
+			commands.add("query cp(" + PrologUtil.stringToAtomLiteral(absolutePath) + ")");
 		}
 	}
 
@@ -208,7 +208,7 @@ public class QTypeCommander implements KahinaListener
 	{
 		synchronized (commands)
 		{
-			commands.add("query lc(" + Utilities.join(" ", words) + ")");
+			commands.add("query lc(" + ListUtil.join(" ", words) + ")");
 		}
 	}
 

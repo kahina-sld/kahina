@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.gui.windows.KahinaWindowType;
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
 import org.w3c.dom.Document;
@@ -143,8 +143,8 @@ public class KahinaPerspective
 	
 	public static KahinaPerspective importXML(Element topEl)
 	{
-		String appID = XMLUtilities.attrStrVal(topEl, "kahina:appID");
-		String name = XMLUtilities.attrStrVal(topEl, "kahina:name");
+		String appID = XMLUtil.attrStrVal(topEl, "kahina:appID");
+		String name = XMLUtil.attrStrVal(topEl, "kahina:name");
 		KahinaPerspective perspective = new KahinaPerspective(appID, name);
 		NodeList nl = topEl.getElementsByTagName("kahina:arrangement");
 		perspective.arr = KahinaArrangement.importXML((Element) nl.item(0));
@@ -154,8 +154,8 @@ public class KahinaPerspective
 		for (int i = 0; i < nl.getLength(); i++)
 		{
 			configEl = (Element) nl.item(i);
-			int viewID = XMLUtilities.attrIntVal(configEl, "kahina:viewid");
-			String type = XMLUtilities.attrStrVal(configEl, "kahina:type");
+			int viewID = XMLUtil.attrIntVal(configEl, "kahina:viewid");
+			String type = XMLUtil.attrStrVal(configEl, "kahina:type");
 			try
 			{
 				Method importMethod = Class.forName(type).getMethod("importXML", Element.class);

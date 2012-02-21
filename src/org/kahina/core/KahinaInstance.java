@@ -29,9 +29,9 @@ import org.kahina.core.gui.event.KahinaConsoleLineEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.magazine.ObjectMagazine;
+import org.kahina.core.io.util.FileUtil;
 import org.kahina.core.profiler.KahinaWarner;
-import org.kahina.core.util.FileUtilities;
-import org.kahina.core.util.KahinaSwingUtilities;
+import org.kahina.core.util.SwingUtil;
 import org.kahina.core.util.ProgressMonitorWrapper;
 import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.source.KahinaJEditSourceCodeView;
@@ -221,16 +221,16 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 				System.err.println(((TraleSLDState) state).getStepTree().getLayerDecider());
 			}
 			in.close();
-			File directory = FileUtilities.createTemporaryDirectory();
+			File directory = FileUtil.createTemporaryDirectory();
 			monitor = gui.createProgressMonitorWrapper("Loading session", null, 0, zipFile.size());
-			FileUtilities.unzipToDirectory(zipFile, directory, "steps/", monitor);
+			FileUtil.unzipToDirectory(zipFile, directory, "steps/", monitor);
 			KahinaRunner.loadSteps(directory);
 			gui.displayMainViews();
 			KahinaRunner.processEvent(new KahinaSelectionEvent(state.getSelectedStepID()));
 			KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.NODE_COUNT, state.getStepCount()));
 		} catch (Exception e)
 		{
-			gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog(SwingUtil.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		} finally
 		{
@@ -242,7 +242,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 					zipFile.close();
 				} catch (IOException e)
 				{
-					gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+					gui.showMessageDialog(SwingUtil.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}
@@ -260,10 +260,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		File directory;
 		try
 		{
-			directory = FileUtilities.createTemporaryDirectory();
+			directory = FileUtil.createTemporaryDirectory();
 		} catch (IOException e)
 		{
-			gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be saved due to the following problem:", e), "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog(SwingUtil.visualError("Session could not be saved due to the following problem:", e), "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		if (zipFile.exists())
@@ -296,13 +296,13 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 				monitor.increment();
 			}
 			out.flush();
-			FileUtilities.zipDirectory(directory, zipFile, monitor);
-			FileUtilities.deleteRecursively(directory);
+			FileUtil.zipDirectory(directory, zipFile, monitor);
+			FileUtil.deleteRecursively(directory);
 			monitor.close();
 		} catch (Exception e)
 		{
 			monitor.close();
-			gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+			gui.showMessageDialog(SwingUtil.visualError("Session could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 		} finally
 		{
 			if (out != null)
@@ -312,7 +312,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 					out.close();
 				} catch (IOException e)
 				{
-					gui.showMessageDialog(KahinaSwingUtilities.visualError("Session could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
+					gui.showMessageDialog(SwingUtil.visualError("Session could not be saved due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}

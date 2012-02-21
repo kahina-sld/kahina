@@ -7,7 +7,7 @@ import javax.swing.JMenu;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.gui.KahinaDialogEvent;
-import org.kahina.core.util.KahinaSwingUtilities;
+import org.kahina.core.util.SwingUtil;
 
 public class KahinaProfilerMenu extends JMenu implements ActionListener
 {
@@ -17,11 +17,11 @@ public class KahinaProfilerMenu extends JMenu implements ActionListener
 	public KahinaProfilerMenu()
 	{
 		super("Profiler");
-		add(KahinaSwingUtilities.createMenuItem("Full profile", "fullProfile", this));
-		add(KahinaSwingUtilities.createMenuItem("Profile call subtree", "callSubtreeProfile", this));
-		add(KahinaSwingUtilities.createMenuItem("Profile search subtree", "searchSubtreeProfile", this));
+		add(SwingUtil.createMenuItem("Full profile", "fullProfile", this));
+		add(SwingUtil.createMenuItem("Profile call subtree", "callSubtreeProfile", this));
+		add(SwingUtil.createMenuItem("Profile search subtree", "searchSubtreeProfile", this));
 		addSeparator();
-		add(KahinaSwingUtilities.createMenuItem("Edit warnings", "editWarnings", this));
+		add(SwingUtil.createMenuItem("Edit warnings", "editWarnings", this));
 	}
 
 	@Override

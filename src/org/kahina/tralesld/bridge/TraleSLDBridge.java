@@ -19,10 +19,10 @@ import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
-import org.kahina.core.util.PrologUtilities;
 import org.kahina.core.util.Sharer;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
+import org.kahina.prolog.util.PrologUtil;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.TraleSLDControlEventCommands;
@@ -62,7 +62,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	private void initializeChart(String parsedSentenceList)
 	{
-		List<String> wordList = PrologUtilities.parsePrologStringList(parsedSentenceList);
+		List<String> wordList = PrologUtil.parsePrologStringList(parsedSentenceList);
 		KahinaChart chart = state.getChart();
 		for (int i = 0; i < wordList.size(); i++)
 		{
@@ -119,7 +119,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 					System.err.println("Registering sentence...");
 				}
 				String sentence = nodeLabel.substring(3, nodeLabel.length());
-				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtilities.parsePrologStringList(sentence) }));
+				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtil.parsePrologStringList(sentence) }));
 				initializeChart(sentence);
 			} else if (stepType.equals("compile_gram"))
 			{
@@ -127,7 +127,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				{
 					System.err.println("Registering grammar...");
 				}
-				String absolutePath = PrologUtilities.atomLiteralToString(nodeLabel.substring(13, nodeLabel.length() - 1));
+				String absolutePath = PrologUtil.atomLiteralToString(nodeLabel.substring(13, nodeLabel.length() - 1));
 				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_GRAMMAR, new Object[] { absolutePath }));
 			}
 			if (VERBOSE)

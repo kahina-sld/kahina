@@ -8,7 +8,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JViewport;
 
-public class KahinaSwingUtilities
+public class SwingUtil
 {
     public static void scrollToCenter(JScrollPane scrollPane, int x, int y)
     {
@@ -35,7 +35,7 @@ public class KahinaSwingUtilities
 
 	public static Object visualError(String message, Throwable t)
 	{
-		return new Object[] { message, new JScrollPane(new JTextArea(Utilities.join(System.getProperty("line.separator"), Utilities.portrayStackTrace(t)), 20, 80)) };
+		return new Object[] { message, new JScrollPane(new JTextArea(ListUtil.join(System.getProperty("line.separator"), MsgUtil.portrayStackTrace(t)), 20, 80)) };
 	}
 
 	public static JMenuItem createMenuItem(String text, String actionCommand, ActionListener actionListener)

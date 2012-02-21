@@ -22,11 +22,11 @@ import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
-import org.kahina.core.util.PrologUtilities;
-import org.kahina.core.util.Utilities;
+import org.kahina.core.util.ListUtil;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
+import org.kahina.prolog.util.PrologUtil;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 import org.kahina.tralesld.control.TraleSLDControlEventCommands;
@@ -259,7 +259,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { Utilities.join(" ", sentence) }));
+				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { ListUtil.join(" ", sentence) }));
 			} 
 			else
 			{
@@ -295,7 +295,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		}
 		synchronized (traleCommands)
 		{
-			traleCommands.add("query dcompile_gram(" + PrologUtilities.stringToAtomLiteral(absolutePath) + ").");
+			traleCommands.add("query dcompile_gram(" + PrologUtil.stringToAtomLiteral(absolutePath) + ").");
 			traleCommands.add("query send_signature.");
 		}
 	}
@@ -306,7 +306,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			//TODO: make sure the signature is retained across parses; requires major restructuring
 			traleCommands.add("query send_signature.");
-			traleCommands.add("query drec[" + Utilities.join(",", words) + "].");
+			traleCommands.add("query drec[" + ListUtil.join(",", words) + "].");
 		}
 	}
 

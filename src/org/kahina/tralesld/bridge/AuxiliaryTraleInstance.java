@@ -22,7 +22,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.SwingUtilities;
 
-import org.kahina.core.io.util.FileUtilities;
+import org.kahina.core.io.util.FileUtil;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 import org.kahina.tralesld.visual.fs.GraleJUtility;
 
@@ -581,7 +581,7 @@ public class AuxiliaryTraleInstance extends Thread
 		String grisu = null;
 		try
 		{
-			grisu = FileUtilities.slurpFile("lex.grisu");
+			grisu = FileUtil.slurpFile("lex.grisu");
 		}
 		catch (IOException e)
 		{
@@ -661,7 +661,7 @@ public class AuxiliaryTraleInstance extends Thread
 		String grisu = null;
 		try
 		{
-			grisu = FileUtilities.slurpFile("tmp.grisu");
+			grisu = FileUtil.slurpFile("tmp.grisu");
 		}
 		catch (IOException e)
 		{
@@ -696,7 +696,7 @@ public class AuxiliaryTraleInstance extends Thread
 		String grisu = null;
 		try
 		{
-			grisu = FileUtilities.slurpFile("tmp.grisu");
+			grisu = FileUtil.slurpFile("tmp.grisu");
 		}
 		catch (IOException e)
 		{
@@ -733,7 +733,7 @@ public class AuxiliaryTraleInstance extends Thread
 		String grisu = null;
 		try
 		{
-			grisu = FileUtilities.slurpFile("tmp.grisu");
+			grisu = FileUtil.slurpFile("tmp.grisu");
 		}
 		catch (IOException e)
 		{

@@ -2,7 +2,7 @@ package org.kahina.core.io.color;
 
 import java.awt.Color;
 
-public class ColorIO
+public class ColorUtil
 {
     public static Color decodeHTML(String htmlColorString)
     {

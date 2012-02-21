@@ -1,10 +1,14 @@
-package org.kahina.core.util;
+package org.kahina.core.io.util;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -18,9 +22,30 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.kahina.core.KahinaException;
+import org.kahina.core.util.ProgressMonitorWrapper;
 
-public class FileUtilities
+public class FileUtil
 {
+	public static String slurpFile(String file) throws IOException 
+	{
+	    BufferedReader reader = new BufferedReader( new FileReader (file));
+	    String line  = null;
+	    StringBuilder stringBuilder = new StringBuilder();
+	    String ls = System.getProperty("line.separator");
+	    while( ( line = reader.readLine() ) != null ) {
+	        stringBuilder.append( line );
+	        stringBuilder.append( ls );
+	    }
+	    reader.close();
+	    return stringBuilder.toString();
+	 }
+	
+	public static void writeStringToFile(String string, String file) throws IOException 
+	{
+	    BufferedWriter writer = new BufferedWriter( new FileWriter (file));
+	    writer.append(string);
+	    writer.close();
+	 }
 
 	public static void copy(File source, File destination) throws IOException
 	{

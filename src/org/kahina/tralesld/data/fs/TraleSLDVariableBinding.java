@@ -1,7 +1,7 @@
 package org.kahina.tralesld.data.fs;
 
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.util.Utilities;
+import org.kahina.core.util.ObjectUtil;
 
 public class TraleSLDVariableBinding extends KahinaObject
 {
@@ -50,13 +50,13 @@ public class TraleSLDVariableBinding extends KahinaObject
 			return false;
 		}
 		TraleSLDVariableBinding other = (TraleSLDVariableBinding) o;
-		return Utilities.equal(varName, other.varName) && Utilities.equal(tag, other.tag) && Utilities.equal(type, other.type) && Utilities.equal(fs, other.fs);
+		return ObjectUtil.equal(varName, other.varName) && ObjectUtil.equal(tag, other.tag) && ObjectUtil.equal(type, other.type) && ObjectUtil.equal(fs, other.fs);
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return Utilities.hashCode(varName, tag, type, fs);
+		return ObjectUtil.hashCode(varName, tag, type, fs);
 	}
 
 }

@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaPerspective;
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.tree.KahinaAbstractTreeView;
 import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.core.visual.tree.KahinaLayeredTreeViewPanel;
@@ -35,7 +35,7 @@ public class SWIPrologGUI extends LogicProgrammingGUI
 			displayMainViews();
 			// TODO: load last perspective instead of only default perspective from XML
 			InputStream xmlStream = new BufferedInputStream(SWIPrologGUI.class.getResourceAsStream("kahinaswi-integrated.xml"));
-			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLStream(xmlStream, false).getDocumentElement()));			
+			windowManager.createWindows(KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement()));			
 		}
 		catch (NullPointerException e)
 		{

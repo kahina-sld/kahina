@@ -7,7 +7,7 @@ import org.kahina.core.control.patterns.TreeAutomaton;
 import org.kahina.core.control.patterns.TreeAutomatonRule;
 import org.kahina.core.control.patterns.TreePattern;
 import org.kahina.core.control.patterns.TreePatternNode;
-import org.kahina.core.io.color.ColorIO;
+import org.kahina.core.io.color.ColorUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -50,7 +50,7 @@ public class KahinaBreakpoint implements Serializable
     {
         number++;
         setName("Breakpoint " + number);
-        signalColor = ColorIO.randomColor();
+        signalColor = ColorUtil.randomColor();
         active = true;
         pattern = new TreePattern();
         this.type = type;
@@ -208,7 +208,7 @@ public class KahinaBreakpoint implements Serializable
     {
         StringBuilder b = new StringBuilder("");
         if (asFile) b.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-        b.append("<breakpoint name=\"" + name + "\" type=\"" + type + "\" color=\"" + ColorIO.encodeHTML(signalColor) +"\" active=\"" + active + "\">\n");
+        b.append("<breakpoint name=\"" + name + "\" type=\"" + type + "\" color=\"" + ColorUtil.encodeHTML(signalColor) +"\" active=\"" + active + "\">\n");
         b.append(pattern.exportXML(false));
         b.append("</breakpoint>");
         return b.toString();
@@ -224,7 +224,7 @@ public class KahinaBreakpoint implements Serializable
         KahinaBreakpoint newBreakpoint = new KahinaBreakpoint(-1);
         newBreakpoint.setName(breakpointNode.getAttribute("name"));
         newBreakpoint.setType(Integer.parseInt(breakpointNode.getAttribute("type")));    
-        newBreakpoint.setSignalColor(ColorIO.decodeHTML(breakpointNode.getAttribute("color")));
+        newBreakpoint.setSignalColor(ColorUtil.decodeHTML(breakpointNode.getAttribute("color")));
         newBreakpoint.active = Boolean.parseBoolean(breakpointNode.getAttribute("active"));
         //expect only one tree pattern
         newBreakpoint.pattern = TreePattern.importXML((Element) breakpointNode.getElementsByTagName("treePattern").item(0));

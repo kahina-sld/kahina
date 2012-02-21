@@ -25,7 +25,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class XMLUtilities 
+public class XMLUtil 
 {
 	/**
 	 * parse an XML file

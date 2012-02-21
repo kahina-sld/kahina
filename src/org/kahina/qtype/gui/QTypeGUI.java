@@ -15,7 +15,7 @@ import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.qtype.QTypeDebuggerInstance;
 import org.kahina.qtype.QTypeStep;
@@ -39,7 +39,7 @@ public class QTypeGUI extends SICStusPrologGUI
 			displayMainViews();
 			//TODO: load last perspective instead of only default perspective from XML
 			InputStream xmlStream = new BufferedInputStream(QTypeGUI.class.getResourceAsStream("kahinaqtype-integrated.xml"));
-			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLStream(xmlStream, false).getDocumentElement()));	
+			windowManager.createWindows(KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement()));	
 		}
 		catch (NullPointerException e)
 		{

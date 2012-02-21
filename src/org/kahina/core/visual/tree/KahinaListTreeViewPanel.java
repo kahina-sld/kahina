@@ -25,7 +25,7 @@ import javax.swing.ListModel;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
-import org.kahina.core.util.Utilities;
+import org.kahina.core.util.ListUtil;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView> implements MouseListener
@@ -298,9 +298,9 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		KahinaListTreeListEntry entry = new KahinaListTreeListEntry();
 		entry.nodeID = node;
 		entry.indentation = indentation;
-		entry.leftAlternatives = Utilities.integerListToIntArray(leftAlternatives);
+		entry.leftAlternatives = ListUtil.integerListToIntArray(leftAlternatives);
 		leftAlternatives.clear();
-		entry.rightAlternatives = Utilities.integerListToIntArray(rightAlternatives);
+		entry.rightAlternatives = ListUtil.integerListToIntArray(rightAlternatives);
 		if (VERBOSE)
 		{
 			System.err.println("Discharchged right alternatives at node " + node + ": " + rightAlternatives);

@@ -17,7 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.util.KahinaSwingUtilities;
+import org.kahina.core.util.SwingUtil;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
@@ -512,7 +512,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
 
 					@Override
 					public void run() {
-		                KahinaSwingUtilities.scrollToCenter((JScrollPane) parent, view.getNodeX(nodeID), view.getNodeY(nodeID));
+		                SwingUtil.scrollToCenter((JScrollPane) parent, view.getNodeX(nodeID), view.getNodeY(nodeID));
 					}});
             }
         }
