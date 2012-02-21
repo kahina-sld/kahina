@@ -10,7 +10,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.List;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaViewPanel;
@@ -18,6 +17,8 @@ import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 
 public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
 {
+    private static final long serialVersionUID = -3000401362714094415L;
+    
     BufferedImage image;
     
     public KahinaGraphViewPanel(KahinaController control)

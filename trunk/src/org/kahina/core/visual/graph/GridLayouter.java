@@ -56,7 +56,7 @@ public class GridLayouter extends KahinaGraphLayouter
             }
         }
         //compute the coordinates corresponding to the grid
-        translateToCoordinates();
+        refreshCoordinates();
     }
 
     @Override
@@ -141,10 +141,10 @@ public class GridLayouter extends KahinaGraphLayouter
             }
         }
         //compute the coordinates corresponding to the grid
-        translateToCoordinates();
+        refreshCoordinates();
     }
     
-    private void translateToCoordinates()
+    public void refreshCoordinates()
     {
         int offset = config.getZoomLevel();
         int currentX = offset;

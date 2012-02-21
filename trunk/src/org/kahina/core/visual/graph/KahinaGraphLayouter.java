@@ -24,6 +24,8 @@ public abstract class KahinaGraphLayouter
         computeInitialLayout();
     }
     
+    public abstract void refreshCoordinates();
+    
     public abstract int getDisplayHeight();
     public abstract int getDisplayWidth();
     
