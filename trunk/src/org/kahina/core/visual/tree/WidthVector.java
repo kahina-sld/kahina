@@ -25,7 +25,7 @@ public class WidthVector
     
     public static WidthVector adjoin(WidthVector w1, WidthVector w2)
     {
-        //System.err.println("Adjoining: " + w1 + " and " + w2);
+        System.err.println("Adjoining: " + w1 + " and " + w2);
         WidthVector w3 = new WidthVector();
         w3.start.clear();
         w3.end.clear();
@@ -46,22 +46,26 @@ public class WidthVector
         }
         int leftOffset = w1.end.get(maxReqDistanceLevel);
         int rightOffset = w2.start.get(maxReqDistanceLevel);
+        System.err.println("  Offsets: [" + leftOffset + "," + rightOffset + "]");
         for (int i = 0; i < minSize; i++)
         {
             w3.start.add(w1.start.get(i) + leftOffset);
             w3.end.add(w2.end.get(i) + rightOffset);
+            System.err.println("  Adding: [" + (w1.start.get(i) + leftOffset) + "," + (w2.end.get(i) + rightOffset) + "]");
         }
         for (int i = minSize; i < w1size; i++)
         {
             w3.start.add(w1.start.get(i) + leftOffset);
             w3.end.add(w1.end.get(i) - leftOffset);
+            System.err.println("  Adding: [" + (w1.start.get(i) + leftOffset) + "," + (w2.end.get(i) - leftOffset) + "]");
         }
         for (int i = minSize; i < w2size; i++)
         {
             w3.start.add(w2.start.get(i) - rightOffset);
             w3.end.add(w2.end.get(i) + rightOffset);
+            System.err.println("  Adding: [" + (w1.start.get(i) - rightOffset) + "," + (w2.end.get(i) + rightOffset) + "]");
         }
-        //System.err.println("Result: " + w3);
+        System.err.println("Result: " + w3);
         return w3;
     }
     

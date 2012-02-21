@@ -122,8 +122,8 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         this.setMinimumSize(newD);
         this.setMaximumSize(newD);
         this.setPreferredSize(newD);
-        this.setBackground(view.getConfig().bgColor);
-        canvas.setColor(view.getConfig().bgColor);
+        this.setBackground(view.getConfig().getBackgroundColor());
+        canvas.setColor(view.getConfig().getBackgroundColor());
         //little hack to account for small trees
         canvas.fillRect(0, 0, 2000, 2000);
         canvas.fillRect(0, 0, this.getSize().width, this.getSize().height);
