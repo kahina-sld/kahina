@@ -10,7 +10,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
 import org.kahina.core.profiler.ProfileEntry;
-import org.kahina.core.util.Utilities;
+import org.kahina.core.util.ObjectUtil;
 
 public class LogicProgrammingProfile implements Serializable
 {
@@ -103,11 +103,11 @@ public class LogicProgrammingProfile implements Serializable
 		{
 			category[i] = entry.getCategory();
 			name[i] = entry.getName();
-			callSum += calls[i] = Utilities.nullToZero(callsByEntry.get(entry));
-			redoSum += redos[i] = Utilities.nullToZero(redosByEntry.get(entry));
-			exitSum += exits[i] = Utilities.nullToZero(exitsByEntry.get(entry));
-			failSum += fails[i] = Utilities.nullToZero(failsByEntry.get(entry));
-			failSum += fails[i] = Utilities.nullToZero(exceptionsByEntry.get(entry));
+			callSum += calls[i] = ObjectUtil.nullToZero(callsByEntry.get(entry));
+			redoSum += redos[i] = ObjectUtil.nullToZero(redosByEntry.get(entry));
+			exitSum += exits[i] = ObjectUtil.nullToZero(exitsByEntry.get(entry));
+			failSum += fails[i] = ObjectUtil.nullToZero(failsByEntry.get(entry));
+			failSum += fails[i] = ObjectUtil.nullToZero(exceptionsByEntry.get(entry));
 			i++;
 		}
 		category[i] = "Total";

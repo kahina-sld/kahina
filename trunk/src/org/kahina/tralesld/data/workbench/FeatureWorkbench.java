@@ -8,7 +8,7 @@ import java.util.Set;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.gui.KahinaArrangement;
 import org.kahina.core.gui.KahinaPerspective;
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.KahinaViewConfiguration;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;

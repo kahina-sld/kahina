@@ -12,7 +12,7 @@ import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.util.Utilities;
+import org.kahina.core.util.ListUtil;
 import org.kahina.qtype.control.QTypeControlEventCommands;
 
 public class QTypeParseExampleMenu extends JMenu implements KahinaListener
@@ -44,10 +44,10 @@ public class QTypeParseExampleMenu extends JMenu implements KahinaListener
 			int size = examples.size();
 			for (int i = 0; i < size; i++)
 			{
-				final List<String> example = Utilities.castToStringList(examples.get(i));
+				final List<String> example = ListUtil.castToStringList(examples.get(i));
 				if (example != null)
 				{
-					add(new JMenuItem(new AbstractAction(Utilities.join(" ", example))
+					add(new JMenuItem(new AbstractAction(ListUtil.join(" ", example))
 					{
 
 						private static final long serialVersionUID = -637062118697209076L;

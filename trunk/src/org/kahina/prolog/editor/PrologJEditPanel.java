@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.gjt.sp.jedit.Mode;
 import org.gjt.sp.jedit.buffer.JEditBuffer;
 import org.kahina.core.edit.source.KahinaJEditPanel;
-import org.kahina.core.util.FileUtilities;
+import org.kahina.core.io.util.FileUtil;
 
 public class PrologJEditPanel extends KahinaJEditPanel
 {
@@ -22,7 +22,7 @@ public class PrologJEditPanel extends KahinaJEditPanel
 	protected void configureBuffer(JEditBuffer buffer) throws IOException
 	{
 		Mode mode = new Mode("prolog");
-		mode.setProperty("file", FileUtilities.resourceAsTempFile(Mode.class, "/modes/prolog.xml").getAbsolutePath());
+		mode.setProperty("file", FileUtil.resourceAsTempFile(Mode.class, "/modes/prolog.xml").getAbsolutePath());
 		buffer.setMode(mode);
 	}
 

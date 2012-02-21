@@ -7,7 +7,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 import org.kahina.sicstus.SICStusPrologStep;
@@ -33,7 +33,7 @@ public class SICStusPrologGUI extends LogicProgrammingGUI
 			displayMainViews();
 			//TODO: load last perspective instead of only default perspective from XML
 			InputStream xmlStream = new BufferedInputStream(SICStusPrologGUI.class.getResourceAsStream("kahinasicstus-integrated.xml"));
-			windowManager.createWindows(KahinaPerspective.importXML(XMLUtilities.parseXMLStream(xmlStream, false).getDocumentElement()));			
+			windowManager.createWindows(KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement()));			
 		}
 		catch (NullPointerException e)
 		{

@@ -5,8 +5,8 @@ import java.util.regex.Pattern;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
-import org.kahina.core.util.PrologUtilities;
 import org.kahina.lp.LogicProgrammingState;
+import org.kahina.prolog.util.PrologUtil;
 import org.kahina.qtype.QTypeStep;
 import org.kahina.qtype.control.QTypeControlEventCommands;
 import org.kahina.qtype.data.bindings.QTypeGoal;
@@ -32,7 +32,7 @@ public class QTypeBridge extends SICStusPrologBridge
 		super.step(extID, type, description, consoleMessage);
 		if (description.startsWith("compile_grammar(") && description.endsWith(")"))
 		{
-			String path = PrologUtilities.atomLiteralToString(description.substring(16, description.length() - 1));
+			String path = PrologUtil.atomLiteralToString(description.substring(16, description.length() - 1));
 			KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { path }));
 		} else if (description.startsWith("lc(") && description.endsWith(")"))
 		{
@@ -40,7 +40,7 @@ public class QTypeBridge extends SICStusPrologBridge
 
 			if (matcher.matches())
 			{
-				KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtilities.parsePrologStringList(matcher.group(0)) }));
+				KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtil.parsePrologStringList(matcher.group(0)) }));
 			}
 		}
 	}
@@ -49,7 +49,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	{
 		try
 		{
-			KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_EXAMPLE, new Object[] { number, expectation, PrologUtilities.parsePrologStringList(sentence) }));
+			KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_EXAMPLE, new Object[] { number, expectation, PrologUtil.parsePrologStringList(sentence) }));
 		}
 		catch (Exception e)
 		{

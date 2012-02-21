@@ -11,7 +11,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.kahina.core.gui.windows.KahinaWindowType;
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -341,9 +341,9 @@ public class KahinaArrangement
 	{
 		KahinaArrangement arr = new KahinaArrangement();
 		Element el;
-		List<Element> contentEls = XMLUtilities.getElements(topEl, "kahina:default-window");
-		contentEls.addAll(XMLUtilities.getElements(topEl, "kahina:control-window"));
-		contentEls.addAll(XMLUtilities.getElements(topEl, "kahina:main-window"));
+		List<Element> contentEls = XMLUtil.getElements(topEl, "kahina:default-window");
+		contentEls.addAll(XMLUtil.getElements(topEl, "kahina:control-window"));
+		contentEls.addAll(XMLUtil.getElements(topEl, "kahina:main-window"));
 		// start at the leaves of the embedding hierarchy and work bottom-up
 		for (Element contentEl : contentEls)
 		{
@@ -352,41 +352,41 @@ public class KahinaArrangement
 			int winID = -1;
 			while (el != topEl)
 			{
-				winID = XMLUtilities.attrIntVal(el, "kahina:id");
+				winID = XMLUtil.attrIntVal(el, "kahina:id");
 				if (previousID != -1)
 				{
 					arr.embeddingWindow.put(previousID, winID);
 				}
 				arr.addWindow(winID);
-				arr.setXPos(winID, XMLUtilities.attrIntVal(el, "kahina:xpos"));
-				arr.setYPos(winID, XMLUtilities.attrIntVal(el, "kahina:ypos"));
-				arr.setWidth(winID, XMLUtilities.attrIntVal(el, "kahina:width"));
-				arr.setHeight(winID, XMLUtilities.attrIntVal(el, "kahina:height"));
+				arr.setXPos(winID, XMLUtil.attrIntVal(el, "kahina:xpos"));
+				arr.setYPos(winID, XMLUtil.attrIntVal(el, "kahina:ypos"));
+				arr.setWidth(winID, XMLUtil.attrIntVal(el, "kahina:width"));
+				arr.setHeight(winID, XMLUtil.attrIntVal(el, "kahina:height"));
 				String resizeWeight = el.getAttribute("kahina:resizeweight");
 				if (!resizeWeight.equals(""))
 				{
 					arr.setResizeWeight(winID, Double.parseDouble(resizeWeight));
 				}
-				arr.setTitle(winID, XMLUtilities.attrStrVal(el, "kahina:title"));
-				arr.setBorder(winID, XMLUtilities.attrBoolVal(el, "kahina:border"));
+				arr.setTitle(winID, XMLUtil.attrStrVal(el, "kahina:title"));
+				arr.setBorder(winID, XMLUtil.attrBoolVal(el, "kahina:border"));
 				String type = el.getLocalName();
 				// System.err.println("  Window is of type " + type + ".");
 				if (type.equals("default-window"))
 				{
 
-					String binding = XMLUtilities.attrStrVal(el, "kahina:binding");
+					String binding = XMLUtil.attrStrVal(el, "kahina:binding");
 					arr.setWindowType(winID, KahinaWindowType.DEFAULT_WINDOW);
 					arr.bindWindow(winID, binding);
-					if (XMLUtilities.attrBoolVal(el, "kahina:primary"))
+					if (XMLUtil.attrBoolVal(el, "kahina:primary"))
 					{
 						arr.setPrimaryWindow(binding, winID);
 					}
 				} else if (type.equals("control-window"))
 				{
 					arr.setWindowType(winID, KahinaWindowType.CONTROL_WINDOW);
-					String binding = XMLUtilities.attrStrVal(el, "kahina:binding");
+					String binding = XMLUtil.attrStrVal(el, "kahina:binding");
 					arr.bindWindow(winID, binding);
-					if (XMLUtilities.attrBoolVal(el, "kahina:primary"))
+					if (XMLUtil.attrBoolVal(el, "kahina:primary"))
 					{
 						arr.setPrimaryWindow(binding, winID);
 					}

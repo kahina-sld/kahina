@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.kahina.core.KahinaException;
-import org.kahina.core.util.FileUtilities;
+import org.kahina.core.io.util.FileUtil;
 import org.kahina.core.util.ProgressMonitorWrapper;
 
 /**
@@ -194,7 +194,7 @@ public class ObjectMagazine<S> {
 			float lowerBound, float upperBound) {
 		File directory;
 		try {
-			directory = FileUtilities.createTemporaryDirectory();
+			directory = FileUtil.createTemporaryDirectory();
 		} catch (IOException e) {
 			throw new KahinaException("Failed to create magazine.", e);
 		}
@@ -246,7 +246,7 @@ public class ObjectMagazine<S> {
 		blockNumbersUnloadQueue.clear();
 		for (File file : folder.listFiles()) {
 			try {
-				FileUtilities.copy(file,
+				FileUtil.copy(file,
 						new File(destinationFolder, file.getName()));
 				if (monitor != null) {
 					monitor.increment();
@@ -259,6 +259,6 @@ public class ObjectMagazine<S> {
 	}
 
 	public void close() {
-		FileUtilities.deleteRecursively(folder);
+		FileUtil.deleteRecursively(folder);
 	}
 }

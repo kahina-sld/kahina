@@ -2,7 +2,7 @@ package org.kahina.core.profiler;
 
 import java.io.Serializable;
 
-import org.kahina.core.util.Utilities;
+import org.kahina.core.util.ObjectUtil;
 
 public class ProfileEntry implements Serializable
 {
@@ -19,7 +19,7 @@ public class ProfileEntry implements Serializable
 	{
 		this.name = name;
 		this.category = category;
-		hashCode = Utilities.hashCode(name, category);
+		hashCode = ObjectUtil.hashCode(name, category);
 	}
 	
 	public String getName()
@@ -44,7 +44,7 @@ public class ProfileEntry implements Serializable
 			return false;
 		}
 		ProfileEntry that = (ProfileEntry) o;
-		return Utilities.equal(name, that.name) && Utilities.equal(category, that.category);
+		return ObjectUtil.equal(name, that.name) && ObjectUtil.equal(category, that.category);
 	}
 	
 	@Override

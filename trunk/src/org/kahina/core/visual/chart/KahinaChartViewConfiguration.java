@@ -2,7 +2,7 @@ package org.kahina.core.visual.chart;
 
 import java.awt.Color;
 
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.KahinaViewConfiguration;
 import org.kahina.core.visual.tree.KahinaTreeViewConfiguration;
 import org.w3c.dom.Document;
@@ -212,50 +212,50 @@ public class KahinaChartViewConfiguration extends KahinaViewConfiguration
 		for (int i = 0; i < optionsList.getLength(); i++)
 		{
 			optionEl = (Element) optionsList.item(i);
-			String optName = XMLUtilities.attrStrVal(optionEl, "kahina:name");
+			String optName = XMLUtil.attrStrVal(optionEl, "kahina:name");
 			if (optName.equals("cellWidth"))
 			{
-				config.cellWidth = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+				config.cellWidth = XMLUtil.attrIntVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("fontSize"))
 			{
-				config.fontSize = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+				config.fontSize = XMLUtil.attrIntVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("bgColor"))
 			{
-				config.bgColor = XMLUtilities.attrColorVal(optionEl, "kahina:value");
+				config.bgColor = XMLUtil.attrColorVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("cellWidthPolicy"))
 			{
-				config.cellWidthPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+				config.cellWidthPolicy = XMLUtil.attrIntVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("edgeStackingPolicy"))
 			{
-				config.edgeStackingPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+				config.edgeStackingPolicy = XMLUtil.attrIntVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("displayRangePolicy"))
 			{
-				config.displayRangePolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+				config.displayRangePolicy = XMLUtil.attrIntVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("dependencyDisplayPolicy"))
 			{
-				config.dependencyDisplayPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+				config.dependencyDisplayPolicy = XMLUtil.attrIntVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("transitiveAncestors"))
 			{
-				config.transitiveAncestors = XMLUtilities.attrBoolVal(optionEl, "kahina:value");
+				config.transitiveAncestors = XMLUtil.attrBoolVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("transitiveDescendants"))
 			{
-				config.transitiveDescendants = XMLUtilities.attrBoolVal(optionEl, "kahina:value");
+				config.transitiveDescendants = XMLUtil.attrBoolVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("antialiasingPolicy"))
 			{
-				config.antialiasingPolicy = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+				config.antialiasingPolicy = XMLUtil.attrIntVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("displayOrientation"))
 			{
-				config.displayOrientation = XMLUtilities.attrIntVal(optionEl, "kahina:value");
+				config.displayOrientation = XMLUtil.attrIntVal(optionEl, "kahina:value");
 			}
 			//TODO: import display decider
 			config.displayDecider = new KahinaChartEdgeDisplayDecider();

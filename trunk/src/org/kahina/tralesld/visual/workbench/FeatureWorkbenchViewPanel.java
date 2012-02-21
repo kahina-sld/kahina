@@ -53,8 +53,8 @@ import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaWindowEvent;
 import org.kahina.core.gui.event.KahinaWindowEventType;
 import org.kahina.core.gui.windows.KahinaWindow;
-import org.kahina.core.io.util.FileUtilities;
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.FileUtil;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
@@ -645,7 +645,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             File grisuFile = chooser.getSelectedFile();
             try
             {
-            	String grisuString = FileUtilities.slurpFile(grisuFile.getAbsolutePath());
+            	String grisuString = FileUtil.slurpFile(grisuFile.getAbsolutePath());
             	String name = getNewName("Enter a new name for the imported feature structure.", "Load feature structure from GRISU file");
             	if (name == null || view.getModel().getStructure(name) != null)
             	{
@@ -673,7 +673,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             try
             {
             	String grisuString = view.getModel().getStructure((String) list.getSelectedValue());
-            	FileUtilities.writeStringToFile(grisuString,grisuFile.getAbsolutePath());
+            	FileUtil.writeStringToFile(grisuString,grisuFile.getAbsolutePath());
             	this.processEvent(new TraleSLDFeatureEditEvent("Feature structure successfully saved.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
             }
             catch (IOException ioe)
@@ -776,7 +776,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             File dataFile = chooser.getSelectedFile();
             try
             {
-            	Document doc = XMLUtilities.parseXMLStream(new BufferedInputStream(new FileInputStream(dataFile)), false);
+            	Document doc = XMLUtil.parseXMLStream(new BufferedInputStream(new FileInputStream(dataFile)), false);
             	FeatureWorkbench workbench = FeatureWorkbench.importXML(doc.getDocumentElement());
             	view.display(workbench);
             	if (view.getModel().getTheoryFileName() != null)
@@ -802,8 +802,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             chooser.setDialogTitle("Save Workbench As");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            Element el = view.getModel().exportXML(XMLUtilities.newEmptyDocument());
-            XMLUtilities.writeXML(el, dataFile.getAbsolutePath());
+            Element el = view.getModel().exportXML(XMLUtil.newEmptyDocument());
+            XMLUtil.writeXML(el, dataFile.getAbsolutePath());
             this.processEvent(new TraleSLDFeatureEditEvent("Workbench saved.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 		}
 		else if (action.equals("Export Selection to Workbench"))
@@ -819,8 +819,8 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
             chooser.setDialogTitle("Save Subset Workbench As");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            Element el = workbench.exportXML(XMLUtilities.newEmptyDocument());
-            XMLUtilities.writeXML(el, dataFile.getAbsolutePath());
+            Element el = workbench.exportXML(XMLUtil.newEmptyDocument());
+            XMLUtil.writeXML(el, dataFile.getAbsolutePath());
             this.processEvent(new TraleSLDFeatureEditEvent("Selection exported.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
 		}
 		else if (action.equals("Load Signature ..."))

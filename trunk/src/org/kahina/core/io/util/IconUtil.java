@@ -1,4 +1,4 @@
-package org.kahina.core.gui.icons;
+package org.kahina.core.io.util;
 
 import java.net.URL;
 

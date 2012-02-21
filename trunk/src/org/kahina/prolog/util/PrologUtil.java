@@ -1,9 +1,9 @@
-package org.kahina.core.util;
+package org.kahina.prolog.util;
 
 import java.util.LinkedList;
 import java.util.List;
 
-public class PrologUtilities
+public class PrologUtil
 {
     public static List<Integer> parsePrologIntegerList(String prologList)
     {

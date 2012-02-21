@@ -34,7 +34,7 @@ import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.control.patterns.TreeAutomaton;
-import org.kahina.core.io.util.XMLUtilities;
+import org.kahina.core.io.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -354,7 +354,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 		breakpoints.clear();
 		compiledBreakpoints.clear();
 		curID = -1;
-		Document dom = XMLUtilities.parseXMLStream(breakpointProfileStream, false);
+		Document dom = XMLUtil.parseXMLStream(breakpointProfileStream, false);
 		NodeList breakpointNodes = dom.getElementsByTagName("breakpoint");
 		for (int i = 0; i < breakpointNodes.getLength(); i++)
 		{
@@ -384,7 +384,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 
 	public void importBreakpointXML(InputStream breakpointStream)
 	{
-		Document dom = XMLUtilities.parseXMLStream(breakpointStream, false);
+		Document dom = XMLUtil.parseXMLStream(breakpointStream, false);
 		NodeList breakpointNodes = dom.getElementsByTagName("breakpoint");
 		for (int i = 0; i < breakpointNodes.getLength(); i++)
 		{

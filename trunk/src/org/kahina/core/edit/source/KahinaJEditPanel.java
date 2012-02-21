@@ -18,9 +18,10 @@ import javax.swing.JTextArea;
 import org.gjt.sp.jedit.buffer.BufferAdapter;
 import org.gjt.sp.jedit.buffer.JEditBuffer;
 import org.gjt.sp.jedit.textarea.StandaloneTextArea;
-import org.kahina.core.util.FileUtilities;
-import org.kahina.core.util.KahinaSwingUtilities;
-import org.kahina.core.util.Utilities;
+import org.kahina.core.io.util.FileUtil;
+import org.kahina.core.util.ListUtil;
+import org.kahina.core.util.MsgUtil;
+import org.kahina.core.util.SwingUtil;
 
 public class KahinaJEditPanel extends JPanel
 {
@@ -104,7 +105,7 @@ public class KahinaJEditPanel extends JPanel
 		}
 		buffer = textArea.getBuffer();
 		configureBuffer(buffer);		
-		buffer.insert(0, FileUtilities.read(file)); // TODO encoding support
+		buffer.insert(0, FileUtil.read(file)); // TODO encoding support
 		buffer.addBufferListener(new BufferAdapter()
 		{
 
@@ -158,7 +159,7 @@ public class KahinaJEditPanel extends JPanel
 
 	private Component createErrorPanel(Exception e)
 	{
-		return new JTextArea(Utilities.join("\n", Utilities.portrayStackTrace(e)));
+		return new JTextArea(ListUtil.join("\n", MsgUtil.portrayStackTrace(e)));
 	}
 
 	private Component createSaveButton()
@@ -177,7 +178,7 @@ public class KahinaJEditPanel extends JPanel
 					save();
 				} catch (IOException e1)
 				{
-					JOptionPane.showMessageDialog(gui, KahinaSwingUtilities.visualError("The file could not be saved.", e1));
+					JOptionPane.showMessageDialog(gui, SwingUtil.visualError("The file could not be saved.", e1));
 				}
 			}
 
@@ -202,7 +203,7 @@ public class KahinaJEditPanel extends JPanel
 					showHelp();
 				} catch (IOException e1)
 				{
-					JOptionPane.showMessageDialog(gui, KahinaSwingUtilities.visualError(
+					JOptionPane.showMessageDialog(gui, SwingUtil.visualError(
 							"An error occured while trying to show the jEdit keyboard shortcuts in your browser. You can find them at http://www.jedit.org/users-guide/shortcuts.html#id2573783", e1),
 							"Error", JOptionPane.ERROR_MESSAGE);
 				}
@@ -218,7 +219,7 @@ public class KahinaJEditPanel extends JPanel
 
 	public void save() throws IOException
 	{
-		FileUtilities.write(buffer.getText(), file);
+		FileUtil.write(buffer.getText(), file);
 		setDirty(false);
 	}
 
