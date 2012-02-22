@@ -24,15 +24,15 @@ import org.kahina.core.visual.tree.WidthVector;
 
 public class KahinaGraphView extends KahinaView<KahinaGraph>
 {
-    KahinaGraphViewConfiguration config;
-    KahinaGraphLayouter layout;
+    protected KahinaGraphViewConfiguration config;
+    protected KahinaGraphLayouter layout;
     
     // display coordinates for vertices
     private HashMap<Integer, Integer> xCoord;
     private HashMap<Integer, Integer> yCoord;
     
     // special display properties for certain nodes
-    HashMap<Integer, Color> vertexBorderColor;
+    protected HashMap<Integer, Color> vertexBorderColor;
     
     // mappings from status values to display properties (TODO: use all of them)
     HashMap<Integer, Color> statusVertexColorEncoding;
