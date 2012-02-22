@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.kahina.core.data.graph.AdjacListsGraph;
@@ -43,11 +45,13 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public KahinaGraph generateClauseGraph()
     {
-        //generate var -> clause map for lookup
+        KahinaGraph graph = new AdjacListsGraph();
+        //generate var -> clause map for lookup; generate clause nodes
         Map<Integer,List<Integer>> varClauseMap = new HashMap<Integer,List<Integer>>();
-        for (int i = 0; i < clauses.size(); i++)
+        for (int i = 1; i <= clauses.size(); i++)
         {
-            List<Integer> clause = clauses.get(i);
+            graph.addVertex(i, i + "");
+            List<Integer> clause = clauses.get(i-1);
             for (int literal : clause)
             {
                 int var = Math.abs(literal);
@@ -60,21 +64,31 @@ public class CnfSatInstance extends KahinaSatInstance
                 clausesForVar.add(i);
             }
         }
-        //generate graph linking clause nodes via variable edges
-        KahinaGraph graph = new AdjacListsGraph();
-        for (int i = 0; i < clauses.size(); i++)
+        System.err.println("Generating clause graph of " + numClauses + " clauses:");
+        //link clause nodes via variable edges
+        Set<Integer> existingEdges = new HashSet<Integer>();
+        int numEdges = 0;
+        for (int i = 1; i <= clauses.size(); i++)
         {
-            List<Integer> clause = clauses.get(i);
-            graph.addVertex(i, i + "");
+            List<Integer> clause = clauses.get(i-1);
             for (int literal : clause)
             {
                 int var = Math.abs(literal);
                 for (int clauseSharingVar : varClauseMap.get(var))
                 {
-                    graph.addUndirectedEdge(i, clauseSharingVar, var + "");
+                    if (existingEdges.add(clauseSharingVar * i))
+                    {
+                        graph.addUndirectedEdge(i, clauseSharingVar, var + "");
+                        numEdges++;
+                    }
                 }
             }
+            if (i % 100 == 0)
+            {
+                System.err.println("  " + i + " clauses processed.");
+            }
         }
+        System.err.println("  Ready! Total number of edges: " + numEdges);
         return graph;
     }
     

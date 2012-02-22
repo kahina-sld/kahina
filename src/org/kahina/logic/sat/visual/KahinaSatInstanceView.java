@@ -31,11 +31,13 @@ public class KahinaSatInstanceView extends KahinaGraphView
     @Override
     public JComponent makePanel(KahinaGUI gui)
     {
+        System.err.println("started makePanel()");
         KahinaSatInstanceViewPanel panel = new KahinaSatInstanceViewPanel(control);
         control.registerListener("redraw", panel);
         panel.setView(this);
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getViewport().setBackground(config.getBackgroundColor());
+        System.err.println("finished makePanel()");
         return scrollPane;
     }
 }

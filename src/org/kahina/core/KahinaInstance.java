@@ -92,11 +92,12 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
 		try
 		{
+		    //TODO: check whether this startup order works in every situation
+	        initializeNewSession();
 			if (!guiStarted)
 			{
 				startGUI();
 			}
-			initializeNewSession();
 			gui.displayMainViews();
 			gui.show();
 			KahinaRunner.processEvent(new KahinaSelectionEvent(-1));

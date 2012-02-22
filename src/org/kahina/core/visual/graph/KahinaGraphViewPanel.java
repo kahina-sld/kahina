@@ -50,10 +50,11 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     @Override
     public void updateDisplay()
     {
+        System.err.println("Update graph display of size " + view.getDisplayWidth() + " * " + view.getDisplayHeight());
         BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = newImage.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;
-        if (view.getConfig().getAntialiasingPolicy() == KahinaTreeViewOptions.ANTIALIASING)
+        if (view.getConfig().getAntialiasingPolicy() == KahinaGraphViewOptions.ANTIALIASING)
         {
             canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
@@ -66,7 +67,6 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
         
         canvas.setStroke(new BasicStroke(1));
         canvas.setColor(Color.BLACK);
-        
         printGraphEdges(canvas);
         printGraphVertices(canvas);
         
@@ -197,6 +197,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
         canvas.setColor(Color.BLACK);
         for (int vertex1 : view.getModel().getVertices())
         {
+
             int x1 = view.getVertexX(vertex1);
             int y1 = view.getVertexY(vertex1);
             //TODO: treat undirected edges more efficiently (they are currently drawn twice!)
@@ -214,6 +215,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
                 //TODO: add this later
                 //printEdgeArrow(canvas, vertex1, vertex2);   
             }
+            System.err.println("Finished drawing " + view.getModel().getNeighbors(vertex1).size() + " lines starting at vertex " + vertex1);
         }
     }
     
