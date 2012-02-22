@@ -134,7 +134,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         Color col = statusVertexColorEncoding.get(status);
         if (col == null)
         {
-            return Color.WHITE;
+            return Color.BLACK;
         } 
         else
         {
@@ -165,7 +165,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         Color col = statusVertexColorEncoding.get(status);
         if (col == null)
         {
-            return Color.WHITE;
+            return Color.BLACK;
         } 
         else
         {

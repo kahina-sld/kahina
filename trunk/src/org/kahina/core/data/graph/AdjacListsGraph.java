@@ -49,7 +49,7 @@ public class AdjacListsGraph extends KahinaGraph
     
     public void addVertex(int v)
     {
-        if (adjacents.get(v) != null)
+        if (adjacents.get(v) == null)
         {
             adjacents.put(v, new LinkedList<Integer>());
         }
@@ -96,7 +96,7 @@ public class AdjacListsGraph extends KahinaGraph
         {
             if (adjacentList.contains(v2))
             {
-                System.err.println("Edge (" + v1 + "," + v2 + ") was already in graph!");
+                //System.err.println("Edge (" + v1 + "," + v2 + ") was already in graph!");
             }
             else
             {

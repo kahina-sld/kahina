@@ -172,6 +172,10 @@ public class KahinaWindowManager implements KahinaListener
                 }
                 case KahinaWindowType.MAIN_WINDOW:
                 {
+                    if (VERBOSE)
+                    {
+                        System.err.println("  Generating main window!");
+                    }
                     mainWindow = createMainWindow(this, winID);
                     mainWindow.setTitle(getArrangement().getTitle(winID));
                     mainWindow.setSize(getArrangement().getWidth(winID), getArrangement().getHeight(winID));
@@ -213,8 +217,10 @@ public class KahinaWindowManager implements KahinaListener
                 }
             }
         }
+        if (VERBOSE) System.err.println("KahinaWindowManager finished creating the window stubs.");
 
         // ... then process the embedding structure ...
+        if (VERBOSE) System.err.println("KahinaWindowManager is processing the embedding structure.");
         for (int winID : getArrangement().getAllWindows())
         {
             Integer embeddingID = getArrangement().getEmbeddingWindowID(winID);
@@ -232,8 +238,10 @@ public class KahinaWindowManager implements KahinaListener
                 }
             }
         }
+        if (VERBOSE) System.err.println("KahinaWindowManager finished processing the embedding structure.");
 
         // ... then adapt the coordinates ...
+        if (VERBOSE) System.err.println("KahinaWindowManager is adapting the window coordinates.");
         for (int winID : getArrangement().getTopLevelWindows())
         {
             // System.err.println("Setting coordinates of top level window " +
@@ -243,6 +251,7 @@ public class KahinaWindowManager implements KahinaListener
             w.setSize(getArrangement().getWidth(w.getID()), getArrangement().getHeight(w.getID()));
             w.setLocation(getArrangement().getXPos(w.getID()), getArrangement().getYPos(w.getID()));
         }
+        if (VERBOSE) System.err.println("KahinaWindowManager finished adapting the window coordinates.");
 
         // ... flip the subwindows of composed windows if inconsistent with the
         // coordinates ...
@@ -269,6 +278,7 @@ public class KahinaWindowManager implements KahinaListener
 
         // ... and fill the content windows with the content specified by the
         // bindings.
+        if (VERBOSE) System.err.println("KahinaWindowManager is filling the content windows...");
         for (int winID : getArrangement().getContentWindowsWithoutMainWindow())
         {
             // apply configuration as defined by the perspective to the view
@@ -286,6 +296,7 @@ public class KahinaWindowManager implements KahinaListener
                 gui.varNameToView.get(binding).setConfig(psp.getConfiguration(winID));
             }
         }
+        if (VERBOSE) System.err.println("KahinaWindowManager finished filling the content windows...");
     }
 
     /**

@@ -17,6 +17,7 @@ public class GridLayouter extends KahinaGraphLayouter
     @Override
     public void computeInitialLayout()
     {
+        System.err.print("Computing initial graph layout ...");
         Set<Integer> vertices = g.getVertices();
         int numVertices = vertices.size();
         //determine correct dimensions for grid (y = rx => x*rx > numVertices)
@@ -57,11 +58,13 @@ public class GridLayouter extends KahinaGraphLayouter
         }
         //compute the coordinates corresponding to the grid
         refreshCoordinates();
+        System.err.println(" done.");
     }
 
     @Override
     public void optimize()
     {
+        System.err.println("Optimizing the graph layout ...");
         for (int i = 0; i < grid.length; i++)
         {
             for (int j = 0; j < grid[i].length; j++)

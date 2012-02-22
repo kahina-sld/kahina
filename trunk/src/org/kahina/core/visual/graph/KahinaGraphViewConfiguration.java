@@ -10,7 +10,7 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
     private Color bgColor = Color.WHITE;
     private int vertexShapePolicy = KahinaGraphViewOptions.POINT_VERTICES;
     private int edgeLabelPolicy = KahinaGraphViewOptions.NO_EDGE_LABELS;
-    private int antialiasingPolicy = KahinaGraphViewOptions.ANTIALIASING;
+    private int antialiasingPolicy = KahinaGraphViewOptions.NO_ANTIALIASING;
     
     public void zoomIn()
     {
