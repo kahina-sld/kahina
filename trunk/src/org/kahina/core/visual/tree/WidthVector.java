@@ -57,13 +57,13 @@ public class WidthVector
         {
             w3.start.add(w1.start.get(i) + leftOffset);
             w3.end.add(w1.end.get(i) - leftOffset);
-            System.err.println("  Adding: [" + (w1.start.get(i) + leftOffset) + "," + (w2.end.get(i) - leftOffset) + "]");
+            System.err.println("  Adding: [" + (w1.start.get(i) + leftOffset) + "," + (w1.end.get(i) - leftOffset) + "]");
         }
         for (int i = minSize; i < w2size; i++)
         {
             w3.start.add(w2.start.get(i) - rightOffset);
             w3.end.add(w2.end.get(i) + rightOffset);
-            System.err.println("  Adding: [" + (w1.start.get(i) - rightOffset) + "," + (w2.end.get(i) + rightOffset) + "]");
+            System.err.println("  Adding: [" + (w2.start.get(i) - rightOffset) + "," + (w2.end.get(i) + rightOffset) + "]");
         }
         System.err.println("Result: " + w3);
         return w3;

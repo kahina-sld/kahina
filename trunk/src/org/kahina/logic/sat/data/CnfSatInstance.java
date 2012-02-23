@@ -43,11 +43,16 @@ public class CnfSatInstance extends KahinaSatInstance
         return clauses;
     }
     
+    @SuppressWarnings("unchecked")
     public KahinaGraph generateClauseGraph()
     {
         KahinaGraph graph = new AdjacListsGraph();
-        //generate var -> clause map for lookup; generate clause nodes
-        Map<Integer,List<Integer>> varClauseMap = new HashMap<Integer,List<Integer>>();
+        //generate var -> clause map for lookup; generate clause vertices at the same time
+        List<Integer>[] varClauseMap = (List<Integer>[]) new List[numVars];
+        for (int i = 0; i < numVars; i++)
+        {
+            varClauseMap[i] = new LinkedList<Integer>();
+        }
         for (int i = 1; i <= clauses.size(); i++)
         {
             graph.addVertex(i, i + "");
@@ -55,18 +60,11 @@ public class CnfSatInstance extends KahinaSatInstance
             for (int literal : clause)
             {
                 int var = Math.abs(literal);
-                List<Integer> clausesForVar = varClauseMap.get(var);
-                if (clausesForVar == null)
-                {
-                    clausesForVar = new LinkedList<Integer>();
-                    varClauseMap.put(var, clausesForVar);
-                }
-                clausesForVar.add(i);
+                varClauseMap[var-1].add(i);
             }
         }
         System.err.println("Generating clause graph of " + numClauses + " clauses:");
-        //link clause nodes via variable edges
-        Set<Integer> existingEdges = new HashSet<Integer>();
+        //link clause vertices via variable edges
         int numEdges = 0;
         for (int i = 1; i <= clauses.size(); i++)
         {
@@ -74,11 +72,12 @@ public class CnfSatInstance extends KahinaSatInstance
             for (int literal : clause)
             {
                 int var = Math.abs(literal);
-                for (int clauseSharingVar : varClauseMap.get(var))
+                for (int j : varClauseMap[var-1])
                 {
-                    if (existingEdges.add(clauseSharingVar * i))
+                    //do not add undirected nodes twice!
+                    if (j > i)
                     {
-                        graph.addUndirectedEdge(i, clauseSharingVar, var + "");
+                        graph.addUndirectedEdge(i, j, var + "");
                         numEdges++;
                     }
                 }

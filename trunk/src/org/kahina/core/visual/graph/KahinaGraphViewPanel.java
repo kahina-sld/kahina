@@ -10,6 +10,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaViewPanel;
@@ -50,7 +52,8 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     @Override
     public void updateDisplay()
     {
-        System.err.println("Update graph display of size " + view.getDisplayWidth() + " * " + view.getDisplayHeight());
+        long startTime = System.currentTimeMillis();
+        System.err.println("Updating graph display of size " + view.getDisplayWidth() + " * " + view.getDisplayHeight());
         BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = newImage.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;
@@ -72,6 +75,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
         
         image = newImage;
         repaint();
+        System.err.println("  Finished updating! Total time spent: " + (System.currentTimeMillis() - startTime) + " ms.");
     }
     
     public void clearCanvas(Graphics canvas)
@@ -94,23 +98,30 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
         //TODO: make this dependent on current scrolling window, ONLY draw nodes there (redraw happens anyway!)
         //print nodes of the graph
         //TODO: implement the concept of a drawing order in order to control which parts are printed in front
+        long startTime = System.currentTimeMillis();
+        int vertices = 0;
         for (int vertex : view.getModel().getVertices())
         {
-            if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.BOX_VERTICES)
+            if (view.isVertexVisible(vertex))
             {
-                printBoxAroundVertexLabel(cnv, vertex);    
-                printVertexLabel(cnv, vertex);
-            }
-            else if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.OVAL_VERTICES)
-            {
-                printOvalAroundVertexLabel(cnv, vertex);
-                printVertexLabel(cnv, vertex);
-            }
-            else if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.POINT_VERTICES)
-            {
-                printVertexPoint(cnv, vertex);
+                vertices++;
+                if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.BOX_VERTICES)
+                {
+                    printBoxAroundVertexLabel(cnv, vertex);    
+                    printVertexLabel(cnv, vertex);
+                }
+                else if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.OVAL_VERTICES)
+                {
+                    printOvalAroundVertexLabel(cnv, vertex);
+                    printVertexLabel(cnv, vertex);
+                }
+                else if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.POINT_VERTICES)
+                {
+                    printVertexPoint(cnv, vertex);
+                }
             }
         }
+        System.err.println("  " + vertices + " vertices in " + (System.currentTimeMillis() - startTime) + " ms.");
     }
     
     public void printBoxAroundVertexLabel(Graphics2D canvas, int vertex)
@@ -193,34 +204,53 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     
     public void printGraphEdges(Graphics canvas)
     {
+        long startTime = System.currentTimeMillis();
         // create lines and their tags
         canvas.setColor(Color.BLACK);
+        int edges = 0;
+        Set<Integer> processedVertices = new HashSet<Integer>();
         for (int vertex1 : view.getModel().getVertices())
         {
-
-            int x1 = view.getVertexX(vertex1);
-            int y1 = view.getVertexY(vertex1);
-            //TODO: treat undirected edges more efficiently (they are currently drawn twice!)
-            for (int vertex2 : view.getModel().getNeighbors(vertex1))
+            if (view.isVertexVisible(vertex1))
             {
-                int x2 = view.getVertexX(vertex2);
-                int y2 = view.getVertexY(vertex2);
-                String edgeLabel = view.getModel().getEdgeLabel(vertex1, vertex2);
-                if (edgeLabel.length() > 0)
+                int x1 = view.getVertexX(vertex1);
+                int y1 = view.getVertexY(vertex1);
+                //TODO: treat undirected edges more efficiently (they are currently drawn twice!)
+                for (int vertex2 : view.getModel().getNeighbors(vertex1))
                 {
-                    printEdgeLabel(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeLabel);
+                    if (!processedVertices.contains(vertex2))
+                    {
+                        if (view.isVertexVisible(vertex2))
+                        {
+                            int x2 = view.getVertexX(vertex2);
+                            int y2 = view.getVertexY(vertex2);
+                            String edgeLabel = view.getModel().getEdgeLabel(vertex1, vertex2);
+                            if (edgeLabel.length() > 0)
+                            {
+                                printEdgeLabel(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeLabel);
+                            }
+                            canvas.setColor(view.getEdgeColor(vertex1,vertex2));
+                            canvas.drawLine(x1, y1, x2, y2);
+                            edges++;
+                            //TODO: add this later (= treatment of directed edges)
+                            //printEdgeArrow(canvas, vertex1, vertex2); 
+                        }
+                        else
+                        {
+                            processedVertices.add(vertex2);
+                        }
+                    }
                 }
-                canvas.setColor(view.getEdgeColor(vertex1,vertex2));
-                canvas.drawLine(x1, y1, x2, y2);
-                //TODO: add this later
-                //printEdgeArrow(canvas, vertex1, vertex2);   
             }
-            System.err.println("Finished drawing " + view.getModel().getNeighbors(vertex1).size() + " lines starting at vertex " + vertex1);
+            //TODO: make treatment of the vertex agenda dependent on a flag indicating whether the graph is directed
+            processedVertices.add(vertex1);
         }
+        System.err.println("  " + edges + " edges in " + (System.currentTimeMillis() - startTime) + " ms.");
     }
     
     public void printEdgeLabel(Graphics canvas, Point center, String label)
     {
+        int edgeLabels = 0;
         if (label != null && view.getConfig().getEdgeLabelPolicy() != KahinaGraphViewOptions.NO_EDGE_LABELS)
         {
             FontMetrics fm = canvas.getFontMetrics();
@@ -245,6 +275,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
                 canvas.drawRect(x - 2, y - height + 2, width + 4, height + 2);
             }
             canvas.drawString(label, x, y);
+            edgeLabels++;
         }
     }
 }

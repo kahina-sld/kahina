@@ -64,7 +64,8 @@ public class GridLayouter extends KahinaGraphLayouter
     @Override
     public void optimize()
     {
-        System.err.println("Optimizing the graph layout ...");
+        long startTime = System.currentTimeMillis();
+        System.err.print("Optimizing a grid graph layout ...");
         for (int i = 0; i < grid.length; i++)
         {
             for (int j = 0; j < grid[i].length; j++)
@@ -132,6 +133,65 @@ public class GridLayouter extends KahinaGraphLayouter
                                 swapNodes(node,swapVert);
                             }
                         }
+                        //otherwise still try to move the node as much as possible towards its optimal position
+                        else
+                        {
+                            //start from vertex with best improvement
+                            int x = bestX;
+                            int y = bestY;
+                            int nBorder = y - 1;
+                            int wBorder = x - 1;
+                            int eBorder = x + 1;
+                            int sBorder = y + 1;
+                            int maxSteps = 100;
+                            int steps = 0;
+                            //spiral out until some improving position is found or maxSteps is reached
+                            while (steps < maxSteps)
+                            {
+                                // outward to the north until northern border is reached
+                                while (y > nBorder)
+                                {
+                                    y--;
+                                    
+                                }
+                                // along the northern border to the east until eastern border is reached
+                                while (x < eBorder)
+                                {
+                                    x++;
+                                    
+                                }
+                                // along the eastern border until southern border is reached
+                                while (y < sBorder)
+                                {
+                                    y++;
+                                    
+                                }
+                                // along the southern border until western border is reached
+                                while (x > wBorder)
+                                {
+                                    x--;
+                                    
+                                }
+                                // along the western border until northern border is reached
+                                while (y > nBorder)
+                                {
+                                    y--;
+                                    
+                                }
+                                // along the northern border back to the center
+                                while (x < bestX)
+                                {
+                                    x++;
+                                    
+                                }
+                                //spiral ring complete, extend outward
+                                nBorder--;
+                                wBorder--;
+                                eBorder++;
+                                sBorder++;
+                                //TODO: special treatment of grid boundaries
+                            }
+                        }
                     }
                     else if (neighbors.size() == 1)
                     {
@@ -145,11 +205,12 @@ public class GridLayouter extends KahinaGraphLayouter
         }
         //compute the coordinates corresponding to the grid
         refreshCoordinates();
+        System.err.println(" done in " + (System.currentTimeMillis() - startTime) + " ms.");
     }
     
     public void refreshCoordinates()
     {
-        int offset = config.getZoomLevel();
+        int offset = config.getZoomLevel() * 2;
         int currentX = offset;
         for (int i = 0; i < grid.length; i++)
         {
@@ -217,13 +278,13 @@ public class GridLayouter extends KahinaGraphLayouter
     @Override
     public int getDisplayHeight()
     {
-        return grid.length * config.getZoomLevel();
+        return grid.length * config.getZoomLevel() * 2;
     }
 
     @Override
     public int getDisplayWidth()
     {
         if (grid.length == 0) return 0;
-        return grid[0].length * config.getZoomLevel();
+        return grid[0].length * config.getZoomLevel() * 2;
     }
 }
