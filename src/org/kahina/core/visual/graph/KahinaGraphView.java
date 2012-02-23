@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Stroke;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -33,6 +35,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     
     // special display properties for certain nodes
     protected HashMap<Integer, Color> vertexBorderColor;
+    protected Collection<Integer> visibleVertices; //everything is visible if this is null
     
     // mappings from status values to display properties (TODO: use all of them)
     HashMap<Integer, Color> statusVertexColorEncoding;
@@ -94,6 +97,16 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         return layout;
     }
     
+    public void setVisibleVertices(Collection<Integer> visVertices)
+    {
+        visibleVertices = visVertices;
+    }
+    
+    public void setAllVisible()
+    {
+        visibleVertices = null;
+    }
+    
     public Map<Integer, Integer> getXCoordinates()
     {
         return xCoord;
@@ -112,6 +125,18 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     public int getDisplayWidth()
     {
         return layout.getDisplayWidth();
+    }
+    
+    public boolean isVertexVisible(int vertex)
+    {
+        if (visibleVertices == null)
+        {
+            return true;
+        }
+        else
+        {
+            return visibleVertices.contains(vertex);
+        }
     }
     
     public Font getVertexFont(int vertex)
@@ -134,7 +159,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         Color col = statusVertexColorEncoding.get(status);
         if (col == null)
         {
-            return Color.BLACK;
+            return Color.WHITE;
         } 
         else
         {
