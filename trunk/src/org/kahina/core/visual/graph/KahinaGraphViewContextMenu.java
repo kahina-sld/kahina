@@ -142,6 +142,10 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
         optimizeItem.addActionListener(l);
         add(optimizeItem);
         
+        JMenuItem optimizeVisibleItem = new JMenuItem("Optimize Visible Vertices");
+        optimizeVisibleItem.addActionListener(l);
+        add(optimizeVisibleItem);
+        
         addSeparator();
         
         JMenuItem exportPNGItem = new JMenuItem("Save as PNG");
