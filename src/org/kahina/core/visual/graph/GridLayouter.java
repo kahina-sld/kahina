@@ -74,7 +74,7 @@ public class GridLayouter extends KahinaGraphLayouter
                 if (node != -1)
                 {
                     List<Integer> neighbors = g.getNeighbors(node);
-                    if (neighbors.size() > 1)
+                    if (neighbors.size() > 0)
                     {
                         //determine center of neighboring vertices as ideal point for node
                         double vectorX = 0.0;
@@ -90,25 +90,17 @@ public class GridLayouter extends KahinaGraphLayouter
                         double optimalY = j + vectorY;
                         //compute for any of the four grid points around optimal point
                         //   how much swapping the node with the node there improves the layout
-                        int bestImprovement = 0;
+                        int bestImprovement = Integer.MIN_VALUE;
                         int bestX = -1;
                         int bestY = -1;
                         int candImprovement = 0;
                         int candX = (int) Math.floor(optimalX);
                         int candY = (int) Math.floor(optimalY);
-                        for (int k = candX; k <= candX + 1; k++)
+                        for (int k = candX; k <= candX + 1 && k < grid.length; k++)
                         {
-                            for (int l = candY; l <= candY + 1; l++)
+                            for (int l = candY; l <= candY + 1 && l < grid[k].length; l++)
                             {
-                                int candVert = grid[k][l];
-                                if (candVert == -1)
-                                {
-                                    candImprovement = computeImprovement(node, i, j, k, l);
-                                }
-                                else
-                                {
-                                    candImprovement = computeSwapImprovement(node, candVert);
-                                }
+                                candImprovement = computeMoveOrSwapImprovement(node,k,l);
                                 if (candImprovement > bestImprovement)
                                 {
                                     bestX = k;
@@ -137,68 +129,167 @@ public class GridLayouter extends KahinaGraphLayouter
                         else
                         {
                             //start from vertex with best improvement
-                            int x = bestX;
-                            int y = bestY;
+                            int centerX = bestX;
+                            int centerY = bestY;
+                            int x = centerX;
+                            int y = centerY;
                             int nBorder = y - 1;
                             int wBorder = x - 1;
                             int eBorder = x + 1;
                             int sBorder = y + 1;
-                            int maxSteps = 100;
-                            int steps = 0;
-                            //spiral out until some improving position is found or maxSteps is reached
-                            while (steps < maxSteps)
+                            int maxLoops = 2;
+                            //spiral out until some improving position is found or maxLoops is reached
+                            for (int loop = 0; loop < maxLoops; loop++)
                             {
-                                // outward to the north until northern border is reached
+                                // outward to the north until northern border is reached (normally just one step)
+                                y--;
                                 while (y > nBorder)
                                 {
+                                    if (y >= 0)
+                                    {
+                                        candImprovement = computeMoveOrSwapImprovement(node,x,y);
+                                        if (candImprovement > bestImprovement)
+                                        {
+                                            bestX = x;
+                                            bestY = y;
+                                            bestImprovement = candImprovement;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
                                     y--;
-                                    
                                 }
                                 // along the northern border to the east until eastern border is reached
-                                while (x < eBorder)
+                                if (y < 0)
                                 {
-                                    x++;
-                                    
+                                    //just jump to the eastern border
+                                    x = eBorder;
+                                    y = 0;
+                                }
+                                else
+                                {
+                                    while (x < eBorder && x < grid.length)
+                                    {
+                                        candImprovement = computeMoveOrSwapImprovement(node,x,y);
+                                        if (candImprovement > bestImprovement)
+                                        {
+                                            bestX = x;
+                                            bestY = y;
+                                            bestImprovement = candImprovement;
+                                        }
+                                        x++;                            
+                                    }
                                 }
                                 // along the eastern border until southern border is reached
-                                while (y < sBorder)
+                                if (x >= grid.length)
                                 {
-                                    y++;
-                                    
+                                    //just jump to the southern border
+                                    y = sBorder;
+                                    x = grid.length - 1;
+                                }
+                                else
+                                {
+                                    while (y < sBorder && y < grid[x].length)
+                                    {
+                                        candImprovement = computeMoveOrSwapImprovement(node,x,y);
+                                        if (candImprovement > bestImprovement)
+                                        {
+                                            bestX = x;
+                                            bestY = y;
+                                            bestImprovement = candImprovement;
+                                        }
+                                        y++;                     
+                                    }
                                 }
                                 // along the southern border until western border is reached
-                                while (x > wBorder)
+                                if (y >= grid[x].length)
                                 {
-                                    x--;
-                                    
+                                    //just jump to the western border
+                                    x = wBorder;
+                                    y = grid[x].length - 1;
+                                }
+                                else
+                                {
+                                    while (x > wBorder && x >= 0)
+                                    {
+                                        candImprovement = computeMoveOrSwapImprovement(node,x,y);
+                                        if (candImprovement > bestImprovement)
+                                        {
+                                            bestX = x;
+                                            bestY = y;
+                                            bestImprovement = candImprovement;
+                                        }
+                                        x--;  
+                                    }
                                 }
                                 // along the western border until northern border is reached
-                                while (y > nBorder)
+                                if (x < 0)
                                 {
-                                    y--;
-                                    
+                                    //just jump to the western border
+                                    y = nBorder;
+                                    x = 0;
+                                }
+                                else
+                                {
+                                    while (y > nBorder && y >= 0)
+                                    {
+                                        candImprovement = computeMoveOrSwapImprovement(node,x,y);
+                                        if (candImprovement > bestImprovement)
+                                        {
+                                            bestX = x;
+                                            bestY = y;
+                                            bestImprovement = candImprovement;
+                                        }
+                                        y--;                      
+                                    }
                                 }
                                 // along the northern border back to the center
-                                while (x < bestX)
+                                if (y < 0)
                                 {
-                                    x++;
-                                    
+                                    //just jump back to the center
+                                    x = centerX;
+                                    y = 0;
+                                }
+                                else
+                                {
+                                    while (x < centerX)
+                                    {
+                                        candImprovement = computeMoveOrSwapImprovement(node,x,y);
+                                        if (candImprovement > bestImprovement)
+                                        {
+                                            bestX = x;
+                                            bestY = y;
+                                            bestImprovement = candImprovement;
+                                        }
+                                        x++;           
+                                    }
                                 }
                                 //spiral ring complete, extend outward
                                 nBorder--;
                                 wBorder--;
                                 eBorder++;
                                 sBorder++;
-                                //TODO: special treatment of grid boundaries
+                                //swap with the optimum of last loop if improvement
+                                if (bestImprovement > 0)
+                                {
+                                    int swapVert = grid[bestX][bestY];
+                                    if (swapVert == -1)
+                                    {
+                                        grid[i][j] = -1;
+                                        grid[bestX][bestY] = node;
+                                        gridX.put(node, bestX);
+                                        gridY.put(node, bestY);
+                                    }
+                                    else
+                                    {
+                                        swapNodes(node,swapVert);
+                                    }
+                                    break;
+                                }
                             }
                         }
-                    }
-                    else if (neighbors.size() == 1)
-                    {
-                        //TODO: try out swaps with the eight vertices currently next to the single neighbor
-                        //int neighbor = neighbors.get(0);
-                        //int centerX = gridX.get(neighbor);
-                        //int centerY = gridY.get(neighbor);
                     }
                 }
             }
@@ -241,6 +332,23 @@ public class GridLayouter extends KahinaGraphLayouter
         gridX.put(v1, x2);
         gridY.put(v2, y1);
         gridY.put(v1, y2);
+    }
+    
+    private int computeMoveOrSwapImprovement(int v, int x, int y)
+    {
+        int result = 0;
+        //System.err.print("Compare vertex " + v + " at (" + gridX.get(v) + "," + gridY.get(v) + ") to (" + x + "," + y + ")");
+        int v2 = grid[x][y];
+        if (v2 == -1)
+        {
+            result = computeImprovement(v, gridX.get(v), gridY.get(v), x, y);
+        }
+        else
+        {
+            result = computeSwapImprovement(v, v2);
+        }
+        //System.err.println(", Improvement: " + result);
+        return result;
     }
     
     private int computeSwapImprovement(int v1, int v2)
