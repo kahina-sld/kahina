@@ -38,9 +38,10 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     protected Collection<Integer> visibleVertices; //everything is visible if this is null
     
     // mappings from status values to display properties (TODO: use all of them)
-    HashMap<Integer, Color> statusVertexColorEncoding;
+    HashMap<Integer, Color> vertexStatusVertexColorEncoding;
+    HashMap<String, Color> vertexStatusEdgeColorEncoding;
     //HashMap<Integer, Color> statusBorderColorEncoding;
-    HashMap<Integer, Color> statusEdgeColorEncoding;
+    HashMap<Integer, Color> edgeStatusEdgeColorEncoding;
     //HashMap<Integer, Stroke> statusStrokeEncoding;
     HashMap<Integer, Font> statusFontEncoding;
     //HashMap<Integer, Boolean> statusVisibilityEncoding;
@@ -58,9 +59,10 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         
         this.vertexBorderColor = new HashMap<Integer,Color>();
         
-        this.statusVertexColorEncoding = new HashMap<Integer, Color>();
+        this.vertexStatusVertexColorEncoding = new HashMap<Integer, Color>();
+        this.vertexStatusEdgeColorEncoding = new HashMap<String, Color>();
         //this.statusBorderColorEncoding = new HashMap<Integer, Color>();
-        this.statusEdgeColorEncoding = new HashMap<Integer, Color>();
+        this.edgeStatusEdgeColorEncoding = new HashMap<Integer, Color>();
         //this.statusStrokeEncoding = new HashMap<Integer, Stroke>();
         this.statusFontEncoding = new HashMap<Integer, Font>();
         
@@ -156,7 +158,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     public Color getVertexColor(int nodeID)
     {
         int status = model.getVertexStatus(nodeID);
-        Color col = statusVertexColorEncoding.get(status);
+        Color col = vertexStatusVertexColorEncoding.get(status);
         if (col == null)
         {
             return Color.WHITE;
@@ -165,6 +167,16 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         {
             return col;
         }
+    }
+    
+    public void setVertexStatusVertexColorEncoding(int state, Color color)
+    {
+        vertexStatusVertexColorEncoding.put(state, color);
+    }
+    
+    public void setVertexStatusEdgeColorEncoding(int v1state, int v2state, Color color)
+    {
+        vertexStatusEdgeColorEncoding.put(v1state + "" + v2state, color);
     }
 
     public void setVertexBorderColor(int nodeID, Color color)
@@ -187,15 +199,15 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     public Color getEdgeColor(int v1, int v2)
     {
         int status = model.getEdgeStatus(v1,v2);
-        Color col = statusVertexColorEncoding.get(status);
+        Color col = edgeStatusEdgeColorEncoding.get(status);
         if (col == null)
         {
-            return Color.BLACK;
+            int v1status = model.getVertexStatus(v1);
+            int v2status = model.getVertexStatus(v2);
+            col = vertexStatusEdgeColorEncoding.get(v1status + "" + v2status);
+            if (col == null) col = Color.black;
         } 
-        else
-        {
-            return col;
-        }
+        return col;
     }
     
     public Integer getVertexX(int vertex)

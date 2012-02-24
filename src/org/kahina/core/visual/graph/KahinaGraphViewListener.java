@@ -101,6 +101,13 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         {
             view.view.layout.optimize();
         }
+        else if (command.equals("Optimize Visible Vertices"))
+        {
+            for (int v : view.view.visibleVertices)
+            {
+                view.view.layout.optimizeVertexPosition(v);
+            }
+        }
         else if (command.endsWith("0 %"))
         {
             int zoomLevel = Integer.parseInt(command.substring(0, command.length() - 3));

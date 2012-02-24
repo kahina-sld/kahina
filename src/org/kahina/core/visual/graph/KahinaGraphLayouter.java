@@ -32,4 +32,5 @@ public abstract class KahinaGraphLayouter
     public abstract void computeInitialLayout();
     
     public abstract void optimize();
+    public abstract void optimizeVertexPosition(int v);
 }
