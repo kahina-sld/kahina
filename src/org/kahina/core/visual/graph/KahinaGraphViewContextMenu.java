@@ -28,7 +28,7 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
         zoomSubmenu.addSeparator();
         ButtonGroup sizeGroup = new ButtonGroup();
         //size buttons visible depend on current size
-        for (int i = 6; i <= 30; i += 1)
+        for (int i = 1; i <= 50; i += 1)
         {
             JRadioButtonMenuItem sizeItem = new JRadioButtonMenuItem(i + "0 %");
             if (i == v.getConfig().getZoomLevel()) sizeItem.setSelected(true);
@@ -37,6 +37,26 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
             zoomSubmenu.add(sizeItem);
         }
         add(zoomSubmenu);
+        
+        JMenu nodeSizeSubmenu = new JMenu("Node Size");
+        JMenuItem increaseNodeSizeItem = new JMenuItem("Increase Node Size");
+        increaseNodeSizeItem.addActionListener(l);
+        nodeSizeSubmenu.add(increaseNodeSizeItem);
+        JMenuItem decreaseNodeSizeItem = new JMenuItem("Decrease Node Size");
+        decreaseNodeSizeItem.addActionListener(l);
+        nodeSizeSubmenu.add(decreaseNodeSizeItem);
+        nodeSizeSubmenu.addSeparator();
+        ButtonGroup nodeSizeGroup = new ButtonGroup();
+        //size buttons visible depend on current size
+        for (int i = 1; i <= 20; i += 1)
+        {
+            JRadioButtonMenuItem sizeItem = new JRadioButtonMenuItem(i + " pt");
+            if (i == v.getConfig().getNodeSize()) sizeItem.setSelected(true);
+            sizeItem.addActionListener(l);
+            nodeSizeGroup.add(sizeItem);
+            nodeSizeSubmenu.add(sizeItem);
+        }
+        add(nodeSizeSubmenu);
         
         addSeparator();
         
@@ -73,19 +93,19 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
         
         JMenu edgeShapePolicySubmenu = new JMenu("Edge labels");
         ButtonGroup edgeShapePolicyGroup = new ButtonGroup();
-        JRadioButtonMenuItem noTagItem = new JRadioButtonMenuItem("No tags");
+        JRadioButtonMenuItem noTagItem = new JRadioButtonMenuItem("No edge labels");
         noTagItem.addActionListener(l);
         edgeShapePolicyGroup.add(noTagItem);
         edgeShapePolicySubmenu.add(noTagItem);
-        JRadioButtonMenuItem simpleTagItem = new JRadioButtonMenuItem("Simple tags");
+        JRadioButtonMenuItem simpleTagItem = new JRadioButtonMenuItem("Simple edge labels");
         simpleTagItem.addActionListener(l);
         edgeShapePolicyGroup.add(simpleTagItem);
         edgeShapePolicySubmenu.add(simpleTagItem);
-        JRadioButtonMenuItem ovalTagItem = new JRadioButtonMenuItem("Oval tags");
+        JRadioButtonMenuItem ovalTagItem = new JRadioButtonMenuItem("Oval edge labels");
         ovalTagItem.addActionListener(l);
         edgeShapePolicyGroup.add(ovalTagItem);
         edgeShapePolicySubmenu.add(ovalTagItem);
-        JRadioButtonMenuItem boxedTagItem = new JRadioButtonMenuItem("Boxed tags");
+        JRadioButtonMenuItem boxedTagItem = new JRadioButtonMenuItem("Boxed edge labels");
         boxedTagItem.addActionListener(l);
         edgeShapePolicyGroup.add(boxedTagItem);
         edgeShapePolicySubmenu.add(boxedTagItem);
@@ -142,9 +162,15 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
         optimizeItem.addActionListener(l);
         add(optimizeItem);
         
-        JMenuItem optimizeVisibleItem = new JMenuItem("Optimize Visible Vertices");
+        JMenuItem optimizeVisibleItem = new JMenuItem("Optimize Visible Vertices (all edges)");
+        optimizeVisibleItem.setActionCommand("optVisVrtAllEdges");
         optimizeVisibleItem.addActionListener(l);
         add(optimizeVisibleItem);
+        
+        JMenuItem optimizeVisibleEdgesItem = new JMenuItem("Optimize Visible Vertices (visible edges)");
+        optimizeVisibleEdgesItem.setActionCommand("optVisVrtVisEdges");
+        optimizeVisibleEdgesItem.addActionListener(l);
+        add(optimizeVisibleEdgesItem);
         
         addSeparator();
         

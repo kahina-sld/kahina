@@ -62,7 +62,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
             canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
         //determine font size
-        int fontSize = view.getConfig().getZoomLevel();
+        int fontSize = view.getConfig().getNodeSize();
         Font font = new Font("Arial", Font.PLAIN, fontSize);
         canvas.setFont(font);
 
@@ -187,17 +187,19 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     
     public void printVertexPoint(Graphics2D canvas, int vertex)
     {
-        int x = view.getVertexX(vertex);
-        int y = view.getVertexY(vertex);
+        int size = view.getConfig().getNodeSize();
+        int x = view.getVertexX(vertex) - size / 2;
+        int y = view.getVertexY(vertex) - size / 2;
         Color color = view.getVertexColor(vertex);
         if (color != null)
         { 
+
             canvas.setColor(color);
-            canvas.fillOval(x, y, 2, 2);
+            canvas.fillOval(x, y, size, size);
             if (view.getVertexBorderColor(vertex) != null)
             {
                 canvas.setColor(view.getVertexBorderColor(vertex));
-                canvas.drawOval(x - 1, y - 1, 4, 4);
+                canvas.drawOval(x - 1, y - 1, size + 2, size + 2);
             }
         }
     }
