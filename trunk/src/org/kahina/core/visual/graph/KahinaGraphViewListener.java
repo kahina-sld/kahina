@@ -19,7 +19,7 @@ import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 
 public class KahinaGraphViewListener extends MouseAdapter implements ActionListener
 {
-    KahinaGraphViewPanel view;
+    protected KahinaGraphViewPanel view;
     MouseEvent lastMouseEvent;
     
     public KahinaGraphViewListener(KahinaGraphViewPanel view)
@@ -40,7 +40,7 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         maybeShowPopup(e);
     }
 
-    private void maybeShowPopup(MouseEvent e) 
+    protected void maybeShowPopup(MouseEvent e) 
     {
         if (e.isPopupTrigger()) 
         {
@@ -153,6 +153,16 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
                 JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+        else
+        {
+            processExtensionCommand(command);
+        }
         view.updateDisplayAndRepaintFromEventDispatchThread();
+    }
+    
+    //deriving classes can implement this to add functionality for additional control elements
+    protected void processExtensionCommand(String command)
+    {
+        
     }
 }
