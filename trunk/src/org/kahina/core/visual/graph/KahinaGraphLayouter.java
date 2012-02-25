@@ -6,18 +6,15 @@ import org.kahina.core.data.graph.KahinaGraph;
 
 public abstract class KahinaGraphLayouter
 {
-    //references to the relevant parts of a KahinaGraphView
-    //these need to be updated manually if replaced in the KahinaGraphView! 
-    protected KahinaGraph g;
-    protected KahinaGraphViewConfiguration config;
+    //references to the graph view
+    KahinaGraphView view;
     //output (always accessible as references from the view)
     protected Map<Integer,Integer> xCoord;
     protected Map<Integer,Integer> yCoord;
     
     public void newGraph(KahinaGraphView view)
     {
-        g = view.getModel();
-        config = view.getConfig();
+        this.view = view;
         xCoord = view.getXCoordinates();
         yCoord = view.getYCoordinates();
         
@@ -32,5 +29,6 @@ public abstract class KahinaGraphLayouter
     public abstract void computeInitialLayout();
     
     public abstract void optimize();
-    public abstract void optimizeVertexPosition(int v);
+    public abstract void optimizeVtxPosAllEdges(int v);
+    public abstract void optimizeVtxPosVisibleEdges(int v);
 }

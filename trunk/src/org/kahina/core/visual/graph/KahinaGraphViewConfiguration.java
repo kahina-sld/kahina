@@ -7,6 +7,7 @@ import org.kahina.core.visual.KahinaViewConfiguration;
 public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
 {
     private int zoomLevel = 10;
+    private int nodeSize = 10;
     private Color bgColor = Color.WHITE;
     private int vertexShapePolicy = KahinaGraphViewOptions.POINT_VERTICES;
     private int edgeLabelPolicy = KahinaGraphViewOptions.NO_EDGE_LABELS;
@@ -14,25 +15,25 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
     
     public void zoomIn()
     {
-        if (zoomLevel < 30)
+        if (zoomLevel < 50)
         {
             zoomLevel += 1;
         } 
         else
         {
-            System.err.println("No zoom levels beyond 30 allowed!");
+            System.err.println("No zoom levels beyond 50 allowed!");
         }
     }
 
     public void zoomOut()
     {
-        if (zoomLevel > 6)
+        if (zoomLevel > 1)
         {
             zoomLevel -= 1;
         } 
         else
         {
-            System.err.println("No zoom levels below 6 allowed!");
+            System.err.println("No zoom levels below 1 allowed!");
         }
     }
 
@@ -44,6 +45,40 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
     public int getZoomLevel()
     {
         return zoomLevel;
+    }
+    
+    public void increaseNodeSize()
+    {
+        if (zoomLevel < 20)
+        {
+            zoomLevel += 1;
+        } 
+        else
+        {
+            System.err.println("No node sizes beyond 20 allowed!");
+        }
+    }
+
+    public void decreaseNodeSize()
+    {
+        if (nodeSize > 1)
+        {
+            nodeSize -= 1;
+        } 
+        else
+        {
+            System.err.println("No node sizes below 1 allowed!");
+        }
+    }
+    
+    public void setNodeSize(int size)
+    {
+        nodeSize = size;
+    }
+
+    public int getNodeSize()
+    {
+        return nodeSize;
     }
     
     public void setBackgroundColor(Color bgColor)

@@ -13,12 +13,14 @@ public class GridLayouter extends KahinaGraphLayouter
     int[][] grid;
     Map<Integer,Integer> gridX;
     Map<Integer,Integer> gridY;
+    
+    public boolean FLAG_USE_INVISIBLE_EDGES = true;
 
     @Override
     public void computeInitialLayout()
     {
         System.err.print("Computing initial graph layout ...");
-        Set<Integer> vertices = g.getVertices();
+        Set<Integer> vertices = view.getModel().getVertices();
         int numVertices = vertices.size();
         //determine correct dimensions for grid (y = rx => x*rx > numVertices)
         double optimalX = Math.sqrt(numVertices / gridRatio);
@@ -78,9 +80,20 @@ public class GridLayouter extends KahinaGraphLayouter
         System.err.println(" done in " + (System.currentTimeMillis() - startTime) + " ms.");
     }
     
-    public void optimizeVertexPosition(int v)
+    @Override
+    public void optimizeVtxPosAllEdges(int v)
     {
         optimizePositionOfVertexAt(gridX.get(v),gridY.get(v));
+        //compute the coordinates corresponding to the grid
+        refreshCoordinates();
+    }
+
+    @Override
+    public void optimizeVtxPosVisibleEdges(int v)
+    {
+        FLAG_USE_INVISIBLE_EDGES = false;
+        optimizePositionOfVertexAt(gridX.get(v),gridY.get(v));
+        FLAG_USE_INVISIBLE_EDGES = true;
         //compute the coordinates corresponding to the grid
         refreshCoordinates();
     }
@@ -90,7 +103,15 @@ public class GridLayouter extends KahinaGraphLayouter
         int node = grid[i][j];
         if (node != -1)
         {
-            List<Integer> neighbors = g.getNeighbors(node);
+            List<Integer> neighbors = null;
+            if (FLAG_USE_INVISIBLE_EDGES)
+            {
+                neighbors = view.getModel().getNeighbors(node);
+            }
+            else
+            {
+                neighbors = view.getVisibleNeighbors(node);
+            }
             if (neighbors.size() > 0)
             {
                 //determine center of neighboring vertices as ideal point for node
@@ -313,7 +334,7 @@ public class GridLayouter extends KahinaGraphLayouter
     
     public void refreshCoordinates()
     {
-        int offset = config.getZoomLevel() * 2;
+        int offset = view.getConfig().getZoomLevel() * 2;
         int currentX = offset;
         for (int i = 0; i < grid.length; i++)
         {
@@ -382,9 +403,20 @@ public class GridLayouter extends KahinaGraphLayouter
     private int computeDistanceSum(int node, int x, int y)
     {
         int distanceSum = 0;
-        for (int neighbor : g.getNeighbors(node))
+        if (FLAG_USE_INVISIBLE_EDGES)
         {
-            distanceSum += sumDistance(x,y,gridX.get(neighbor), gridY.get(neighbor));
+            for (int neighbor : view.getModel().getNeighbors(node))
+            {
+                distanceSum += sumDistance(x,y,gridX.get(neighbor), gridY.get(neighbor));
+            }
+        }
+        else
+        {
+            
+            for (int neighbor : view.getVisibleNeighbors(node))
+            {
+                distanceSum += sumDistance(x,y,gridX.get(neighbor), gridY.get(neighbor));
+            }
         }
         return distanceSum;
     }
@@ -398,13 +430,13 @@ public class GridLayouter extends KahinaGraphLayouter
     @Override
     public int getDisplayHeight()
     {
-        return grid.length * config.getZoomLevel() * 2;
+        return (grid.length + 1) * view.getConfig().getZoomLevel() * 2;
     }
 
     @Override
     public int getDisplayWidth()
     {
         if (grid.length == 0) return 0;
-        return grid[0].length * config.getZoomLevel() * 2;
+        return (grid[0].length + 1) * view.getConfig().getZoomLevel() * 2;
     }
 }

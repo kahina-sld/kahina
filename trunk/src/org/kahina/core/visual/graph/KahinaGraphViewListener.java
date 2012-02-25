@@ -61,6 +61,14 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
             view.view.getConfig().zoomOut();
             view.view.layout.refreshCoordinates();
         }
+        else if (command.equals("Increase Node Size"))
+        {
+            view.view.getConfig().increaseNodeSize();
+        }
+        else if (command.equals("Decrease Node Size"))
+        {
+            view.view.getConfig().decreaseNodeSize();
+        }
         else if (command.equals("Point vertices"))
         {
             view.view.getConfig().setVertexShapePolicy(KahinaGraphViewOptions.POINT_VERTICES);
@@ -101,11 +109,18 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         {
             view.view.layout.optimize();
         }
-        else if (command.equals("Optimize Visible Vertices"))
+        else if (command.equals("optVisVrtAllEdges"))
         {
             for (int v : view.view.visibleVertices)
             {
-                view.view.layout.optimizeVertexPosition(v);
+                view.view.layout.optimizeVtxPosAllEdges(v);
+            }
+        }
+        else if (command.equals("optVisVrtVisEdges"))
+        {
+            for (int v : view.view.visibleVertices)
+            {
+                view.view.layout.optimizeVtxPosVisibleEdges(v);
             }
         }
         else if (command.endsWith("0 %"))
@@ -113,6 +128,11 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
             int zoomLevel = Integer.parseInt(command.substring(0, command.length() - 3));
             view.view.getConfig().setZoomLevel(zoomLevel);
             view.view.layout.refreshCoordinates();
+        }
+        else if (command.endsWith(" pt"))
+        {
+            int nodeSize = Integer.parseInt(command.substring(0, command.length() - 3));
+            view.view.getConfig().setNodeSize(nodeSize);
         }
         else if (command.equals("Save as PNG"))
         {

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -141,17 +142,30 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         }
     }
     
+    public List<Integer> getVisibleNeighbors(int vertex)
+    {
+        List<Integer> visNeighbors = new LinkedList<Integer>();
+        for (int neighbor : model.getNeighbors(vertex))
+        {
+            if (isVertexVisible(neighbor))
+            {
+                visNeighbors.add(neighbor);
+            }
+        }
+        return visNeighbors;
+    }
+    
     public Font getVertexFont(int vertex)
     {
         int status = model.getVertexStatus(vertex);
         Font fnt = statusFontEncoding.get(status);
         if (fnt == null)
         {
-            return new Font(Font.SANS_SERIF, Font.PLAIN, config.getZoomLevel());
+            return new Font(Font.SANS_SERIF, Font.PLAIN, config.getNodeSize());
         } 
         else
         {
-            return new Font(fnt.getFamily(), fnt.getStyle(), config.getZoomLevel());
+            return new Font(fnt.getFamily(), fnt.getStyle(), config.getNodeSize());
         }
     }
     
@@ -160,13 +174,14 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         int status = model.getVertexStatus(nodeID);
         Color col = vertexStatusVertexColorEncoding.get(status);
         if (col == null)
-        {
-            return Color.WHITE;
+        {       
+            col = Color.WHITE;
         } 
-        else
+        if (col == Color.WHITE && config.getVertexShapePolicy() == KahinaGraphViewOptions.POINT_VERTICES)
         {
-            return col;
+            col = Color.BLACK;
         }
+        return col;
     }
     
     public void setVertexStatusVertexColorEncoding(int state, Color color)
@@ -222,9 +237,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
 
     public int getVertexHeight(int vertex)
     {
-        return 10;
-        //TODO: determine this via the font geometry
-        //return vertexHeight;
+        return config.getNodeSize();
     }
     
     protected void resetLayoutStructures()
