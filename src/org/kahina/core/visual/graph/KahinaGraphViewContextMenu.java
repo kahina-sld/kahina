@@ -174,6 +174,8 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
         
         addSeparator();
         
+        addAdditionalMenus(l);
+        
         JMenuItem exportPNGItem = new JMenuItem("Save as PNG");
         exportPNGItem.addActionListener(l);
         add(exportPNGItem);
@@ -182,5 +184,11 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
     public static JPopupMenu getMenu(ActionListener l, KahinaGraphView v)
     {
         return new KahinaGraphViewContextMenu(l, v);
+    }
+    
+    //deriving classes can implement this to extend the context menu
+    protected void addAdditionalMenus(ActionListener l)
+    {
+        
     }
 }

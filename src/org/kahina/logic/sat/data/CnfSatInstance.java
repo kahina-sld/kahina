@@ -44,7 +44,7 @@ public class CnfSatInstance extends KahinaSatInstance
     }
     
     @SuppressWarnings("unchecked")
-    public KahinaGraph generateClauseGraph()
+    public KahinaGraph generateClaByVarGraph()
     {
         KahinaGraph graph = new AdjacListsGraph();
         //generate var -> clause map for lookup; generate clause vertices at the same time
@@ -63,7 +63,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 varClauseMap[var-1].add(i);
             }
         }
-        System.err.println("Generating clause graph of " + numClauses + " clauses:");
+        System.err.println("Generating claByVar graph of " + numClauses + " clauses:");
         //link clause vertices via variable edges
         int numEdges = 0;
         for (int i = 1; i <= clauses.size(); i++)
@@ -88,6 +88,125 @@ public class CnfSatInstance extends KahinaSatInstance
             }
         }
         System.err.println("  Ready! Total number of edges: " + numEdges);
+        return graph;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public KahinaGraph generateClaByLitGraph()
+    {
+        KahinaGraph graph = new AdjacListsGraph();
+        //generate var -> clause map for lookup; generate clause vertices at the same time
+        List<Integer>[] litClauseMap = (List<Integer>[]) new List[numVars * 2];
+        for (int i = 0; i < numVars * 2; i++)
+        {
+            litClauseMap[i] = new LinkedList<Integer>();
+        }
+        for (int i = 1; i <= clauses.size(); i++)
+        {
+            graph.addVertex(i, i + "");
+            List<Integer> clause = clauses.get(i-1);
+            for (int literal : clause)
+            {
+                int pos = literal;
+                if (literal < 0) pos = numVars + Math.abs(literal);
+                litClauseMap[pos-1].add(i);
+            }
+        }
+        System.err.println("Generating claByLit graph of " + numClauses + " clauses:");
+        //link clause vertices via variable edges
+        int numEdges = 0;
+        for (int i = 1; i <= clauses.size(); i++)
+        {
+            List<Integer> clause = clauses.get(i-1);
+            for (int literal : clause)
+            {
+                int pos = literal;
+                if (literal < 0) pos = numVars + Math.abs(literal);
+                for (int j : litClauseMap[pos-1])
+                {
+                    //do not add undirected nodes twice!
+                    if (j > i)
+                    {
+                        graph.addUndirectedEdge(i, j, literal + "");
+                        numEdges++;
+                    }
+                }
+            }
+            if (i % 100 == 0)
+            {
+                System.err.println("  " + i + " clauses processed.");
+            }
+        }
+        System.err.println("  Ready! Total number of edges: " + numEdges);
+        return graph;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public KahinaGraph generateClaByCompLitGraph()
+    {
+        KahinaGraph graph = new AdjacListsGraph();
+        //generate var -> clause map for lookup; generate clause vertices at the same time
+        List<Integer>[] litClauseMap = (List<Integer>[]) new List[numVars * 2];
+        for (int i = 0; i < numVars * 2; i++)
+        {
+            litClauseMap[i] = new LinkedList<Integer>();
+        }
+        for (int i = 1; i <= clauses.size(); i++)
+        {
+            graph.addVertex(i, i + "");
+            List<Integer> clause = clauses.get(i-1);
+            for (int literal : clause)
+            {
+                int pos = literal;
+                if (literal < 0) pos = numVars + Math.abs(literal);
+                litClauseMap[pos-1].add(i);
+            }
+        }
+        System.err.println("Generating claByCompLit graph of " + numClauses + " clauses:");
+        //link clause vertices via variable edges
+        int numEdges = 0;
+        for (int i = 1; i <= clauses.size(); i++)
+        {
+            List<Integer> clause = clauses.get(i-1);
+            for (int literal : clause)
+            {
+                //switch around the literal to look up
+                int pos = literal;
+                if (literal < 0) pos = Math.abs(literal);
+                else
+                {
+                    pos += numVars;
+                }
+                for (int j : litClauseMap[pos-1])
+                {
+                    //do not add undirected nodes twice!
+                    if (j > i)
+                    {
+                        graph.addUndirectedEdge(i, j, literal + "");
+                        numEdges++;
+                    }
+                }
+            }
+            if (i % 100 == 0)
+            {
+                System.err.println("  " + i + " clauses processed.");
+            }
+        }
+        System.err.println("  Ready! Total number of edges: " + numEdges);
+        return graph;
+    }
+    
+    public KahinaGraph generateVarByClaGraph()
+    {
+        KahinaGraph graph = new AdjacListsGraph();
+        //TODO: implement this!
+        return graph;
+    }
+    
+    public KahinaGraph generateLitByClaGraph()
+    {
+        KahinaGraph graph = new AdjacListsGraph();
+        //TODO: implement this!
         return graph;
     }
     

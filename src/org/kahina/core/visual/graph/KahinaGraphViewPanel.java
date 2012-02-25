@@ -27,6 +27,11 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     {       
         view = new KahinaGraphView(control, new GridLayouter());
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
+        generateMouseListener();
+    }
+    
+    protected void generateMouseListener()
+    {
         this.addMouseListener(new KahinaGraphViewListener(this));
     }
     

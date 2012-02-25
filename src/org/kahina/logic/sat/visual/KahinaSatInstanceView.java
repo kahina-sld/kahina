@@ -15,6 +15,8 @@ import org.kahina.logic.sat.data.CnfSatInstance;
 
 public class KahinaSatInstanceView extends KahinaGraphView
 {
+    CnfSatInstance sat;
+    
     public KahinaSatInstanceView(KahinaController control, KahinaGraphLayouter layout)
     {
         super(control, layout);
@@ -22,7 +24,45 @@ public class KahinaSatInstanceView extends KahinaGraphView
     
     public void display(CnfSatInstance sat)
     {
-        model = sat.generateClauseGraph();
+        this.sat = sat;
+        displayClausesByVariables();
+    }
+    
+    public void displayClausesByVariables()
+    {
+        model = sat.generateClaByVarGraph();
+        vertexBorderColor = new HashMap<Integer, Color>();
+        resetLayoutStructures();
+        layout.newGraph(this);
+    }
+    
+    public void displayClausesByLiterals()
+    {
+        model = sat.generateClaByLitGraph();
+        vertexBorderColor = new HashMap<Integer, Color>();
+        resetLayoutStructures();
+        layout.newGraph(this);
+    }
+    
+    public void displayClausesByComplementaryLiterals()
+    {
+        model = sat.generateClaByCompLitGraph();
+        vertexBorderColor = new HashMap<Integer, Color>();
+        resetLayoutStructures();
+        layout.newGraph(this);
+    }
+    
+    public void displayVariablesByClauses()
+    {
+        model = sat.generateVarByClaGraph();
+        vertexBorderColor = new HashMap<Integer, Color>();
+        resetLayoutStructures();
+        layout.newGraph(this);
+    }
+    
+    public void displayLiteralsByClauses()
+    {
+        model = sat.generateLitByClaGraph();
         vertexBorderColor = new HashMap<Integer, Color>();
         resetLayoutStructures();
         layout.newGraph(this);
