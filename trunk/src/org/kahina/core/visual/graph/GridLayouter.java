@@ -175,7 +175,7 @@ public class GridLayouter extends KahinaGraphLayouter
                     int wBorder = x - 1;
                     int eBorder = x + 1;
                     int sBorder = y + 1;
-                    int maxLoops = 2;
+                    int maxLoops = 4;
                     //spiral out until some improving position is found or maxLoops is reached
                     for (int loop = 0; loop < maxLoops; loop++)
                     {

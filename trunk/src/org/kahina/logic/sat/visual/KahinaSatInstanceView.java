@@ -16,40 +16,63 @@ import org.kahina.logic.sat.data.CnfSatInstance;
 public class KahinaSatInstanceView extends KahinaGraphView
 {
     CnfSatInstance sat;
+    boolean clauseGraph;
     
     public KahinaSatInstanceView(KahinaController control, KahinaGraphLayouter layout)
     {
         super(control, layout);
+        clauseGraph = false;
     }
     
     public void display(CnfSatInstance sat)
     {
-        this.sat = sat;
-        displayClausesByVariables();
+        //do not recalculate if the sat instance is already displayed
+        if (this.sat == null || this.sat != sat)
+        {
+            this.sat = sat;
+            displayClausesByVariables();
+        }
+    }
+    
+    public boolean showsClauseGraph()
+    {
+        return clauseGraph;
     }
     
     public void displayClausesByVariables()
     {
         model = sat.generateClaByVarGraph();
-        vertexBorderColor = new HashMap<Integer, Color>();
-        resetLayoutStructures();
-        layout.newGraph(this);
+        if (!clauseGraph)
+        {
+            vertexBorderColor = new HashMap<Integer, Color>();
+            resetLayoutStructures();
+            layout.newGraph(this);
+        }
+        clauseGraph = true;
     }
     
     public void displayClausesByLiterals()
     {
         model = sat.generateClaByLitGraph();
-        vertexBorderColor = new HashMap<Integer, Color>();
-        resetLayoutStructures();
-        layout.newGraph(this);
+        if (!clauseGraph)
+        {
+            vertexBorderColor = new HashMap<Integer, Color>();
+            resetLayoutStructures();
+            layout.newGraph(this);
+        }
+        clauseGraph = true;
     }
     
     public void displayClausesByComplementaryLiterals()
     {
         model = sat.generateClaByCompLitGraph();
-        vertexBorderColor = new HashMap<Integer, Color>();
-        resetLayoutStructures();
-        layout.newGraph(this);
+        if (!clauseGraph)
+        {
+            vertexBorderColor = new HashMap<Integer, Color>();
+            resetLayoutStructures();
+            layout.newGraph(this);
+        }
+        clauseGraph = true;
     }
     
     public void displayVariablesByClauses()
@@ -58,6 +81,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
         vertexBorderColor = new HashMap<Integer, Color>();
         resetLayoutStructures();
         layout.newGraph(this);
+        clauseGraph = false;
     }
     
     public void displayLiteralsByClauses()
@@ -66,6 +90,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
         vertexBorderColor = new HashMap<Integer, Color>();
         resetLayoutStructures();
         layout.newGraph(this);
+        clauseGraph = false;
     }
     
     @Override
