@@ -49,7 +49,7 @@ public class KahinaSatInstanceViewContextMenu extends KahinaGraphViewContextMenu
         visTypeSubmenu.add(varByClaItem);
         
         JMenuItem litByVarItem = new JMenuItem("Literals connected by clauses");
-        litByVarItem.setActionCommand("litByVar");
+        litByVarItem.setActionCommand("litByCla");
         litByVarItem.addActionListener(l);
         visTypeSubmenu.add(litByVarItem);
 

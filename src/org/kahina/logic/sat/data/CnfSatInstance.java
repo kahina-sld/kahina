@@ -21,11 +21,55 @@ public class CnfSatInstance extends KahinaSatInstance
     private int numVars;
     private List<List<Integer>> clauses;
     
+    //literals -> clauses; important for efficient computation of views
+    //  entries [0,...,numVars-1] for positive literals
+    //  entries [numVars,...,2*numVars-1] for negative literals 
+    private List<Integer>[] occurrenceMap = null;
+    
     public CnfSatInstance()
     {
         numClauses = 0;
         numVars = 0;
         clauses = new ArrayList<List<Integer>>();
+        occurrenceMap = null;
+    }
+    
+    //generate lit -> clause map for lookup
+    //caching this makes the computation of different views a lot faster
+    @SuppressWarnings("unchecked")
+    public void computeOccurrenceMap()
+    {
+        System.err.print("Generating occurrence map for " + (numVars * 2) + " literals ... ");
+        occurrenceMap = (List<Integer>[]) new List[numVars * 2];
+        for (int i = 0; i < numVars * 2; i++)
+        {
+            occurrenceMap[i] = new LinkedList<Integer>();
+        }
+        for (int i = 1; i <= clauses.size(); i++)
+        {
+            List<Integer> clause = clauses.get(i-1);
+            for (int literal : clause)
+            {
+                int pos = literal;
+                if (literal < 0) pos = numVars + Math.abs(literal);
+                occurrenceMap[pos-1].add(i);
+            }
+        }
+        System.err.println("Ready!");
+    }
+    
+    //to free up memory; computing visualizations will take a lot longer
+    public void discardOccurrenceMap()
+    {
+        occurrenceMap = null;
+    }
+    
+    private void makeSureOccurrenceMapExists()
+    {
+        if (occurrenceMap == null)
+        {
+            computeOccurrenceMap();
+        }
     }
     
     public int getNumClauses()
@@ -43,27 +87,16 @@ public class CnfSatInstance extends KahinaSatInstance
         return clauses;
     }
     
-    @SuppressWarnings("unchecked")
     public KahinaGraph generateClaByVarGraph()
     {
         KahinaGraph graph = new AdjacListsGraph();
-        //generate var -> clause map for lookup; generate clause vertices at the same time
-        List<Integer>[] varClauseMap = (List<Integer>[]) new List[numVars];
-        for (int i = 0; i < numVars; i++)
-        {
-            varClauseMap[i] = new LinkedList<Integer>();
-        }
+        makeSureOccurrenceMapExists();
+        System.err.println("Generating claByVar graph of " + numClauses + " clauses:");
+        //generate clause vertices
         for (int i = 1; i <= clauses.size(); i++)
         {
             graph.addVertex(i, i + "");
-            List<Integer> clause = clauses.get(i-1);
-            for (int literal : clause)
-            {
-                int var = Math.abs(literal);
-                varClauseMap[var-1].add(i);
-            }
         }
-        System.err.println("Generating claByVar graph of " + numClauses + " clauses:");
         //link clause vertices via variable edges
         int numEdges = 0;
         for (int i = 1; i <= clauses.size(); i++)
@@ -72,7 +105,18 @@ public class CnfSatInstance extends KahinaSatInstance
             for (int literal : clause)
             {
                 int var = Math.abs(literal);
-                for (int j : varClauseMap[var-1])
+                //positive occurrences of var
+                for (int j : occurrenceMap[var-1])
+                {
+                    //do not add undirected nodes twice!
+                    if (j > i)
+                    {
+                        graph.addUndirectedEdge(i, j, var + "");
+                        numEdges++;
+                    }
+                }
+                //negative occurrences of var
+                for (int j : occurrenceMap[numVars + var-1])
                 {
                     //do not add undirected nodes twice!
                     if (j > i)
@@ -91,28 +135,16 @@ public class CnfSatInstance extends KahinaSatInstance
         return graph;
     }
     
-    @SuppressWarnings("unchecked")
     public KahinaGraph generateClaByLitGraph()
     {
         KahinaGraph graph = new AdjacListsGraph();
-        //generate var -> clause map for lookup; generate clause vertices at the same time
-        List<Integer>[] litClauseMap = (List<Integer>[]) new List[numVars * 2];
-        for (int i = 0; i < numVars * 2; i++)
-        {
-            litClauseMap[i] = new LinkedList<Integer>();
-        }
+        makeSureOccurrenceMapExists();
+        System.err.println("Generating claByLit graph of " + numClauses + " clauses:");
+        //generate clause vertices
         for (int i = 1; i <= clauses.size(); i++)
         {
             graph.addVertex(i, i + "");
-            List<Integer> clause = clauses.get(i-1);
-            for (int literal : clause)
-            {
-                int pos = literal;
-                if (literal < 0) pos = numVars + Math.abs(literal);
-                litClauseMap[pos-1].add(i);
-            }
         }
-        System.err.println("Generating claByLit graph of " + numClauses + " clauses:");
         //link clause vertices via variable edges
         int numEdges = 0;
         for (int i = 1; i <= clauses.size(); i++)
@@ -122,7 +154,7 @@ public class CnfSatInstance extends KahinaSatInstance
             {
                 int pos = literal;
                 if (literal < 0) pos = numVars + Math.abs(literal);
-                for (int j : litClauseMap[pos-1])
+                for (int j : occurrenceMap[pos-1])
                 {
                     //do not add undirected nodes twice!
                     if (j > i)
@@ -141,28 +173,16 @@ public class CnfSatInstance extends KahinaSatInstance
         return graph;
     }
     
-    @SuppressWarnings("unchecked")
     public KahinaGraph generateClaByCompLitGraph()
     {
         KahinaGraph graph = new AdjacListsGraph();
-        //generate var -> clause map for lookup; generate clause vertices at the same time
-        List<Integer>[] litClauseMap = (List<Integer>[]) new List[numVars * 2];
-        for (int i = 0; i < numVars * 2; i++)
-        {
-            litClauseMap[i] = new LinkedList<Integer>();
-        }
+        makeSureOccurrenceMapExists();
+        System.err.println("Generating claByCompLit graph of " + numClauses + " clauses:");
+        //generate clause vertices
         for (int i = 1; i <= clauses.size(); i++)
         {
             graph.addVertex(i, i + "");
-            List<Integer> clause = clauses.get(i-1);
-            for (int literal : clause)
-            {
-                int pos = literal;
-                if (literal < 0) pos = numVars + Math.abs(literal);
-                litClauseMap[pos-1].add(i);
-            }
         }
-        System.err.println("Generating claByCompLit graph of " + numClauses + " clauses:");
         //link clause vertices via variable edges
         int numEdges = 0;
         for (int i = 1; i <= clauses.size(); i++)
@@ -177,7 +197,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 {
                     pos += numVars;
                 }
-                for (int j : litClauseMap[pos-1])
+                for (int j : occurrenceMap[pos-1])
                 {
                     //do not add undirected nodes twice!
                     if (j > i)
@@ -199,14 +219,100 @@ public class CnfSatInstance extends KahinaSatInstance
     public KahinaGraph generateVarByClaGraph()
     {
         KahinaGraph graph = new AdjacListsGraph();
-        //TODO: implement this!
+        makeSureOccurrenceMapExists();
+        System.err.println("Generating varByCla graph of " + numVars + " variables:");
+        //generate variable vertices
+        for (int i = 1; i <= numVars; i++)
+        {
+            graph.addVertex(i, i + "");
+        }
+        //link variable vertices via clause edges
+        int numEdges = 0;
+        for (int var1 = 1; var1 <= numVars; var1++)
+        {
+            Set<Integer> clausesWithVar1 = new HashSet<Integer>();
+            clausesWithVar1.addAll(occurrenceMap[var1 - 1]);
+            clausesWithVar1.addAll(occurrenceMap[numVars + var1 - 1]);
+            for (int var2 = var1 + 1; var2 <= numVars; var2++)
+            {
+                int found = 0;
+                for (int clause : occurrenceMap[var2 - 1])
+                {
+                    if (clausesWithVar1.contains(clause))
+                    {
+                        found = clause;
+                        break;
+                    }
+                }
+                if (found == 0)
+                {
+                    for (int clause : occurrenceMap[numVars + var2 - 1])
+                    {
+                        if (clausesWithVar1.contains(clause))
+                        {
+                            found = clause;
+                            break;
+                        }
+                    }
+                }
+                if (found != 0)
+                {
+                    graph.addUndirectedEdge(var1, var2, found + "");
+                    numEdges++;
+                }
+            }
+            if (var1 % 100 == 0)
+            {
+                System.err.println("  " + var1 + " variables processed.");
+            }
+        }
+        System.err.println("  Ready! Total number of edges: " + numEdges);
         return graph;
     }
     
     public KahinaGraph generateLitByClaGraph()
     {
         KahinaGraph graph = new AdjacListsGraph();
-        //TODO: implement this!
+        makeSureOccurrenceMapExists();
+        System.err.println("Generating litByCla graph of " + numVars * 2 + " literals:");
+        //generate literal vertices
+        for (int i = 1; i <= numVars; i++)
+        {
+            graph.addVertex(i, i + "");
+        }
+        for (int i = 1; i <= numVars; i++)
+        {
+            graph.addVertex(numVars + i, "-" + i);
+        }
+        //link literal vertices via clause edges
+        int numEdges = 0;
+        for (int lit1 = 1; lit1 <= numVars * 2; lit1++)
+        {
+            Set<Integer> clausesWithLit1 = new HashSet<Integer>();
+            clausesWithLit1.addAll(occurrenceMap[lit1 - 1]);
+            for (int lit2 = lit1 + 1; lit2 <= numVars * 2; lit2++)
+            {
+                int found = 0;
+                for (int clause : occurrenceMap[lit2 - 1])
+                {
+                    if (clausesWithLit1.contains(clause))
+                    {
+                        found = clause;
+                        break;
+                    }
+                }
+                if (found != 0)
+                {
+                    graph.addUndirectedEdge(lit1, lit2, found + "");
+                    numEdges++;
+                }
+            }
+            if (lit1 % 100 == 0)
+            {
+                System.err.println("  " + lit1 + " literals processed.");
+            }
+        }
+        System.err.println("  Ready! Total number of edges: " + numEdges);
         return graph;
     }
     

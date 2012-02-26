@@ -244,6 +244,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     {
         xCoord.clear();
         yCoord.clear();
+        visibleVertices = null;
     }
 
     @Override
