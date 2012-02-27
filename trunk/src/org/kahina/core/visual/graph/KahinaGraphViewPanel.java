@@ -75,8 +75,16 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
         
         canvas.setStroke(new BasicStroke(1));
         canvas.setColor(Color.BLACK);
-        printGraphEdges(canvas);
-        printGraphVertices(canvas);
+        if (view.getConfig().getDrawingOrderPolicy() == KahinaGraphViewOptions.VERTICES_ABOVE_EDGES)
+        {
+            printGraphEdges(canvas);
+            printGraphVertices(canvas);
+        }
+        else
+        {
+            printGraphVertices(canvas);
+            printGraphEdges(canvas);
+        }
         
         image = newImage;
         repaint();

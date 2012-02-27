@@ -11,6 +11,7 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
     private Color bgColor = Color.WHITE;
     private int vertexShapePolicy = KahinaGraphViewOptions.POINT_VERTICES;
     private int edgeLabelPolicy = KahinaGraphViewOptions.NO_EDGE_LABELS;
+    private int drawingOrderPolicy = KahinaGraphViewOptions.VERTICES_ABOVE_EDGES;
     private int antialiasingPolicy = KahinaGraphViewOptions.NO_ANTIALIASING;
     
     public void zoomIn()
@@ -130,6 +131,23 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
         else
         {
             System.err.println("WARNING: unknown edge label policy value " + edgeLabelPolicy);
+        }
+    }
+    
+    public int getDrawingOrderPolicy()
+    {
+        return drawingOrderPolicy;
+    }
+
+    public void setDrawingOrderPolicy(int newPolicy)
+    {
+        if (newPolicy >= 0 && newPolicy <= 1)
+        {
+            drawingOrderPolicy = newPolicy;
+        } 
+        else
+        {
+            System.err.println("WARNING: unknown drawing order policy value " + newPolicy);
         }
     }
     

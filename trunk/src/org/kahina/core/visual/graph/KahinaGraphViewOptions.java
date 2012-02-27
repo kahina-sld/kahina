@@ -15,6 +15,10 @@ public class KahinaGraphViewOptions
     public static final int OVAL_EDGE_LABELS = 2;
     public static final int BOXED_EDGE_LABELS = 3;
     
+    // possible values for drawing order policy
+    public static final int VERTICES_ABOVE_EDGES = 0;
+    public static final int EDGES_ABOVE_VERTICES = 1;
+    
     // possible values for antialiasing policy
     public static final int ANTIALIASING = 0;
     public static final int NO_ANTIALIASING = 1;

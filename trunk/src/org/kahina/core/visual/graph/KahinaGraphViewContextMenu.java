@@ -129,7 +129,32 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
                 ovalTagItem.setSelected(true);
             }
         }
-        add(edgeShapePolicySubmenu);        
+        add(edgeShapePolicySubmenu); 
+        
+        JMenu drawingOrderSubmenu = new JMenu("Drawing Order");
+        ButtonGroup drawingOrderGroup = new ButtonGroup();
+        JRadioButtonMenuItem nodesAboveEdgesItem = new JRadioButtonMenuItem("Vertices above Edges");
+        nodesAboveEdgesItem.setActionCommand("verticesAboveEdges");
+        nodesAboveEdgesItem.addActionListener(l);
+        drawingOrderGroup.add(nodesAboveEdgesItem);
+        drawingOrderSubmenu.add(nodesAboveEdgesItem);
+        JRadioButtonMenuItem edgesAboveNodesItem = new JRadioButtonMenuItem("Edges above Vertices");
+        edgesAboveNodesItem.setActionCommand("edgesAboveVertices");
+        edgesAboveNodesItem.addActionListener(l);
+        drawingOrderGroup.add(edgesAboveNodesItem);
+        drawingOrderSubmenu.add(edgesAboveNodesItem);
+        switch (v.getConfig().getDrawingOrderPolicy())
+        {
+            case 0:
+            {
+                nodesAboveEdgesItem.setSelected(true); break;
+            }
+            case 1:
+            {
+                edgesAboveNodesItem.setSelected(true);
+            }
+        }
+        add(drawingOrderSubmenu);
         
         JMenu antialiasingSubmenu = new JMenu("Antialiasing");
         ButtonGroup antialiasingGroup = new ButtonGroup();
