@@ -1,5 +1,5 @@
 /** 
-* Provides the classes for modularly defining the behavior of Kahina core data types.
+* Provides classes for specifying the modification logic of complex data structures in a modular way.
 * <p> 
 * Some frequently used data structures such as trees and graphs often
 * show complex behavior when step information arrives at a Kahina instance.
