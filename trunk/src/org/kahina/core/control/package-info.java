@@ -39,7 +39,7 @@
 * and can be generated using convenience methods in {@link org.kahina.core.control.KahinaBreakpointFactory}.
 * Despite their name, breakpoints are used for much more comprehensive control automation
 * than their counterparts in other debugging systems. 
-* The type of a breakpoint is defined by giving it one of the constant values in {@link org.kahina.core.control.KahinaBreakpointType}
+* In this context, the type of a breakpoint is defined by giving it one of the constant values in {@link org.kahina.core.control.KahinaBreakpointType}
 * (some of these types are specific to logic programming, MOVE THEM!).
 * <p>
 * @since 1.0 
