@@ -42,16 +42,16 @@ public class LogicProgrammingGUI extends KahinaGUI
 		livingViews.add(mainTreeView);
 		varNameToView.put("controlFlowTree", mainTreeView);
 		
-		addControlButton("Control", "creep.png", "creep", "(C)ontinue to next step", KeyEvent.VK_C);
-		addControlButton("Control", "roundskip.png", "auto-complete", "(A)uto-complete this step", KeyEvent.VK_A);
-		addControlButton("Control", "pause.png", "(un)pause", "(P)ause the current skip operation", KeyEvent.VK_P);
-		addControlButton("Control", "skip.png", "skip", "(S)kip this step", KeyEvent.VK_S);
-		addControlButton("Control", "reject.png", "fail", "make this step (F)ail", KeyEvent.VK_F);
-		addControlButton("Control", "leap.png", "leap", "(L)eap to next breakpoint match", KeyEvent.VK_L);
-		addControlButton("Control", "stop.png", "stop", "abort skip or leap (X)", KeyEvent.VK_X);
+		addControlButton("Control", "gui/icons/creep.png", "creep", "(C)ontinue to next step", KeyEvent.VK_C);
+		addControlButton("Control", "gui/icons/roundskip.png", "auto-complete", "(A)uto-complete this step", KeyEvent.VK_A);
+		addControlButton("Control", "gui/icons/pause.png", "(un)pause", "(P)ause the current skip operation", KeyEvent.VK_P);
+		addControlButton("Control", "gui/icons/skip.png", "skip", "(S)kip this step", KeyEvent.VK_S);
+		addControlButton("Control", "gui/icons/reject.png", "fail", "make this step (F)ail", KeyEvent.VK_F);
+		addControlButton("Control", "gui/icons/leap.png", "leap", "(L)eap to next breakpoint match", KeyEvent.VK_L);
+		addControlButton("Control", "gui/icons/stop.png", "stop", "abort skip or leap (X)", KeyEvent.VK_X);
 		
-		addControlButton("History", "back.png", "backInHistory", "Back (Q)", KeyEvent.VK_Q);
-		addControlButton("History", "forward.png", "forwardInHistory", "Forward (W)", KeyEvent.VK_W);
+		addControlButton("History", "gui/icons/back.png", "backInHistory", "Back (Q)", KeyEvent.VK_Q);
+		addControlButton("History", "gui/icons/forward.png", "forwardInHistory", "Forward (W)", KeyEvent.VK_W);
 
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.CALL, Color.WHITE);
 		mainTreeView.setStatusColorEncoding(LogicProgrammingStepType.EXIT, new Color(153, 255, 102));
