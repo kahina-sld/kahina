@@ -1,6 +1,5 @@
 /** 
-* Provides the core classes for the Kahina architecture,
-* including view components for many common datatypes such as trees and graphs.
+* Provides the essential core classes for the Kahina architecture.
 * <p> 
 * The root package includes the class {@link org.kahina.core.KahinaInstance}
 * which is the central piece of the architecture because it groups together
