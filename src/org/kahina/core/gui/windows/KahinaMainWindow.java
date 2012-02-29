@@ -45,10 +45,13 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		// Uncomment this in order to be able to profile using JRat.
 
 		menuBar = new JMenuBar();
+		
+		addMenusInFront();
+		
 		menuBar.add(new KahinaSessionMenu());
 		menuBar.add(new KahinaViewMenu(wm));
 
-		addAdditionalMenus();
+		addMenusBeforeHelpMenu();
 
 		menuBar.add(new KahinaHelpMenu());
 		this.setJMenuBar(menuBar);
@@ -63,8 +66,13 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		super.setSize(width, height);
 		mainPanel.setSize(width - 10, height - 50);
 	}
+	
+	protected void addMenusInFront()
+	{
 
-	protected void addAdditionalMenus()
+	}
+
+	protected void addMenusBeforeHelpMenu()
 	{
 
 	}

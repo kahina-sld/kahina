@@ -20,13 +20,13 @@
 * In order to make tree pattern matches efficiently computable,
 * tree patterns are compiled into tree automata.
 * A {@link org.kahina.core.control.patterns.TreeAutomaton} keeps track of the changes
-* in a {@link org.kahina.core.data.tree.KahinaTree} object, firing a {@link org.kahina.core.control.patterns.TreeMatchEvent}
+* in a {@link org.kahina.core.data.tree.KahinaTree} object, firing a {@link org.kahina.core.control.patterns.KahinaTreeMatchEvent}
 * in case the tree pattern it encodes is matched by.
 * <p>
 * Internally a TreeAutomaton is defined a collection of rules, and maintains annotations of the nodes in a KahinaTree.
 * The rules are represented by instances of {@link org.kahina.core.control.patterns.TreeAutomatonRule},
 * each of which combines a TreeNodePattern with a set of required annotations for the matched node's children.
-* During breakpoint compilation an editing, {@link org.kahina.core.control.patterns.KahinaTreeMatchEvent}s
+* During breakpoint compilation an editing, {@link org.kahina.core.control.patterns.PatternFormatException}s
 * are used to inform the interface components about specification errors for user feedback.
 * <p>
 * @since 1.0 

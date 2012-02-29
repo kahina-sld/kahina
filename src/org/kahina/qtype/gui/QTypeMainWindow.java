@@ -1,6 +1,7 @@
 package org.kahina.qtype.gui;
 
 import org.kahina.lp.gui.LogicProgrammingMainWindow;
+import org.kahina.parse.gui.ProjectMenu;
 
 public class QTypeMainWindow extends LogicProgrammingMainWindow
 {
@@ -17,10 +18,11 @@ public class QTypeMainWindow extends LogicProgrammingMainWindow
 	}
 	
 	@Override
-	protected void addAdditionalMenus()
+	protected void addMenusInFront()
 	{
+		menuBar.add(new ProjectMenu(wm.gui.getKahinaInstance()));
+		//TODO: define and add a good ProjectMenuListener
 		menuBar.add(new QTypeParseMenu(wm.gui.getKahinaInstance()));
-		super.addAdditionalMenus();
 	}
 
 }

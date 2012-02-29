@@ -1,6 +1,7 @@
 package org.kahina.tralesld.gui;
 
 import org.kahina.lp.gui.LogicProgrammingMainWindow;
+import org.kahina.parse.gui.ProjectMenu;
 
 public class TraleSLDMainWindow extends LogicProgrammingMainWindow
 {
@@ -16,11 +17,12 @@ public class TraleSLDMainWindow extends LogicProgrammingMainWindow
 		super(windowManager, winID);
 	}
 	
-	protected void addAdditionalMenus()
+	protected void addMenusInFront()
 	{
+		menuBar.add(new ProjectMenu(wm.gui.getKahinaInstance()));
+		//TODO: define and add a good ProjectMenuListener
 		menuBar.add(new TraleSLDParseMenu(wm.gui.getKahinaInstance()));
 		//menuBar.add(new TraleSLDWorkbenchMenu(((TraleSLDGUI) wm.gui)));
-		super.addAdditionalMenus();
 	}
 
 }

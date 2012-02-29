@@ -21,7 +21,7 @@ public class LogicProgrammingMainWindow extends KahinaMainWindow
 		super(windowManager, winID);
 	}
 	
-	protected void addAdditionalMenus()
+	protected void addMenusBeforeHelpMenu()
 	{
 		menuBar.add(new KahinaControlPointMenu());
 		menuBar.add(new KahinaProfilerMenu());
