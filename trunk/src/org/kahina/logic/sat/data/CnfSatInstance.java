@@ -17,14 +17,14 @@ import org.kahina.core.data.graph.KahinaGraph;
 
 public class CnfSatInstance extends KahinaSatInstance
 {
-    private int numClauses;
-    private int numVars;
-    private List<List<Integer>> clauses;
+    protected int numClauses;
+    protected int numVars;
+    protected List<List<Integer>> clauses;
     
     //literals -> clauses; important for efficient computation of views
     //  entries [0,...,numVars-1] for positive literals
     //  entries [numVars,...,2*numVars-1] for negative literals 
-    private List<Integer>[] occurrenceMap = null;
+    protected List<Integer>[] occurrenceMap = null;
     
     public CnfSatInstance()
     {
@@ -58,7 +58,7 @@ public class CnfSatInstance extends KahinaSatInstance
         System.err.println("Ready!");
     }
     
-    //to free up memory; computing visualizations will take a lot longer
+    //to free up memory; next visualization computation will take a lot longer
     public void discardOccurrenceMap()
     {
         occurrenceMap = null;
