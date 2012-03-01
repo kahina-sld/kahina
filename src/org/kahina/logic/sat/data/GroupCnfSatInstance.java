@@ -1,10 +1,14 @@
 package org.kahina.logic.sat.data;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.kahina.core.data.graph.AdjacListsGraph;
 import org.kahina.core.data.graph.KahinaGraph;
@@ -335,5 +339,85 @@ public class GroupCnfSatInstance extends CnfSatInstance
         }
         System.err.println("  Ready! Total number of edges: " + numEdges);
         return graph;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static GroupCnfSatInstance parseDimacsGroupCnfFile(String fileName)
+    {
+        GroupCnfSatInstance sat = new GroupCnfSatInstance();
+        try
+        {
+            Scanner in = new Scanner(new File(fileName));
+            //ignore comment lines
+            while (in.hasNext(Pattern.compile("c (.*)\n")))
+            {
+                in.nextLine();
+            }
+            //process the problem line
+            String problemLine = in.nextLine();
+            String[] params = problemLine.split(" ");
+            if (!params[0].equals("p"))
+            {
+                System.err.println("ERROR: Dimacs group CNF file appears to miss the problem line!");
+                System.err.println("       Returning empty group SAT instance!");
+                return sat;
+            }
+            if (!params[1].equals("gcnf"))
+            {
+                System.err.println("ERROR: Parsing a non-group CNF Dimacs file with the Dimacs group CNF parser!");
+                System.err.println("       Returning empty group SAT instance!");
+            }
+            sat.numVars = Integer.parseInt(params[2]);
+            sat.numClauses = Integer.parseInt(params[3]);
+            sat.numGroups = Integer.parseInt(params[4]);
+            sat.clauseToGroup = new int[sat.numClauses];
+            sat.groupToClauses = (List<Integer>[]) new List[sat.numGroups];
+            //read in clauses
+            List<Integer> currentClause = new LinkedList<Integer>();
+            int clauseID = 1;
+            int groupID = 0;
+            boolean expectGroupID = true;
+            while (in.hasNext())
+            {
+                if (expectGroupID)
+                {
+                    String groupIDInBraces = in.next();
+                    groupID = Integer.parseInt(groupIDInBraces.substring(1,groupIDInBraces.length() - 1));
+                    expectGroupID = false;
+                }
+                else
+                {
+                    Integer literal = Integer.parseInt(in.next());
+                    if (literal == 0)
+                    {
+                        sat.clauses.add(currentClause);
+                        sat.clauseToGroup[clauseID-1] = 0;
+                        if (groupID != 0)
+                        {
+                            List<Integer> groupClauses = sat.groupToClauses[groupID-1];
+                            if (groupClauses == null)
+                            {
+                                groupClauses = new LinkedList<Integer>();
+                                sat.groupToClauses[groupID-1] = groupClauses;
+                            }
+                            groupClauses.add(clauseID);
+                        }
+                        currentClause = new LinkedList<Integer>();
+                        expectGroupID = true;
+                        clauseID++;
+                    }
+                    else
+                    {
+                        currentClause.add(literal);
+                    }
+                }
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            System.err.println("ERROR: Dimacs CNF file not found: " + fileName);
+            System.err.println("       Returning empty SAT instance!");
+        }
+        return sat;
     }
 }
