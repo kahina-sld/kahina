@@ -1,4 +1,4 @@
-package org.kahina.core.control;
+package org.kahina.core.data.breakpoint;
 
 import java.awt.Color;
 import java.io.Serializable;

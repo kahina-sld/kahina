@@ -18,10 +18,10 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
+import org.kahina.core.data.breakpoint.KahinaBreakpoint;
 
 public class BreakpointEditPanel extends JPanel implements ActionListener, KahinaListener
 {

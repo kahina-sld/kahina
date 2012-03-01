@@ -6,10 +6,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
+import org.kahina.core.data.breakpoint.KahinaBreakpoint;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.core.gui.event.KahinaMessageEvent;

@@ -1,4 +1,4 @@
-package org.kahina.core.control;
+package org.kahina.core.data.breakpoint;
 
 import org.kahina.core.control.patterns.TreeNodePattern;
 import org.kahina.core.control.patterns.TreePattern;

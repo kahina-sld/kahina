@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaState;
-import org.kahina.core.control.KahinaBreakpoint;
+import org.kahina.core.data.breakpoint.KahinaBreakpoint;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
