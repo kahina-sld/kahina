@@ -1,8 +1,8 @@
 package org.kahina.core.control.patterns;
 
-import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
+import org.kahina.core.data.breakpoint.KahinaBreakpoint;
 
 public class KahinaTreeMatchEvent extends KahinaEvent
 {

@@ -5,8 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.kahina.core.behavior.KahinaTreeBehavior;
-import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.data.breakpoint.KahinaBreakpoint;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.KahinaUnlayeredMemTree;
 

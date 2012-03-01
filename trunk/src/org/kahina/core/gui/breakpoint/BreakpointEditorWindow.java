@@ -28,12 +28,12 @@ import javax.swing.event.ListSelectionListener;
 
 import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaRunner;
-import org.kahina.core.control.KahinaBreakpoint;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.control.patterns.TreeAutomaton;
+import org.kahina.core.data.breakpoint.KahinaBreakpoint;
 import org.kahina.core.io.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

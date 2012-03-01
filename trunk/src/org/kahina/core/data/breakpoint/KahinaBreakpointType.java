@@ -1,4 +1,5 @@
-package org.kahina.core.control;
+package org.kahina.core.data.breakpoint;
+
 
 
 /**

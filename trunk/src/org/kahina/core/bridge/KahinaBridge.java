@@ -2,8 +2,6 @@ package org.kahina.core.bridge;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
-import org.kahina.core.control.KahinaBreakpoint;
-import org.kahina.core.control.KahinaBreakpointType;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
@@ -11,6 +9,8 @@ import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.control.KahinaWarnEvent;
 import org.kahina.core.control.patterns.KahinaTreeMatchEvent;
+import org.kahina.core.data.breakpoint.KahinaBreakpoint;
+import org.kahina.core.data.breakpoint.KahinaBreakpointType;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 /**
