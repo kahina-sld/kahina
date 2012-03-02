@@ -44,9 +44,9 @@ public class GroupCnfSatInstance extends CnfSatInstance
         {
             occurrenceMap[i] = new LinkedList<Integer>();
         }
-        for (int g = 0; g <= numGroups; g++)
+        for (int g = 1; g <= numGroups; g++)
         {
-            List<Integer> clauseIds = groupToClauses[g];
+            List<Integer> clauseIds = groupToClauses[g-1];
             for (int i : clauseIds)
             {
                 List<Integer> clause = clauses.get(i-1);
