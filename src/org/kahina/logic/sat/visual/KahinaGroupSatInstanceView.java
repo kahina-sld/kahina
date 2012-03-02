@@ -23,7 +23,7 @@ public class KahinaGroupSatInstanceView extends KahinaSatInstanceView
         {
             this.sat = sat;
             super.sat = sat;
-            displayClausesByVariables();
+            displayGroupsByVariables();
         }
     }
     

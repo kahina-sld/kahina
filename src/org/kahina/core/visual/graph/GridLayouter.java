@@ -72,6 +72,7 @@ public class GridLayouter extends KahinaGraphLayouter
         {
             for (int j = 0; j < grid[i].length; j++)
             {
+               System.err.println(" Optimizing vertex " + grid[i][j]);
                optimizePositionOfVertexAt(i,j);
             }
         }
@@ -83,6 +84,7 @@ public class GridLayouter extends KahinaGraphLayouter
     @Override
     public void optimizeVtxPosAllEdges(int v)
     {
+        System.err.println(" Optimizing vertex " + v);
         optimizePositionOfVertexAt(gridX.get(v),gridY.get(v));
         //compute the coordinates corresponding to the grid
         refreshCoordinates();
@@ -92,6 +94,7 @@ public class GridLayouter extends KahinaGraphLayouter
     public void optimizeVtxPosVisibleEdges(int v)
     {
         FLAG_USE_INVISIBLE_EDGES = false;
+        System.err.println(" Optimizing vertex " + v);
         optimizePositionOfVertexAt(gridX.get(v),gridY.get(v));
         FLAG_USE_INVISIBLE_EDGES = true;
         //compute the coordinates corresponding to the grid
@@ -403,17 +406,9 @@ public class GridLayouter extends KahinaGraphLayouter
     private int computeDistanceSum(int node, int x, int y)
     {
         int distanceSum = 0;
-        if (FLAG_USE_INVISIBLE_EDGES)
+        for (int neighbor : view.getModel().getNeighbors(node))
         {
-            for (int neighbor : view.getModel().getNeighbors(node))
-            {
-                distanceSum += sumDistance(x,y,gridX.get(neighbor), gridY.get(neighbor));
-            }
-        }
-        else
-        {
-            
-            for (int neighbor : view.getVisibleNeighbors(node))
+            if (FLAG_USE_INVISIBLE_EDGES || view.isVertexVisible(neighbor))
             {
                 distanceSum += sumDistance(x,y,gridX.get(neighbor), gridY.get(neighbor));
             }
