@@ -47,6 +47,10 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     HashMap<Integer, Font> statusFontEncoding;
     //HashMap<Integer, Boolean> statusVisibilityEncoding;
     
+    //allow one vertex to be marked
+    private int markedVertex;
+    public static final Color MARKING_COLOR = Color.ORANGE;
+    
     public KahinaGraphView(KahinaController control, KahinaGraphLayouter layout)
     {
         super(control);
@@ -67,6 +71,8 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         //this.statusStrokeEncoding = new HashMap<Integer, Stroke>();
         this.statusFontEncoding = new HashMap<Integer, Font>();
         
+        this.markedVertex = -1;
+        
         layout.newGraph(this);
     }
     
@@ -74,6 +80,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     {
         model = graphModel;
         vertexBorderColor = new HashMap<Integer, Color>();
+        this.markedVertex = -1;
         resetLayoutStructures();
         layout.newGraph(this);
     }
@@ -176,7 +183,11 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         if (col == null)
         {       
             col = Color.WHITE;
-        } 
+        }
+        if (nodeID == markedVertex)
+        {
+            col = MARKING_COLOR;
+        }
         if (col == Color.WHITE && config.getVertexShapePolicy() == KahinaGraphViewOptions.POINT_VERTICES)
         {
             col = Color.BLACK;
@@ -211,8 +222,22 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         return vertexBorderColor.get(nodeID);
     }
     
+    public void setMarkedVertex(int vertex)
+    {
+        markedVertex = vertex;
+    }
+    
+    public int getMarkedVertex()
+    {
+        return markedVertex;
+    }
+    
     public Color getEdgeColor(int v1, int v2)
     {
+        if (v1 == markedVertex || v2 == markedVertex)
+        {
+           return MARKING_COLOR;
+        }
         int status = model.getEdgeStatus(v1,v2);
         Color col = edgeStatusEdgeColorEncoding.get(status);
         if (col == null)
