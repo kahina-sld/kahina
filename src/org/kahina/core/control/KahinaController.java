@@ -4,11 +4,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-
 /**
- * the central broker for event handling and passing of messages
- * 
- * basic concept: 
+ * The central broker for event handling and passing of messages.
+ * <p>
+ * Basic concept: 
  * - an object can fire events via <code>processEvent</code> if it has access to a KahinaController instance
  * - KahinaListeners can register themselves as listeners for event types
  * - the controller passes each fired event to all KahinaListeners that have registered for its type
@@ -28,12 +27,17 @@ public class KahinaController
     
     public void registerListener(String type, KahinaListener listener)
     {
+        if (VERBOSE)
+        {
+            System.err.println(this + " gets new listener for type " + type + ": " + listener);
+        }
         List<KahinaListener> listenersForType = registry.get(type);
         if (listenersForType == null)
         {
             listenersForType = new LinkedList<KahinaListener>();
             registry.put(type, listenersForType);
-        } else if (listenersForType.contains(listener))
+        } 
+        else if (listenersForType.contains(listener))
         {
         	return;
         }
@@ -57,7 +61,7 @@ public class KahinaController
     {
         if (VERBOSE)
         {
-        	System.err.println("Controller processing event: " + event);
+        	System.err.println(this + " processing event: " + event);
         }
         String type = event.getType();
         List<KahinaListener> listenersForType = registry.get(type);
