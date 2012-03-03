@@ -99,6 +99,10 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
             {
                 Graphics2D canvas = (Graphics2D) image.getGraphics();
                 //set default rendering options
+                if (view.getConfig().getAntialiasingPolicy() == KahinaGraphViewOptions.ANTIALIASING)
+                {
+                    canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                }
                 int fontSize = view.getConfig().getNodeSize();
                 Font font = new Font("Arial", Font.PLAIN, fontSize);
                 canvas.setFont(font);
