@@ -11,6 +11,7 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.kahina.core.control.KahinaController;
@@ -58,35 +59,67 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     public void updateDisplay()
     {
         long startTime = System.currentTimeMillis();
+        List<Integer> redrawAgenda = view.getRedrawAgenda();
         System.err.println("Updating graph display of size " + view.getDisplayWidth() + " * " + view.getDisplayHeight());
-        BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics cnv = newImage.getGraphics();
-        Graphics2D canvas = (Graphics2D) cnv;
-        if (view.getConfig().getAntialiasingPolicy() == KahinaGraphViewOptions.ANTIALIASING)
+        if (!redrawAgenda.isEmpty())
         {
-            canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        }
-        //determine font size
-        int fontSize = view.getConfig().getNodeSize();
-        Font font = new Font("Arial", Font.PLAIN, fontSize);
-        canvas.setFont(font);
-
-        clearCanvas(canvas);
+            if (redrawAgenda.get(0) == -1)
+            {
+                BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
+                Graphics cnv = newImage.getGraphics();
+                Graphics2D canvas = (Graphics2D) cnv;
+                if (view.getConfig().getAntialiasingPolicy() == KahinaGraphViewOptions.ANTIALIASING)
+                {
+                    canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                }
+                //determine font size
+                int fontSize = view.getConfig().getNodeSize();
+                Font font = new Font("Arial", Font.PLAIN, fontSize);
+                canvas.setFont(font);
         
-        canvas.setStroke(new BasicStroke(1));
-        canvas.setColor(Color.BLACK);
-        if (view.getConfig().getDrawingOrderPolicy() == KahinaGraphViewOptions.VERTICES_ABOVE_EDGES)
-        {
-            printGraphEdges(canvas);
-            printGraphVertices(canvas);
+                clearCanvas(canvas);
+                
+                canvas.setStroke(new BasicStroke(1));
+                canvas.setColor(Color.BLACK);
+                if (view.getConfig().getDrawingOrderPolicy() == KahinaGraphViewOptions.VERTICES_ABOVE_EDGES)
+                {
+                    printGraphEdges(canvas);
+                    printGraphVertices(canvas);
+                }
+                else
+                {
+                    printGraphVertices(canvas);
+                    printGraphEdges(canvas);
+                }
+                
+                image = newImage;
+                redrawAgenda.clear();
+            }
+            else
+            {
+                Graphics2D canvas = (Graphics2D) image.getGraphics();
+                //set default rendering options
+                int fontSize = view.getConfig().getNodeSize();
+                Font font = new Font("Arial", Font.PLAIN, fontSize);
+                canvas.setFont(font);
+                canvas.setStroke(new BasicStroke(1));
+                canvas.setColor(Color.BLACK);
+                for (int vertex : redrawAgenda)
+                {
+                    if (view.getConfig().getDrawingOrderPolicy() == KahinaGraphViewOptions.VERTICES_ABOVE_EDGES)
+                    {
+                        printEdgesForVertex(canvas, vertex);
+                        printGraphVertex(canvas, vertex);
+                    }
+                    else
+                    {
+                        printGraphVertex(canvas, vertex);
+                        printEdgesForVertex(canvas, vertex);
+                    }
+                }
+                redrawAgenda.clear();
+            }
         }
-        else
-        {
-            printGraphVertices(canvas);
-            printGraphEdges(canvas);
-        }
-        
-        image = newImage;
         repaint();
         System.err.println("  Finished updating! Total time spent: " + (System.currentTimeMillis() - startTime) + " ms.");
     }
@@ -115,26 +148,31 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
         int vertices = 0;
         for (int vertex : view.getModel().getVertices())
         {
-            if (view.isVertexVisible(vertex))
-            {
-                vertices++;
-                if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.BOX_VERTICES)
-                {
-                    printBoxAroundVertexLabel(cnv, vertex);    
-                    printVertexLabel(cnv, vertex);
-                }
-                else if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.OVAL_VERTICES)
-                {
-                    printOvalAroundVertexLabel(cnv, vertex);
-                    printVertexLabel(cnv, vertex);
-                }
-                else if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.POINT_VERTICES)
-                {
-                    printVertexPoint(cnv, vertex);
-                }
-            }
+           vertices++;
+           printGraphVertex(cnv,vertex);
         }
         System.err.println("  " + vertices + " vertices in " + (System.currentTimeMillis() - startTime) + " ms.");
+    }
+    
+    public void printGraphVertex(Graphics2D cnv, int vertex)
+    {
+        if (view.isVertexVisible(vertex))
+        {
+            if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.BOX_VERTICES)
+            {
+                printBoxAroundVertexLabel(cnv, vertex);    
+                printVertexLabel(cnv, vertex);
+            }
+            else if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.OVAL_VERTICES)
+            {
+                printOvalAroundVertexLabel(cnv, vertex);
+                printVertexLabel(cnv, vertex);
+            }
+            else if (view.getConfig().getVertexShapePolicy() == KahinaGraphViewOptions.POINT_VERTICES)
+            {
+                printVertexPoint(cnv, vertex);
+            }
+        }
     }
     
     public void printBoxAroundVertexLabel(Graphics2D canvas, int vertex)
@@ -261,6 +299,32 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
             processedVertices.add(vertex1);
         }
         System.err.println("  " + edges + " edges in " + (System.currentTimeMillis() - startTime) + " ms.");
+    }
+    
+    public void printEdgesForVertex(Graphics canvas, int vertex1)
+    {
+        if (view.isVertexVisible(vertex1))
+        {
+            int x1 = view.getVertexX(vertex1);
+            int y1 = view.getVertexY(vertex1);
+            for (int vertex2 : view.getModel().getNeighbors(vertex1))
+            {
+                if (view.isVertexVisible(vertex2))
+                {
+                    int x2 = view.getVertexX(vertex2);
+                    int y2 = view.getVertexY(vertex2);
+                    String edgeLabel = view.getModel().getEdgeLabel(vertex1, vertex2);
+                    if (edgeLabel.length() > 0)
+                    {
+                        printEdgeLabel(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeLabel);
+                    }
+                    canvas.setColor(view.getEdgeColor(vertex1,vertex2));
+                    canvas.drawLine(x1, y1, x2, y2);
+                    //TODO: add this later (= treatment of directed edges)
+                    //printEdgeArrow(canvas, vertex1, vertex2); 
+                }
+            }
+        }
     }
     
     public void printEdgeLabel(Graphics canvas, Point center, String label)
