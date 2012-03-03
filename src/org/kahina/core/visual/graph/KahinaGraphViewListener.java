@@ -165,6 +165,7 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         {
             processExtensionCommand(command);
         }
+        view.view.flushRedrawAgenda();
         view.updateDisplayAndRepaintFromEventDispatchThread();
     }
     

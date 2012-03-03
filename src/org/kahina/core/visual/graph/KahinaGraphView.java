@@ -51,6 +51,10 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     private int markedVertex;
     public static final Color MARKING_COLOR = Color.ORANGE;
     
+    //redrawing agenda for less time-consuming redraws; also allows to influence the ordering
+    //special entry -1 means "redraw everything"
+    private List<Integer> redrawAgenda;
+    
     public KahinaGraphView(KahinaController control, KahinaGraphLayouter layout)
     {
         super(control);
@@ -73,6 +77,8 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         
         this.markedVertex = -1;
         
+        this.redrawAgenda = new LinkedList<Integer>();
+        
         layout.newGraph(this);
     }
     
@@ -81,6 +87,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         model = graphModel;
         vertexBorderColor = new HashMap<Integer, Color>();
         this.markedVertex = -1;
+        flushRedrawAgenda();
         resetLayoutStructures();
         layout.newGraph(this);
     }
@@ -93,12 +100,14 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     public void setConfig(KahinaGraphViewConfiguration config)
     {
         this.config = config;
+        flushRedrawAgenda();
         layout.newGraph(this);
     }
     
     public void setLayouter(KahinaGraphLayouter layouter)
     {
         layout = layouter;
+        flushRedrawAgenda();
         layout.newGraph(this);
     }
     
@@ -135,6 +144,20 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     public int getDisplayWidth()
     {
         return layout.getDisplayWidth();
+    }
+    
+    public List<Integer> getRedrawAgenda()
+    {
+        return redrawAgenda;
+    }
+    
+    /**
+     * Tell the view to redraw the entire structure during the next update.
+     */
+    public void flushRedrawAgenda()
+    {
+        redrawAgenda.clear();
+        redrawAgenda.add(-1);
     }
     
     public boolean isVertexVisible(int vertex)
@@ -224,6 +247,8 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     
     public void setMarkedVertex(int vertex)
     {
+        if (markedVertex != -1) redrawAgenda.add(markedVertex);
+        if (vertex != -1) redrawAgenda.add(vertex);
         markedVertex = vertex;
     }
     
