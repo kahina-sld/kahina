@@ -37,7 +37,7 @@ import org.w3c.dom.Node;
 
 public class KahinaWindowManager implements KahinaListener
 {
-    private static final boolean VERBOSE = true;
+    private static final boolean VERBOSE = false;
 
     public KahinaMainWindow mainWindow;
 
@@ -228,7 +228,10 @@ public class KahinaWindowManager implements KahinaListener
             // + embeddingID);
             if (embeddingID != null && embeddingID != -1)
             {
-                System.err.println("Embedding window " + winID + " into window " + embeddingID);
+            	if (VERBOSE)
+            	{
+            		System.err.println("Embedding window " + winID + " into window " + embeddingID);
+            	}
                 KahinaWindow embeddingWindow = windowByID.get(embeddingID);
                 KahinaWindow embeddedWindow = windowByID.get(winID);
                 boolean success = embeddingWindow.addSubwindow(embeddedWindow);
