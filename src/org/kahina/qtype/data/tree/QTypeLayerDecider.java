@@ -48,7 +48,7 @@ public class QTypeLayerDecider extends LayerDecider
 			System.err.println(this + ".doDecideOnLayer(" + nodeID + ", [tree]");
 		}
 		String caption = tree.getNodeCaption(nodeID);
-		if (caption.contains("compile_grammar(") || caption.contains(" lc(") || caption.contains(" lc_complete(") || caption.contains(" lc_list(") || caption.contains(" db_rule(") || caption.contains(" db_macro(") || caption.contains(" apply_lexrules(") || caption.contains(" db_word(") || caption.contains(" db_lexrule(") || caption.contains(" lcx("))
+		if (caption.contains("compile_grammar(") || caption.contains(" lc(") || caption.contains(" lc_complete(") || caption.contains(" lc_list(") || caption.contains(" db_rule(") || caption.contains(" db_macro(") || caption.contains(" apply_lexrules(") || caption.contains(" db_word(") || caption.contains(" db_lexrule(") || caption.contains(" lcx(") || caption.contains(" lexentry_existence("))
 		{
 			return 0;
 		}
