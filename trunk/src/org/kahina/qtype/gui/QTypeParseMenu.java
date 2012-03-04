@@ -17,7 +17,7 @@ public class QTypeParseMenu extends JMenu
 		QTypeCommander commander = ((QTypeDebuggerInstance) kahina).getCommander();
 		add(new JMenuItem(commander.COMPILE_ACTION));
 		add(new JMenuItem(commander.PARSE_ACTION));
-		add(new QTypeParseExampleMenu());
+		add(commander.getParseExampleMenu());
 		add(new JMenuItem(commander.RESTART_ACTION));
 	}
 }

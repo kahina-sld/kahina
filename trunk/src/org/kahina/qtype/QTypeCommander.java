@@ -9,6 +9,7 @@ import java.util.Queue;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JMenu;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
@@ -20,6 +21,7 @@ import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.util.ListUtil;
 import org.kahina.prolog.util.PrologUtil;
 import org.kahina.qtype.control.QTypeControlEventCommands;
+import org.kahina.qtype.gui.QTypeParseExampleMenu;
 
 public class QTypeCommander implements KahinaListener
 {
@@ -61,6 +63,24 @@ public class QTypeCommander implements KahinaListener
 		}
 
 	};
+	
+	/**
+	 * HACK This menu must be disabled/enabled by controller as appropriate,
+	 * just like the actions. That's why we lifecycle-manage it here, even
+	 * though it is a GUI element. We initialize it lazily because its
+	 * constructor accesses the GUI. 
+	 */
+	private JMenu parseExampleMenu = null;
+	
+	public JMenu getParseExampleMenu()
+	{
+		if (parseExampleMenu == null)
+		{
+			parseExampleMenu = new QTypeParseExampleMenu();
+		}
+		
+		return parseExampleMenu;
+	}
 
 	public final Action RESTART_ACTION = new AbstractAction("Restart parse")
 	{
@@ -101,6 +121,7 @@ public class QTypeCommander implements KahinaListener
 	{
 		COMPILE_ACTION.setEnabled(commanding);
 		PARSE_ACTION.setEnabled(commanding && grammar != null);
+		parseExampleMenu.setEnabled(commanding && grammar != null);
 		RESTART_ACTION.setEnabled(commanding && grammar != null && !sentence.isEmpty());
 	}
 
