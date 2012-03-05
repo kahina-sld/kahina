@@ -2,6 +2,7 @@ package org.kahina.tralesld;
 
 import java.util.HashMap;
 
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.data.chart.KahinaMemChart;
 import org.kahina.lp.LogicProgrammingState;
@@ -23,9 +24,9 @@ public class TraleSLDState extends LogicProgrammingState
 	HashMap<Integer, Integer> edgeToNode;
 	HashMap<Integer, Integer> nodeToEdge;
 
-	public TraleSLDState()
+	public TraleSLDState(KahinaController control)
 	{
-		super();
+		super(control);
 		System.err.println("New TraleSLDState() and empty signature");
 		System.err.println("Current heap size: " + Runtime.getRuntime().totalMemory());
 		trale = new AuxiliaryTraleInstance(true);

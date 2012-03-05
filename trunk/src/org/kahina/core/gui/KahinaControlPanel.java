@@ -13,19 +13,23 @@ import javax.swing.JPanel;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.control.KahinaController;
 
 public class KahinaControlPanel extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = 6440832833800241356L;
+	
+	KahinaController control;
 	
 	//definitions of control button groups
     HashMap<String, KahinaControlButtonGroup> controlButtonGroups;
     
     List<String> buttonGroupOrdering;
     
-    public KahinaControlPanel()
+    public KahinaControlPanel(KahinaController control)
     {
         super();
+        this.control = control;
         controlButtonGroups = new HashMap<String, KahinaControlButtonGroup>();
         buttonGroupOrdering = new ArrayList<String>();
     }
@@ -75,6 +79,6 @@ public class KahinaControlPanel extends JPanel implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         String command = e.getActionCommand();
-        KahinaRunner.processEvent(new KahinaControlEvent(command));
+        control.processEvent(new KahinaControlEvent(command));
     }
 }

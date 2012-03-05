@@ -1,5 +1,6 @@
 package org.kahina.core.bridge;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaControlEvent;
@@ -22,11 +23,13 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 public class KahinaBridge implements KahinaListener
 {
 	private static final boolean VERBOSE = false;
+	KahinaInstance kahina;
     
-    public KahinaBridge()
+    public KahinaBridge(KahinaInstance kahina)
     {
-        KahinaRunner.getControl().registerListener(KahinaEventTypes.CONTROL, this);
-        KahinaRunner.getControl().registerListener(KahinaEventTypes.TREE_MATCH, this);
+    	this.kahina = kahina;
+        kahina.getControl().registerListener(KahinaEventTypes.CONTROL, this);
+        kahina.getControl().registerListener(KahinaEventTypes.TREE_MATCH, this);
     }
     
     protected KahinaStep generateStep()

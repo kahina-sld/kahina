@@ -38,7 +38,7 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 	@Override
 	protected QTypeBridge createBridge()
 	{
-		return new QTypeBridge(state);
+		return new QTypeBridge(this);
 	}
 	
 	public static void main(String[] args)

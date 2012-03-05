@@ -117,9 +117,9 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	}
 
 	@Override
-	protected KahinaWindowManager createWindowManager(KahinaGUI gui, KahinaController control)
+	protected KahinaWindowManager createWindowManager()
 	{
-		return new TraleSLDWindowManager(gui, control);
+		return new TraleSLDWindowManager((TraleSLDInstance) kahina);
 	}
 
 	/*

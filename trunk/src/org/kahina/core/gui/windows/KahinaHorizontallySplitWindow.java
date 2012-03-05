@@ -25,15 +25,15 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     
     JSplitPane splitPane;
     
-    public KahinaHorizontallySplitWindow(KahinaWindowManager wm)
+    public KahinaHorizontallySplitWindow(KahinaWindowManager wm, KahinaController control)
     {
-    	super(wm);
+    	super(wm, control);
     	this.initialize();
     }
     
-    public KahinaHorizontallySplitWindow(KahinaWindowManager wm, int winID)
+    public KahinaHorizontallySplitWindow(KahinaWindowManager wm, KahinaController control, int winID)
     {
-    	super(wm, winID);
+    	super(wm, control, winID);
     	this.initialize();
     }
     
@@ -193,7 +193,7 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     
     public KahinaWindow createDynamicClone()
     {
-    	KahinaHorizontallySplitWindow cloneWindow = new KahinaHorizontallySplitWindow(wm);
+    	KahinaHorizontallySplitWindow cloneWindow = new KahinaHorizontallySplitWindow(wm, control);
     	cloneWindow.cloned = true;
     	cloneWindow.setTitle(getTitle() + " (clone)");
     	cloneWindow.setLeftWindow(leftWindow.createDynamicClone());
@@ -205,9 +205,9 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     
     public KahinaWindow createSnapshotClone()
     {
-    	KahinaHorizontallySplitWindow cloneWindow = new KahinaHorizontallySplitWindow(wm);
+    	KahinaHorizontallySplitWindow cloneWindow = new KahinaHorizontallySplitWindow(wm, control);
     	cloneWindow.cloned = true;
-    	cloneWindow.setTitle(getTitle() + " (at step " + wm.gui.kahina.getState().nextStepID() + ")");
+    	cloneWindow.setTitle(getTitle() + " (at step " + wm.kahina.getState().nextStepID() + ")");
     	cloneWindow.setLeftWindow(leftWindow.createSnapshotClone());
     	cloneWindow.setRightWindow(rightWindow.createSnapshotClone());
     	cloneWindow.setSize(this.getSize());

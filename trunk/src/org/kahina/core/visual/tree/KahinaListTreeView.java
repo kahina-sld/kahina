@@ -391,7 +391,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 			List<Integer> children = model.getChildren(node);
 			if (children.isEmpty())
 			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(node));
+				control.processEvent(new KahinaSelectionEvent(node));
 				return;
 			}
 			node = children.get(0);
@@ -406,7 +406,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 			List<Integer> children = model.getChildren(node);
 			if (children.isEmpty())
 			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(node));
+				control.processEvent(new KahinaSelectionEvent(node));
 				return;
 			}
 			node = children.get(children.size() - 1);

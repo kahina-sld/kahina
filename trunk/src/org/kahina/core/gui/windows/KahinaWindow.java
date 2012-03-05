@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaTransferablePanel;
 import org.kahina.core.gui.KahinaWindowManager;
@@ -31,14 +32,17 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     protected final int windowID;
     protected boolean cloned;
     
+    protected KahinaController control;
+    
     /**
      * Constructs a KahinaWindow with a new unique window ID.
      * @param wm the window manager that is to manage this window
      */
-    public KahinaWindow(KahinaWindowManager wm)
+    public KahinaWindow(KahinaWindowManager wm, KahinaController control)
     {     
     	this.wm = wm;
     	windowID = idCounter++;
+    	this.control = control;
         initialize();
     }
     
@@ -48,7 +52,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
      * @param wm the window manager that is to manage this window
      * @param id the unique window ID that this window will be referred by (never use -1 or an ID that is already used!)
      */
-    public KahinaWindow(KahinaWindowManager wm, int id)
+    public KahinaWindow(KahinaWindowManager wm, KahinaController control, int id)
     {
     	if (VERBOSE)
     	{
@@ -56,6 +60,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	}
     	this.wm = wm;
     	this.windowID = id;
+    	this.control = control;
     	//make sure the other constructor does not cause any ID clashes
     	if (windowID >= idCounter)
     	{
@@ -75,8 +80,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
         this.addComponentListener(this);
         wm.registerWindow(this);
         
-        // Send a Quit system event when the main window or a window containing
-        // it is closed.
+        // Send a Quit system event when the main window or a window containing it is closed.
         addWindowListener(new WindowAdapter()
         {
 
@@ -85,7 +89,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 			{
 				if (KahinaRunner.isInitialized() && containsMainWindow())
 				{
-					KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));					
+					control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));					
 				}
 			}
 			
@@ -206,7 +210,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
      */
     public KahinaWindow createDynamicClone()
     {
-    	return new KahinaWindow(wm);
+    	return new KahinaWindow(wm, control);
     }
     
     /**
@@ -217,7 +221,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
      */
     public KahinaWindow createSnapshotClone()
     {
-    	return new KahinaWindow(wm);
+    	return new KahinaWindow(wm, control);
     }
     
     /**
@@ -264,7 +268,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 	@Override
 	public void windowClosing(WindowEvent e) 
 	{
-		wm.getControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE,this.getID()));
+		wm.getGuiControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE,this.getID()));
 	}
 
 	@Override

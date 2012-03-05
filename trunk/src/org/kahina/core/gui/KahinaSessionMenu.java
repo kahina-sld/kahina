@@ -9,16 +9,20 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaSessionEvent;
 import org.kahina.core.control.KahinaSystemEvent;
 
 public class KahinaSessionMenu extends JMenu implements ActionListener
 {
 	private static final long serialVersionUID = -3140345218228195395L;
+	
+	KahinaController control;
     
-    public KahinaSessionMenu()
+    public KahinaSessionMenu(KahinaController control)
     {
         super("Session");
+        this.control = control;
         
         JMenuItem loadSessionItem = new JMenuItem("Load...");
         loadSessionItem.setActionCommand("loadSession");
@@ -48,7 +52,7 @@ public class KahinaSessionMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Load Session");
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) KahinaRunner.processEvent(new KahinaSessionEvent(KahinaSessionEvent.LOAD_SESSION, dataFile));
+            if (dataFile != null) control.processEvent(new KahinaSessionEvent(KahinaSessionEvent.LOAD_SESSION, dataFile));
         }
         else if (s.equals("saveSessionAs"))
         {
@@ -56,11 +60,11 @@ public class KahinaSessionMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Save Session As");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null)  KahinaRunner.processEvent(new KahinaSessionEvent(KahinaSessionEvent.SAVE_SESSION, dataFile));
+            if (dataFile != null)  control.processEvent(new KahinaSessionEvent(KahinaSessionEvent.SAVE_SESSION, dataFile));
         }
         else if (s.equals("quit"))
         {
-            KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
+            control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
         }
     }
 }

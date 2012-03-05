@@ -23,6 +23,7 @@ import org.kahina.core.util.Sharer;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.prolog.util.PrologUtil;
+import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.control.TraleSLDControlEventCommands;
@@ -50,10 +51,10 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	private Sharer<TraleSLDVariableBinding> bindingSharer;
 
-	public TraleSLDBridge(final TraleSLDState state)
+	public TraleSLDBridge(final TraleSLDInstance kahina)
 	{
-		super(state);
-		this.state = state;
+		super(kahina);
+		this.state = kahina.getState();
 		prospectiveEdgeStack = new ArrayList<Integer>();
 		edgeIDConv = new HashMap<Integer, Integer>();
 		packer = new TraleSLDFSPacker();

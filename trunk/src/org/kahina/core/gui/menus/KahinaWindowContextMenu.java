@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaWindowEvent;
 import org.kahina.core.gui.event.KahinaWindowEventType;
 import org.kahina.core.gui.windows.KahinaWindow;
@@ -17,10 +18,12 @@ import org.kahina.core.gui.windows.KahinaWindow;
 public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListener
 {
 	KahinaWindow w;
+	KahinaController guiControl;
 	
 	public KahinaWindowContextMenu(KahinaWindow w)
 	{
 		this.w = w;
+		guiControl = w.wm.getGuiControl();
 		
 		if (!w.isDummyWindow())
 		{
@@ -93,34 +96,34 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
 		String s = e.getActionCommand();
 		if (s.equals("Undock"))
 		{
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getID()));
+			guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getID()));
 		}
 		else if (s.equals("Rename"))
 		{
         	String title = getNewTitle("Enter a new title for the window.", "Rename window");
         	if (title != null)
         	{
-        		KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RENAME, w.getID(), title));
+        		guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RENAME, w.getID(), title));
         	}
 		}
 		else if (s.equals("Flip"))
 		{
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.FLIP, w.getID()));
+			guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.FLIP, w.getID()));
 		}
 		else if (s.equals("Dynamic Clone"))
 		{
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DYNAMIC_CLONE, w.getID()));
+			guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DYNAMIC_CLONE, w.getID()));
 		}
 		else if (s.equals("Snapshot Clone"))
 		{
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.SNAPSHOT_CLONE, w.getID()));
+			guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.SNAPSHOT_CLONE, w.getID()));
 		}
 		else if (s.equals("Vertical Split"))
 		{
         	String title = getNewTitle("Enter a title for the split window.", "Split window");
         	if (title != null)
         	{
-        		KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.VERT_SPLIT, w.getID(), title));
+        		guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.VERT_SPLIT, w.getID(), title));
         	}
 		}
 		else if (s.equals("Horizontal Split"))
@@ -128,24 +131,24 @@ public class KahinaWindowContextMenu  extends JPopupMenu implements ActionListen
         	String title = getNewTitle("Enter a title for the split window.", "Split window");
         	if (title != null)
         	{
-        		KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.HORI_SPLIT, w.getID(), title));
+        		guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.HORI_SPLIT, w.getID(), title));
         	}
 		}
 		else if (s.equals("Close"))
 		{
 			if (!w.isTopLevelWindow())
 			{
-				KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getID()));
+				guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, w.getID()));
 			}
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, w.getID()));
+			guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, w.getID()));
 		}
 		else if (s.equals("Dispose"))
 		{
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DISPOSE, w.getID()));
+			guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.DISPOSE, w.getID()));
 		}
 		else if (s.equals("Fuse"))
 		{
-			KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.FUSE, w.getID()));
+			guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.FUSE, w.getID()));
 		}
 	}
 	

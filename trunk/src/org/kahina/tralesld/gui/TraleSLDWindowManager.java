@@ -4,12 +4,13 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.windows.KahinaMainWindow;
+import org.kahina.tralesld.TraleSLDInstance;
 
 public class TraleSLDWindowManager extends KahinaWindowManager
 {
-	public TraleSLDWindowManager(KahinaGUI gui, KahinaController control)
+	public TraleSLDWindowManager(TraleSLDInstance kahina)
 	{
-		super(gui, control);
+		super(kahina, false);
 	}
     
     protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager)
@@ -22,7 +23,7 @@ public class TraleSLDWindowManager extends KahinaWindowManager
     	{
     		System.err.println("FATAL ERROR: TraleSLDWindowManager could not create main window!");
     		System.err.println("             Building default window with dummy functionality instead.");
-    		return new KahinaMainWindow(windowManager);
+    		return new KahinaMainWindow(windowManager, windowManager.getGuiControl());
     	}
 	}
     

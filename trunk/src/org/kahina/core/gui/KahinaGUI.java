@@ -36,6 +36,7 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.util.ProgressMonitorWrapper;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.text.KahinaTextView;
+import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 
 public class KahinaGUI implements KahinaListener
 {
@@ -76,7 +77,7 @@ public class KahinaGUI implements KahinaListener
 
 		this.selectionHistory = new KahinaSelectionHistory(control);
 		
-		this.windowManager = createWindowManager(this, control);
+		this.windowManager = createWindowManager();
 
 		this.controlWindows = new HashMap<String,List<KahinaControlButton>>();
 
@@ -183,9 +184,9 @@ public class KahinaGUI implements KahinaListener
 		displayMainViews();
 	}	
 
-	protected KahinaWindowManager createWindowManager(KahinaGUI kahinaGUI, KahinaController control)
+	protected KahinaWindowManager createWindowManager()
 	{
-		return new KahinaWindowManager(this, control);
+		return new KahinaWindowManager(kahina, false);
 	}
 
 	public final void show()
@@ -256,8 +257,8 @@ public class KahinaGUI implements KahinaListener
 					System.err.println("Updating selection to step " + stepID);
 				}
 				displayStepContent(stepID);
-				KahinaRunner.processEvent(new KahinaUpdateEvent(stepID));
-				KahinaRunner.processEvent(new KahinaRedrawEvent());
+				kahina.dispatchEvent(new KahinaUpdateEvent(stepID));
+				kahina.dispatchEvent(new KahinaRedrawEvent());
 			}
 		}
 		// for special case of isolated view components: there is no coordinating KahinaGUI
@@ -343,4 +344,5 @@ public class KahinaGUI implements KahinaListener
 	{
 		JOptionPane.showMessageDialog(windowManager.mainWindow, message, title, messageType);
 	}
+
 }

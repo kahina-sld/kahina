@@ -62,9 +62,9 @@ public class QTypeGUI extends SICStusPrologGUI
 	}
 
 	@Override
-	protected KahinaWindowManager createWindowManager(KahinaGUI gui, KahinaController control)
+	protected KahinaWindowManager createWindowManager()
 	{
-		return new QTypeWindowManager(gui, control);
+		return new QTypeWindowManager((QTypeDebuggerInstance) kahina);
 	}
 	
 	@Override

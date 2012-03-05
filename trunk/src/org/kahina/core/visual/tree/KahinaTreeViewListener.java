@@ -56,7 +56,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         }
         else
         {
-            KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
+            view.view.control.processEvent(new KahinaSelectionEvent(clickedNode));
             lastMouseEvent = e;
         }
     }

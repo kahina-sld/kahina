@@ -39,7 +39,7 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
         }
         else
         {
-            KahinaRunner.processEvent(new KahinaSelectionEvent(clickedNode));
+            view.view.control.processEvent(new KahinaSelectionEvent(clickedNode));
             lastMouseEvent = e;
         }
     }

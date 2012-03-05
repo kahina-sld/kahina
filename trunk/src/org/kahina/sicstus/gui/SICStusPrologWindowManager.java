@@ -5,21 +5,22 @@ import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.windows.KahinaMainWindow;
 import org.kahina.lp.gui.LogicProgrammingMainWindow;
+import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 
 public class SICStusPrologWindowManager extends KahinaWindowManager
 {
-	public SICStusPrologWindowManager(KahinaGUI gui, KahinaController control)
+	public SICStusPrologWindowManager(SICStusPrologDebuggerInstance kahina)
 	{
-		super(gui, control);
+		super(kahina, false);
 	}
     
     protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager)
 	{
-		return new LogicProgrammingMainWindow(windowManager);
+		return new LogicProgrammingMainWindow(windowManager, windowManager.getGuiControl());
 	}
     
-    protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, int winID)
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager, int winID)
 	{
-		return new LogicProgrammingMainWindow(this, winID);
+		return new LogicProgrammingMainWindow(this, windowManager.getGuiControl(), winID);
 	}
 }

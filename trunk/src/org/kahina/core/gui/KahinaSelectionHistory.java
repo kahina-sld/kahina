@@ -20,11 +20,14 @@ public class KahinaSelectionHistory implements KahinaListener
     
     private boolean selectionCausedByHistory;
     
+    KahinaController control;
+    
     public KahinaSelectionHistory(KahinaController control)
     {
         selectionHistory = new LinkedList<Integer>();
         pointInHistory = -1;
         selectionCausedByHistory = false;
+        this.control = control;
         control.registerListener(KahinaEventTypes.SELECTION, this);
     }
     
@@ -44,7 +47,7 @@ public class KahinaSelectionHistory implements KahinaListener
         {
             int newSelection = selectionHistory.get(--pointInHistory);
             selectionCausedByHistory = true;
-            KahinaRunner.processEvent(new KahinaSelectionEvent(newSelection));
+            control.processEvent(new KahinaSelectionEvent(newSelection));
             selectionCausedByHistory = false;
         }
     }
@@ -55,7 +58,7 @@ public class KahinaSelectionHistory implements KahinaListener
         {
             int newSelection = selectionHistory.get(++pointInHistory);
             selectionCausedByHistory = true;
-            KahinaRunner.processEvent(new KahinaSelectionEvent(newSelection));
+            control.processEvent(new KahinaSelectionEvent(newSelection));
             selectionCausedByHistory = false;
         }
     }

@@ -6,6 +6,7 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.tulipa.TulipaInstance;
 import org.kahina.tulipa.TulipaState;
 import org.kahina.tulipa.TulipaStep;
 
@@ -33,10 +34,10 @@ public class TulipaBridge extends KahinaBridge
     int currentItem;
     boolean currentItemWasProductive = true;
     
-    public TulipaBridge(TulipaState state)
+    public TulipaBridge(TulipaInstance kahina)
     {
-        super();
-        this.state = state;
+        super(kahina);
+        this.state = kahina.getState();
         bridgeState = 'n';
         itemIDConv = new HashMap<Integer, Integer>();
         currentItemWasProductive = false;

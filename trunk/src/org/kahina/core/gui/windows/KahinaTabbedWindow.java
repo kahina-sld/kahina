@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.swing.JTabbedPane;
 
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.KahinaWindowTransferHandler;
 
@@ -16,15 +17,15 @@ public class KahinaTabbedWindow  extends KahinaWindow
     
     List<KahinaWindow> windows;
     
-    public KahinaTabbedWindow(KahinaWindowManager wm)
+    public KahinaTabbedWindow(KahinaWindowManager wm, KahinaController control)
     {
-    	super(wm);
+    	super(wm, control);
     	this.initialize();
     }
     
-    public KahinaTabbedWindow(KahinaWindowManager wm, int winID)
+    public KahinaTabbedWindow(KahinaWindowManager wm, KahinaController control, int winID)
     {
-    	super(wm, winID);
+    	super(wm, control, winID);
     	this.initialize();
     }
     

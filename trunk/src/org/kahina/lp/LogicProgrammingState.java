@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaState;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaMemTree;
@@ -44,9 +45,9 @@ public class LogicProgrammingState extends KahinaState
     
     protected LogicProgrammingProfile profile;
     
-    public LogicProgrammingState()
+    public LogicProgrammingState(KahinaController control)
     {
-        super();
+        super(control);
         stepTree = new KahinaMemTree();
         secondaryStepTree = new KahinaMemTree();
         anchorsByTarget = new HashMap<Integer, List<Integer>>();

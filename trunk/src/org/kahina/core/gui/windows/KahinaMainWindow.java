@@ -5,6 +5,7 @@ import java.awt.dnd.DropTarget;
 
 import javax.swing.JMenuBar;
 
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
@@ -26,15 +27,15 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 	KahinaWindow subwindow;
 
-	public KahinaMainWindow(KahinaWindowManager windowManager)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control)
 	{
-		super(windowManager);
+		super(windowManager, control);
 		this.initializeMainWindow();
 	}
 
-	public KahinaMainWindow(KahinaWindowManager windowManager, int winID)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, int winID)
 	{
-		super(windowManager, winID);
+		super(windowManager, control, winID);
 		this.initializeMainWindow();
 	}
 
@@ -48,17 +49,17 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		
 		addMenusInFront();
 		
-		menuBar.add(new KahinaSessionMenu());
+		menuBar.add(new KahinaSessionMenu(wm.kahina.getControl()));
 		menuBar.add(new KahinaViewMenu(wm));
 
 		addMenusBeforeHelpMenu();
 
-		menuBar.add(new KahinaHelpMenu());
+		menuBar.add(new KahinaHelpMenu(wm.getGuiControl()));
 		this.setJMenuBar(menuBar);
 
 		mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
-		wm.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
+		wm.kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 	}
 
 	public void setSize(int width, int height)
