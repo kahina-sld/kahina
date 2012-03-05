@@ -1,6 +1,7 @@
 package org.kahina.core.visual.graph;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,22 +49,173 @@ public class CircularLayouter extends KahinaGraphLayouter
     @Override
     public void optimize()
     {
-        // TODO Auto-generated method stub
+        long startTime = System.currentTimeMillis();
+        System.err.print("Global optimization of a circular graph layout ...");
+        for (int i = 0; i < array.length; i++)
+        {
+           optimizePositionOfVertexAt(i);
+        }
+        //compute the coordinates corresponding to the grid
+        refreshCoordinates();
+        System.err.println(" done in " + (System.currentTimeMillis() - startTime) + " ms.");
         
     }
 
     @Override
     public void optimizeVtxPosAllEdges(int v)
     {
-        // TODO Auto-generated method stub
-        
+        optimizePositionOfVertexAt(vertexToIndex.get(v));
+        //compute the coordinates corresponding to the grid
+        refreshCoordinates();     
     }
 
     @Override
     public void optimizeVtxPosVisibleEdges(int v)
     {
-        // TODO Auto-generated method stub
-        
+        FLAG_USE_INVISIBLE_EDGES = false;
+        optimizePositionOfVertexAt(vertexToIndex.get(v));
+        FLAG_USE_INVISIBLE_EDGES = true;
+        //compute the coordinates corresponding to the grid
+        refreshCoordinates();     
+    }
+    
+    private void optimizePositionOfVertexAt(int i)
+    {
+        System.err.print(" Optimizing vertex " + array[i] + "[" + i + "] : |");
+        int node = array[i];
+        if (node != -1)
+        {
+            List<Integer> neighbors = null;
+            if (FLAG_USE_INVISIBLE_EDGES)
+            {
+                neighbors = view.getModel().getNeighbors(node);
+            }
+            else
+            {
+                neighbors = view.getVisibleNeighbors(node);
+            }
+            if (neighbors.size() > 0)
+            {
+                //determine index in the array which would be the ideal point for the node
+                int clockwiseMovement = 0;
+                for (int neighbor : neighbors)
+                {
+                    System.err.print(vertexToIndex.get(neighbor) + "|");
+                    clockwiseMovement += clockwiseDistance(node,neighbor);
+                }
+                clockwiseMovement /= neighbors.size();
+                int optimalIndex = mod(i + clockwiseMovement,array.length);
+                System.err.println(" -> " + optimalIndex);
+                //compute for a range of indices around the optimal index
+                //   how much swapping the node with the node there improves the layout
+                int maxDistance = 4;
+                int bestImprovement = Integer.MIN_VALUE;
+                int best = -1;
+                int candImprovement = 0;
+                int cand = optimalIndex;
+                int size = array.length;
+                for (int j = cand - maxDistance; j < cand + maxDistance + 1; j++)
+                {
+                    candImprovement = computeMoveOrSwapImprovement(node, mod(j,size));
+                    if (candImprovement > bestImprovement)
+                    {
+                        best = mod(j,size);
+                        bestImprovement = candImprovement;
+                    }
+                }
+                //if the best swap yields improvement > 0: swap
+                if (bestImprovement > 0)
+                {
+                    int swapVert = array[best];
+                    if (swapVert == -1)
+                    {
+                        array[i] = -1;
+                        array[best] = node;
+                        vertexToIndex.put(node, best);
+                    }
+                    else
+                    {
+                        swapNodes(node,swapVert);
+                    }
+                }
+            }
+        }
+    }
+    
+    private int clockwiseDistance(int v1, int v2)
+    {
+        return mod((vertexToIndex.get(v1) - vertexToIndex.get(v2)),array.length);    
+    }
+    
+    private void swapNodes(int v1, int v2)
+    {
+        System.err.println("  swapNodes(" + v1 + "," + v2 + ")");
+        int idx1 = vertexToIndex.get(v1);
+        int idx2 = vertexToIndex.get(v2);
+        array[idx1] = v2;
+        array[idx2] = v1;
+        vertexToIndex.put(v2, idx1);
+        vertexToIndex.put(v1, idx2);
+    }
+    
+    private int computeMoveOrSwapImprovement(int v, int idx)
+    {
+        int result = 0;
+        //System.err.print("Compare vertex " + v + " at (" + gridX.get(v) + "," + gridY.get(v) + ") to (" + x + "," + y + ")");
+        int v2 = array[idx];
+        if (v2 == -1)
+        {
+            result = computeImprovement(v, vertexToIndex.get(v), idx);
+        }
+        else
+        {
+            result = computeSwapImprovement(v, v2);
+        }
+        //System.err.println(", Improvement: " + result);
+        return result;
+    }
+    
+    private int computeSwapImprovement(int v1, int v2)
+    {
+        int idx1 = vertexToIndex.get(v1);
+        int idx2 = vertexToIndex.get(v2);
+        return computeImprovement(v1,idx1,idx2) + computeImprovement(v2,idx2,idx1);
+    }
+    
+    //evaluate the distance sum change if vertex is moved from index idx1 to idx2
+    private int computeImprovement(int node, int idx1, int idx2)
+    {
+        return computeDistanceSum(node, idx2) - computeDistanceSum(node, idx1);
+    }
+    
+    //evaluate the sum of the outgoing edge lengths if node were at (x,y)
+    private int computeDistanceSum(int node, int idx)
+    {
+        int distanceSum = 0;
+        for (int neighbor : view.getModel().getNeighbors(node))
+        {
+            if (FLAG_USE_INVISIBLE_EDGES || view.isVertexVisible(neighbor))
+            {
+                distanceSum += minDistance(idx, vertexToIndex.get(neighbor));
+            }
+        }
+        return distanceSum;
+    }
+    
+    //minimum distance between indices idx1 and idx2
+    private int minDistance(int idx1, int idx2)
+    {
+        return Math.min(mod((idx2 - idx1),array.length), mod((idx1 - idx2), array.length));
+    }
+    
+    //real modulo operation (also for negative integers)
+    private int mod(int a, int b)
+    {
+        if (a >= 0)
+        {
+            return a % b;
+        }
+        return (a-((a / b - 1)*b)) % b;
     }
 
     @Override
