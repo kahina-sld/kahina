@@ -109,9 +109,9 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			super.startNewSession();
 			profiler = new TraleSLDProfiler(state.getFullProfile());
-			controller.registerListener("edge select", this);
-			controller.registerListener("update", this);
-			controller.registerListener(KahinaEventTypes.CONTROL, this);
+			control.registerListener("edge select", this);
+			control.registerListener("update", this);
+			control.registerListener(KahinaEventTypes.CONTROL, this);
 			return bridge;
 		}
 		catch (NullPointerException e)

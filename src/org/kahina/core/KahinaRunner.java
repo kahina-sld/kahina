@@ -13,18 +13,7 @@ public class KahinaRunner // TODO get rid of this class, make everything non-sta
 	
     private static ObjectMagazine<KahinaStep> steps;
     private static KahinaController control = new KahinaController();
-    private static KahinaController guiController;
-
-	public static void deinitialize()
-	{
-		if (VERBOSE)
-		{
-			System.err.println("KahinaRunner is deinitializing.");
-		}
-		steps.close();
-		steps = null;
-		control = null;
-	}
+    private static KahinaController guiControl;
     
     public static void processEvent(KahinaEvent e)
     {
@@ -32,7 +21,7 @@ public class KahinaRunner // TODO get rid of this class, make everything non-sta
     	{
     		System.err.println("KahinaRunner.processEvent(" + e + ")");
     	}
-    	guiController.processEvent(e);
+    	guiControl.processEvent(e);
         control.processEvent(e);
     }
     
@@ -78,14 +67,14 @@ public class KahinaRunner // TODO get rid of this class, make everything non-sta
 		steps = ObjectMagazine.load(directory, KahinaStep.class);
 	}
 
-	public static void setGUIController(KahinaController guiController)
+	public static void setGUIController(KahinaController guiControl)
 	{
-		KahinaRunner.guiController = guiController;
+		KahinaRunner.guiControl = guiControl;
 	}
 	
 	public static KahinaController getGUIControl()
 	{
-		return guiController;
+		return guiControl;
 	}
 
 	public static boolean isInitialized()

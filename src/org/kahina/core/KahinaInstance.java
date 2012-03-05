@@ -50,17 +50,16 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	protected B bridge;
 
-	protected KahinaController controller;
-
 	protected ObjectMagazine<KahinaStep> steps;
 
-	protected final KahinaController guiController;
+	protected final KahinaController guiControl;
+	protected KahinaController control;
 
 	private boolean guiStarted = false;
 
 	public KahinaInstance()
 	{
-		guiController = new KahinaController();
+		guiControl = new KahinaController();
 		try
 		{
 			fillViewRegistry();
@@ -81,10 +80,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	 */
 	private void startGUI()
 	{
-		KahinaRunner.setGUIController(guiController); // TODO get rid of
-														// KahinaRunner
-		gui = createGUI(guiController);
-		gui.prepare(guiController);
+		gui = createGUI(guiControl);
+		gui.prepare(guiControl);
 		guiStarted = true;
 	}
 
@@ -120,16 +117,15 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			steps.close();
 		}
 		steps = ObjectMagazine.create();
-		KahinaRunner.setSteps(steps); // TODO get rid of KahinaRunner
-		controller = new KahinaController();
-		KahinaRunner.setControl(controller); // TODO get rid of KahinaRunner
-		controller.registerListener(KahinaEventTypes.UPDATE, this);
-		controller.registerListener(KahinaEventTypes.SESSION, this);
-		controller.registerListener(KahinaEventTypes.SYSTEM, this);
+		control = new KahinaController();
+		control.registerListener(KahinaEventTypes.UPDATE, this);
+		control.registerListener(KahinaEventTypes.SESSION, this);
+		control.registerListener(KahinaEventTypes.SYSTEM, this);
 		if (state != null)
 		{
 			state.initialize();
-		} else
+		} 
+		else
 		{
 			state = createState();
 		}
@@ -167,6 +163,34 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		KahinaViewRegistry.registerMapping(KahinaTree.class, KahinaTreeView.class);
 		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, KahinaJEditSourceCodeView.class);
 	}
+	
+    public void dispatchEvent(KahinaEvent e)
+    {
+    	if (VERBOSE)
+    	{
+    		System.err.println("KahinaInstance.dispatchEvent(" + e + ")");
+    	}
+        control.processEvent(e);
+    	guiControl.processEvent(e);
+    }
+    
+    public void dispatchBackgroundEvent(KahinaEvent e)
+    {
+    	if (VERBOSE)
+    	{
+    		System.err.println("KahinaInstance.dispatchBackgroundEvent(" + e + ")");
+    	}
+    	guiControl.processEvent(e);
+    }
+    
+    public void dispatchGUIEvent(KahinaEvent e)
+    {
+    	if (VERBOSE)
+    	{
+    		System.err.println("KahinaInstance.dispatchGUIEvent(" + e + ")");
+    	}
+    	guiControl.processEvent(e);
+    }
 
 	@Override
 	public void processEvent(KahinaEvent e)
@@ -187,7 +211,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
 		if (e.getSystemEventType() == KahinaSystemEvent.QUIT)
 		{
-			KahinaRunner.deinitialize();
+			steps.close();
+			steps = null;
+			control = null;
 		}
 	}
 
