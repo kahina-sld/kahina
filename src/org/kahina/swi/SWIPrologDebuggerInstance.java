@@ -43,7 +43,7 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
 	@Override
 	protected SWIPrologBridge createBridge()
 	{
-		return new SWIPrologBridge(state);
+		return new SWIPrologBridge(this);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
 	@Override
 	protected LogicProgrammingState createState()
 	{
-		return new LogicProgrammingState();
+		return new LogicProgrammingState(control);
 	}
 	
 	@Override

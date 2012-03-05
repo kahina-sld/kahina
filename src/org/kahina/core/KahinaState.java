@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
@@ -47,10 +48,13 @@ public class KahinaState implements Serializable, KahinaListener
     
     private int nextStepID = 1;
     
-    public KahinaState()
+    private KahinaController control;
+    
+    public KahinaState(KahinaController control)
     {
         initialize();
-        KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);
+        this.control = control;
+        control.registerListener(KahinaEventTypes.SELECTION, this);
     }
     
 	public void initialize() 
@@ -112,7 +116,7 @@ public class KahinaState implements Serializable, KahinaListener
             consoleLines.put(stepID, refs);
         }
         refs.add(ref);
-        KahinaRunner.processEvent(new KahinaMessageEvent(ref));
+        control.processEvent(new KahinaMessageEvent(ref));
     }
     
     public KahinaTextModel getConsoleMessages()

@@ -161,7 +161,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	@Override
 	protected TraleSLDBridge createBridge()
 	{
-		return new TraleSLDBridge(this.state);
+		return new TraleSLDBridge(this);
 	}
 
 	@Override
@@ -173,7 +173,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	@Override
 	protected TraleSLDState createState()
 	{
-		return new TraleSLDState();
+		return new TraleSLDState(control);
 	}
 
 	@Override

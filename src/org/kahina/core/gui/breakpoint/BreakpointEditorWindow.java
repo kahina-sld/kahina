@@ -234,7 +234,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 		case BreakpointEditorEvent.APPLY_QUIT:
 		{
 			compileCurrentlyOpenedBreakpoint();
-			KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.APPLY_BREAKPOINTS, breakpointType));
+			control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.APPLY_BREAKPOINTS, breakpointType));
 			this.setVisible(false);
 			this.dispose();
 			break;

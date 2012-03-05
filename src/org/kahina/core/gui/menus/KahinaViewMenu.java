@@ -37,7 +37,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         super("View"); 
         
         this.manager = manager;      
-        manager.getControl().registerListener(KahinaEventTypes.WINDOW, this);
+        manager.getGuiControl().registerListener(KahinaEventTypes.WINDOW, this);
       
         rebuild();
     }
@@ -149,37 +149,37 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         String s = e.getActionCommand();
         if (s.equals("newDefaultWindow"))
         {	
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_DEFAULT, -1, "Empty view"));
+        	manager.getGuiControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_DEFAULT, -1, "Empty view"));
         }
         else if (s.equals("newVertSplitWindow"))
         {	
         	String title = getNewTitle("Vertically Split Window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_VERT_SPLIT, -1, title));
+        	manager.getGuiControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_VERT_SPLIT, -1, title));
         }
         else if (s.equals("newHoriSplitWindow"))
         {	
         	String title = getNewTitle("Horizontally Split Window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_HORI_SPLIT, -1, title));
+        	manager.getGuiControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_HORI_SPLIT, -1, title));
         }
         else if (s.equals("newTabbedWindow"))
         {	
         	String title = getNewTitle("Tabbed Window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, -1, title));
+        	manager.getGuiControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_TABBED, -1, title));
         }
         else if (s.equals("newListWindow"))
         {	
         	String title = getNewTitle("List Window");
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_LIST, -1, title));
+        	manager.getGuiControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.NEW_LIST, -1, title));
         }
         else if (s.startsWith("toggleVisibility"))
         {
             int windowID = Integer.parseInt(s.substring(s.indexOf(':') + 1));
-            KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, windowID));
+            manager.getGuiControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE, windowID));
         }
         else if (s.startsWith("restoreFrame:"))
         {
         	int windowID = Integer.parseInt(s.substring(s.indexOf(':') + 1));
-        	KahinaRunner.processEvent(new KahinaWindowEvent(KahinaWindowEventType.RESTORE_FRAME, windowID));
+        	manager.getGuiControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.RESTORE_FRAME, windowID));
         }
         else if (s.equals("loadPerspective"))
         {
@@ -187,23 +187,23 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
             chooser.setDialogTitle("Load Perspective");
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_PERSPECTIVE, dataFile));
+            if (dataFile != null) manager.getGuiControl().processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_PERSPECTIVE, dataFile));
         }
         else if (s.startsWith("loadRecentPerspective:"))
         {
         	int counter = Integer.parseInt(s.substring(22));
-        	KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_RECENT_PERSPECTIVE, counter));
+        	manager.getGuiControl().processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_RECENT_PERSPECTIVE, counter));
         }
         else if (s.startsWith("loadDefaultPerspective:"))
         {
         	int counter = Integer.parseInt(s.substring(23));
-        	KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_DEFAULT_PERSPECTIVE, counter));
+        	manager.getGuiControl().processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.LOAD_DEFAULT_PERSPECTIVE, counter));
         }
         else if (s.equals("savePerspective"))
         {
         	if (lastPerspectiveFile != null)
         	{
-        		KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.SAVE_PERSPECTIVE, lastPerspectiveFile));
+        		manager.getGuiControl().processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.SAVE_PERSPECTIVE, lastPerspectiveFile));
         	}
         	else
         	{
@@ -229,7 +229,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
             chooser.setDialogTitle("Save Perspective As");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null)  KahinaRunner.processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.SAVE_PERSPECTIVE, dataFile));
+            if (dataFile != null)  manager.getGuiControl().processEvent(new KahinaPerspectiveEvent(KahinaPerspectiveEvent.SAVE_PERSPECTIVE, dataFile));
             lastPerspectiveFile = dataFile;
         }
     }

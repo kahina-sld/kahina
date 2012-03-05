@@ -27,16 +27,16 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     private double resizeWeight;
     
-    public KahinaVerticallySplitWindow(KahinaWindowManager wm, double resizeWeight)
+    public KahinaVerticallySplitWindow(KahinaWindowManager wm, KahinaController control, double resizeWeight)
     {
-    	super(wm);
+    	super(wm, control);
     	this.resizeWeight = resizeWeight;
     	this.initialize();
     }
     
-    public KahinaVerticallySplitWindow(KahinaWindowManager wm, int winID, double resizeWeight)
+    public KahinaVerticallySplitWindow(KahinaWindowManager wm, KahinaController control, int winID, double resizeWeight)
     {
-    	super(wm, winID);
+    	super(wm, control, winID);
     	this.resizeWeight = resizeWeight;
     	this.initialize();
     }
@@ -198,7 +198,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public KahinaWindow createDynamicClone()
     {
-    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm, resizeWeight);
+    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm, control, resizeWeight);
     	cloneWindow.cloned = true;
     	cloneWindow.setTitle(getTitle() + " (clone)");
     	cloneWindow.setUpperWindow(upperWindow.createDynamicClone());
@@ -210,9 +210,9 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public KahinaWindow createSnapshotClone()
     {
-    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm, resizeWeight);
+    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm, control, resizeWeight);
     	cloneWindow.cloned = true;
-    	cloneWindow.setTitle(getTitle() + " (at step " + wm.gui.kahina.getState().nextStepID() + ")");
+    	cloneWindow.setTitle(getTitle() + " (at step " + wm.kahina.getState().nextStepID() + ")");
     	cloneWindow.setUpperWindow(upperWindow.createSnapshotClone());
     	cloneWindow.setLowerWindow(lowerWindow.createSnapshotClone());
     	cloneWindow.setSize(this.getSize());

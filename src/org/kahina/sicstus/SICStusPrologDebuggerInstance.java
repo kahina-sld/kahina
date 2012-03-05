@@ -43,7 +43,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 	@Override
 	protected SICStusPrologBridge createBridge()
 	{
-		return new SICStusPrologBridge(state);
+		return new SICStusPrologBridge(this);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 	@Override
 	protected LogicProgrammingState createState()
 	{
-		return new LogicProgrammingState();
+		return new LogicProgrammingState(control);
 	}
 
 	@Override

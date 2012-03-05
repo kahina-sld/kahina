@@ -9,7 +9,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
@@ -30,9 +32,11 @@ public class KahinaDAGTest
             DocumentBuilder db = dbf.newDocumentBuilder();
             Document dom = db.parse(file);
             //TestLayeredTree m1 = TestLayeredTree.importXML(dom);
-            KahinaDAG dag = KahinaMemDAG.importXML(dom);       
+            KahinaDAG dag = KahinaMemDAG.importXML(dom);  
             
-            KahinaDAGView v = new KahinaDAGView(KahinaRunner.getControl());
+            KahinaController control = new KahinaController();
+            
+            KahinaDAGView v = new KahinaDAGView(control);
             v.setTitle("Kahina DAGView Demo");
             v.setVerticalDistance(5);
             v.setHorizontalDistance(30);
@@ -42,11 +46,11 @@ public class KahinaDAGTest
             v.setStatusColorEncoding(2,new Color(0,255,255));
             v.setStatusColorEncoding(3,new Color(255,255,255)); 
             
-            KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, v);
-            KahinaRunner.getControl().registerListener(KahinaEventTypes.UPDATE, v);
-            KahinaRunner.getControl().registerListener(KahinaEventTypes.REDRAW, v);
+            control.registerListener(KahinaEventTypes.SELECTION, v);
+            control.registerListener(KahinaEventTypes.UPDATE, v);
+            control.registerListener(KahinaEventTypes.REDRAW, v);
             
-            KahinaDefaultWindow w = new KahinaDefaultWindow(v, new KahinaWindowManager(null, KahinaRunner.getControl()));
+            KahinaDefaultWindow w = new KahinaDefaultWindow(v, null, control);
             w.setSize(510, 720);
             w.setVisible(true);
             w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

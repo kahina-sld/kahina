@@ -42,7 +42,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 {
 	private static final boolean VERBOSE = false;
 
-	protected G gui;
+	public G gui;
 
 	// TODO maybe group state, bridge, profiler etc. under a new Session type
 
@@ -60,13 +60,18 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	public KahinaInstance()
 	{
 		guiControl = new KahinaController();
+		//TODO: this is an ad hoc solution for testing
+		control = guiControl;
+		KahinaRunner.setControl(guiControl);
+		KahinaRunner.setGUIController(guiControl);
 		try
 		{
 			fillViewRegistry();
 			initializeNewSession(); // dummy session so views have something
 									// (empty)
 									// to show
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(-1);
@@ -90,14 +95,14 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		try
 		{
 		    //TODO: check whether this startup order works in every situation
-	        initializeNewSession();
 			if (!guiStarted)
 			{
 				startGUI();
 			}
+	        initializeNewSession();
 			gui.displayMainViews();
 			gui.show();
-			KahinaRunner.processEvent(new KahinaSelectionEvent(-1));
+			dispatchEvent(new KahinaSelectionEvent(-1));
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -117,7 +122,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			steps.close();
 		}
 		steps = ObjectMagazine.create();
-		control = new KahinaController();
+		//control = new KahinaController();
 		control.registerListener(KahinaEventTypes.UPDATE, this);
 		control.registerListener(KahinaEventTypes.SESSION, this);
 		control.registerListener(KahinaEventTypes.SYSTEM, this);
@@ -132,6 +137,16 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		bridge = createBridge();
 		createTreeBehavior();
 		createWarner();
+	}
+	
+	public KahinaController getControl()
+	{
+		return control;
+	}
+	
+	public KahinaController getGuiControl()
+	{
+		return guiControl;
 	}
 
 	protected abstract void createTreeBehavior();
@@ -253,8 +268,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			FileUtil.unzipToDirectory(zipFile, directory, "steps/", monitor);
 			KahinaRunner.loadSteps(directory);
 			gui.displayMainViews();
-			KahinaRunner.processEvent(new KahinaSelectionEvent(state.getSelectedStepID()));
-			KahinaRunner.processEvent(new KahinaSystemEvent(KahinaSystemEvent.NODE_COUNT, state.getStepCount()));
+			dispatchEvent(new KahinaSelectionEvent(state.getSelectedStepID()));
+			dispatchEvent(new KahinaSystemEvent(KahinaSystemEvent.NODE_COUNT, state.getStepCount()));
 		} catch (Exception e)
 		{
 			gui.showMessageDialog(SwingUtil.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
@@ -354,7 +369,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		}
 		if (refs != null)
 		{
-			KahinaRunner.processEvent(new KahinaConsoleLineEvent(refs));
+			dispatchEvent(new KahinaConsoleLineEvent(refs));
 		}
 	}
 

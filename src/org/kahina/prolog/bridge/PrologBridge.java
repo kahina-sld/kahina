@@ -1,5 +1,6 @@
 package org.kahina.prolog.bridge;
 
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 
@@ -8,9 +9,9 @@ public class PrologBridge extends LogicProgrammingBridge
 	
 	Integer queryRootID = null;
 
-	public PrologBridge(LogicProgrammingState state)
+	public PrologBridge(LogicProgrammingInstance kahina)
 	{
-		super(state);
+		super(kahina);
 	}
 	
 	/**

@@ -21,7 +21,7 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
     @Override
     protected TulipaBridge createBridge()
     {
-        return new TulipaBridge(this.state);
+        return new TulipaBridge(this);
     }
 
     @Override

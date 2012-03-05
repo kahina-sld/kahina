@@ -30,7 +30,7 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
     {
         int clickedEdge = view.view.edgeAtCoordinates(e.getX() - 5, e.getY() - 5);
         //marking and redrawing happens indirectly
-        KahinaRunner.processEvent(new KahinaEdgeSelectionEvent(clickedEdge));
+        view.view.control.processEvent(new KahinaEdgeSelectionEvent(clickedEdge));
     }
     
     @Override

@@ -19,6 +19,7 @@ import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.KahinaTreeEvent;
 import org.kahina.core.data.tree.KahinaTreeEventType;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
@@ -82,10 +83,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	protected LogicProgrammingState state;
 
-	public LogicProgrammingBridge(LogicProgrammingState state)
+	public LogicProgrammingBridge(LogicProgrammingInstance kahina)
 	{
-		super();
-		this.state = state;
+		super(kahina);
+		this.state = (LogicProgrammingState) kahina.getState();
 		stepIDConv = new HashMap<Integer, Integer>();
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 		KahinaRunner.getControl().registerListener(KahinaEventTypes.SELECTION, this);

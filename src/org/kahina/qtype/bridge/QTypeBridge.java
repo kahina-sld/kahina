@@ -7,6 +7,7 @@ import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.prolog.util.PrologUtil;
+import org.kahina.qtype.QTypeDebuggerInstance;
 import org.kahina.qtype.QTypeStep;
 import org.kahina.qtype.control.QTypeControlEventCommands;
 import org.kahina.qtype.data.bindings.QTypeGoal;
@@ -20,9 +21,9 @@ public class QTypeBridge extends SICStusPrologBridge
 
 	private final TraleSLDFSPacker packer;
 
-	public QTypeBridge(LogicProgrammingState state)
+	public QTypeBridge(QTypeDebuggerInstance kahina)
 	{
-		super(state);
+		super(kahina);
 		packer = new TraleSLDFSPacker();
 	}
 

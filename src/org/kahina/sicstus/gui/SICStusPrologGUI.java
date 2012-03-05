@@ -8,6 +8,7 @@ import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.io.util.XMLUtil;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 import org.kahina.sicstus.SICStusPrologStep;
@@ -20,9 +21,9 @@ public class SICStusPrologGUI extends LogicProgrammingGUI
 	}
 	
 	@Override
-	protected KahinaWindowManager createWindowManager(KahinaGUI gui, KahinaController control)
+	protected KahinaWindowManager createWindowManager()
 	{
-		return new SICStusPrologWindowManager(gui, control);
+		return new SICStusPrologWindowManager((SICStusPrologDebuggerInstance) kahina);
 	}
 
 	@Override

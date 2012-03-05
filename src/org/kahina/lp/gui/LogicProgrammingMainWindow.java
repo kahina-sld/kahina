@@ -1,6 +1,7 @@
 package org.kahina.lp.gui;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.menus.KahinaControlPointMenu;
 import org.kahina.core.gui.profiler.KahinaProfilerMenu;
@@ -11,19 +12,19 @@ public class LogicProgrammingMainWindow extends KahinaMainWindow
 {
 	private static final long serialVersionUID = -8044329699904664157L;
 
-	public LogicProgrammingMainWindow(KahinaWindowManager windowManager)
+	public LogicProgrammingMainWindow(KahinaWindowManager windowManager, KahinaController control)
 	{
-		super(windowManager);
+		super(windowManager, control);
 	}
 	
-	public LogicProgrammingMainWindow(KahinaWindowManager windowManager, int winID)
+	public LogicProgrammingMainWindow(KahinaWindowManager windowManager, KahinaController control, int winID)
 	{
-		super(windowManager, winID);
+		super(windowManager, control, winID);
 	}
 	
 	protected void addMenusBeforeHelpMenu()
 	{
-		menuBar.add(new KahinaControlPointMenu());
-		menuBar.add(new KahinaProfilerMenu());
+		menuBar.add(new KahinaControlPointMenu(control));
+		menuBar.add(new KahinaProfilerMenu(control));
 	}
 }

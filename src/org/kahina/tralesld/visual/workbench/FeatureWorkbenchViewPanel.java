@@ -44,6 +44,8 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.DefaultListModel;
 
 import org.gjt.sp.jedit.bsh.This;
+import org.kahina.core.KahinaDefaultInstance;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
@@ -1060,9 +1062,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	public static void main(String[] args)
 	{
-		KahinaController control = new KahinaController();
-		KahinaRunner.setControl(control);
-		KahinaRunner.setGUIController(control);
+		KahinaInstance instance = new KahinaDefaultInstance();
 		AuxiliaryTraleInstance trale = new AuxiliaryTraleInstance(true);
 		trale.start();
 		FeatureWorkbench workbench = new FeatureWorkbench();
@@ -1070,32 +1070,32 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		workbench.setSignature(trale.getSignature(System.getProperty("user.dir") + "/signature"));
 		workbench.getSignature().inferCachedInformation();
 
-		KahinaWindowManager wManager = new KahinaWindowManager(control);
+		KahinaWindowManager wManager = new KahinaWindowManager(instance, true);
 		
 		//generate a signature view window
-		TraleSLDSignatureAppropriatenessView appro = new TraleSLDSignatureAppropriatenessView(control);
+		TraleSLDSignatureAppropriatenessView appro = new TraleSLDSignatureAppropriatenessView(instance.getControl());
 		appro.display(workbench.getSignature());
-		TraleSLDSignatureHierarchyView hiera = new TraleSLDSignatureHierarchyView(control);
+		TraleSLDSignatureHierarchyView hiera = new TraleSLDSignatureHierarchyView(instance.getControl());
 		hiera.display(workbench.getSignature());
-		TraleSLDSignatureUsageView usage = new TraleSLDSignatureUsageView(control);
+		TraleSLDSignatureUsageView usage = new TraleSLDSignatureUsageView(instance.getControl());
 		usage.display(workbench.getSignature());
 		
 		KahinaWindow hieraWindow = wManager.integrateInDefaultWindow(hiera);
 		hieraWindow.setTitle("Type hierarchy");
 		KahinaWindow approWindow = wManager.integrateInDefaultWindow(appro);
 		approWindow.setTitle("Appropriateness");
-		KahinaWindow upperWindow = wManager.integrateInHorizontallySplitWindow(hieraWindow.getID(), approWindow.getID(), "Hierarchy & Appropriateness", control);
+		KahinaWindow upperWindow = wManager.integrateInHorizontallySplitWindow(hieraWindow.getID(), approWindow.getID(), "Hierarchy & Appropriateness", instance.getControl());
 		upperWindow.setBorder(false);
 		KahinaWindow usageWindow = wManager.integrateInDefaultWindow(usage);
 		usageWindow.setTitle("Usage");
-		KahinaWindow signatureWindow = wManager.integrateInVerticallySplitWindow(upperWindow.getID(), usageWindow.getID(), "Signature Inspection", control);
+		KahinaWindow signatureWindow = wManager.integrateInVerticallySplitWindow(upperWindow.getID(), usageWindow.getID(), "Signature Inspection", instance.getControl());
 		signatureWindow.setBorder(false);
 		signatureWindow.setSize(800, 500);
 		signatureWindow.setLocation(400, 300);
 		signatureWindow.setVisible(true);
 		
 		//generate the main feature workbench window
-		FeatureWorkbenchView workbenchView = new FeatureWorkbenchView(control, trale);
+		FeatureWorkbenchView workbenchView = new FeatureWorkbenchView(instance.getControl(), trale);
 		workbenchView.setTitle("Feature Workbench");
 		workbenchView.display(workbench);
 		

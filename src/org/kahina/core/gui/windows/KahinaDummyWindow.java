@@ -15,6 +15,7 @@ import java.io.IOException;
 import javax.swing.JPanel;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.KahinaWindowTransferHandler;
 import org.kahina.core.gui.event.KahinaWindowEvent;
@@ -24,9 +25,9 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaDummyWindow extends KahinaDefaultWindow
 {
-	public KahinaDummyWindow(KahinaWindowManager wm)
+	public KahinaDummyWindow(KahinaWindowManager wm, KahinaController control)
 	{
-		super(new KahinaEmptyView(wm.getControl()),wm);
+		super(new KahinaEmptyView(wm.getGuiControl()),wm, control);
         setSize(300,150);
 		mainPanel.setTransferHandler(new KahinaWindowTransferHandler());
         mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));

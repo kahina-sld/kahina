@@ -25,7 +25,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 
 	protected T model;
 	
-	protected KahinaController control;
+	public KahinaController control;
 
 	public KahinaView(KahinaController control)
 	{
@@ -53,12 +53,11 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 		recalculate();
 	}
 
-	// only listens to this in absence of KahinaGUI; do not register as listener
-	// in KahinaGUI case!!!
+	// only listens to this in absence of KahinaGUI; do not register as listener in KahinaGUI case!!!
 	private void processEvent(KahinaSelectionEvent e)
 	{
-		KahinaRunner.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
-		KahinaRunner.processEvent(new KahinaRedrawEvent());
+		control.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
+		control.processEvent(new KahinaRedrawEvent());
 	}
 
 	/**

@@ -21,7 +21,7 @@ public class KahinaWarner implements KahinaListener
 	public KahinaWarner(KahinaInstance<?, ?, ?> kahina)
 	{
 		this.kahina = kahina;
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.TREE_MATCH, this);
+		kahina.getControl().registerListener(KahinaEventTypes.TREE_MATCH, this);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class KahinaWarner implements KahinaListener
 			int newMatchCount = ObjectUtil.nullToZero(matchCountByBreakpoint.get(breakpoint)) + 1;
 			if (newMatchCount == threshold)
 			{
-				KahinaRunner.processEvent(new KahinaWarnEvent(breakpoint, newMatchCount));
+				kahina.dispatchBackgroundEvent(new KahinaWarnEvent(breakpoint, newMatchCount));
 				newMatchCount = 0;
 			}
 			matchCountByBreakpoint.put(breakpoint, newMatchCount);

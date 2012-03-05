@@ -10,6 +10,7 @@ import javax.swing.JButton;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.windows.KahinaWindow;
 import org.kahina.core.gui.windows.KahinaWindowType;
 
@@ -17,15 +18,15 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
 {
 	List<KahinaControlButton> buttons;
 	
-	public KahinaControlButtonWindow(KahinaWindowManager wm) 
+	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaController control) 
 	{
-		super(wm);
+		super(wm, control);
 		buttons = new LinkedList<KahinaControlButton>();
 	}
 	
-	public KahinaControlButtonWindow(KahinaWindowManager wm, int winID) 
+	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaController control, int winID) 
 	{
-		super(wm, winID);
+		super(wm, control, winID);
 		buttons = new LinkedList<KahinaControlButton>();
 	}
 	
@@ -51,7 +52,7 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
     public void actionPerformed(ActionEvent e)
     {
         String command = e.getActionCommand();
-        KahinaRunner.processEvent(new KahinaControlEvent(command));
+        control.processEvent(new KahinaControlEvent(command));
     }
     
     public int getWindowType()
