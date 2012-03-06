@@ -81,7 +81,7 @@ public class KahinaWindowManager implements KahinaListener
                     return file.getName().endsWith("xml");
                 }
             };
-            File[] files = new File(kahina.gui.getClass().getResource(".").getFile()).listFiles(fileFilter);
+            File[] files = new File(kahina.getClass().getResource("./gui").getFile()).listFiles(fileFilter);
             for (File f : files)
             {
                 if (VERBOSE)

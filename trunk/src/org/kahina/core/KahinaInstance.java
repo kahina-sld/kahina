@@ -52,7 +52,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	protected ObjectMagazine<KahinaStep> steps;
 
-	protected final KahinaController guiControl;
+	protected KahinaController guiControl;
 	protected KahinaController control;
 
 	private boolean guiStarted = false;
@@ -67,9 +67,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		try
 		{
 			fillViewRegistry();
-			initializeNewSession(); // dummy session so views have something
-									// (empty)
-									// to show
+			//initializeNewSession(); //WAS: dummy session so views have something (empty) to show
 		} 
 		catch (Exception e)
 		{
@@ -93,17 +91,18 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	public B startNewSession()
 	{
 		try
-		{
+		{	    
 		    //TODO: check whether this startup order works in every situation
+	        initializeNewSession();
 			if (!guiStarted)
 			{
 				startGUI();
 			}
-	        initializeNewSession();
 			gui.displayMainViews();
 			gui.show();
 			dispatchEvent(new KahinaSelectionEvent(-1));
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
