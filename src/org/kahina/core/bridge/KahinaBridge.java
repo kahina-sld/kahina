@@ -23,10 +23,15 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 public class KahinaBridge implements KahinaListener
 {
 	private static final boolean VERBOSE = false;
-	KahinaInstance kahina;
+	KahinaInstance<?,?,?> kahina;
     
-    public KahinaBridge(KahinaInstance kahina)
+    public KahinaBridge(KahinaInstance<?,?,?> kahina)
     {
+        if (kahina.getState() == null)
+        {
+            System.err.println("ERROR: attempting to construct a bridge for an instance where state == null!");
+            System.err.println("       Bridge will not be functional! NullPointerExceptions will result!");
+        }
     	this.kahina = kahina;
         kahina.getControl().registerListener(KahinaEventTypes.CONTROL, this);
         kahina.getControl().registerListener(KahinaEventTypes.TREE_MATCH, this);

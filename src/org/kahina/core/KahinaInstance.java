@@ -133,6 +133,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		{
 			state = createState();
 		}
+		System.err.println("State before creating the bridge: " + state);
 		bridge = createBridge();
 		createTreeBehavior();
 		createWarner();
