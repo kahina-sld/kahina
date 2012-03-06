@@ -5,7 +5,6 @@ import javax.swing.JEditorPane;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.core.visual.chart.KahinaChartView;
 
 public class TraleSLDSignatureUsageViewPanel  extends KahinaViewPanel<TraleSLDSignatureUsageView>
 {

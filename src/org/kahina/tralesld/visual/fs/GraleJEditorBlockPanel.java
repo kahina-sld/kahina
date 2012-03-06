@@ -1,12 +1,12 @@
 package org.kahina.tralesld.visual.fs;
 
-import java.util.List;
-
 import gralej.blocks.Block;
 import gralej.blocks.BlockPanel;
 import gralej.om.IRelation;
 import gralej.om.IVisitable;
 import gralej.om.IneqsAndResidue;
+
+import java.util.List;
 
 public class GraleJEditorBlockPanel extends BlockPanel
 {

@@ -2,7 +2,6 @@ package org.kahina.tulipa.bridge;
 
 import java.util.HashMap;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;

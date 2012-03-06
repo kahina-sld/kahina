@@ -1,7 +1,5 @@
 package org.kahina.tralesld.gui;
 
-import org.kahina.core.control.KahinaController;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.windows.KahinaMainWindow;
 import org.kahina.tralesld.TraleSLDInstance;

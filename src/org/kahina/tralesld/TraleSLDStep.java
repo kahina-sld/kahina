@@ -1,6 +1,5 @@
 package org.kahina.tralesld;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;

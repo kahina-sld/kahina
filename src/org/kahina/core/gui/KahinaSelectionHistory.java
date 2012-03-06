@@ -2,7 +2,6 @@ package org.kahina.core.gui;
 
 import java.util.LinkedList;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;

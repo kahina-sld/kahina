@@ -5,7 +5,6 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JList;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.gui.event.KahinaSelectionEvent;

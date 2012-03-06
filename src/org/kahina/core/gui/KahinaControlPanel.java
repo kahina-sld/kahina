@@ -11,7 +11,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
 

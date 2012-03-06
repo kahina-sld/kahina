@@ -6,7 +6,6 @@ import java.awt.event.MouseEvent;
 import javax.swing.TransferHandler;
 
 import org.kahina.core.gui.menus.KahinaWindowContextMenu;
-import org.kahina.core.visual.tree.KahinaTreeViewContextMenu;
 
 public class KahinaWindowListener extends MouseAdapter
 {

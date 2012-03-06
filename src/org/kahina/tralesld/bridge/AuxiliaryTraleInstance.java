@@ -8,25 +8,26 @@ import gralej.om.ITag;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.regex.Pattern;
-
-import javax.swing.SwingUtilities;
 
 import org.kahina.core.io.util.FileUtil;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
-import org.kahina.tralesld.visual.fs.GraleJUtility;
 
-import se.sics.jasper.*;
+import se.sics.jasper.ConversionFailedException;
+import se.sics.jasper.IllegalTermException;
+import se.sics.jasper.SICStus;
+import se.sics.jasper.SPException;
+import se.sics.jasper.SPPredicate;
+import se.sics.jasper.SPQuery;
+import se.sics.jasper.SPTerm;
+import se.sics.jasper.Term;
 
 /**
  * This class uses the Jasper interface to run and maintain a second instance of TRALE.

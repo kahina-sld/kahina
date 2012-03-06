@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridgePauseEvent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;

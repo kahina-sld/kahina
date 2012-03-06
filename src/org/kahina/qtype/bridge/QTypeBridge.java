@@ -3,9 +3,7 @@ package org.kahina.qtype.bridge;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
-import org.kahina.lp.LogicProgrammingState;
 import org.kahina.prolog.util.PrologUtil;
 import org.kahina.qtype.QTypeDebuggerInstance;
 import org.kahina.qtype.QTypeStep;

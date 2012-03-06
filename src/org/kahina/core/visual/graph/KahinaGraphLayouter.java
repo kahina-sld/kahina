@@ -2,8 +2,6 @@ package org.kahina.core.visual.graph;
 
 import java.util.Map;
 
-import org.kahina.core.data.graph.KahinaGraph;
-
 public abstract class KahinaGraphLayouter
 {
     //references to the graph view

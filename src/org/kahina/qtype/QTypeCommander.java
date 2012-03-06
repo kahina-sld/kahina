@@ -11,7 +11,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;

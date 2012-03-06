@@ -2,10 +2,8 @@ package org.kahina.tralesld.visual.workbench;
 
 import gralej.om.IEntity;
 import gralej.om.ITypedFeatureStructure;
-import gralej.parsers.EntityFactory;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -16,68 +14,48 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JList;
 import javax.swing.MenuSelectionManager;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.DefaultListModel;
 
-import org.gjt.sp.jedit.bsh.This;
 import org.kahina.core.KahinaDefaultInstance;
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.KahinaRunner;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.KahinaWindowManager;
-import org.kahina.core.gui.event.KahinaPerspectiveEvent;
-import org.kahina.core.gui.event.KahinaRedrawEvent;
-import org.kahina.core.gui.event.KahinaWindowEvent;
-import org.kahina.core.gui.event.KahinaWindowEventType;
 import org.kahina.core.gui.windows.KahinaWindow;
 import org.kahina.core.io.util.FileUtil;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.control.TraleSLDEventTypes;
-import org.kahina.tralesld.data.fs.TraleSLDFS;
-import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 import org.kahina.tralesld.data.workbench.FeatureWorkbench;
 import org.kahina.tralesld.visual.fs.GraleJUtility;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureEditEvent;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditor;
-import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureEditorMenu;
-import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
-import org.kahina.tralesld.visual.fs.VisualizationUtility;
 import org.kahina.tralesld.visual.signature.TraleSLDSignatureAppropriatenessView;
 import org.kahina.tralesld.visual.signature.TraleSLDSignatureHierarchyView;
 import org.kahina.tralesld.visual.signature.TraleSLDSignatureUsageView;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-
-import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.ParseException;
 
 /**
  * A feature workbench window, with list of objects on the left, 
