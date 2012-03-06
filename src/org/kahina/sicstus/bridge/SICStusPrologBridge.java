@@ -10,7 +10,7 @@ import org.kahina.sicstus.SICStusPrologStep;
 public class SICStusPrologBridge extends PrologBridge
 {
 
-	public SICStusPrologBridge(LogicProgrammingInstance kahina)
+	public SICStusPrologBridge(LogicProgrammingInstance<?,?,?> kahina)
 	{
 		super(kahina);
 	}
@@ -32,7 +32,7 @@ public class SICStusPrologBridge extends PrologBridge
 
 			if (bridgeState == 'n')
 			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(internalStepID));
+				kahina.processEvent(new KahinaSelectionEvent(internalStepID));
 			}
 		} catch (Exception e)
 		{

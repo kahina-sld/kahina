@@ -119,7 +119,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	private String lastDisplayID = null;
 
-	public FeatureWorkbenchViewPanel(AuxiliaryTraleInstance trale)
+	public FeatureWorkbenchViewPanel(KahinaInstance<?,?,?> kahina, AuxiliaryTraleInstance trale)
 	{		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -286,10 +286,10 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		listScroller.setAlignmentX(CENTER_ALIGNMENT);
 		contentPanel.add(listScroller);
 		
-		editor = new TraleSLDFeatureStructureEditor(trale);
+		editor = new TraleSLDFeatureStructureEditor(kahina, trale);
 		GraleJUtility.setFeatureStructureEditor(editor);
 		editor.setSignature(new TraleSLDSignature());
-        KahinaRunner.getGUIControl().registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, editor);
+        kahina.getControl().registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, editor);
 		JScrollPane editorScrollPane = new JScrollPane(editor);
 		contentPanel.add(editorScrollPane);
 		
@@ -617,7 +617,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     		if (copiedStructure != null)
     		{
     			this.processEvent(new TraleSLDFeatureEditEvent("Structure copied.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
-    			KahinaRunner.getGUIControl().processEvent(new TraleSLDFeatureEditEvent(copiedStructure, TraleSLDFeatureEditEvent.COPY_FS));
+    			view.control.processEvent(new TraleSLDFeatureEditEvent(copiedStructure, TraleSLDFeatureEditEvent.COPY_FS));
     		}
     		else
     		{
@@ -1062,7 +1062,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	public static void main(String[] args)
 	{
-		KahinaInstance instance = new KahinaDefaultInstance();
+		KahinaDefaultInstance instance = new KahinaDefaultInstance();
 		AuxiliaryTraleInstance trale = new AuxiliaryTraleInstance(true);
 		trale.start();
 		FeatureWorkbench workbench = new FeatureWorkbench();

@@ -4,11 +4,19 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
 import org.kahina.core.KahinaRunner;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
 
 public class TraleSLDSignatureHyperlinkListener implements HyperlinkListener
 {
+	KahinaController control;
+	
+	public TraleSLDSignatureHyperlinkListener(KahinaController control)
+	{
+		this.control = control;
+	}
+	
 	@Override
 	public void hyperlinkUpdate(HyperlinkEvent event) 
 	{
@@ -16,8 +24,8 @@ public class TraleSLDSignatureHyperlinkListener implements HyperlinkListener
 		{
 			if (event.getDescription().startsWith("type:"))
 			{
-				KahinaRunner.processEvent(new TraleSLDTypeSelectionEvent(event.getDescription().substring(5)));
-				KahinaRunner.processEvent(new KahinaRedrawEvent());
+				control.processEvent(new TraleSLDTypeSelectionEvent(event.getDescription().substring(5)));
+				control.processEvent(new KahinaRedrawEvent());
 			}
 		}
 	}	

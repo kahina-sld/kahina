@@ -6,6 +6,7 @@ import org.kahina.core.behavior.KahinaDAGBehavior;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
+import org.kahina.tulipa.TulipaInstance;
 import org.kahina.tulipa.TulipaStepStatus;
 import org.kahina.tulipa.bridge.TulipaBridgeEvent;
 import org.kahina.tulipa.bridge.TulipaBridgeEventType;
@@ -14,11 +15,11 @@ public class TulipaDAGBehavior extends KahinaDAGBehavior
 {
     public static boolean VERBOSE = false;
     
-    public TulipaDAGBehavior(KahinaDAG dag, KahinaInstance kahina)
+    public TulipaDAGBehavior(KahinaDAG dag, TulipaInstance kahina)
     {
         super(dag, kahina);
-        KahinaRunner.getControl().registerListener("dag", this);
-        KahinaRunner.getControl().registerListener("tulipa bridge", this);
+        kahina.getControl().registerListener("dag", this);
+        kahina.getControl().registerListener("tulipa bridge", this);
     }
     
     public void initializeDAG()

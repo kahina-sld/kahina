@@ -33,7 +33,7 @@ public class LogicProgrammingProfiler implements KahinaListener
 		// like subtree profiles. This will change once the profiler keeps track
 		// of the time spent in individual steps - then we will need to record
 		// extra information that is not part of the control flow tree.
-		KahinaRunner.getControl().registerListener("logic programming bridge", this);
+		kahina.getControl().registerListener("logic programming bridge", this);
 	}
 
 	@Override

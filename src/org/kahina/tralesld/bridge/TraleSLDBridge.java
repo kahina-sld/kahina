@@ -98,7 +98,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			System.err.println(this + ".signatureFinished()");
 		}
 		state.getSignature().inferCachedInformation();
-		KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REBUILD_SIGNATURE_INFO));
+		kahina.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REBUILD_SIGNATURE_INFO));
 	}
 
 	public void step(int extID, String stepType, String nodeLabel, String consoleMessage)
@@ -120,7 +120,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 					System.err.println("Registering sentence...");
 				}
 				String sentence = nodeLabel.substring(3, nodeLabel.length());
-				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtil.parsePrologStringList(sentence) }));
+				kahina.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtil.parsePrologStringList(sentence) }));
 				initializeChart(sentence);
 			} else if (stepType.equals("compile_gram"))
 			{
@@ -129,7 +129,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 					System.err.println("Registering grammar...");
 				}
 				String absolutePath = PrologUtil.atomLiteralToString(nodeLabel.substring(13, nodeLabel.length() - 1));
-				KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_GRAMMAR, new Object[] { absolutePath }));
+				kahina.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.REGISTER_GRAMMAR, new Object[] { absolutePath }));
 			}
 			if (VERBOSE)
 			{
@@ -188,7 +188,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			prospectiveEdgeStack.add(0, newEdgeID);
 			prospectiveEdgeCanFail = true;
 			state.linkEdgeToNode(newEdgeID, stepIDConv.get(ruleApplicationExtID));
-			KahinaRunner.processEvent(new KahinaChartUpdateEvent(newEdgeID));
+			kahina.processEvent(new KahinaChartUpdateEvent(newEdgeID));
 			if (VERBOSE)
 			{
 				System.err.println("//" + this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + leftmostDaughter);
@@ -221,7 +221,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			chart.addEdgeDependency(mother, daughter);
 			// lastRegisteredChartEdge = mother;
-			KahinaRunner.processEvent(new KahinaChartUpdateEvent(mother));
+			kahina.processEvent(new KahinaChartUpdateEvent(mother));
 			if (VERBOSE)
 			{
 				System.err.println("//" + this + ".registerEdgeRetrieval(" + daughterID + ")");
@@ -257,7 +257,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				System.err.println("Firing rule application event.");
 			}
 			// let TraleSLDTreeBehavior do the rest
-			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStepID, ruleName, extID));
+			kahina.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.RULE_APP, newStepID, ruleName, extID));
 			if (VERBOSE)
 			{
 				System.err.println("Creating console message.");
@@ -270,7 +270,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			// if (bridgeState == 'n')
 			{
-				KahinaRunner.processEvent(new KahinaSelectionEvent(newStepID));
+				kahina.processEvent(new KahinaSelectionEvent(newStepID));
 			}
 			// the following two actions and the structures they operate on seem
 			// to
@@ -300,7 +300,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				System.err.println("Internal edge ID: " + internalEdgeID);
 			edgeIDConv.put(externalEdgeID, internalEdgeID);
 			lastRegisteredChartEdge = internalEdgeID;
-			KahinaRunner.processEvent(new KahinaChartUpdateEvent(internalEdgeID));
+			kahina.processEvent(new KahinaChartUpdateEvent(internalEdgeID));
 			if (VERBOSE)
 			{
 				System.err.println("//TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
@@ -423,7 +423,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				state.getChart().setEdgeStatus(currentEdge, TraleSLDChartEdgeStatus.FAILED);
 				state.linkEdgeToNode(currentEdge, stepID);
 				// lastRegisteredChartEdge = currentEdge;
-				KahinaRunner.processEvent(new KahinaChartUpdateEvent(currentEdge));
+				kahina.processEvent(new KahinaChartUpdateEvent(currentEdge));
 			}
 
 			if (state.get(stepID).getGoalDesc().startsWith("rule("))
@@ -440,8 +440,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// we're sure to see the result and get the prompt back.
 			if (isQueryRoot(stepID))
 			{
-				KahinaRunner.processEvent(new KahinaBridgePauseEvent());
-				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+				kahina.processEvent(new KahinaBridgePauseEvent());
+				kahina.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
 
@@ -466,7 +466,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				waitingForReturnFromSkip = -1;
 			}
-			KahinaRunner.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
+			kahina.processEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
 			currentID = stepID;
 			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
 
@@ -478,8 +478,8 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// we're sure to see the result and get the prompt back.
 			if (isQueryRoot(stepID))
 			{
-				KahinaRunner.processEvent(new KahinaBridgePauseEvent());
-				KahinaRunner.processEvent(new KahinaSelectionEvent(stepID));
+				kahina.processEvent(new KahinaBridgePauseEvent());
+				kahina.processEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
 

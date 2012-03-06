@@ -19,7 +19,7 @@ public class TraleSLDProfiler extends LogicProgrammingProfiler
 	public TraleSLDProfiler(TraleSLDInstance kahina, LogicProgrammingProfile profile)
 	{
 		super(kahina, new TraleSLDProfileEntryMapper(), profile);
-		KahinaRunner.getControl().registerListener("traleSLD bridge", this);
+		kahina.getControl().registerListener("traleSLD bridge", this);
 	}
 
 	@Override

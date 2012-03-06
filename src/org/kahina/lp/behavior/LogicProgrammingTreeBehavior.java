@@ -57,10 +57,10 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		}
 		this.secondaryTree = secondaryTree;
 		this.lastActiveID = -1;
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.LPBRIDGE, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.STEP_DESCRIPTION, this);
-		KahinaRunner.getControl().registerListener(KahinaEventTypes.TREE, this);
+		kahina.getControl().registerListener(KahinaEventTypes.LPBRIDGE, this);
+		kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
+		kahina.getControl().registerListener(KahinaEventTypes.STEP_DESCRIPTION, this);
+		kahina.getControl().registerListener(KahinaEventTypes.TREE, this);
 		primaryBreakpoints = new ArrayList<TreeAutomaton>();
 		initializePrimaryBreakpoints();
 		compilePrimaryBreakpoints();
@@ -166,7 +166,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			TreeAutomaton aut = bp.compile();
 			aut.setTree(object);
-			aut.setController(KahinaRunner.getControl());
+			aut.setController(kahina.getControl());
 			aut.setConstellationMatch(false);
 			this.primaryBreakpoints.add(aut);
 		}
@@ -179,7 +179,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			TreeAutomaton aut = bp.compile();
 			aut.setTree(secondaryTree);
-			aut.setController(KahinaRunner.getControl());
+			aut.setController(kahina.getControl());
 			aut.setConstellationMatch(false);
 			this.secondaryBreakpoints.add(aut);
 		}
@@ -192,7 +192,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			TreeAutomaton aut = bp.compile();
 			aut.setTree(object);
-			aut.setController(KahinaRunner.getControl());
+			aut.setController(kahina.getControl());
 			aut.setConstellationMatch(false);
 			this.primaryWarnPoints.add(aut);
 		}
@@ -205,7 +205,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			TreeAutomaton aut = bp.compile();
 			aut.setTree(secondaryTree);
-			aut.setController(KahinaRunner.getControl());
+			aut.setController(kahina.getControl());
 			aut.setConstellationMatch(false);
 			this.secondaryWarnPoints.add(aut);
 		}
@@ -218,7 +218,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			TreeAutomaton aut = bp.compile();
 			aut.setTree(secondaryTree);
-			aut.setController(KahinaRunner.getControl());
+			aut.setController(kahina.getControl());
 			aut.setConstellationMatch(true);
 			this.skipPoints.add(aut);
 		}
@@ -231,7 +231,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			TreeAutomaton aut = bp.compile();
 			aut.setTree(secondaryTree);
-			aut.setController(KahinaRunner.getControl());
+			aut.setController(kahina.getControl());
 			aut.setConstellationMatch(true);
 			this.creepPoints.add(aut);
 		}
@@ -244,7 +244,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			TreeAutomaton aut = bp.compile();
 			aut.setTree(secondaryTree);
-			aut.setController(KahinaRunner.getControl());
+			aut.setController(kahina.getControl());
 			aut.setConstellationMatch(true);
 			this.failPoints.add(aut);
 		}

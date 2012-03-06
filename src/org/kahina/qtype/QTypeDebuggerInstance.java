@@ -10,14 +10,14 @@ import org.kahina.qtype.visual.bindings.QTypeGoalView;
 import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 
 public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
-{
-	
-	private final QTypeCommander commander = new QTypeCommander();
+{	
+	private QTypeCommander commander;
 	
 	@Override
 	public QTypeBridge startNewSession()
 	{
 		QTypeBridge bridge = (QTypeBridge) super.startNewSession(); 
+		commander = new QTypeCommander(control);
 		commander.initializeForNewSession();
 		return bridge;
 	}

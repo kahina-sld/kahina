@@ -62,8 +62,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		guiControl = new KahinaController();
 		//TODO: this is an ad hoc solution for testing
 		control = guiControl;
-		KahinaRunner.setControl(guiControl);
-		KahinaRunner.setGUIController(guiControl);
 		try
 		{
 			fillViewRegistry();

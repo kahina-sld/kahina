@@ -79,7 +79,7 @@ public class LogicProgrammingState extends KahinaState
     {
         int lineID = consoleMessages.text.addLine(message);
         KahinaLineReference ref = new LogicProgrammingLineReference(consoleMessages,lineID,stepID,-1, -1);
-        KahinaRunner.processEvent(new KahinaMessageEvent(ref));
+        control.processEvent(new KahinaMessageEvent(ref));
     }
     
     public void consoleMessage(int stepID, int extID, int port, String message)
@@ -93,7 +93,7 @@ public class LogicProgrammingState extends KahinaState
             consoleLines.put(stepID, refs);
         }
         refs.add(ref);
-        KahinaRunner.processEvent(new KahinaMessageEvent(ref));
+        control.processEvent(new KahinaMessageEvent(ref));
     }
     
     public void exceptionConsoleMessage(int stepID, int extID, String message)
@@ -107,7 +107,7 @@ public class LogicProgrammingState extends KahinaState
             consoleLines.put(stepID, refs);
         }
         refs.add(ref);
-        KahinaRunner.processEvent(new KahinaMessageEvent(ref));
+        control.processEvent(new KahinaMessageEvent(ref));
     }
     
     public void consoleMessage(LogicProgrammingLineReference ref)
@@ -120,7 +120,7 @@ public class LogicProgrammingState extends KahinaState
         }
         refs.add(ref);
         //ref.store();
-        KahinaRunner.processEvent(new KahinaMessageEvent(ref));
+        control.processEvent(new KahinaMessageEvent(ref));
     }
     
     public LogicProgrammingLineReference getConsoleLineRefForStep(int stepID)

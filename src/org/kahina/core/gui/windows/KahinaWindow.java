@@ -87,7 +87,8 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 			@Override
 			public void windowClosing(WindowEvent e)
 			{
-				if (KahinaRunner.isInitialized() && containsMainWindow())
+				//TODO: find out what condition KahinaRunner.isInitialized() did here
+				if (containsMainWindow())
 				{
 					control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));					
 				}

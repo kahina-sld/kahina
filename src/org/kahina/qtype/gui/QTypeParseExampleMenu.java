@@ -9,6 +9,7 @@ import javax.swing.JMenuItem;
 
 import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
@@ -17,13 +18,15 @@ import org.kahina.qtype.control.QTypeControlEventCommands;
 
 public class QTypeParseExampleMenu extends JMenu implements KahinaListener
 {
-
 	private static final long serialVersionUID = 5337584282998019751L;
+	
+	private KahinaController guiControl;
 
-	public QTypeParseExampleMenu()
+	public QTypeParseExampleMenu(KahinaController guiControl)
 	{
 		super("Parse example");
-		KahinaRunner.getGUIControl().registerListener(KahinaEventTypes.CONTROL, this);
+		this.guiControl = guiControl;
+		guiControl.registerListener(KahinaEventTypes.CONTROL, this);
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class QTypeParseExampleMenu extends JMenu implements KahinaListener
 						@Override
 						public void actionPerformed(ActionEvent e)
 						{
-							KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.PARSE, new Object[] { example }));
+							guiControl.processEvent(new KahinaControlEvent(QTypeControlEventCommands.PARSE, new Object[] { example }));
 						}
 
 					}));
