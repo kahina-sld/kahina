@@ -60,7 +60,7 @@ public class TulipaBridge extends KahinaBridge
             TulipaStep newStep = generateStep();
             intID = state.nextStepID();
             newStep.setExternalID(extID);
-            KahinaRunner.store(intID, newStep);
+            state.store(intID, newStep);
             itemIDConv.put(extID, intID);
         }
         if (verbose) System.err.println("TulipaBridge.convertItemID(" + extID + ") = " + intID);
@@ -288,9 +288,9 @@ public class TulipaBridge extends KahinaBridge
         {
             if (verbose) System.err.println("TulipaBridge.registerItemLabel(" + extID + ",\"" + label + "\")");
             int stepID = convertItemID(extID);
-            TulipaStep step = TulipaStep.get(stepID);
+            TulipaStep step = state.get(stepID);
             step.setItemDesc(label.substring(0, label.indexOf("-->")));
-            KahinaRunner.store(stepID, step);
+            state.store(stepID, step);
             KahinaRunner.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SET_ITEM_DESC, stepID, label.substring(0, label.indexOf("-->"))));
             currentID = stepID;
             if (verbose) System.err.println("//TulipaBridge.registerItemLabel(" + extID + ",\"" + label + "\")");

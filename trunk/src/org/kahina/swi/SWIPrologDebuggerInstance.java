@@ -24,7 +24,7 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
 		try
 		{
 			super.startNewSession();
-			profiler = new PrologProfiler(state.getFullProfile());
+			profiler = new PrologProfiler(this, state.getFullProfile());
 			return bridge;
 		} catch (Exception e)
 		{

@@ -7,6 +7,7 @@ import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.profiler.LogicProgrammingProfile;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
+import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStep;
 import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.bridge.TraleSLDBridgeEvent;
@@ -15,9 +16,9 @@ import org.kahina.tralesld.bridge.TraleSLDBridgeEventType;
 public class TraleSLDProfiler extends LogicProgrammingProfiler
 {
 
-	public TraleSLDProfiler(LogicProgrammingProfile profile)
+	public TraleSLDProfiler(TraleSLDInstance kahina, LogicProgrammingProfile profile)
 	{
-		super(new TraleSLDProfileEntryMapper(), profile);
+		super(kahina, new TraleSLDProfileEntryMapper(), profile);
 		KahinaRunner.getControl().registerListener("traleSLD bridge", this);
 	}
 
@@ -42,7 +43,7 @@ public class TraleSLDProfiler extends LogicProgrammingProfiler
 	@Override
 	protected void profileNode(KahinaTree tree, KahinaTree contentfulTree, int stepID, LogicProgrammingProfile profile)
 	{
-		TraleSLDStep step = KahinaRunner.retrieve(TraleSLDStep.class, stepID);
+		TraleSLDStep step = kahina.getState().retrieve(TraleSLDStep.class, stepID);
 		profileNode(step, tree, contentfulTree, stepID, profile);
 	}
 

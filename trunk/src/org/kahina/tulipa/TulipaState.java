@@ -1,5 +1,6 @@
 package org.kahina.tulipa;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaState;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.dag.KahinaDAG;
@@ -26,5 +27,10 @@ public class TulipaState extends KahinaState
     public TulipaGrammar getGrammar()
     {
     	return grammar;
+    }
+    
+    public TulipaStep get(int id)
+    {
+        return retrieve(TulipaStep.class, id);
     }
 }

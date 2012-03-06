@@ -2,6 +2,7 @@ package org.kahina.tralesld;
 
 import java.util.HashMap;
 
+import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.data.chart.KahinaMemChart;
@@ -87,4 +88,9 @@ public class TraleSLDState extends LogicProgrammingState
 		}
 		return result;
 	}
+	
+    public TraleSLDStep get(int id)
+    {
+        return retrieve(TraleSLDStep.class, id);
+    }
 }

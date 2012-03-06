@@ -33,9 +33,4 @@ public class TulipaStep extends KahinaStep
     {
         this.externalID = externalID;
     }
-    
-    public static TulipaStep get(int id)
-    {
-        return KahinaRunner.retrieve(TulipaStep.class, id);
-    }
 }

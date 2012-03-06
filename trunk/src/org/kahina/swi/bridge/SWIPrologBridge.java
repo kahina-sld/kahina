@@ -33,7 +33,7 @@ public class SWIPrologBridge extends PrologBridge
 		try
 		{
 			int internalStepID = convertStepID(externalStepID);
-			SWIPrologStep step = KahinaRunner.retrieve(SWIPrologStep.class, internalStepID);
+			SWIPrologStep step = state.retrieve(SWIPrologStep.class, internalStepID);
 			
 			if ("in".equals(direction))
 			{
@@ -43,7 +43,7 @@ public class SWIPrologBridge extends PrologBridge
 				step.setOutBindings(keys, values);
 			}
 
-			KahinaRunner.store(internalStepID, step);
+			state.store(internalStepID, step);
 
 			if (bridgeState == 'n')
 			{
