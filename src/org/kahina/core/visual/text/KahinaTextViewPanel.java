@@ -3,6 +3,7 @@ package org.kahina.core.visual.text;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.MouseListener;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -26,7 +27,6 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView<?>>
         list = new JList();
         list.setSelectionBackground(Color.YELLOW);
         list.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
-        list.addMouseListener(new KahinaTextViewListener(this));
         list.setFixedCellHeight(16);
         
         listScrollPane = new JScrollPane(list);
@@ -39,6 +39,11 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView<?>>
         this.view = view;
         list.setModel(view.getListModel());
         list.setSelectionModel(view.getSelectionModel());
+        for (MouseListener mouseListener : list.getMouseListeners())
+        {
+            list.removeMouseListener(mouseListener);
+        }
+        list.addMouseListener(new KahinaTextViewListener(this));
         this.updateDisplayAndRepaintFromEventDispatchThread();
     }
     
