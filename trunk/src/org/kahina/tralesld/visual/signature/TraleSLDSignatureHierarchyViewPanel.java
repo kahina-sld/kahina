@@ -18,7 +18,7 @@ public class TraleSLDSignatureHierarchyViewPanel extends KahinaViewPanel<TraleSL
 		htmlPane = new JTextPane();
 		htmlPane.setContentType("text/html");
 		htmlPane.setEditable(false);
-		htmlPane.addHyperlinkListener(new TraleSLDSignatureHyperlinkListener());
+		htmlPane.addHyperlinkListener(new TraleSLDSignatureHyperlinkListener(control));
 		
 		add(htmlPane);
 	}

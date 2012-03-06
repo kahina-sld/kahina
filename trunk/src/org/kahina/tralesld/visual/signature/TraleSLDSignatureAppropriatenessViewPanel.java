@@ -18,7 +18,7 @@ public class TraleSLDSignatureAppropriatenessViewPanel extends KahinaViewPanel<T
 		htmlPane = new JEditorPane();
 		htmlPane.setContentType("text/html");
 		htmlPane.setEditable(false);
-		htmlPane.addHyperlinkListener(new TraleSLDSignatureHyperlinkListener());
+		htmlPane.addHyperlinkListener(new TraleSLDSignatureHyperlinkListener(control));
 		
 		add(htmlPane);
 	}

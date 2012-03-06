@@ -58,7 +58,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE));
+			processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE));
 		}
 
 	};
@@ -71,7 +71,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.PARSE));
+			processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.PARSE));
 		}
 
 	};
@@ -84,7 +84,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			KahinaRunner.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.RESTART));
+			processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.RESTART));
 		}
 
 	};
@@ -245,7 +245,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
+				processEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
 			} 
 			else
 			{
@@ -259,7 +259,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				KahinaRunner.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { ListUtil.join(" ", sentence) }));
+				processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { ListUtil.join(" ", sentence) }));
 			} 
 			else
 			{
@@ -315,7 +315,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		int nodeID = state.getNodeForEdge(e.getSelectedEdge());
 		if (nodeID != -1)
 		{
-			KahinaRunner.processEvent(new KahinaSelectionEvent(nodeID));
+			processEvent(new KahinaSelectionEvent(nodeID));
 		}
 	}
 
@@ -324,7 +324,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		int edgeID = state.getEdgeForNode(e.getSelectedStep());
 		if (edgeID != -1)
 		{
-			KahinaRunner.processEvent(new KahinaChartUpdateEvent(edgeID));
+			processEvent(new KahinaChartUpdateEvent(edgeID));
 		}
 	}
 

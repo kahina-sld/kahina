@@ -23,7 +23,7 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 public class KahinaBridge implements KahinaListener
 {
 	private static final boolean VERBOSE = false;
-	KahinaInstance<?,?,?> kahina;
+	protected KahinaInstance<?,?,?> kahina;
     
     public KahinaBridge(KahinaInstance<?,?,?> kahina)
     {

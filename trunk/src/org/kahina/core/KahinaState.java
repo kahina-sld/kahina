@@ -50,7 +50,7 @@ public class KahinaState implements Serializable, KahinaListener
     
     private int nextStepID = 1;
     
-    private KahinaController control;
+    protected KahinaController control;
     
     private static ObjectMagazine<KahinaStep> steps;
     

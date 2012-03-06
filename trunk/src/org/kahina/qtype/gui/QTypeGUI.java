@@ -108,7 +108,7 @@ public class QTypeGUI extends SICStusPrologGUI
 
 				if (grammar != null)
 				{
-					KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.COMPILE, new Object[] { grammar.getAbsolutePath() }));
+					kahina.processEvent(new KahinaControlEvent(QTypeControlEventCommands.COMPILE, new Object[] { grammar.getAbsolutePath() }));
 				}
 			}
 		} else if (type == KahinaDialogEvent.PARSE)
@@ -119,7 +119,7 @@ public class QTypeGUI extends SICStusPrologGUI
 
 			if (sentence != null)
 			{
-				KahinaRunner.processEvent(new KahinaControlEvent(QTypeControlEventCommands.PARSE, new Object[] { Arrays.asList(sentence.split(" +")) }));
+				kahina.processEvent(new KahinaControlEvent(QTypeControlEventCommands.PARSE, new Object[] { Arrays.asList(sentence.split(" +")) }));
 			}
 		}
 	}
