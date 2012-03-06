@@ -73,11 +73,6 @@ public class LogicProgrammingStep extends KahinaStep
         this.codeLocation = codeLocation;
     }
     
-    public static LogicProgrammingStep get(int id)
-    {
-        return KahinaRunner.retrieve(LogicProgrammingStep.class, id);
-    }
-    
     public int getRedone()
     {
     	return redone;

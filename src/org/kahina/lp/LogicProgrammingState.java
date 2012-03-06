@@ -227,5 +227,10 @@ public class LogicProgrammingState extends KahinaState
 	{
 		return Collections.unmodifiableSet(hiddenSteps);
 	}
+	
+    public LogicProgrammingStep get(int id)
+    {
+        return retrieve(LogicProgrammingStep.class, id);
+    }
     
 }

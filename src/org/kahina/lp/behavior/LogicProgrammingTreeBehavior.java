@@ -381,7 +381,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	{
 		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.processStepInformation(" + stepID + ",\"" + stepInfo + "\")");
-		int extID = LogicProgrammingStep.get(stepID).getExternalID();
+		int extID = ((LogicProgrammingState) kahina.getState()).get(stepID).getExternalID();
 		String caption = makeNodeLabel(extID, stepInfo);
 		object.addNode(stepID, caption, "", LogicProgrammingStepType.CALL);
 		// TODO: make this unnecessary => new structure for secondary tree,
@@ -667,7 +667,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	public void processStepDescriptionEvent(KahinaStepDescriptionEvent e)
 	{
 		int stepID = e.getStepID();
-		int extID = LogicProgrammingStep.get(stepID).getExternalID();
+		int extID = ((LogicProgrammingState) kahina.getState()).get(stepID).getExternalID();
 		object.setNodeCaption(stepID, makeNodeLabel(extID, e.getDescription()));
 	}
 }

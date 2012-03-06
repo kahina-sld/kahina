@@ -116,11 +116,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	protected void initializeNewSession()
 	{
-		if (steps != null)
-		{
-			steps.close();
-		}
-		steps = ObjectMagazine.create();
 		//control = new KahinaController();
 		control.registerListener(KahinaEventTypes.UPDATE, this);
 		control.registerListener(KahinaEventTypes.SESSION, this);
@@ -266,7 +261,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			File directory = FileUtil.createTemporaryDirectory();
 			monitor = gui.createProgressMonitorWrapper("Loading session", null, 0, zipFile.size());
 			FileUtil.unzipToDirectory(zipFile, directory, "steps/", monitor);
-			KahinaRunner.loadSteps(directory);
+			state.loadSteps(directory);
 			gui.displayMainViews();
 			dispatchEvent(new KahinaSelectionEvent(state.getSelectedStepID()));
 			dispatchEvent(new KahinaSystemEvent(KahinaSystemEvent.NODE_COUNT, state.getStepCount()));
@@ -322,7 +317,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			gui.showMessageDialog("Failed to create directory " + directory + ". Session not saved.", "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		ObjectMagazine<KahinaStep> steps = KahinaRunner.getSteps();
+		ObjectMagazine<KahinaStep> steps = state.getSteps();
 		ProgressMonitorWrapper monitor = gui.createProgressMonitorWrapper("Saving session", null, 0, steps.persistSteps() * 2 + 2);
 		ObjectOutputStream out = null;
 		try

@@ -251,7 +251,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				System.err.println("Storing new step.");
 			}
-			KahinaRunner.store(newStepID, newStep);
+			state.store(newStepID, newStep);
 			if (VERBOSE)
 			{
 				System.err.println("Firing rule application event.");
@@ -337,7 +337,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 		try
 		{
 			int stepID = stepIDConv.get(extID);
-			final TraleSLDStep step = TraleSLDStep.get(stepID);
+			final TraleSLDStep step = state.get(stepID);
 			if ("start".equals(key))
 			{
 				step.startFeatStruct = packer.pack(grisuMessage);
@@ -345,7 +345,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				step.endFeatStruct = packer.pack(grisuMessage);
 			}
-			KahinaRunner.store(stepID, step);
+			state.store(stepID, step);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
@@ -379,7 +379,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 
 			int id = stepIDConv.get(extID);
-			TraleSLDStep step = TraleSLDStep.get(id);
+			TraleSLDStep step = state.get(id);
 			TraleSLDVariableBinding binding = bindingSharer.share(new TraleSLDVariableBinding(varName, tag, type, packer.pack(grisuMessage)));
 
 			if ("start".equals(key))
@@ -426,7 +426,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				KahinaRunner.processEvent(new KahinaChartUpdateEvent(currentEdge));
 			}
 
-			if (TraleSLDStep.get(stepID).getGoalDesc().startsWith("rule("))
+			if (state.get(stepID).getGoalDesc().startsWith("rule("))
 			{
 				prospectiveEdgeCanFail = true;
 			}

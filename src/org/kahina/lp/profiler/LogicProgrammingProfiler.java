@@ -6,6 +6,7 @@ import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridgeEvent;
@@ -19,11 +20,14 @@ public class LogicProgrammingProfiler implements KahinaListener
 	private final Mapper<String, ProfileEntry> mapper;
 
 	private final LogicProgrammingProfile profile;
+	
+	protected final LogicProgrammingInstance<?,?,?> kahina;
 
-	public LogicProgrammingProfiler(Mapper<String, ProfileEntry> mapper, LogicProgrammingProfile profile)
+	public LogicProgrammingProfiler(LogicProgrammingInstance<?,?,?> kahina, Mapper<String, ProfileEntry> mapper, LogicProgrammingProfile profile)
 	{
 		this.mapper = mapper;
 		this.profile = profile;
+		this.kahina = kahina;
 		// Currently this does not make a lot of sense since the full profile
 		// could easily be computed on demand from the control flow tree just
 		// like subtree profiles. This will change once the profiler keeps track
@@ -92,7 +96,7 @@ public class LogicProgrammingProfiler implements KahinaListener
 
 	protected ProfileEntry getProfileEntryForStepID(int stepID)
 	{
-		return mapper.map(KahinaRunner.retrieve(LogicProgrammingStep.class, stepID).getGoalDesc());
+		return mapper.map(kahina.getState().retrieve(LogicProgrammingStep.class, stepID).getGoalDesc());
 	}
 
 	public LogicProgrammingProfile getProfile()
@@ -143,7 +147,7 @@ public class LogicProgrammingProfiler implements KahinaListener
 
 	protected void profileNode(KahinaTree tree, KahinaTree contentfulTree, int stepID, LogicProgrammingProfile profile)
 	{
-		LogicProgrammingStep step = KahinaRunner.retrieve(LogicProgrammingStep.class, stepID);
+		LogicProgrammingStep step = kahina.getState().retrieve(LogicProgrammingStep.class, stepID);
 		profileNode(step, tree, contentfulTree, stepID, profile);
 	}
 

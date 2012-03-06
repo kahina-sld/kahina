@@ -24,7 +24,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 		try
 		{
 			super.startNewSession();
-			profiler = new PrologProfiler(state.getFullProfile());
+			profiler = new PrologProfiler(this, state.getFullProfile());
 			return bridge;
 		} catch (Exception e)
 		{

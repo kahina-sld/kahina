@@ -201,7 +201,7 @@ public class KahinaGUI implements KahinaListener
 
 	public void displayStepContent(int stepID)
 	{
-		KahinaStep step = KahinaRunner.retrieve(KahinaStep.class, stepID);
+		KahinaStep step = kahina.getState().retrieve(KahinaStep.class, stepID);
 		for (Field field : fieldToView.keySet())
 		{
 			try

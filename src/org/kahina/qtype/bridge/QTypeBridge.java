@@ -70,7 +70,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	{
 		try
 		{
-			QTypeGoal goal = KahinaRunner.retrieve(QTypeStep.class, stepIDConv.get(extID)).getGoal();
+			QTypeGoal goal = state.retrieve(QTypeStep.class, stepIDConv.get(extID)).getGoal();
 
 			if ("in".equals(key))
 			{

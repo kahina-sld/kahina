@@ -30,9 +30,4 @@ public class TraleSLDStep extends LogicProgrammingStep
     	copy.endBindings = endBindings.copy();
     	return copy;
     }
-    
-    public static TraleSLDStep get(int id)
-    {
-        return KahinaRunner.retrieve(TraleSLDStep.class, id);
-    }
 }

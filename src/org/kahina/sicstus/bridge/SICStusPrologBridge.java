@@ -26,9 +26,9 @@ public class SICStusPrologBridge extends PrologBridge
 		try
 		{
 			int internalStepID = convertStepID(externalStepID);
-			SICStusPrologStep step = KahinaRunner.retrieve(SICStusPrologStep.class, internalStepID);
+			SICStusPrologStep step = state.retrieve(SICStusPrologStep.class, internalStepID);
 			step.bindings.addBinding(variableName, direction, value);
-			KahinaRunner.store(internalStepID, step);
+			state.store(internalStepID, step);
 
 			if (bridgeState == 'n')
 			{

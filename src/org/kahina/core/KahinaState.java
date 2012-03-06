@@ -1,5 +1,6 @@
 package org.kahina.core;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,11 +11,13 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
+import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.core.gui.event.KahinaMessageEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.core.io.magazine.ObjectMagazine;
 
 /**
  * The current state of a Kahina instance.
@@ -40,8 +43,7 @@ public class KahinaState implements Serializable, KahinaListener
     //map from stepIDs to lines in console
     protected Map<Integer,Set<KahinaLineReference>> consoleLines;
     
-    protected Map<KahinaBreakpoint, Integer> warnThresholdByBreakpoint;
-    
+    protected Map<KahinaBreakpoint, Integer> warnThresholdByBreakpoint; 
     protected Map<KahinaBreakpoint, Integer> matchCountByBreakpoint;
     
     private int selectedStepID = -1;
@@ -50,8 +52,11 @@ public class KahinaState implements Serializable, KahinaListener
     
     private KahinaController control;
     
+    private static ObjectMagazine<KahinaStep> steps;
+    
     public KahinaState(KahinaController control)
     {
+		steps = ObjectMagazine.create();
         initialize();
         this.control = control;
         control.registerListener(KahinaEventTypes.SELECTION, this);
@@ -59,6 +64,11 @@ public class KahinaState implements Serializable, KahinaListener
     
 	public void initialize() 
 	{
+		if (steps != null)
+		{
+			steps.close();
+		}
+		steps = ObjectMagazine.create();
 		selectedStepID = -1;
 		nextStepID = 1;
 		//console is refilled for each new process
@@ -82,6 +92,33 @@ public class KahinaState implements Serializable, KahinaListener
     {
     	return nextStepID - 1;
     }
+    
+    public ObjectMagazine<KahinaStep> getSteps()
+    {
+    	return steps;
+    }
+    
+    public void store(int id, KahinaObject object)
+	{
+		if (VERBOSE)
+		{
+			System.err.println("KahinaRunner.store(" + id + "," + object + ")");
+			System.err.println("steps == " + steps);
+		}
+		steps.store(id, (KahinaStep) object);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T extends KahinaObject> T retrieve(Class<T> type, int stepID)
+	{
+		// TODO we want to do this differently
+		return (T) steps.retrieve(stepID);
+	}
+	
+	public void loadSteps(File directory)
+	{
+		steps = ObjectMagazine.load(directory, KahinaStep.class);
+	}
     
     public void processEvent(KahinaEvent event)
     {
