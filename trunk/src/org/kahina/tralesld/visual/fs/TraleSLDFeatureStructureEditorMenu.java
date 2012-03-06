@@ -1,7 +1,6 @@
 package org.kahina.tralesld.visual.fs;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;

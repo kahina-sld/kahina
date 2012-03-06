@@ -8,11 +8,9 @@ import java.util.Arrays;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaDialogEvent;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.io.util.XMLUtil;

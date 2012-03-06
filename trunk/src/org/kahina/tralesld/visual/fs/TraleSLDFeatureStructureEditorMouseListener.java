@@ -1,15 +1,10 @@
 package org.kahina.tralesld.visual.fs;
 
 import gralej.blocks.Block;
-import gralej.blocks.BlockPanel;
-import gralej.om.IEntity;
-import gralej.om.IType;
-import gralej.om.ITypedFeatureStructure;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import org.kahina.core.visual.chart.KahinaChartViewContextMenu;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 
 public class TraleSLDFeatureStructureEditorMouseListener implements MouseListener

@@ -2,13 +2,10 @@ package org.kahina.tralesld.visual.fs;
 
 import gralej.blocks.AVMBlock;
 import gralej.blocks.Block;
-import gralej.blocks.BlockPanel;
 import gralej.blocks.ContainerBlock;
 import gralej.blocks.Label;
 import gralej.blocks.ListBlock;
 import gralej.blocks.ListContentBlock;
-import gralej.om.Entities;
-import gralej.om.EntityFactory;
 import gralej.om.IAny;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
@@ -17,36 +14,25 @@ import gralej.om.ITag;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
 import gralej.parsers.IDataPackage;
-import gralej.parsers.OutputFormatter;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseListener;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
-import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
-
-import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 
 /**
  * first attempt at minimally invasive editor layer on FS visualization

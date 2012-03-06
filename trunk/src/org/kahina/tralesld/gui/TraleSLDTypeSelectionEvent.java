@@ -1,8 +1,6 @@
 package org.kahina.tralesld.gui;
 
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.control.KahinaEventTypes;
-import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.tralesld.control.TraleSLDEventTypes;
 
 public class TraleSLDTypeSelectionEvent extends KahinaEvent 

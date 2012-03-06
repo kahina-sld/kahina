@@ -1,7 +1,5 @@
 package org.kahina.tulipa.behavior;
 
-import org.kahina.core.KahinaInstance;
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.behavior.KahinaDAGBehavior;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.dag.KahinaDAG;

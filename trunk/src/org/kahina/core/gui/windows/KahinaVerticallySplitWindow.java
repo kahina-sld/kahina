@@ -4,11 +4,9 @@ import java.awt.Container;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.border.TitledBorder;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaWindowManager;

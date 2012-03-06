@@ -1,7 +1,6 @@
 package org.kahina.tralesld.visual.signature;
 
 import javax.swing.BoxLayout;
-import javax.swing.JEditorPane;
 import javax.swing.JTextPane;
 
 import org.kahina.core.control.KahinaController;

@@ -8,7 +8,6 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.windows.KahinaWindow;

@@ -1,6 +1,5 @@
 package org.kahina.tralesld.profiler;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.profiler.ProfileEntry;

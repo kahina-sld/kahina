@@ -16,7 +16,6 @@ import java.util.Set;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 
 public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
 {

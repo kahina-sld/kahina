@@ -1,26 +1,18 @@
 package org.kahina.tralesld.visual.signature;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Stroke;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.chart.KahinaChartEdgeDisplayDecider;
-import org.kahina.core.visual.chart.KahinaChartViewConfiguration;
-import org.kahina.core.visual.chart.KahinaChartViewPanel;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
 

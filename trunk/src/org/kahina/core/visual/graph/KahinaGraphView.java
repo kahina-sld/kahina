@@ -2,15 +2,11 @@ package org.kahina.core.visual.graph;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Stroke;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -18,12 +14,8 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.graph.AdjacListsGraph;
 import org.kahina.core.data.graph.KahinaGraph;
-import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.tree.KahinaTreeViewOptions;
-import org.kahina.core.visual.tree.KahinaTreeViewPanel;
-import org.kahina.core.visual.tree.WidthVector;
 
 public class KahinaGraphView extends KahinaView<KahinaGraph>
 {

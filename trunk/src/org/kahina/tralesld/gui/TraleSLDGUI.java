@@ -1,7 +1,5 @@
 package org.kahina.tralesld.gui;
 
-import gralej.controller.Controller;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
@@ -16,16 +14,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.KahinaException;
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaDialogEvent;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
-import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.gui.windows.KahinaWindow;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.profiler.ProfileEntry;
@@ -33,14 +28,11 @@ import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.core.visual.tree.KahinaLayeredTreeViewPanel;
-import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.tralesld.TraleSLDInstance;
 import org.kahina.tralesld.TraleSLDStepType;
 import org.kahina.tralesld.control.TraleSLDControlEventCommands;
 import org.kahina.tralesld.data.chart.TraleSLDChartEdgeStatus;
-import org.kahina.tralesld.data.fs.TraleSLDFS;
-import org.kahina.tralesld.data.fs.TraleSLDPackedFSTerminal;
 import org.kahina.tralesld.data.tree.TraleSLDLayerDecider;
 import org.kahina.tralesld.data.workbench.FeatureWorkbench;
 import org.kahina.tralesld.profiler.TraleSLDProfileEntryMapper;

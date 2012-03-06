@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.behavior.KahinaTreeBehavior;
 import org.kahina.core.bridge.KahinaStepDescriptionEvent;
 import org.kahina.core.control.KahinaEvent;
@@ -19,7 +18,6 @@ import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.KahinaTreeEvent;
 import org.kahina.core.data.tree.KahinaTreeEventType;
 import org.kahina.lp.LogicProgrammingState;
-import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
 import org.kahina.lp.bridge.LogicProgrammingBridgeEvent;
 import org.kahina.lp.bridge.LogicProgrammingBridgeEventType;

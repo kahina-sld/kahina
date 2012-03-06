@@ -13,7 +13,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
 
 public class KahinaChartViewListener extends MouseAdapter implements ActionListener

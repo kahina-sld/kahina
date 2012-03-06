@@ -9,7 +9,6 @@ import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.TraleSLDState;
 import org.kahina.tralesld.control.TraleSLDEventTypes;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
-import org.kahina.tralesld.gui.TraleSLDGUI;
 
 public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS>
 {

@@ -12,11 +12,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import org.kahina.core.KahinaRunner;
-import org.kahina.core.gui.event.KahinaSelectionEvent;
-import org.kahina.core.visual.tree.KahinaTreeViewContextMenu;
-import org.kahina.core.visual.tree.KahinaTreeViewOptions;
-
 public class KahinaGraphViewListener extends MouseAdapter implements ActionListener
 {
     protected KahinaGraphViewPanel view;

@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 
 import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
@@ -36,7 +35,6 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.util.ProgressMonitorWrapper;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.text.KahinaTextView;
-import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 
 public class KahinaGUI implements KahinaListener
 {

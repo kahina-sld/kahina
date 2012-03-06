@@ -9,7 +9,6 @@ import java.util.Queue;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;

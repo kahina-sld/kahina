@@ -3,7 +3,6 @@ package org.kahina.tralesld.visual.signature;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;

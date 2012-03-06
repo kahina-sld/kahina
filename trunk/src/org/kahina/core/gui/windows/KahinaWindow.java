@@ -11,7 +11,6 @@ import java.awt.event.WindowListener;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaTransferablePanel;

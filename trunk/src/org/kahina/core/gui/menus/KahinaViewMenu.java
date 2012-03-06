@@ -3,7 +3,6 @@ package org.kahina.core.gui.menus;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.HashMap;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
@@ -11,8 +10,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import org.kahina.core.KahinaInstance;
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
@@ -21,8 +18,6 @@ import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.event.KahinaPerspectiveEvent;
 import org.kahina.core.gui.event.KahinaWindowEvent;
 import org.kahina.core.gui.event.KahinaWindowEventType;
-import org.kahina.core.visual.KahinaEmptyView;
-import org.kahina.core.visual.KahinaView;
 
 public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaListener
 {

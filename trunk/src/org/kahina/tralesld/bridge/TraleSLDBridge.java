@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.kahina.core.KahinaRunner;
 import org.kahina.core.bridge.KahinaBridgePauseEvent;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.data.chart.KahinaChart;
