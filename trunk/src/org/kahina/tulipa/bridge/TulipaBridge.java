@@ -110,7 +110,7 @@ public class TulipaBridge extends KahinaBridge
                     }
                     skipID = -1;
                     bridgeState = 'n';
-                    kahina.processEvent(new KahinaSelectionEvent(currentID));
+                    kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
                     return 'n';
                 } else
                 {
@@ -140,7 +140,7 @@ public class TulipaBridge extends KahinaBridge
         try
         {
             if (verbose) System.err.println("TulipaBridge.initializeParse()");
-            kahina.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.INIT));
+            kahina.dispatchEvent(new TulipaBridgeEvent(TulipaBridgeEventType.INIT));
             if (verbose) System.err.println("//TulipaBridge.initializeParse()");
         } 
         catch (Exception e)
@@ -155,7 +155,7 @@ public class TulipaBridge extends KahinaBridge
         int stepID = convertItemID(extID);
         if (!currentItemWasProductive)
         {
-            kahina.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.UNPRODUCTIVE, currentItem));
+            kahina.dispatchEvent(new TulipaBridgeEvent(TulipaBridgeEventType.UNPRODUCTIVE, currentItem));
         }
         currentItem = stepID;
         currentItemWasProductive = false;
@@ -167,9 +167,9 @@ public class TulipaBridge extends KahinaBridge
         {
             if (verbose) System.err.println("TulipaBridge.registerInitialItem(" + newID + "\")");
             int newStepID = convertItemID(newID);
-            kahina.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.START, newStepID));
+            kahina.dispatchEvent(new TulipaBridgeEvent(TulipaBridgeEventType.START, newStepID));
             currentID = newStepID;
-            if (bridgeState == 'n') kahina.processEvent(new KahinaSelectionEvent(newStepID));
+            if (bridgeState == 'n') kahina.dispatchEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerInitialItem(" + newID + "\")");
         } 
         catch (Exception e)
@@ -186,10 +186,10 @@ public class TulipaBridge extends KahinaBridge
             if (verbose) System.err.println("TulipaBridge.registerScanEpsilon(" + ancID + ",\"" + newID + "\")");
             int ancStepID = convertItemID(ancID);
             int newStepID = convertItemID(newID);
-            kahina.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SCAN_EPSILON, newStepID, ancStepID));
+            kahina.dispatchEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SCAN_EPSILON, newStepID, ancStepID));
             currentID = newStepID;
             currentItemWasProductive = true;
-            if (bridgeState == 'n') kahina.processEvent(new KahinaSelectionEvent(newStepID));
+            if (bridgeState == 'n') kahina.dispatchEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerScanEpsilon(" + ancID + ",\"" + newID + "\")");
         } 
         catch (Exception e)
@@ -206,10 +206,10 @@ public class TulipaBridge extends KahinaBridge
             if (verbose) System.err.println("TulipaBridge.registerScan(" + ancID + ",\"" + newID + "\")");
             int ancStepID = convertItemID(ancID);
             int newStepID = convertItemID(newID);
-            kahina.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SCAN, newStepID, ancStepID));
+            kahina.dispatchEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SCAN, newStepID, ancStepID));
             currentID = newStepID;
             currentItemWasProductive = true;
-            if (bridgeState == 'n') kahina.processEvent(new KahinaSelectionEvent(newStepID));
+            if (bridgeState == 'n') kahina.dispatchEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerScan(" + ancID + ",\"" + newID + "\")");
         } 
         catch (Exception e)
@@ -226,10 +226,10 @@ public class TulipaBridge extends KahinaBridge
             if (verbose) System.err.println("TulipaBridge.registerPredict(" + ancID + ",\"" + newID + "\")");
             int ancStepID = convertItemID(ancID);
             int newStepID = convertItemID(newID);
-            kahina.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.PREDICT, newStepID, ancStepID));
+            kahina.dispatchEvent(new TulipaBridgeEvent(TulipaBridgeEventType.PREDICT, newStepID, ancStepID));
             currentID = newStepID;
             currentItemWasProductive = true;
-            if (bridgeState == 'n') kahina.processEvent(new KahinaSelectionEvent(newStepID));
+            if (bridgeState == 'n') kahina.dispatchEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerPredict(" + ancID + ",\"" + newID + "\")");
         } 
         catch (Exception e)
@@ -247,10 +247,10 @@ public class TulipaBridge extends KahinaBridge
             int anc1StepID = convertItemID(anc1ID);
             int anc2StepID = convertItemID(anc2ID);
             int newStepID = convertItemID(newID);
-            kahina.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SUSPEND, newStepID, anc1StepID, anc2StepID));
+            kahina.dispatchEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SUSPEND, newStepID, anc1StepID, anc2StepID));
             currentID = newStepID;
             currentItemWasProductive = true;
-            if (bridgeState == 'n') kahina.processEvent(new KahinaSelectionEvent(newStepID));
+            if (bridgeState == 'n') kahina.dispatchEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerSuspend(" + anc1ID + ",\"" + anc2ID + ",\"" + newID + "\")");
         } 
         catch (Exception e)
@@ -268,10 +268,10 @@ public class TulipaBridge extends KahinaBridge
             int anc1StepID = convertItemID(anc1ID);
             int anc2StepID = convertItemID(anc2ID);
             int newStepID = convertItemID(newID);
-            kahina.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.RESUME, newStepID, anc1StepID, anc2StepID));
+            kahina.dispatchEvent(new TulipaBridgeEvent(TulipaBridgeEventType.RESUME, newStepID, anc1StepID, anc2StepID));
             currentID = newStepID;
             currentItemWasProductive = true;
-            if (bridgeState == 'n') kahina.processEvent(new KahinaSelectionEvent(newStepID));
+            if (bridgeState == 'n') kahina.dispatchEvent(new KahinaSelectionEvent(newStepID));
             if (verbose) System.err.println("//TulipaBridge.registerResume(" + anc1ID + ",\"" + anc2ID + ",\"" + newID + "\")");
         } 
         catch (Exception e)
@@ -290,7 +290,7 @@ public class TulipaBridge extends KahinaBridge
             TulipaStep step = state.get(stepID);
             step.setItemDesc(label.substring(0, label.indexOf("-->")));
             state.store(stepID, step);
-            kahina.processEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SET_ITEM_DESC, stepID, label.substring(0, label.indexOf("-->"))));
+            kahina.dispatchEvent(new TulipaBridgeEvent(TulipaBridgeEventType.SET_ITEM_DESC, stepID, label.substring(0, label.indexOf("-->"))));
             currentID = stepID;
             if (verbose) System.err.println("//TulipaBridge.registerItemLabel(" + extID + ",\"" + label + "\")");
         } 

@@ -32,14 +32,14 @@ public class QTypeBridge extends SICStusPrologBridge
 		if (description.startsWith("compile_grammar(") && description.endsWith(")"))
 		{
 			String path = PrologUtil.atomLiteralToString(description.substring(16, description.length() - 1));
-			kahina.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { path }));
+			kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { path }));
 		} else if (description.startsWith("lc(") && description.endsWith(")"))
 		{
 			Matcher matcher = SENTENCE_PATTERN.matcher(description.substring(3, description.length() - 1));
 
 			if (matcher.matches())
 			{
-				kahina.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtil.parsePrologStringList(matcher.group(0)) }));
+				kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtil.parsePrologStringList(matcher.group(0)) }));
 			}
 		}
 	}
@@ -48,7 +48,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	{
 		try
 		{
-			kahina.processEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_EXAMPLE, new Object[] { number, expectation, PrologUtil.parsePrologStringList(sentence) }));
+			kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_EXAMPLE, new Object[] { number, expectation, PrologUtil.parsePrologStringList(sentence) }));
 		}
 		catch (Exception e)
 		{

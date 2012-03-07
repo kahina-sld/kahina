@@ -157,8 +157,8 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 		{
 			workbenchView.getModel().setSignature(instance.getState().getSignature());
 		}
-		kahina.processEvent(new TraleSLDTypeSelectionEvent("bot"));
-		kahina.processEvent(new KahinaRedrawEvent());
+		kahina.dispatchEvent(new TraleSLDTypeSelectionEvent("bot"));
+		kahina.dispatchEvent(new KahinaRedrawEvent());
 	}
 
 	@Override
@@ -263,7 +263,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 
 				if (grammar != null)
 				{
-					kahina.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE, new Object[] { grammar.getAbsolutePath() }));
+					kahina.dispatchEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE, new Object[] { grammar.getAbsolutePath() }));
 				}
 			}
 		} else if (type == KahinaDialogEvent.PARSE)
@@ -274,7 +274,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 
 			if (sentence != null)
 			{
-				kahina.processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.PARSE, new Object[] { Arrays.asList(sentence.split(" +")) }));
+				kahina.dispatchEvent(new KahinaControlEvent(TraleSLDControlEventCommands.PARSE, new Object[] { Arrays.asList(sentence.split(" +")) }));
 			}
 		}
 	}
