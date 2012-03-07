@@ -54,7 +54,6 @@ public class QTypeCommander implements KahinaListener
 		{
 			control.processEvent(new KahinaControlEvent(QTypeControlEventCommands.COMPILE));
 		}
-
 	};
 
 	public final Action PARSE_ACTION = new AbstractAction("Parse...")

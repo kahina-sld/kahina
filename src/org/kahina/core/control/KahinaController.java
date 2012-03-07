@@ -29,7 +29,7 @@ public class KahinaController
     {
         if (VERBOSE)
         {
-            System.err.println(this + " gets new listener for type " + type + ": " + listener);
+            System.err.println("KahinaController@" + this.hashCode() + ".registerListener(" + type + ", " + listener.getClass().getSimpleName() + "@" + listener.hashCode() + ")");
         }
         List<KahinaListener> listenersForType = registry.get(type);
         if (listenersForType == null)
@@ -61,7 +61,7 @@ public class KahinaController
     {
         if (VERBOSE)
         {
-        	System.err.println(this + " processing event: " + event);
+        	System.err.println("KahinaController@" + this.hashCode() + ".processEvent(" + event + "@" + event.hashCode() + ")");
         }
         String type = event.getType();
         List<KahinaListener> listenersForType = registry.get(type);
@@ -71,7 +71,7 @@ public class KahinaController
             {
             	if (VERBOSE)
             	{
-            		System.err.println("    Sending to listener: " + listenersForType.get(i));
+            		System.err.println("    event \"" + event + "@" + event.hashCode() + "\" to listener " + listenersForType.get(i).getClass().getSimpleName() + "@" + listenersForType.get(i).hashCode());
             	}
                 listenersForType.get(i).processEvent(event);
             }
