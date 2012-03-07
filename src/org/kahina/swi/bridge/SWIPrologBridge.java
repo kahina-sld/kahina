@@ -45,7 +45,7 @@ public class SWIPrologBridge extends PrologBridge
 
 			if (bridgeState == 'n')
 			{
-				kahina.processEvent(new KahinaSelectionEvent(internalStepID));
+				kahina.dispatchEvent(new KahinaSelectionEvent(internalStepID));
 			}
 		} catch (Exception e)
 		{

@@ -219,8 +219,11 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
 		if (e.getSystemEventType() == KahinaSystemEvent.QUIT)
 		{
-			steps.close();
-			steps = null;
+			if (steps != null)
+			{
+				steps.close();
+				steps = null;
+			}
 			control = null;
 		}
 	}

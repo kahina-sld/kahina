@@ -13,12 +13,17 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 {	
 	private QTypeCommander commander;
 	
+	public QTypeDebuggerInstance()
+	{
+		super();
+		commander = new QTypeCommander(control);
+		commander.initializeForNewSession();
+	}
+	
 	@Override
 	public QTypeBridge startNewSession()
 	{
 		QTypeBridge bridge = (QTypeBridge) super.startNewSession(); 
-		commander = new QTypeCommander(control);
-		commander.initializeForNewSession();
 		return bridge;
 	}
 
