@@ -49,6 +49,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
             layout.newGraph(this);
         }
         clauseGraph = true;
+        flushRedrawAgenda();
     }
     
     public void displayClausesByLiterals()
@@ -61,6 +62,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
             layout.newGraph(this);
         }
         clauseGraph = true;
+        flushRedrawAgenda();
     }
     
     public void displayClausesByComplementaryLiterals()
@@ -73,6 +75,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
             layout.newGraph(this);
         }
         clauseGraph = true;
+        flushRedrawAgenda();
     }
     
     public void displayVariablesByClauses()
@@ -82,6 +85,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
         resetLayoutStructures();
         layout.newGraph(this);
         clauseGraph = false;
+        flushRedrawAgenda();
     }
     
     public void displayLiteralsByClauses()
@@ -91,6 +95,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
         resetLayoutStructures();
         layout.newGraph(this);
         clauseGraph = false;
+        flushRedrawAgenda();
     }
     
     @Override
