@@ -108,6 +108,16 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         {
             view.view.getConfig().setAntialiasingPolicy(KahinaGraphViewOptions.NO_ANTIALIASING);
         }
+        else if (command.equals("gridLayout"))
+        {
+            view.view.getConfig().setGraphLayout(KahinaGraphViewOptions.GRID_LAYOUT);
+            view.view.setLayouter(new GridLayouter());
+        }
+        else if (command.equals("circularLayout"))
+        {
+            view.view.getConfig().setGraphLayout(KahinaGraphViewOptions.CIRCULAR_LAYOUT);
+            view.view.setLayouter(new CircularLayouter());
+        }
         else if (command.equals("Optimize"))
         {
             view.view.layout.optimize();

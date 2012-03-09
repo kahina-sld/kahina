@@ -22,4 +22,8 @@ public class KahinaGraphViewOptions
     // possible values for antialiasing policy
     public static final int ANTIALIASING = 0;
     public static final int NO_ANTIALIASING = 1;
+    
+    // possible values for graph layout option
+    public static final int GRID_LAYOUT = 0;
+    public static final int CIRCULAR_LAYOUT = 1;
 }

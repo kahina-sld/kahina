@@ -13,6 +13,7 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
     private int edgeLabelPolicy = KahinaGraphViewOptions.NO_EDGE_LABELS;
     private int drawingOrderPolicy = KahinaGraphViewOptions.VERTICES_ABOVE_EDGES;
     private int antialiasingPolicy = KahinaGraphViewOptions.NO_ANTIALIASING;
+    private int graphLayout = KahinaGraphViewOptions.GRID_LAYOUT;
     
     public void zoomIn()
     {
@@ -164,6 +165,22 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
         } else
         {
             System.err.println("WARNING: unknown antialiasing policy value " + newPolicy);
+        }
+    }
+    
+    public int getGraphLayout()
+    {
+        return graphLayout;
+    }
+
+    public void setGraphLayout(int newLayout)
+    {
+        if (newLayout >= 0 && newLayout <= 1)
+        {
+            graphLayout = newLayout;
+        } else
+        {
+            System.err.println("WARNING: unknown graph layout value " + newLayout);
         }
     }
 }
