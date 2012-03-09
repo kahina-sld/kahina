@@ -103,7 +103,7 @@ public class CircularLayouter extends KahinaGraphLayouter
                 for (int neighbor : neighbors)
                 {
                     if (VERBOSE) System.err.print(vertexToIndex.get(neighbor) + "|");
-                    clockwiseMovement += clockwiseDistance(node,neighbor);
+                    clockwiseMovement += minimumClockwiseDistance(node,neighbor);
                 }
                 clockwiseMovement /= neighbors.size();
                 int optimalIndex = mod(i - clockwiseMovement,array.length);
@@ -152,14 +152,20 @@ public class CircularLayouter extends KahinaGraphLayouter
         }
     }
     
-    private int clockwiseDistance(int v1, int v2)
+    private int minimumClockwiseDistance(int v1, int v2)
     {
-        return mod((vertexToIndex.get(v1) - vertexToIndex.get(v2)),array.length);    
+        int clockwise = mod((vertexToIndex.get(v1) - vertexToIndex.get(v2)),array.length);    
+        int counterClockwise = mod((vertexToIndex.get(v2) - vertexToIndex.get(v1)),array.length); 
+        if (counterClockwise > clockwise)
+        {
+            clockwise = - counterClockwise;
+        }
+        return clockwise;
     }
     
     private void swapNodes(int v1, int v2)
     {
-        System.err.println("  swapNodes(" + v1 + "," + v2 + ")");
+        if (VERBOSE) System.err.println("  swapNodes(" + v1 + "," + v2 + ")");
         int idx1 = vertexToIndex.get(v1);
         int idx2 = vertexToIndex.get(v2);
         array[idx1] = v2;
