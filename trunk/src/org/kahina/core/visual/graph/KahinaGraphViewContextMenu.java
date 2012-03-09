@@ -183,6 +183,34 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
         
         addSeparator();
         
+        JMenu graphLayoutSubmenu = new JMenu("Graph Layout");
+        ButtonGroup graphLayoutGroup = new ButtonGroup();
+        JRadioButtonMenuItem gridLayoutItem = new JRadioButtonMenuItem("Grid Layout");
+        gridLayoutItem.setActionCommand("gridLayout");
+        gridLayoutItem.addActionListener(l);
+        graphLayoutGroup.add(gridLayoutItem);
+        graphLayoutSubmenu.add(gridLayoutItem);
+        JRadioButtonMenuItem circularLayoutItem = new JRadioButtonMenuItem("Circular Layout");
+        circularLayoutItem.setActionCommand("circularLayout");
+        circularLayoutItem.addActionListener(l);
+        graphLayoutGroup.add(circularLayoutItem);
+        graphLayoutSubmenu.add(circularLayoutItem);
+        switch (v.getConfig().getGraphLayout())
+        {
+            case 0:
+            {
+                gridLayoutItem.setSelected(true); break;
+            }
+            case 1:
+            {
+                circularLayoutItem.setSelected(true);
+            }
+        }
+        add(graphLayoutSubmenu);
+        
+        
+        addSeparator();
+        
         JMenuItem optimizeItem = new JMenuItem("Optimize");
         optimizeItem.addActionListener(l);
         add(optimizeItem);
