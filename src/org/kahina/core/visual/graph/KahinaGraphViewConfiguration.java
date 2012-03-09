@@ -178,7 +178,8 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
         if (newLayout >= 0 && newLayout <= 1)
         {
             graphLayout = newLayout;
-        } else
+        } 
+        else
         {
             System.err.println("WARNING: unknown graph layout value " + newLayout);
         }
