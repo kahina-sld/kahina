@@ -12,6 +12,8 @@ public class CircularLayouter extends KahinaGraphLayouter
     Map<Integer,Integer> vertexToIndex;
     
     public boolean FLAG_USE_INVISIBLE_EDGES = true;
+    
+    public boolean VERBOSE = false;
 
     @Override
     public void computeInitialLayout()
@@ -81,7 +83,7 @@ public class CircularLayouter extends KahinaGraphLayouter
     
     private void optimizePositionOfVertexAt(int i)
     {
-        System.err.print(" Optimizing vertex " + array[i] + "[" + i + "] : |");
+        if (VERBOSE) System.err.print(" Optimizing vertex " + array[i] + "[" + i + "] : |");
         int node = array[i];
         if (node != -1)
         {
@@ -100,15 +102,15 @@ public class CircularLayouter extends KahinaGraphLayouter
                 int clockwiseMovement = 0;
                 for (int neighbor : neighbors)
                 {
-                    System.err.print(vertexToIndex.get(neighbor) + "|");
+                    if (VERBOSE) System.err.print(vertexToIndex.get(neighbor) + "|");
                     clockwiseMovement += clockwiseDistance(node,neighbor);
                 }
                 clockwiseMovement /= neighbors.size();
-                int optimalIndex = mod(i + clockwiseMovement,array.length);
-                System.err.println(" -> " + optimalIndex);
+                int optimalIndex = mod(i - clockwiseMovement,array.length);
+                if (VERBOSE) System.err.println(" -> " + optimalIndex);
                 //compute for a range of indices around the optimal index
                 //   how much swapping the node with the node there improves the layout
-                int maxDistance = 4;
+                int maxDistance = 8;
                 int bestImprovement = Integer.MIN_VALUE;
                 int best = -1;
                 int candImprovement = 0;
@@ -117,6 +119,7 @@ public class CircularLayouter extends KahinaGraphLayouter
                 for (int j = cand - maxDistance; j < cand + maxDistance + 1; j++)
                 {
                     candImprovement = computeMoveOrSwapImprovement(node, mod(j,size));
+                    //System.err.println("  " + mod(j,size) + " -> candImprovement " + candImprovement);
                     if (candImprovement > bestImprovement)
                     {
                         best = mod(j,size);
@@ -137,6 +140,13 @@ public class CircularLayouter extends KahinaGraphLayouter
                     {
                         swapNodes(node,swapVert);
                     }
+                }
+            }
+            else
+            {
+                if (VERBOSE)
+                {
+                    System.err.println("(none)|");
                 }
             }
         }
@@ -182,15 +192,16 @@ public class CircularLayouter extends KahinaGraphLayouter
         return computeImprovement(v1,idx1,idx2) + computeImprovement(v2,idx2,idx1);
     }
     
-    //evaluate the distance sum change if vertex is moved from index idx1 to idx2
+    //the negative of the distance sum change if vertex is moved from index idx1 to idx2
     private int computeImprovement(int node, int idx1, int idx2)
     {
-        return computeDistanceSum(node, idx2) - computeDistanceSum(node, idx1);
+        return computeDistanceSum(node, idx1) - computeDistanceSum(node, idx2);
     }
     
-    //evaluate the sum of the outgoing edge lengths if node were at (x,y)
+    //evaluate the sum of the outgoing edge lengths if node were at index idx
     private int computeDistanceSum(int node, int idx)
     {
+        //System.err.println("computeDistanceSum(" + node + "," + idx + ") = ");
         int distanceSum = 0;
         for (int neighbor : view.getModel().getNeighbors(node))
         {
@@ -199,12 +210,16 @@ public class CircularLayouter extends KahinaGraphLayouter
                 distanceSum += minDistance(idx, vertexToIndex.get(neighbor));
             }
         }
+        //System.err.println(distanceSum + ";");
         return distanceSum;
     }
     
     //minimum distance between indices idx1 and idx2
     private int minDistance(int idx1, int idx2)
     {
+        //System.err.println("minDist(" + idx1 + "," + idx2 + ")");
+        //System.err.println("  " + "mod(" + (idx2 - idx1) + "," + array.length + ") = " + mod((idx2 - idx1),array.length));
+        //System.err.println("  " + "mod(" + (idx1 - idx2) + "," + array.length + ") = " + mod((idx1 - idx2),array.length));
         return Math.min(mod((idx2 - idx1),array.length), mod((idx1 - idx2), array.length));
     }
     

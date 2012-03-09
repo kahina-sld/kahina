@@ -399,7 +399,7 @@ public class GridLayouter extends KahinaGraphLayouter
     //evaluate the distance sum change if node is moved from (x1,y1) to (x2,y2)
     private int computeImprovement(int node, int x1, int y1, int x2, int y2)
     {
-        return computeDistanceSum(node, x2, y2) - computeDistanceSum(node, x1, y1);
+        return computeDistanceSum(node, x1, y1) - computeDistanceSum(node, x2, y2);
     }
     
     //evaluate the sum of the outgoing edge lengths if node were at (x,y)
