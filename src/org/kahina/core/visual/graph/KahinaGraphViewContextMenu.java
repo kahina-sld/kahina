@@ -208,6 +208,155 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
         }
         add(graphLayoutSubmenu);
         
+        JMenu nodeVisibilitySubmenu = new JMenu("Vertex Visibility");
+        ButtonGroup nodeVisibilityGroup = new ButtonGroup();
+        JRadioButtonMenuItem allNodesVisibleItem = new JRadioButtonMenuItem("All Vertices Visible");
+        allNodesVisibleItem.setActionCommand("vertexVisAll");
+        allNodesVisibleItem.addActionListener(l);
+        nodeVisibilityGroup.add(allNodesVisibleItem);
+        nodeVisibilitySubmenu.add(allNodesVisibleItem);
+        JRadioButtonMenuItem onlySpecialNodesItem = new JRadioButtonMenuItem("Only Special Vertices");
+        onlySpecialNodesItem.setActionCommand("vertexVisSpecial");
+        onlySpecialNodesItem.addActionListener(l);
+        nodeVisibilityGroup.add(onlySpecialNodesItem);
+        nodeVisibilitySubmenu.add(onlySpecialNodesItem);
+        JRadioButtonMenuItem onlyExplicitlyVisibleNodesItem = new JRadioButtonMenuItem("Only Explicitly Visible Vertices");
+        onlyExplicitlyVisibleNodesItem.setActionCommand("vertexVisExplicit");
+        onlyExplicitlyVisibleNodesItem.addActionListener(l);
+        nodeVisibilityGroup.add(onlyExplicitlyVisibleNodesItem);
+        nodeVisibilitySubmenu.add(onlyExplicitlyVisibleNodesItem);
+        switch (v.getConfig().getVertexVisibilityPolicy())
+        {
+            case 0:
+            {
+                allNodesVisibleItem.setSelected(true); break;
+            }
+            case 1:
+            {
+                onlySpecialNodesItem.setSelected(true); break;
+            }
+            case 2:
+            {
+                onlyExplicitlyVisibleNodesItem.setSelected(true);
+            }
+        }
+        add(nodeVisibilitySubmenu);
+        
+        JMenu edgeVisibilitySubmenu = new JMenu("Edge Visibility");
+        ButtonGroup edgeVisibilityGroup = new ButtonGroup();
+        JRadioButtonMenuItem allEdgesVisibleItem = new JRadioButtonMenuItem("All Edges");
+        allEdgesVisibleItem.setActionCommand("edgeVisAll");
+        allEdgesVisibleItem.addActionListener(l);
+        edgeVisibilityGroup.add(allEdgesVisibleItem);
+        edgeVisibilitySubmenu.add(allEdgesVisibleItem);
+        JRadioButtonMenuItem onlyEdgesOneVisibleItem = new JRadioButtonMenuItem("Only Edges With Visible Node");
+        onlyEdgesOneVisibleItem.setActionCommand("edgeVisOneVisible");
+        onlyEdgesOneVisibleItem.addActionListener(l);
+        edgeVisibilityGroup.add(onlyEdgesOneVisibleItem);
+        edgeVisibilitySubmenu.add(onlyEdgesOneVisibleItem);
+        JRadioButtonMenuItem onlyEdgesBothVisibleItem = new JRadioButtonMenuItem("Only Edges Between Visible Nodes");
+        onlyEdgesBothVisibleItem.setActionCommand("edgeVisBothVisible");
+        onlyEdgesBothVisibleItem.addActionListener(l);
+        edgeVisibilityGroup.add(onlyEdgesBothVisibleItem);
+        edgeVisibilitySubmenu.add(onlyEdgesBothVisibleItem);
+        switch (v.getConfig().getEdgeVisibilityPolicy())
+        {
+            case 0:
+            {
+                allEdgesVisibleItem.setSelected(true); break;
+            }
+            case 1:
+            {
+                onlyEdgesOneVisibleItem.setSelected(true); break;
+            }
+            case 2:
+            {
+                onlyEdgesBothVisibleItem.setSelected(true);
+            }
+        }
+        add(edgeVisibilitySubmenu);
+        
+        JMenu edgeColoringSubmenu = new JMenu("Edge Coloring");
+        ButtonGroup edgeColoringGroup = new ButtonGroup();
+        JRadioButtonMenuItem independentColorItem = new JRadioButtonMenuItem("Independent");
+        independentColorItem.setActionCommand("edgeColIndependent");
+        independentColorItem.addActionListener(l);
+        edgeColoringGroup.add(independentColorItem);
+        edgeColoringSubmenu.add(independentColorItem);
+        JRadioButtonMenuItem functionVertexColorItem = new JRadioButtonMenuItem("Defined Function of Vertex Colors");
+        functionVertexColorItem.setActionCommand("edgeColFunction");
+        functionVertexColorItem.addActionListener(l);
+        edgeColoringGroup.add(functionVertexColorItem);
+        edgeColoringSubmenu.add(functionVertexColorItem);
+        JRadioButtonMenuItem onlySameColorItem = new JRadioButtonMenuItem("Only Between Nodes of Same Color");
+        onlySameColorItem.setActionCommand("edgeColOnlySameColor");
+        onlySameColorItem.addActionListener(l);
+        edgeColoringGroup.add(onlySameColorItem);
+        edgeColoringSubmenu.add(onlySameColorItem);
+        switch (v.getConfig().getEdgeColoringPolicy())
+        {
+            case 0:
+            {
+                independentColorItem.setSelected(true); break;
+            }
+            case 1:
+            {
+               functionVertexColorItem.setSelected(true); break;
+            }
+            case 2:
+            {
+                onlySameColorItem.setSelected(true);
+            }
+        }
+        add(edgeColoringSubmenu);
+        
+        JMenu specialVerticesSubmenu = new JMenu("Special Vertices");
+        ButtonGroup specialVertexPositionGroup = new ButtonGroup();
+        JRadioButtonMenuItem spePosSeparateItem = new JRadioButtonMenuItem("Spatially Separated");
+        spePosSeparateItem.setActionCommand("spePosSeparate");
+        spePosSeparateItem.addActionListener(l);
+        specialVertexPositionGroup.add(spePosSeparateItem);
+        specialVerticesSubmenu.add(spePosSeparateItem);
+        JRadioButtonMenuItem spePosMixedItem = new JRadioButtonMenuItem("Mixed With Other Vertices");
+        spePosMixedItem.setActionCommand("spePosMixed");
+        spePosMixedItem.addActionListener(l);
+        specialVertexPositionGroup.add(spePosMixedItem);
+        specialVerticesSubmenu.add(spePosMixedItem);
+        switch (v.getConfig().getSpecialVertexPositionPolicy())
+        {
+            case 0:
+            {
+                spePosSeparateItem.setSelected(true); break;
+            }
+            case 1:
+            {
+                spePosMixedItem.setSelected(true);
+            }
+        }
+        specialVerticesSubmenu.addSeparator();
+        ButtonGroup specialVertexColoringGroup = new ButtonGroup();
+        JRadioButtonMenuItem speColHighlightItem = new JRadioButtonMenuItem("Highlighted, Other Vertices Greyed Out");
+        speColHighlightItem.setActionCommand("speColHighlight");
+        speColHighlightItem.addActionListener(l);
+        specialVertexColoringGroup.add(speColHighlightItem);
+        specialVerticesSubmenu.add(speColHighlightItem);
+        JRadioButtonMenuItem speColNormalItem = new JRadioButtonMenuItem("No Special Coloring");
+        speColNormalItem.setActionCommand("speColNormal");
+        speColNormalItem.addActionListener(l);
+        specialVertexColoringGroup.add(speColNormalItem);
+        specialVerticesSubmenu.add(speColNormalItem);
+        switch (v.getConfig().getSpecialVertexColoringPolicy())
+        {
+            case 0:
+            {
+                speColHighlightItem.setSelected(true); break;
+            }
+            case 1:
+            {
+                speColNormalItem.setSelected(true);
+            }
+        }
+        add(specialVerticesSubmenu);
         
         addSeparator();
         

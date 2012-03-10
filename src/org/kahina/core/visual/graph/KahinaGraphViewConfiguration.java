@@ -13,7 +13,12 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
     private int edgeLabelPolicy = KahinaGraphViewOptions.NO_EDGE_LABELS;
     private int drawingOrderPolicy = KahinaGraphViewOptions.VERTICES_ABOVE_EDGES;
     private int antialiasingPolicy = KahinaGraphViewOptions.NO_ANTIALIASING;
-    private int graphLayout = KahinaGraphViewOptions.GRID_LAYOUT;
+    private int graphLayout = KahinaGraphViewOptions.LAYOUT_GRID;
+    private int vertexVisibilityPolicy = KahinaGraphViewOptions.VERTICES_EXPLICITLY_VISIBLE;
+    private int edgeVisibilityPolicy = KahinaGraphViewOptions.EDGES_WITH_BOTH_NODES_VISIBLE;
+    private int edgeColoringPolicy = KahinaGraphViewOptions.EDGE_COLOR_FUNCTION_OF_VERTEX_COLOR;
+    private int specialVertexPositionPolicy = KahinaGraphViewOptions.SPECIAL_VERTICES_MIXED;
+    private int specialVertexColoringPolicy = KahinaGraphViewOptions.SPECIAL_VERTICES_NORMAL_COLOR;
     
     public void zoomIn()
     {
@@ -183,5 +188,90 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
         {
             System.err.println("WARNING: unknown graph layout value " + newLayout);
         }
+    }
+
+    public void setVertexVisibilityPolicy(int vertexVisibilityPolicy)
+    {
+        if (vertexVisibilityPolicy >= 0 && vertexVisibilityPolicy <= 2)
+        {
+            this.vertexVisibilityPolicy = vertexVisibilityPolicy;
+        }
+        else
+        {
+            System.err.println("WARNING: unknown vertex visibility policy value " + vertexVisibilityPolicy);
+        }
+    }
+
+    public int getVertexVisibilityPolicy()
+    {
+        return vertexVisibilityPolicy;
+    }
+
+    public void setEdgeVisibilityPolicy(int edgeVisibilityPolicy)
+    {
+        if (edgeVisibilityPolicy >= 0 && edgeVisibilityPolicy <= 2)
+        {
+            this.edgeVisibilityPolicy = edgeVisibilityPolicy;
+        }
+        else
+        {
+            System.err.println("WARNING: unknown edge visibility policy value " + edgeVisibilityPolicy);
+        }
+    }
+
+    public int getEdgeVisibilityPolicy()
+    {
+        return edgeVisibilityPolicy;
+    }
+
+    public void setEdgeColoringPolicy(int edgeColoringPolicy)
+    {
+        if (edgeColoringPolicy >= 0 && edgeColoringPolicy <= 2)
+        {
+            this.edgeColoringPolicy = edgeColoringPolicy;
+        }
+        else
+        {
+            System.err.println("WARNING: unknown edge coloring policy value " + edgeColoringPolicy);
+        }
+    }
+
+    public int getEdgeColoringPolicy()
+    {
+        return edgeColoringPolicy;
+    }
+
+    public void setSpecialVertexPositionPolicy(int specialVertexPositionPolicy)
+    {
+        if (specialVertexPositionPolicy >= 0 && specialVertexPositionPolicy <= 1)
+        {
+            this.specialVertexPositionPolicy = specialVertexPositionPolicy;
+        }
+        else
+        {
+            System.err.println("WARNING: unknown special vertex position policy value " + specialVertexPositionPolicy);
+        }
+    }
+
+    public int getSpecialVertexPositionPolicy()
+    {
+        return specialVertexPositionPolicy;
+    }
+
+    public void setSpecialVertexColoringPolicy(int specialVertexColoringPolicy)
+    {
+        if (specialVertexColoringPolicy >= 0 && specialVertexColoringPolicy <= 1)
+        {
+            this.specialVertexColoringPolicy = specialVertexColoringPolicy;
+        }
+        else
+        {
+            System.err.println("WARNING: unknown special node coloring policy value " + specialVertexColoringPolicy);
+        }
+    }
+
+    public int getSpecialVertexColoringPolicy()
+    {
+        return specialVertexColoringPolicy;
     }
 }

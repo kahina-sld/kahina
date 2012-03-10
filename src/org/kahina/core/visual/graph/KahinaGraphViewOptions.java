@@ -24,6 +24,29 @@ public class KahinaGraphViewOptions
     public static final int NO_ANTIALIASING = 1;
     
     // possible values for graph layout option
-    public static final int GRID_LAYOUT = 0;
-    public static final int CIRCULAR_LAYOUT = 1;
+    public static final int LAYOUT_GRID = 0;
+    public static final int LAYOUT_CIRCULAR = 1;
+    
+    //possible values for vertex visibility policy
+    public static final int VERTICES_ALL_VISIBLE = 0;
+    public static final int VERTICES_SPECIAL_VISIBLE = 1;
+    public static final int VERTICES_EXPLICITLY_VISIBLE = 2;
+    
+    //possible values for edge visibility policy
+    public static final int EDGES_ALL_VISIBLE = 0;
+    public static final int EDGES_WITH_ONE_NODE_VISIBLE = 1;
+    public static final int EDGES_WITH_BOTH_NODES_VISIBLE = 2;
+    
+    //possible values for edge coloring policy
+    public static final int EDGE_COLOR_INDEPENDENT = 0;
+    public static final int EDGE_COLOR_FUNCTION_OF_VERTEX_COLOR = 1;
+    public static final int EDGE_COLOR_BETWEEN_NODES_OF_SAME_COLOR = 2;
+    
+    //possible values for special vertex position
+    public static final int SPECIAL_VERTICES_SEPARATE = 0;
+    public static final int SPECIAL_VERTICES_MIXED = 1;
+    
+    //possible values for special vertex coloring
+    public static final int SPECIAL_VERTICES_HIGHLIGHTED = 0;
+    public static final int SPECIAL_VERTICES_NORMAL_COLOR = 1;
 }

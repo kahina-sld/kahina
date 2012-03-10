@@ -110,13 +110,65 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         }
         else if (command.equals("gridLayout"))
         {
-            view.view.getConfig().setGraphLayout(KahinaGraphViewOptions.GRID_LAYOUT);
+            view.view.getConfig().setGraphLayout(KahinaGraphViewOptions.LAYOUT_GRID);
             view.view.setLayouter(new GridLayouter());
         }
         else if (command.equals("circularLayout"))
         {
-            view.view.getConfig().setGraphLayout(KahinaGraphViewOptions.CIRCULAR_LAYOUT);
+            view.view.getConfig().setGraphLayout(KahinaGraphViewOptions.LAYOUT_CIRCULAR);
             view.view.setLayouter(new CircularLayouter());
+        }
+        else if (command.equals("vertexVisAll"))
+        {
+            view.view.getConfig().setVertexVisibilityPolicy(KahinaGraphViewOptions.VERTICES_ALL_VISIBLE);
+        }
+        else if (command.equals("vertexVisSpecial"))
+        {
+            view.view.getConfig().setVertexVisibilityPolicy(KahinaGraphViewOptions.VERTICES_SPECIAL_VISIBLE);
+        }
+        else if (command.equals("vertexVisExplicit"))
+        {
+            view.view.getConfig().setVertexVisibilityPolicy(KahinaGraphViewOptions.VERTICES_EXPLICITLY_VISIBLE);
+        }
+        else if (command.equals("edgeVisAll"))
+        {
+            view.view.getConfig().setEdgeVisibilityPolicy(KahinaGraphViewOptions.EDGES_ALL_VISIBLE);
+        }
+        else if (command.equals("edgeVisOneVisible"))
+        {
+            view.view.getConfig().setEdgeVisibilityPolicy(KahinaGraphViewOptions.EDGES_WITH_ONE_NODE_VISIBLE);
+        }
+        else if (command.equals("edgeVisBothVisible"))
+        {
+            view.view.getConfig().setEdgeVisibilityPolicy(KahinaGraphViewOptions.EDGES_WITH_BOTH_NODES_VISIBLE);
+        }
+        else if (command.equals("edgeColIndependent"))
+        {
+            view.view.getConfig().setEdgeColoringPolicy(KahinaGraphViewOptions.EDGE_COLOR_INDEPENDENT);
+        }
+        else if (command.equals("edgeColFunction"))
+        {
+            view.view.getConfig().setEdgeColoringPolicy(KahinaGraphViewOptions.EDGE_COLOR_FUNCTION_OF_VERTEX_COLOR);
+        }
+        else if (command.equals("edgeColOnlySameColor"))
+        {
+            view.view.getConfig().setEdgeColoringPolicy(KahinaGraphViewOptions.EDGE_COLOR_BETWEEN_NODES_OF_SAME_COLOR);
+        }
+        else if (command.equals("spePosSeparate"))
+        {
+            view.view.getConfig().setSpecialVertexPositionPolicy(KahinaGraphViewOptions.SPECIAL_VERTICES_SEPARATE);
+        }
+        else if (command.equals("spePosMixed"))
+        {
+            view.view.getConfig().setSpecialVertexPositionPolicy(KahinaGraphViewOptions.SPECIAL_VERTICES_MIXED);
+        }
+        else if (command.equals("speColHighlight"))
+        {
+            view.view.getConfig().setSpecialVertexColoringPolicy(KahinaGraphViewOptions.SPECIAL_VERTICES_HIGHLIGHTED);
+        }
+        else if (command.equals("speColNormal"))
+        {
+            view.view.getConfig().setSpecialVertexColoringPolicy(KahinaGraphViewOptions.SPECIAL_VERTICES_NORMAL_COLOR);
         }
         else if (command.equals("Optimize"))
         {
