@@ -57,7 +57,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE));
+			dispatchEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE));
 		}
 
 	};
@@ -70,7 +70,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.PARSE));
+			dispatchEvent(new KahinaControlEvent(TraleSLDControlEventCommands.PARSE));
 		}
 
 	};
@@ -83,7 +83,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			processEvent(new KahinaControlEvent(TraleSLDControlEventCommands.RESTART));
+			dispatchEvent(new KahinaControlEvent(TraleSLDControlEventCommands.RESTART));
 		}
 
 	};
@@ -244,7 +244,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				processEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
+				dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
 			} 
 			else
 			{
@@ -258,7 +258,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { ListUtil.join(" ", sentence) }));
+				dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { ListUtil.join(" ", sentence) }));
 			} 
 			else
 			{
