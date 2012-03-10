@@ -184,7 +184,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, PrologJEditSourceCodeView.class);
 	}
 
-	@Override
+	//@Override
 	public void processEvent(KahinaEvent e)
 	{
 		super.processEvent(e);

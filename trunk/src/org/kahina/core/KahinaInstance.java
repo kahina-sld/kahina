@@ -61,7 +61,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
 		guiControl = new KahinaController();
 		//TODO: this is an ad hoc solution for testing
-		control = guiControl;
+		control = new KahinaController();
 		try
 		{
 			fillViewRegistry();
@@ -200,8 +200,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     	guiControl.processEvent(e);
     }
 
-	@Override
-	public void processEvent(KahinaEvent e)
+	//@Override
+    public void processEvent(KahinaEvent e)
 	{
 		if (e instanceof KahinaUpdateEvent)
 		{
