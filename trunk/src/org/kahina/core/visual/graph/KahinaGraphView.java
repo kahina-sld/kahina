@@ -28,7 +28,10 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     
     // special display properties for certain nodes
     protected HashMap<Integer, Color> vertexBorderColor;
-    protected Collection<Integer> visibleVertices; //everything is visible if this is null
+    //depending on vertex visibility policy, everything is visible if this is null
+    protected Collection<Integer> visibleVertices;
+    //depending on vertex visibility policy, everything is visible if this is null
+    protected Collection<Integer> specialVertices;
     
     // mappings from status values to display properties (TODO: use all of them)
     HashMap<Integer, Color> vertexStatusVertexColorEncoding;
@@ -118,6 +121,16 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         visibleVertices = null;
     }
     
+    public void setSpecialVertices(Collection<Integer> specVertices)
+    {
+        specialVertices = specVertices;
+    }
+    
+    public void turnSpecialVerticesBackToNormal()
+    {
+        specialVertices = null;
+    }
+    
     public Map<Integer, Integer> getXCoordinates()
     {
         return xCoord;
@@ -152,16 +165,44 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         redrawAgenda.add(-1);
     }
     
+    public boolean isVertexSpecial(int vertex)
+    {
+        if (specialVertices == null) return false;
+        return specialVertices.contains(vertex);
+    }
+    
     public boolean isVertexVisible(int vertex)
     {
-        if (visibleVertices == null)
+        switch (config.getVertexVisibilityPolicy())
         {
-            return true;
+            case KahinaGraphViewOptions.VERTICES_ALL_VISIBLE:
+            {
+                return true;
+            }
+            case KahinaGraphViewOptions.VERTICES_SPECIAL_VISIBLE:
+            {
+                if (specialVertices == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return specialVertices.contains(vertex);
+                }
+            }
+            case KahinaGraphViewOptions.VERTICES_EXPLICITLY_VISIBLE:
+            {
+                if (visibleVertices == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return visibleVertices.contains(vertex);
+                }
+            }
         }
-        else
-        {
-            return visibleVertices.contains(vertex);
-        }
+        return false;
     }
     
     public List<Integer> getVisibleNeighbors(int vertex)
@@ -175,6 +216,26 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
             }
         }
         return visNeighbors;
+    }
+    
+    public boolean isEdgeVisible(int vertex1, int vertex2)
+    {
+        switch (config.getEdgeVisibilityPolicy())
+        {
+            case KahinaGraphViewOptions.EDGES_ALL_VISIBLE:
+            {
+                return true;
+            }
+            case KahinaGraphViewOptions.EDGES_WITH_ONE_NODE_VISIBLE:
+            {
+                return isVertexVisible(vertex1) || isVertexVisible(vertex2);
+            }
+            case KahinaGraphViewOptions.EDGES_WITH_BOTH_NODES_VISIBLE:
+            {
+                return isVertexVisible(vertex1) && isVertexVisible(vertex2);
+            }
+        }
+        return false;
     }
     
     public Font getVertexFont(int vertex)
@@ -191,23 +252,27 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         }
     }
     
-    public Color getVertexColor(int nodeID)
+    public Color getVertexColor(int vertex)
     {
-        int status = model.getVertexStatus(nodeID);
-        Color col = vertexStatusVertexColorEncoding.get(status);
-        if (col == null)
-        {       
-            col = Color.WHITE;
-        }
-        if (nodeID == markedVertex)
+        if (config.getSpecialVertexColoringPolicy() == KahinaGraphViewOptions.SPECIAL_VERTICES_NORMAL_COLOR || isVertexSpecial(vertex))
         {
-            col = MARKING_COLOR;
+            int status = model.getVertexStatus(vertex);
+            Color col = vertexStatusVertexColorEncoding.get(status);
+            if (col == null)
+            {       
+                col = Color.WHITE;
+            }
+            if (vertex == markedVertex)
+            {
+                col = MARKING_COLOR;
+            }
+            if (col == Color.WHITE && config.getVertexShapePolicy() == KahinaGraphViewOptions.POINT_VERTICES)
+            {
+                col = Color.BLACK;
+            }
+            return col;
         }
-        if (col == Color.WHITE && config.getVertexShapePolicy() == KahinaGraphViewOptions.POINT_VERTICES)
-        {
-            col = Color.BLACK;
-        }
-        return col;
+        return Color.gray;
     }
     
     public void setVertexStatusVertexColorEncoding(int state, Color color)
@@ -255,16 +320,32 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         {
            return MARKING_COLOR;
         }
-        int status = model.getEdgeStatus(v1,v2);
-        Color col = edgeStatusEdgeColorEncoding.get(status);
-        if (col == null)
+        switch (config.getEdgeColoringPolicy())
         {
-            int v1status = model.getVertexStatus(v1);
-            int v2status = model.getVertexStatus(v2);
-            col = vertexStatusEdgeColorEncoding.get(v1status + "" + v2status);
-            if (col == null) col = Color.black;
-        } 
-        return col;
+            case KahinaGraphViewOptions.EDGE_COLOR_INDEPENDENT:
+            {
+                int status = model.getEdgeStatus(v1,v2);
+                Color col = edgeStatusEdgeColorEncoding.get(status);
+                if (col == null) return Color.black;
+                return col;
+            }
+            case KahinaGraphViewOptions.EDGE_COLOR_FUNCTION_OF_VERTEX_COLOR:
+            {
+                int v1status = model.getVertexStatus(v1);
+                int v2status = model.getVertexStatus(v2);
+                Color col = vertexStatusEdgeColorEncoding.get(v1status + "" + v2status);
+                if (col == null) return Color.black;
+                return col;
+            }
+            case KahinaGraphViewOptions.EDGE_COLOR_BETWEEN_NODES_OF_SAME_COLOR:
+            {
+                Color v1color = getVertexColor(v1);
+                Color v2color = getVertexColor(v2);
+                if (v1color.equals(v2color)) return v1color;
+                return Color.black;
+            }
+        }
+        return Color.black;
     }
     
     public Integer getVertexX(int vertex)

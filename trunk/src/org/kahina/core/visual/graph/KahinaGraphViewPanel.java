@@ -267,35 +267,25 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
         Set<Integer> processedVertices = new HashSet<Integer>();
         for (int vertex1 : view.getModel().getVertices())
         {
-            if (view.isVertexVisible(vertex1))
+            int x1 = view.getVertexX(vertex1);
+            int y1 = view.getVertexY(vertex1);
+            //TODO: treat undirected edges more efficiently (they are currently drawn twice!)
+            for (int vertex2 : view.getModel().getNeighbors(vertex1))
             {
-                int x1 = view.getVertexX(vertex1);
-                int y1 = view.getVertexY(vertex1);
-                //TODO: treat undirected edges more efficiently (they are currently drawn twice!)
-                for (int vertex2 : view.getModel().getNeighbors(vertex1))
+                if (view.isEdgeVisible(vertex1,vertex2) && !processedVertices.contains(vertex2))
                 {
-                    if (!processedVertices.contains(vertex2))
+                    int x2 = view.getVertexX(vertex2);
+                    int y2 = view.getVertexY(vertex2);
+                    String edgeLabel = view.getModel().getEdgeLabel(vertex1, vertex2);
+                    if (edgeLabel.length() > 0)
                     {
-                        if (view.isVertexVisible(vertex2))
-                        {
-                            int x2 = view.getVertexX(vertex2);
-                            int y2 = view.getVertexY(vertex2);
-                            String edgeLabel = view.getModel().getEdgeLabel(vertex1, vertex2);
-                            if (edgeLabel.length() > 0)
-                            {
-                                printEdgeLabel(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeLabel);
-                            }
-                            canvas.setColor(view.getEdgeColor(vertex1,vertex2));
-                            canvas.drawLine(x1, y1, x2, y2);
-                            edges++;
-                            //TODO: add this later (= treatment of directed edges)
-                            //printEdgeArrow(canvas, vertex1, vertex2); 
-                        }
-                        else
-                        {
-                            processedVertices.add(vertex2);
-                        }
+                        printEdgeLabel(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeLabel);
                     }
+                    canvas.setColor(view.getEdgeColor(vertex1,vertex2));
+                    canvas.drawLine(x1, y1, x2, y2);
+                    edges++;
+                    //TODO: add this later (= treatment of directed edges)
+                    //printEdgeArrow(canvas, vertex1, vertex2); 
                 }
             }
             //TODO: make treatment of the vertex agenda dependent on a flag indicating whether the graph is directed

@@ -249,10 +249,20 @@ public class CircularLayouter extends KahinaGraphLayouter
         double degree = 0.0;
         for (int i = 0; i < array.length; i++)
         {
-            int x = (int) (midpointX - 50 * zoomLevel * Math.sin(degree));
-            int y = (int) (midpointY - 50 * zoomLevel * Math.cos(degree));
-            xCoord.put(array[i],x);
-            yCoord.put(array[i],y);
+            if (view.getConfig().getSpecialVertexPositionPolicy() == KahinaGraphViewOptions.SPECIAL_VERTICES_SEPARATE && view.isVertexSpecial(array[i]))
+            {
+                int x = (int) (midpointX - 25 * zoomLevel * Math.sin(degree));
+                int y = (int) (midpointY - 25 * zoomLevel * Math.cos(degree));
+                xCoord.put(array[i],x);
+                yCoord.put(array[i],y);
+            }
+            else
+            {
+                int x = (int) (midpointX - 50 * zoomLevel * Math.sin(degree));
+                int y = (int) (midpointY - 50 * zoomLevel * Math.cos(degree));
+                xCoord.put(array[i],x);
+                yCoord.put(array[i],y);
+            }
             degree += degreeIncrement;
         }
     }
