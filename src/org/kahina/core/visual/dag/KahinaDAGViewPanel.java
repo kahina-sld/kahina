@@ -27,7 +27,7 @@ private static final long serialVersionUID = 6701252380309408342L;
     
     public KahinaDAGViewPanel(KahinaController control)
     {       
-        view = new KahinaDAGView(control);
+        view = new KahinaDAGView(control, new LayeredLayouter());
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaDAGViewListener(this));
     }
@@ -57,12 +57,12 @@ private static final long serialVersionUID = 6701252380309408342L;
         BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = newImage.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;
-        if (view.getAntialiasingPolicy() == KahinaTreeViewOptions.ANTIALIASING)
+        if (view.getConfig().getAntialiasingPolicy() == KahinaTreeViewOptions.ANTIALIASING)
         {
             canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
         //determine font size
-        int fontSize = view.getZoomLevel();
+        int fontSize = view.getConfig().getNodeSize();
         Font font = new Font("Arial", Font.PLAIN, fontSize);
         canvas.setFont(font);
 
@@ -97,9 +97,9 @@ private static final long serialVersionUID = 6701252380309408342L;
         this.setMinimumSize(newD);
         this.setMaximumSize(newD);
         this.setPreferredSize(newD);
-        this.setBackground(view.bgColor);
-        canvas.setColor(view.bgColor);
-        //little hack to account for small trees
+        this.setBackground(view.getConfig().getBackgroundColor());
+        canvas.setColor(view.getConfig().getBackgroundColor());
+        //little hack to account for small DAGs
         canvas.fillRect(0, 0, 2000, 2000);
         canvas.fillRect(0, 0, this.getSize().width, this.getSize().height);
     }
@@ -107,15 +107,10 @@ private static final long serialVersionUID = 6701252380309408342L;
     public void printDAGNodes(Graphics2D cnv)
     {
         //TODO: make this dependent on current scrolling window, ONLY draw nodes there (redraw happens anyway!)
-        //print nodes of the tree
-        for (int i = 0; i < view.nodeLevels.size(); i++)
+        for (int node : view.getModel().getNodeIDIterator())
         {
-            List<Integer> nodes = view.nodeLevels.get(i);
-            for (int j = 0; j < nodes.size(); j++)
-            {
-                printBoxAroundNodeTag(cnv, nodes.get(j));               
-                printNodeTag(cnv, nodes.get(j));
-            }
+            printBoxAroundNodeTag(cnv, node);               
+            printNodeTag(cnv, node);
         }
     }
     
@@ -124,7 +119,7 @@ private static final long serialVersionUID = 6701252380309408342L;
         int x = view.getNodeX(nodeID);
         int y = view.getNodeY(nodeID);
         int width = view.getNodeWidth(nodeID);
-        int height = view.getNodeHeight(nodeID);
+        int height = view.getConfig().getNodeSize();
         Color color = view.getNodeColor(nodeID);
         if (color != null)
         { 
@@ -152,7 +147,7 @@ private static final long serialVersionUID = 6701252380309408342L;
         canvas.setFont(view.getNodeFont(nodeID));      
         drawNodeTagWithLineBreaks(nodeID, canvas);
         canvas.setStroke(new BasicStroke(1));
-        canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, view.getZoomLevel()));
+        canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, view.getConfig().getZoomLevel()));
     }
     
     private void drawNodeTagWithLineBreaks(int nodeID, Graphics2D canvas)
@@ -176,33 +171,29 @@ private static final long serialVersionUID = 6701252380309408342L;
     {
         // create lines and their tags
         canvas.setColor(Color.BLACK);
-        for (int i = 0; i < view.nodeLevels.size(); i++)
-        {
-            List<Integer> nodes = view.nodeLevels.get(i);
-            for (int nodeID : nodes)
-            {       
-                List<Integer> incomingEdges = view.getModel().getIncomingEdges(nodeID);
-                if (incomingEdges.size() > 0)
+        for (int nodeID : view.getModel().getNodeIDIterator())
+        {       
+            List<Integer> incomingEdges = view.getModel().getIncomingEdges(nodeID);
+            if (incomingEdges.size() > 0)
+            {
+                for (int j = 0; j < incomingEdges.size(); j++)
                 {
-                    for (int j = 0; j < incomingEdges.size(); j++)
+                    int ancestor = view.getModel().getStartNode(incomingEdges.get(j));
+                    if (!view.displaysNode(ancestor))
                     {
-                        int ancestor = view.getModel().getStartNode(incomingEdges.get(j));
-                        if (!view.displaysNode(ancestor))
-                        {
-                            incomingEdges.addAll(view.getModel().getIncomingEdges(ancestor));
-                        }
-                        else
-                        {
-                            int x1 = view.getNodeX(ancestor) + view.getNodeWidth(ancestor) / 2;
-                            int y1 = view.getNodeY(ancestor) + view.getNodeHeight(ancestor);
-                            int x2 = view.getNodeX(nodeID) + view.getNodeWidth(nodeID) / 2;
-                            int y2 = view.getNodeY(nodeID);
-                            canvas.drawLine(x1, y1, x2, y2);
-                                    
-                            //TODO: add this soon
-                            printEdgeLabel(canvas,incomingEdges.get(j), x1, x2, y1, y2);
-                            //printEdgeArrow(canvas, nodes.get(j));  
-                        }
+                        incomingEdges.addAll(view.getModel().getIncomingEdges(ancestor));
+                    }
+                    else
+                    {
+                        int x1 = view.getNodeX(ancestor) + view.getNodeWidth(ancestor) / 2;
+                        int y1 = view.getNodeY(ancestor) + view.getConfig().getNodeSize();
+                        int x2 = view.getNodeX(nodeID) + view.getNodeWidth(nodeID) / 2;
+                        int y2 = view.getNodeY(nodeID);
+                        canvas.drawLine(x1, y1, x2, y2);
+                                
+                        //TODO: add this soon
+                        printEdgeLabel(canvas,incomingEdges.get(j), x1, x2, y1, y2);
+                        //printEdgeArrow(canvas, nodes.get(j));  
                     }
                 }
             }

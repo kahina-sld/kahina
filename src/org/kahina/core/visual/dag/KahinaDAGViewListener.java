@@ -28,11 +28,11 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
     @Override
 	public void mouseClicked(MouseEvent e)
     {
-        int clickedNode = view.view.nodeAtCoordinates(e.getX(), e.getY());
+        int clickedNode = view.view.getLayouter().getNodeAtCoordinates(e.getX(), e.getY());
         if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
         {
             view.view.getModel().toggleCollapse(clickedNode);
-            view.view.recalculate();
+            view.view.getLayouter().refreshCoordinates();
             view.updateDisplayAndRepaintFromEventDispatchThread();
             view.repaint();
         }
@@ -68,59 +68,59 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
         String command = e.getActionCommand();
         if (command.equals("Zoom In"))
         {
-            view.view.zoomIn();
-            view.view.recalculate();
+            view.view.getConfig().zoomIn();
+            view.view.getLayouter().refreshCoordinates();
         }
         else if (command.equals("Zoom Out"))
         {
-            view.view.zoomOut();
-            view.view.recalculate();
+            view.view.getConfig().zoomOut();
+            view.view.getLayouter().refreshCoordinates();
         }
         else if (command.equals("Increase vertical distance"))
         {
-            view.view.increaseVerticalDistance();
-            view.view.recalculate();
+            view.view.getConfig().increaseVerticalDistance();
+            view.view.getLayouter().refreshCoordinates();
         }
         else if (command.equals("Decrease vertical distance"))
         {
-            view.view.decreaseVerticalDistance();
-            view.view.recalculate();
+            view.view.getConfig().decreaseVerticalDistance();
+            view.view.getLayouter().refreshCoordinates();
         }
         else if (command.equals("Increase horizontal distance"))
         {
-            view.view.increaseHorizontalDistance();
-            view.view.recalculate();
+            view.view.getConfig().increaseHorizontalDistance();
+            view.view.getLayouter().refreshCoordinates();
         }
         else if (command.equals("Decrease horizontal distance"))
         {
-            view.view.decreaseHorizontalDistance();
-            view.view.recalculate();
+            view.view.getConfig().decreaseHorizontalDistance();
+            view.view.getLayouter().refreshCoordinates();
         }
         else if (command.equals("Antialiasing On"))
         {
-            view.view.setAntialiasingPolicy(KahinaTreeViewOptions.ANTIALIASING);
+            view.view.getConfig().setAntialiasingPolicy(KahinaTreeViewOptions.ANTIALIASING);
         }
         else if (command.equals("Antialiasing Off"))
         {
-            view.view.setAntialiasingPolicy(KahinaTreeViewOptions.NO_ANTIALIASING);
+            view.view.getConfig().setAntialiasingPolicy(KahinaTreeViewOptions.NO_ANTIALIASING);
         }
         else if (command.endsWith("0 %"))
         {
             int zoomLevel = Integer.parseInt(command.substring(0, command.length() - 3));
-            view.view.setZoomLevel(zoomLevel);
-            view.view.recalculate();
+            view.view.getConfig().setZoomLevel(zoomLevel);
+            view.view.getLayouter().refreshCoordinates();
         }
         else if (command.endsWith(" vertical distance"))
         {
             int vertDist = Integer.parseInt(command.substring(0, command.length() - 18));
-            view.view.setVerticalDistance(vertDist);
-            view.view.recalculate();
+            view.view.getConfig().setVerticalDistance(vertDist);
+            view.view.getLayouter().refreshCoordinates();
         }
         else if (command.endsWith(" horizontal distance"))
         {
             int horiDist = Integer.parseInt(command.substring(0, command.length() - 20));
-            view.view.setHorizontalDistance(horiDist);
-            view.view.recalculate();
+            view.view.getConfig().setHorizontalDistance(horiDist);
+            view.view.getLayouter().refreshCoordinates();
         }
         else if (command.equals("Save as PNG"))
         {

@@ -7,6 +7,7 @@ import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.dag.KahinaDAGView;
+import org.kahina.core.visual.dag.LayeredLayouter;
 import org.kahina.tulipa.TulipaInstance;
 import org.kahina.tulipa.TulipaStepStatus;
 import org.kahina.tulipa.visual.grammar.TulipaGrammarView;
@@ -23,7 +24,7 @@ public class TulipaGUI extends KahinaGUI
         super(stepType, instance, control);
         this.instance = instance;      
         
-        mainDAGView = new KahinaDAGView(control);
+        mainDAGView = new KahinaDAGView(control, new LayeredLayouter());
         mainDAGView.setTitle("Item Graph");
         views.add(mainDAGView);
         livingViews.add(mainDAGView); 
@@ -32,8 +33,8 @@ public class TulipaGUI extends KahinaGUI
         mainDAGView.setStatusColorEncoding(TulipaStepStatus.PRODUCTIVE, Color.WHITE);
         mainDAGView.setStatusColorEncoding(TulipaStepStatus.UNPRODUCTIVE, new Color(183,50,50));
         mainDAGView.setStatusColorEncoding(TulipaStepStatus.PREVENTED_PRODUCTION, Color.RED);
-        mainDAGView.setVerticalDistance(6);
-        mainDAGView.setHorizontalDistance(2);
+        mainDAGView.getConfig().setVerticalDistance(6);
+        mainDAGView.getConfig().setHorizontalDistance(2);
         
         grammarView = new TulipaGrammarView(control);
         grammarView.setTitle("RCG grammar");
