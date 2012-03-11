@@ -157,10 +157,12 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         else if (command.equals("spePosSeparate"))
         {
             view.view.getConfig().setSpecialVertexPositionPolicy(KahinaGraphViewOptions.SPECIAL_VERTICES_SEPARATE);
+            view.view.layout.refreshCoordinates();
         }
         else if (command.equals("spePosMixed"))
         {
             view.view.getConfig().setSpecialVertexPositionPolicy(KahinaGraphViewOptions.SPECIAL_VERTICES_MIXED);
+            view.view.layout.refreshCoordinates();
         }
         else if (command.equals("speColHighlight"))
         {
@@ -176,14 +178,14 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         }
         else if (command.equals("optVisVrtAllEdges"))
         {
-            for (int v : view.view.visibleVertices)
+            for (int v : view.view.getVisibleVertices())
             {
                 view.view.layout.optimizeVtxPosAllEdges(v);
             }
         }
         else if (command.equals("optVisVrtVisEdges"))
         {
-            for (int v : view.view.visibleVertices)
+            for (int v : view.view.getVisibleVertices())
             {
                 view.view.layout.optimizeVtxPosVisibleEdges(v);
             }
