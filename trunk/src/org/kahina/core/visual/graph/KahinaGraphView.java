@@ -205,6 +205,40 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         return false;
     }
     
+    public Collection<Integer> getVisibleVertices()
+    {
+        switch (config.getVertexVisibilityPolicy())
+        {
+            case KahinaGraphViewOptions.VERTICES_ALL_VISIBLE:
+            {
+                return model.getVertices();
+            }
+            case KahinaGraphViewOptions.VERTICES_SPECIAL_VISIBLE:
+            {
+                if (specialVertices == null)
+                {
+                    return new LinkedList<Integer>();
+                }
+                else
+                {
+                    return specialVertices;
+                }
+            }
+            case KahinaGraphViewOptions.VERTICES_EXPLICITLY_VISIBLE:
+            {
+                if (visibleVertices == null)
+                {
+                    return model.getVertices();
+                }
+                else
+                {
+                    return visibleVertices;
+                }
+            }
+        }
+        return new LinkedList<Integer>();
+    }
+    
     public List<Integer> getVisibleNeighbors(int vertex)
     {
         List<Integer> visNeighbors = new LinkedList<Integer>();
@@ -326,7 +360,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
             {
                 int status = model.getEdgeStatus(v1,v2);
                 Color col = edgeStatusEdgeColorEncoding.get(status);
-                if (col == null) return Color.black;
+                if (col == null) return Color.gray;
                 return col;
             }
             case KahinaGraphViewOptions.EDGE_COLOR_FUNCTION_OF_VERTEX_COLOR:
@@ -334,7 +368,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
                 int v1status = model.getVertexStatus(v1);
                 int v2status = model.getVertexStatus(v2);
                 Color col = vertexStatusEdgeColorEncoding.get(v1status + "" + v2status);
-                if (col == null) return Color.black;
+                if (col == null) return Color.gray;
                 return col;
             }
             case KahinaGraphViewOptions.EDGE_COLOR_BETWEEN_NODES_OF_SAME_COLOR:
