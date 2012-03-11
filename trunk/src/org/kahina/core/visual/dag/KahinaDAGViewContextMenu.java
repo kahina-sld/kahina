@@ -32,7 +32,7 @@ public class KahinaDAGViewContextMenu extends JPopupMenu
         for (int i = 6; i <= 30; i += 1)
         {
             JRadioButtonMenuItem sizeItem = new JRadioButtonMenuItem(i + "0 %");
-            if (i == v.getZoomLevel()) sizeItem.setSelected(true);
+            if (i == v.getConfig().getZoomLevel()) sizeItem.setSelected(true);
             sizeItem.addActionListener(l);
             sizeGroup.add(sizeItem);
             zoomSubmenu.add(sizeItem);
@@ -55,7 +55,7 @@ public class KahinaDAGViewContextMenu extends JPopupMenu
         {
             JRadioButtonMenuItem distanceItem = new JRadioButtonMenuItem(i + " px");
             distanceItem.setActionCommand(i + " vertical distance");
-            if (i == v.getVerticalDistance()) distanceItem.setSelected(true);
+            if (i == v.getConfig().getVerticalDistance()) distanceItem.setSelected(true);
             distanceItem.addActionListener(l);
             verticalDistanceGroup.add(distanceItem);
             verticalDistanceSubmenu.add(distanceItem);
@@ -78,7 +78,7 @@ public class KahinaDAGViewContextMenu extends JPopupMenu
         {
             JRadioButtonMenuItem distanceItem = new JRadioButtonMenuItem(i + " px");
             distanceItem.setActionCommand(i + " horizontal distance");
-            if (i == v.getHorizontalDistance()) distanceItem.setSelected(true);
+            if (i == v.getConfig().getHorizontalDistance()) distanceItem.setSelected(true);
             distanceItem.addActionListener(l);
             horizontalDistanceGroup.add(distanceItem);
             horizontalDistanceSubmenu.add(distanceItem);
@@ -99,7 +99,7 @@ public class KahinaDAGViewContextMenu extends JPopupMenu
         antialiasingOffItem.addActionListener(l);
         antialiasingGroup.add(antialiasingOffItem);
         antialiasingSubmenu.add(antialiasingOffItem);
-        switch (v.getAntialiasingPolicy())
+        switch (v.getConfig().getAntialiasingPolicy())
         {
             case 0:
             {

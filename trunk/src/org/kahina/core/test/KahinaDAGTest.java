@@ -15,6 +15,7 @@ import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
 import org.kahina.core.gui.windows.KahinaDefaultWindow;
 import org.kahina.core.visual.dag.KahinaDAGView;
+import org.kahina.core.visual.dag.LayeredLayouter;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -33,10 +34,10 @@ public class KahinaDAGTest
             
             KahinaController control = new KahinaController();
             
-            KahinaDAGView v = new KahinaDAGView(control);
+            KahinaDAGView v = new KahinaDAGView(control, new LayeredLayouter());
             v.setTitle("Kahina DAGView Demo");
-            v.setVerticalDistance(5);
-            v.setHorizontalDistance(30);
+            v.getConfig().setVerticalDistance(5);
+            v.getConfig().setHorizontalDistance(30);
             v.display(dag);
             v.setStatusColorEncoding(0,new Color(255,255,255));
             v.setStatusColorEncoding(1,new Color(255,0,0));
