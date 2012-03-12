@@ -51,7 +51,7 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
     public void actionPerformed(ActionEvent e)
     {
         String command = e.getActionCommand();
-        control.processEvent(new KahinaControlEvent(command));
+        wm.kahina.dispatchEvent(new KahinaControlEvent(command));
     }
     
     public int getWindowType()

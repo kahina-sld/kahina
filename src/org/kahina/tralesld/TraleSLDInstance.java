@@ -95,6 +95,12 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	private List<String> sentence = Collections.emptyList();
 
+	
+   public TraleSLDInstance()
+    {
+        this(false);
+    }
+	   
 	public TraleSLDInstance(boolean withWorkbench)
 	{
 	    this.withAuxiliaryInstance = withWorkbench;
