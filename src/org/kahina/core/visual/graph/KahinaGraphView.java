@@ -44,7 +44,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     
     //allow one vertex to be marked
     private int markedVertex;
-    public static final Color MARKING_COLOR = Color.ORANGE;
+    public static final Color MARKING_COLOR = new Color(255, 163, 0);
     
     //redrawing agenda for less time-consuming redraws; also allows to influence the ordering
     //special entry -1 means "redraw everything"

@@ -19,7 +19,7 @@ import org.kahina.core.visual.tree.WidthVector;
 
 public class LayeredLayouter extends KahinaDAGLayouter
 {
-    public static boolean VERBOSE = false;
+    public static boolean VERBOSE = true;
     
     // layered structure for drawing; also used for reverse indexing
     ArrayList<List<Integer>> nodeLevels;
