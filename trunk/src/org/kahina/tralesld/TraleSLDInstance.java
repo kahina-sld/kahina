@@ -38,6 +38,7 @@ import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
 
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge>
 {
+	boolean withAuxiliaryInstance = false;
 	
 	// TODO extract a generic commander superclass from QTypeCommander and move
 	// the command stuff in TraleSLDInstance to a TraleSLDCommander. QTypeCommander
@@ -94,8 +95,10 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	private List<String> sentence = Collections.emptyList();
 
-	public TraleSLDInstance()
+	public TraleSLDInstance(boolean withWorkbench)
 	{
+	    this.withAuxiliaryInstance = withWorkbench;
+	    
 		COMPILE_ACTION.setEnabled(false);
 		PARSE_ACTION.setEnabled(false); // need grammar first
 		RESTART_ACTION.setEnabled(false); // need grammar and sentence first
@@ -166,13 +169,13 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	@Override
 	protected TraleSLDGUI createGUI(KahinaController guiController)
 	{
-		return new TraleSLDGUI(TraleSLDStep.class, this, guiController);
+		return new TraleSLDGUI(TraleSLDStep.class, this, guiController, withAuxiliaryInstance);
 	}
 
 	@Override
 	protected TraleSLDState createState()
 	{
-		return new TraleSLDState(control);
+		return new TraleSLDState(control, withAuxiliaryInstance);
 	}
 
 	@Override
@@ -335,7 +338,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	public static void main(String[] args)
 	{
-		(new TraleSLDInstance()).start(args);
+		(new TraleSLDInstance(false)).start(args);
 	}
 
 }

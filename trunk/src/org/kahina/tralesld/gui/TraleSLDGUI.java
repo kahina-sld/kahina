@@ -58,11 +58,13 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	//needed to generate additional views (e.g. workbenches) after initialization
 	protected KahinaController control;
 
-	public TraleSLDGUI(Class<? extends KahinaStep> stepType, TraleSLDInstance instance, KahinaController control)
+	public TraleSLDGUI(Class<? extends KahinaStep> stepType, TraleSLDInstance instance, KahinaController control, boolean withAuxiliaryInstance)
 	{
 		super(stepType, instance, control);
 		this.instance = instance;
 		this.control = control;
+		
+		this.withWorkbench = withAuxiliaryInstance;
 
 		mainChartView = new KahinaChartView(control);
 		mainChartView.setTitle("Chart");
