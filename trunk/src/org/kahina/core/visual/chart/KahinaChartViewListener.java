@@ -13,15 +13,19 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
 
 public class KahinaChartViewListener extends MouseAdapter implements ActionListener
 {
     KahinaChartViewPanel view;
     
-    public KahinaChartViewListener(KahinaChartViewPanel view)
+    KahinaInstance<?,?,?> kahina;
+    
+    public KahinaChartViewListener(KahinaChartViewPanel view, KahinaInstance<?,?,?> kahina)
     {
         this.view = view;
+        this.kahina = kahina;
     }
     
     @Override
@@ -29,7 +33,7 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
     {
         int clickedEdge = view.view.edgeAtCoordinates(e.getX() - 5, e.getY() - 5);
         //marking and redrawing happens indirectly
-        view.view.control.processEvent(new KahinaEdgeSelectionEvent(clickedEdge));
+        kahina.dispatchEvent(new KahinaEdgeSelectionEvent(clickedEdge));
     }
     
     @Override

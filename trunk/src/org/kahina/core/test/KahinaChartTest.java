@@ -11,6 +11,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.kahina.core.KahinaDefaultInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.visual.chart.KahinaChartView;
@@ -42,7 +43,7 @@ public class KahinaChartTest
             v.setStatusFontEncoding(2, new Font(Font.SANS_SERIF,Font.BOLD, 10));
             v.setStatusFontEncoding(3, new Font(Font.SANS_SERIF,Font.BOLD, 10));
 
-            KahinaChartViewPanel vp = new KahinaChartViewPanel();
+            KahinaChartViewPanel vp = new KahinaChartViewPanel(new KahinaDefaultInstance());
             JScrollPane vpp = new JScrollPane(vp);
             vpp.setBounds(0, 0, 500, 300);
             JFrame w = new JFrame("Kahina ChartView Demo");
