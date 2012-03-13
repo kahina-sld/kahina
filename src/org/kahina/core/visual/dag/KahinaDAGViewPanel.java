@@ -8,6 +8,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -109,8 +110,28 @@ private static final long serialVersionUID = 6701252380309408342L;
         //TODO: make this dependent on current scrolling window, ONLY draw nodes there (redraw happens anyway!)
         for (int node : view.getModel().getNodeIDIterator())
         {
-            printBoxAroundNodeTag(cnv, node);               
-            printNodeTag(cnv, node);
+            printDAGNode(cnv, node);               
+        }
+    }
+    
+    public void printDAGNode(Graphics2D cnv, int node)
+    {
+        if (view.isNodeVisible(node))
+        {
+            if (view.getConfig().getVertexShapePolicy() == KahinaDAGViewOptions.BOX_VERTICES)
+            {
+                printBoxAroundNodeTag(cnv, node);    
+                printNodeLabel(cnv, node);
+            }
+            else if (view.getConfig().getVertexShapePolicy() == KahinaDAGViewOptions.OVAL_VERTICES)
+            {
+                printOvalAroundNodeTag(cnv, node);
+                printNodeLabel(cnv, node);
+            }
+            else if (view.getConfig().getVertexShapePolicy() == KahinaDAGViewOptions.POINT_VERTICES)
+            {
+                printNodePoint(cnv, node);
+            }
         }
     }
     
@@ -142,12 +163,63 @@ private static final long serialVersionUID = 6701252380309408342L;
         }
     }   
     
-    public void printNodeTag(Graphics2D canvas, int nodeID)
+    public void printOvalAroundNodeTag(Graphics2D canvas, int nodeID)
+    {
+        int x = view.getNodeX(nodeID);
+        int y = view.getNodeY(nodeID);
+        int width = view.getNodeWidth(nodeID);
+        int height = view.getConfig().getNodeSize();
+        Color color = view.getNodeColor(nodeID);
+        if (color != null)
+        { 
+            canvas.setColor(color);
+            canvas.fillRect(x, y, width, height);
+            canvas.setColor(Color.BLACK);
+            canvas.drawOval(x, y, width, height);
+            if (view.getMarkedNode() == nodeID)
+            {
+                canvas.setColor(Color.YELLOW);
+                canvas.setStroke(new BasicStroke(2));
+                canvas.drawOval(x - 2, y - 2, width + 4, height + 4);
+            }
+            if (view.getNodeBorderColor(nodeID) != null)
+            {
+                canvas.setColor(view.getNodeBorderColor(nodeID));
+                canvas.setStroke(new BasicStroke(2));
+                canvas.drawOval(x - 2, y - 2, width + 4, height + 4);
+            }
+        }
+    }  
+    
+    public void printNodePoint(Graphics2D canvas, int nodeID)
+    {
+        int size = view.getConfig().getNodeSize();
+        int x = view.getNodeX(nodeID) - size / 2;
+        int y = view.getNodeY(nodeID) - size / 2;
+        Color color = view.getNodeColor(nodeID);
+        if (color != null)
+        { 
+            canvas.setColor(color);
+            canvas.fillOval(x, y, size, size);
+            if (view.getMarkedNode() == nodeID)
+            {
+                canvas.setColor(Color.YELLOW);
+                canvas.drawOval(x - 1, y - 1, size + 2, size + 2);
+            }
+            if (view.getNodeBorderColor(nodeID) != null)
+            {
+                canvas.setColor(view.getNodeBorderColor(nodeID));
+                canvas.drawOval(x - 1, y - 1, size + 2, size + 2);
+            }
+        }
+    }
+    
+    public void printNodeLabel(Graphics2D canvas, int nodeID)
     {
         canvas.setFont(view.getNodeFont(nodeID));      
         drawNodeTagWithLineBreaks(nodeID, canvas);
         canvas.setStroke(new BasicStroke(1));
-        canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, view.getConfig().getZoomLevel()));
+        canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, view.getConfig().getNodeSize()));
     }
     
     private void drawNodeTagWithLineBreaks(int nodeID, Graphics2D canvas)
@@ -158,7 +230,7 @@ private static final long serialVersionUID = 6701252380309408342L;
         String[] stringParts = tag.split("\\\\n");   
         canvas.setColor(Color.BLACK);
         int x = view.getNodeX(nodeID);
-        int y = view.getNodeY(nodeID) + fm.getHeight(); 
+        int y = view.getNodeY(nodeID) + view.getConfig().getNodeSize(); 
         
         for (String part : stringParts)
         {
@@ -192,7 +264,7 @@ private static final long serialVersionUID = 6701252380309408342L;
                         canvas.drawLine(x1, y1, x2, y2);
                                 
                         //TODO: add this soon
-                        printEdgeLabel(canvas,incomingEdges.get(j), x1, x2, y1, y2);
+                        printEdgeLabel(canvas, new Point((x1 + x2)/2, (y1 + y2)/2), view.getModel().getEdgeLabel(incomingEdges.get(j)));
                         //printEdgeArrow(canvas, nodes.get(j));  
                     }
                 }
@@ -200,21 +272,34 @@ private static final long serialVersionUID = 6701252380309408342L;
         }
     }
     
-    public void printEdgeLabel(Graphics canvas, int edgeID, int x1, int x2, int y1, int y2)
+    public void printEdgeLabel(Graphics canvas, Point center, String label)
     {
-        FontMetrics fm = canvas.getFontMetrics();
-        //TODO: better solution than using root font
-        canvas.setFont(view.getNodeFont(0));
-        String tag = view.getModel().getEdgeLabel(edgeID);
-        String[] stringParts = tag.split("\\\\n");   
-        canvas.setColor(Color.BLACK);
-        int x = (x1 + x2)/2;
-        int y = (y1 + y2)/2;
-        
-        for (String part : stringParts)
+        int edgeLabels = 0;
+        if (label != null && view.getConfig().getEdgeLabelPolicy() != KahinaDAGViewOptions.NO_EDGE_LABELS)
         {
-            canvas.drawString(part, x, y); 
-            y += fm.getHeight();
+            FontMetrics fm = canvas.getFontMetrics();
+            int width = fm.stringWidth(label);
+            int height = fm.getHeight();
+            canvas.setColor(Color.BLACK);
+            //print edge tag
+            int x = center.x - width / 2;
+            int y = center.y;
+            if (view.getConfig().getEdgeLabelPolicy() == KahinaDAGViewOptions.OVAL_EDGE_LABELS)
+            {
+                canvas.setColor(Color.WHITE);
+                canvas.fillOval(x - 2, y - height + 2, width + 4, height + 2);
+                canvas.setColor(Color.BLACK);
+                canvas.drawOval(x - 2, y - height + 2, width + 4, height + 2);
+            }
+            else if (view.getConfig().getEdgeLabelPolicy() == KahinaDAGViewOptions.BOXED_EDGE_LABELS)
+            {
+                canvas.setColor(Color.WHITE);
+                canvas.fillRect(x - 2, y - height + 2, width + 4, height + 2);
+                canvas.setColor(Color.BLACK);
+                canvas.drawRect(x - 2, y - height + 2, width + 4, height + 2);
+            }
+            canvas.drawString(label, x, y);
+            edgeLabels++;
         }
     }
     
