@@ -1,9 +1,11 @@
 /**
-* Provides a datatype for charts, i.e. collections of labeled edges ranging over predefined segments.
+* Provides a datatype for charts (collections of labeled edges ranging over predefined segments).
 * <p>
 * The abstract class {@link org.kahina.core.data.chart.KahinaChart}
 * defines the functionality that any chart implementation is expected so support.
-* This includes 
+* Most prominently, this includes the possibility to add edges, to modify the appearance of edges and segments,
+* and to define a dependency hierarchy on the chart edges, e.g. for highlighting the components of edges
+* which represent a combination of smaller edges.
 * Any class implementing {@link org.kahina.core.data.chart.KahinaChart} can be visualized
 * via the {@link org.kahina.core.data.visual.chart} package.
 * <p>
