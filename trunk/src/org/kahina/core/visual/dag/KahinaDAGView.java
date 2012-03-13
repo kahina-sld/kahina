@@ -25,10 +25,6 @@ import org.kahina.core.data.dag.KahinaMemDAG;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.graph.KahinaGraphLayouter;
-import org.kahina.core.visual.graph.KahinaGraphViewConfiguration;
-import org.kahina.core.visual.tree.KahinaTreeViewOptions;
-import org.kahina.core.visual.tree.WidthVector;
 
 public class KahinaDAGView extends KahinaView<KahinaDAG>
 {
@@ -258,4 +254,10 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
 	{
         layout.computeLayout();
 	}
+
+    public boolean isNodeVisible(int node)
+    {
+        // TODO Auto-generated method stub
+        return true;
+    }
 }

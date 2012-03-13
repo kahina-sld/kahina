@@ -3,7 +3,6 @@ package org.kahina.core.visual.dag;
 import java.awt.Color;
 
 import org.kahina.core.visual.KahinaViewConfiguration;
-import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 
 public class KahinaDAGViewConfiguration extends KahinaViewConfiguration
 {
@@ -14,7 +13,9 @@ public class KahinaDAGViewConfiguration extends KahinaViewConfiguration
     
     private Color bgColor = Color.WHITE;
     
-    private int antialiasingPolicy = KahinaTreeViewOptions.ANTIALIASING;
+    private int vertexShapePolicy = KahinaDAGViewOptions.BOX_VERTICES;
+    private int edgeLabelPolicy = KahinaDAGViewOptions.NO_EDGE_LABELS;
+    private int antialiasingPolicy = KahinaDAGViewOptions.ANTIALIASING;
     
     public void zoomIn()
     {
@@ -165,6 +166,40 @@ public class KahinaDAGViewConfiguration extends KahinaViewConfiguration
     public Color getBackgroundColor()
     {
         return bgColor;
+    }
+    
+    public int getVertexShapePolicy()
+    {
+        return vertexShapePolicy;
+    }
+
+    public void setVertexShapePolicy(int newPolicy)
+    {
+        if (newPolicy >= 0 && newPolicy <= 2)
+        {
+            vertexShapePolicy = newPolicy;
+        } 
+        else
+        {
+            System.err.println("WARNING: unknown vertex shape policy value " + newPolicy);
+        }
+    }
+    
+    public int getEdgeLabelPolicy()
+    {
+        return edgeLabelPolicy;
+    }
+
+    public void setEdgeLabelPolicy(int edgeLabelPolicy)
+    {
+        if (edgeLabelPolicy >= 0 && edgeLabelPolicy <= 3)
+        {
+            this.edgeLabelPolicy = edgeLabelPolicy;
+        } 
+        else
+        {
+            System.err.println("WARNING: unknown edge label policy value " + edgeLabelPolicy);
+        }
     }
     
     public int getAntialiasingPolicy()

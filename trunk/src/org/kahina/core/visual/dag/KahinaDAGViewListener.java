@@ -12,7 +12,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.gui.event.KahinaSelectionEvent;
-import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 
 public class KahinaDAGViewListener extends MouseAdapter implements ActionListener
 {
@@ -96,13 +95,49 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
             view.view.getConfig().decreaseHorizontalDistance();
             view.view.getLayouter().refreshCoordinates();
         }
+        else if (command.equals("Increase Node Size"))
+        {
+            view.view.getConfig().increaseNodeSize();
+        }
+        else if (command.equals("Decrease Node Size"))
+        {
+            view.view.getConfig().decreaseNodeSize();
+        }
+        else if (command.equals("Point vertices"))
+        {
+            view.view.getConfig().setVertexShapePolicy(KahinaDAGViewOptions.POINT_VERTICES);
+        }
+        else if (command.equals("Box vertices"))
+        {
+            view.view.getConfig().setVertexShapePolicy(KahinaDAGViewOptions.BOX_VERTICES);
+        }
+        else if (command.equals("Oval vertices"))
+        {
+            view.view.getConfig().setVertexShapePolicy(KahinaDAGViewOptions.OVAL_VERTICES);
+        }
+        else if (command.equals("No edge labels"))
+        {
+            view.view.getConfig().setEdgeLabelPolicy(KahinaDAGViewOptions.NO_EDGE_LABELS);
+        }
+        else if (command.equals("Simple edge labels"))
+        {
+            view.view.getConfig().setEdgeLabelPolicy(KahinaDAGViewOptions.SIMPLE_EDGE_LABELS);
+        }
+        else if (command.equals("Oval edge labels"))
+        {
+            view.view.getConfig().setEdgeLabelPolicy(KahinaDAGViewOptions.OVAL_EDGE_LABELS);
+        }
+        else if (command.equals("Boxed edge labels"))
+        {
+            view.view.getConfig().setEdgeLabelPolicy(KahinaDAGViewOptions.BOXED_EDGE_LABELS);
+        }
         else if (command.equals("Antialiasing On"))
         {
-            view.view.getConfig().setAntialiasingPolicy(KahinaTreeViewOptions.ANTIALIASING);
+            view.view.getConfig().setAntialiasingPolicy(KahinaDAGViewOptions.ANTIALIASING);
         }
         else if (command.equals("Antialiasing Off"))
         {
-            view.view.getConfig().setAntialiasingPolicy(KahinaTreeViewOptions.NO_ANTIALIASING);
+            view.view.getConfig().setAntialiasingPolicy(KahinaDAGViewOptions.NO_ANTIALIASING);
         }
         else if (command.endsWith("0 %"))
         {
@@ -121,6 +156,11 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
             int horiDist = Integer.parseInt(command.substring(0, command.length() - 20));
             view.view.getConfig().setHorizontalDistance(horiDist);
             view.view.getLayouter().refreshCoordinates();
+        }
+        else if (command.endsWith(" pt"))
+        {
+            int nodeSize = Integer.parseInt(command.substring(0, command.length() - 3));
+            view.view.getConfig().setNodeSize(nodeSize);
         }
         else if (command.equals("Save as PNG"))
         {
