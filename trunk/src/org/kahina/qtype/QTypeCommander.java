@@ -37,11 +37,11 @@ public class QTypeCommander implements KahinaListener
 
     private List<List<String>> examples = new ArrayList<List<String>>();
 
-    private KahinaController control;
+    private QTypeDebuggerInstance kahina;
 
-    public QTypeCommander(KahinaController control)
+    public QTypeCommander(QTypeDebuggerInstance kahina)
     {
-        this.control = control;
+        this.kahina = kahina;
     }
 
     public final Action COMPILE_ACTION = new AbstractAction("Compile...")
@@ -52,7 +52,7 @@ public class QTypeCommander implements KahinaListener
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            control.processEvent(new KahinaControlEvent(QTypeControlEventCommands.COMPILE));
+            kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.COMPILE));
         }
     };
 
@@ -64,7 +64,7 @@ public class QTypeCommander implements KahinaListener
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            control.processEvent(new KahinaControlEvent(QTypeControlEventCommands.PARSE));
+            kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.PARSE));
         }
 
     };
@@ -81,7 +81,7 @@ public class QTypeCommander implements KahinaListener
     {
         if (parseExampleMenu == null)
         {
-            parseExampleMenu = new QTypeParseExampleMenu(control);
+            parseExampleMenu = new QTypeParseExampleMenu(kahina.getControl());
         }
 
         return parseExampleMenu;
@@ -95,7 +95,7 @@ public class QTypeCommander implements KahinaListener
         @Override
         public void actionPerformed(ActionEvent e)
         {
-            control.processEvent(new KahinaControlEvent(QTypeControlEventCommands.RESTART));
+            kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.RESTART));
         }
 
     };
@@ -180,14 +180,14 @@ public class QTypeCommander implements KahinaListener
             int number = (Integer) arguments[0];
             ListUtil.ensureSize(examples, number + 1);
             examples.set(number, ListUtil.castToStringList(arguments[2]));
-            control.processEvent(new KahinaControlEvent(QTypeControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
+            kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
         }
         else if (QTypeControlEventCommands.REGISTER_GRAMMAR.equals(command))
         {
             grammar = (String) event.getArguments()[0];
             sentence = Collections.emptyList();
             examples = new ArrayList<List<String>>();
-            control.processEvent(new KahinaControlEvent(QTypeControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
+            kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
             updateActions();
             if (VERBOSE)
             {
@@ -198,12 +198,12 @@ public class QTypeCommander implements KahinaListener
         {
             if (event.getArguments() == null || event.getArguments().length == 0)
             {
-                control.processEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
+                kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
             }
             else
             {
                 //abort in case another parse is being executed
-                control.processEvent(new KahinaControlEvent("abort"));
+                kahina.dispatchEvent(new KahinaControlEvent("abort"));
                 compile((String) event.getArguments()[0]);
             }
         }
@@ -211,17 +211,17 @@ public class QTypeCommander implements KahinaListener
         {
             if (event.getArguments() == null || event.getArguments().length == 0)
             {
-                control.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { ListUtil.join(" ", sentence) }));
+                kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { ListUtil.join(" ", sentence) }));
             }
             else
             {
-                control.processEvent(new KahinaControlEvent("abort"));
+                kahina.dispatchEvent(new KahinaControlEvent("abort"));
                 parse(ListUtil.castToStringList(event.getArguments()[0]));
             }
         }
         else if (QTypeControlEventCommands.RESTART.equals(command))
         {
-            control.processEvent(new KahinaControlEvent("abort"));
+            kahina.dispatchEvent(new KahinaControlEvent("abort"));
             compile(grammar);
             parse(sentence);
         }
@@ -249,8 +249,8 @@ public class QTypeCommander implements KahinaListener
 
     public void initializeForNewSession()
     {
-        control.registerListener(KahinaEventTypes.SYSTEM, this);
-        control.registerListener(KahinaEventTypes.CONTROL, this);
+        kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
+        kahina.getControl().registerListener(KahinaEventTypes.CONTROL, this);
     }
 
 }

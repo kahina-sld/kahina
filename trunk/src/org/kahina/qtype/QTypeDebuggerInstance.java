@@ -16,7 +16,7 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 	public QTypeDebuggerInstance()
 	{
 		super();
-		commander = new QTypeCommander(control);
+		commander = new QTypeCommander(this);
 		commander.initializeForNewSession();
 	}
 	
