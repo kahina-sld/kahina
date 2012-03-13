@@ -44,26 +44,30 @@ public class WidthVector
                 maxReqDistanceLevel = i;
             }
         }
-        int leftOffset = w1.end.get(maxReqDistanceLevel);
-        int rightOffset = w2.start.get(maxReqDistanceLevel);
-        System.err.println("  Offsets: [" + leftOffset + "," + rightOffset + "]");
+        int leftAxisOffset = w1.start.get(maxReqDistanceLevel);
+        int totalWidth = leftAxisOffset;
+        totalWidth += w1.end.get(maxReqDistanceLevel);
+        totalWidth += w2.start.get(maxReqDistanceLevel);
+        totalWidth += w1.end.get(maxReqDistanceLevel);
+        int leftAxisMovement = totalWidth / 2 - leftAxisOffset;
+        System.err.println("  leftAxisMovement: " + leftAxisMovement);
         for (int i = 0; i < minSize; i++)
         {
-            w3.start.add(w1.start.get(i) + leftOffset);
-            w3.end.add(w2.end.get(i) + rightOffset);
-            System.err.println("  Adding: [" + (w1.start.get(i) + leftOffset) + "," + (w2.end.get(i) + rightOffset) + "]");
+            w3.start.add(w1.start.get(i) + leftAxisMovement);
+            w3.end.add(w2.end.get(i) + leftAxisMovement);
+            System.err.println("  Adding: [" + (w1.start.get(i) + leftAxisMovement) + "," + (w2.end.get(i) + leftAxisMovement) + "]");
         }
         for (int i = minSize; i < w1size; i++)
         {
-            w3.start.add(w1.start.get(i) + leftOffset);
-            w3.end.add(w1.end.get(i) - leftOffset);
-            System.err.println("  Adding: [" + (w1.start.get(i) + leftOffset) + "," + (w1.end.get(i) - leftOffset) + "]");
+            w3.start.add(w1.start.get(i) + leftAxisMovement);
+            w3.end.add(w1.end.get(i) - leftAxisMovement);
+            System.err.println("  Adding: [" + (w1.start.get(i) + leftAxisMovement) + "," + (w1.end.get(i) - leftAxisMovement) + "]");
         }
         for (int i = minSize; i < w2size; i++)
         {
-            w3.start.add(w2.start.get(i) - rightOffset);
-            w3.end.add(w2.end.get(i) + rightOffset);
-            System.err.println("  Adding: [" + (w2.start.get(i) - rightOffset) + "," + (w2.end.get(i) + rightOffset) + "]");
+            w3.start.add(w2.start.get(i) - leftAxisMovement);
+            w3.end.add(w2.end.get(i) + leftAxisMovement);
+            System.err.println("  Adding: [" + (w2.start.get(i) - leftAxisMovement) + "," + (w2.end.get(i) + leftAxisMovement) + "]");
         }
         System.err.println("Result: " + w3);
         return w3;
