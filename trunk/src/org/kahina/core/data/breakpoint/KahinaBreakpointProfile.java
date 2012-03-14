@@ -3,7 +3,9 @@ package org.kahina.core.data.breakpoint;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KahinaBreakpointProfile 
+import org.kahina.core.data.KahinaObject;
+
+public class KahinaBreakpointProfile extends KahinaObject
 {
 	List<KahinaBreakpoint> treeBreakpoints;
 	
