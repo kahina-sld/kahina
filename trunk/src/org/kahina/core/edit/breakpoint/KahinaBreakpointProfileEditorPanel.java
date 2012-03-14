@@ -1,8 +1,8 @@
-package org.kahina.core.visual.breakpoint;
+package org.kahina.core.edit.breakpoint;
 
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class KahinaBreakpointProfileViewPanel extends KahinaViewPanel<KahinaBreakpointProfileView>
+public class KahinaBreakpointProfileEditorPanel extends KahinaViewPanel<KahinaBreakpointProfileEditor>
 {
     /**
      * 

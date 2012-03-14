@@ -1,4 +1,4 @@
-package org.kahina.core.gui.breakpoint;
+package org.kahina.core.edit.breakpoint;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -20,18 +20,18 @@ import javax.swing.JTextField;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
-import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
-import org.kahina.core.edit.breakpoint.NodeConstraintPanel;
-import org.kahina.core.edit.breakpoint.TreeFragmentPanel;
+import org.kahina.core.visual.KahinaViewPanel;
 
-public class BreakpointEditPanel extends JPanel implements ActionListener, KahinaListener
+public class KahinaBreakpointEditorPanel extends KahinaViewPanel<KahinaBreakpointEditor> implements ActionListener
 {
 
-	private static final long serialVersionUID = 1696100673150672096L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -857783947658715855L;
 
-	private KahinaController control;
+    private KahinaController control;
     
     private JTabbedPane editTabs;  
     private NodeConstraintPanel nodeConstraintPanel;
@@ -52,9 +52,9 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
     public static final int PENDING_OR_OPERATION = 1;
     public static final int PENDING_IMPL_OPERATION = 2;
     
-    public BreakpointEditPanel(KahinaController control)
+    public KahinaBreakpointEditorPanel(KahinaController control)
     {
-        this.control = control;
+        super();
         control.registerListener("breakpoint_editor", this);
         
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -67,7 +67,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
     
     protected void addAllComponents()
     {
-    	editTabs = new JTabbedPane();
+        editTabs = new JTabbedPane();
         editTabs.add("Step Constraint", buildNodeConstraintPanel(control));
         editTabs.add("Decision Tree Pattern", buildTreeFragmentPanel(control));
         
@@ -176,7 +176,7 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
     }
     
     @Override
-	public void setEnabled(boolean enabled)
+    public void setEnabled(boolean enabled)
     {
         super.setEnabled(enabled);
         if (enabled)
@@ -271,4 +271,12 @@ public class BreakpointEditPanel extends JPanel implements ActionListener, Kahin
 
         }
     }
+
+    @Override
+    public void updateDisplay()
+    {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

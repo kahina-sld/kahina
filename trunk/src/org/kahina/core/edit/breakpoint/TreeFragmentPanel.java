@@ -1,4 +1,4 @@
-package org.kahina.core.gui.breakpoint;
+package org.kahina.core.edit.breakpoint;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -16,6 +16,7 @@ import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.patterns.TreePattern;
 import org.kahina.core.control.patterns.TreePatternNode;
+import org.kahina.core.gui.breakpoint.BreakpointEditPanel;
 
 public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaListener
 {

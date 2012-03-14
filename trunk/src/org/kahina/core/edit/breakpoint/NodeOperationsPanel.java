@@ -1,4 +1,4 @@
-package org.kahina.core.gui.breakpoint;
+package org.kahina.core.edit.breakpoint;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;

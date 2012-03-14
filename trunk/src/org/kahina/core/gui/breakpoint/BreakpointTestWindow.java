@@ -18,6 +18,8 @@ import org.kahina.core.control.patterns.KahinaTreeMatchEvent;
 import org.kahina.core.control.patterns.TreeAutomaton;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.edit.breakpoint.BreakpointEditorHintPanel;
+import org.kahina.core.edit.breakpoint.NodeOperationsPanel;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.core.visual.tree.KahinaTreeViewMarker;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
