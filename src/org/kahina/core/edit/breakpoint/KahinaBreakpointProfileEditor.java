@@ -1,4 +1,4 @@
-package org.kahina.core.visual.breakpoint;
+package org.kahina.core.edit.breakpoint;
 
 import javax.swing.JComponent;
 
@@ -7,10 +7,10 @@ import org.kahina.core.data.breakpoint.KahinaBreakpointProfile;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 
-public class KahinaBreakpointProfileView extends KahinaView<KahinaBreakpointProfile>
+public class KahinaBreakpointProfileEditor extends KahinaView<KahinaBreakpointProfile>
 {
 
-    public KahinaBreakpointProfileView(KahinaController control)
+    public KahinaBreakpointProfileEditor(KahinaController control)
     {
         super(control);
         // TODO Auto-generated constructor stub

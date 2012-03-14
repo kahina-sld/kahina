@@ -33,6 +33,7 @@ import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.control.patterns.TreeAutomaton;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
+import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.io.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
