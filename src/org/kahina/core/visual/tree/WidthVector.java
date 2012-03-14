@@ -7,6 +7,8 @@ public class WidthVector
     public ArrayList<Integer> start;
     public ArrayList<Integer> end;
     
+    public static boolean VERBOSE = false;
+    
     public WidthVector()
     {
         start = new ArrayList<Integer>();
@@ -25,7 +27,7 @@ public class WidthVector
     
     public static WidthVector adjoin(WidthVector w1, WidthVector w2)
     {
-        System.err.println("Adjoining: " + w1 + " and " + w2);
+        if (VERBOSE) System.err.println("Adjoining: " + w1 + " and " + w2);
         WidthVector w3 = new WidthVector();
         w3.start.clear();
         w3.end.clear();
@@ -48,28 +50,30 @@ public class WidthVector
         int totalWidth = leftAxisOffset;
         totalWidth += w1.end.get(maxReqDistanceLevel);
         totalWidth += w2.start.get(maxReqDistanceLevel);
-        totalWidth += w1.end.get(maxReqDistanceLevel);
+        totalWidth += w2.end.get(maxReqDistanceLevel);
         int leftAxisMovement = totalWidth / 2 - leftAxisOffset;
-        System.err.println("  leftAxisMovement: " + leftAxisMovement);
+        int rightAxisMovement = (w1.end.get(maxReqDistanceLevel) + w2.start.get(maxReqDistanceLevel) - leftAxisMovement);
+        if (VERBOSE) System.err.println("  leftAxisMovement: " + leftAxisMovement);
+        if (VERBOSE) System.err.println("  rightAxisMovement: " + rightAxisMovement);
         for (int i = 0; i < minSize; i++)
         {
             w3.start.add(w1.start.get(i) + leftAxisMovement);
-            w3.end.add(w2.end.get(i) + leftAxisMovement);
-            System.err.println("  Adding: [" + (w1.start.get(i) + leftAxisMovement) + "," + (w2.end.get(i) + leftAxisMovement) + "]");
+            w3.end.add(w2.end.get(i) + rightAxisMovement);
+            if (VERBOSE) System.err.println("  Adding: [" + (w1.start.get(i) + leftAxisMovement) + "," + (w2.end.get(i) + rightAxisMovement) + "]");
         }
         for (int i = minSize; i < w1size; i++)
         {
             w3.start.add(w1.start.get(i) + leftAxisMovement);
             w3.end.add(w1.end.get(i) - leftAxisMovement);
-            System.err.println("  Adding: [" + (w1.start.get(i) + leftAxisMovement) + "," + (w1.end.get(i) - leftAxisMovement) + "]");
+            if (VERBOSE) System.err.println("  Adding: [" + (w1.start.get(i) + leftAxisMovement) + "," + (w1.end.get(i) - leftAxisMovement) + "]");
         }
         for (int i = minSize; i < w2size; i++)
         {
-            w3.start.add(w2.start.get(i) - leftAxisMovement);
-            w3.end.add(w2.end.get(i) + leftAxisMovement);
-            System.err.println("  Adding: [" + (w2.start.get(i) - leftAxisMovement) + "," + (w2.end.get(i) + leftAxisMovement) + "]");
+            w3.start.add(w2.start.get(i) - rightAxisMovement);
+            w3.end.add(w2.end.get(i) + rightAxisMovement);
+            if (VERBOSE) System.err.println("  Adding: [" + (w2.start.get(i) - rightAxisMovement) + "," + (w2.end.get(i) + rightAxisMovement) + "]");
         }
-        System.err.println("Result: " + w3);
+        if (VERBOSE) System.err.println("Result: " + w3);
         return w3;
     }
     
