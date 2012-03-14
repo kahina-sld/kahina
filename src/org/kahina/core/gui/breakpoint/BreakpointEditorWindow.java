@@ -31,9 +31,10 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaSystemEvent;
-import org.kahina.core.control.patterns.TreeAutomaton;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
+import org.kahina.core.data.breakpoint.patterns.TreeAutomaton;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
+import org.kahina.core.edit.breakpoint.KahinaBreakpointEditorPanel;
 import org.kahina.core.io.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,7 +54,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 	JPanel breakpointListPanel;
 	JList breakpointList;
 
-	BreakpointEditPanel editPanel;
+	KahinaBreakpointEditorPanel editPanel;
 
 	List<KahinaBreakpoint> breakpoints;
 	List<TreeAutomaton> compiledBreakpoints;
@@ -153,7 +154,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 
 	protected JPanel buildRightPanel()
 	{
-		editPanel = new BreakpointEditPanel(control);
+		editPanel = new KahinaBreakpointEditorPanel(control);
 		return editPanel;
 	}
 

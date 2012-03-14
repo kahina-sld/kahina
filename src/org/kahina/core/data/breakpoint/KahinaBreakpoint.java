@@ -3,11 +3,11 @@ package org.kahina.core.data.breakpoint;
 import java.awt.Color;
 import java.io.Serializable;
 
-import org.kahina.core.control.patterns.TreeAutomaton;
-import org.kahina.core.control.patterns.TreeAutomatonRule;
-import org.kahina.core.control.patterns.TreePattern;
-import org.kahina.core.control.patterns.TreePatternNode;
 import org.kahina.core.data.KahinaObject;
+import org.kahina.core.data.breakpoint.patterns.TreeAutomaton;
+import org.kahina.core.data.breakpoint.patterns.TreeAutomatonRule;
+import org.kahina.core.data.breakpoint.patterns.TreePattern;
+import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 import org.kahina.core.io.color.ColorUtil;
 import org.w3c.dom.Element;
 

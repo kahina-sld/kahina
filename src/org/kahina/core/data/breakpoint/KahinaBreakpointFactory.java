@@ -1,8 +1,8 @@
 package org.kahina.core.data.breakpoint;
 
-import org.kahina.core.control.patterns.TreeNodePattern;
-import org.kahina.core.control.patterns.TreePattern;
-import org.kahina.core.control.patterns.TreePatternNode;
+import org.kahina.core.data.breakpoint.patterns.TreeNodePattern;
+import org.kahina.core.data.breakpoint.patterns.TreePattern;
+import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 
 /**
  * A collection of convenience methods for creating simple breakpoints.

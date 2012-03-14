@@ -13,8 +13,9 @@ import javax.swing.SpinnerNumberModel;
 
 import org.kahina.core.KahinaState;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.edit.breakpoint.KahinaBreakpointEditorPanel;
 
-public class ThresholdedBreakpointEditPanel extends BreakpointEditPanel
+public class ThresholdedBreakpointEditPanel extends KahinaBreakpointEditorPanel
 {
 	
 	private static final long serialVersionUID = -5038545439301530295L;
