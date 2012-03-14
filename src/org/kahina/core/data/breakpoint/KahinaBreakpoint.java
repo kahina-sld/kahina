@@ -7,6 +7,7 @@ import org.kahina.core.control.patterns.TreeAutomaton;
 import org.kahina.core.control.patterns.TreeAutomatonRule;
 import org.kahina.core.control.patterns.TreePattern;
 import org.kahina.core.control.patterns.TreePatternNode;
+import org.kahina.core.data.KahinaObject;
 import org.kahina.core.io.color.ColorUtil;
 import org.w3c.dom.Element;
 
@@ -23,7 +24,7 @@ import org.w3c.dom.Element;
  * @author jd
  *
  */
-public class KahinaBreakpoint implements Serializable
+public class KahinaBreakpoint extends KahinaObject implements Serializable
 {
 	private static final long serialVersionUID = -6754119800163857876L;
 	/** a static counter keeping track of the number of breakpoints created so far
