@@ -14,9 +14,8 @@ import javax.swing.JScrollPane;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.control.patterns.TreePattern;
-import org.kahina.core.control.patterns.TreePatternNode;
-import org.kahina.core.gui.breakpoint.BreakpointEditPanel;
+import org.kahina.core.data.breakpoint.patterns.TreePattern;
+import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 
 public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaListener
 {
@@ -118,7 +117,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         {
             if (markedTreeNode.getMarkedPattern() != null)
             {
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_AND_OPERATION));
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, KahinaBreakpointEditorPanel.PENDING_AND_OPERATION));
                 hint("Now select the second conjunct.", Color.BLACK);
             }
             else
@@ -130,7 +129,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         {
             if (markedTreeNode.getMarkedPattern() != null)
             {
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_OR_OPERATION));
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, KahinaBreakpointEditorPanel.PENDING_OR_OPERATION));
                 hint("Now select the second disjunct.", Color.BLACK);
             }
             else
@@ -142,7 +141,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         {
             if (markedTreeNode.getMarkedPattern() != null)
             {
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, BreakpointEditPanel.PENDING_IMPL_OPERATION));
+                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, KahinaBreakpointEditorPanel.PENDING_IMPL_OPERATION));
                 hint("Now select the consequent.", Color.BLACK);
             }
             else

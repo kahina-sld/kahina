@@ -1,4 +1,4 @@
-package org.kahina.core.control.patterns;
+package org.kahina.core.data.breakpoint.patterns;
 
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
