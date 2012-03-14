@@ -384,4 +384,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			loadSession(new File(args[0]));
 		}
 	}
+
+    public KahinaBridge getBridge()
+    {
+        return bridge;
+    }
 }
