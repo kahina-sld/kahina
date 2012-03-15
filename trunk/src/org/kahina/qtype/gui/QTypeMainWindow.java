@@ -1,8 +1,8 @@
 package org.kahina.qtype.gui;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.gui.menus.ProjectMenu;
 import org.kahina.lp.gui.LogicProgrammingMainWindow;
-import org.kahina.parse.gui.ProjectMenu;
 
 public class QTypeMainWindow extends LogicProgrammingMainWindow
 {
