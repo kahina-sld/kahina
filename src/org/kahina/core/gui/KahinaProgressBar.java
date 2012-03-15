@@ -20,6 +20,7 @@ public class KahinaProgressBar extends JPanel implements ActionListener
     public KahinaProgressBar()
     {
         progressBar = new JProgressBar(0,100);
+        progressBar.setStringPainted(true);
         this.add(progressBar);
         cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(this);
