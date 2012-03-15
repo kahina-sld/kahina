@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.util.HashMap;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.gui.KahinaProgressBar;
 import org.kahina.core.visual.graph.KahinaGraphLayouter;
 import org.kahina.core.visual.graph.KahinaGraphView;
 import org.kahina.core.visual.graph.KahinaGraphViewPanel;
@@ -101,11 +103,16 @@ public class KahinaSatInstanceView extends KahinaGraphView
     @Override
     public JComponent makePanel(KahinaGUI gui)
     {
+        KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaSatInstanceViewPanel panel = new KahinaSatInstanceViewPanel(control);
+        panel.setProgressBar(progressBar);
         control.registerListener("redraw", panel);
         panel.setView(this);
+        JPanel scrollPaneAndProgressBar = new JPanel();
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getViewport().setBackground(config.getBackgroundColor());
-        return scrollPane;
+        scrollPaneAndProgressBar.add(scrollPane);
+        scrollPaneAndProgressBar.add(progressBar);
+        return scrollPaneAndProgressBar;
     }
 }

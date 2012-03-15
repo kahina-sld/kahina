@@ -1,5 +1,6 @@
 package org.kahina.core.visual.graph;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.Collection;
@@ -8,13 +9,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BoxLayout;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.graph.AdjacListsGraph;
 import org.kahina.core.data.graph.KahinaGraph;
 import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.gui.KahinaProgressBar;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaGraphView extends KahinaView<KahinaGraph>
@@ -407,11 +411,17 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     @Override
     public JComponent makePanel(KahinaGUI gui)
     {
+        KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaGraphViewPanel panel = new KahinaGraphViewPanel(control);
+        panel.setProgressBar(progressBar);
         control.registerListener("redraw", panel);
         panel.setView(this);
+        JPanel scrollPaneAndProgressBar = new JPanel();
+        scrollPaneAndProgressBar.setLayout(new BorderLayout());
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getViewport().setBackground(config.getBackgroundColor());
-        return scrollPane;
+        scrollPaneAndProgressBar.add(scrollPane);
+        scrollPaneAndProgressBar.add(progressBar);
+        return scrollPaneAndProgressBar;
     }
 }

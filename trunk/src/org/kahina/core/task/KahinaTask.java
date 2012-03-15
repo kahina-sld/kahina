@@ -6,7 +6,7 @@ public abstract class KahinaTask implements Runnable
 {
     KahinaProgressBar progressBar;
     
-    boolean finished;
+    protected boolean finished;
     
     public KahinaTask(KahinaProgressBar progressBar)
     {

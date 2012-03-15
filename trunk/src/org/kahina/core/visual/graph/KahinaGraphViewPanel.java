@@ -14,7 +14,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JPanel;
+
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.gui.KahinaProgressBar;
+import org.kahina.core.task.KahinaTask;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
@@ -22,6 +26,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     private static final long serialVersionUID = -3000401362714094415L;
     
     BufferedImage image;
+    KahinaProgressBar progressBar;
     
     public KahinaGraphViewPanel(KahinaController control)
     {       
@@ -260,38 +265,23 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     
     public void printGraphEdges(Graphics canvas)
     {
-        long startTime = System.currentTimeMillis();
-        // create lines and their tags
-        canvas.setColor(Color.BLACK);
-        int edges = 0;
-        Set<Integer> processedVertices = new HashSet<Integer>();
-        for (int vertex1 : view.getModel().getVertices())
-        {
-            int x1 = view.getVertexX(vertex1);
-            int y1 = view.getVertexY(vertex1);
-            //TODO: treat undirected edges more efficiently (they are currently drawn twice!)
-            for (int vertex2 : view.getModel().getNeighbors(vertex1))
+       //TODO: show progress bar (which should be hidden before)
+       //TODO: coordinate drawing thread such that only one is working at the same time
+       PrintGraphEdgesTask task = new PrintGraphEdgesTask(canvas, progressBar);
+       (new Thread(task)).start();  
+       /*while (!task.isFinished())
+       {
+            try
             {
-                if (view.isEdgeVisible(vertex1,vertex2) && !processedVertices.contains(vertex2))
-                {
-                    int x2 = view.getVertexX(vertex2);
-                    int y2 = view.getVertexY(vertex2);
-                    String edgeLabel = view.getModel().getEdgeLabel(vertex1, vertex2);
-                    if (edgeLabel.length() > 0)
-                    {
-                        printEdgeLabel(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeLabel);
-                    }
-                    canvas.setColor(view.getEdgeColor(vertex1,vertex2));
-                    canvas.drawLine(x1, y1, x2, y2);
-                    edges++;
-                    //TODO: add this later (= treatment of directed edges)
-                    //printEdgeArrow(canvas, vertex1, vertex2); 
-                }
+                Thread.sleep(100);
             }
-            //TODO: make treatment of the vertex agenda dependent on a flag indicating whether the graph is directed
-            processedVertices.add(vertex1);
-        }
-        System.err.println("  " + edges + " edges in " + (System.currentTimeMillis() - startTime) + " ms.");
+            catch (InterruptedException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+       }*/
+       //TODO: hide progress bar
     }
     
     public void printEdgesForVertex(Graphics canvas, int vertex1)
@@ -349,5 +339,69 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
             canvas.drawString(label, x, y);
             edgeLabels++;
         }
+    }
+    
+    private class PrintGraphEdgesTask extends KahinaTask
+    {
+        Graphics canvas;
+        
+        public PrintGraphEdgesTask(Graphics canvas, KahinaProgressBar progressBar)
+        {
+            super(progressBar);
+            this.canvas = canvas;
+        }
+
+        @Override
+        public void run()
+        {
+            int currentVertex = 0;
+            int edges = 0;
+            int numVertices = view.getModel().getVertices().size();
+            setProgressAndStatus(0, "Drawing graph edges: " + currentVertex + "/" + numVertices + " vertices complete, " + edges + " edges drawn");
+            long startTime = System.currentTimeMillis();
+            // create lines and their tags
+            canvas.setColor(Color.BLACK);
+            Set<Integer> processedVertices = new HashSet<Integer>();
+            for (int vertex1 : view.getModel().getVertices())
+            {
+                if (isCanceled()) break;
+                int x1 = view.getVertexX(vertex1);
+                int y1 = view.getVertexY(vertex1);
+                //TODO: treat undirected edges more efficiently (they are currently drawn twice!)
+                for (int vertex2 : view.getModel().getNeighbors(vertex1))
+                {
+                    if (view.isEdgeVisible(vertex1,vertex2) && !processedVertices.contains(vertex2))
+                    {
+                        int x2 = view.getVertexX(vertex2);
+                        int y2 = view.getVertexY(vertex2);
+                        String edgeLabel = view.getModel().getEdgeLabel(vertex1, vertex2);
+                        if (edgeLabel.length() > 0)
+                        {
+                            printEdgeLabel(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeLabel);
+                        }
+                        canvas.setColor(view.getEdgeColor(vertex1,vertex2));
+                        canvas.drawLine(x1, y1, x2, y2);
+                        edges++;
+                        //TODO: add this later (= treatment of directed edges)
+                        //printEdgeArrow(canvas, vertex1, vertex2); 
+                    }
+                }
+                //TODO: make treatment of the vertex agenda dependent on a flag indicating whether the graph is directed
+                processedVertices.add(vertex1);
+                currentVertex++;
+                setProgressAndStatus(currentVertex / numVertices, "Drawing graph edges: " + currentVertex + 
+                                                                  "/" + numVertices + " vertices complete, " + edges + " edges drawn");
+            }
+            setProgressAndStatus(100, "Drawing graph edges: " + numVertices + 
+                    "/" + numVertices + " vertices complete, " + edges + " edges drawn");
+            System.err.println("  " + edges + " edges in " + (System.currentTimeMillis() - startTime) + " ms.");      
+            finished = true;
+        }
+        
+    }
+
+    public void setProgressBar(KahinaProgressBar progressBar)
+    {
+        this.progressBar = progressBar;   
     }
 }
