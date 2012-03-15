@@ -1,7 +1,7 @@
 package org.kahina.tralesld.gui;
 
+import org.kahina.core.gui.menus.ProjectMenu;
 import org.kahina.lp.gui.LogicProgrammingMainWindow;
-import org.kahina.parse.gui.ProjectMenu;
 
 public class TraleSLDMainWindow extends LogicProgrammingMainWindow
 {

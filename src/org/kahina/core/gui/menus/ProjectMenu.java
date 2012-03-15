@@ -1,4 +1,4 @@
-package org.kahina.parse.gui;
+package org.kahina.core.gui.menus;
 
 import java.awt.event.ActionListener;
 

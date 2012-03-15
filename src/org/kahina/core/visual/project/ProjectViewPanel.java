@@ -1,4 +1,4 @@
-package org.kahina.parse.visual.project;
+package org.kahina.core.visual.project;
 
 import org.kahina.core.visual.KahinaViewPanel;
 

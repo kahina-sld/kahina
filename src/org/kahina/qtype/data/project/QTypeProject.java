@@ -2,7 +2,7 @@ package org.kahina.qtype.data.project;
 
 import java.io.File;
 
-import org.kahina.parse.data.project.Project;
+import org.kahina.core.data.project.Project;
 
 public class QTypeProject extends Project
 {
