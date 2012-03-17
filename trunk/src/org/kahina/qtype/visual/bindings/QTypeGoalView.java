@@ -17,7 +17,7 @@ public class QTypeGoalView extends KahinaView<QTypeGoal>
 	}
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
 	{
 		QTypeGoalViewPanel panel = new QTypeGoalViewPanel();
         control.registerListener(KahinaEventTypes.REDRAW, panel);

@@ -81,10 +81,10 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	KahinaController control;
 	
-	public TraleSLDFeatureStructureEditor(KahinaInstance<?,?,?> kahina, AuxiliaryTraleInstance trale)
+	public TraleSLDFeatureStructureEditor(KahinaController control, AuxiliaryTraleInstance trale)
 	{
 		super();
-		this.control = kahina.getControl();
+		this.control = control;
 		
 		blockPanel = null;
 		

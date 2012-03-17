@@ -15,7 +15,7 @@ public class ProjectView extends KahinaView<Project>
 	}
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui) 
+	public JComponent makePanel() 
 	{
 		// TODO Auto-generated method stub
 		return null;

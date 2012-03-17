@@ -17,7 +17,7 @@ public class KahinaBreakpointProfileEditor extends KahinaView<KahinaBreakpointPr
     }
 
     @Override
-    public JComponent makePanel(KahinaGUI gui)
+    public JComponent makePanel()
     {
         // TODO Auto-generated method stub
         return null;

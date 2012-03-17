@@ -37,7 +37,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.kahina.core.KahinaDefaultInstance;
-import org.kahina.core.KahinaInstance;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.windows.KahinaWindow;
@@ -97,7 +97,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	private String lastDisplayID = null;
 
-	public FeatureWorkbenchViewPanel(KahinaInstance<?,?,?> kahina, AuxiliaryTraleInstance trale)
+	public FeatureWorkbenchViewPanel(KahinaController control, AuxiliaryTraleInstance trale)
 	{		
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
@@ -264,10 +264,10 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		listScroller.setAlignmentX(CENTER_ALIGNMENT);
 		contentPanel.add(listScroller);
 		
-		editor = new TraleSLDFeatureStructureEditor(kahina, trale);
+		editor = new TraleSLDFeatureStructureEditor(control, trale);
 		GraleJUtility.setFeatureStructureEditor(editor);
 		editor.setSignature(new TraleSLDSignature());
-        kahina.getControl().registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, editor);
+        control.registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, editor);
 		JScrollPane editorScrollPane = new JScrollPane(editor);
 		contentPanel.add(editorScrollPane);
 		

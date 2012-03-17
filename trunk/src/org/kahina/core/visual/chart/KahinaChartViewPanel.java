@@ -9,7 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import org.kahina.core.KahinaInstance;
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 
@@ -19,11 +19,11 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
 	
 	BufferedImage image;
     
-    public KahinaChartViewPanel(KahinaInstance<?,?,?> kahina)
+    public KahinaChartViewPanel(KahinaController control)
     {
         view = null;
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
-        this.addMouseListener(new KahinaChartViewListener(this, kahina));
+        this.addMouseListener(new KahinaChartViewListener(this, control));
     }
     
     @Override

@@ -25,6 +25,7 @@ public class KahinaChartTest
     {
         try
         {
+            KahinaController control = new KahinaController();
             File file = new File("src/org/kahina/core/test/test-chart.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();
@@ -32,7 +33,7 @@ public class KahinaChartTest
             //DatabaseHandler data = new DatabaseHandler(new File("otoka.dat"));
             //KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.DATABASE, data);
             KahinaChart m = KahinaChart.importXML(dom);
-            KahinaChartView v = new KahinaChartView(new KahinaController());
+            KahinaChartView v = new KahinaChartView(control);
             v.display(m);       
 
             v.setStatusColorEncoding(0,new Color(100,255,100));
@@ -43,7 +44,7 @@ public class KahinaChartTest
             v.setStatusFontEncoding(2, new Font(Font.SANS_SERIF,Font.BOLD, 10));
             v.setStatusFontEncoding(3, new Font(Font.SANS_SERIF,Font.BOLD, 10));
 
-            KahinaChartViewPanel vp = new KahinaChartViewPanel(new KahinaDefaultInstance());
+            KahinaChartViewPanel vp = new KahinaChartViewPanel(control);
             JScrollPane vpp = new JScrollPane(vp);
             vpp.setBounds(0, 0, 500, 300);
             JFrame w = new JFrame("Kahina ChartView Demo");

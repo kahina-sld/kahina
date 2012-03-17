@@ -768,9 +768,9 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     }
     
     @Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
     {
-        KahinaChartViewPanel panel = new KahinaChartViewPanel(gui.getKahinaInstance());
+        KahinaChartViewPanel panel = new KahinaChartViewPanel(control);
         control.registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);

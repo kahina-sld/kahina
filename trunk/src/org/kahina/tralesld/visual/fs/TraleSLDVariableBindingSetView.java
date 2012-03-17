@@ -16,7 +16,7 @@ public class TraleSLDVariableBindingSetView extends KahinaView<TraleSLDVariableB
 	}
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
 	{
 		TraleSLDVariableBindingSetViewPanel panel = new TraleSLDVariableBindingSetViewPanel();
         control.registerListener("redraw", panel);
