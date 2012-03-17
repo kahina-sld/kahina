@@ -180,7 +180,7 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
 
     public void setGraphLayout(int newLayout)
     {
-        if (newLayout >= 0 && newLayout <= 1)
+        if (newLayout >= 0 && newLayout <= 2)
         {
             graphLayout = newLayout;
         } 

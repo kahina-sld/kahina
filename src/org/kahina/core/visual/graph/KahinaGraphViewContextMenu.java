@@ -195,6 +195,11 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
         circularLayoutItem.addActionListener(l);
         graphLayoutGroup.add(circularLayoutItem);
         graphLayoutSubmenu.add(circularLayoutItem);
+        JRadioButtonMenuItem springLayoutItem = new JRadioButtonMenuItem("Spring Layout");
+        springLayoutItem.setActionCommand("springLayout");
+        springLayoutItem.addActionListener(l);
+        graphLayoutGroup.add(springLayoutItem);
+        graphLayoutSubmenu.add(springLayoutItem);
         switch (v.getConfig().getGraphLayout())
         {
             case 0:
@@ -203,7 +208,11 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
             }
             case 1:
             {
-                circularLayoutItem.setSelected(true);
+                circularLayoutItem.setSelected(true); break;
+            }
+            case 2:
+            {
+                springLayoutItem.setSelected(true);
             }
         }
         add(graphLayoutSubmenu);

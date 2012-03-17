@@ -26,6 +26,7 @@ public class KahinaGraphViewOptions
     // possible values for graph layout option
     public static final int LAYOUT_GRID = 0;
     public static final int LAYOUT_CIRCULAR = 1;
+    public static final int LAYOUT_SPRING = 2;
     
     //possible values for vertex visibility policy
     public static final int VERTICES_ALL_VISIBLE = 0;

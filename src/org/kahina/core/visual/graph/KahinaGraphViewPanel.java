@@ -370,7 +370,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
                 //TODO: treat undirected edges more efficiently (they are currently drawn twice!)
                 for (int vertex2 : view.getModel().getNeighbors(vertex1))
                 {
-                    if (view.isEdgeVisible(vertex1,vertex2) && !processedVertices.contains(vertex2))
+                    if (view.isEdgeVisible(vertex1,vertex2))
                     {
                         int x2 = view.getVertexX(vertex2);
                         int y2 = view.getVertexY(vertex2);

@@ -118,6 +118,11 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
             view.view.getConfig().setGraphLayout(KahinaGraphViewOptions.LAYOUT_CIRCULAR);
             view.view.setLayouter(new CircularLayouter());
         }
+        else if (command.equals("springLayout"))
+        {
+            view.view.getConfig().setGraphLayout(KahinaGraphViewOptions.LAYOUT_SPRING);
+            view.view.setLayouter(new SpringLayouter());
+        }
         else if (command.equals("vertexVisAll"))
         {
             view.view.getConfig().setVertexVisibilityPolicy(KahinaGraphViewOptions.VERTICES_ALL_VISIBLE);
