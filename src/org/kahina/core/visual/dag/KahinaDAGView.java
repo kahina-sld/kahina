@@ -233,7 +233,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     }
 
     @Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
     {
         KahinaDAGViewPanel panel = new KahinaDAGViewPanel(control);
         control.registerListener("redraw", panel);

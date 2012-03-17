@@ -102,7 +102,7 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
     }
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
 	{
         TraleSLDSignatureAppropriatenessViewPanel panel = new TraleSLDSignatureAppropriatenessViewPanel(control);
         control.registerListener("redraw", panel);

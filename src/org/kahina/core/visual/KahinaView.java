@@ -93,11 +93,9 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	/**
 	 * Returns the panel that represents this view in the GUI. This method must
 	 * be invoked from the event dispatch thread.
-	 * 
-	 * @param control
 	 * @return
 	 */
-	public abstract JComponent makePanel(KahinaGUI gui);
+	public abstract JComponent makePanel();
 
 	public String getTitle()
 	{
@@ -121,6 +119,6 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 
 	public Component makeEditorPanel(KahinaGUI gui) 
 	{
-		return makePanel(gui);
+		return makePanel();
 	}
 }

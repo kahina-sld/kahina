@@ -53,9 +53,9 @@ public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 	}
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
 	{
-		FeatureWorkbenchViewPanel panel = new FeatureWorkbenchViewPanel(gui.kahina, trale);
+		FeatureWorkbenchViewPanel panel = new FeatureWorkbenchViewPanel(control, trale);
         control.registerListener("redraw", panel);
         control.registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, panel);
 		panel.setView(this);

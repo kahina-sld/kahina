@@ -52,7 +52,7 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
     }
     
     @Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
     {
         KahinaTextViewPanel panel = new KahinaTextViewPanel();
         control.registerListener("redraw", panel);

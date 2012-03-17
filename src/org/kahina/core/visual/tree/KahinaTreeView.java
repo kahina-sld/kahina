@@ -835,7 +835,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	}
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
 	{
 		KahinaTreeViewPanel panel = new KahinaTreeViewPanel(control);
 		control.registerListener("redraw", panel);

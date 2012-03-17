@@ -16,7 +16,7 @@ public class KahinaDefaultView extends KahinaView<KahinaObject>
 	}
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
     {
         KahinaDefaultViewPanel panel = new KahinaDefaultViewPanel();
         control.registerListener("redraw", panel);

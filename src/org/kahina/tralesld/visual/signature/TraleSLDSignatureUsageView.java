@@ -89,7 +89,7 @@ public class TraleSLDSignatureUsageView extends KahinaView<TraleSLDSignature>
     }
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
 	{
         TraleSLDSignatureUsageViewPanel panel = new TraleSLDSignatureUsageViewPanel(control);
         control.registerListener("redraw", panel);

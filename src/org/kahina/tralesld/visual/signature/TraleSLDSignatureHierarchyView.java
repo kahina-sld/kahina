@@ -174,7 +174,7 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
     }
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
 	{
         TraleSLDSignatureHierarchyViewPanel panel = new TraleSLDSignatureHierarchyViewPanel(control);
         control.registerListener("redraw", panel);

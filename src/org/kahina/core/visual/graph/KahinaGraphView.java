@@ -409,7 +409,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     }
 
     @Override
-    public JComponent makePanel(KahinaGUI gui)
+    public JComponent makePanel()
     {
         KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaGraphViewPanel panel = new KahinaGraphViewPanel(control);

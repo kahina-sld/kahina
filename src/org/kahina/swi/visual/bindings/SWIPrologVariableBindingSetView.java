@@ -16,7 +16,7 @@ public class SWIPrologVariableBindingSetView extends KahinaView<SWIPrologVariabl
 	}
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
 	{
 		SWIPrologVariableBindingSetViewPanel panel = new SWIPrologVariableBindingSetViewPanel();
         control.registerListener("redraw", panel);

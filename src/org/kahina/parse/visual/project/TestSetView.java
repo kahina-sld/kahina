@@ -15,7 +15,7 @@ public class TestSetView extends KahinaView<TestSet>
 	}
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui) 
+	public JComponent makePanel() 
 	{
 		// TODO Auto-generated method stub
 		return null;

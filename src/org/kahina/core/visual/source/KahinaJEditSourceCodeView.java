@@ -16,7 +16,7 @@ public class KahinaJEditSourceCodeView extends KahinaView<KahinaSourceCodeLocati
 	}
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
 	{
 		KahinaJEditSourceCodeViewPanel panel = createPanel();
         control.registerListener("redraw", panel);

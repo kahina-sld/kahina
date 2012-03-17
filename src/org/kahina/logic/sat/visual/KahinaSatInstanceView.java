@@ -101,7 +101,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
     }
     
     @Override
-    public JComponent makePanel(KahinaGUI gui)
+    public JComponent makePanel()
     {
         KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaSatInstanceViewPanel panel = new KahinaSatInstanceViewPanel(control);

@@ -118,7 +118,7 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 	}
 
 	@Override
-	public JComponent makePanel(KahinaGUI gui)
+	public JComponent makePanel()
 	{
 		marker = new KahinaTreeViewMarker(model, secondaryModel);
 		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(views.length, marker, control, orientation);
