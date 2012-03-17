@@ -42,7 +42,6 @@ import org.w3c.dom.NodeList;
 
 public class BreakpointEditorWindow extends JFrame implements ActionListener, KahinaListener, ListSelectionListener
 {
-
 	private static final long serialVersionUID = -2695961972605190759L;
 
 	KahinaController control;
