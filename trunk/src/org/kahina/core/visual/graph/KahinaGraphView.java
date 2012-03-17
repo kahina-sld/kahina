@@ -2,7 +2,9 @@ package org.kahina.core.visual.graph;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -414,14 +416,18 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaGraphViewPanel panel = new KahinaGraphViewPanel(control);
         panel.setProgressBar(progressBar);
+        panel.setPreferredSize(new Dimension(200,300));
         control.registerListener("redraw", panel);
         panel.setView(this);
         JPanel scrollPaneAndProgressBar = new JPanel();
-        scrollPaneAndProgressBar.setLayout(new BorderLayout());
-        JScrollPane scrollPane = new JScrollPane(panel);
+        //scrollPaneAndProgressBar.setLayout(new GridLayout());
+        //scrollPaneAndProgressBar.setLayout(new BorderLayout());
+        JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setBackground(config.getBackgroundColor());
+        scrollPane.setViewportView(panel);
         scrollPaneAndProgressBar.add(scrollPane);
         scrollPaneAndProgressBar.add(progressBar);
-        return scrollPaneAndProgressBar;
+        //return scrollPaneAndProgressBar;
+        return panel;
     }
 }
