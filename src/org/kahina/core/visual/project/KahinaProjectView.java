@@ -3,13 +3,13 @@ package org.kahina.core.visual.project;
 import javax.swing.JComponent;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.data.project.Project;
+import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 
-public class ProjectView extends KahinaView<Project>
+public class KahinaProjectView extends KahinaView<KahinaProject>
 {
-	public ProjectView(KahinaController control) 
+	public KahinaProjectView(KahinaController control) 
 	{
 		super(control);
 	}
