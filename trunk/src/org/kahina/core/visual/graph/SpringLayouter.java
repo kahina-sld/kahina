@@ -51,7 +51,7 @@ public class SpringLayouter extends KahinaGraphLayouter
     @Override
     public void optimize()
     {
-        double REJECTION_FORCE = 0.001 / xPos.length;
+        double REJECTION_FORCE = 0.001;
         double SPRING_STRENGTH = 0.05;
         double SPRING_LENGTH = 0.5 / Math.sqrt(xPos.length);
         double[] xForces = new double[xPos.length];
