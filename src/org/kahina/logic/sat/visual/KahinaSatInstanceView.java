@@ -1,8 +1,10 @@
 package org.kahina.logic.sat.visual;
 
 import java.awt.Color;
+import java.awt.GridLayout;
 import java.util.HashMap;
 
+import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -105,14 +107,15 @@ public class KahinaSatInstanceView extends KahinaGraphView
     {
         KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaSatInstanceViewPanel panel = new KahinaSatInstanceViewPanel(control);
-        panel.setProgressBar(progressBar);
         control.registerListener("redraw", panel);
         panel.setView(this);
-        JPanel scrollPaneAndProgressBar = new JPanel();
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getViewport().setBackground(config.getBackgroundColor());
+        JPanel scrollPaneAndProgressBar = new JPanel();
+        scrollPaneAndProgressBar.setLayout(new BoxLayout(scrollPaneAndProgressBar, BoxLayout.Y_AXIS));
         scrollPaneAndProgressBar.add(scrollPane);
         scrollPaneAndProgressBar.add(progressBar);
+        panel.setProgressBar(progressBar);
         return scrollPaneAndProgressBar;
     }
 }

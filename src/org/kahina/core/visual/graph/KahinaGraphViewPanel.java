@@ -2,6 +2,7 @@ package org.kahina.core.visual.graph;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -14,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 import org.kahina.core.control.KahinaController;
@@ -27,6 +29,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     
     BufferedImage image;
     KahinaProgressBar progressBar;
+    Container progressBarParent;
     
     public KahinaGraphViewPanel(KahinaController control)
     {       
@@ -265,11 +268,13 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     
     public void printGraphEdges(Graphics canvas)
     {
-       //TODO: show progress bar (which should be hidden before)
+       //show progress bar (which should be hidden before)
+       progressBarParent.add(progressBar);
+       revalidate();
        //TODO: coordinate drawing thread such that only one is working at the same time
        PrintGraphEdgesTask task = new PrintGraphEdgesTask(canvas, progressBar);
        (new Thread(task)).start();  
-       /*while (!task.isFinished())
+       while (!task.isFinished())
        {
             try
             {
@@ -280,8 +285,9 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-       }*/
-       //TODO: hide progress bar
+       }
+       progressBarParent.remove(progressBar);
+       revalidate();
     }
     
     public void printEdgesForVertex(Graphics canvas, int vertex1)
@@ -402,6 +408,8 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
 
     public void setProgressBar(KahinaProgressBar progressBar)
     {
-        this.progressBar = progressBar;   
+        this.progressBar = progressBar;  
+        this.progressBarParent = progressBar.getParent();
+        progressBarParent.remove(progressBar);
     }
 }
