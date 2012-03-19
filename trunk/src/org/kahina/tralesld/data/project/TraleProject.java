@@ -3,9 +3,9 @@ package org.kahina.tralesld.data.project;
 import java.io.File;
 import java.util.List;
 
-import org.kahina.core.data.project.Project;
+import org.kahina.core.data.project.KahinaProject;
 
-public class TraleProject extends Project
+public class TraleProject extends KahinaProject
 {
 	private File signatureFile;
 	private List<File> theoryFiles;

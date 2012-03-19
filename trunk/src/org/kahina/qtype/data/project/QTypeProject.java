@@ -2,9 +2,9 @@ package org.kahina.qtype.data.project;
 
 import java.io.File;
 
-import org.kahina.core.data.project.Project;
+import org.kahina.core.data.project.KahinaProject;
 
-public class QTypeProject extends Project
+public class QTypeProject extends KahinaProject
 {
 	private File grammarFile;
 

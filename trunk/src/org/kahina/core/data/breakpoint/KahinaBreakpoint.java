@@ -9,7 +9,9 @@ import org.kahina.core.data.breakpoint.patterns.TreeAutomatonRule;
 import org.kahina.core.data.breakpoint.patterns.TreePattern;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 import org.kahina.core.io.color.ColorUtil;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * A breakpoint based on a tree pattern as used by the Kahina breakpoint system.
@@ -230,5 +232,11 @@ public class KahinaBreakpoint extends KahinaObject implements Serializable
         //expect only one tree pattern
         newBreakpoint.pattern = TreePattern.importXML((Element) breakpointNode.getElementsByTagName("treePattern").item(0));
         return newBreakpoint;
+    }
+
+    public Node exportXML(Document dom)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
