@@ -90,6 +90,7 @@ public class SpringLayouter extends KahinaGraphLayouter
         for (int vertex : vertexToIndex.keySet())
         {
             int id = vertexToIndex.get(vertex);
+            //TODO: debug this (sometimes coordinates do exceed the bounds)
             //a hard constraint prevents vertices from exceeding the view boundaries
             xPos[id] += xForces[id];
             if (xPos[id] < 0.1) xPos[id] = 0.1/(-xPos[id]+1);
