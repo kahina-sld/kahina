@@ -15,8 +15,9 @@ public class KahinaGraphTest
     {
         KahinaController control = new KahinaController();
         
-        KahinaGraph graph = KahinaGraph.importTGF("src/org/kahina/core/test/test-graph.tgf");
+        KahinaGraph graph = KahinaGraph.importTGF("/home/dellert/workspace/Kahina/src/org/kahina/core/test/test-graph.tgf");
         final KahinaGraphView view = new KahinaGraphView(control, new SpringLayouter());
+        view.getConfig().setZoomLevel(5);
         view.display(graph);  
         
         SwingUtilities.invokeLater(new Runnable() 
@@ -24,7 +25,7 @@ public class KahinaGraphTest
             public void run() 
             {
                 JFrame w = new JFrame("KahinaGraphView Demo");
-                w.setSize(510, 330);
+                w.setSize(600, 600);
                 w.setLayout(null);
                 w.add(view.makePanel());
                 w.setVisible(true);

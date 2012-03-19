@@ -51,8 +51,8 @@ public class SpringLayouter extends KahinaGraphLayouter
     @Override
     public void optimize()
     {
-        double REJECTION_FORCE = 0.0001;
-        double SPRING_STRENGTH = 0.005;
+        double REJECTION_FORCE = 0.001 / xPos.length;
+        double SPRING_STRENGTH = 0.05;
         double SPRING_LENGTH = 0.5 / Math.sqrt(xPos.length);
         double[] xForces = new double[xPos.length];
         double[] yForces = new double[yPos.length];
@@ -68,24 +68,35 @@ public class SpringLayouter extends KahinaGraphLayouter
                     double dist = euclideanDistance(vertex2,vertex1);
                     xForces[id1] += REJECTION_FORCE / Math.pow(dist, 2) * vector[0];
                     yForces[id1] += REJECTION_FORCE / Math.pow(dist, 2) * vector[1]; 
+                    //System.err.println("repulse(" + vertex1 + "," + vertex2 + ") = ("
+                    //                  + REJECTION_FORCE / Math.pow(dist, 2) * vector[0] + ","
+                    //                  + REJECTION_FORCE / Math.pow(dist, 2) * vector[1] + ")"); 
                 }
             }
             //edges as springs keeping vertices together
+            //System.err.println("Neighbors of vertex " + vertex1 + ": " + this.view.getModel().getNeighbors(vertex1));
             for (int vertex2 : this.view.getModel().getNeighbors(vertex1))
             {
                 double[] vector = unitVector(vertex1,vertex2);
                 double dist = euclideanDistance(vertex2,vertex1);
-                double factor = -SPRING_STRENGTH * (dist - SPRING_LENGTH);
+                double factor = SPRING_STRENGTH * (dist - SPRING_LENGTH);
                 xForces[id1] += factor * vector[0];
                 yForces[id1] += factor * vector[1]; 
+                //System.err.println("attract(" + vertex1 + "," + vertex2 + ") = ("
+                //        + factor * vector[0] + "," + factor * vector[1] + ")"); 
             }
         }
 
         for (int vertex : vertexToIndex.keySet())
         {
             int id = vertexToIndex.get(vertex);
+            //a hard constraint prevents vertices from exceeding the view boundaries
             xPos[id] += xForces[id];
+            if (xPos[id] < 0.1) xPos[id] = 0.1/(-xPos[id]+1);
+            if (xPos[id] > 0.9) xPos[id] = 0.9 + 0.1/(xPos[id]-1);
             yPos[id] += yForces[id];
+            if (yPos[id] < 0.1) yPos[id] = 0.1/(-yPos[id]+1);
+            if (yPos[id] > 0.9) yPos[id] = 0.9 + 0.1/(yPos[id]-1);
             //System.err.println("xPos[" + id + "] += " + xForces[id] + " = " + xPos[id]);
         }
         refreshCoordinates();

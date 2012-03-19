@@ -179,6 +179,7 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         }
         else if (command.equals("Optimize"))
         {
+            
             view.view.layout.optimize();
         }
         else if (command.equals("optVisVrtAllEdges"))
