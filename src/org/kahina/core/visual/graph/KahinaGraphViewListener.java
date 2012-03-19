@@ -179,8 +179,21 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         }
         else if (command.equals("Optimize"))
         {
-            
-            view.view.layout.optimize();
+            String numIterations = (String) JOptionPane.showInputDialog(
+                    view,
+                    "How many iterations?",
+                    "Customized Dialog",
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    null, "1");
+            if ((numIterations != null) && (numIterations.length() > 0)) 
+            {
+                int it = Integer.parseInt(numIterations);
+                for (int i = 0; i < it; i++)
+                {
+                    view.view.layout.optimize();
+                }
+            }
         }
         else if (command.equals("optVisVrtAllEdges"))
         {
