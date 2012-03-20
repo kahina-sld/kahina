@@ -269,8 +269,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     public void printGraphEdges(Graphics canvas)
     {
        //show progress bar (which should be hidden before)
-       progressBarParent.add(progressBar);
-       revalidate();
+       addProgressBar();
        //TODO: coordinate drawing thread such that only one is working at the same time
        PrintGraphEdgesTask task = new PrintGraphEdgesTask(canvas, progressBar);
        (new Thread(task)).start();  
@@ -286,8 +285,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
                 e.printStackTrace();
             }
        }
-       progressBarParent.remove(progressBar);
-       revalidate();
+       removeProgressBar();
     }
     
     public void printEdgesForVertex(Graphics canvas, int vertex1)
@@ -405,11 +403,35 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
         }
         
     }
+    
+    private void addProgressBar()
+    {
+        if (progressBarParent != null)
+        {
+            progressBarParent.add(progressBar);
+            revalidate();
+        }
+    }
+    
+    private void removeProgressBar()
+    {
+        if (progressBarParent != null)
+        {
+            progressBarParent.remove(progressBar);
+            revalidate();
+        }
+    }
 
     public void setProgressBar(KahinaProgressBar progressBar)
     {
-        this.progressBar = progressBar;  
-        this.progressBarParent = progressBar.getParent();
-        progressBarParent.remove(progressBar);
+        if (progressBar != null)
+        {
+            this.progressBar = progressBar;  
+            this.progressBarParent = progressBar.getParent();
+            if (progressBarParent != null)
+            {
+                progressBarParent.remove(progressBar);
+            }
+        }
     }
 }

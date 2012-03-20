@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class SpringLayouter extends KahinaGraphLayouter
 {
-    //internal positions on grid (expressed in [0,1] x [0,1])
+    //internal positions on grid (expressed in [0,100] x [0,100])
     double[] xPos;
     double[] yPos;
     
@@ -27,8 +27,8 @@ public class SpringLayouter extends KahinaGraphLayouter
         for (int vertex : vertices)
         {
             vertexToIndex.put(vertex, id);
-            xPos[id] = Math.random();
-            yPos[id] = Math.random();
+            xPos[id] = Math.random() * 100;
+            yPos[id] = Math.random() * 100;
             id++;
         }
         //compute the coordinates corresponding to the internal positions
@@ -51,9 +51,9 @@ public class SpringLayouter extends KahinaGraphLayouter
     @Override
     public void optimize()
     {
-        double REJECTION_FORCE = 0.001;
-        double SPRING_STRENGTH = 0.05;
-        double SPRING_LENGTH = 0.5 / Math.sqrt(xPos.length);
+        double REJECTION_FORCE = 10;
+        double SPRING_STRENGTH = 10;
+        double SPRING_LENGTH = 50 / Math.sqrt(xPos.length);
         double[] xForces = new double[xPos.length];
         double[] yForces = new double[yPos.length];
         for (int vertex1 : vertexToIndex.keySet())
@@ -86,20 +86,46 @@ public class SpringLayouter extends KahinaGraphLayouter
                 //        + factor * vector[0] + "," + factor * vector[1] + ")"); 
             }
         }
-
+        
+        //scale the resulting coordinates to fit the picture
+        double maxX = 0;
+        double minX = 0;
+        double maxY = 0;
+        double minY = 0;
         for (int vertex : vertexToIndex.keySet())
+        {
+            int id = vertexToIndex.get(vertex);
+            xPos[id] += xForces[id];
+            yPos[id] += yForces[id];
+            if (xPos[id] > maxX) maxX = xPos[id];
+            else if (xPos[id] < minX) minX = xPos[id];
+            if (yPos[id] > maxY) maxY = yPos[id];
+            else if (yPos[id] < minY) minY = yPos[id];
+        }
+        double xScaling = 100 / (maxX - minX);
+        double xTranslation = -(maxX * xScaling - 100);
+        double yScaling = 100 / (maxY - minY);
+        double yTranslation = -(maxY * yScaling - 100);
+        for (int vertex : vertexToIndex.keySet())
+        {
+            int id = vertexToIndex.get(vertex);
+            xPos[id] = xPos[id] * xScaling + xTranslation;
+            yPos[id] = yPos[id] * yScaling + yTranslation;
+        }
+        
+        /*for (int vertex : vertexToIndex.keySet())
         {
             int id = vertexToIndex.get(vertex);
             //TODO: debug this (sometimes coordinates do exceed the bounds)
             //a hard constraint prevents vertices from exceeding the view boundaries
             xPos[id] += xForces[id];
-            if (xPos[id] < 0.1) xPos[id] = 0.1/(-xPos[id]+1);
-            if (xPos[id] > 0.9) xPos[id] = 0.9 + 0.1/(xPos[id]-1);
+            if (xPos[id] < 10) xPos[id] = 10/(-xPos[id]+100);
+            if (xPos[id] > 90) xPos[id] = 90 + 10/(xPos[id]-100);
             yPos[id] += yForces[id];
-            if (yPos[id] < 0.1) yPos[id] = 0.1/(-yPos[id]+1);
-            if (yPos[id] > 0.9) yPos[id] = 0.9 + 0.1/(yPos[id]-1);
+            if (yPos[id] < 10) yPos[id] = 10/(-yPos[id]+100);
+            if (yPos[id] > 90) yPos[id] = 90 + 10/(yPos[id]-100);
             //System.err.println("xPos[" + id + "] += " + xForces[id] + " = " + xPos[id]);
-        }
+        }*/
         refreshCoordinates();
     }
 
@@ -120,11 +146,12 @@ public class SpringLayouter extends KahinaGraphLayouter
     @Override
     public void refreshCoordinates()
     {
+        int zoomLevel = view.getConfig().getZoomLevel();
         for (int vertex : vertexToIndex.keySet())
         {
             int id = vertexToIndex.get(vertex);
-            xCoord.put(vertex, (int) (xPos[id] * getDisplayWidth() - 20) + 10);
-            yCoord.put(vertex, (int) (yPos[id] * getDisplayHeight() - 20) + 10);
+            xCoord.put(vertex, (int) (xPos[id] * zoomLevel) + 10);
+            yCoord.put(vertex, (int) (yPos[id] * zoomLevel) + 10);
         }
     }
     
