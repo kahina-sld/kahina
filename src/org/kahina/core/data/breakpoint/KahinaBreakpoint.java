@@ -217,6 +217,17 @@ public class KahinaBreakpoint extends KahinaObject implements Serializable
         return b.toString();
     }
     
+    public Element exportXML(Document dom)
+    {
+        Element breakpointEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:breakpoint");
+        breakpointEl.setAttribute("name", name);
+        breakpointEl.setAttribute("type", type + "");
+        breakpointEl.setAttribute("color", ColorUtil.encodeHTML(signalColor));
+        breakpointEl.setAttribute("active", active + "");
+        breakpointEl.appendChild(pattern.exportXML(dom));
+        return breakpointEl;
+    }
+    
     /**
      * Constructs a breakpoint from an XML representation as produced by <code>exportXML</code>.
      * @param breakpointNode an XML DOM element with name "breakpoint" as produced when parsing the result of <code>exportXML</code>
@@ -232,11 +243,5 @@ public class KahinaBreakpoint extends KahinaObject implements Serializable
         //expect only one tree pattern
         newBreakpoint.pattern = TreePattern.importXML((Element) breakpointNode.getElementsByTagName("treePattern").item(0));
         return newBreakpoint;
-    }
-
-    public Node exportXML(Document dom)
-    {
-        // TODO Auto-generated method stub
-        return null;
     }
 }
