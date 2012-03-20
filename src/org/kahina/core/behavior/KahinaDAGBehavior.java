@@ -14,7 +14,7 @@ import org.kahina.core.data.dag.KahinaDAG;
  * <p>
  * In an application, the user will usually want to inherit from this in order to define the behavior of DAG components.
  * By default, each <code>KahinaBehavior</code> implements the {@link KahinaListener} interface, but it does not register itself with the event system.
- * For that purpose, implementations should use the <code>KahinaRunner.getControl().registerListener</code> mechanism.
+ * For that purpose, implementations should use the <code>kahina.getControl().registerListener</code> mechanism.
  * 
  * @author jd
  */
