@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
 import org.kahina.core.data.tree.KahinaTree;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -637,6 +638,39 @@ public class TreeNodePattern implements Serializable
         }
         b.append("</pattern>");
         return b.toString();
+    }
+    
+    public Element exportXML(Document dom)
+    {
+        Element patternEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:pattern");
+        patternEl.setAttribute("type", getTypeAsXMLString());
+        patternEl.setAttribute("rel", getRelAsXMLString());
+        if (intValue != -1)
+        {
+            Element intValEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:int-val");
+            intValEl.setTextContent(intValue + "");
+            patternEl.appendChild(intValEl);
+        }
+        if (stringValue.length() > 0 && !stringValue.equals("--"))
+        {
+            Element strValEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:str-val");
+            strValEl.setAttribute("regex", (regexValue != null) + "");
+            strValEl.setTextContent(stringValue);
+            patternEl.appendChild(strValEl);
+        }
+        if (leftArg != null)
+        {
+            Element leftArgEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:left-arg");
+            leftArgEl.appendChild(leftArg.exportXML(dom));
+            patternEl.appendChild(leftArgEl);
+        }
+        if (rightArg != null)
+        {
+            Element rightArgEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:right-arg");
+            rightArgEl.appendChild(rightArg.exportXML(dom));
+            patternEl.appendChild(rightArgEl);
+        }
+        return patternEl;
     }
     
     public static TreeNodePattern importXML(Element treeNodePatternNode)

@@ -2,6 +2,8 @@ package org.kahina.core.data.breakpoint.patterns;
 
 import java.io.Serializable;
 
+import org.kahina.core.io.color.ColorUtil;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -47,6 +49,13 @@ public class TreePattern implements Serializable
         b.append(root.exportXML(false));
         b.append("</treePattern>");
         return b.toString();
+    }
+    
+    public Element exportXML(Document dom)
+    {
+        Element treePatternEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:tree-pattern");
+        treePatternEl.appendChild(root.exportXML(dom));
+        return treePatternEl;
     }
     
     public static TreePattern importXML(Element treePatternNode)

@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -97,6 +98,22 @@ public class TreePatternNode implements Serializable
         }
         b.append("</patternNode>");
         return b.toString();
+    }
+    
+    public Element exportXML(Document dom)
+    {
+        Element nodePatternEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:pattern-node");
+        nodePatternEl.appendChild(pattern.exportXML(dom));
+        if (children.size() > 0)
+        {
+            Element childrenEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:pattern-node");
+            for (TreePatternNode child : children)
+            {
+                childrenEl.appendChild(child.exportXML(dom));
+            }
+            nodePatternEl.appendChild(childrenEl);
+        }
+        return nodePatternEl;
     }
     
     public static TreePatternNode importXML(Element treePatternNodeNode)
