@@ -51,8 +51,8 @@ public class SpringLayouter extends KahinaGraphLayouter
     @Override
     public void optimize()
     {
-        double REJECTION_FORCE = 10;
-        double SPRING_STRENGTH = 10;
+        double REJECTION_FORCE = 1;
+        double SPRING_STRENGTH = 1;
         double SPRING_LENGTH = 50 / Math.sqrt(xPos.length);
         double[] xForces = new double[xPos.length];
         double[] yForces = new double[yPos.length];
@@ -79,7 +79,8 @@ public class SpringLayouter extends KahinaGraphLayouter
             {
                 double[] vector = unitVector(vertex1,vertex2);
                 double dist = euclideanDistance(vertex2,vertex1);
-                double factor = SPRING_STRENGTH * (dist - SPRING_LENGTH);
+                //double factor = SPRING_STRENGTH * (dist - SPRING_LENGTH);
+                double factor = SPRING_STRENGTH * Math.log(dist / SPRING_LENGTH);
                 xForces[id1] += factor * vector[0];
                 yForces[id1] += factor * vector[1]; 
                 //System.err.println("attract(" + vertex1 + "," + vertex2 + ") = ("
