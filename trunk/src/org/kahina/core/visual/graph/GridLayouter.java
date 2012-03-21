@@ -76,8 +76,6 @@ public class GridLayouter extends KahinaGraphLayouter
                optimizePositionOfVertexAt(i,j);
             }
         }
-        //compute the coordinates corresponding to the grid
-        refreshCoordinates();
         System.err.println(" done in " + (System.currentTimeMillis() - startTime) + " ms.");
     }
     
@@ -86,8 +84,6 @@ public class GridLayouter extends KahinaGraphLayouter
     {
         System.err.println(" Optimizing vertex " + v);
         optimizePositionOfVertexAt(gridX.get(v),gridY.get(v));
-        //compute the coordinates corresponding to the grid
-        refreshCoordinates();
     }
 
     @Override
@@ -97,8 +93,6 @@ public class GridLayouter extends KahinaGraphLayouter
         System.err.println(" Optimizing vertex " + v);
         optimizePositionOfVertexAt(gridX.get(v),gridY.get(v));
         FLAG_USE_INVISIBLE_EDGES = true;
-        //compute the coordinates corresponding to the grid
-        refreshCoordinates();
     }
     
     private void optimizePositionOfVertexAt(int i, int j)
