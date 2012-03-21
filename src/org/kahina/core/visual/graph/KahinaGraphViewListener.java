@@ -192,6 +192,7 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
                 for (int i = 0; i < it; i++)
                 {
                     view.view.layout.optimize();
+                    view.view.layout.refreshCoordinates();
                 }
             }
         }
@@ -201,6 +202,7 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
             {
                 view.view.layout.optimizeVtxPosAllEdges(v);
             }
+            view.view.layout.refreshCoordinates();
         }
         else if (command.equals("optVisVrtVisEdges"))
         {
@@ -208,6 +210,7 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
             {
                 view.view.layout.optimizeVtxPosVisibleEdges(v);
             }
+            view.view.layout.refreshCoordinates();
         }
         else if (command.endsWith("0 %"))
         {

@@ -71,6 +71,7 @@ public class KahinaGraphTest
            {
                System.err.println("Optimizing!");
                view.getLayouter().optimize();
+               view.getLayouter().refreshCoordinates();
                view.flushRedrawAgenda();
                control.processEvent(new KahinaRedrawEvent());
            }       

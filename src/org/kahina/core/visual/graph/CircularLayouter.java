@@ -57,18 +57,13 @@ public class CircularLayouter extends KahinaGraphLayouter
         {
            optimizePositionOfVertexAt(i);
         }
-        //compute the coordinates corresponding to the grid
-        refreshCoordinates();
-        System.err.println(" done in " + (System.currentTimeMillis() - startTime) + " ms.");
-        
+        System.err.println(" done in " + (System.currentTimeMillis() - startTime) + " ms.");   
     }
 
     @Override
     public void optimizeVtxPosAllEdges(int v)
     {
         optimizePositionOfVertexAt(vertexToIndex.get(v));
-        //compute the coordinates corresponding to the grid
-        refreshCoordinates();     
     }
 
     @Override
@@ -76,9 +71,7 @@ public class CircularLayouter extends KahinaGraphLayouter
     {
         FLAG_USE_INVISIBLE_EDGES = false;
         optimizePositionOfVertexAt(vertexToIndex.get(v));
-        FLAG_USE_INVISIBLE_EDGES = true;
-        //compute the coordinates corresponding to the grid
-        refreshCoordinates();     
+        FLAG_USE_INVISIBLE_EDGES = true; 
     }
     
     private void optimizePositionOfVertexAt(int i)
