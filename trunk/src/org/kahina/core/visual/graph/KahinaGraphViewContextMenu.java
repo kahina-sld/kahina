@@ -91,24 +91,24 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
         }
         add(nodeShapePolicySubmenu);
         
-        JMenu edgeShapePolicySubmenu = new JMenu("Edge labels");
-        ButtonGroup edgeShapePolicyGroup = new ButtonGroup();
+        JMenu edgeLabelPolicySubmenu = new JMenu("Edge labels");
+        ButtonGroup edgeLabelPolicyGroup = new ButtonGroup();
         JRadioButtonMenuItem noTagItem = new JRadioButtonMenuItem("No edge labels");
         noTagItem.addActionListener(l);
-        edgeShapePolicyGroup.add(noTagItem);
-        edgeShapePolicySubmenu.add(noTagItem);
+        edgeLabelPolicyGroup.add(noTagItem);
+        edgeLabelPolicySubmenu.add(noTagItem);
         JRadioButtonMenuItem simpleTagItem = new JRadioButtonMenuItem("Simple edge labels");
         simpleTagItem.addActionListener(l);
-        edgeShapePolicyGroup.add(simpleTagItem);
-        edgeShapePolicySubmenu.add(simpleTagItem);
+        edgeLabelPolicyGroup.add(simpleTagItem);
+        edgeLabelPolicySubmenu.add(simpleTagItem);
         JRadioButtonMenuItem ovalTagItem = new JRadioButtonMenuItem("Oval edge labels");
         ovalTagItem.addActionListener(l);
-        edgeShapePolicyGroup.add(ovalTagItem);
-        edgeShapePolicySubmenu.add(ovalTagItem);
+        edgeLabelPolicyGroup.add(ovalTagItem);
+        edgeLabelPolicySubmenu.add(ovalTagItem);
         JRadioButtonMenuItem boxedTagItem = new JRadioButtonMenuItem("Boxed edge labels");
         boxedTagItem.addActionListener(l);
-        edgeShapePolicyGroup.add(boxedTagItem);
-        edgeShapePolicySubmenu.add(boxedTagItem);
+        edgeLabelPolicyGroup.add(boxedTagItem);
+        edgeLabelPolicySubmenu.add(boxedTagItem);
 
         switch (v.getConfig().getEdgeLabelPolicy())
         {
@@ -129,7 +129,7 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
                 ovalTagItem.setSelected(true);
             }
         }
-        add(edgeShapePolicySubmenu); 
+        add(edgeLabelPolicySubmenu); 
         
         JMenu drawingOrderSubmenu = new JMenu("Drawing Order");
         ButtonGroup drawingOrderGroup = new ButtonGroup();
@@ -155,6 +155,40 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
             }
         }
         add(drawingOrderSubmenu);
+        
+        JMenu edgeShapePolicySubmenu = new JMenu("Edge shape");
+        ButtonGroup edgeShapePolicyGroup = new ButtonGroup();
+        JRadioButtonMenuItem directShapeItem = new JRadioButtonMenuItem("Direct");
+        directShapeItem.setActionCommand("edgeShapeDirect");
+        directShapeItem.addActionListener(l);
+        edgeShapePolicyGroup.add(directShapeItem);
+        edgeShapePolicySubmenu.add(directShapeItem);
+        JRadioButtonMenuItem rectangularShapeItem = new JRadioButtonMenuItem("Rectangular");
+        rectangularShapeItem.setActionCommand("edgeShapeRect");
+        rectangularShapeItem.addActionListener(l);
+        edgeShapePolicyGroup.add(rectangularShapeItem);
+        edgeShapePolicySubmenu.add(rectangularShapeItem);
+        JRadioButtonMenuItem arcShapeItem = new JRadioButtonMenuItem("Arc");
+        arcShapeItem.setActionCommand("edgeShapeArc");
+        arcShapeItem.addActionListener(l);
+        edgeShapePolicyGroup.add(arcShapeItem);
+        edgeShapePolicySubmenu.add(arcShapeItem);
+        switch (v.getConfig().getEdgeShapePolicy())
+        {
+            case KahinaGraphViewOptions.EDGE_SHAPE_DIRECT:
+            {
+                directShapeItem.setSelected(true); break;
+            }
+            case KahinaGraphViewOptions.EDGE_SHAPE_RECTANGULAR:
+            {
+                rectangularShapeItem.setSelected(true); break;
+            }
+            case KahinaGraphViewOptions.EDGE_SHAPE_ARC:
+            {
+                arcShapeItem.setSelected(true);
+            }
+        }
+        add(edgeShapePolicySubmenu);
         
         JMenu antialiasingSubmenu = new JMenu("Antialiasing");
         ButtonGroup antialiasingGroup = new ButtonGroup();

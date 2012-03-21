@@ -384,7 +384,47 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
                             printEdgeLabel(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeLabel);
                         }
                         canvas.setColor(view.getEdgeColor(vertex1,vertex2));
-                        canvas.drawLine(x1, y1, x2, y2);
+                        switch (view.getConfig().getEdgeShapePolicy())
+                        {
+                            case KahinaGraphViewOptions.EDGE_SHAPE_DIRECT:
+                            {
+                                canvas.drawLine(x1, y1, x2, y2);
+                                break;
+                            }
+                            case KahinaGraphViewOptions.EDGE_SHAPE_RECTANGULAR:
+                            {
+                                canvas.drawLine(x1, y1, x2, y1);
+                                canvas.drawLine(x2, y1, x2, y2);
+                                break;
+                            }
+                            case KahinaGraphViewOptions.EDGE_SHAPE_ARC:
+                            {
+                                int halfXDist = (x2 - x1)/2;
+                                int halfYDist = (y2 - y1)/2;
+                                int midPointX = x1 + halfXDist + halfYDist;
+                                int midPointY = y1 + halfYDist - halfXDist;
+                                double radius = Math.sqrt(Math.pow(x1 - midPointX,2) + Math.pow(y1 - midPointY,2));
+                                int startAngle = (int) (180.0 * Math.asin((y1-midPointY) / radius) / Math.PI);
+                                int endAngle = (int) (180.0 * Math.asin((y2-midPointY) / radius) / Math.PI);
+                                if (endAngle - startAngle < 0)
+                                {
+                                    int tempAngle = startAngle;
+                                    startAngle = endAngle;
+                                    endAngle = tempAngle;
+                                }
+                                if (startAngle < 0) startAngle = 360 + startAngle;
+                                System.err.println("Computing arc for edge (" + vertex1 + "," + vertex2 + ")");
+                                System.err.println("  Half distance vector: (" + halfXDist + "," + halfYDist + ")");
+                                System.err.println("  Resulting midpoint: (" + midPointX + "," + midPointY + ")");
+                                System.err.println("  Radius: " + radius);
+                                System.err.println("  arcsin(" + (y1-midPointY) / radius + ") = " + Math.asin((y1-midPointY) / radius));
+                                System.err.println("  arcsin(" + (y2-midPointY) / radius + ") = " + Math.asin((y2-midPointY) / radius));
+                                System.err.println("  Resulting angle range: (" + startAngle + "," + endAngle + "):");
+                                System.err.println("  Drawing arc with angles: (" + startAngle + "," + (endAngle - startAngle) + "):");
+                                canvas.drawArc(midPointX - (int) radius, midPointY - (int) radius, (int) radius * 2, (int) radius * 2, startAngle, endAngle - startAngle);
+                                break;
+                            }
+                        }
                         edges++;
                         //TODO: add this later (= treatment of directed edges)
                         //printEdgeArrow(canvas, vertex1, vertex2); 
