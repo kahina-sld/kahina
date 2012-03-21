@@ -100,6 +100,18 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
         {
             view.view.getConfig().setDrawingOrderPolicy(KahinaGraphViewOptions.EDGES_ABOVE_VERTICES);
         }
+        else if (command.equals("edgeShapeDirect"))
+        {
+            view.view.getConfig().setEdgeShapePolicy(KahinaGraphViewOptions.EDGE_SHAPE_DIRECT);
+        }
+        else if (command.equals("edgeShapeRect"))
+        {
+            view.view.getConfig().setEdgeShapePolicy(KahinaGraphViewOptions.EDGE_SHAPE_RECTANGULAR);
+        }
+        else if (command.equals("edgeShapeArc"))
+        {
+            view.view.getConfig().setEdgeShapePolicy(KahinaGraphViewOptions.EDGE_SHAPE_ARC);
+        }
         else if (command.equals("Antialiasing On"))
         {
             view.view.getConfig().setAntialiasingPolicy(KahinaGraphViewOptions.ANTIALIASING);

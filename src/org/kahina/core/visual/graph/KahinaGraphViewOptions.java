@@ -19,6 +19,11 @@ public class KahinaGraphViewOptions
     public static final int VERTICES_ABOVE_EDGES = 0;
     public static final int EDGES_ABOVE_VERTICES = 1;
     
+    //possible values for edge shape policy
+    public static final int EDGE_SHAPE_DIRECT = 0;
+    public static final int EDGE_SHAPE_RECTANGULAR = 1;
+    public static final int EDGE_SHAPE_ARC = 2;
+    
     // possible values for antialiasing policy
     public static final int ANTIALIASING = 0;
     public static final int NO_ANTIALIASING = 1;

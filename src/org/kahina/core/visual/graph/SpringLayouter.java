@@ -188,10 +188,10 @@ public class SpringLayouter extends KahinaGraphLayouter
     private void adaptScaling()
     {
         //scale the resulting coordinates to fit the picture
-        double maxX = 50;
-        double minX = 50;
-        double maxY = 50;
-        double minY = 50;
+        double maxX = 50.1;
+        double minX = 49.9;
+        double maxY = 50.1;
+        double minY = 49.9;
         for (int vertex : vertexToIndex.keySet())
         {
             if (view.isVertexVisible(vertex))

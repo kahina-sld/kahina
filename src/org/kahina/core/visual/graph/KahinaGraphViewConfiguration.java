@@ -12,6 +12,7 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
     private int vertexShapePolicy = KahinaGraphViewOptions.POINT_VERTICES;
     private int edgeLabelPolicy = KahinaGraphViewOptions.NO_EDGE_LABELS;
     private int drawingOrderPolicy = KahinaGraphViewOptions.VERTICES_ABOVE_EDGES;
+    private int edgeShapePolicy = KahinaGraphViewOptions.EDGE_SHAPE_DIRECT;
     private int antialiasingPolicy = KahinaGraphViewOptions.NO_ANTIALIASING;
     private int graphLayout = KahinaGraphViewOptions.LAYOUT_GRID;
     private int vertexVisibilityPolicy = KahinaGraphViewOptions.VERTICES_EXPLICITLY_VISIBLE;
@@ -154,6 +155,23 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
         else
         {
             System.err.println("WARNING: unknown drawing order policy value " + newPolicy);
+        }
+    }
+    
+    public int getEdgeShapePolicy()
+    {
+        return edgeShapePolicy;
+    }
+
+    public void setEdgeShapePolicy(int newPolicy)
+    {
+        if (newPolicy >= 0 && newPolicy <= 2)
+        {
+            edgeShapePolicy = newPolicy;
+        } 
+        else
+        {
+            System.err.println("WARNING: unknown edge shape policy value " + newPolicy);
         }
     }
     
