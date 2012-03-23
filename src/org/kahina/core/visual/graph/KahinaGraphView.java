@@ -5,6 +5,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -408,6 +412,42 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         xCoord.clear();
         yCoord.clear();
         visibleVertices = null;
+    }
+    
+    public void exportVisibleSubgraphTGF(String fileName) throws IOException
+    {
+        try
+        {
+            BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
+            //print vertex IDs and vertex labels of visible vertices
+            for (int vertex : model.getVertices())
+            {
+                if (isVertexVisible(vertex))
+                {
+                    out.write(vertex + " " + model.getVertexLabel(vertex) + "\n");
+                }
+            }
+            out.write("#\n");
+            //print edges between visible vertices
+            for (int vertex1 : model.getVertices())
+            {
+                if (isVertexVisible(vertex1))
+                {
+                    for (int vertex2 : model.getNeighbors(vertex1))
+                    {
+                        if (isVertexVisible(vertex2))
+                        {
+                            out.write(vertex1 + " " + vertex2 + " " + model.getEdgeLabel(vertex1,vertex2) + "\n");
+                        }
+                    }
+                }
+            }
+            out.close();
+        }
+        catch (FileNotFoundException e)
+        {
+            System.err.println("ERROR: File for TGF output not found. Aborting TGF output!");
+        }
     }
 
     @Override
