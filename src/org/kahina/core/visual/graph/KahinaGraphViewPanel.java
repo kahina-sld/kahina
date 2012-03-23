@@ -404,24 +404,27 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
                                 int midPointX = x1 + halfXDist + halfYDist;
                                 int midPointY = y1 + halfYDist - halfXDist;
                                 double radius = Math.sqrt(Math.pow(x1 - midPointX,2) + Math.pow(y1 - midPointY,2));
-                                int startAngle = (int) (180.0 * Math.asin((y1-midPointY) / radius) / Math.PI);
-                                int endAngle = (int) (180.0 * Math.asin((y2-midPointY) / radius) / Math.PI);
-                                if (endAngle - startAngle < 0)
+                                int startAngle = (int) determineAngleInDegrees(midPointX, midPointY, x1, y1);
+                                int endAngle = (int) determineAngleInDegrees(midPointX, midPointY, x2, y2);
+                                int angleLength = endAngle - startAngle;
+                                if (angleLength < 0)
                                 {
-                                    int tempAngle = startAngle;
-                                    startAngle = endAngle;
-                                    endAngle = tempAngle;
+                                    if (angleLength > -180)
+                                    {
+                                        startAngle = endAngle;
+                                        angleLength = -angleLength;
+                                    }
+                                    else
+                                    {
+                                        angleLength += 360;
+                                    }
                                 }
-                                if (startAngle < 0) startAngle = 360 + startAngle;
-                                System.err.println("Computing arc for edge (" + vertex1 + "," + vertex2 + ")");
-                                System.err.println("  Half distance vector: (" + halfXDist + "," + halfYDist + ")");
-                                System.err.println("  Resulting midpoint: (" + midPointX + "," + midPointY + ")");
-                                System.err.println("  Radius: " + radius);
-                                System.err.println("  arcsin(" + (y1-midPointY) / radius + ") = " + Math.asin((y1-midPointY) / radius));
-                                System.err.println("  arcsin(" + (y2-midPointY) / radius + ") = " + Math.asin((y2-midPointY) / radius));
-                                System.err.println("  Resulting angle range: (" + startAngle + "," + endAngle + "):");
-                                System.err.println("  Drawing arc with angles: (" + startAngle + "," + (endAngle - startAngle) + "):");
-                                canvas.drawArc(midPointX - (int) radius, midPointY - (int) radius, (int) radius * 2, (int) radius * 2, startAngle, endAngle - startAngle);
+                                else if (angleLength > 180)
+                                {
+                                    startAngle = endAngle;
+                                    angleLength = 360 - angleLength;
+                                }
+                                canvas.drawArc(midPointX - (int) radius, midPointY - (int) radius, (int) radius * 2, (int) radius * 2, startAngle, angleLength);
                                 break;
                             }
                         }
@@ -442,6 +445,42 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
             finished = true;
         }
         
+    }
+    
+    private double determineAngleInDegrees(double midpointX, double midpointY, double pointX, double pointY)
+    {
+        //System.err.print("angleInDegrees[(" + midpointX + "," + midpointY + ") -> (" + pointX + "," + pointY + ")] = ");
+        if (midpointX == pointX)
+        {
+            if (midpointY  < pointY)
+            {
+                return 270;
+            }
+            else if (midpointY > pointY)
+            {
+                return 90;
+            }
+            //is actually undefined, but 0 is a safe default value for our purposes
+            return 0;
+        }
+        else if (midpointX < pointX)
+        {
+            if (midpointY >= pointY)
+            {
+                //System.err.println(180 * Math.atan((midpointY - pointY) / (pointX - midpointX)) / Math.PI);
+                return 180 * Math.atan((midpointY - pointY) / (pointX - midpointX)) / Math.PI;
+            }
+            else
+            {
+                //System.err.println(360 - 180 * Math.atan((midpointY - pointY) / (pointX - midpointX)) / Math.PI);
+                return 360 + 180 * Math.atan((midpointY - pointY) / (pointX - midpointX)) / Math.PI;
+            }
+        }
+        else
+        {
+            //System.err.println(180 + 180 * Math.atan((midpointY - pointY) / (pointX - midpointX)) / Math.PI);
+            return 180 + 180 * Math.atan((midpointY - pointY) / (pointX - midpointX)) / Math.PI;
+        }
     }
     
     private void addProgressBar()
