@@ -254,6 +254,38 @@ public class KahinaGraphViewListener extends MouseAdapter implements ActionListe
                 JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+        else if (command.equals("exportTGF"))
+        {
+            JFileChooser chooser = new JFileChooser(new File("."));
+            //FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG Images", "png");
+            //chooser.setFileFilter(filter);
+            chooser.showSaveDialog(view);
+            File outputFile = chooser.getSelectedFile();
+            try
+            {
+                view.view.getModel().exportTGF(outputFile.getAbsolutePath());
+            }
+            catch (IOException ioe)
+            {
+                JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else if (command.equals("exportVisTGF"))
+        {
+            JFileChooser chooser = new JFileChooser(new File("."));
+            //FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG Images", "png");
+            //chooser.setFileFilter(filter);
+            chooser.showSaveDialog(view);
+            File outputFile = chooser.getSelectedFile();
+            try
+            {
+                view.view.exportVisibleSubgraphTGF(outputFile.getAbsolutePath());
+            }
+            catch (IOException ioe)
+            {
+                JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
         else
         {
             processExtensionCommand(command);

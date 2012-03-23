@@ -1,14 +1,17 @@
 package org.kahina.core.data.graph;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
 import org.kahina.core.data.KahinaObject;
+import org.kahina.core.visual.graph.KahinaGraphView;
 
 public abstract class KahinaGraph extends KahinaObject
 {
@@ -130,6 +133,7 @@ public abstract class KahinaGraph extends KahinaObject
                     }
                 }
             }
+            in.close();
         }
         catch (FileNotFoundException e)
         {
@@ -140,5 +144,32 @@ public abstract class KahinaGraph extends KahinaObject
             System.err.println("ERROR: IOException while reading TGF file. Returning empty graph!");
         }
         return graph;
+    }
+    
+    public void exportTGF(String fileName) throws IOException
+    {
+        try
+        {
+            BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
+            //print vertex IDs and vertex labels
+            for (int vertex : getVertices())
+            {
+                out.write(vertex + " " + getVertexLabel(vertex) + "\n");
+            }
+            out.write("#\n");
+            //print all edges (undirected edges in both directions) with their labels
+            for (int vertex1 : getVertices())
+            {
+                for (int vertex2 : getNeighbors(vertex1))
+                {
+                    out.write(vertex1 + " " + vertex2 + " " + getEdgeLabel(vertex1,vertex2) + "\n");
+                }
+            }
+            out.close();
+        }
+        catch (FileNotFoundException e)
+        {
+            System.err.println("ERROR: File for TGF output not found. Aborting TGF output!");
+        }
     }
 }

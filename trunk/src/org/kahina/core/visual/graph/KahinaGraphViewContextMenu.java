@@ -424,6 +424,16 @@ public class KahinaGraphViewContextMenu extends JPopupMenu
         JMenuItem exportPNGItem = new JMenuItem("Save as PNG");
         exportPNGItem.addActionListener(l);
         add(exportPNGItem);
+        
+        JMenuItem exportTGFItem = new JMenuItem("Export entire graph to TGF");
+        exportTGFItem.setActionCommand("exportTGF");
+        exportTGFItem.addActionListener(l);
+        add(exportTGFItem);
+        
+        JMenuItem exportVisibleTGFItem = new JMenuItem("Export visible subgraph to TGF");
+        exportVisibleTGFItem.setActionCommand("exportVisTGF");
+        exportVisibleTGFItem.addActionListener(l);
+        add(exportVisibleTGFItem);
     }
     
     public static JPopupMenu getMenu(ActionListener l, KahinaGraphView v)
