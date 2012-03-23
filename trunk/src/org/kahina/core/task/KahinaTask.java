@@ -5,12 +5,16 @@ import org.kahina.core.gui.KahinaProgressBar;
 public abstract class KahinaTask implements Runnable
 {
     KahinaProgressBar progressBar;
+    KahinaTaskManager manager;
     
-    protected boolean finished;
+    private boolean cancelled;
+    private boolean finished;
     
-    public KahinaTask(KahinaProgressBar progressBar)
+    public KahinaTask(KahinaProgressBar progressBar, KahinaTaskManager manager)
     {
         this.progressBar = progressBar;
+        this.manager = manager;
+        this.cancelled = false;
         this.finished = false;
     }
     
@@ -24,6 +28,7 @@ public abstract class KahinaTask implements Runnable
     
     protected boolean isCanceled()
     {
+        if (cancelled) return true;
         if (progressBar == null) return false;
         return progressBar.cancelButtonClicked();
     }
@@ -31,5 +36,16 @@ public abstract class KahinaTask implements Runnable
     public boolean isFinished()
     {
         return finished;
+    }
+    
+    public void setCanceled()
+    {
+        this.cancelled = true;
+    }
+    
+    public void setFinished()
+    {
+        this.finished = true;
+        manager.taskFinished(this);
     }
 }
