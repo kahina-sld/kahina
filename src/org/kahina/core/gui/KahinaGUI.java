@@ -44,7 +44,7 @@ public class KahinaGUI implements KahinaListener
 
 	KahinaSelectionHistory selectionHistory;
 
-	Map<String,List<KahinaControlButton>> controlWindows;
+	public Map<String,List<KahinaControlButton>> controlWindows;
 
 	// FIXME get rid of this generics warning
 	protected KahinaTextView messageConsoleView;
