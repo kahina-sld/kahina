@@ -135,7 +135,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
                 redrawAgenda.clear();
             }
         }
-        repaint();
+        //repaint();
         System.err.println("  Finished updating! Total time spent: " + (System.currentTimeMillis() - startTime) + " ms.");
     }
     
