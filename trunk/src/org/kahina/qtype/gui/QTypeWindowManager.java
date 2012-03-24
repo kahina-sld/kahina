@@ -16,19 +16,19 @@ public class QTypeWindowManager extends KahinaWindowManager
 	{
     	if (windowManager instanceof QTypeWindowManager)
     	{
-    		return new QTypeMainWindow((QTypeWindowManager) windowManager, windowManager.getGuiControl());
+    		return new QTypeMainWindow((QTypeWindowManager) windowManager, kahina);
     	}
     	else
     	{
     		System.err.println("FATAL ERROR: TraleSLDWindowManager could not create main window!");
     		System.err.println("             Building default window with dummy functionality instead.");
-    		return new KahinaMainWindow(windowManager, windowManager.getGuiControl());
+    		return new KahinaMainWindow(windowManager, kahina);
     	}
 	}
     
     @Override
     protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, int winID)
 	{
-		return new QTypeMainWindow(this, kahinaWindowManager.getGuiControl(), winID);
+		return new QTypeMainWindow(this, kahina, winID);
 	}
 }

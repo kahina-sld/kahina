@@ -1,6 +1,6 @@
 package org.kahina.core.gui.windows;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.visual.KahinaView;
@@ -12,17 +12,17 @@ public class KahinaDefaultWindow extends KahinaWindow
 
 	KahinaView<?> v;
 
-	public KahinaDefaultWindow(KahinaView<?> v, KahinaWindowManager wm, KahinaController control)
+	public KahinaDefaultWindow(KahinaView<?> v, KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina)
 	{
-		super(wm, control);
-		setContent(v, wm.kahina.gui);
+		super(wm, kahina);
+		setContent(v, kahina.gui);
 		setTitle(v.getTitle());
 	}
 
-	public KahinaDefaultWindow(KahinaView<?> v, KahinaWindowManager wm, KahinaController control, int winID)
+	public KahinaDefaultWindow(KahinaView<?> v, KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID)
 	{
-		super(wm, control, winID);
-		setContent(v, wm.kahina.gui);
+		super(wm, kahina, winID);
+		setContent(v, kahina.gui);
 		setTitle(v.getTitle());
 	}
 
@@ -50,7 +50,7 @@ public class KahinaDefaultWindow extends KahinaWindow
 		// new model is displayed?
 		KahinaView<?> vCopy = v;
 		vCopy.display(v.getModel());
-		KahinaDefaultWindow cloneWindow = new KahinaDefaultWindow(vCopy, wm, control);
+		KahinaDefaultWindow cloneWindow = new KahinaDefaultWindow(vCopy, wm, kahina);
 		cloneWindow.cloned = true;
 		cloneWindow.setTitle(cloneWindow.getTitle() + " (clone)");
 		cloneWindow.setSize(this.getSize());
@@ -75,9 +75,9 @@ public class KahinaDefaultWindow extends KahinaWindow
 		// avoided
 		// if snapshots at different stages of construction are desired
 		vCopy.display(v.getModel());
-		KahinaDefaultWindow cloneWindow = new KahinaDefaultWindow(vCopy, wm, control);
+		KahinaDefaultWindow cloneWindow = new KahinaDefaultWindow(vCopy, wm, kahina);
 		cloneWindow.cloned = true;
-		cloneWindow.setTitle(cloneWindow.getTitle() + " (at step " + wm.kahina.getState().nextStepID() + ")");
+		cloneWindow.setTitle(cloneWindow.getTitle() + " (at step " + kahina.getState().nextStepID() + ")");
 		cloneWindow.setSize(this.getSize());
 		cloneWindow.setLocation(this.getX() + 100, this.getY() + 100);
 		return cloneWindow;

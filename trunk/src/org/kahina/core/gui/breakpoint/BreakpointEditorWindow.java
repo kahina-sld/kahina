@@ -27,6 +27,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.kahina.core.KahinaException;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
@@ -62,12 +63,14 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 	// is one of the constant values in
 	// org.kahina.core.breakpoint.KahinaBreakpointType
 	int breakpointType;
+	
+	private final KahinaInstance<?, ?, ?> kahina;
 
-	public BreakpointEditorWindow(KahinaController control, int breakpointType)
+	public BreakpointEditorWindow(KahinaInstance<?, ?, ?> kahina, int breakpointType)
 	{
 		this.breakpointType = breakpointType;
 
-		this.control = control;
+		this.kahina = kahina;
 		control.registerListener("breakpoint_editor", this);
 		this.setTitle("Kahina Breakpoint Editor");
 		this.setSize(800, 600);
@@ -221,7 +224,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 		{
 			// compile the currently opened breakpoint once more
 			compileCurrentlyOpenedBreakpoint();
-			BreakpointTestWindow w = new BreakpointTestWindow(compiledBreakpoints, control);
+			BreakpointTestWindow w = new BreakpointTestWindow(compiledBreakpoints, kahina);
 			w.setVisible(true);
 			break;
 		}

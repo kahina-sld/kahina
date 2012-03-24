@@ -7,7 +7,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTreeView>
@@ -25,7 +25,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 		VERTICAL, HORIZONTAL;
 	}
 
-	public KahinaLayeredTreeViewPanel(int layers, KahinaTreeViewMarker marker, KahinaController control, Orientation orientation)
+	public KahinaLayeredTreeViewPanel(int layers, KahinaTreeViewMarker marker, KahinaInstance<?, ?, ?> kahina, Orientation orientation)
 	{
 		if (VERBOSE)
 		{
@@ -34,7 +34,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 		panels = new KahinaTreeViewPanel[layers];
 		for (int i = 0; i < panels.length; i++)
 		{
-			panels[i] = new KahinaTreeViewPanel(marker, control);
+			panels[i] = new KahinaTreeViewPanel(marker, kahina);
 		}
 		this.orientation = orientation;
 		int axis;

@@ -11,7 +11,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.breakpoint.patterns.KahinaTreeMatchEvent;
@@ -27,7 +27,9 @@ import org.kahina.core.visual.tree.KahinaTreeViewPanel;
 
 public class BreakpointTestWindow extends JFrame implements ActionListener, KahinaListener
 {
-    KahinaTree model;   
+
+	private static final long serialVersionUID = 5249202782237918220L;
+	KahinaTree model;   
     List<TreeAutomaton> breakpoints;
     
     KahinaTreeView view;
@@ -41,12 +43,12 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
     Thread growthProcess;
     boolean growthMode;
     
-    public BreakpointTestWindow(List<TreeAutomaton> breakpoints, KahinaController control)
+    public BreakpointTestWindow(List<TreeAutomaton> breakpoints, KahinaInstance<?, ?, ?> kahina)
     {
         this.setTitle("Kahina Breakpoint Test Environment");
         this.setSize(800,600);
         
-        control.registerListener("treeMatch", this);
+        kahina.getGuiControl().registerListener("treeMatch", this);
         
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
@@ -59,7 +61,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         for (TreeAutomaton breakpoint : breakpoints)
         {
             breakpoint.setTree(model);
-            breakpoint.setController(control);
+            breakpoint.setController(kahina.getGuiControl());
         }
         
         treeGenPanel = new TreeGenerationPanel(this);
@@ -71,7 +73,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         hintPanel = new BreakpointEditorHintPanel();
         mainPanel.add(hintPanel);
         
-        view = new KahinaTreeView(control);
+        view = new KahinaTreeView(kahina);
         view.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
         view.getConfig().setVerticalDistance(4);
         view.getConfig().setHorizontalDistance(10);
@@ -79,7 +81,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         view.display(model);
         
         KahinaTreeViewMarker treeMarker = new KahinaTreeViewMarker(model);
-        viewPanel = new KahinaTreeViewPanel(treeMarker, control);
+        viewPanel = new KahinaTreeViewPanel(treeMarker, kahina);
         JScrollPane viewScrollPane = new JScrollPane(viewPanel);
         
         mainPanel.add(viewScrollPane);

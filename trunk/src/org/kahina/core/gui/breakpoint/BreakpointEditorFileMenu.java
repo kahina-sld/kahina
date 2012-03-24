@@ -13,7 +13,9 @@ import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 
 public class BreakpointEditorFileMenu extends JMenu implements ActionListener
 {
-    KahinaController control;
+ 
+	private static final long serialVersionUID = 7163623733563539175L;
+	KahinaController control;
     
     public BreakpointEditorFileMenu(KahinaController control)
     {

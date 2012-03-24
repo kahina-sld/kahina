@@ -5,19 +5,19 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JList;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaTextViewListener implements MouseListener
 {
     JList list;
-    KahinaController control;
+    private final KahinaInstance<?, ?, ?> kahina;
     
-    public KahinaTextViewListener(KahinaTextViewPanel p)
+    public KahinaTextViewListener(KahinaTextViewPanel p, KahinaInstance<?, ?, ?> kahina)
     {
         list = p.list;
-        control = p.view.control;
+        this.kahina = kahina;
     }
     
     public void mouseClicked(MouseEvent e) 
@@ -26,7 +26,7 @@ public class KahinaTextViewListener implements MouseListener
         KahinaLineReference ref = (KahinaLineReference) list.getModel().getElementAt(index);
         if (ref.getStepID() != -1)
         {
-            control.processEvent(new KahinaSelectionEvent(ref.getStepID()));
+            kahina.dispatchEvent(new KahinaSelectionEvent(ref.getStepID()));
         }
     }
 

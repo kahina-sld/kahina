@@ -1,6 +1,5 @@
 package org.kahina.swi;
 
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.lp.LogicProgrammingInstance;
@@ -47,9 +46,9 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
 	}
 
 	@Override
-	protected SWIPrologGUI createGUI(KahinaController guiController)
+	protected SWIPrologGUI createGUI()
 	{
-		return new SWIPrologGUI(SWIPrologStep.class, this, guiController);
+		return new SWIPrologGUI(SWIPrologStep.class, this);
 	}
 
 	@Override

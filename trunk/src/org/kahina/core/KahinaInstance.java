@@ -52,7 +52,15 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	protected ObjectMagazine<KahinaStep> steps;
 
-	protected KahinaController guiControl;
+	/**
+	 * GUI and views listen to this controller. It never changes.
+	 */
+	protected final KahinaController guiControl;
+	
+	/**
+	 * Everything else (e.g. bridges) listens to this controller. It changes
+	 * with every session.
+	 */
 	protected KahinaController control;
 
 	private boolean guiStarted = false;
@@ -81,8 +89,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	 */
 	private void startGUI()
 	{
-		gui = createGUI(guiControl);
-		gui.prepare(guiControl);
+		gui = createGUI();
+		gui.prepare();
 		guiStarted = true;
 	}
 
@@ -131,6 +139,14 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		createWarner();
 	}
 	
+	// TODO remove the following two methods - client classes should not have
+	// direct access to the controllers, there is too much that they could do
+	// wrong, i.e. call processEvent instead of dispatchEvent or register
+	// listeners to the wrong constructor. Instead, add
+	// registerSessionListener() and registerInstanceListener() with which
+	// listeners can be registered according to their lifespan (session lifespan
+	// -> controller, instance lifespan -> GUI controller).
+	
 	public KahinaController getControl()
 	{
 		return control;
@@ -150,7 +166,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	protected abstract S createState();
 
-	protected abstract G createGUI(KahinaController guiController);
+	protected abstract G createGUI();
 
 	protected abstract B createBridge();
 

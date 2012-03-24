@@ -3,21 +3,18 @@ package org.kahina.sicstus.gui;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 
-import org.kahina.core.control.KahinaController;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.io.util.XMLUtil;
-import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 import org.kahina.sicstus.SICStusPrologStep;
 
 public class SICStusPrologGUI extends LogicProgrammingGUI
 {
-	public SICStusPrologGUI(Class<? extends SICStusPrologStep> stepType, SICStusPrologDebuggerInstance instance, KahinaController control)
+	public SICStusPrologGUI(Class<? extends SICStusPrologStep> stepType, SICStusPrologDebuggerInstance instance)
 	{
-		super(stepType, instance, control);
+		super(stepType, instance);
 	}
 	
 	@Override
@@ -27,7 +24,7 @@ public class SICStusPrologGUI extends LogicProgrammingGUI
 	}
 
 	@Override
-	public void prepare(KahinaController control)
+	public void prepare()
 	{
 		try
 		{

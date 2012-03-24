@@ -46,6 +46,7 @@ public class KahinaGUI implements KahinaListener
 
 	Map<String,List<KahinaControlButton>> controlWindows;
 
+	// FIXME get rid of this generics warning
 	protected KahinaTextView messageConsoleView;
 
 	protected List<KahinaView<?>> views;
@@ -59,7 +60,7 @@ public class KahinaGUI implements KahinaListener
 
 	Class<? extends KahinaStep> stepType;
 
-	public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina, KahinaController control)
+	public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
 	{
 		if (VERBOSE)
 		{
@@ -67,13 +68,13 @@ public class KahinaGUI implements KahinaListener
 		}
 		this.stepType = stepType;
 		this.kahina = kahina;
-		control.registerListener(KahinaEventTypes.STEP_FOCUS, this);
-		control.registerListener(KahinaEventTypes.SELECTION, this);
-		control.registerListener(KahinaEventTypes.DIALOG, this);
-		control.registerListener(KahinaEventTypes.CONTROL, this);
-		control.registerListener(KahinaEventTypes.WARN, this);
+		kahina.getGuiControl().registerListener(KahinaEventTypes.STEP_FOCUS, this);
+		kahina.getGuiControl().registerListener(KahinaEventTypes.SELECTION, this);
+		kahina.getGuiControl().registerListener(KahinaEventTypes.DIALOG, this);
+		kahina.getGuiControl().registerListener(KahinaEventTypes.CONTROL, this);
+		kahina.getGuiControl().registerListener(KahinaEventTypes.WARN, this);
 
-		this.selectionHistory = new KahinaSelectionHistory(control);
+		this.selectionHistory = new KahinaSelectionHistory(kahina);
 		
 		this.windowManager = createWindowManager();
 
@@ -84,12 +85,12 @@ public class KahinaGUI implements KahinaListener
 		this.livingViews = new HashSet<KahinaView<?>>();
 		this.fieldToView = new HashMap<Field, KahinaView<? extends KahinaObject>>();
 		this.varNameToView = new HashMap<String, KahinaView<? extends KahinaObject>>();
-		fillFieldToView(stepType, control);
+		fillFieldToView(stepType, kahina);
 
-		messageConsoleView = new KahinaTextView(control);
+		messageConsoleView = new KahinaTextView(kahina);
 		messageConsoleView.setTitle("Message console");
-		control.registerListener("message", messageConsoleView);
-		control.registerListener("console line", messageConsoleView);
+		kahina.getGuiControl().registerListener("message", messageConsoleView);
+		kahina.getGuiControl().registerListener("console line", messageConsoleView);
 		views.add(messageConsoleView);
 		livingViews.add(messageConsoleView);
 		varNameToView.put("messageConsole", messageConsoleView);
@@ -100,7 +101,7 @@ public class KahinaGUI implements KahinaListener
 	 * 
 	 * @param stepType
 	 */
-	protected void fillFieldToView(Class<? extends KahinaStep> stepType, KahinaController control)
+	protected void fillFieldToView(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
 	{
 		if (VERBOSE)
 		{
@@ -114,8 +115,8 @@ public class KahinaGUI implements KahinaListener
 			}
 			if (KahinaObject.class.isAssignableFrom(field.getType()))
 			{
-				KahinaView<?> newView = KahinaViewRegistry.generateViewFor(field.getType(), control);
-				control.registerListener("update", newView);
+				KahinaView<?> newView = KahinaViewRegistry.generateViewFor(field.getType(), kahina);
+				kahina.getGuiControl().registerListener("update", newView);
 				if (VERBOSE)
 				{
 					System.err.println("\t\tview: " + newView);
@@ -176,7 +177,7 @@ public class KahinaGUI implements KahinaListener
 		}
 	}
 
-	public void prepare(KahinaController control)
+	public void prepare()
 	{
 		windowManager.createWindows(KahinaPerspective.generateDefaultPerspective(varNameToView));
 		displayMainViews();

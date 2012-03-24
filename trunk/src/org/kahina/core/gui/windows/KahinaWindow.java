@@ -11,7 +11,7 @@ import java.awt.event.WindowListener;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaTransferablePanel;
 import org.kahina.core.gui.KahinaWindowManager;
@@ -31,17 +31,17 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     protected final int windowID;
     protected boolean cloned;
     
-    protected KahinaController control;
+    protected final KahinaInstance<?, ?, ?> kahina;
     
     /**
      * Constructs a KahinaWindow with a new unique window ID.
      * @param wm the window manager that is to manage this window
      */
-    public KahinaWindow(KahinaWindowManager wm, KahinaController control)
+    public KahinaWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina)
     {     
     	this.wm = wm;
     	windowID = idCounter++;
-    	this.control = control;
+    	this.kahina = kahina;
         initialize();
     }
     
@@ -51,7 +51,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
      * @param wm the window manager that is to manage this window
      * @param id the unique window ID that this window will be referred by (never use -1 or an ID that is already used!)
      */
-    public KahinaWindow(KahinaWindowManager wm, KahinaController control, int id)
+    public KahinaWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int id)
     {
     	if (VERBOSE)
     	{
@@ -59,7 +59,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	}
     	this.wm = wm;
     	this.windowID = id;
-    	this.control = control;
+    	this.kahina = kahina;
     	//make sure the other constructor does not cause any ID clashes
     	if (windowID >= idCounter)
     	{
@@ -89,7 +89,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 				//TODO: find out what condition KahinaRunner.isInitialized() did here
 				if (containsMainWindow())
 				{
-					control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));					
+					kahina.dispatchEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));					
 				}
 			}
 			
@@ -210,7 +210,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
      */
     public KahinaWindow createDynamicClone()
     {
-    	return new KahinaWindow(wm, control);
+    	return new KahinaWindow(wm, kahina);
     }
     
     /**
@@ -221,7 +221,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
      */
     public KahinaWindow createSnapshotClone()
     {
-    	return new KahinaWindow(wm, control);
+    	return new KahinaWindow(wm, kahina);
     }
     
     /**

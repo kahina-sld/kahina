@@ -1,14 +1,14 @@
 package org.kahina.lp.visual.source;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.source.KahinaJEditSourceCodeView;
 
 public class PrologJEditSourceCodeView extends KahinaJEditSourceCodeView
 {
 	
-	public PrologJEditSourceCodeView(KahinaController control)
+	public PrologJEditSourceCodeView(KahinaInstance<?, ?, ?> kahina)
 	{
-		super(control);
+		super(kahina);
 	}
 
 	@Override

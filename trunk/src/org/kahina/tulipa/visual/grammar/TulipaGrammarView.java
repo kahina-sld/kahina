@@ -5,16 +5,15 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-import org.kahina.core.control.KahinaController;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
+import org.kahina.tulipa.TulipaInstance;
 import org.kahina.tulipa.data.grammar.TulipaGrammar;
 
 public class TulipaGrammarView extends KahinaView<TulipaGrammar>
 {
-	public TulipaGrammarView(KahinaController control)
+	public TulipaGrammarView(TulipaInstance kahina)
 	{
-		super(control);
+		super(kahina);
 	}
 
 	int selectedClause;
@@ -23,7 +22,7 @@ public class TulipaGrammarView extends KahinaView<TulipaGrammar>
 	public JComponent makePanel()
     {
         TulipaGrammarViewPanel panel = new TulipaGrammarViewPanel();
-        control.registerListener("redraw", panel);
+        kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
         return panel;
     }

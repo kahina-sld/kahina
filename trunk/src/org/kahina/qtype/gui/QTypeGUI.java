@@ -9,7 +9,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.control.KahinaControlEvent;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
@@ -24,13 +23,13 @@ import org.kahina.sicstus.gui.SICStusPrologGUI;
 public class QTypeGUI extends SICStusPrologGUI
 {
 
-	public QTypeGUI(Class<? extends QTypeStep> stepType, QTypeDebuggerInstance instance, KahinaController control)
+	public QTypeGUI(Class<? extends QTypeStep> stepType, QTypeDebuggerInstance instance)
 	{
-		super(stepType, instance, control);
+		super(stepType, instance);
 	}
 
 	@Override
-	public void prepare(KahinaController control)
+	public void prepare()
 	{
 		try
 		{
@@ -46,9 +45,9 @@ public class QTypeGUI extends SICStusPrologGUI
 	}
 
 	@Override
-	protected KahinaListTreeView generateTreeView(KahinaController control)
+	protected KahinaListTreeView generateTreeView()
 	{
-		return new KahinaListTreeView(control, 0, 1);
+		return new KahinaListTreeView(kahina, 0, 1);
 	}
 
 	@Override

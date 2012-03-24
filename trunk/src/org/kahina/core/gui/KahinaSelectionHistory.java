@@ -2,6 +2,7 @@ package org.kahina.core.gui;
 
 import java.util.LinkedList;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
@@ -19,15 +20,15 @@ public class KahinaSelectionHistory implements KahinaListener
     
     private boolean selectionCausedByHistory;
     
-    KahinaController control;
+    private final KahinaInstance<?, ?, ?> kahina;
     
-    public KahinaSelectionHistory(KahinaController control)
+    public KahinaSelectionHistory(KahinaInstance<?, ?, ?> kahina)
     {
         selectionHistory = new LinkedList<Integer>();
         pointInHistory = -1;
         selectionCausedByHistory = false;
-        this.control = control;
-        control.registerListener(KahinaEventTypes.SELECTION, this);
+        this.kahina = kahina;
+        kahina.getGuiControl().registerListener(KahinaEventTypes.SELECTION, this);
     }
     
     public boolean canMoveToPrevious()
@@ -46,7 +47,7 @@ public class KahinaSelectionHistory implements KahinaListener
         {
             int newSelection = selectionHistory.get(--pointInHistory);
             selectionCausedByHistory = true;
-            control.processEvent(new KahinaSelectionEvent(newSelection));
+            kahina.dispatchEvent(new KahinaSelectionEvent(newSelection));
             selectionCausedByHistory = false;
         }
     }
@@ -57,7 +58,7 @@ public class KahinaSelectionHistory implements KahinaListener
         {
             int newSelection = selectionHistory.get(++pointInHistory);
             selectionCausedByHistory = true;
-            control.processEvent(new KahinaSelectionEvent(newSelection));
+            kahina.dispatchEvent(new KahinaSelectionEvent(newSelection));
             selectionCausedByHistory = false;
         }
     }

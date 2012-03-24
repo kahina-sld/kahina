@@ -8,7 +8,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.KahinaWindowManager;
 
 public class KahinaVerticallySplitWindow extends KahinaWindow
@@ -25,16 +25,16 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     private double resizeWeight;
     
-    public KahinaVerticallySplitWindow(KahinaWindowManager wm, KahinaController control, double resizeWeight)
+    public KahinaVerticallySplitWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, double resizeWeight)
     {
-    	super(wm, control);
+    	super(wm, kahina);
     	this.resizeWeight = resizeWeight;
     	this.initialize();
     }
     
-    public KahinaVerticallySplitWindow(KahinaWindowManager wm, KahinaController control, int winID, double resizeWeight)
+    public KahinaVerticallySplitWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID, double resizeWeight)
     {
-    	super(wm, control, winID);
+    	super(wm, kahina, winID);
     	this.resizeWeight = resizeWeight;
     	this.initialize();
     }
@@ -196,7 +196,7 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public KahinaWindow createDynamicClone()
     {
-    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm, control, resizeWeight);
+    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm, kahina, resizeWeight);
     	cloneWindow.cloned = true;
     	cloneWindow.setTitle(getTitle() + " (clone)");
     	cloneWindow.setUpperWindow(upperWindow.createDynamicClone());
@@ -208,9 +208,9 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     public KahinaWindow createSnapshotClone()
     {
-    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm, control, resizeWeight);
+    	KahinaVerticallySplitWindow cloneWindow = new KahinaVerticallySplitWindow(wm, kahina, resizeWeight);
     	cloneWindow.cloned = true;
-    	cloneWindow.setTitle(getTitle() + " (at step " + wm.kahina.getState().nextStepID() + ")");
+    	cloneWindow.setTitle(getTitle() + " (at step " + kahina.getState().nextStepID() + ")");
     	cloneWindow.setUpperWindow(upperWindow.createSnapshotClone());
     	cloneWindow.setLowerWindow(lowerWindow.createSnapshotClone());
     	cloneWindow.setSize(this.getSize());

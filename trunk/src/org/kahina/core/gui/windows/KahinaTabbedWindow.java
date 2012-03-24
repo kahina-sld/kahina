@@ -7,25 +7,28 @@ import java.util.List;
 
 import javax.swing.JTabbedPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.KahinaWindowTransferHandler;
 
 public class KahinaTabbedWindow  extends KahinaWindow
 {
-    JTabbedPane tabbedPane;
+
+	private static final long serialVersionUID = -3402208749341396369L;
+
+	JTabbedPane tabbedPane;
     
     List<KahinaWindow> windows;
     
-    public KahinaTabbedWindow(KahinaWindowManager wm, KahinaController control)
+    public KahinaTabbedWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina)
     {
-    	super(wm, control);
+    	super(wm, kahina);
     	this.initialize();
     }
     
-    public KahinaTabbedWindow(KahinaWindowManager wm, KahinaController control, int winID)
+    public KahinaTabbedWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID)
     {
-    	super(wm, control, winID);
+    	super(wm, kahina, winID);
     	this.initialize();
     }
     

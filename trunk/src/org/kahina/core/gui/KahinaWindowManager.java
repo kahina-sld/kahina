@@ -40,7 +40,7 @@ public class KahinaWindowManager implements KahinaListener
 {
     private static final boolean VERBOSE = false;
     
-    public KahinaInstance kahina; 
+    protected final KahinaInstance<?, ?, ?> kahina; 
 
     public KahinaMainWindow mainWindow;
     private KahinaPerspective psp;
@@ -58,7 +58,7 @@ public class KahinaWindowManager implements KahinaListener
      * @param kahina - the KahinaInstance bundling the other parts of the system
      * @param standaloneMode - true for a simple standalone application
      */
-    public KahinaWindowManager(KahinaInstance kahina, boolean standaloneMode)
+    public KahinaWindowManager(KahinaInstance<?, ?, ?> kahina, boolean standaloneMode)
     {
     	this.kahina = kahina;
         getGuiControl().registerListener(KahinaEventTypes.WINDOW, this);
@@ -124,7 +124,7 @@ public class KahinaWindowManager implements KahinaListener
                     {
                         System.err.println("  Generating default view " + winID + " for binding " + binding + " (primary window: " + getArrangement().getPrimaryWinIDForName(binding) + ")");
                     }
-                    KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, getGuiControl(), winID);
+                    KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, kahina, winID);
                     viewWindow.setTitle(getArrangement().getTitle(winID));
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
                     break;
@@ -132,7 +132,7 @@ public class KahinaWindowManager implements KahinaListener
                 case KahinaWindowType.CONTROL_WINDOW:
                 {
                     String binding = getArrangement().getBindingForWinID(winID);
-                    KahinaControlButtonWindow controlWindow = new KahinaControlButtonWindow(this, getGuiControl(), winID);
+                    KahinaControlButtonWindow controlWindow = new KahinaControlButtonWindow(this, kahina, winID);
                     if (VERBOSE)
                     {
                         System.err.println("  Generating control view " + winID + " for binding " + binding + " (primary window: " + getArrangement().getPrimaryWinIDForName(binding) + ")");
@@ -160,28 +160,28 @@ public class KahinaWindowManager implements KahinaListener
                 }
                 case KahinaWindowType.HORI_SPLIT_WINDOW:
                 {
-                    KahinaWindow viewWindow = new KahinaHorizontallySplitWindow(this, getGuiControl(), winID);
+                    KahinaWindow viewWindow = new KahinaHorizontallySplitWindow(this, kahina, winID);
                     viewWindow.setTitle(getArrangement().getTitle(winID));
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
                     break;
                 }
                 case KahinaWindowType.VERT_SPLIT_WINDOW:
                 {
-                    KahinaWindow viewWindow = new KahinaVerticallySplitWindow(this, getGuiControl(), winID, getArrangement().getResizeWeight(winID));
+                    KahinaWindow viewWindow = new KahinaVerticallySplitWindow(this, kahina, winID, getArrangement().getResizeWeight(winID));
                     viewWindow.setTitle(getArrangement().getTitle(winID));
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
                     break;
                 }
                 case KahinaWindowType.TABBED_WINDOW:
                 {
-                    KahinaWindow viewWindow = new KahinaTabbedWindow(this, getGuiControl(), winID);
+                    KahinaWindow viewWindow = new KahinaTabbedWindow(this, kahina, winID);
                     viewWindow.setTitle(getArrangement().getTitle(winID));
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
                     break;
                 }
                 case KahinaWindowType.LIST_WINDOW:
                 {
-                    KahinaWindow viewWindow = new KahinaListWindow(this, getGuiControl(), winID);
+                    KahinaWindow viewWindow = new KahinaListWindow(this, kahina, winID);
                     viewWindow.setTitle(getArrangement().getTitle(winID));
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
                     break;
@@ -316,12 +316,12 @@ public class KahinaWindowManager implements KahinaListener
 
     protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager)
     {
-        return new KahinaMainWindow(this, getGuiControl());
+        return new KahinaMainWindow(this, kahina);
     }
 
     protected KahinaMainWindow createMainWindow(KahinaWindowManager kahinaWindowManager, int winID)
     {
-        return new KahinaMainWindow(this, getGuiControl(), winID);
+        return new KahinaMainWindow(this, kahina, winID);
     }
 
     public void disposeAllWindows()
@@ -341,7 +341,7 @@ public class KahinaWindowManager implements KahinaListener
 
     public KahinaWindow integrateInDefaultWindow(KahinaView<?> view)
     {
-        KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, getGuiControl());
+        KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, kahina);
         viewWindow.setTitle(view.getTitle());
         getPerspective().arr.setEmbeddingWindowID(viewWindow.getID(), -1);
         registerWindow(viewWindow);
@@ -353,16 +353,16 @@ public class KahinaWindowManager implements KahinaListener
         KahinaWindow wrapperWindow1 = windowByID.get(window1ID);
         if (wrapperWindow1 == null)
         {
-            wrapperWindow1 = new KahinaDefaultWindow(new KahinaEmptyView(control), this, getGuiControl());
+            wrapperWindow1 = new KahinaDefaultWindow(new KahinaEmptyView(kahina), this, kahina);
             System.err.println("WARNING: split window could not access window \"" + window1ID + "\"");
         }
         KahinaWindow wrapperWindow2 = windowByID.get(window2ID);
         if (wrapperWindow2 == null)
         {
-            wrapperWindow2 = new KahinaDefaultWindow(new KahinaEmptyView(control), this, getGuiControl());
+            wrapperWindow2 = new KahinaDefaultWindow(new KahinaEmptyView(kahina), this, kahina);
             System.err.println("WARNING: split window could not access window \"" + window1ID + "\"");
         }
-        KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this, getGuiControl(), .5);
+        KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this, kahina, .5);
         splitWindow.setTitle(newTitle);
         splitWindow.setUpperWindow(wrapperWindow1);
         splitWindow.setLowerWindow(wrapperWindow2);
@@ -380,16 +380,16 @@ public class KahinaWindowManager implements KahinaListener
         KahinaWindow wrapperWindow1 = windowByID.get(window1ID);
         if (wrapperWindow1 == null)
         {
-            wrapperWindow1 = new KahinaDefaultWindow(new KahinaEmptyView(control), this, getGuiControl());
+            wrapperWindow1 = new KahinaDefaultWindow(new KahinaEmptyView(kahina), this, kahina);
             System.err.println("WARNING: split window could not access window \"" + window1ID + "\"");
         }
         KahinaWindow wrapperWindow2 = windowByID.get(window2ID);
         if (wrapperWindow2 == null)
         {
-            wrapperWindow2 = new KahinaDefaultWindow(new KahinaEmptyView(control), this, getGuiControl());
+            wrapperWindow2 = new KahinaDefaultWindow(new KahinaEmptyView(kahina), this, kahina);
             System.err.println("WARNING: split window could not access window \"" + window2ID + "\"");
         }
-        KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this, getGuiControl());
+        KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this, kahina);
         splitWindow.setTitle(newTitle);
         splitWindow.setLeftWindow(wrapperWindow1);
         splitWindow.setRightWindow(wrapperWindow2);
@@ -475,7 +475,7 @@ public class KahinaWindowManager implements KahinaListener
         int type = e.getWindowEventType();
         if (type == KahinaWindowEventType.NEW_DEFAULT)
         {
-            KahinaWindow viewWindow = new KahinaDummyWindow(this, getGuiControl());
+            KahinaWindow viewWindow = new KahinaDummyWindow(this, kahina);
             viewWindow.setTitle(e.getStringContent());
             viewWindow.setSize(300, 100);
             viewWindow.setLocation(200, 200);
@@ -485,10 +485,10 @@ public class KahinaWindowManager implements KahinaListener
         }
         else if (type == KahinaWindowEventType.NEW_HORI_SPLIT)
         {
-            KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this, getGuiControl());
+            KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this, kahina);
             splitWindow.setTitle(e.getStringContent());
-            splitWindow.setLeftWindow(new KahinaDummyWindow(this, getGuiControl()));
-            splitWindow.setRightWindow(new KahinaDummyWindow(this, getGuiControl()));
+            splitWindow.setLeftWindow(new KahinaDummyWindow(this, kahina));
+            splitWindow.setRightWindow(new KahinaDummyWindow(this, kahina));
             splitWindow.setSize(600, 150);
             splitWindow.setLocation(200, 200);
             splitWindow.setVisible(true);
@@ -497,10 +497,10 @@ public class KahinaWindowManager implements KahinaListener
         }
         else if (type == KahinaWindowEventType.NEW_VERT_SPLIT)
         {
-            KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this, getGuiControl(), .5);
+            KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this, kahina, .5);
             splitWindow.setTitle(e.getStringContent());
-            splitWindow.setUpperWindow(new KahinaDummyWindow(this, getGuiControl()));
-            splitWindow.setLowerWindow(new KahinaDummyWindow(this, getGuiControl()));
+            splitWindow.setUpperWindow(new KahinaDummyWindow(this, kahina));
+            splitWindow.setLowerWindow(new KahinaDummyWindow(this, kahina));
             splitWindow.setSize(300, 250);
             splitWindow.setLocation(200, 200);
             splitWindow.setVisible(true);
@@ -509,9 +509,9 @@ public class KahinaWindowManager implements KahinaListener
         }
         else if (type == KahinaWindowEventType.NEW_TABBED)
         {
-            KahinaTabbedWindow tabbedWindow = new KahinaTabbedWindow(this, getGuiControl());
+            KahinaTabbedWindow tabbedWindow = new KahinaTabbedWindow(this, kahina);
             tabbedWindow.setTitle(e.getStringContent());
-            tabbedWindow.addSubwindow(new KahinaDummyWindow(this, getGuiControl()));
+            tabbedWindow.addSubwindow(new KahinaDummyWindow(this, kahina));
             tabbedWindow.setSize(300, 250);
             tabbedWindow.setLocation(200, 200);
             tabbedWindow.setVisible(true);
@@ -519,9 +519,9 @@ public class KahinaWindowManager implements KahinaListener
         }
         else if (type == KahinaWindowEventType.NEW_LIST)
         {
-            KahinaListWindow listWindow = new KahinaListWindow(this, getGuiControl());
+            KahinaListWindow listWindow = new KahinaListWindow(this, kahina);
             listWindow.setTitle(e.getStringContent());
-            listWindow.addSubwindow(new KahinaDummyWindow(this, getGuiControl()));
+            listWindow.addSubwindow(new KahinaDummyWindow(this, kahina));
             listWindow.setSize(300, 250);
             listWindow.setLocation(200, 200);
             listWindow.setVisible(true);
@@ -708,10 +708,10 @@ public class KahinaWindowManager implements KahinaListener
                     window.setTitle("Empty view");
                 }
                 KahinaWindow oldEmbeddingWindow = window.getEmbeddingWindow();
-                KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this, getGuiControl(), .5);
+                KahinaVerticallySplitWindow splitWindow = new KahinaVerticallySplitWindow(this, kahina, .5);
                 splitWindow.setTitle(e.getStringContent());
                 splitWindow.setUpperWindow(window);
-                splitWindow.setLowerWindow(new KahinaDummyWindow(this, getGuiControl()));
+                splitWindow.setLowerWindow(new KahinaDummyWindow(this, kahina));
                 splitWindow.setSize(window.getWidth(), window.getHeight());
                 splitWindow.setLocation(window.getLocation());
                 window.setSize(window.getWidth(), window.getHeight() / 2);
@@ -744,10 +744,10 @@ public class KahinaWindowManager implements KahinaListener
                     window.setTitle("Empty view");
                 }
                 KahinaWindow oldEmbeddingWindow = window.getEmbeddingWindow();
-                KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this, getGuiControl());
+                KahinaHorizontallySplitWindow splitWindow = new KahinaHorizontallySplitWindow(this, kahina);
                 splitWindow.setTitle(e.getStringContent());
                 splitWindow.setLeftWindow(window);
-                splitWindow.setRightWindow(new KahinaDummyWindow(this, getGuiControl()));
+                splitWindow.setRightWindow(new KahinaDummyWindow(this, kahina));
                 splitWindow.setSize(window.getWidth(), window.getHeight());
                 splitWindow.setLocation(window.getLocation());
                 window.setSize(window.getWidth(), window.getHeight() / 2);

@@ -10,7 +10,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.kahina.core.control.KahinaControlEvent;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaSystemEvent;
@@ -173,9 +172,9 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	}
 
 	@Override
-	protected TraleSLDGUI createGUI(KahinaController guiController)
+	protected TraleSLDGUI createGUI()
 	{
-		return new TraleSLDGUI(TraleSLDStep.class, this, guiController, withAuxiliaryInstance);
+		return new TraleSLDGUI(TraleSLDStep.class, this, withAuxiliaryInstance);
 	}
 
 	@Override

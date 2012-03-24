@@ -37,7 +37,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.kahina.core.KahinaDefaultInstance;
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.windows.KahinaWindow;
@@ -67,6 +67,8 @@ import org.w3c.dom.Element;
  */
 public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchView> implements ListSelectionListener, ActionListener, MouseListener
 {
+
+	private static final long serialVersionUID = 8913866572343111847L;
 	private final JLabel msgLabel;
 	private final JLabel signatureFileLabel;
 	private final JLabel theoryFileLabel;
@@ -96,9 +98,12 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	private String bufferedStructure = null;
 	
 	private String lastDisplayID = null;
+	
+	private final KahinaInstance<?, ?, ?> kahina;
 
-	public FeatureWorkbenchViewPanel(KahinaController control, AuxiliaryTraleInstance trale)
+	public FeatureWorkbenchViewPanel(KahinaInstance<?, ?, ?> kahina, AuxiliaryTraleInstance trale)
 	{		
+		this.kahina = kahina;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		JMenuBar menuBar = new JMenuBar();
@@ -264,10 +269,10 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		listScroller.setAlignmentX(CENTER_ALIGNMENT);
 		contentPanel.add(listScroller);
 		
-		editor = new TraleSLDFeatureStructureEditor(control, trale);
+		editor = new TraleSLDFeatureStructureEditor(kahina, trale);
 		GraleJUtility.setFeatureStructureEditor(editor);
 		editor.setSignature(new TraleSLDSignature());
-        control.registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, editor);
+        kahina.getGuiControl().registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, editor);
 		JScrollPane editorScrollPane = new JScrollPane(editor);
 		contentPanel.add(editorScrollPane);
 		
@@ -595,7 +600,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
     		if (copiedStructure != null)
     		{
     			this.processEvent(new TraleSLDFeatureEditEvent("Structure copied.", TraleSLDFeatureEditEvent.SUCCESS_MESSAGE));
-    			view.control.processEvent(new TraleSLDFeatureEditEvent(copiedStructure, TraleSLDFeatureEditEvent.COPY_FS));
+    			kahina.dispatchEvent(new TraleSLDFeatureEditEvent(copiedStructure, TraleSLDFeatureEditEvent.COPY_FS));
     		}
     		else
     		{
@@ -1040,7 +1045,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	public static void main(String[] args)
 	{
-		KahinaDefaultInstance instance = new KahinaDefaultInstance();
+		KahinaDefaultInstance kahina = new KahinaDefaultInstance();
 		AuxiliaryTraleInstance trale = new AuxiliaryTraleInstance(true);
 		trale.start();
 		FeatureWorkbench workbench = new FeatureWorkbench();
@@ -1048,32 +1053,32 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		workbench.setSignature(trale.getSignature(System.getProperty("user.dir") + "/signature"));
 		workbench.getSignature().inferCachedInformation();
 
-		KahinaWindowManager wManager = new KahinaWindowManager(instance, true);
+		KahinaWindowManager wManager = new KahinaWindowManager(kahina, true);
 		
 		//generate a signature view window
-		TraleSLDSignatureAppropriatenessView appro = new TraleSLDSignatureAppropriatenessView(instance.getControl());
+		TraleSLDSignatureAppropriatenessView appro = new TraleSLDSignatureAppropriatenessView(kahina);
 		appro.display(workbench.getSignature());
-		TraleSLDSignatureHierarchyView hiera = new TraleSLDSignatureHierarchyView(instance.getControl());
+		TraleSLDSignatureHierarchyView hiera = new TraleSLDSignatureHierarchyView(kahina);
 		hiera.display(workbench.getSignature());
-		TraleSLDSignatureUsageView usage = new TraleSLDSignatureUsageView(instance.getControl());
+		TraleSLDSignatureUsageView usage = new TraleSLDSignatureUsageView(kahina);
 		usage.display(workbench.getSignature());
 		
 		KahinaWindow hieraWindow = wManager.integrateInDefaultWindow(hiera);
 		hieraWindow.setTitle("Type hierarchy");
 		KahinaWindow approWindow = wManager.integrateInDefaultWindow(appro);
 		approWindow.setTitle("Appropriateness");
-		KahinaWindow upperWindow = wManager.integrateInHorizontallySplitWindow(hieraWindow.getID(), approWindow.getID(), "Hierarchy & Appropriateness", instance.getControl());
+		KahinaWindow upperWindow = wManager.integrateInHorizontallySplitWindow(hieraWindow.getID(), approWindow.getID(), "Hierarchy & Appropriateness", kahina.getControl());
 		upperWindow.setBorder(false);
 		KahinaWindow usageWindow = wManager.integrateInDefaultWindow(usage);
 		usageWindow.setTitle("Usage");
-		KahinaWindow signatureWindow = wManager.integrateInVerticallySplitWindow(upperWindow.getID(), usageWindow.getID(), "Signature Inspection", instance.getControl());
+		KahinaWindow signatureWindow = wManager.integrateInVerticallySplitWindow(upperWindow.getID(), usageWindow.getID(), "Signature Inspection", kahina.getControl());
 		signatureWindow.setBorder(false);
 		signatureWindow.setSize(800, 500);
 		signatureWindow.setLocation(400, 300);
 		signatureWindow.setVisible(true);
 		
 		//generate the main feature workbench window
-		FeatureWorkbenchView workbenchView = new FeatureWorkbenchView(instance.getControl(), trale);
+		FeatureWorkbenchView workbenchView = new FeatureWorkbenchView(kahina, trale);
 		workbenchView.setTitle("Feature Workbench");
 		workbenchView.display(workbench);
 		

@@ -22,7 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListModel;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.util.ListUtil;
 import org.kahina.core.visual.KahinaViewPanel;
@@ -41,9 +41,9 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private MouseEvent lastMouseEvent;
 	private List<JSplitPane> splitPanes;
 	
-	KahinaController control;
+	KahinaInstance<?, ?, ?> kahina;
 
-	public KahinaListTreeViewPanel(int layers, KahinaController control)
+	public KahinaListTreeViewPanel(int layers, KahinaInstance<?, ?, ?> kahina)
 	{
 		if (VERBOSE)
 		{
@@ -54,7 +54,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		listModels = new DefaultListModel[layers];
 		lastMouseEvent = null;
 		splitPanes = new LinkedList<JSplitPane>();
-		this.control = control;
+		this.kahina = kahina;
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		for (int i = 0; i < panels.length; i++)
@@ -403,7 +403,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 				if (hasLeftAlternatives)
 				{
 					// TODO do this without changing the selection?
-					control.processEvent(new KahinaSelectionEvent(clickedEntry.leftAlternatives[clickedEntry.leftAlternatives.length - 1]));
+					kahina.dispatchEvent(new KahinaSelectionEvent(clickedEntry.leftAlternatives[clickedEntry.leftAlternatives.length - 1]));
 				}
 				return;
 			} else if (isRightButtonPosition(e.getPoint(), list, clickedNode, layer))
@@ -411,7 +411,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 				if (hasRightAlternatives)
 				{
 					// TODO do this without changing the selection?
-					control.processEvent(new KahinaSelectionEvent(clickedEntry.rightAlternatives[0]));
+					kahina.dispatchEvent(new KahinaSelectionEvent(clickedEntry.rightAlternatives[0]));
 				}
 				return;
 			}
@@ -423,7 +423,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			repaint();
 		} else
 		{
-			control.processEvent(new KahinaSelectionEvent(clickedNode));
+			kahina.dispatchEvent(new KahinaSelectionEvent(clickedNode));
 			lastMouseEvent = e;
 		}
 	}

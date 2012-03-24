@@ -1,7 +1,5 @@
 package org.kahina.sicstus.gui;
 
-import org.kahina.core.control.KahinaController;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.windows.KahinaMainWindow;
 import org.kahina.lp.gui.LogicProgrammingMainWindow;
@@ -16,11 +14,11 @@ public class SICStusPrologWindowManager extends KahinaWindowManager
     
     protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager)
 	{
-		return new LogicProgrammingMainWindow(windowManager, windowManager.getGuiControl());
+		return new LogicProgrammingMainWindow(windowManager, kahina);
 	}
     
     protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager, int winID)
 	{
-		return new LogicProgrammingMainWindow(this, windowManager.getGuiControl(), winID);
+		return new LogicProgrammingMainWindow(this, kahina, winID);
 	}
 }

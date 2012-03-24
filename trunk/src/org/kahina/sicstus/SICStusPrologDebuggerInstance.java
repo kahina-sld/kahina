@@ -1,6 +1,5 @@
 package org.kahina.sicstus;
 
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.lp.LogicProgrammingInstance;
@@ -47,9 +46,9 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 	}
 
 	@Override
-	protected SICStusPrologGUI createGUI(KahinaController guiController)
+	protected SICStusPrologGUI createGUI()
 	{
-		return new SICStusPrologGUI(SICStusPrologStep.class, this, guiController);
+		return new SICStusPrologGUI(SICStusPrologStep.class, this);
 	}
 
 	@Override

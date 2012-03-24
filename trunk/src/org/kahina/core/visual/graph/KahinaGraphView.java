@@ -20,6 +20,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.graph.AdjacListsGraph;
 import org.kahina.core.data.graph.KahinaGraph;
@@ -60,9 +61,9 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     //special entry -1 means "redraw everything"
     private List<Integer> redrawAgenda;
     
-    public KahinaGraphView(KahinaController control, KahinaGraphLayouter layout)
+    public KahinaGraphView(KahinaInstance<?, ?, ?> kahina, KahinaGraphLayouter layout)
     {
-        super(control);
+        super(kahina);
         this.model = new AdjacListsGraph();
         
         this.config = new KahinaGraphViewConfiguration();
@@ -454,10 +455,10 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     public JComponent makePanel()
     {
         KahinaProgressBar progressBar = new KahinaProgressBar();
-        KahinaGraphViewPanel panel = new KahinaGraphViewPanel(control);
+        KahinaGraphViewPanel panel = new KahinaGraphViewPanel(kahina);
         panel.setProgressBar(progressBar);
         panel.setPreferredSize(new Dimension(200,300));
-        control.registerListener("redraw", panel);
+        kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
         JPanel scrollPaneAndProgressBar = new JPanel();
         //scrollPaneAndProgressBar.setLayout(new GridLayout());

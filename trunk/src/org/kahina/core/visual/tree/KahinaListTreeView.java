@@ -9,12 +9,11 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.bridge.KahinaBridgePauseEvent;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 
@@ -47,10 +46,10 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	// allow marking of trees on different layers
 	private int[] markedNodes;
 
-	public KahinaListTreeView(KahinaController control, int... layers)
+	public KahinaListTreeView(KahinaInstance<?, ?, ?> kahina, int... layers)
 	{
-		super(control);
-		control.registerListener(KahinaEventTypes.BRIDGE_PAUSE, this);
+		super(kahina);
+		kahina.getGuiControl().registerListener(KahinaEventTypes.BRIDGE_PAUSE, this);
 		this.layers = layers;
 		nodeBorderColor = new HashMap<Integer, Color>();
 		statusNodeColorEncoding = new HashMap<Integer, Color>();
@@ -217,8 +216,8 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 	@Override
 	public JComponent makePanel()
 	{
-		KahinaListTreeViewPanel panel = new KahinaListTreeViewPanel(layers.length, control);
-		control.registerListener("redraw", panel);
+		KahinaListTreeViewPanel panel = new KahinaListTreeViewPanel(layers.length, kahina);
+		kahina.getGuiControl().registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;
 	}
@@ -390,7 +389,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 			List<Integer> children = model.getChildren(node);
 			if (children.isEmpty())
 			{
-				control.processEvent(new KahinaSelectionEvent(node));
+				kahina.dispatchEvent(new KahinaSelectionEvent(node));
 				return;
 			}
 			node = children.get(0);
@@ -405,7 +404,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 			List<Integer> children = model.getChildren(node);
 			if (children.isEmpty())
 			{
-				control.processEvent(new KahinaSelectionEvent(node));
+				kahina.dispatchEvent(new KahinaSelectionEvent(node));
 				return;
 			}
 			node = children.get(children.size() - 1);

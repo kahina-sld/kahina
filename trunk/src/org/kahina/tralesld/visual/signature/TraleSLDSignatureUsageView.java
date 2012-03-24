@@ -9,9 +9,8 @@ import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
@@ -21,18 +20,18 @@ public class TraleSLDSignatureUsageView extends KahinaView<TraleSLDSignature>
 	private Map<String,String> htmlForType;
 	String currentType = "bot";
 	
-    public TraleSLDSignatureUsageView(KahinaController control)
+    public TraleSLDSignatureUsageView(KahinaInstance<?, ?, ?> kahina)
     {
-    	super(control);
+    	super(kahina);
         
         htmlForType = new HashMap<String,String>();
         
-        control.registerListener("type selection", this);
+        kahina.getGuiControl().registerListener("type selection", this);
     }
     
-    public TraleSLDSignatureUsageView(TraleSLDSignature signature, KahinaController control)
+    public TraleSLDSignatureUsageView(TraleSLDSignature signature, KahinaInstance<?, ?, ?> kahina)
     {
-        this(control);
+        this(kahina);
         display(signature);
     }
     
@@ -91,8 +90,8 @@ public class TraleSLDSignatureUsageView extends KahinaView<TraleSLDSignature>
 	@Override
 	public JComponent makePanel()
 	{
-        TraleSLDSignatureUsageViewPanel panel = new TraleSLDSignatureUsageViewPanel(control);
-        control.registerListener("redraw", panel);
+        TraleSLDSignatureUsageViewPanel panel = new TraleSLDSignatureUsageViewPanel(kahina);
+        kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
 	}

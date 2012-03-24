@@ -2,7 +2,6 @@ package org.kahina.core.visual.graph;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -16,9 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.KahinaProgressBar;
 import org.kahina.core.task.KahinaTask;
 import org.kahina.core.task.KahinaTaskManager;
@@ -34,9 +32,9 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     
     KahinaGraphViewTaskManager taskManager;
     
-    public KahinaGraphViewPanel(KahinaController control)
+    public KahinaGraphViewPanel(KahinaInstance<?, ?, ?> kahina)
     {       
-        view = new KahinaGraphView(control, new GridLayouter());
+        view = new KahinaGraphView(kahina, new GridLayouter());
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         generateMouseListener();
         taskManager = new KahinaGraphViewTaskManager(this);

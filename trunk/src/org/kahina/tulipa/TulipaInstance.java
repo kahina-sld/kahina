@@ -1,7 +1,6 @@
 package org.kahina.tulipa;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.tulipa.behavior.TulipaDAGBehavior;
 import org.kahina.tulipa.bridge.TulipaBridge;
@@ -25,9 +24,9 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
     }
 
     @Override
-    protected TulipaGUI createGUI(KahinaController guiController)
+    protected TulipaGUI createGUI()
     {
-        return new TulipaGUI(TulipaStep.class, this, guiController);
+        return new TulipaGUI(TulipaStep.class, this);
     }
 
     @Override

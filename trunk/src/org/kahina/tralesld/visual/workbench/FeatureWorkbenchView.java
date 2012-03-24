@@ -6,8 +6,7 @@ import java.util.List;
 
 import javax.swing.JComponent;
 
-import org.kahina.core.control.KahinaController;
-import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
 import org.kahina.tralesld.control.TraleSLDEventTypes;
@@ -19,9 +18,9 @@ public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 	
 	private AuxiliaryTraleInstance trale;
 	
-	public FeatureWorkbenchView(KahinaController control, AuxiliaryTraleInstance trale)
+	public FeatureWorkbenchView(KahinaInstance<?, ?, ?> kahina, AuxiliaryTraleInstance trale)
 	{
-		super(control);
+		super(kahina);
 		this.trale = trale;
 	}
 	
@@ -55,9 +54,9 @@ public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 	@Override
 	public JComponent makePanel()
 	{
-		FeatureWorkbenchViewPanel panel = new FeatureWorkbenchViewPanel(control, trale);
-        control.registerListener("redraw", panel);
-        control.registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, panel);
+		FeatureWorkbenchViewPanel panel = new FeatureWorkbenchViewPanel(kahina, trale);
+        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.getGuiControl().registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, panel);
 		panel.setView(this);
 		return panel;
 	}

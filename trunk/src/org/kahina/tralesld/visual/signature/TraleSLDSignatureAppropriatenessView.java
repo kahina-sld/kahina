@@ -9,9 +9,8 @@ import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.tralesld.data.signature.TraleSLDSignature;
 import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
@@ -21,18 +20,18 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
 	private Map<String,String> htmlForType;
 	String currentType = "bot";
 	
-    public TraleSLDSignatureAppropriatenessView(KahinaController control)
+    public TraleSLDSignatureAppropriatenessView(KahinaInstance<?, ?, ?> kahina)
     {
-    	super(control);
+    	super(kahina);
         
         htmlForType = new HashMap<String,String>();
         
-        control.registerListener("type selection", this);
+        kahina.getGuiControl().registerListener("type selection", this);
     }
     
-    public TraleSLDSignatureAppropriatenessView(TraleSLDSignature signature, KahinaController control)
+    public TraleSLDSignatureAppropriatenessView(TraleSLDSignature signature, KahinaInstance<?, ?, ?> kahina)
     {
-        this(control);
+        this(kahina);
         display(signature);
     }
     
@@ -104,8 +103,8 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
 	@Override
 	public JComponent makePanel()
 	{
-        TraleSLDSignatureAppropriatenessViewPanel panel = new TraleSLDSignatureAppropriatenessViewPanel(control);
-        control.registerListener("redraw", panel);
+        TraleSLDSignatureAppropriatenessViewPanel panel = new TraleSLDSignatureAppropriatenessViewPanel(kahina);
+        kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
 	}

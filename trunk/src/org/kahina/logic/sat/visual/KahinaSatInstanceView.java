@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaProgressBar;
@@ -22,9 +23,9 @@ public class KahinaSatInstanceView extends KahinaGraphView
     CnfSatInstance sat;
     boolean clauseGraph;
     
-    public KahinaSatInstanceView(KahinaController control, KahinaGraphLayouter layout)
+    public KahinaSatInstanceView(KahinaInstance<?, ?, ?> kahina, KahinaGraphLayouter layout)
     {
-        super(control, layout);
+        super(kahina, layout);
         clauseGraph = false;
     }
     
@@ -106,8 +107,8 @@ public class KahinaSatInstanceView extends KahinaGraphView
     public JComponent makePanel()
     {
         KahinaProgressBar progressBar = new KahinaProgressBar();
-        KahinaSatInstanceViewPanel panel = new KahinaSatInstanceViewPanel(control);
-        control.registerListener("redraw", panel);
+        KahinaSatInstanceViewPanel panel = new KahinaSatInstanceViewPanel(kahina);
+        kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getViewport().setBackground(config.getBackgroundColor());

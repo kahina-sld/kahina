@@ -8,24 +8,26 @@ import java.util.List;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaControlEvent;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.windows.KahinaWindow;
 import org.kahina.core.gui.windows.KahinaWindowType;
 
 public class KahinaControlButtonWindow extends KahinaWindow implements ActionListener
 {
+
+	private static final long serialVersionUID = -809546592680882505L;
 	List<KahinaControlButton> buttons;
 	
-	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaController control) 
+	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina) 
 	{
-		super(wm, control);
+		super(wm, kahina);
 		buttons = new LinkedList<KahinaControlButton>();
 	}
 	
-	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaController control, int winID) 
+	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID) 
 	{
-		super(wm, control, winID);
+		super(wm, kahina, winID);
 		buttons = new LinkedList<KahinaControlButton>();
 	}
 	
@@ -51,7 +53,7 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
     public void actionPerformed(ActionEvent e)
     {
         String command = e.getActionCommand();
-        wm.kahina.dispatchEvent(new KahinaControlEvent(command));
+        kahina.dispatchEvent(new KahinaControlEvent(command));
     }
     
     public int getWindowType()
