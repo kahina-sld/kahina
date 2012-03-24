@@ -49,7 +49,12 @@ public class KahinaProgressBar extends JPanel implements ActionListener
     
     public boolean cancelButtonClicked()
     {
-        return canceled;
+        if (canceled)
+        {
+            canceled = false;
+            return true;
+        }
+        return false;
     }
 
     @Override
