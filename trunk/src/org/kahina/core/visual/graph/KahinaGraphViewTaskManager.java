@@ -26,9 +26,9 @@ public class KahinaGraphViewTaskManager extends KahinaTaskManager
         viewPanel.repaint();
     }
     
-    public void taskCanceled(KahinaTask task)
+    public void cancelTasks()
     {
-        super.taskCanceled(task);
+        super.cancelTasks();
         viewPanel.hideProgressBar();
         viewPanel.repaint();
     }

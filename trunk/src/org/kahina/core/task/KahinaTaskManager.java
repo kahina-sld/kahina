@@ -25,14 +25,7 @@ public class KahinaTaskManager
         }
     }
     
-    public void cancelAllTasks()
-    {
-        taskQueue.clear();
-        if (currentTask != null)
-        {
-            currentTask.setCanceled();
-        }
-    }
+
     
     /**
      * DANGEROUS: overriding methods MUST call super.taskStarted(task)!
@@ -57,17 +50,13 @@ public class KahinaTaskManager
         }
     }
     
-    public void taskCanceled(KahinaTask task)
+    public void cancelTasks()
     {
-        if (taskQueue.size() == 0)
+        taskQueue.clear();
+        if (currentTask != null)
         {
+            currentTask.setCanceled();
             currentTask = null;
-        }
-        else
-        {
-            currentTask = taskQueue.get(0);
-            currentTask.run();
-            taskStarted(currentTask);
         }
     }
 }
