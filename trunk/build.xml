@@ -6,7 +6,7 @@
 	<target name="compile" depends="init">
 		<javac srcdir="${src}" destdir="${bin}" source="1.6" target="1.6" compiler="javac1.6" includeantruntime="false">
 			<classpath>
-				<pathelement location="${lib}/gralej-v0_8_1/gralej.jar"/>
+				<pathelement location="${lib}/gralej/gralej.jar"/>
 				<pathelement location="${lib}/jedit-textArea.jar"/>
 			</classpath>
 		</javac>
