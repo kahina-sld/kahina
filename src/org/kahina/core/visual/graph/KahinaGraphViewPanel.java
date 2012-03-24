@@ -24,7 +24,7 @@ import org.kahina.core.task.KahinaTask;
 import org.kahina.core.task.KahinaTaskManager;
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView> implements KahinaTaskManager
+public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
 {
     private static final long serialVersionUID = -3000401362714094415L;
     
@@ -32,11 +32,14 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView> imple
     KahinaProgressBar progressBar;
     JComponent progressBarParent;
     
+    KahinaGraphViewTaskManager taskManager;
+    
     public KahinaGraphViewPanel(KahinaController control)
     {       
         view = new KahinaGraphView(control, new GridLayouter());
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         generateMouseListener();
+        taskManager = new KahinaGraphViewTaskManager(this);
     }
     
     protected void generateMouseListener()
@@ -166,6 +169,11 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView> imple
         System.err.println("  " + vertices + " vertices in " + (System.currentTimeMillis() - startTime) + " ms.");
     }
     
+    public void printGraphEdges(Graphics canvas)
+    {
+       taskManager.addTask(new PrintGraphEdgesTask(canvas, progressBar, taskManager));
+    }
+    
     public void printGraphVertex(Graphics2D cnv, int vertex)
     {
         if (view.isVertexVisible(vertex))
@@ -265,15 +273,6 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView> imple
                 canvas.drawOval(x - 1, y - 1, size + 2, size + 2);
             }
         }
-    }
-    
-    public void printGraphEdges(Graphics canvas)
-    {
-       //show progress bar (which should be hidden before)
-       addProgressBar();
-       //TODO: coordinate drawing thread such that only one is working at the same time
-       PrintGraphEdgesTask task = new PrintGraphEdgesTask(canvas, progressBar, this);
-       (new Thread(task)).start();  
     }
     
     public void printEdgesForVertex(Graphics canvas, int vertex1)
@@ -471,7 +470,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView> imple
         }
     }
     
-    private void addProgressBar()
+    public void showProgressBar()
     {
         if (progressBarParent != null)
         {
@@ -480,7 +479,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView> imple
         }
     }
     
-    private void removeProgressBar()
+    public void hideProgressBar()
     {
         if (progressBarParent != null)
         {
@@ -500,19 +499,5 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView> imple
                 progressBarParent.remove(progressBar);
             }
         }
-    }
-    
-    @Override
-    public void taskCanceled(KahinaTask task)
-    {
-        removeProgressBar();  
-        repaint();
-    }
-
-    @Override
-    public void taskFinished(KahinaTask task)
-    {
-        removeProgressBar();  
-        repaint();
     }
 }

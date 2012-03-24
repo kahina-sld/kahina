@@ -1,7 +1,73 @@
 package org.kahina.core.task;
 
-public interface KahinaTaskManager
+import java.util.LinkedList;
+import java.util.List;
+
+public class KahinaTaskManager
 {
-    public abstract void taskCanceled(KahinaTask task);
-    public abstract void taskFinished(KahinaTask task);
+    List<KahinaTask> taskQueue;
+    KahinaTask currentTask;
+    
+    public KahinaTaskManager()
+    {
+        taskQueue = new LinkedList<KahinaTask>();
+        currentTask = null;
+    }
+    
+    public void addTask(KahinaTask task)
+    {
+        taskQueue.add(task);
+        if (currentTask == null)
+        {
+            currentTask = task;
+            (new Thread(currentTask)).start(); 
+            taskStarted(currentTask);
+        }
+    }
+    
+    public void cancelAllTasks()
+    {
+        taskQueue.clear();
+        if (currentTask != null)
+        {
+            currentTask.setCanceled();
+        }
+    }
+    
+    /**
+     * DANGEROUS: overriding methods MUST call super.taskStarted(task)!
+     * @param task
+     */
+    public void taskStarted(KahinaTask task)
+    {
+        taskQueue.remove(task);
+    }
+    
+    public void taskFinished(KahinaTask task)
+    {
+        if (taskQueue.size() == 0)
+        {
+            currentTask = null;
+        }
+        else
+        {
+            currentTask = taskQueue.get(0);
+            (new Thread(currentTask)).start(); 
+            taskStarted(currentTask);
+        }
+    }
+    
+    public void taskCanceled(KahinaTask task)
+    {
+        if (taskQueue.size() == 0)
+        {
+            currentTask = null;
+        }
+        else
+        {
+            currentTask = taskQueue.get(0);
+            currentTask.run();
+            taskStarted(currentTask);
+        }
+    }
 }
