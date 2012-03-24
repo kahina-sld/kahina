@@ -22,7 +22,7 @@ public abstract class KahinaTask implements Runnable
     {
         if (progressBar != null)
         {
-            progressBar.tellTaskProgress((int) (progress + 0.5), status);
+            progressBar.tellTaskProgress((int) (100 * progress), status);
         }
     }
     
@@ -30,7 +30,13 @@ public abstract class KahinaTask implements Runnable
     {
         if (cancelled) return true;
         if (progressBar == null) return false;
-        return progressBar.cancelButtonClicked();
+        if (progressBar.cancelButtonClicked())
+        {
+            //TODO: find a better architecture for managing cancellation of one vs. all tasks
+            manager.cancelTasks();
+            return true;
+        }
+        return false;
     }
     
     public boolean isFinished()

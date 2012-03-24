@@ -156,17 +156,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     
     public void printGraphVertices(Graphics2D cnv)
     {
-        //TODO: make this dependent on current scrolling window, ONLY draw nodes there (redraw happens anyway!)
-        //print nodes of the graph
-        //TODO: implement the concept of a drawing order in order to control which parts are printed in front
-        long startTime = System.currentTimeMillis();
-        int vertices = 0;
-        for (int vertex : view.getModel().getVertices())
-        {
-           vertices++;
-           printGraphVertex(cnv,vertex);
-        }
-        System.err.println("  " + vertices + " vertices in " + (System.currentTimeMillis() - startTime) + " ms.");
+       taskManager.addTask(new PrintGraphVerticesTask(cnv, progressBar, taskManager));
     }
     
     public void printGraphEdges(Graphics canvas)
@@ -347,8 +337,8 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
         {
             int currentVertex = 0;
             int edges = 0;
-            int numVertices = view.getModel().getVertices().size();
-            setProgressAndStatus(0, "Drawing graph edges: " + currentVertex + "/" + numVertices + " vertices complete, " + edges + " edges drawn");
+            double numVertices = view.getModel().getVertices().size();
+            setProgressAndStatus(0, "Drawing graph edges: " + currentVertex + "/" + (int) numVertices + " vertices complete, " + edges + " edges drawn");
             long startTime = System.currentTimeMillis();
             // create lines and their tags
             canvas.setColor(Color.BLACK);
@@ -424,11 +414,48 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
                 processedVertices.add(vertex1);
                 currentVertex++;
                 setProgressAndStatus(currentVertex / numVertices, "Drawing graph edges: " + currentVertex + 
-                                                                  "/" + numVertices + " vertices complete, " + edges + " edges drawn");
+                                                                  "/" + (int) numVertices + " vertices complete, " + edges + " edges drawn");
             }
-            setProgressAndStatus(100, "Drawing graph edges: " + numVertices + 
-                    "/" + numVertices + " vertices complete, " + edges + " edges drawn");
+            setProgressAndStatus(1, "Drawing graph edges: " + (int) numVertices + 
+                    "/" + (int) numVertices + " vertices complete, " + edges + " edges drawn");
             System.err.println("  " + edges + " edges in " + (System.currentTimeMillis() - startTime) + " ms.");      
+            setFinished();
+        }
+        
+    }
+    
+    private class PrintGraphVerticesTask extends KahinaTask
+    {
+        Graphics2D canvas;
+        
+        public PrintGraphVerticesTask(Graphics2D canvas, KahinaProgressBar progressBar, KahinaTaskManager manager)
+        {
+            super(progressBar,manager);
+            this.canvas = canvas;
+        }
+
+        @Override
+        public void run()
+        {
+            int currentVertex = 0;
+            int edges = 0;
+            double numVertices = view.getModel().getVertices().size();
+            setProgressAndStatus(0, "Drawing graph vertices: " + currentVertex + "/" + numVertices + " vertices complete.");
+            long startTime = System.currentTimeMillis();
+            // create lines and their tags
+            canvas.setColor(Color.BLACK);
+            Set<Integer> processedVertices = new HashSet<Integer>();
+            for (int vertex : view.getModel().getVertices())
+            {
+                if (isCanceled()) break;
+                printGraphVertex(canvas,vertex);
+                currentVertex++;
+                setProgressAndStatus(currentVertex / numVertices, "Drawing graph vertices: " + currentVertex + 
+                                                                  "/" + (int) numVertices + " vertices complete.");
+            }
+            setProgressAndStatus(1, "Drawing graph vertices: " + (int) numVertices + 
+                    "/" + (int) numVertices + " vertices complete.");
+            System.err.println("  " + currentVertex + " vertices in " + (System.currentTimeMillis() - startTime) + " ms.");      
             setFinished();
         }
         
