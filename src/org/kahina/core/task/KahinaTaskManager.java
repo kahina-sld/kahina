@@ -8,6 +8,8 @@ public class KahinaTaskManager
     List<KahinaTask> taskQueue;
     KahinaTask currentTask;
     
+    public static boolean VERBOSE = false;
+    
     public KahinaTaskManager()
     {
         taskQueue = new LinkedList<KahinaTask>();
@@ -16,7 +18,10 @@ public class KahinaTaskManager
     
     public void addTask(KahinaTask task)
     {
+        if (VERBOSE) System.err.println("KahinaTaskManager.addTask(" + task + ")");
         taskQueue.add(task);
+        if (VERBOSE) System.err.println("  taskQueue = " + taskQueue);
+        if (VERBOSE) System.err.println("  currentTask = " + currentTask);
         if (currentTask == null)
         {
             currentTask = task;
@@ -25,19 +30,21 @@ public class KahinaTaskManager
         }
     }
     
-
-    
     /**
      * DANGEROUS: overriding methods MUST call super.taskStarted(task)!
      * @param task
      */
     public void taskStarted(KahinaTask task)
     {
+        if (VERBOSE) System.err.println("KahinaTaskManager.taskStarted(" + task + ")");
         taskQueue.remove(task);
+        if (VERBOSE) System.err.println("  taskQueue = " + taskQueue);
     }
     
     public void taskFinished(KahinaTask task)
     {
+        if (VERBOSE) System.err.println("KahinaTaskManager.taskFinished(" + task + ")");
+        if (VERBOSE) System.err.println("  taskQueue = " + taskQueue);
         if (taskQueue.size() == 0)
         {
             currentTask = null;
@@ -52,7 +59,9 @@ public class KahinaTaskManager
     
     public void cancelTasks()
     {
+        if (VERBOSE) System.err.println("KahinaTaskManager.cancelTasks()");
         taskQueue.clear();
+        if (VERBOSE) System.err.println("  currentTask = " + currentTask);
         if (currentTask != null)
         {
             currentTask.setCanceled();
