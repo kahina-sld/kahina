@@ -1,28 +1,17 @@
 package org.kahina.core.visual.dag;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics2D;
 import java.awt.Stroke;
-import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 
@@ -56,9 +45,9 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     //allow marking of a single node in the graph
     private int markedNode;
     
-    public KahinaDAGView(KahinaController control, KahinaDAGLayouter layout)
+    public KahinaDAGView(KahinaInstance<?, ?, ?> kahina, KahinaDAGLayouter layout)
     {
-    	super(control);
+    	super(kahina);
         this.model = new KahinaMemDAG();
         
         this.config = new KahinaDAGViewConfiguration();
@@ -78,11 +67,11 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
 
         this.markedNode = -1;
         
-        control.registerListener("update", this);
+        kahina.getGuiControl().registerListener("update", this);
         layout.newDAG(this);
     }
-    
-    public void display(KahinaDAG dagModel)
+
+	public void display(KahinaDAG dagModel)
     {
         model = dagModel;
         nodeBorderColor = new HashMap<Integer, Color>();
@@ -235,8 +224,8 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     @Override
 	public JComponent makePanel()
     {
-        KahinaDAGViewPanel panel = new KahinaDAGViewPanel(control);
-        control.registerListener("redraw", panel);
+        KahinaDAGViewPanel panel = new KahinaDAGViewPanel(kahina);
+        kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getViewport().setBackground(config.getBackgroundColor());

@@ -13,7 +13,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.KahinaWindowTransferHandler;
 
@@ -28,15 +28,15 @@ public class KahinaListWindow extends KahinaWindow implements MouseListener
     List<KahinaWindow> windows;
     int selectedWindow;
     
-    public KahinaListWindow(KahinaWindowManager wm, KahinaController control)
+    public KahinaListWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina)
     {
-    	super(wm, control);
+    	super(wm, kahina);
     	this.initialize();
     }
     
-    public KahinaListWindow(KahinaWindowManager wm, KahinaController control, int winID)
+    public KahinaListWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID)
     {
-    	super(wm, control, winID);
+    	super(wm, kahina, winID);
     	this.initialize();
     }
     

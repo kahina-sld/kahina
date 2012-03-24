@@ -4,9 +4,8 @@ import java.awt.Color;
 
 import javax.swing.JComponent;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaViewConfiguration;
 
@@ -24,14 +23,14 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 
 	private final KahinaLayeredTreeViewPanel.Orientation orientation;
 
-	public KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation orientation, KahinaController control, int... layers)
+	public KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation orientation, KahinaInstance<?, ?, ?> kahina, int... layers)
 	{
-		this(false, orientation, control, layers);
+		this(false, orientation, kahina, layers);
 	}
 
-	public KahinaLayeredTreeView(boolean displaySecondDimensionInTopLayer, KahinaLayeredTreeViewPanel.Orientation orientation, KahinaController control, int... layers)
+	public KahinaLayeredTreeView(boolean displaySecondDimensionInTopLayer, KahinaLayeredTreeViewPanel.Orientation orientation, KahinaInstance<?, ?, ?> kahina, int... layers)
 	{
-		super(control);
+		super(kahina);
 		if (VERBOSE)
 		{
 			System.out.println("Constructing " + this);
@@ -39,7 +38,7 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 		this.orientation = orientation;
 		this.layers = layers;
 		views = new KahinaTreeView[layers.length];
-		views[0] = new KahinaTreeView(control);
+		views[0] = new KahinaTreeView(kahina);
 
 		if (!displaySecondDimensionInTopLayer)
 		{
@@ -53,8 +52,8 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 
 		for (int i = 1; i < views.length; i++)
 		{
-			views[i] = new KahinaTreeView(control);
-			control.registerListener("update", views[i]);
+			views[i] = new KahinaTreeView(kahina);
+			kahina.getGuiControl().registerListener("update", views[i]);
 		}
 	}
 
@@ -121,8 +120,8 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 	public JComponent makePanel()
 	{
 		marker = new KahinaTreeViewMarker(model, secondaryModel);
-		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(views.length, marker, control, orientation);
-		control.registerListener("redraw", panel);
+		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(views.length, marker, kahina, orientation);
+		kahina.getGuiControl().registerListener("redraw", panel);
 		panel.setView(this);
 		return panel;
 	}

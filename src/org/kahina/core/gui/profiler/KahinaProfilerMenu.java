@@ -5,19 +5,19 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JMenu;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.util.SwingUtil;
 
 public class KahinaProfilerMenu extends JMenu implements ActionListener
 {
 	private static final long serialVersionUID = -7484775954027995992L;
-	private KahinaController guiControl;
+	private final KahinaInstance<?, ?, ?> kahina;
 
-	public KahinaProfilerMenu(KahinaController guiControl)
+	public KahinaProfilerMenu(KahinaInstance<?, ?, ?> kahina)
 	{
 		super("Profiler");
-		this.guiControl = guiControl;
+		this.kahina = kahina;
 		
 		add(SwingUtil.createMenuItem("Full profile", "fullProfile", this));
 		add(SwingUtil.createMenuItem("Profile call subtree", "callSubtreeProfile", this));
@@ -32,16 +32,16 @@ public class KahinaProfilerMenu extends JMenu implements ActionListener
 		String command = e.getActionCommand();
 		if (command.equals("fullProfile"))
 		{
-			guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.FULL_PROFILE));
+			kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.FULL_PROFILE));
 		} else if (command.equals("callSubtreeProfile"))
 		{
-			guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.CALL_SUBTREE_PROFILE));
+			kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.CALL_SUBTREE_PROFILE));
 		} else if (command.equals("searchSubtreeProfile"))
 		{
-			guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.SEARCH_SUBTREE_PROFILE));
+			kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.SEARCH_SUBTREE_PROFILE));
 		} else if (command.equals("editWarnings"))
 		{
-			guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.EDIT_WARNINGS));
+			kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.EDIT_WARNINGS));
 		}
 	}
 

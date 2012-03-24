@@ -12,6 +12,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaTreeViewListener extends MouseAdapter implements ActionListener
@@ -19,19 +20,22 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
     KahinaTreeViewPanel view;
     KahinaTreeViewMarker marker;
     MouseEvent lastMouseEvent;
+	private final KahinaInstance<?, ?, ?> kahina;
     
-    public KahinaTreeViewListener(KahinaTreeViewPanel view)
+    public KahinaTreeViewListener(KahinaTreeViewPanel view, KahinaInstance<?, ?, ?> kahina)
     {
         this.view = view;
         this.marker = new KahinaTreeViewMarker(view.view.getTreeModel());
+        this.kahina = kahina;
         marker.registerTreeView(view);
         this.lastMouseEvent = null;
     }
     
-    public KahinaTreeViewListener(KahinaTreeViewPanel view, KahinaTreeViewMarker marker)
+    public KahinaTreeViewListener(KahinaTreeViewPanel view, KahinaTreeViewMarker marker, KahinaInstance<?, ?, ?> kahina)
     {
         this.view = view;
         this.marker = marker;
+        this.kahina = kahina;
         marker.registerTreeView(view);
         this.lastMouseEvent = null;
     }
@@ -55,7 +59,7 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         }
         else
         {
-            view.view.control.processEvent(new KahinaSelectionEvent(clickedNode));
+            kahina.dispatchEvent(new KahinaSelectionEvent(clickedNode));
             lastMouseEvent = e;
         }
     }

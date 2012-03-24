@@ -2,16 +2,16 @@ package org.kahina.core.visual.tree;
 
 import java.awt.Color;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.visual.KahinaView;
 
 public abstract class KahinaAbstractTreeView extends KahinaView<KahinaTree>
 {
 
-	public KahinaAbstractTreeView(KahinaController control)
+	public KahinaAbstractTreeView(KahinaInstance<?, ?, ?> kahina)
 	{
-		super(control);
+		super(kahina);
 	}
 	
 	public abstract void displaySecondaryTree(KahinaTree treeModel);

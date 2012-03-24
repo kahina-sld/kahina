@@ -6,18 +6,18 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.KahinaDialogEvent;
 
 public class KahinaControlPointMenu  extends JMenu implements ActionListener
 {
     private static final long serialVersionUID = -1290849167486564257L;
-    private KahinaController guiControl;
+    private final KahinaInstance<?, ?, ?> kahina;
 
-    public KahinaControlPointMenu(KahinaController guiControl)
+    public KahinaControlPointMenu(KahinaInstance<?, ?, ?> kahina)
     {
         super("Control points");       
-        this.guiControl = guiControl;
+        this.kahina = kahina;
         
         JMenuItem primaryBreakpointsItem = new JMenuItem("Breakpoints (search tree)");
         primaryBreakpointsItem.setActionCommand("editPrimaryBreakpoints");
@@ -64,31 +64,31 @@ public class KahinaControlPointMenu  extends JMenu implements ActionListener
         String s = e.getActionCommand();
         if (s.equals("editPrimaryBreakpoints"))
         {
-            guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PRIMARY_BREAKPOINTS));
+            kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.PRIMARY_BREAKPOINTS));
         }
         else if (s.equals("editSecondaryBreakpoints"))
         {
-        	guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.SECONDARY_BREAKPOINTS));
+        	kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.SECONDARY_BREAKPOINTS));
         }
         if (s.equals("editPrimaryWarnPoints"))
         {
-        	guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.PRIMARY_WARN_POINTS));
+        	kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.PRIMARY_WARN_POINTS));
         }
         else if (s.equals("editSecondaryWarnPoints"))
         {
-        	guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.SECONDARY_WARN_POINTS));
+        	kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.SECONDARY_WARN_POINTS));
         }
         else if (s.equals("editSkipPoints"))
         {
-        	guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.SKIP_POINTS));
+        	kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.SKIP_POINTS));
         }
         else if (s.equals("editCreepPoints"))
         {
-        	guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.CREEP_POINTS));
+        	kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.CREEP_POINTS));
         }
         else if (s.equals("editFailPoints"))
         {
-        	guiControl.processEvent(new KahinaDialogEvent(KahinaDialogEvent.FAIL_POINTS));
+        	kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.FAIL_POINTS));
         }
     }
 }

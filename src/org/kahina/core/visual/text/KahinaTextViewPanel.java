@@ -8,6 +8,7 @@ import java.awt.event.MouseListener;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView<?>>
@@ -18,11 +19,13 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView<?>>
     JScrollPane listScrollPane;
     //determines how many lines are automatically displayed before and after the lead selection line
     //also determines the minimum height of the component
-    int displayContext = 2;
+    private int displayContext = 2;
+    private final KahinaInstance<?, ?, ?> kahina;
     
-    public KahinaTextViewPanel()
+    public KahinaTextViewPanel(KahinaInstance<?, ?, ?> kahina)
     {
         this.setLayout(new GridLayout());
+        this.kahina = kahina;
         view = null;
         list = new JList();
         list.setSelectionBackground(Color.YELLOW);
@@ -43,7 +46,7 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView<?>>
         {
             list.removeMouseListener(mouseListener);
         }
-        list.addMouseListener(new KahinaTextViewListener(this));
+        list.addMouseListener(new KahinaTextViewListener(this, kahina));
         this.updateDisplayAndRepaintFromEventDispatchThread();
     }
     

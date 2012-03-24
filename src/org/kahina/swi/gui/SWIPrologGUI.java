@@ -3,7 +3,6 @@ package org.kahina.swi.gui;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.tree.KahinaAbstractTreeView;
@@ -16,19 +15,19 @@ import org.kahina.swi.SWIPrologStep;
 public class SWIPrologGUI extends LogicProgrammingGUI
 {
 
-	public SWIPrologGUI(Class<? extends SWIPrologStep> stepType, SWIPrologDebuggerInstance instance, KahinaController control)
+	public SWIPrologGUI(Class<? extends SWIPrologStep> stepType, SWIPrologDebuggerInstance kahina)
 	{
-		super(stepType, instance, control);
+		super(stepType, kahina);
 	}
 	
 	@Override
-	public KahinaAbstractTreeView generateTreeView(KahinaController control)
+	public KahinaAbstractTreeView generateTreeView()
 	{
-		return new KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation.HORIZONTAL, control, 0);
+		return new KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation.HORIZONTAL, kahina, 0);
 	}
 
 	@Override
-	public void prepare(KahinaController control)
+	public void prepare()
 	{
 		try
 		{

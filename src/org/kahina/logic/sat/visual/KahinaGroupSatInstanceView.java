@@ -3,7 +3,7 @@ package org.kahina.logic.sat.visual;
 import java.awt.Color;
 import java.util.HashMap;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.graph.KahinaGraphLayouter;
 import org.kahina.logic.sat.data.GroupCnfSatInstance;
 
@@ -11,9 +11,9 @@ public class KahinaGroupSatInstanceView extends KahinaSatInstanceView
 {
     GroupCnfSatInstance sat;
     
-    public KahinaGroupSatInstanceView(KahinaController control, KahinaGraphLayouter layout)
+    public KahinaGroupSatInstanceView(KahinaInstance<?, ?, ?> kahina, KahinaGraphLayouter layout)
     {
-        super(control, layout);
+        super(kahina, layout);
     }
 
     public void display(GroupCnfSatInstance sat)

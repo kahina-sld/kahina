@@ -25,7 +25,7 @@ import org.kahina.qtype.gui.QTypeParseExampleMenu;
 
 public class QTypeCommander implements KahinaListener
 {
-    private static final boolean VERBOSE = true;
+    private static final boolean VERBOSE = false;
 
     private Queue<String> commands = new ArrayDeque<String>();
 

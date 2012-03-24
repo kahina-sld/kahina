@@ -27,7 +27,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.tralesld.bridge.AuxiliaryTraleInstance;
@@ -43,6 +42,9 @@ import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
 
 public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureViewPanel implements ActionListener
 {
+
+	private static final long serialVersionUID = -7070400847889372946L;
+
 	GraleJEditorBlockPanel blockPanel;
 	
 	TraleSLDSignature sig;
@@ -79,12 +81,12 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	public static final int TF_MODE = 1;
 	public static final int TTF_MODE = 2;
 	
-	KahinaController control;
+	private final KahinaInstance<?, ?, ?> kahina;
 	
-	public TraleSLDFeatureStructureEditor(KahinaController control, AuxiliaryTraleInstance trale)
+	public TraleSLDFeatureStructureEditor(KahinaInstance<?, ?, ?> kahina, AuxiliaryTraleInstance trale)
 	{
 		super();
-		this.control = control;
+		this.kahina = kahina;
 		
 		blockPanel = null;
 		
@@ -274,8 +276,8 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		
 		if (!contextStructureType.equals("?"))
 		{
-			control.processEvent(new TraleSLDTypeSelectionEvent(contextStructureType));
-			control.processEvent(new KahinaRedrawEvent());
+			kahina.dispatchEvent(new TraleSLDTypeSelectionEvent(contextStructureType));
+			kahina.dispatchEvent(new KahinaRedrawEvent());
 		}
 		
 		contextPath = determinePath(contextBlock);
@@ -540,22 +542,22 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	
 	public void infoMessage(String desc)
 	{
-		control.processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.INFO_MESSAGE));
+		kahina.dispatchEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.INFO_MESSAGE));
 	}
 	
 	public void success(String desc)
 	{
-		control.processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.SUCCESS));
+		kahina.dispatchEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.SUCCESS));
 	}
 	
 	public void failureMessage(String desc)
 	{
-		control.processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
+		kahina.dispatchEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.FAILURE_MESSAGE));
 	}
 	
 	public void warningMessage(String desc)
 	{
-		control.processEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.WARNING_MESSAGE));
+		kahina.dispatchEvent(new TraleSLDFeatureEditEvent(desc, TraleSLDFeatureEditEvent.WARNING_MESSAGE));
 	}
 
 	@Override
@@ -573,7 +575,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 			else
 			{
 				success("Copying operation successful.");
-				control.processEvent(new TraleSLDFeatureEditEvent(copyGrisu, TraleSLDFeatureEditEvent.COPY_FS));
+				kahina.dispatchEvent(new TraleSLDFeatureEditEvent(copyGrisu, TraleSLDFeatureEditEvent.COPY_FS));
 			}		
 		}
 		else if (command.equals("replPaste"))
@@ -846,7 +848,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else
 		{
 			grisuString = result;
-			control.processEvent(new TraleSLDFeatureEditEvent(null, TraleSLDFeatureEditEvent.UPDATE_FS));
+			kahina.dispatchEvent(new TraleSLDFeatureEditEvent(null, TraleSLDFeatureEditEvent.UPDATE_FS));
 		}
 	}
 	
@@ -860,7 +862,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 		else
 		{
 			grisuString = result;
-			control.processEvent(new TraleSLDFeatureEditEvent(null, TraleSLDFeatureEditEvent.UPDATE_FS));
+			kahina.dispatchEvent(new TraleSLDFeatureEditEvent(null, TraleSLDFeatureEditEvent.UPDATE_FS));
 		}
 	}
 }

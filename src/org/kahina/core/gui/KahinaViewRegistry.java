@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kahina.core.KahinaException;
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.visual.KahinaView;
 
@@ -24,7 +24,7 @@ public class KahinaViewRegistry
 		map.put(type, viewType);
 	}
 
-	public static KahinaView<?> generateViewFor(Class<?> type, KahinaController control)
+	public static KahinaView<?> generateViewFor(Class<?> type, KahinaInstance<?, ?, ?> kahina)
 	{
 		Class<? extends KahinaView<?>> viewType = map.get(type);
 		while (viewType == null)
@@ -35,7 +35,7 @@ public class KahinaViewRegistry
 		KahinaView<?> view;
 		try
 		{
-			view = viewType.getConstructor(KahinaController.class).newInstance(control);
+			view = viewType.getConstructor(KahinaInstance.class).newInstance(kahina);
 		} catch (Exception e)
 		{
 			throw new KahinaException("Problem generating view for " + type, e);

@@ -3,17 +3,17 @@ package org.kahina.tralesld.visual.signature;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
 
 public class TraleSLDSignatureHyperlinkListener implements HyperlinkListener
 {
-	KahinaController control;
+	private final KahinaInstance<?, ?, ?> kahina;
 	
-	public TraleSLDSignatureHyperlinkListener(KahinaController control)
+	public TraleSLDSignatureHyperlinkListener(KahinaInstance<?, ?, ?> kahina)
 	{
-		this.control = control;
+		this.kahina = kahina;
 	}
 	
 	@Override
@@ -23,8 +23,8 @@ public class TraleSLDSignatureHyperlinkListener implements HyperlinkListener
 		{
 			if (event.getDescription().startsWith("type:"))
 			{
-				control.processEvent(new TraleSLDTypeSelectionEvent(event.getDescription().substring(5)));
-				control.processEvent(new KahinaRedrawEvent());
+				kahina.dispatchEvent(new TraleSLDTypeSelectionEvent(event.getDescription().substring(5)));
+				kahina.dispatchEvent(new KahinaRedrawEvent());
 			}
 		}
 	}	

@@ -3,15 +3,14 @@ package org.kahina.core.visual;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.gui.KahinaGUI;
 
 public class KahinaEmptyView extends KahinaView<KahinaObject>
 {
-    public KahinaEmptyView(KahinaController control)
+    public KahinaEmptyView(KahinaInstance<?, ?, ?> kahina)
 	{
-		super(control);
+		super(kahina);
 		setTitle("Empty View");
 	}
 
@@ -19,7 +18,7 @@ public class KahinaEmptyView extends KahinaView<KahinaObject>
 	public JComponent makePanel()
     {
         KahinaEmptyViewPanel panel = new KahinaEmptyViewPanel();
-        control.registerListener("redraw", panel);
+        kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
     }

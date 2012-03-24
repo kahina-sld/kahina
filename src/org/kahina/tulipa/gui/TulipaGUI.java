@@ -1,10 +1,8 @@
 package org.kahina.tulipa.gui;
 
 import java.awt.Color;
-import java.awt.event.KeyEvent;
 
 import org.kahina.core.KahinaStep;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.visual.dag.KahinaDAGView;
 import org.kahina.core.visual.dag.LayeredLayouter;
@@ -19,12 +17,12 @@ public class TulipaGUI extends KahinaGUI
     protected KahinaDAGView mainDAGView;
     protected TulipaGrammarView grammarView;
     
-    public TulipaGUI(Class<? extends KahinaStep> stepType, TulipaInstance instance, KahinaController control)
+    public TulipaGUI(Class<? extends KahinaStep> stepType, TulipaInstance instance)
     {
-        super(stepType, instance, control);
+        super(stepType, instance);
         this.instance = instance;      
         
-        mainDAGView = new KahinaDAGView(control, new LayeredLayouter());
+        mainDAGView = new KahinaDAGView(instance, new LayeredLayouter());
         mainDAGView.setTitle("Item Graph");
         views.add(mainDAGView);
         livingViews.add(mainDAGView); 
@@ -36,7 +34,7 @@ public class TulipaGUI extends KahinaGUI
         mainDAGView.getConfig().setVerticalDistance(6);
         mainDAGView.getConfig().setHorizontalDistance(2);
         
-        grammarView = new TulipaGrammarView(control);
+        grammarView = new TulipaGrammarView(instance);
         grammarView.setTitle("RCG grammar");
         views.add(grammarView);
         livingViews.add(grammarView);
@@ -64,9 +62,9 @@ public class TulipaGUI extends KahinaGUI
     }
     
     @Override
-    public void prepare(KahinaController control)
+    public void prepare()
     {
-        super.prepare(control);
+        super.prepare();
         //TODO: put this into a default configuration
         //getWindowForVarName("dag").setSize(800, 500);
         //getWindowForVarName("dag").setLocation(0, 150);

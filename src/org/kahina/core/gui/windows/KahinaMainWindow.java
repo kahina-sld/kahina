@@ -5,7 +5,7 @@ import java.awt.dnd.DropTarget;
 
 import javax.swing.JMenuBar;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
@@ -27,15 +27,15 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 	KahinaWindow subwindow;
 
-	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
 	{
-		super(windowManager, control);
+		super(windowManager, kahina);
 		this.initializeMainWindow();
 	}
 
-	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaController control, int winID)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina, int winID)
 	{
-		super(windowManager, control, winID);
+		super(windowManager, kahina, winID);
 		this.initializeMainWindow();
 	}
 
@@ -49,7 +49,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		
 		addMenusInFront();
 		
-		menuBar.add(new KahinaSessionMenu(wm.kahina.getControl()));
+		menuBar.add(new KahinaSessionMenu(kahina.getControl()));
 		menuBar.add(new KahinaViewMenu(wm));
 
 		addMenusBeforeHelpMenu();
@@ -59,7 +59,12 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
-		wm.kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
+		/**
+		 * TODO This used to use getControl(), surely by mistake? Changed it to
+		 * getGuiControl(), hopefully improving functionality rather than
+		 * destroying it.
+		 */
+		kahina.getGuiControl().registerListener(KahinaEventTypes.SYSTEM, this);
 	}
 
 	public void setSize(int width, int height)

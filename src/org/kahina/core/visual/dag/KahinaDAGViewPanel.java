@@ -15,7 +15,7 @@ import java.util.List;
 
 import javax.swing.JScrollPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.util.SwingUtil;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
@@ -26,11 +26,11 @@ private static final long serialVersionUID = 6701252380309408342L;
     
     BufferedImage image;
     
-    public KahinaDAGViewPanel(KahinaController control)
+    public KahinaDAGViewPanel(KahinaInstance<?, ?, ?> kahina)
     {       
-        view = new KahinaDAGView(control, new LayeredLayouter());
+        view = new KahinaDAGView(kahina, new LayeredLayouter());
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
-        this.addMouseListener(new KahinaDAGViewListener(this));
+        this.addMouseListener(new KahinaDAGViewListener(this, kahina));
     }
     
     @Override

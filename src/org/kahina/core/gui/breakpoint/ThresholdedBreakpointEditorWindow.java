@@ -2,7 +2,7 @@ package org.kahina.core.gui.breakpoint;
 
 import javax.swing.JPanel;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.lp.LogicProgrammingState;
 
 public class ThresholdedBreakpointEditorWindow extends BreakpointEditorWindow
@@ -18,9 +18,9 @@ public class ThresholdedBreakpointEditorWindow extends BreakpointEditorWindow
 
 	private LogicProgrammingState state;
 
-	public ThresholdedBreakpointEditorWindow(KahinaController control, int breakpointType)
+	public ThresholdedBreakpointEditorWindow(KahinaInstance<?, ?, ?> kahina, int breakpointType)
 	{
-		super(control, breakpointType);
+		super(kahina, breakpointType);
 	}
 
 	@Override

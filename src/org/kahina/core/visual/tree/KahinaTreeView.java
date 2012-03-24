@@ -16,10 +16,9 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 
 // TODO Second dimension sometimes isn't properly displayed when there is no
@@ -72,9 +71,9 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	private ArrayList<Integer> terminalLayer;
 	private int maxNodeWidth;
 
-	public KahinaTreeView(KahinaController control)
+	public KahinaTreeView(KahinaInstance<?, ?, ?> kahina)
 	{
-		super(control);
+		super(kahina);
 		model = new KahinaMemTree();
 		treeLayer = 0;
 		secondaryTreeModel = null;
@@ -837,8 +836,8 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	@Override
 	public JComponent makePanel()
 	{
-		KahinaTreeViewPanel panel = new KahinaTreeViewPanel(control);
-		control.registerListener("redraw", panel);
+		KahinaTreeViewPanel panel = new KahinaTreeViewPanel(kahina);
+		kahina.getGuiControl().registerListener("redraw", panel);
 		panel.setView(this);
 		JScrollPane scrollPane = new JScrollPane(panel);
 		scrollPane.getViewport().setBackground(config.getBackgroundColor());

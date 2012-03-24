@@ -11,16 +11,19 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaDAGViewListener extends MouseAdapter implements ActionListener
 {
-    KahinaDAGViewPanel view;
-    MouseEvent lastMouseEvent;
+    private final KahinaDAGViewPanel view;
+    private final KahinaInstance<?, ?, ?> kahina;
+    private MouseEvent lastMouseEvent;
     
-    public KahinaDAGViewListener(KahinaDAGViewPanel view)
+    public KahinaDAGViewListener(KahinaDAGViewPanel view, KahinaInstance<?, ?, ?> kahina)
     {
         this.view = view;
+        this.kahina = kahina;
         this.lastMouseEvent = null;
     }
     
@@ -37,7 +40,7 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
         }
         else
         {
-            view.view.control.processEvent(new KahinaSelectionEvent(clickedNode));
+            kahina.dispatchEvent(new KahinaSelectionEvent(clickedNode));
             lastMouseEvent = e;
         }
     }

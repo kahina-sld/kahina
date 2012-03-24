@@ -18,6 +18,7 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.chart.KahinaChart;
@@ -63,9 +64,9 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     HashMap<Integer,Integer> segmentOffsets = new HashMap<Integer,Integer>();
     int chartWidth;
     
-    public KahinaChartView(KahinaController control)
+    public KahinaChartView(KahinaInstance<?, ?, ?> kahina)
     {
-    	super(control);
+    	super(kahina);
         g = null;
         
         config = new KahinaChartViewConfiguration();
@@ -81,12 +82,12 @@ public class KahinaChartView extends KahinaView<KahinaChart>
 
         setDisplayDecider(new KahinaChartEdgeDisplayDecider());
 
-        control.registerListener("chart update", this);
+        kahina.getGuiControl().registerListener("chart update", this);
     }
     
-    public KahinaChartView(KahinaChart chartModel, KahinaController control)
+    public KahinaChartView(KahinaChart chartModel, KahinaInstance<?, ?, ?> kahina)
     {
-        this(control);
+        this(kahina);
         display(chartModel);
     }
     
@@ -770,8 +771,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     @Override
 	public JComponent makePanel()
     {
-        KahinaChartViewPanel panel = new KahinaChartViewPanel(control);
-        control.registerListener("redraw", panel);
+        KahinaChartViewPanel panel = new KahinaChartViewPanel(kahina);
+        kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
     }

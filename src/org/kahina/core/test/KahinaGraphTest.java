@@ -6,10 +6,11 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
+import org.kahina.core.KahinaDefaultInstance;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.graph.KahinaGraph;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
-import org.kahina.core.visual.graph.GridLayouter;
 import org.kahina.core.visual.graph.KahinaGraphView;
 import org.kahina.core.visual.graph.SpringLayouter;
 
@@ -18,9 +19,10 @@ public class KahinaGraphTest
     public static void main(String[] args)
     {
         final KahinaController control = new KahinaController();
+        final KahinaInstance<?, ?, ?> kahina = new KahinaDefaultInstance();
         
         KahinaGraph graph = KahinaGraph.importTGF("/home/dellert/workspace/Kahina/src/org/kahina/core/test/test-graph.tgf");
-        final KahinaGraphView view = new KahinaGraphView(control, new SpringLayouter());
+        final KahinaGraphView view = new KahinaGraphView(kahina, new SpringLayouter());
         view.getConfig().setZoomLevel(5);
         view.display(graph);  
         

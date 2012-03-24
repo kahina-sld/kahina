@@ -1,6 +1,5 @@
 package org.kahina.qtype;
 
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.qtype.bridge.QTypeBridge;
@@ -28,9 +27,9 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 	}
 
 	@Override
-	protected QTypeGUI createGUI(KahinaController guiController)
+	protected QTypeGUI createGUI()
 	{
-		return new QTypeGUI(QTypeStep.class, this, guiController);
+		return new QTypeGUI(QTypeStep.class, this);
 	}
 
 	@Override

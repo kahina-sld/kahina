@@ -3,23 +3,22 @@ package org.kahina.core.visual;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.gui.KahinaGUI;
 
 public class KahinaDefaultView extends KahinaView<KahinaObject>
 {
     
-    public KahinaDefaultView(KahinaController control)
+    public KahinaDefaultView(KahinaInstance<?, ?, ?> kahina)
 	{
-		super(control);
+		super(kahina);
 	}
 
 	@Override
 	public JComponent makePanel()
     {
         KahinaDefaultViewPanel panel = new KahinaDefaultViewPanel();
-        control.registerListener("redraw", panel);
+        kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
     }

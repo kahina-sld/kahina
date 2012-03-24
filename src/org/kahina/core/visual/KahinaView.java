@@ -4,7 +4,7 @@ import java.awt.Component;
 
 import javax.swing.JComponent;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
@@ -24,11 +24,11 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 
 	protected T model;
 	
-	public KahinaController control;
+	protected final KahinaInstance<?, ?, ?> kahina;
 
-	public KahinaView(KahinaController control)
+	public KahinaView(KahinaInstance<?, ?, ?> kahina)
 	{
-		this.control = control;
+		this.kahina = kahina;
 		this.title = "New View";
 	}
 
@@ -55,8 +55,8 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	// only listens to this in absence of KahinaGUI; do not register as listener in KahinaGUI case!!!
 	private void processEvent(KahinaSelectionEvent e)
 	{
-		control.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
-		control.processEvent(new KahinaRedrawEvent());
+		kahina.dispatchEvent(new KahinaUpdateEvent(e.getSelectedStep()));
+		kahina.dispatchEvent(new KahinaRedrawEvent());
 	}
 
 	/**

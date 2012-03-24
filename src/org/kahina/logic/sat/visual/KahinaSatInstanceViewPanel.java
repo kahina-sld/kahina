@@ -1,13 +1,13 @@
 package org.kahina.logic.sat.visual;
 
-import org.kahina.core.control.KahinaController;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.graph.KahinaGraphViewPanel;
 
 public class KahinaSatInstanceViewPanel extends KahinaGraphViewPanel
 {
-    public KahinaSatInstanceViewPanel(KahinaController control)
+    public KahinaSatInstanceViewPanel(KahinaInstance<?, ?, ?> kahina)
     {       
-        super(control);
+        super(kahina);
     }
     
     protected void generateMouseListener()

@@ -1,5 +1,6 @@
 package org.kahina.tralesld.gui;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.menus.ProjectMenu;
 import org.kahina.lp.gui.LogicProgrammingMainWindow;
 
@@ -7,21 +8,21 @@ public class TraleSLDMainWindow extends LogicProgrammingMainWindow
 {
 	private static final long serialVersionUID = -8044329699904664157L;
 
-	public TraleSLDMainWindow(TraleSLDWindowManager windowManager)
+	public TraleSLDMainWindow(TraleSLDWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
 	{
-		super(windowManager, windowManager.getGuiControl());
+		super(windowManager, kahina);
 	}
 	
-	public TraleSLDMainWindow(TraleSLDWindowManager windowManager, int winID)
+	public TraleSLDMainWindow(TraleSLDWindowManager windowManager, int winID, KahinaInstance<?, ?, ?> kahina)
 	{
-		super(windowManager, windowManager.getGuiControl(), winID);
+		super(windowManager, kahina, winID);
 	}
 	
 	protected void addMenusInFront()
 	{
-		menuBar.add(new ProjectMenu(wm.kahina));
+		menuBar.add(new ProjectMenu(kahina));
 		//TODO: define and add a good ProjectMenuListener
-		menuBar.add(new TraleSLDParseMenu(wm.kahina));
+		menuBar.add(new TraleSLDParseMenu(kahina));
 		//menuBar.add(new TraleSLDWorkbenchMenu(((TraleSLDGUI) wm.gui)));
 	}
 

@@ -51,7 +51,7 @@ import org.kahina.lp.data.text.LogicProgrammingLineReference;
  */
 public class LogicProgrammingBridge extends KahinaBridge
 {
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 
 	// a dynamic map from external step IDs to most recent corresponding tree
 	// nodes
@@ -889,9 +889,17 @@ public class LogicProgrammingBridge extends KahinaBridge
 					bridgeState = 't';
 					if (selectedID == -1)
 					{
+						if (VERBOSE)
+						{
+							System.err.println("Auto-completing current step: " + currentID);
+						}
 						skipID = currentID;
 					} else
 					{
+						if (VERBOSE)
+						{
+							System.err.println("Auto-completing selected step: " + selectedID);
+						}
 						skipID = selectedID;
 					}
 				} else
