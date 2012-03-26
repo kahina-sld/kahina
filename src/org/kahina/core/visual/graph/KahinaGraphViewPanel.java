@@ -336,6 +336,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
             int currentVertex = 0;
             int edges = 0;
             double numVertices = view.getModel().getVertices().size();
+            boolean directed = (view.getConfig().getEdgeInterpretation() == KahinaGraphViewOptions.EDGE_INTERPRETATION_DIRECTED);
             setProgressAndStatus(0, "Drawing graph edges: " + currentVertex + "/" + (int) numVertices + " vertices complete, " + edges + " edges drawn");
             long startTime = System.currentTimeMillis();
             // create lines and their tags
@@ -346,66 +347,68 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
                 if (isCanceled()) break;
                 int x1 = view.getVertexX(vertex1);
                 int y1 = view.getVertexY(vertex1);
-                //TODO: treat undirected edges more efficiently (they are currently drawn twice!)
                 for (int vertex2 : view.getModel().getNeighbors(vertex1))
                 {
-                    if (view.isEdgeVisible(vertex1,vertex2))
+                    if (vertex2 > vertex1 || directed)
                     {
-                        int x2 = view.getVertexX(vertex2);
-                        int y2 = view.getVertexY(vertex2);
-                        String edgeLabel = view.getModel().getEdgeLabel(vertex1, vertex2);
-                        if (edgeLabel.length() > 0)
+                        if (view.isEdgeVisible(vertex1,vertex2))
                         {
-                            printEdgeLabel(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeLabel);
-                        }
-                        canvas.setColor(view.getEdgeColor(vertex1,vertex2));
-                        switch (view.getConfig().getEdgeShapePolicy())
-                        {
-                            case KahinaGraphViewOptions.EDGE_SHAPE_DIRECT:
+                            int x2 = view.getVertexX(vertex2);
+                            int y2 = view.getVertexY(vertex2);
+                            String edgeLabel = view.getModel().getEdgeLabel(vertex1, vertex2);
+                            if (edgeLabel.length() > 0)
                             {
-                                canvas.drawLine(x1, y1, x2, y2);
-                                break;
+                                printEdgeLabel(canvas, new Point((x2+x1)/2,(y2+y1)/2),edgeLabel);
                             }
-                            case KahinaGraphViewOptions.EDGE_SHAPE_RECTANGULAR:
+                            canvas.setColor(view.getEdgeColor(vertex1,vertex2));
+                            switch (view.getConfig().getEdgeShapePolicy())
                             {
-                                canvas.drawLine(x1, y1, x2, y1);
-                                canvas.drawLine(x2, y1, x2, y2);
-                                break;
-                            }
-                            case KahinaGraphViewOptions.EDGE_SHAPE_ARC:
-                            {
-                                int halfXDist = (x2 - x1)/2;
-                                int halfYDist = (y2 - y1)/2;
-                                int midPointX = x1 + halfXDist + halfYDist;
-                                int midPointY = y1 + halfYDist - halfXDist;
-                                double radius = Math.sqrt(Math.pow(x1 - midPointX,2) + Math.pow(y1 - midPointY,2));
-                                int startAngle = (int) determineAngleInDegrees(midPointX, midPointY, x1, y1);
-                                int endAngle = (int) determineAngleInDegrees(midPointX, midPointY, x2, y2);
-                                int angleLength = endAngle - startAngle;
-                                if (angleLength < 0)
+                                case KahinaGraphViewOptions.EDGE_SHAPE_DIRECT:
                                 {
-                                    if (angleLength > -180)
+                                    canvas.drawLine(x1, y1, x2, y2);
+                                    break;
+                                }
+                                case KahinaGraphViewOptions.EDGE_SHAPE_RECTANGULAR:
+                                {
+                                    canvas.drawLine(x1, y1, x2, y1);
+                                    canvas.drawLine(x2, y1, x2, y2);
+                                    break;
+                                }
+                                case KahinaGraphViewOptions.EDGE_SHAPE_ARC:
+                                {
+                                    int halfXDist = (x2 - x1)/2;
+                                    int halfYDist = (y2 - y1)/2;
+                                    int midPointX = x1 + halfXDist + halfYDist;
+                                    int midPointY = y1 + halfYDist - halfXDist;
+                                    double radius = Math.sqrt(Math.pow(x1 - midPointX,2) + Math.pow(y1 - midPointY,2));
+                                    int startAngle = (int) determineAngleInDegrees(midPointX, midPointY, x1, y1);
+                                    int endAngle = (int) determineAngleInDegrees(midPointX, midPointY, x2, y2);
+                                    int angleLength = endAngle - startAngle;
+                                    if (angleLength < 0)
+                                    {
+                                        if (angleLength > -180)
+                                        {
+                                            startAngle = endAngle;
+                                            angleLength = -angleLength;
+                                        }
+                                        else
+                                        {
+                                            angleLength += 360;
+                                        }
+                                    }
+                                    else if (angleLength > 180)
                                     {
                                         startAngle = endAngle;
-                                        angleLength = -angleLength;
+                                        angleLength = 360 - angleLength;
                                     }
-                                    else
-                                    {
-                                        angleLength += 360;
-                                    }
+                                    canvas.drawArc(midPointX - (int) radius, midPointY - (int) radius, (int) radius * 2, (int) radius * 2, startAngle, angleLength);
+                                    break;
                                 }
-                                else if (angleLength > 180)
-                                {
-                                    startAngle = endAngle;
-                                    angleLength = 360 - angleLength;
-                                }
-                                canvas.drawArc(midPointX - (int) radius, midPointY - (int) radius, (int) radius * 2, (int) radius * 2, startAngle, angleLength);
-                                break;
                             }
+                            edges++;
+                            //TODO: add this later (= treatment of directed edges)
+                            //printEdgeArrow(canvas, vertex1, vertex2); 
                         }
-                        edges++;
-                        //TODO: add this later (= treatment of directed edges)
-                        //printEdgeArrow(canvas, vertex1, vertex2); 
                     }
                 }
                 //TODO: make treatment of the vertex agenda dependent on a flag indicating whether the graph is directed
@@ -492,37 +495,6 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
         {
             //System.err.println(180 + 180 * Math.atan((midpointY - pointY) / (pointX - midpointX)) / Math.PI);
             return 180 + 180 * Math.atan((midpointY - pointY) / (pointX - midpointX)) / Math.PI;
-        }
-    }
-    
-    public void showProgressBar()
-    {
-        if (progressBarParent != null)
-        {
-            progressBarParent.add(progressBar);
-            progressBarParent.revalidate();
-        }
-    }
-    
-    public void hideProgressBar()
-    {
-        if (progressBarParent != null)
-        {
-            progressBarParent.remove(progressBar);
-            progressBarParent.revalidate();
-        }
-    }
-
-    public void setProgressBar(KahinaProgressBar progressBar)
-    {
-        if (progressBar != null)
-        {
-            this.progressBar = progressBar;  
-            this.progressBarParent = (JComponent) progressBar.getParent();
-            if (progressBarParent != null)
-            {
-                progressBarParent.remove(progressBar);
-            }
         }
     }
 }
