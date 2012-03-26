@@ -10,6 +10,7 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.breakpoint.KahinaBreakpointType;
+import org.kahina.core.edit.breakpoint.KahinaBreakpointProfileEditor;
 import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.breakpoint.BreakpointEditorWindow;
@@ -30,16 +31,25 @@ public class LogicProgrammingGUI extends KahinaGUI
 
 	protected KahinaAbstractTreeView mainTreeView;
 	//protected KahinaLayeredTreeView mainTreeView;
+	
+	protected KahinaBreakpointProfileEditor breakpointProfileEditor;
 
 	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
 	{
 		super(stepType, kahina);
+		
 		mainTreeView = generateTreeView();
 		mainTreeView.setTitle("Control flow tree");
 		kahina.getGuiControl().registerListener(KahinaEventTypes.UPDATE, mainTreeView);
 		views.add(mainTreeView);
 		livingViews.add(mainTreeView);
 		varNameToView.put("controlFlowTree", mainTreeView);
+		
+		breakpointProfileEditor = new KahinaBreakpointProfileEditor(kahina);
+	    breakpointProfileEditor.setTitle("Breakpoint Profile");
+	    views.add(breakpointProfileEditor);
+	    livingViews.add(breakpointProfileEditor);
+        varNameToView.put("breakpointProfile", breakpointProfileEditor);
 		
 		addControlButton("Control", "gui/icons/creep.png", "creep", "(C)ontinue to next step", KeyEvent.VK_C);
 		addControlButton("Control", "gui/icons/roundskip.png", "auto-complete", "(A)uto-complete this step", KeyEvent.VK_A);

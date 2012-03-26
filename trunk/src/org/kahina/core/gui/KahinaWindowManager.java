@@ -425,7 +425,6 @@ public class KahinaWindowManager implements KahinaListener
     {
         SwingUtilities.invokeLater(new Runnable()
         {
-
             @Override
             public void run()
             {

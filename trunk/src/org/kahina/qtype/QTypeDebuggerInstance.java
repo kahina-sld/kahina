@@ -1,5 +1,6 @@
 package org.kahina.qtype;
 
+import org.kahina.core.data.breakpoint.KahinaBreakpointProfile;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.qtype.bridge.QTypeBridge;
@@ -11,12 +12,14 @@ import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 {	
 	private QTypeCommander commander;
+	private KahinaBreakpointProfile breakpoints;
 	
 	public QTypeDebuggerInstance()
 	{
 		super();
 		commander = new QTypeCommander(this);
 		commander.initializeForNewSession();
+		breakpoints = new KahinaBreakpointProfile();
 	}
 	
 	@Override
@@ -65,6 +68,11 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 	public QTypeCommander getCommander()
 	{
 		return commander;
+	}
+	
+	public KahinaBreakpointProfile getBreakpoints()
+	{
+	    return breakpoints;
 	}
 
 }
