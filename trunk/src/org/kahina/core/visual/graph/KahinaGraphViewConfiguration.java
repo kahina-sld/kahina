@@ -20,6 +20,7 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
     private int edgeColoringPolicy = KahinaGraphViewOptions.EDGE_COLOR_FUNCTION_OF_VERTEX_COLOR;
     private int specialVertexPositionPolicy = KahinaGraphViewOptions.SPECIAL_VERTICES_MIXED;
     private int specialVertexColoringPolicy = KahinaGraphViewOptions.SPECIAL_VERTICES_NORMAL_COLOR;
+    private int edgeInterpretation = KahinaGraphViewOptions.EDGE_INTERPRETATION_UNDIRECTED;
     
     public void zoomIn()
     {
@@ -291,5 +292,22 @@ public class KahinaGraphViewConfiguration extends KahinaViewConfiguration
     public int getSpecialVertexColoringPolicy()
     {
         return specialVertexColoringPolicy;
+    }
+    
+    public void setEdgeInterpretation(int edgeInterpretation)
+    {
+        if (edgeInterpretation >= 0 && edgeInterpretation <= 1)
+        {
+            this.edgeInterpretation = edgeInterpretation;
+        }
+        else
+        {
+            System.err.println("WARNING: unknown edge interpretation value " + edgeInterpretation);
+        }
+    }
+
+    public int getEdgeInterpretation()
+    {
+        return edgeInterpretation;
     }
 }

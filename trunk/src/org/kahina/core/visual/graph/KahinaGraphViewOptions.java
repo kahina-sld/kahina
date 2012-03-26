@@ -55,4 +55,8 @@ public class KahinaGraphViewOptions
     //possible values for special vertex coloring
     public static final int SPECIAL_VERTICES_HIGHLIGHTED = 0;
     public static final int SPECIAL_VERTICES_NORMAL_COLOR = 1;
+    
+    //possible values for edge interpretation
+    public static final int EDGE_INTERPRETATION_DIRECTED = 0;
+    public static final int EDGE_INTERPRETATION_UNDIRECTED = 1;
 }

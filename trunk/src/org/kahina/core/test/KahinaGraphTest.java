@@ -12,6 +12,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.graph.KahinaGraph;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.visual.graph.KahinaGraphView;
+import org.kahina.core.visual.graph.KahinaGraphViewOptions;
 import org.kahina.core.visual.graph.SpringLayouter;
 
 public class KahinaGraphTest
@@ -24,6 +25,7 @@ public class KahinaGraphTest
         KahinaGraph graph = KahinaGraph.importTGF("/home/dellert/workspace/Kahina/src/org/kahina/core/test/test-graph.tgf");
         final KahinaGraphView view = new KahinaGraphView(kahina, new SpringLayouter());
         view.getConfig().setZoomLevel(5);
+        view.getConfig().setEdgeInterpretation(KahinaGraphViewOptions.EDGE_INTERPRETATION_DIRECTED);
         view.display(graph);  
         
         SwingUtilities.invokeLater(new Runnable() 
