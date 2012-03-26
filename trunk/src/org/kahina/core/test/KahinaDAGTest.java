@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -12,7 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
-import org.kahina.core.gui.windows.KahinaDefaultWindow;
 import org.kahina.core.visual.dag.KahinaDAGView;
 import org.kahina.core.visual.dag.LayeredLayouter;
 import org.kahina.tulipa.TulipaInstance;
@@ -34,7 +34,7 @@ public class KahinaDAGTest
             
             TulipaInstance kahina = new TulipaInstance();
             
-            KahinaDAGView v = new KahinaDAGView(kahina, new LayeredLayouter());
+            final KahinaDAGView v = new KahinaDAGView(kahina, new LayeredLayouter());
             v.setTitle("Kahina DAGView Demo");
             v.getConfig().setVerticalDistance(5);
             v.getConfig().setHorizontalDistance(30);
@@ -48,10 +48,18 @@ public class KahinaDAGTest
             kahina.getGuiControl().registerListener(KahinaEventTypes.UPDATE, v);
             kahina.getGuiControl().registerListener(KahinaEventTypes.REDRAW, v);
             
-            KahinaDefaultWindow w = new KahinaDefaultWindow(v, null, kahina);
-            w.setSize(510, 720);
-            w.setVisible(true);
-            w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            SwingUtilities.invokeLater(new Runnable() 
+            {
+                public void run() 
+                {
+                    JFrame w = new JFrame("KahinaGraphView Demo");
+                    w.setSize(510, 720);
+                    w.setLayout(null);
+                    w.add(v.makePanel());
+                    w.setVisible(true);
+                    w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
+                }
+            });
         }
         catch (ParserConfigurationException e)
         {
