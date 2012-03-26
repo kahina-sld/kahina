@@ -35,7 +35,7 @@ public class QTypeGUI extends SICStusPrologGUI
 		{
 			displayMainViews();
 			//TODO: load last perspective instead of only default perspective from XML
-			InputStream xmlStream = new BufferedInputStream(QTypeGUI.class.getResourceAsStream("kahinaqtype-integrated.xml"));
+			InputStream xmlStream = new BufferedInputStream(QTypeGUI.class.getResourceAsStream("kahinaqtype-integrated2.xml"));
 			windowManager.createWindows(KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement()));	
 		}
 		catch (NullPointerException e)
