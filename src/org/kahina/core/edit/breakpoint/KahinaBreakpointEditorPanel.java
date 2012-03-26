@@ -25,7 +25,6 @@ import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaBreakpointEditorPanel extends KahinaViewPanel<KahinaBreakpointEditor> implements ActionListener
 {
-
     /**
      * 
      */

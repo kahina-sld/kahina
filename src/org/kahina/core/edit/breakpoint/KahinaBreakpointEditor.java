@@ -8,7 +8,6 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaBreakpointEditor extends KahinaView<KahinaBreakpoint>
 {
-
     public KahinaBreakpointEditor(KahinaInstance<?, ?, ?> kahina)
     {
         super(kahina);
