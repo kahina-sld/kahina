@@ -1,6 +1,7 @@
 package org.kahina.core.data.dag;
 
 import java.util.List;
+import java.util.Set;
 
 import org.kahina.core.data.KahinaObject;
 
@@ -10,11 +11,6 @@ public abstract class KahinaDAG extends KahinaObject
 	 * 
 	 */
 	private static final long serialVersionUID = 4477263548864006864L;
-	/**
-     * Public just to be lightweight. Do not be tempted to directly access
-     * this field.
-     */
-    public int rootID;
     
     public KahinaDAG()
     {
@@ -72,15 +68,7 @@ public abstract class KahinaDAG extends KahinaObject
     
     public abstract Iterable<Integer> getEdgeIDIterator();
     
-    public int getRootID()
-    {
-        return rootID;
-    }
-
-    public void setRootID(int rootID)
-    {
-        this.rootID = rootID;
-    }
+    public abstract Set<Integer> getRoots();
     
     public void toggleCollapse(int nodeID)
     {

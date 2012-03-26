@@ -1,17 +1,20 @@
 package org.kahina.core.visual.dag;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Stroke;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.dag.KahinaDAG;
 import org.kahina.core.data.dag.KahinaMemDAG;
+import org.kahina.core.gui.KahinaProgressBar;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.KahinaView;
 
@@ -27,7 +30,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     public static final int NO_ANTIALIASING = 1;
     
     //display coordinates for nodes
-    private HashMap<Integer, Integer> nodeX;
+    HashMap<Integer, Integer> nodeX;
     private HashMap<Integer, Integer> nodeY;
     
     private HashMap<Integer, Integer> nodeWidths;
@@ -222,14 +225,22 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     }
 
     @Override
-	public JComponent makePanel()
+    public JComponent makePanel()
     {
+        KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaDAGViewPanel panel = new KahinaDAGViewPanel(kahina);
+        panel.setProgressBar(progressBar);
+        panel.setPreferredSize(new Dimension(200,300));
         kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
-        JScrollPane scrollPane = new JScrollPane(panel);
+        JPanel scrollPaneAndProgressBar = new JPanel();
+        JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setBackground(config.getBackgroundColor());
-        return scrollPane;
+        scrollPane.setViewportView(panel);
+        scrollPaneAndProgressBar.add(scrollPane);
+        scrollPaneAndProgressBar.add(progressBar);
+        //return scrollPaneAndProgressBar;
+        return panel;
     }
     
 	protected void processEvent(KahinaUpdateEvent e)

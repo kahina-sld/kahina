@@ -71,11 +71,13 @@ public class LayeredLayouter extends KahinaDAGLayouter
         
         //do a specialized variant of topological sort on nodes
         HashMap<Integer, Integer> levelForNode = new HashMap<Integer, Integer>();
-        int rootID = view.getModel().getRootID();
-        levelForNode.put(rootID, 0);
         LinkedList<Integer> nodeLevelAgenda = new LinkedList<Integer>();
-        nodeLevelAgenda.add(rootID);
-        allNodes.add(rootID);
+        for (int rootID : view.getModel().getRoots())
+        {
+            levelForNode.put(rootID, 0);
+            nodeLevelAgenda.add(rootID);
+            allNodes.add(rootID);
+        }
         while (nodeLevelAgenda.size() > 0)
         {
             int nodeID = nodeLevelAgenda.remove(0);
@@ -205,7 +207,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
         
         int zoomLevel = view.getConfig().getZoomLevel();
 
-        if (view.getModel().getRootID() != -1)
+        if (view.getModel().getRoots().size() > 0)
         {
             if (VERBOSE) System.err.println("BEGIN: Calculate subtree widths");
             // calculate (maximum) subtree width for each node bottom-up
@@ -227,7 +229,10 @@ public class LayeredLayouter extends KahinaDAGLayouter
             }
             if (VERBOSE) System.err.println("COMPLETE: Calculate subtree widths");
             if (VERBOSE) System.err.println("maxNodeWidth = " + maxNodeWidth);
-            xCoord.put(view.getModel().getRootID(), subtreeWidths.get(view.getModel().getRootID()).maximumLeftDistance() + view.getConfig().getHorizontalDistance() * zoomLevel);
+            for (int rootID : view.getModel().getRoots())
+            {
+                xCoord.put(rootID, subtreeWidths.get(rootID).maximumLeftDistance() + view.getConfig().getHorizontalDistance() * zoomLevel);
+            }
             for (int i = 0; i < nodeLevels.size(); i++)
             {
                 if (VERBOSE) System.err.println("Node level: " + i);
