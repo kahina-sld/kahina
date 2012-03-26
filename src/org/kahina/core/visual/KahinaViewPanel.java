@@ -1,5 +1,6 @@
 package org.kahina.core.visual;
 
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -16,6 +17,9 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 	private static final boolean VERBOSE = false;
 
 	public T view;
+	
+    KahinaProgressBar progressBar;
+    JComponent progressBarParent;
 
 	public void processEvent(KahinaEvent event)
 	{
@@ -69,4 +73,35 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 	 * This method must be called from the Swing event dispatch thread.
 	 */
 	public abstract void updateDisplay();
+	
+    public void showProgressBar()
+    {
+        if (progressBarParent != null)
+        {
+            progressBarParent.add(progressBar);
+            progressBarParent.revalidate();
+        }
+    }
+    
+    public void hideProgressBar()
+    {
+        if (progressBarParent != null)
+        {
+            progressBarParent.remove(progressBar);
+            progressBarParent.revalidate();
+        }
+    }
+
+    public void setProgressBar(KahinaProgressBar progressBar)
+    {
+        if (progressBar != null)
+        {
+            this.progressBar = progressBar;  
+            this.progressBarParent = (JComponent) progressBar.getParent();
+            if (progressBarParent != null)
+            {
+                progressBarParent.remove(progressBar);
+            }
+        }
+    }
 }

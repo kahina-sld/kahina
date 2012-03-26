@@ -108,7 +108,7 @@ private static final long serialVersionUID = 6701252380309408342L;
     public void printDAGNodes(Graphics2D cnv)
     {
         //TODO: make this dependent on current scrolling window, ONLY draw nodes there (redraw happens anyway!)
-        for (int node : view.getModel().getNodeIDIterator())
+        for (int node : view.nodeX.keySet()) //view.getModel().getNodeIDIterator())
         {
             printDAGNode(cnv, node);               
         }

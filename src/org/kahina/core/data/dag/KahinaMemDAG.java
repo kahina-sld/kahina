@@ -18,6 +18,9 @@ public class KahinaMemDAG extends KahinaDAG
 	 * 
 	 */
 	private static final long serialVersionUID = -7505557494606184493L;
+	
+	protected Set<Integer> roots;
+	
 	//encode properties of individual nodes
     protected Map<Integer, List<Integer>> incomingEdges;
     protected Map<Integer, List<Integer>> outgoingEdges;
@@ -38,6 +41,8 @@ public class KahinaMemDAG extends KahinaDAG
     {        
         super();
         
+        roots = new HashSet<Integer>();
+        
         incomingEdges = new HashMap<Integer, List<Integer>>();
         outgoingEdges = new HashMap<Integer, List<Integer>>();
         nodeCaptions = new HashMap<Integer, String>();
@@ -52,6 +57,7 @@ public class KahinaMemDAG extends KahinaDAG
     @Override
     public void addEdge(int edgeID, int start, int end, String label)
     {
+        if (roots.contains(end)) roots.remove(end);
         edgeLabels.put(edgeID, label);
         startNodes.put(edgeID,start);
         endNodes.put(edgeID,end);
@@ -63,6 +69,7 @@ public class KahinaMemDAG extends KahinaDAG
     @Override
     public int addEdge(int start, int end, String label)
     {
+        if (roots.contains(end)) roots.remove(end);
         int edgeID = getNextFreeEdgeID();
         edgeLabels.put(edgeID, label);
         startNodes.put(edgeID, start);
@@ -76,6 +83,7 @@ public class KahinaMemDAG extends KahinaDAG
     @Override
     public void addNode(int id, String caption, int nodeStatus)
     {
+        roots.add(id);
         setNodeCaption(id, caption);
         setNodeStatus(id, nodeStatus);
         nextNodeID = Math.max(id + 1, nextNodeID);
@@ -85,6 +93,7 @@ public class KahinaMemDAG extends KahinaDAG
     public int addNode(String caption, int nodeStatus)
     {
         int nodeID = getNextFreeNodeID();
+        roots.add(nodeID);
         nodeCaptions.put(nodeID, caption);
         status.put(nodeID,nodeStatus);
         return nodeID;
@@ -294,8 +303,6 @@ public class KahinaMemDAG extends KahinaDAG
     public static KahinaDAG importXML(Document dom)
     {
         KahinaMemDAG m = new KahinaMemDAG();
-        // TODO: a little risky, root node could be assigned another ID (or be empty)
-        m.setRootID(0);
         Element treeElement = dom.getDocumentElement();
         NodeList childNodes = treeElement.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++)
@@ -324,6 +331,7 @@ public class KahinaMemDAG extends KahinaDAG
         {
             nodeID = m.getNextFreeNodeID();
         }
+        m.roots.add(nodeID);
         m.nodeCaptions.put(nodeID, node.getAttribute("caption"));
         if (node.getAttribute("status").length() > 0)
         {
@@ -398,5 +406,11 @@ public class KahinaMemDAG extends KahinaDAG
     public Iterable<Integer> getNodeIDIterator()
     {
         return nodeCaptions.keySet();
+    }
+
+    @Override
+    public Set<Integer> getRoots()
+    {
+        return roots;
     }
 }
