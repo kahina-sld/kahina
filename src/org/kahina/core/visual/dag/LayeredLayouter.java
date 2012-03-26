@@ -31,9 +31,9 @@ public class LayeredLayouter extends KahinaDAGLayouter
     //private variables for internal calculations across functions
     private int totalTreeHeight;
     private int totalTreeWidth;
-    private Map<Integer, WidthVector> subtreeWidths;
+    //private Map<Integer, WidthVector> subtreeWidths;
     private Map<Integer, Integer> drawingParents;
-    private int maxNodeWidth;
+    //private int maxNodeWidth;
     
     // hack to allow precalculations from outside any drawing method
     private Graphics2D g;
@@ -57,10 +57,8 @@ public class LayeredLayouter extends KahinaDAGLayouter
         
         nodeHeights = new HashMap<Integer, Integer>();
         
-        subtreeWidths = new HashMap<Integer, WidthVector>();
+        //subtreeWidths = new HashMap<Integer, WidthVector>();
         drawingParents = new HashMap<Integer, Integer>();
-        
-        maxNodeWidth = -1;
         
         refreshCoordinates();
     }
@@ -68,6 +66,9 @@ public class LayeredLayouter extends KahinaDAGLayouter
     private void createNodeLayers()
     {
         if (VERBOSE) System.err.println("BEGIN: Create node layers");
+        
+        nodeLevels.clear();
+        allNodes.clear();
         
         //do a specialized variant of topological sort on nodes
         HashMap<Integer, Integer> levelForNode = new HashMap<Integer, Integer>();
@@ -149,7 +150,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
         if (VERBOSE) System.err.println("Levels:\n" + showLevels());
     }
     
-    private WidthVector constructWidthVector(int node)
+    /*private WidthVector constructWidthVector(int node)
     {
         if (VERBOSE) System.err.println("--------------------------------------------");
         if (VERBOSE) System.err.println("Width vector computation for node " + node);
@@ -179,7 +180,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
         if (VERBOSE) System.err.println("Width vector for node " + node + ": " + sum.toString());
         if (VERBOSE) System.err.println("--------------------------------------------");
         return sum;
-    }
+    }*/
 
     public int getDisplayWidth()
     {
@@ -199,13 +200,108 @@ public class LayeredLayouter extends KahinaDAGLayouter
         FontMetrics fm = getFontMetrics(new Font(Font.SANS_SERIF, Font.PLAIN, view.getConfig().getNodeSize()), new BasicStroke(1), view.getConfig().getNodeSize());
 
         createNodeLayers();
-        // System.err.println(showLevels());
-        // System.err.println(terminalLayer);
-
-        totalTreeWidth = 50;
-        totalTreeHeight = (nodeLevels.size() + 2) * view.getConfig().getVerticalDistance() * view.getConfig().getNodeSize() + 10;
         
+        xCoord.clear();
+        yCoord.clear();
+
         int zoomLevel = view.getConfig().getZoomLevel();
+        int horiDistance = view.getConfig().getHorizontalDistance();
+        int vertDistance = view.getConfig().getVerticalDistance();
+        int nodeSize = view.getConfig().getNodeSize();
+        int numLayers = nodeLevels.size();
+        if (numLayers > 0)
+        {
+            int maxLayer = determineMaximumLayer();
+            int maxLayerSize = nodeLevels.get(maxLayer).size();
+
+            totalTreeWidth = (maxLayerSize + 2) * horiDistance * zoomLevel;
+            totalTreeHeight = (numLayers + 2) * vertDistance * zoomLevel + 10;
+            
+            //arrange nodes on widest layer at regular intervals
+            int offset = horiDistance * zoomLevel;
+            for (int node : nodeLevels.get(maxLayer))
+            {
+                Dimension nodeDimension = computeNodeDimension(fm, node);
+                nodeWidths.put(node, nodeDimension.width);
+                nodeHeights.put(node, nodeDimension.height);
+                
+                xCoord.put(node, offset);
+                yCoord.put(node, maxLayer * vertDistance * zoomLevel + 10);
+                offset += horiDistance * zoomLevel;
+            }
+            
+            //move upward, place nodes according to positions of already determined descendents
+            for (int layer = maxLayer - 1; layer >= 0; layer--)
+            {
+                for (int node : nodeLevels.get(layer))
+                {
+                    Dimension nodeDimension = computeNodeDimension(fm, node);
+                    nodeWidths.put(node, nodeDimension.width);
+                    nodeHeights.put(node, nodeDimension.height);
+                    
+                    int averageX = 0; 
+                    int numComputedChildren = 0;
+                    for (int child : view.getModel().getOutgoingEdges(node))
+                    {
+                        Integer childX = xCoord.get(child);
+                        if (childX != null)
+                        {
+                            averageX += childX;
+                            numComputedChildren++;
+                        }
+                    }
+                    if (numComputedChildren > 0)
+                    {
+                        averageX /= numComputedChildren;
+                    }
+                    else
+                    {
+                        averageX = totalTreeWidth / 2;
+                    }
+                    xCoord.put(node, averageX);
+                    yCoord.put(node, layer * vertDistance * zoomLevel + 10);
+                }
+                //TODO: shove nodes around to avoid scrambling the ordering
+            }
+            
+            //move downward, place nodes according to positions of already determined ancestors
+            for (int layer = maxLayer + 1; layer < numLayers; layer++)
+            {
+                for (int node : nodeLevels.get(layer))
+                {
+                    Dimension nodeDimension = computeNodeDimension(fm, node);
+                    nodeWidths.put(node, nodeDimension.width);
+                    nodeHeights.put(node, nodeDimension.height);
+                    
+                    int averageX = 0; 
+                    int numComputedParents = 0;
+                    for (int parent : view.getModel().getIncomingEdges(node))
+                    {
+                        Integer parentX = xCoord.get(parent);
+                        if (parentX != null)
+                        {
+                            averageX += parentX;
+                            numComputedParents++;
+                        }
+                    }
+                    if (numComputedParents > 0)
+                    {
+                        averageX /= numComputedParents;
+                    }
+                    else
+                    {
+                        averageX = totalTreeWidth / 2;
+                    }
+                    xCoord.put(node, averageX);
+                    yCoord.put(node, layer * vertDistance * zoomLevel + 10);
+                }
+                //TODO: shove nodes around to avoid scrambling the ordering
+            }
+
+        }
+        
+        /*if (VERBOSE)
+            System.err.println("COMPLETE: Calculate coordinates");
 
         if (view.getModel().getRoots().size() > 0)
         {
@@ -279,9 +375,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
                     }
                 }
             }
-        }
-        if (VERBOSE)
-            System.err.println("COMPLETE: Calculate coordinates");
+        }*/
         
     }
     
@@ -293,6 +387,22 @@ public class LayeredLayouter extends KahinaDAGLayouter
             levelString += nodeLevel + "\n";
         }
         return levelString;
+    }
+    
+    private int determineMaximumLayer()
+    {
+        int maxLayer = 0;
+        int maxLayerSize = 0;
+        for (int i = 0; i < nodeLevels.size(); i++)
+        {
+            int size = nodeLevels.get(i).size();
+            if (size > maxLayerSize)
+            {
+               maxLayerSize = size;
+               maxLayer = i;
+            }
+        }
+        return maxLayer;
     }
 
     //  TODO: make this work also with bottom-up display orientation
