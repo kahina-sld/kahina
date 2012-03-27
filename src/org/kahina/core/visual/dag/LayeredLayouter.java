@@ -217,165 +217,142 @@ public class LayeredLayouter extends KahinaDAGLayouter
             totalTreeWidth = (maxLayerSize + 2) * horiDistance * zoomLevel;
             totalTreeHeight = (numLayers + 2) * vertDistance * zoomLevel + 10;
             
-            //arrange nodes on widest layer at regular intervals
-            int offset = horiDistance * zoomLevel;
-            for (int node : nodeLevels.get(maxLayer))
+            //initial placement on all layers: centered, at regular intervals
+            for (int layerID = 0; layerID < numLayers; layerID++)
             {
-                Dimension nodeDimension = computeNodeDimension(fm, node);
-                nodeWidths.put(node, nodeDimension.width);
-                nodeHeights.put(node, nodeDimension.height);
+                List<Integer> layer = nodeLevels.get(layerID);
+                int offset = (int) (horiDistance * zoomLevel * (1 + (maxLayerSize - layer.size()) / 2.0));
+                for (int node : layer)
+                {
+                    Dimension nodeDimension = computeNodeDimension(fm, node);
+                    nodeWidths.put(node, nodeDimension.width);
+                    nodeHeights.put(node, nodeDimension.height);
+                    
+                    xCoord.put(node, offset);
+                    yCoord.put(node, layerID * vertDistance * zoomLevel + 10);
+                    offset += horiDistance * zoomLevel;
+                }
                 
-                xCoord.put(node, offset);
-                yCoord.put(node, maxLayer * vertDistance * zoomLevel + 10);
-                offset += horiDistance * zoomLevel;
             }
             
-            //move upward, place nodes according to positions of already determined descendents
-            for (int layer = maxLayer - 1; layer >= 0; layer--)
+            //move downward, rearrange nodes according to positions of already determined ancestors
+            for (int layerID = maxLayer + 1; layerID < numLayers; layerID++)
             {
-                for (int node : nodeLevels.get(layer))
+                List<Integer> layer = nodeLevels.get(layerID);
+                //move all nodes as far left as they want (but never beyond their left neighbor)
+                for (int i = 0; i < layer.size(); i++)
                 {
+                    int node = layer.get(i);
                     Dimension nodeDimension = computeNodeDimension(fm, node);
                     nodeWidths.put(node, nodeDimension.width);
                     nodeHeights.put(node, nodeDimension.height);
                     
-                    int averageX = 0; 
-                    int numComputedChildren = 0;
-                    for (int child : view.getModel().getOutgoingEdges(node))
+                    int optimalX = computeAncestorOptimalXPos(node);
+                    
+                    if (optimalX < xCoord.get(node))
                     {
-                        Integer childX = xCoord.get(child);
-                        if (childX != null)
+                        if (i == 0)
                         {
-                            averageX += childX;
-                            numComputedChildren++;
+                            xCoord.put(node, optimalX);
+                        }
+                        else
+                        {
+                            int neighborX = xCoord.get(layer.get(i-1));
+                            if (neighborX > optimalX - horiDistance * zoomLevel)
+                            {
+                                xCoord.put(node, neighborX + horiDistance * zoomLevel);
+                            }
                         }
                     }
-                    if (numComputedChildren > 0)
-                    {
-                        averageX /= numComputedChildren;
-                    }
-                    else
-                    {
-                        averageX = totalTreeWidth / 2;
-                    }
-                    xCoord.put(node, averageX);
-                    yCoord.put(node, layer * vertDistance * zoomLevel + 10);
                 }
-                //TODO: shove nodes around to avoid scrambling the ordering
-            }
-            
-            //move downward, place nodes according to positions of already determined ancestors
-            for (int layer = maxLayer + 1; layer < numLayers; layer++)
-            {
-                for (int node : nodeLevels.get(layer))
+                //move all nodes as far right as they want (but never beyond their right neighbor)
+                for (int i = layer.size() - 1; i >= 0; i--)
                 {
+                    int node = layer.get(i);
                     Dimension nodeDimension = computeNodeDimension(fm, node);
                     nodeWidths.put(node, nodeDimension.width);
                     nodeHeights.put(node, nodeDimension.height);
                     
-                    int averageX = 0; 
-                    int numComputedParents = 0;
-                    for (int parent : view.getModel().getIncomingEdges(node))
+                    int optimalX = computeAncestorOptimalXPos(node);
+                    
+                    if (optimalX > xCoord.get(node))
                     {
-                        Integer parentX = xCoord.get(parent);
-                        if (parentX != null)
+                        if (i == layer.size() - 1)
                         {
-                            averageX += parentX;
-                            numComputedParents++;
+                            xCoord.put(node, optimalX);
+                        }
+                        else
+                        {
+                            int neighborX = xCoord.get(layer.get(i+1));
+                            if (neighborX < optimalX + horiDistance * zoomLevel)
+                            {
+                                xCoord.put(node, neighborX - horiDistance * zoomLevel);
+                            }
                         }
                     }
-                    if (numComputedParents > 0)
-                    {
-                        averageX /= numComputedParents;
-                    }
-                    else
-                    {
-                        averageX = totalTreeWidth / 2;
-                    }
-                    xCoord.put(node, averageX);
-                    yCoord.put(node, layer * vertDistance * zoomLevel + 10);
                 }
-                //TODO: shove nodes around to avoid scrambling the ordering
+            }
+            
+            
+            //move upward, rearrange nodes according to positions of already determined descendants
+            for (int layerID = maxLayer - 1; layerID >= 0; layerID--)
+            {
+                List<Integer> layer = nodeLevels.get(layerID);
+                //move all nodes as far left as they want (but never beyond their left neighbor)
+                for (int i = 0; i < layer.size(); i++)
+                {
+                    int node = layer.get(i);
+                    Dimension nodeDimension = computeNodeDimension(fm, node);
+                    nodeWidths.put(node, nodeDimension.width);
+                    nodeHeights.put(node, nodeDimension.height);
+                    
+                    int optimalX = computeDescendantOptimalXPos(node);
+                    
+                    if (optimalX < xCoord.get(node))
+                    {
+                        if (i == 0)
+                        {
+                            xCoord.put(node, optimalX);
+                        }
+                        else
+                        {
+                            int neighborX = xCoord.get(layer.get(i-1));
+                            if (neighborX > optimalX - horiDistance * zoomLevel)
+                            {
+                                xCoord.put(node, neighborX + horiDistance * zoomLevel);
+                            }
+                        }
+                    }
+                }
+                //move all nodes as far right as they want (but never beyond their right neighbor)
+                for (int i = layer.size() - 1; i >= 0; i--)
+                {
+                    int node = layer.get(i);
+                    Dimension nodeDimension = computeNodeDimension(fm, node);
+                    nodeWidths.put(node, nodeDimension.width);
+                    nodeHeights.put(node, nodeDimension.height);
+                    
+                    int optimalX = computeDescendantOptimalXPos(node);
+                    
+                    if (optimalX > xCoord.get(node))
+                    {
+                        if (i == layer.size() - 1)
+                        {
+                            xCoord.put(node, optimalX);
+                        }
+                        else
+                        {
+                            int neighborX = xCoord.get(layer.get(i+1));
+                            if (neighborX < optimalX + horiDistance * zoomLevel)
+                            {
+                                xCoord.put(node, neighborX - horiDistance * zoomLevel);
+                            }
+                        }
+                    }
+                }
             }
 
         }
-        
-        /*if (VERBOSE)
-            System.err.println("COMPLETE: Calculate coordinates");
-
-        if (view.getModel().getRoots().size() > 0)
-        {
-            if (VERBOSE) System.err.println("BEGIN: Calculate subtree widths");
-            // calculate (maximum) subtree width for each node bottom-up
-            for (int i = nodeLevels.size() - 1; i >= 0; i--)
-            {
-                if (VERBOSE) System.err.println("Node level: " + i);
-                for (int node : nodeLevels.get(i))
-                {
-                    Dimension nodeDimension = computeNodeDimension(fm, node);
-                    nodeWidths.put(node, nodeDimension.width);
-                    nodeHeights.put(node, nodeDimension.height);
-                    // System.err.println("labelWidth(" +
-                    // getContentfulTreeModel().getNodeCaption(node) + ") = " +
-                    // nodeLabelWidth);
-                    if (maxNodeWidth < nodeDimension.width) maxNodeWidth = nodeDimension.width;               
-                    subtreeWidths.put(node, constructWidthVector(node));
-                    //if (verbose)  System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
-                }
-            }
-            if (VERBOSE) System.err.println("COMPLETE: Calculate subtree widths");
-            if (VERBOSE) System.err.println("maxNodeWidth = " + maxNodeWidth);
-            for (int rootID : view.getModel().getRoots())
-            {
-                xCoord.put(rootID, subtreeWidths.get(rootID).maximumLeftDistance() + view.getConfig().getHorizontalDistance() * zoomLevel);
-            }
-            for (int i = 0; i < nodeLevels.size(); i++)
-            {
-                if (VERBOSE) System.err.println("Node level: " + i);
-                List<Integer> nodes = nodeLevels.get(i);
-                int xOffset = 0;
-                if (nodes.size() > 0) xOffset = subtreeWidths.get(nodes.get(0)).maximumLeftDistance() + view.getConfig().getHorizontalDistance() * zoomLevel;
-                int parent = -1;
-                WidthVector subtreeWidth = new WidthVector();
-                WidthVector lastSubtreeWidth;
-                for (int node : nodes)
-                {
-                    if (VERBOSE) System.err.print("  Node:" + node);
-                    lastSubtreeWidth = subtreeWidth;
-                    subtreeWidth = subtreeWidths.get(node);
-                    xOffset += WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth); //+ horizontalDistance * fontSize;
-                    // switch to children of next parent node --> jump in x offset
-                    int newParent = drawingParents.get(node);
-                    if (VERBOSE) System.err.print(" VisParent:" + newParent);
-                    if (i > 0 && newParent != parent)
-                    {
-                        parent = newParent;
-                        if (VERBOSE) System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
-                        // old variant of xOffset computation
-                        // xOffset = (int)((nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) * 0.5 - 0.5) * horizontalDistance * fontSize));
-                        xOffset = xCoord.get(parent)  + nodeWidths.get(parent) / 2 - subtreeWidths.get(parent).getStart(1) + view.getConfig().getHorizontalDistance() * zoomLevel / 2;
-                    }
-                    if (i > 0)
-                    {
-                        xCoord.put(node, xOffset);
-                    }
-                    yCoord.put(node, view.getConfig().getVerticalDistance() * zoomLevel * i + zoomLevel * 3);
-                    if (VERBOSE) System.err.println(" X:" + xCoord.get(node) + " Y:" + yCoord.get(node));
-                }
-                // adapt total tree width to maximum level width (i.e. maximum x
-                // position of a node in any level)
-                if (nodes.size() > 0)
-                {
-                    int nodeLevelWidth = xCoord.get(nodes.get(nodes.size() - 1)) 
-                                       + nodeWidths.get(nodes.get(nodes.size() - 1)) 
-                                       + view.getConfig().getHorizontalDistance() * view.getConfig().getNodeSize();
-                    if (nodeLevelWidth > totalTreeWidth)
-                    {
-                        totalTreeWidth = nodeLevelWidth;
-                    }
-                }
-            }
-        }*/
         
     }
     
@@ -403,6 +380,56 @@ public class LayeredLayouter extends KahinaDAGLayouter
             }
         }
         return maxLayer;
+    }
+    
+    private int computeAncestorOptimalXPos(int nodeID)
+    {
+        int averageX = 0; 
+        int numComputedParents = 0;
+        for (int edge : view.getModel().getIncomingEdges(nodeID))
+        {
+            int parent = view.getModel().getStartNode(edge);
+            Integer parentX = xCoord.get(parent);
+            if (parentX != null)
+            {
+                averageX += parentX;
+                numComputedParents++;
+            }
+        }
+        if (numComputedParents > 0)
+        {
+            averageX /= numComputedParents;
+        }
+        else
+        {
+            averageX = totalTreeWidth / 2;
+        }
+        return averageX;
+    }
+    
+    private int computeDescendantOptimalXPos(int nodeID)
+    {
+        int averageX = 0; 
+        int numComputedChildren = 0;
+        for (int edge : view.getModel().getOutgoingEdges(nodeID))
+        {
+            int child = view.getModel().getEndNode(edge);
+            Integer childX = xCoord.get(child);
+            if (childX != null)
+            {
+                averageX += childX;
+                numComputedChildren++;
+            }
+        }
+        if (numComputedChildren > 0)
+        {
+            averageX /= numComputedChildren;
+        }
+        else
+        {
+            averageX = totalTreeWidth / 2;
+        }
+        return averageX;
     }
 
     //  TODO: make this work also with bottom-up display orientation

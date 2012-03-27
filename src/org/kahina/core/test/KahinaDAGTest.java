@@ -37,7 +37,7 @@ public class KahinaDAGTest
             final KahinaDAGView v = new KahinaDAGView(kahina, new LayeredLayouter());
             v.setTitle("Kahina DAGView Demo");
             v.getConfig().setVerticalDistance(5);
-            v.getConfig().setHorizontalDistance(30);
+            v.getConfig().setHorizontalDistance(3);
             v.display(dag);
             v.setStatusColorEncoding(0,new Color(255,255,255));
             v.setStatusColorEncoding(1,new Color(255,0,0));

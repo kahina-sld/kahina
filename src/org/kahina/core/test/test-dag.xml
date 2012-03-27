@@ -47,6 +47,12 @@
   <edge id="20" start="2" end="20"/>
   <edge id="21" start="2" end="22"/>
   <edge id="22" start="2" end="24"/>
+  <edge id="64" start="2" end="26"/>
+  <edge id="65" start="2" end="28"/>
+  <edge id="66" start="2" end="30"/>
+  <edge id="67" start="2" end="32"/>
+  <edge id="68" start="2" end="34"/>
+  <edge id="69" start="2" end="36"/>
   <edge id="1" start="3" end="6"/>
   <edge id="2" start="3" end="9"/>
   <edge id="3" start="3" end="12"/>
