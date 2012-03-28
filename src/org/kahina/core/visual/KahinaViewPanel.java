@@ -98,10 +98,7 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
         {
             this.progressBar = progressBar;  
             this.progressBarParent = (JComponent) progressBar.getParent();
-            if (progressBarParent != null)
-            {
-                progressBarParent.remove(progressBar);
-            }
+            hideProgressBar();
         }
     }
 }

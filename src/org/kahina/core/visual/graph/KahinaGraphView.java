@@ -464,9 +464,9 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setBackground(config.getBackgroundColor());
         scrollPane.setViewportView(panel);
+        scrollPaneAndProgressBar.setLayout(new BoxLayout(scrollPaneAndProgressBar, BoxLayout.Y_AXIS));
         scrollPaneAndProgressBar.add(scrollPane);
         scrollPaneAndProgressBar.add(progressBar);
-        //return scrollPaneAndProgressBar;
-        return panel;
+        return scrollPaneAndProgressBar;
     }
 }
