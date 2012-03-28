@@ -20,6 +20,7 @@ public abstract class KahinaTask implements Runnable
     
     protected void setProgressAndStatus(double progress, String status)
     {
+        //System.err.println("setProgressAndStatus(" + progress + "," + status + ")");
         if (progressBar != null)
         {
             progressBar.tellTaskProgress((int) (100 * progress), status);

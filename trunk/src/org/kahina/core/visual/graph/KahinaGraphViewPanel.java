@@ -27,8 +27,6 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     private static final long serialVersionUID = -3000401362714094415L;
     
     BufferedImage image;
-    KahinaProgressBar progressBar;
-    JComponent progressBarParent;
     
     KahinaGraphViewTaskManager taskManager;
     

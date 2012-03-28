@@ -18,7 +18,7 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 
 	public T view;
 	
-    KahinaProgressBar progressBar;
+    protected KahinaProgressBar progressBar;
     JComponent progressBarParent;
 
 	public void processEvent(KahinaEvent event)

@@ -29,6 +29,7 @@ public class KahinaProgressBar extends JPanel implements ActionListener
 
     public void tellTaskProgress(int percentage, String statusMessage)
     {
+        //System.err.println("tellTaskProgress(" + percentage + "stringMessage");
         if (percentage < 0)
         {
             System.err.println("WARNING: KahinaProgressBar was told to display " + percentage + " %, displaying 0 % instead.");
