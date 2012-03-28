@@ -456,7 +456,6 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     {
         KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaGraphViewPanel panel = new KahinaGraphViewPanel(kahina);
-        panel.setProgressBar(progressBar);
         panel.setPreferredSize(new Dimension(200,300));
         kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
@@ -467,6 +466,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
         scrollPaneAndProgressBar.setLayout(new BoxLayout(scrollPaneAndProgressBar, BoxLayout.Y_AXIS));
         scrollPaneAndProgressBar.add(scrollPane);
         scrollPaneAndProgressBar.add(progressBar);
+        panel.setProgressBar(progressBar);
         return scrollPaneAndProgressBar;
     }
 }
