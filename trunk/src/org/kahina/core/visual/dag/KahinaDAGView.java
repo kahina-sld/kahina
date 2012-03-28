@@ -7,6 +7,7 @@ import java.awt.Stroke;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -237,10 +238,10 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.getViewport().setBackground(config.getBackgroundColor());
         scrollPane.setViewportView(panel);
+        scrollPaneAndProgressBar.setLayout(new BoxLayout(scrollPaneAndProgressBar, BoxLayout.Y_AXIS));
         scrollPaneAndProgressBar.add(scrollPane);
         scrollPaneAndProgressBar.add(progressBar);
-        //return scrollPaneAndProgressBar;
-        return panel;
+        return scrollPaneAndProgressBar;
     }
     
 	protected void processEvent(KahinaUpdateEvent e)

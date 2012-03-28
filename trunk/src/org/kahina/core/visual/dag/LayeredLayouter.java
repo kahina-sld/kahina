@@ -19,7 +19,7 @@ import org.kahina.core.visual.tree.WidthVector;
 
 public class LayeredLayouter extends KahinaDAGLayouter
 {
-    public static boolean VERBOSE = true;
+    public static boolean VERBOSE = false;
     
     // layered structure for drawing; also used for reverse indexing
     ArrayList<List<Integer>> nodeLevels;
@@ -150,37 +150,6 @@ public class LayeredLayouter extends KahinaDAGLayouter
         if (VERBOSE) System.err.println("Levels:\n" + showLevels());
     }
     
-    /*private WidthVector constructWidthVector(int node)
-    {
-        if (VERBOSE) System.err.println("--------------------------------------------");
-        if (VERBOSE) System.err.println("Width vector computation for node " + node);
-        List<Integer> children = view.getModel().getVisibleChildren(node);
-        if (VERBOSE) System.err.println(" Candidate children: " + children);
-        for (int i = 0; i < children.size(); i++)
-        {
-            if (VERBOSE) System.err.println(" Child: " + children.get(i) + " Drawing Parent: " + drawingParents.get(children.get(i)));
-            if (drawingParents.get(children.get(i)) != node)
-            {
-                children.remove(i);
-                i--;
-            }
-        }
-        int nodeWidth = nodeWidths.get(node) + view.getConfig().getHorizontalDistance() * view.getConfig().getZoomLevel();
-        WidthVector sum = new WidthVector(nodeWidth / 2, nodeWidth / 2);
-        if (children.size() > 0)
-        {
-            sum = subtreeWidths.get(children.get(0)).copy();
-            for (int i = 1; i < children.size(); i++)
-            {
-                sum = WidthVector.adjoin(sum, subtreeWidths.get(children.get(i)));
-            }
-            sum.start.add(0, nodeWidth / 2);
-            sum.end.add(0, nodeWidth / 2);
-        }
-        if (VERBOSE) System.err.println("Width vector for node " + node + ": " + sum.toString());
-        if (VERBOSE) System.err.println("--------------------------------------------");
-        return sum;
-    }*/
 
     public int getDisplayWidth()
     {
