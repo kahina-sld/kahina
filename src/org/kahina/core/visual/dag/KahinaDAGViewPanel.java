@@ -226,7 +226,7 @@ private static final long serialVersionUID = 6701252380309408342L;
     {
         FontMetrics fm = canvas.getFontMetrics();
         String tag = view.getModel().getNodeCaption(nodeID);
-        tag += nodeID;
+        //tag += nodeID;
         String[] stringParts = tag.split("\\\\n");   
         canvas.setColor(Color.BLACK);
         int x = view.getNodeX(nodeID);

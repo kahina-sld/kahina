@@ -171,7 +171,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     
     public int getNodeX(int nodeID)
     {
-        System.err.println("getNodeX(" + nodeID + ")" + nodeX);
+        //System.err.println("getNodeX(" + nodeID + ")" + nodeX);
         return nodeX.get(nodeID);
     }
 
@@ -230,7 +230,6 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     {
         KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaDAGViewPanel panel = new KahinaDAGViewPanel(kahina);
-        panel.setProgressBar(progressBar);
         panel.setPreferredSize(new Dimension(200,300));
         kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
@@ -241,6 +240,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         scrollPaneAndProgressBar.setLayout(new BoxLayout(scrollPaneAndProgressBar, BoxLayout.Y_AXIS));
         scrollPaneAndProgressBar.add(scrollPane);
         scrollPaneAndProgressBar.add(progressBar);
+        panel.setProgressBar(progressBar);
         return scrollPaneAndProgressBar;
     }
     
