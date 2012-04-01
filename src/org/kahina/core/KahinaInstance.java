@@ -68,12 +68,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	public KahinaInstance()
 	{
 		guiControl = new KahinaController();
-		//TODO: this is an ad hoc solution for testing
-		control = new KahinaController();
 		try
 		{
 			fillViewRegistry();
-			//initializeNewSession(); //WAS: dummy session so views have something (empty) to show
+			initializeNewSession(); //WAS: dummy session so views have something (empty) to show
 		} 
 		catch (Exception e)
 		{
@@ -122,7 +120,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	protected void initializeNewSession()
 	{
-		//control = new KahinaController();
+		control = new KahinaController();
 		control.registerListener(KahinaEventTypes.UPDATE, this);
 		control.registerListener(KahinaEventTypes.SESSION, this);
 		control.registerListener(KahinaEventTypes.SYSTEM, this);
