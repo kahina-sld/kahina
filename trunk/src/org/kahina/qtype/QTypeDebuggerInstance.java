@@ -11,6 +11,7 @@ import org.kahina.sicstus.SICStusPrologDebuggerInstance;
 
 public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 {	
+	
 	private QTypeCommander commander;
 	private KahinaBreakpointProfile breakpoints;
 	
@@ -25,7 +26,8 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 	@Override
 	public QTypeBridge startNewSession()
 	{
-		QTypeBridge bridge = (QTypeBridge) super.startNewSession(); 
+		QTypeBridge bridge = (QTypeBridge) super.startNewSession();
+		commander.initializeForNewSession();
 		return bridge;
 	}
 
