@@ -15,7 +15,7 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 
 public abstract class KahinaView<T extends KahinaObject> implements KahinaListener
 {
-	private static final boolean verbose = false;
+	private static final boolean VERBOSE = false;
 
 	// the title of the tab or window this view is displayed in
 	private String title = "Unnamed View";
@@ -34,7 +34,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 
 	public void processEvent(KahinaEvent e)
 	{
-		if (verbose)
+		if (VERBOSE)
 		{
 			System.err.println(this + " received " + e);
 		}
@@ -55,6 +55,10 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	// only listens to this in absence of KahinaGUI; do not register as listener in KahinaGUI case!!!
 	private void processEvent(KahinaSelectionEvent e)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + " updating and redrawing");
+		}
 		kahina.dispatchEvent(new KahinaUpdateEvent(e.getSelectedStep()));
 		kahina.dispatchEvent(new KahinaRedrawEvent());
 	}
