@@ -72,7 +72,6 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			JSplitPane splitPane = createSplitPane(0);
 			splitPane.setDividerSize(2);
-			// splitPane.setEnabled(false);
 			splitPanes.add(splitPane);
 			add(splitPane);
 		} else
