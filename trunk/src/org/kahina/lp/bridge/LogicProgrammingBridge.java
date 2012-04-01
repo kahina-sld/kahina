@@ -945,7 +945,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 		} else if (command.equals("(un)pause"))
 		{
-			// FIXME doesn't seem to work properly
+			// FIXME There's no visible reaction when clicking pause. The button
+			// should change, and the current step should be selected. For the
+			// time being, I removed the pause button.
 			if (bridgeState == 't')
 			{
 				bridgeState = 'p';
