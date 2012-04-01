@@ -32,16 +32,18 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private static final long serialVersionUID = -2816651065876855228L;
 
 	private static final boolean VERBOSE = false;
+	
+	private final KahinaInstance<?, ?, ?> kahina;
 
-	private JPanel[] panels;
-	private JList[] lists;
-	private ListModel[] listModels;
+	private final JPanel[] panels;
+	private final JList[] lists;
+	private final ListModel[] listModels;
+	private final List<JSplitPane> splitPanes;
+	
+	private final Map<Integer, Integer> listIndexByNodeID;
 
 	// GUI component handling
 	private MouseEvent lastMouseEvent;
-	private List<JSplitPane> splitPanes;
-	
-	KahinaInstance<?, ?, ?> kahina;
 
 	public KahinaListTreeViewPanel(int layers, KahinaInstance<?, ?, ?> kahina)
 	{
@@ -55,6 +57,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		lastMouseEvent = null;
 		splitPanes = new LinkedList<JSplitPane>();
 		this.kahina = kahina;
+		listIndexByNodeID = new HashMap<Integer, Integer>();
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		for (int i = 0; i < panels.length; i++)
@@ -141,6 +144,15 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			panel.repaint();
 			panel.revalidate();
 		}
+		for (int layer = 0; layer < panels.length; layer++)
+		{
+			Integer listIndex = listIndexByNodeID.get(view.getMarkedNode(layer));
+			
+			if (listIndex != null)
+			{
+				lists[layer].ensureIndexIsVisible(listIndex);
+			}
+		}
 	}
 
 	private ListModel createListModel(int layer, int root)
@@ -149,6 +161,10 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		KahinaListTreeListEntry farLeftRightEntry = new KahinaListTreeListEntry();
 		farLeftRightEntry.far = true;
 		result.addElement(farLeftRightEntry);
+		
+		// Prepare to remember the list position for each node:
+		listIndexByNodeID.clear();
+		int listIndex = 1; // not 0 - that is the farLeftRightEntry
 
 		// Step 1: traversal of the secondary tree, filtering nodes according to
 		// layer and visibility
@@ -167,6 +183,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 				// display this node, and any alternatives we have collected
 				farLeftRightEntry.farLeftEnabled = farLeftRightEntry.farLeftEnabled || !currentLeftAlternatives.isEmpty();
 				farLeftRightEntry.farRightEnabled = farLeftRightEntry.farRightEnabled || !currentRightAlternatives.isEmpty();
+				listIndexByNodeID.put(node, listIndex++);
 				addNodeToListModel(node, result, indentations.get(node), currentLeftAlternatives, currentRightAlternatives, false);
 			}
 			List<Integer> children = view.getTreeModel().getChildren(node);
@@ -200,6 +217,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			// way to display them
 			farLeftRightEntry.farLeftEnabled = farLeftRightEntry.farLeftEnabled || !currentLeftAlternatives.isEmpty();
 			farLeftRightEntry.farRightEnabled = farLeftRightEntry.farRightEnabled || !currentRightAlternatives.isEmpty();
+			listIndexByNodeID.put(node, listIndex++);
 			addNodeToListModel(node, result, 0, currentLeftAlternatives, currentRightAlternatives, true);
 		}
 
