@@ -6,7 +6,6 @@ import java.util.Stack;
 import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.bridge.KahinaBridge;
-import org.kahina.core.bridge.KahinaBridgePauseEvent;
 import org.kahina.core.bridge.KahinaStepDescriptionEvent;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEventTypes;
@@ -438,7 +437,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// we're sure to see the result and get the prompt back.
 			if (isQueryRoot(stepID))
 			{
-				kahina.dispatchEvent(new KahinaBridgePauseEvent());
 				kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
 				if (deterministic)
 				{
@@ -497,7 +495,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// we're sure to see the result and get the prompt back.
 			if (isQueryRoot(stepID))
 			{
-				kahina.dispatchEvent(new KahinaBridgePauseEvent());
 				kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
@@ -539,7 +536,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// we're sure to see the result and get the prompt back.
 			if (isQueryRoot(stepID))
 			{
-				kahina.dispatchEvent(new KahinaBridgePauseEvent());
 				kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
@@ -590,7 +586,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
-			kahina.dispatchEvent(new KahinaBridgePauseEvent());
 			bridgeState = 'n';
 			kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
 		} catch (Exception e)
@@ -672,7 +667,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					System.err.println("Bridge state/pressed button: c/c");
 				}
-				kahina.dispatchEvent(new KahinaBridgePauseEvent());
 				bridgeState = 'n';
 				return 'c';
 			}
@@ -682,7 +676,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					System.err.println("Bridge state/pressed button: f/f");
 				}
-				kahina.dispatchEvent(new KahinaBridgePauseEvent());
 				bridgeState = 'n';
 				return 'f';
 			}
@@ -713,7 +706,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 						System.err.println("Bridge state/pressed button: s/n");
 					}
 					skipID = -1;
-					kahina.dispatchEvent(new KahinaBridgePauseEvent());
 					bridgeState = 'n';
 					kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
 					return 'n';
@@ -740,7 +732,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					System.err.println("Bridge state/pressed button: " + bridgeState + "/n");
 				}
-				kahina.dispatchEvent(new KahinaBridgePauseEvent());
 				bridgeState = 'n';
 				return 'n';
 			}
@@ -822,7 +813,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 	@Override
 	protected void processWarnEvent(KahinaWarnEvent e)
 	{
-		kahina.dispatchEvent(new KahinaBridgePauseEvent());
 		bridgeState = 'n';
 		selectIfPaused(currentID);
 	}
@@ -1025,7 +1015,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	@Override
 	protected void processBreakPointMatch(int nodeID, KahinaBreakpoint bp)
 	{
-		kahina.dispatchEvent(new KahinaBridgePauseEvent());
+		kahina.dispatchEvent(new KahinaSelectionEvent(nodeID));
 		// TODO: temporarily mark matching node in the breakpoint's signal color
 		// same reaction as in pause mode
 		if (bridgeState == 't')
@@ -1039,5 +1029,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 			bridgeState = 'n';
 		}
 		state.breakpointConsoleMessage(currentID, "Breakpoint match: " + bp.getName() + " at node " + currentID);
+		kahina.dispatchEvent(new KahinaSelectionEvent(nodeID));
 	}
 }
