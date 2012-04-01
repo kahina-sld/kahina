@@ -249,7 +249,6 @@ top_end(Inv,Bridge,JVM) :-
   assert(end_det).
 top_end(_,_,_).
 
-% TODO it might make sense to change the goal desc at the exit port (additional bindings!)
 act_step(Bridge,JVM,Inv,PredChars,GoalDescChars) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','step',[instance]),
@@ -455,12 +454,12 @@ variable_binding(Name,Value) :-
   (source_read(File) % TODO is that guaranteed to be absolute?
   -> true
    ; read_source_file(File)),
-  execution_state(parent_clause(_Clause,SubtermSelector)), % Clause is as it is read from the source modulo module prefix translation, it does not have variable bindings.
+  execution_state(parent_clause(_Clause,SubtermSelector)), % Clause is as it is read from the source module modulo prefix translation, it does not have variable bindings.
   execution_state(goal(_:Goal)), % TODO consolidate, see above
   once(( % TODO With two clauses on the same line, this may find the wrong one.
-      source_clause(SourceClause,File,FirstLine,LastLine,Names), % 
+      source_clause(SourceClause,File,FirstLine,LastLine,Names),
       FirstLine =< Line,
-      LastLine >= Line)), % TODO check if SourceClause is a variant of Clause modulo module prefix normalization
+      LastLine >= Line)), % TODO check if SourceClause is a variant of Clause module modulo prefix normalization
   SourceClause = (_ :- SourceBody), % if we were dealing with a fact, we wouldn't be here
   select_subterm(SubtermSelector,SourceBody,SourceGoal),
   term_variables(SourceGoal,Variables), % limit our attention to the variables in the current goal, for the others we don't have the values handy
