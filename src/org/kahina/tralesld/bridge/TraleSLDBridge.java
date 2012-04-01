@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.kahina.core.bridge.KahinaBridgePauseEvent;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
@@ -437,7 +436,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// we're sure to see the result and get the prompt back.
 			if (isQueryRoot(stepID))
 			{
-				kahina.dispatchEvent(new KahinaBridgePauseEvent());
 				kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}
@@ -475,7 +473,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			// we're sure to see the result and get the prompt back.
 			if (isQueryRoot(stepID))
 			{
-				kahina.dispatchEvent(new KahinaBridgePauseEvent());
 				kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
 				bridgeState = 'c';
 			}

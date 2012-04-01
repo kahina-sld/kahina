@@ -16,11 +16,6 @@
 * The event type {@link org.kahina.core.bridge.KahinaStepDescriptionEvent}
 * can be used to store description strings for steps,
 * thereby providing most basic functionality for storing step data.
-* <p>
-* The event type {@link org.kahina.core.bridge.KahinaBridgePauseEvent}
-* is important for the rudimentary breakpoint system implemented in the
-* core Kahina package, ensuring that the computations
-* between breakpoint matches can be paused if they take too long.
 * 
 * @since 1.0 
 */ 
