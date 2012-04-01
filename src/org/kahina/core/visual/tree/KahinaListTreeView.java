@@ -323,6 +323,12 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		selectNode(e.getSelectedStep());
 	}
 
+	/**
+	 * Marks the selected node (or, if it is not visible on the respective
+	 * layer, its best equivalent, i.e. the lowest visible secondary
+	 * ancestor) on every layer.
+	 * @param nodeID
+	 */
 	public void selectNode(int nodeID)
 	{
 		if (nodeID == -1)
