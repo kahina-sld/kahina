@@ -388,8 +388,6 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			{
 				step.endBindings.add(binding);
 			}
-			
-			selectIfPaused(currentID);
 		} catch (Exception e)
 		{
 			e.printStackTrace();
