@@ -1,8 +1,10 @@
 package org.kahina.core.gui.windows;
 
 import java.awt.Container;
+import java.awt.Toolkit;
 import java.awt.dnd.DropTarget;
 
+import javax.swing.ImageIcon;
 import javax.swing.JMenuBar;
 
 import org.kahina.core.KahinaInstance;
@@ -14,6 +16,7 @@ import org.kahina.core.gui.KahinaSessionMenu;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.menus.KahinaHelpMenu;
 import org.kahina.core.gui.menus.KahinaViewMenu;
+import org.kahina.core.io.util.IconUtil;
 
 public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 {
@@ -41,7 +44,8 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 	private void initializeMainWindow()
 	{
-		this.setTitle("Kahina");
+		this.setTitle(kahina.getApplicationName());
+		this.setIconImage(new ImageIcon(IconUtil.getIcon("gui/icons/logo.png")).getImage());
 		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Uncomment this in order to be able to profile using JRat.
 
@@ -163,7 +167,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	{
 		if (event.getSystemEventType() == KahinaSystemEvent.NODE_COUNT)
 		{
-			setTitle("Kahina (" + event.getIntContent() + ")");
+			setTitle(kahina.getApplicationName() + " (" + event.getIntContent() + ")");
 		} else if (event.getSystemEventType() == KahinaSystemEvent.QUIT)
 		{
 			disposeAllWindows();
