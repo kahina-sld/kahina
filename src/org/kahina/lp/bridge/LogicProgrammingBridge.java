@@ -863,7 +863,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			} else if (bridgeState == 'l')
 			{
 				skipID = -1;
-				bridgeState = 'n';
+				bridgeState = 'c';
 			}
 		} else if (command.equals("fail"))
 		{
