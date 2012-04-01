@@ -15,7 +15,7 @@ import java.util.List;
 
 public class KahinaController
 {
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 	
     //map from types to interested listeners
     private HashMap<String,List<KahinaListener>> registry;
