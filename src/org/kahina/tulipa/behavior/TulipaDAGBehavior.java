@@ -23,7 +23,7 @@ public class TulipaDAGBehavior extends KahinaDAGBehavior
     public void initializeDAG()
     {
         object.addNode(0,"start",0);
-        object.setRootID(0);
+        //object.setRootID(0); FIXME method no longer exists 
     }
     
     public void processItemInformation(int itemID, String label)
