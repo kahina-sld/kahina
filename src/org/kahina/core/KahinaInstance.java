@@ -405,4 +405,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     {
         return bridge;
     }
+
+	public String getApplicationName()
+	{
+		return "Kahina";
+	}
 }
