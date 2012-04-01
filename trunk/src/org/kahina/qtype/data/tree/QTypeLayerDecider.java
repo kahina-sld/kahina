@@ -52,7 +52,7 @@ public class QTypeLayerDecider extends LayerDecider
 		{
 			return 0;
 		}
-		if (caption.contains("(") || caption.endsWith("tokenize_and_parse"))
+		if (caption.contains("(") || caption.endsWith(" tokenize_and_parse") || caption.endsWith(" handle_atom_types") || caption.endsWith(" handle_problematic_bitvectors"))
 		{
 			return 1;
 		}
