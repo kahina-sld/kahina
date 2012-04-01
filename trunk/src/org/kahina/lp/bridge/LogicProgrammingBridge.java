@@ -71,7 +71,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	// store the state of the bridge, determining the next result of
 	// getPressedButton()
-	protected char bridgeState = 'n';
+	protected volatile char bridgeState = 'n';
 
 	// used to hand on skip commands to the logic programming system
 	protected boolean skipFlag = false;
@@ -848,7 +848,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			} else if (bridgeState == 'l')
 			{
 				skipID = -1;
-				bridgeState = 'n';
+				bridgeState = 'c';
 			}
 		} else if (command.equals("stop"))
 		{
@@ -945,6 +945,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 		} else if (command.equals("(un)pause"))
 		{
+			// FIXME doesn't seem to work properly
 			if (bridgeState == 't')
 			{
 				bridgeState = 'p';
