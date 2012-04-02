@@ -104,6 +104,10 @@ public abstract class KahinaTree extends KahinaObject
 	public abstract void setLayer(int nodeID, int layer);
 
     public abstract void addChild(int parent, int child);
+    
+    public abstract void addChildAddListener(KahinaTreeChildAddListener listener);
+    
+    public abstract void removeChildAddListener(KahinaTreeChildAddListener listener);
 
     public abstract int getRootID(int layer);
 
