@@ -3,11 +3,10 @@ package org.kahina.tralesld.gui;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.windows.KahinaMainWindow;
-import org.kahina.tralesld.TraleSLDInstance;
 
 public class TraleSLDWindowManager extends KahinaWindowManager
 {
-	public TraleSLDWindowManager(TraleSLDInstance kahina)
+	public TraleSLDWindowManager(KahinaInstance<?, ?, ?> kahina)
 	{
 		super(kahina, false);
 	}

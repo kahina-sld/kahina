@@ -43,7 +43,7 @@ import org.kahina.tralesld.visual.workbench.FeatureWorkbenchView;
 
 public class TraleSLDGUI extends LogicProgrammingGUI
 {
-	private TraleSLDInstance instance;
+	private final TraleSLDInstance instance;
 
 	protected KahinaChartView mainChartView;
 	
@@ -108,7 +108,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	@Override
 	protected KahinaWindowManager createWindowManager()
 	{
-		return new TraleSLDWindowManager(instance);
+		return new TraleSLDWindowManager(kahina);
 	}
 
 	/*
@@ -119,7 +119,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	@Override
 	protected KahinaLayeredTreeView generateTreeView()
 	{
-		return new KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation.VERTICAL, instance, 0, 1, 2);
+		return new KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation.VERTICAL, kahina, 0, 1, 2);
 	}
 
 	@Override
