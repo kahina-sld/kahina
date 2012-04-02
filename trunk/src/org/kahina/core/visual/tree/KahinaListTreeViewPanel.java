@@ -38,9 +38,8 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private final JPanel[] panels;
 	private final JList[] lists;
 	private final ListModel[] listModels;
-	private final List<JSplitPane> splitPanes;
-	
-	private final Map<Integer, Integer> listIndexByNodeID;
+	private final List<JSplitPane> splitPanes;	
+	private final List<Map<Integer, Integer>> listIndexByNodeIDByLayer;
 
 	// GUI component handling
 	private MouseEvent lastMouseEvent;
@@ -57,7 +56,12 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		lastMouseEvent = null;
 		splitPanes = new LinkedList<JSplitPane>();
 		this.kahina = kahina;
-		listIndexByNodeID = new HashMap<Integer, Integer>();
+		listIndexByNodeIDByLayer = new ArrayList<Map<Integer, Integer>>(layers);
+		
+		for (int layer = 0; layer < layers; layer++)
+		{
+			listIndexByNodeIDByLayer.add(new HashMap<Integer, Integer>());
+		}
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		for (int i = 0; i < panels.length; i++)
@@ -146,7 +150,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		}
 		for (int layer = 0; layer < panels.length; layer++)
 		{
-			Integer listIndex = listIndexByNodeID.get(view.getMarkedNode(layer));
+			Integer listIndex = listIndexByNodeIDByLayer.get(layer).get(view.getMarkedNode(layer));
 			
 			if (listIndex != null)
 			{
@@ -163,6 +167,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		result.addElement(farLeftRightEntry);
 		
 		// Prepare to remember the list position for each node:
+		Map<Integer, Integer> listIndexByNodeID = listIndexByNodeIDByLayer.get(layer);
 		listIndexByNodeID.clear();
 		int listIndex = 1; // not 0 - that is the farLeftRightEntry
 
