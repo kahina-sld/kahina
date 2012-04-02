@@ -11,10 +11,11 @@ import javax.swing.JComponent;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.data.tree.KahinaTreeChildAddListener;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 
-public class KahinaListTreeView extends KahinaAbstractTreeView
+public class KahinaListTreeView extends KahinaAbstractTreeView implements KahinaTreeChildAddListener
 {
 	private static final boolean VERBOSE = false;
 
@@ -74,6 +75,16 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 
 	public void displaySecondaryTree(KahinaTree treeModel)
 	{
+		// Always listen to child add events from currently set secondary tree
+		// model:
+		if (treeModel != this.secondaryTreeModel)
+		{
+			if (this.secondaryTreeModel != null)
+			{
+				this.secondaryTreeModel.removeChildAddListener(this);
+			}
+			treeModel.addChildAddListener(this);
+		}
 		this.secondaryTreeModel = treeModel;
 		(this.secondaryTreeModel).setReferenceNode(model.getReferenceNode());
 		this.secondaryTreeModel.setPrimaryModel(model);
@@ -201,7 +212,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 		primaryChildChoices = new HashMap<Integer, Integer>();
 		markedNodes = new int[layers.length];
 	}
-	
+
 	@Override
 	protected void doDisplay()
 	{
@@ -311,8 +322,9 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 
 	/**
 	 * Marks the selected node (or, if it is not visible on the respective
-	 * layer, its best equivalent, i.e. the lowest visible secondary
-	 * ancestor) on every layer.
+	 * layer, its best equivalent, i.e. the lowest visible secondary ancestor)
+	 * on every layer.
+	 * 
 	 * @param nodeID
 	 */
 	public void selectNode(int nodeID)
@@ -362,7 +374,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 			parentID = primaryTree.getParent(parentID);
 		}
 	}
-	
+
 	public int getPrimaryChildChoice(int parent)
 	{
 		Integer result = primaryChildChoices.get(parent);
@@ -401,5 +413,13 @@ public class KahinaListTreeView extends KahinaAbstractTreeView
 			}
 			node = children.get(children.size() - 1);
 		}
+	}
+
+	@Override
+	public void childAdded(int nodeID)
+	{
+		// When a new node is added into the tree, adapt the choices so that it
+		// is visible.
+		adaptChoices(nodeID);
 	}
 }

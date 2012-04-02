@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.kahina.core.KahinaException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -35,6 +34,9 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     
     //store the ID of the next node that is going to be added
     private int nextID = 0;
+    
+	private final List<KahinaTreeChildAddListener> childAddListeners;
+	
     public KahinaUnlayeredMemTree()
     {
     	this(new DefaultLayerDecider());
@@ -51,6 +53,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
         status = new HashMap<Integer, Integer>();
         collapsed = new HashSet<Integer>();
         layers = new HashMap<Integer, Integer>();
+        childAddListeners = new ArrayList<KahinaTreeChildAddListener>();
     }
     
     @Override
@@ -74,6 +77,27 @@ public class KahinaUnlayeredMemTree extends KahinaTree
             childIDs.add(child);
         }
         parents.put(child, parent);
+        notifyChildAddListeners(child);
+    }
+    
+    private void notifyChildAddListeners(int child)
+    {
+    	for (KahinaTreeChildAddListener listener : childAddListeners)
+    	{
+    		listener.childAdded(child);
+    	}
+    }
+    
+    @Override
+    public void addChildAddListener(KahinaTreeChildAddListener listener)
+    {
+    	childAddListeners.add(listener);
+    }
+    
+    @Override
+    public void removeChildAddListener(KahinaTreeChildAddListener listener)
+    {
+    	childAddListeners.remove(listener);
     }
     
     @Override
