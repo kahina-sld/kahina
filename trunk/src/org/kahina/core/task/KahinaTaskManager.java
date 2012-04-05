@@ -16,6 +16,10 @@ public class KahinaTaskManager
         currentTask = null;
     }
     
+    /**
+     * Adds a new task to the task queue, starting it immediately if no other task was queued.
+     * @param task the task to be queued and started when all the preceding tasks are processed.
+     */
     public void addTask(KahinaTask task)
     {
         if (VERBOSE) System.err.println("KahinaTaskManager.addTask(" + task + ")");
