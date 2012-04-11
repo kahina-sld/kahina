@@ -256,7 +256,7 @@ public class KahinaGUI implements KahinaListener
 					System.err.println("Updating selection to step " + stepID);
 				}
 				displayStepContent(stepID);
-				kahina.dispatchEvent(new KahinaUpdateEvent(stepID));
+				kahina.dispatchEvent(new KahinaUpdateEvent(stepID, e.getLayer()));
 				kahina.dispatchEvent(new KahinaRedrawEvent());
 			}
 		}
@@ -267,7 +267,7 @@ public class KahinaGUI implements KahinaListener
 			{
 				System.err.println("Updating and redrawing (isolated view component)...");
 			}
-			e.getPanel().view.processEvent(new KahinaUpdateEvent(e.getSelectedStep()));
+			e.getPanel().view.processEvent(new KahinaUpdateEvent(e.getSelectedStep(), e.getLayer()));
 			e.getPanel().processEvent(new KahinaRedrawEvent());
 		}
 	}

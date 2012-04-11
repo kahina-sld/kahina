@@ -5,17 +5,25 @@ import org.kahina.core.control.KahinaEventTypes;
 
 public class KahinaUpdateEvent extends KahinaEvent
 {
-    int selectedStep;
+    private final int selectedStep;
     
-    public KahinaUpdateEvent(int selectedStep)
+    private final int layer;
+    
+    public KahinaUpdateEvent(int selectedStep, int layer)
     {
         super(KahinaEventTypes.UPDATE);
         this.selectedStep = selectedStep;
+        this.layer = layer;
     }
     
     public int getSelectedStep()
     {
         return selectedStep;
+    }
+    
+    public int getLayer()
+    {
+    	return layer;
     }
     
     @Override

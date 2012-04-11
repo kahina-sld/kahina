@@ -59,7 +59,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 		{
 			System.err.println(this + " updating and redrawing");
 		}
-		kahina.dispatchEvent(new KahinaUpdateEvent(e.getSelectedStep()));
+		kahina.dispatchEvent(new KahinaUpdateEvent(e.getSelectedStep(), e.getLayer()));
 		kahina.dispatchEvent(new KahinaRedrawEvent());
 	}
 
