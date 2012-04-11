@@ -44,6 +44,8 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	// GUI component handling
 	private MouseEvent lastMouseEvent;
 
+	private final int[] oldReferenceNodeByLayer;
+
 	public KahinaListTreeViewPanel(int layers, KahinaInstance<?, ?, ?> kahina)
 	{
 		if (VERBOSE)
@@ -57,10 +59,12 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		splitPanes = new LinkedList<JSplitPane>();
 		this.kahina = kahina;
 		listIndexByNodeIDByLayer = new ArrayList<Map<Integer, Integer>>(layers);
+		oldReferenceNodeByLayer = new int[layers];
 		
 		for (int layer = 0; layer < layers; layer++)
 		{
 			listIndexByNodeIDByLayer.add(new HashMap<Integer, Integer>());
+			oldReferenceNodeByLayer[layer] = -1;
 		}
 		
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
@@ -136,12 +140,12 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	public void updateDisplay()
 	{
 		updateDividerLocations();
-		view.secondaryTreeModel.setReferenceNode(view.getModel().getReferenceNode());
-		for (int i = 0; i < panels.length; i++)
+		for (int layer = 0; layer < panels.length; layer++)
 		{
-			int rootID = view.secondaryTreeModel.getRootID(i);
-			listModels[i] = createListModel(i, rootID);
-			lists[i].setModel(listModels[i]);
+			view.secondaryTreeModel.setReferenceNode(determineReferenceNode(layer));
+			int rootID = view.secondaryTreeModel.getRootID(layer);
+			listModels[layer] = createListModel(layer, rootID);
+			lists[layer].setModel(listModels[layer]);
 		}
 		for (JPanel panel : panels)
 		{
@@ -157,6 +161,38 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 				lists[layer].ensureIndexIsVisible(listIndex);
 			}
 		}
+	}
+	
+	/**
+	 * The default reference node for each layer is the reference node set on
+	 * the tree model, which is the same for each layer. However, for certain
+	 * selection events, it is better to keep the old reference node for one
+	 * layer. Case in point: On layer 1, nodes from layers 0 and 1 are
+	 * displayed. You switch to a previous branch by clicking left arrow on
+	 * one of the layer 0 nodes, selecting its left alternative. This
+	 * alternative is also on layer 0, thus would become the root of the layer 1
+	 * view on being selected. We don't want this since it would destroy the
+	 * possibility to see such alternatives in context. What we thus do is
+	 * memorize the curent reference node and just keep it in case the selection
+	 * was caused by a click on this layer view. More precisely, only arrow
+	 * buttons currently send selection events with this bit of extra
+	 * informations; clicking the nodes themselves will still make them root in
+	 * each case. 
+	 * @param layer
+	 * @return
+	 */
+	private int determineReferenceNode(int layer)
+	{
+		int result = oldReferenceNodeByLayer[layer];
+		int originLayer = view.getLatestOriginLayer();
+		
+		if (result == -1 || originLayer == -1 || originLayer < layer)
+		{
+			result = view.getTreeModel().getReferenceNode();
+			oldReferenceNodeByLayer[layer] = result;
+		}
+		
+		return result;
 	}
 
 	private ListModel createListModel(int layer, int root)
@@ -425,7 +461,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 				if (hasLeftAlternatives)
 				{
 					// TODO do this without changing the selection?
-					kahina.dispatchEvent(new KahinaSelectionEvent(clickedEntry.leftAlternatives[clickedEntry.leftAlternatives.length - 1]));
+					kahina.dispatchEvent(new KahinaSelectionEvent(clickedEntry.leftAlternatives[clickedEntry.leftAlternatives.length - 1], layer));
 				}
 				return;
 			} else if (isRightButtonPosition(e.getPoint(), list, clickedNode, layer))
@@ -433,7 +469,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 				if (hasRightAlternatives)
 				{
 					// TODO do this without changing the selection?
-					kahina.dispatchEvent(new KahinaSelectionEvent(clickedEntry.rightAlternatives[0]));
+					kahina.dispatchEvent(new KahinaSelectionEvent(clickedEntry.rightAlternatives[0], layer));
 				}
 				return;
 			}

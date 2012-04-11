@@ -44,6 +44,8 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 	// allow marking of trees on different layers
 	private int[] markedNodes;
 
+	private int latestOriginLayer = 0;
+
 	public KahinaListTreeView(KahinaInstance<?, ?, ?> kahina, int... layers)
 	{
 		super(kahina);
@@ -317,7 +319,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 	protected void processEvent(KahinaUpdateEvent e)
 	{
 		// recalculation is implicitly part of this (via marker)
-		selectNode(e.getSelectedStep());
+		selectNode(e.getSelectedStep(), e.getLayer());
 	}
 
 	/**
@@ -327,8 +329,9 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 	 * 
 	 * @param nodeID
 	 */
-	public void selectNode(int nodeID)
+	public void selectNode(int nodeID, int layer)
 	{
+		latestOriginLayer = layer;
 		if (nodeID == -1)
 		{
 			for (int i = 0; i < layers.length; i++)
@@ -421,5 +424,18 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 		// When a new node is added into the tree, adapt the choices so that it
 		// is visible.
 		adaptChoices(nodeID);
+	}
+
+	/**
+	 * @return The origin layer for the latest selection event received. -1 if
+	 *         there is no origin layer.
+	 */
+	public int getLatestOriginLayer()
+	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".getLatestOriginLayer() = " + latestOriginLayer);
+		}
+		return latestOriginLayer;
 	}
 }
