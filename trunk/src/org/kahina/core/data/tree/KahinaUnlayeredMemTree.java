@@ -63,6 +63,12 @@ public class KahinaUnlayeredMemTree extends KahinaTree
     }
     
     @Override
+    public int getRootID(int layerID, int referenceNode)
+    {
+    	return getRootID(layerID);
+    }
+    
+    @Override
 	public void addChild(int parent, int child)
     {
         //System.err.println("KahinaUnlayeredMemTree.addChild(" + parent + "," + child + ")");

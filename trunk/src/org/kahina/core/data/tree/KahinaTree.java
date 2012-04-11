@@ -111,6 +111,8 @@ public abstract class KahinaTree extends KahinaObject
 
     public abstract int getRootID(int layer);
 
+	public abstract int getRootID(int layerID, int referenceNode);
+
     public abstract int getSize();
 
     public String exportXML()

@@ -28,16 +28,22 @@ public class KahinaMemTree extends KahinaUnlayeredMemTree
 	}
 
 	@Override
-	public int getRootID(int layerID)
+	public int getRootID(int layerID, int referenceNode)
 	{
 		if (layerID == 0)
 			return super.getRootID(0);
-		int rootID = getReferenceNode();
+		int rootID = referenceNode;
 		while (decider.decideOnLayer(rootID, this) >= layerID)
 		{
 			rootID = super.getParent(rootID, 0);
 		}
 		return rootID;
+	}
+	
+	@Override
+	public int getRootID(int layerID)
+	{
+		return getRootID(layerID, getReferenceNode());
 	}
 
 	/**
