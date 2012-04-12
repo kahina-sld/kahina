@@ -9,6 +9,13 @@ public class KahinaUpdateEvent extends KahinaEvent
     
     private final int layer;
     
+    public KahinaUpdateEvent(int selectedStep)
+    {
+        super(KahinaEventTypes.UPDATE);
+        this.selectedStep = selectedStep;
+        this.layer = -1;
+    }
+    
     public KahinaUpdateEvent(int selectedStep, int layer)
     {
         super(KahinaEventTypes.UPDATE);
