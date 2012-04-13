@@ -61,7 +61,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 	}
 
 	public void display(KahinaTree treeModel)
-	{
+	{	
 		model = treeModel;
 		nodeBorderColor = new HashMap<Integer, Color>();
 		if (VERBOSE)
@@ -77,16 +77,6 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 
 	public void displaySecondaryTree(KahinaTree treeModel)
 	{
-		// Always listen to child add events from currently set secondary tree
-		// model:
-		if (treeModel != this.secondaryTreeModel)
-		{
-			if (this.secondaryTreeModel != null)
-			{
-				this.secondaryTreeModel.removeChildAddListener(this);
-			}
-			treeModel.addChildAddListener(this);
-		}
 		this.secondaryTreeModel = treeModel;
 		(this.secondaryTreeModel).setReferenceNode(model.getReferenceNode());
 		this.secondaryTreeModel.setPrimaryModel(model);
@@ -94,6 +84,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 		recalculate(); // TODO is this necessary?
 	}
 
+	// TODO Is this method used? Should support for childAddListeners be added?
 	public void display(KahinaTree layerModel, int referenceNode)
 	{
 		layerModel.setReferenceNode(referenceNode);
@@ -214,11 +205,26 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 		primaryChildChoices = new HashMap<Integer, Integer>();
 		markedNodes = new int[layers.length];
 	}
+	
+	private KahinaTree oldModel;
 
 	@Override
 	protected void doDisplay()
 	{
 		super.doDisplay();
+
+		// Always listen to child add events from currently set primary tree
+		// model:
+		if (model != oldModel)
+		{
+			if (model != null)
+			{
+				model.removeChildAddListener(this);
+			}
+			model.addChildAddListener(this);
+			oldModel = model;
+		}
+		
 		resetAllStructures();
 	}
 

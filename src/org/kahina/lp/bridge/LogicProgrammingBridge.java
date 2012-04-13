@@ -317,7 +317,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				// already has one:
 				if (VERBOSE)
 				{
-					System.err.println("Looking up parent of " + id + " in " + callTree);
+					System.err.println("Looking up parent of " + id + " in call tree");
 				}
 				id = stepIDConv.get(state.get(callTree.getParent(id)).getExternalID());
 
