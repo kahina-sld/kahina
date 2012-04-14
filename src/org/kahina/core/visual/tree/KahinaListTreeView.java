@@ -59,22 +59,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 		statusVisibilityEncoding = new HashMap<Integer, Boolean>();
 		config = new KahinaTreeViewConfiguration();
 	}
-
-	public void display(KahinaTree treeModel)
-	{	
-		model = treeModel;
-		nodeBorderColor = new HashMap<Integer, Color>();
-		if (VERBOSE)
-		{
-			System.err.println("Recalculating...");
-		}
-		recalculate(); // TODO is this necessary?
-		if (VERBOSE)
-		{
-			System.err.println("Recalculated.");
-		}
-	}
-
+	
 	public void displaySecondaryTree(KahinaTree treeModel)
 	{
 		this.secondaryTreeModel = treeModel;
@@ -82,15 +67,6 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 		this.secondaryTreeModel.setPrimaryModel(model);
 		nodeBorderColor = new HashMap<Integer, Color>();
 		recalculate(); // TODO is this necessary?
-	}
-
-	// TODO Is this method used? Should support for childAddListeners be added?
-	public void display(KahinaTree layerModel, int referenceNode)
-	{
-		layerModel.setReferenceNode(referenceNode);
-		model = layerModel;
-		nodeBorderColor = new HashMap<Integer, Color>();
-		recalculate();
 	}
 
 	public KahinaTreeViewConfiguration getConfig()
