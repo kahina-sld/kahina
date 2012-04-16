@@ -343,7 +343,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			{
 				if (!done[i])
 				{
-					alternatives.add(children.get(i));
+					alternatives.add(i, children.get(i));
 				}
 			}
 		}
