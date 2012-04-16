@@ -254,6 +254,12 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		// haven't been displayed
 		if (!currentLeftAlternatives.isEmpty() || !currentRightAlternatives.isEmpty())
 		{
+			if (VERBOSE)
+			{
+				System.err.println("Leftover left alternatives: " + currentLeftAlternatives);
+				System.err.println("Leftover right alternatives: " + currentRightAlternatives);
+			}
+			
 			// indentation doesn't matter for ghosts, at least for the current
 			// way to display them
 			farLeftRightEntry.farLeftEnabled = farLeftRightEntry.farLeftEnabled || !currentLeftAlternatives.isEmpty();
@@ -293,10 +299,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 	private List<Integer> findAlternatives(int node, Set<Integer> virtualSecondaryDescendants)
 	{
 		List<Integer> result = new ArrayList<Integer>();
-		if (!findAlternatives(node, result, virtualSecondaryDescendants))
-		{
-			result.add(node);
-		}
+		findAlternatives(node, result, virtualSecondaryDescendants);
 		return result;
 	}
 
@@ -321,6 +324,10 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		if (virtualSecondaryDescendants.contains(node))
 		{
 			alternatives.add(node);
+			if (VERBOSE)
+			{
+				System.err.println("Added VSD: " + node);
+			}
 			return true;
 		}
 		List<Integer> children = view.getTreeModel().getChildren(node);
@@ -339,11 +346,17 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			// The children which do not dominate any of the
 			// virtualSecondaryDescendants are nevertheless added to the list
 			// of alternatives, as representatives of their "empty" branches.
+			// TODO It's not useful to have 2 or more empty branches next
+			// to each other; conflate them.
 			for (int i = 0; i < done.length; i++)
 			{
 				if (!done[i])
 				{
 					alternatives.add(i, children.get(i));
+					if (VERBOSE)
+					{
+						System.err.println("Added empty branch representative: " + children.get(i));
+					}
 				}
 			}
 		}
