@@ -47,21 +47,34 @@ public class QTypeLayerDecider extends LayerDecider
 		{
 			System.err.println(this + ".doDecideOnLayer(" + nodeID + ", [tree]");
 		}
-		String caption = tree.getNodeCaption(nodeID);
-		if (caption.contains("compile_grammar(") || caption.contains(" lc(") || caption.contains(" lc_complete(") || caption.contains(" lc_list(") || caption.contains(" db_rule(") || caption.contains(" db_macro(") || caption.contains(" apply_lexrules(") || caption.contains(" db_word(") || caption.contains(" db_lexrule(") || caption.contains(" lcx(") || caption.contains(" lexentry_existence(") || caption.contains(" tokenize_and_parse_the_external_syntax1("))
-		{
-			return 0;
-		}
-		if (caption.contains("(") || caption.endsWith(" tokenize_and_parse") || caption.endsWith(" handle_atom_types") || caption.endsWith(" handle_problematic_bitvectors") || caption.endsWith(" copy_dbfs2"))
-		{
-			return 1;
-		}
+		
 		int parentID = tree.getParent(nodeID);
+		
 		if (parentID == -1)
 		{
 			return 0;
 		}
-		return decideOnLayer(parentID, tree);
+		
+		int parentLayer = decideOnLayer(parentID, tree);
+		
+		if (parentLayer == 1)
+		{
+			return 1;
+		}
+		
+		String caption = tree.getNodeCaption(nodeID);
+		
+		if (caption.contains("compile_grammar(") || caption.contains(" lc(") || caption.contains(" lc_complete(") || caption.contains(" lc_list(") || caption.contains(" db_rule(") || caption.contains(" db_macro(") || caption.contains(" apply_lexrules(") || caption.contains(" db_word(") || caption.contains(" db_lexrule(") || caption.contains(" lcx(") || caption.contains(" lexentry_existence(") || caption.contains(" tokenize_and_parse_the_external_syntax1("))
+		{
+			return 0;
+		}
+		
+		if (caption.contains("(") || caption.endsWith(" tokenize_and_parse") || caption.endsWith(" handle_atom_types") || caption.endsWith(" handle_problematic_bitvectors") || caption.endsWith(" copy_dbfs2"))
+		{
+			return 1;
+		}
+		
+		return 0;
 	}
 
 }
