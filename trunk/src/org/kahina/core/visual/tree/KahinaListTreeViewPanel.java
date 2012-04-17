@@ -330,6 +330,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			}
 			return true;
 		}
+		int preSize = alternatives.size();
 		List<Integer> children = view.getTreeModel().getChildren(node);
 		if (VERBOSE)
 		{
@@ -352,7 +353,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			{
 				if (!done[i])
 				{
-					alternatives.add(i, children.get(i));
+					alternatives.add(preSize + i, children.get(i));
 					if (VERBOSE)
 					{
 						System.err.println("Added empty branch representative: " + children.get(i));
