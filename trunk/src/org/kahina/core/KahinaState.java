@@ -79,7 +79,7 @@ public class KahinaState implements Serializable, KahinaListener
         matchCountByBreakpoint = new HashMap<KahinaBreakpoint, Integer>();
 	}
     
-    public int nextStepID()
+    public synchronized int nextStepID()
     {
     	if (VERBOSE)
     	{
@@ -98,7 +98,7 @@ public class KahinaState implements Serializable, KahinaListener
     	return steps;
     }
     
-    public void store(int id, KahinaObject object)
+    public synchronized void store(int id, KahinaObject object)
 	{
 		if (VERBOSE)
 		{
@@ -109,7 +109,7 @@ public class KahinaState implements Serializable, KahinaListener
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T extends KahinaObject> T retrieve(Class<T> type, int stepID)
+	public synchronized <T extends KahinaObject> T retrieve(Class<T> type, int stepID)
 	{
 		// TODO we want to do this differently
 		return (T) steps.retrieve(stepID);
