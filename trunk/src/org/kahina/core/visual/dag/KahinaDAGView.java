@@ -72,13 +72,13 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         this.markedNode = -1;
         
         kahina.getGuiControl().registerListener("update", this);
-        layout.newDAG(this);
     }
 
 	public void display(KahinaDAG dagModel)
     {
         model = dagModel;
         nodeBorderColor = new HashMap<Integer, Color>();
+        layout.newDAG(this);
         recalculate();
     }
     

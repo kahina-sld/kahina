@@ -242,6 +242,7 @@ private static final long serialVersionUID = 6701252380309408342L;
     public void printDAGEdges(Graphics canvas)
     {
         // create lines and their tags
+        System.err.println("KahinaDAGViewPanel.printDAGEdges");
         canvas.setColor(Color.BLACK);
         for (int nodeID : view.getModel().getNodeIDIterator())
         {       

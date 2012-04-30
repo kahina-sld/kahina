@@ -60,7 +60,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
         //subtreeWidths = new HashMap<Integer, WidthVector>();
         drawingParents = new HashMap<Integer, Integer>();
         
-        refreshCoordinates();
+        if (view != null) refreshCoordinates();
     }
     
     private void createNodeLayers()

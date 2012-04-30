@@ -39,6 +39,18 @@ public abstract class KahinaDAG extends KahinaObject
     
     public abstract List<Integer> getIncomingEdges(int nodeID);
     
+    public int getEdgeBetween(int startID, int endID)
+    {
+        for (int edgeID : getOutgoingEdges(startID))
+        {
+            if (getEndNode(edgeID) == endID)
+            {
+                return edgeID;
+            }
+        }
+        return -1;
+    }
+    
     public abstract List<Integer> getVisibleChildren(int nodeID);
 
     public abstract int getNodeStatus(int nodeID);
