@@ -59,7 +59,7 @@ public class ColoredPathDAGView extends KahinaDAGView
         if (colors == null)
         {
             colors = new LinkedList<Color>();
-            colors.add(Color.BLACK);
+            //colors.add(Color.BLACK);
         }
         return colors;
     }
