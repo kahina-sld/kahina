@@ -92,15 +92,23 @@ public class ColoredPathDAGViewPanel extends KahinaDAGViewPanel
                         int y2 = view.getNodeY(nodeID);
                         List<Color> edgeColors = view.getEdgeColors(incomingEdges.get(j));
                         int xOffset = edgeColors.size();
-                        for (int i = - xOffset; i < xOffset; i += 2)
+                        if (xOffset == 0)
                         {
-                            canvas.setColor(edgeColors.get((i + xOffset) / 2));
-                            canvas.drawLine(x1 + i, y1, x2 + i, y2);
-                            canvas.drawLine(x1 + i + 1, y1, x2 + i + 1, y2);
-                        } 
-                        printEdgeLabel(canvas, new Point((x1 + x2)/2, (y1 + y2)/2), view.getModel().getEdgeLabel(incomingEdges.get(j)));
-                        //TODO: add this soon
-                        //printEdgeArrow(canvas, nodes.get(j));  
+                            canvas.setColor(Color.BLACK);
+                            canvas.drawLine(x1, y1, x2, y2);
+                        }
+                        else
+                        {
+                            for (int i = - xOffset; i < xOffset; i += 2)
+                            {
+                                canvas.setColor(edgeColors.get((i + xOffset) / 2));
+                                canvas.drawLine(x1 + i, y1, x2 + i, y2);
+                                canvas.drawLine(x1 + i + 1, y1, x2 + i + 1, y2);
+                            } 
+                            printEdgeLabel(canvas, new Point((x1 + x2)/2, (y1 + y2)/2), view.getModel().getEdgeLabel(incomingEdges.get(j)));
+                            //TODO: add this soon
+                            //printEdgeArrow(canvas, nodes.get(j));  
+                        }
                     }
                 }
             }
