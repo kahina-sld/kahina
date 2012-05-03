@@ -71,7 +71,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		try
 		{
 			fillViewRegistry();
-			initializeNewSession(); //WAS: dummy session so views have something (empty) to show
+			initializeNewSession(true); //WAS: dummy session so views have something (empty) to show
 		} 
 		catch (Exception e)
 		{
@@ -91,13 +91,36 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		gui.prepare();
 		guiStarted = true;
 	}
+	
+    public void startNewSessionWithoutBridge()
+    {
+        try
+        {       
+            initializeNewSession(false);
+            if (!guiStarted)
+            {
+                startGUI();
+            }
+            gui.displayMainViews();
+            gui.show();
+            dispatchEvent(new KahinaSelectionEvent(-1));
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(1);
+        }
+        if (VERBOSE)
+        {
+            System.err.println(this + ".startNewSessionWithoutBridge()");
+        }
+    }
 
 	public B startNewSession()
 	{
 		try
 		{	    
-		    //TODO: check whether this startup order works in every situation
-	        initializeNewSession();
+	        initializeNewSession(true);
 			if (!guiStarted)
 			{
 				startGUI();
@@ -118,7 +141,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		return bridge;
 	}
 
-	protected void initializeNewSession()
+	protected void initializeNewSession(boolean withBridge)
 	{
 		control = new KahinaController();
 		control.registerListener(KahinaEventTypes.UPDATE, this);
@@ -132,7 +155,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		{
 			state = createState();
 		}
-		bridge = createBridge();
+		if (withBridge)
+		{
+		    bridge = createBridge();
+		}
 		createTreeBehavior();
 		createWarner();
 	}
