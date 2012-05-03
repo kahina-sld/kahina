@@ -23,10 +23,14 @@ public class KahinaSatInstanceView extends KahinaGraphView
     CnfSatInstance sat;
     boolean clauseGraph;
     
+    boolean textDisplay;
+    String displayText;
+    
     public KahinaSatInstanceView(KahinaInstance<?, ?, ?> kahina, KahinaGraphLayouter layout)
     {
         super(kahina, layout);
         clauseGraph = false;
+        textDisplay = false;
     }
     
     public void display(CnfSatInstance sat)
@@ -37,6 +41,15 @@ public class KahinaSatInstanceView extends KahinaGraphView
             this.sat = sat;
             displayClausesByVariables();
         }
+        textDisplay = false;
+    }
+    
+    //allows to display a text instead of a graph
+    //TODO: add this option to all views per default!
+    public void displayText(String text)
+    {
+        textDisplay = true;
+        displayText = text;
     }
     
     public boolean showsClauseGraph()
