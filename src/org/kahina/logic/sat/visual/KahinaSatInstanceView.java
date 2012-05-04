@@ -45,7 +45,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
     }
     
     //allows to display a text instead of a graph
-    //TODO: add this option to all views per default!
+    //TODO: consider adding this option to all views per default!
     public void displayText(String text)
     {
         textDisplay = true;
