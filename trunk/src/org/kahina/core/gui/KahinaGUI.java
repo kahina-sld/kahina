@@ -32,6 +32,7 @@ import org.kahina.core.data.KahinaObject;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.core.gui.windows.KahinaMainWindow;
 import org.kahina.core.util.ProgressMonitorWrapper;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.text.KahinaTextView;
@@ -133,6 +134,11 @@ public class KahinaGUI implements KahinaListener
 	public KahinaInstance<?,?,?> getKahinaInstance()
 	{
 		return kahina;
+	}
+	
+	public KahinaMainWindow getMainWindow()
+	{
+	    return windowManager.mainWindow;
 	}
 	
 	public void addControlButton(String windowTitle, String iconFilePath, String command, String toolTipText, int mnemonic)
