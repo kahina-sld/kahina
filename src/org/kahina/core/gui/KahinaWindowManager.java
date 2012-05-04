@@ -124,8 +124,8 @@ public class KahinaWindowManager implements KahinaListener
                     {
                         System.err.println("  Generating default view " + winID + " for binding " + binding + " (primary window: " + getArrangement().getPrimaryWinIDForName(binding) + ")");
                     }
+                    view.setTitle(getArrangement().getTitle(winID));
                     KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, kahina, winID);
-                    viewWindow.setTitle(getArrangement().getTitle(winID));
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
                     break;
                 }
@@ -156,6 +156,7 @@ public class KahinaWindowManager implements KahinaListener
                     mainWindow.setTitle(getArrangement().getTitle(winID));
                     mainWindow.setSize(getArrangement().getWidth(winID), getArrangement().getHeight(winID));
                     mainWindow.setLocation(getArrangement().getXPos(winID), getArrangement().getYPos(winID));
+                    mainWindow.setBorder(getArrangement().hasBorder(winID));
                     break;
                 }
                 case KahinaWindowType.HORI_SPLIT_WINDOW:
