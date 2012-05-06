@@ -34,6 +34,12 @@
 %       the goal Callback will be called. If it succeeds, File is used as the
 %       absolute path of the corresponding source file and Line is used as the
 %       corresponding line number in that file.
+%   goal_desc(Callback,Module,Goal,Desc) - Can be given to specify custom
+%       mappings from modules/goals to goal descriptions (used as node labels).
+%       On a match, Module and Goal will be bound to the values for the current
+%       match, then Callback will be called. If it succeeds, Desc is used as the
+%       goal description. Otherwise, a default is used (currently: the goal
+%       itself with the module prefix stripped away).
 user:breakpoint_expansion(kahina_breakpoint_action(Options),[
     % The three action variables Show, Mode, Command control Prolog's behavior
     % on encountering a breakpoint. We use show/1, mode/1, command/1 terms to
@@ -75,15 +81,15 @@ kahina_breakpoint_action(Inv,Port,Mode,Command,Options) :-
 % action_mode_command(+ActionCode,-Mode,-Command,+Inv,+Port,+Autoskip)
 action_mode_command(115,skip(Inv),proceed,Inv,_Port,_Autoskip) :- % s(kip)
   !.
-action_mode_command(102,trace,proceed,_Inv,fail,_Autoskip) :-     % f(ail) at fail ports TODO what about exception ports?
+action_mode_command(102,debug,proceed,_Inv,fail,_Autoskip) :-     % f(ail) at fail ports TODO what about exception ports?
   !.
-action_mode_command(102,trace,fail(Inv),Inv,_Port,_Autoskip) :-   % f(ail) at other ports
+action_mode_command(102,debug,fail(Inv),Inv,_Port,_Autoskip) :-   % f(ail) at other ports
   !.
 action_mode_command(97,Mode,Command,_Inv,_Port,_Autoskip) :-      % a(bort)
   abort_hook(Mode,Command), % if not implemented or fails for another reason, we
   !.                        % set the command action variable to abort in the
                             % next clause
-action_mode_command(97,trace,abort,_Inv,_Port,_Autoskip) :-
+action_mode_command(97,debug,abort,_Inv,_Port,_Autoskip) :-
   !.
 action_mode_command(_,skip(Inv),proceed,Inv,call,true) :-         % autoskip at call ports
   !.
@@ -139,7 +145,7 @@ act(call,Inv,Bridge,JVM,Options) :-
   execution_state(pred(Module:Pred)),	% "module qualified goal template", see manual
   write_term_to_chars(Module:Pred,PredChars,[max_depth(5)]),
   execution_state(goal(_:Goal)),
-  goal_desc(Module,Goal,GoalDesc),
+  goal_desc(Module,Goal,Options,GoalDesc),
   write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   act_step(Bridge,JVM,Inv,PredChars,GoalDescChars),
   run_post_step_hooks(Bridge,JVM,Inv,PredChars,GoalDescChars),
@@ -160,7 +166,7 @@ act(exit(DetFlag),Inv,Bridge,JVM,Options) :-
   retractall(unblock_pseudostep_waiting_for_link(_)),
   execution_state(pred(Module:_)),
   execution_state(goal(_:Goal)),
-  goal_desc(Module,Goal,GoalDesc),
+  goal_desc(Module,Goal,Options,GoalDesc),
   write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   detflag_det(DetFlag,Det), % translates det/nondet to true/false
   act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
@@ -201,7 +207,7 @@ act(unblock,Inv,Bridge,JVM,Options) :-
   execution_state(pred(Module:Pred)),
   write_term_to_chars(Module:Pred,PredChars,[max_depth(5)]),
   execution_state(goal(_:Goal)),
-  goal_desc(Module,Goal,GoalDesc),
+  goal_desc(Module,Goal,Options,GoalDesc),
   write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   act_step(Bridge,JVM,ID,[117,110,98,108,111,99,107,32|PredChars],[117,110,98,108,111,99,107,32|GoalDescChars]), % 'unblock '
   (memberchk(layer(Layer),Options),
@@ -688,13 +694,14 @@ select_subterm([ArgNo|ArgNos],Term,Subterm) :-
   arg(ArgNo,Term,Arg),
   select_subterm(ArgNos,Arg,Subterm).
 
-% goal_desc(+Module,+Goal,-GoalDesc)
-% Used to remove the module prefix from goal descriptions if it refers to the
-% type-in module.
-goal_desc(Module,Goal,Goal) :-
-  module(Module),
+% goal_desc(+Module,+Goal,+Options,-GoalDesc)
+% maps goals to goal descriptions for display
+goal_desc(Module,Goal,Options,Desc) :-
+  member(goal_desc(Callback,Module,Goal,Desc),Options),
+  Callback,
   !.
-goal_desc(Module,Goal,Module:Goal).
+% default: goal without module prefix
+goal_desc(Module,Goal,_,Goal).
 
 detflag_det(det,true).
 detflag_det(nondet,false).
