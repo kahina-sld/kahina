@@ -102,8 +102,8 @@ action_mode_command(_,debug,proceed,_Inv,_Port,_Autoskip).        % creep
 % Calls all clauses of kahinasicstus:post_step_hook/5 in a failure-driven loop.
 % Modules can add such clauses e.g. to read additional information from a goal
 % before it is called, and pass it to Kahina. 
-run_post_step_hooks(Bridge,JVM,Inv,PredChars,GoalDescChars) :-
-  post_step_hook(Bridge,JVM,Inv,PredChars,GoalDescChars),
+run_post_step_hooks(Bridge,JVM,Inv,Pred,GoalDesc) :-
+  post_step_hook(Bridge,JVM,Inv,Pred,GoalDesc),
   fail.
 run_post_step_hooks(_,_,_,_,_).
 
@@ -112,8 +112,8 @@ run_post_step_hooks(_,_,_,_,_).
 % Calls all clauses of kahinasicstus:post_step_hook/5 in a failure-driven loop.
 % Modules can add such clauses e.g. to read additional information from a goal
 % after it exits, and pass it to Kahina. 
-run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDescChars) :-
-  post_exit_hook(Bridge,JVM,Inv,Det,GoalDescChars),
+run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDesc) :-
+  post_exit_hook(Bridge,JVM,Inv,Det,GoalDesc),
   fail.
 run_post_exit_hooks(_,_,_,_,_).
 
@@ -148,7 +148,7 @@ act(call,Inv,Bridge,JVM,Options) :-
   goal_desc(Module,Goal,Options,GoalDesc),
   write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   act_step(Bridge,JVM,Inv,PredChars,GoalDescChars),
-  run_post_step_hooks(Bridge,JVM,Inv,PredChars,GoalDescChars),
+  run_post_step_hooks(Bridge,JVM,Inv,PredChars,GoalDesc),
   % TODO make the following into hooks
   act_source_code_location(Bridge,JVM,Inv,Options),
   (memberchk(layer(Layer),Options),
@@ -170,7 +170,7 @@ act(exit(DetFlag),Inv,Bridge,JVM,Options) :-
   write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
   detflag_det(DetFlag,Det), % translates det/nondet to true/false
   act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
-  run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDescChars),
+  run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDesc),
   % TODO make the following into hooks
   act_source_code_location(Bridge,JVM,Inv,Options),
   perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(DetFlag))),
@@ -701,7 +701,7 @@ goal_desc(Module,Goal,Options,Desc) :-
   Callback,
   !.
 % default: goal without module prefix
-goal_desc(Module,Goal,_,Goal).
+goal_desc(_,Goal,_,Goal).
 
 detflag_det(det,true).
 detflag_det(nondet,false).
