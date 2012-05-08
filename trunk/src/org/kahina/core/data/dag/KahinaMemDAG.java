@@ -3,6 +3,7 @@ package org.kahina.core.data.dag;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -412,5 +413,24 @@ public class KahinaMemDAG extends KahinaDAG
     public Set<Integer> getRoots()
     {
         return roots;
+    }
+
+    @Override
+    //TODO: use a decent shortest path algorithm!
+    public List<Integer> findShortestPathFromRoot(int nodeID)
+    {
+        List<Integer> path = new LinkedList<Integer>();
+        int minLength = Integer.MAX_VALUE;
+        for (int edge : getIncomingEdges(nodeID))
+        {
+            List<Integer> subpath = findShortestPathFromRoot(getStartNode(edge));
+            if (subpath.size() < minLength)
+            {
+                minLength = subpath.size();
+                path = subpath;
+            }
+        }
+        path.add(0,nodeID);
+        return path;
     }
 }
