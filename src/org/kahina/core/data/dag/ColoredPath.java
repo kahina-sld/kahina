@@ -20,6 +20,18 @@ public class ColoredPath
     }
     
     /**
+     * Creates a specified path of the specified color.
+     * @param path a list of integers representing the path
+     * @param color the color of the new path
+     */
+    public ColoredPath(List<Integer> path, Color color)
+    {
+        this.color = color;
+        this.path = new LinkedList<Integer>();
+        this.path.addAll(path);
+    }
+    
+    /**
      * Extends the path by a numeric step ID.
      * @param id the Id by which the path is extended
      */

@@ -82,6 +82,8 @@ public abstract class KahinaDAG extends KahinaObject
     
     public abstract Set<Integer> getRoots();
     
+    public abstract List<Integer> findShortestPathFromRoot(int nodeID);
+    
     public void toggleCollapse(int nodeID)
     {
         if (!isCollapsed(nodeID))
