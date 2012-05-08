@@ -408,7 +408,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
         int lowerIndex = 0;
         int upperIndex = nodeLevels.size() - 1;
         int middleIndex = (lowerIndex + upperIndex) / 2;
-        int middleBound = yCoord.get(nodeLevels.get(middleIndex).get(0)) + 2;
+        int middleBound = yCoord.get(nodeLevels.get(middleIndex).get(0)) + view.getConfig().getZoomLevel();
         if (upperIndex != 0) // simply take the only existing level if there is only one
         {
             while (lowerIndex + 1 < upperIndex)
@@ -418,12 +418,13 @@ public class LayeredLayouter extends KahinaDAGLayouter
                 if (middleBound >= y)
                 {
                     upperIndex = middleIndex;
-                } else
+                } 
+                else
                 {
                     lowerIndex = middleIndex;
                 }
                 middleIndex = (lowerIndex + upperIndex) / 2;
-                middleBound = yCoord.get(nodeLevels.get(middleIndex).get(0)) + 2;
+                middleBound = yCoord.get(nodeLevels.get(middleIndex).get(0)) + view.getConfig().getZoomLevel();
             }
             if (y < middleBound)
                 upperIndex--;
@@ -436,7 +437,8 @@ public class LayeredLayouter extends KahinaDAGLayouter
         if (selectedLevel.size() == 1)
         {
             candidateNode = selectedLevel.get(0);
-        } else
+        } 
+        else
         {
             lowerIndex = 0;
             upperIndex = selectedLevel.size() - 1;
@@ -451,7 +453,8 @@ public class LayeredLayouter extends KahinaDAGLayouter
                 if (middleBound >= x)
                 {
                     upperIndex = middleIndex;
-                } else
+                } 
+                else
                 {
                     lowerIndex = middleIndex;
                 }
@@ -468,18 +471,17 @@ public class LayeredLayouter extends KahinaDAGLayouter
         // System.err.println("Potentially clicked node: " + candidateNode);
 
         // test coordinates against exact boundaries of candidate node
-        FontMetrics fm = getFontMetrics(new Font(Font.SANS_SERIF, Font.PLAIN, view.getConfig().getNodeSize()), new BasicStroke(1), view.getConfig().getNodeSize());
-        int width = fm.stringWidth(view.getModel().getNodeCaption(candidateNode));
-        int xLeft = xCoord.get(candidateNode) - width / 2 - 2;
-        int xRight = xLeft + width + 4;
-        int yBottom = yCoord.get(candidateNode) + 2;
-        int yTop = yBottom - view.getConfig().getNodeSize();
+        int xLeft = xCoord.get(candidateNode);
+        int xRight = xLeft + view.getNodeWidth(candidateNode);
+        int yTop = yCoord.get(candidateNode);
+        int yBottom = yTop + view.getConfig().getNodeSize();
         // System.err.println("test: " + xLeft + " <= " + x + " <= " + xRight +
         // "; " + yTop + " <= " + y + " <= " + yBottom);
         if (xLeft <= x && x <= xRight && yTop <= y && y <= yBottom)
         {
             // System.err.println("Click on node: " + candidateNode);
-        } else
+        } 
+        else
         {
             // System.err.println("No node found!");
             return -1;
