@@ -1,5 +1,7 @@
 package org.kahina.core.visual;
 
+import java.lang.reflect.InvocationTargetException;
+
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -63,10 +65,14 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 			    });
 			}
 		} 
-		catch (Exception e)
-		{
-			throw new KahinaException("Failed to update and repaint " + this + ".", e);
-		}
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
 	}
 
 	/**
