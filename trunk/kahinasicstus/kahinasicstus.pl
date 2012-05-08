@@ -3,7 +3,7 @@
                          abort_hook/2,
                          breakpoint_action_hook/5,
                          post_step_hook/5,
-                         post_exit_hook/5,
+                         pre_exit_hook/5,
                          get_jvm/1,
                          get_kahina_instance/2,
                          get_bridge/3]).
@@ -107,15 +107,15 @@ run_post_step_hooks(Bridge,JVM,Inv,Pred,GoalDesc) :-
   fail.
 run_post_step_hooks(_,_,_,_,_).
 
-:- multifile post_exit_hook/5.
+:- multifile pre_exit_hook/5.
 
 % Calls all clauses of kahinasicstus:post_step_hook/5 in a failure-driven loop.
 % Modules can add such clauses e.g. to read additional information from a goal
 % after it exits, and pass it to Kahina. 
-run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDesc) :-
-  post_exit_hook(Bridge,JVM,Inv,Det,GoalDesc),
+run_pre_exit_hooks(Bridge,JVM,Inv,Det,GoalDesc) :-
+  pre_exit_hook(Bridge,JVM,Inv,Det,GoalDesc),
   fail.
-run_post_exit_hooks(_,_,_,_,_).
+run_pre_exit_hooks(_,_,_,_,_).
 
 :- multifile classpath_element/1.
 
@@ -167,13 +167,13 @@ act(exit(DetFlag),Inv,Bridge,JVM,Options) :-
   execution_state(pred(Module:_)),
   execution_state(goal(_:Goal)),
   goal_desc(Module,Goal,Options,GoalDesc),
-  write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
-  detflag_det(DetFlag,Det), % translates det/nondet to true/false
-  act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
-  run_post_exit_hooks(Bridge,JVM,Inv,Det,GoalDesc),
+  run_pre_exit_hooks(Bridge,JVM,Inv,Det,GoalDesc),
   % TODO make the following into hooks
   act_source_code_location(Bridge,JVM,Inv,Options),
   perhaps(send_variable_bindings(Bridge,JVM,Inv,exit(DetFlag))),
+  write_term_to_chars(GoalDesc,GoalDescChars,[max_depth(5)]),
+  detflag_det(DetFlag,Det), % translates det/nondet to true/false
+  act_exit(Bridge,JVM,Inv,Det,GoalDescChars),
   top_end(Inv,Bridge,JVM).
 act(redo,Inv,Bridge,JVM,Options) :-
   top_start(Inv),
