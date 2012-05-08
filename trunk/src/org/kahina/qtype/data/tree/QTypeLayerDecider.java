@@ -64,7 +64,7 @@ public class QTypeLayerDecider extends LayerDecider
 		
 		String caption = tree.getNodeCaption(nodeID);
 		
-		if (caption.contains("compile_grammar(") || caption.contains(" lc(") || caption.contains(" lc_complete(") || caption.contains(" lc_list(") || caption.contains(" apply_lexrules(") || caption.contains(" lexentry_existence(") || caption.contains(" tokenize_and_parse_the_external_syntax("))
+		if (caption.contains("compile_grammar(") || caption.contains(" lc(") || caption.contains(" lc_complete(") || caption.contains(" lc_list(") || caption.contains(" lexentry_existence(") || caption.contains(" tokenize_and_parse_the_external_syntax("))
 		{
 			return 0;
 		}
