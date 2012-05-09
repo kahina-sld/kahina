@@ -2,21 +2,21 @@
 <kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="" kahina:name="QType integrated">
   <kahina:arrangement>
     <kahina:main-window kahina:border="false" kahina:height="926" kahina:id="0" kahina:primary="false" kahina:title="Kahina (1)" kahina:width="1164" kahina:xpos="0" kahina:ypos="25">
-      <kahina:vert-split-window kahina:height="573" kahina:id="19" kahina:title="Content" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
-        <kahina:hori-split-window kahina:height="590" kahina:id="22" kahina:title="Upper Half" kahina:width="0" kahina:xpos="0" kahina:ypos="25">
+      <kahina:vert-split-window kahina:height="926" kahina:id="19" kahina:title="Content" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
+        <kahina:hori-split-window kahina:height="-600" kahina:id="22" kahina:title="Upper Half" kahina:width="0" kahina:xpos="0" kahina:ypos="25">
           <kahina:vert-split-window kahina:height="0" kahina:id="24" kahina:title="Control Structure" kahina:width="653" kahina:xpos="0" kahina:ypos="25">
-            <kahina:vert-split-window kahina:height="300" kahina:id="20" kahina:title="Control and Breakpoints" kahina:width="0" kahina:xpos="0" kahina:ypos="40">
+            <kahina:vert-split-window kahina:height="150" kahina:id="20" kahina:title="Control and Breakpoints" kahina:width="0" kahina:xpos="0" kahina:ypos="40">
               <kahina:hori-split-window kahina:height="85" kahina:id="18" kahina:title="Control" kahina:width="0" kahina:xpos="0" kahina:ypos="40">
                 <kahina:control-window kahina:binding="History" kahina:border="true" kahina:height="0" kahina:id="17" kahina:primary="true" kahina:title="History" kahina:width="100" kahina:xpos="420" kahina:ypos="25"/>
                 <kahina:control-window kahina:binding="Control" kahina:border="true" kahina:height="0" kahina:id="16" kahina:primary="true" kahina:title="Control" kahina:width="300" kahina:xpos="120" kahina:ypos="25"/>
               </kahina:hori-split-window>
-              <kahina:default-window kahina:binding="breakpointProfile" kahina:border="true" kahina:height="-85" kahina:id="21" kahina:primary="true" kahina:title="Breakpoint Profile" kahina:width="0" kahina:xpos="0" kahina:ypos="125"/>
+              <kahina:default-window kahina:binding="breakpointProfile" kahina:border="true" kahina:height="0" kahina:id="21" kahina:primary="true" kahina:title="Breakpoint Profile" kahina:width="0" kahina:xpos="0" kahina:ypos="125"/>
             </kahina:vert-split-window>
-            <kahina:default-window kahina:binding="controlFlowTree" kahina:border="true" kahina:height="-300" kahina:id="2" kahina:primary="true" kahina:title="Control flow tree" kahina:width="0" kahina:xpos="784" kahina:ypos="409"/>
+            <kahina:default-window kahina:binding="controlFlowTree" kahina:border="true" kahina:height="500" kahina:id="2" kahina:primary="true" kahina:title="Control flow tree" kahina:width="0" kahina:xpos="784" kahina:ypos="409"/>
           </kahina:vert-split-window>
           <kahina:default-window kahina:binding="goal" kahina:border="true" kahina:height="0" kahina:id="1" kahina:primary="true" kahina:title="goal" kahina:width="-653" kahina:xpos="457" kahina:ypos="488"/>
         </kahina:hori-split-window>
-        <kahina:tabbed-window kahina:height="-590" kahina:id="8" kahina:title="Lower half" kahina:width="0" kahina:xpos="0" kahina:ypos="172">
+        <kahina:tabbed-window kahina:height="600" kahina:id="8" kahina:title="Lower half" kahina:width="0" kahina:xpos="0" kahina:ypos="172">
           <kahina:default-window kahina:binding="codeLocation" kahina:border="true" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:title="codeLocation" kahina:width="194" kahina:xpos="1010" kahina:ypos="24"/>
           <kahina:default-window kahina:binding="messageConsole" kahina:border="true" kahina:height="360" kahina:id="3" kahina:primary="true" kahina:title="Message console" kahina:width="230" kahina:xpos="760" kahina:ypos="24"/>
         </kahina:tabbed-window>
