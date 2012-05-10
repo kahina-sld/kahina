@@ -430,7 +430,7 @@ public class KahinaMemDAG extends KahinaDAG
                 path = subpath;
             }
         }
-        path.add(0,nodeID);
+        path.add(nodeID);
         return path;
     }
 }
