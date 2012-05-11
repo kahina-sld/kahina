@@ -171,18 +171,23 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     
     public int getNodeX(int nodeID)
     {
-        //System.err.println("getNodeX(" + nodeID + ")" + nodeX);
-        return nodeX.get(nodeID);
+        Integer x = nodeX.get(nodeID);
+        if (x == null) return 0;
+        return x;
     }
 
     public int getNodeY(int nodeID)
     {
-        return nodeY.get(nodeID);
+        Integer y = nodeY.get(nodeID);
+        if (y == null) return 0;
+        return y;
     }
     
     public int getNodeWidth(int nodeID)
     {
-        return nodeWidths.get(nodeID);
+        Integer width = nodeWidths.get(nodeID);
+        if (width == null) return 0;
+        return width;
     }
     
     public int getDisplayHeight()
