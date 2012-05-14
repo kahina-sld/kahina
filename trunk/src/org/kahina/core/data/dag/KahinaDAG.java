@@ -24,6 +24,34 @@ public abstract class KahinaDAG extends KahinaObject
     public abstract void addEdge(int edgeID, int start, int end, String label);
     
     public abstract int addEdge(int start, int end, String label);
+    
+    public void addEdgeNoDuplicates(int edgeID, int start, int end, String label)
+    {
+        if (getEdgeBetween(start,end) == -1)
+        {
+            addEdge(edgeID,start,end,label);
+        }
+        else
+        {
+            //overwrite the label of a previously existent edge
+            setEdgeLabel(edgeID, label);
+        }
+    }
+    
+    public int addEdgeNoDuplicates(int start, int end, String label)
+    {
+        int edgeID = getEdgeBetween(start,end);
+        if (edgeID == -1)
+        {
+            edgeID = addEdge(start,end,label);
+        }
+        else
+        {
+            //overwrite the label of a previously existent edge
+            setEdgeLabel(edgeID, label);
+        }
+        return edgeID;
+    }
 
     public abstract void decollapseAll();
 
