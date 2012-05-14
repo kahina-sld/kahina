@@ -60,7 +60,7 @@ public class KahinaMemDAG extends KahinaDAG
     {
         if (roots.contains(end)) roots.remove(end);
         edgeLabels.put(edgeID, label);
-        startNodes.put(edgeID,start);
+        startNodes.put(edgeID, start);
         endNodes.put(edgeID,end);
         getOutgoingEdges(start).add(edgeID);
         getIncomingEdges(end).add(edgeID);
