@@ -191,5 +191,14 @@ public class KahinaListWindow extends KahinaWindow implements MouseListener
 		// TODO Auto-generated method stub
 		
 	}
+	
+    public void setVisible(boolean visible)
+    {
+        super.setVisible(visible);
+        for (KahinaWindow window : windows)
+        {
+            window.setVisible(visible);
+        }
+    }
 
 }

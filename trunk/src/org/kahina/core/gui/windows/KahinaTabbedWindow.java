@@ -98,4 +98,13 @@ public class KahinaTabbedWindow  extends KahinaWindow
     		System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" not found as a tab in window \"" + this.getTitle() + "\", replacement failed.");
     	}
     }
+    
+    public void setVisible(boolean visible)
+    {
+        super.setVisible(visible);
+        for (KahinaWindow window : windows)
+        {
+            window.setVisible(visible);
+        }
+    }
 }

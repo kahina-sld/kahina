@@ -35,11 +35,14 @@ public class KahinaSatInstanceView extends KahinaGraphView
     
     public void display(CnfSatInstance sat)
     {
-        //do not recalculate if the sat instance is already displayed
+        //do not recalculate if invisible, or if the sat instance is already displayed
         if (this.sat == null || this.sat != sat)
         {
             this.sat = sat;
-            displayClausesByVariables();
+            if (isVisible())
+            {
+                displayClausesByVariables();
+            }
         }
         textDisplay = false;
     }

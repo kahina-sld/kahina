@@ -217,4 +217,11 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     	cloneWindow.setLocation(this.getX() + 100, this.getY() + 100);
     	return cloneWindow;
     }
+    
+    public void setVisible(boolean visible)
+    {
+        super.setVisible(visible);
+        upperWindow.setVisible(visible);
+        lowerWindow.setVisible(visible);
+    }
 }
