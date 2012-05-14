@@ -35,14 +35,14 @@ public class KahinaSatInstanceView extends KahinaGraphView
     
     public void display(CnfSatInstance sat)
     {
-        //do not recalculate if invisible, or if the sat instance is already displayed
+        //do not recalculate if invisible, or if the sat instance is not yet loaded
         if (this.sat == null || this.sat != sat)
         {
             this.sat = sat;
-            if (isVisible())
-            {
-                displayClausesByVariables();
-            }
+        }
+        if (isVisible())
+        {
+            displayClausesByVariables();
         }
         textDisplay = false;
     }
@@ -134,5 +134,15 @@ public class KahinaSatInstanceView extends KahinaGraphView
         scrollPaneAndProgressBar.add(progressBar);
         panel.setProgressBar(progressBar);
         return scrollPaneAndProgressBar;
+    }
+    
+    public void setVisible(boolean visible)
+    {
+        System.err.println("KahinaSatInstanceView.setVisible(" + visible + ")");
+        super.setVisible(visible);
+        if (visible)
+        {
+            display(sat);
+        }
     }
 }
