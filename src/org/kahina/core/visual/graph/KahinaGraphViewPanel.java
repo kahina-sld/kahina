@@ -65,6 +65,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     @Override
     public void updateDisplay()
     {
+        if (!view.isVisible()) return;
         long startTime = System.currentTimeMillis();
         List<Integer> redrawAgenda = view.getRedrawAgenda();
         System.err.println("Updating graph display of size " + view.getDisplayWidth() + " * " + view.getDisplayHeight());

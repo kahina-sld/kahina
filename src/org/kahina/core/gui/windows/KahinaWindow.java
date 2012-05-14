@@ -321,4 +321,9 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 	{
 		return getTitle();
 	}
+	
+	public void setVisible(boolean visible)
+	{
+	    super.setVisible(visible);
+	}
 }

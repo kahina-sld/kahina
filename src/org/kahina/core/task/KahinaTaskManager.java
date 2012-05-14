@@ -6,7 +6,7 @@ import java.util.List;
 public class KahinaTaskManager
 {
     List<KahinaTask> taskQueue;
-    KahinaTask currentTask;
+    protected KahinaTask currentTask;
     
     public static boolean VERBOSE = false;
     

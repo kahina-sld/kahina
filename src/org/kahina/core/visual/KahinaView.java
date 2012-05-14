@@ -19,12 +19,13 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 
 	// the title of the tab or window this view is displayed in
 	private String title = "Unnamed View";
+	
+	private boolean visible = false;
 
 	protected KahinaViewConfiguration config;
-
 	protected T model;
-	
 	protected final KahinaInstance<?, ?, ?> kahina;
+	
 
 	public KahinaView(KahinaInstance<?, ?, ?> kahina)
 	{
@@ -125,4 +126,14 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	{
 		return makePanel();
 	}
+	
+	public boolean isVisible()
+	{
+	    return this.visible;
+	}
+
+    public void setVisible(boolean visible)
+    {
+        this.visible = visible;     
+    }
 }
