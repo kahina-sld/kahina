@@ -1,11 +1,11 @@
-package org.kahina.logic.sat.visual;
+package org.kahina.logic.sat.visual.cnf;
 
 import java.awt.Color;
 import java.util.HashMap;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.graph.KahinaGraphLayouter;
-import org.kahina.logic.sat.data.GroupCnfSatInstance;
+import org.kahina.logic.sat.data.cnf.GroupCnfSatInstance;
 
 public class KahinaGroupSatInstanceView extends KahinaSatInstanceView
 {

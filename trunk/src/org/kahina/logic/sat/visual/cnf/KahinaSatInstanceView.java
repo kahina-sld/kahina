@@ -1,4 +1,4 @@
-package org.kahina.logic.sat.visual;
+package org.kahina.logic.sat.visual.cnf;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -16,7 +16,7 @@ import org.kahina.core.gui.KahinaProgressBar;
 import org.kahina.core.visual.graph.KahinaGraphLayouter;
 import org.kahina.core.visual.graph.KahinaGraphView;
 import org.kahina.core.visual.graph.KahinaGraphViewPanel;
-import org.kahina.logic.sat.data.CnfSatInstance;
+import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
 public class KahinaSatInstanceView extends KahinaGraphView
 {

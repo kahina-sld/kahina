@@ -1,4 +1,4 @@
-package org.kahina.logic.sat.data;
+package org.kahina.logic.sat.data.cnf;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 import org.kahina.core.data.graph.AdjacListsGraph;
 import org.kahina.core.data.graph.KahinaGraph;
+import org.kahina.logic.sat.data.KahinaSatInstance;
 
 public class CnfSatInstance extends KahinaSatInstance
 {
