@@ -1,4 +1,4 @@
-package org.kahina.logic.sat.data;
+package org.kahina.logic.sat.data.cnf;
 
 import java.io.File;
 import java.io.FileNotFoundException;

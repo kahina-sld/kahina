@@ -1,4 +1,4 @@
-package org.kahina.logic.sat.visual;
+package org.kahina.logic.sat.visual.cnf;
 
 import java.awt.event.MouseEvent;
 
