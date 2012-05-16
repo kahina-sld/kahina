@@ -14,4 +14,10 @@ public class BooleanVariable extends BooleanFormula
     {
       return var.toString();
     }
+
+    @Override
+    public String toStringWithMinimumBracing()
+    {
+        return toString();
+    }
 }

@@ -26,4 +26,25 @@ public class Disjunction extends BooleanFormula
       s.append(")");
       return s.toString();
     }
+    
+    @Override
+    public String toStringWithMinimumBracing()
+    {
+        StringBuffer s = new StringBuffer();
+        String separator = "";
+        for(BooleanFormula fm : fms) 
+        {
+          s.append(separator);
+          if (fm instanceof Disjunction)
+          {
+              s.append("(" + fm.toStringWithMinimumBracing() + ")");
+          }
+          else
+          {
+              s.append(fm.toStringWithMinimumBracing());
+          }
+          separator = "/";
+        }
+        return s.toString();
+    }
 }
