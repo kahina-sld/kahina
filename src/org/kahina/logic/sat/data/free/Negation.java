@@ -14,4 +14,17 @@ public class Negation extends BooleanFormula
     {
       return "-(" + fm + ")";
     }
+
+    @Override
+    public String toStringWithMinimumBracing()
+    {
+        if (fm instanceof BooleanVariable || fm instanceof BooleanConstant)
+        {
+            return "-" + fm.toStringWithMinimumBracing();
+        }
+        else
+        {
+            return "-(" + fm.toStringWithMinimumBracing() + ")";
+        }
+    }
 }

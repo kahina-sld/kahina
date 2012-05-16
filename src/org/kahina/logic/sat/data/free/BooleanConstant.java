@@ -14,4 +14,10 @@ public class BooleanConstant extends BooleanFormula
     {
         return value ? "T" : "F";
     }
+
+    @Override
+    public String toStringWithMinimumBracing()
+    {
+        return toString();
+    }
 }
