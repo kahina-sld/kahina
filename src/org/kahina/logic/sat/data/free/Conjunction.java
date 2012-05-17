@@ -47,4 +47,9 @@ public class Conjunction extends BooleanFormula
         }
         return s.toString();
     }
+    
+    public List<BooleanFormula> getFms()
+    {
+        return fms;
+    }
 }

@@ -61,7 +61,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
     
     @Override
 	public void updateDisplay()
-    {      
+    {     
         BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = newImage.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;

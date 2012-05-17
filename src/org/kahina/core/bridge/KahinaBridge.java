@@ -28,8 +28,8 @@ public class KahinaBridge implements KahinaListener
     {
         if (kahina.getState() == null)
         {
-            System.err.println("ERROR: attempting to construct a bridge for an instance where state == null!");
-            System.err.println("       Bridge will not be functional! NullPointerExceptions will result!");
+            System.err.println("WARNING: attempting to construct a bridge for an instance where state == null!");
+            System.err.println("         Bridge will not be functional! NullPointerExceptions might result!");
         }
     	this.kahina = kahina;
         kahina.getControl().registerListener(KahinaEventTypes.CONTROL, this);

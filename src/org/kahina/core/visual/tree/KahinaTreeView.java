@@ -29,7 +29,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 {
 	public static final boolean VERBOSE = false;
 	
-	KahinaTreeViewConfiguration config;
+	protected KahinaTreeViewConfiguration config;
 
 	int treeLayer = 0;
 	// layered structure for drawing; also used for reverse indexing
