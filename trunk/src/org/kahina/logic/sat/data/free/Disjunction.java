@@ -47,4 +47,9 @@ public class Disjunction extends BooleanFormula
         }
         return s.toString();
     }
+    
+    public List<BooleanFormula> getFms()
+    {
+        return fms;
+    }
 }
