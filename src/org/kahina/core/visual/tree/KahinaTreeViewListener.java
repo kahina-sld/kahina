@@ -17,10 +17,10 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 public class KahinaTreeViewListener extends MouseAdapter implements ActionListener
 {
-    KahinaTreeViewPanel view;
-    KahinaTreeViewMarker marker;
-    MouseEvent lastMouseEvent;
-	private final KahinaInstance<?, ?, ?> kahina;
+    protected KahinaTreeViewPanel view;
+    protected KahinaTreeViewMarker marker;
+    protected MouseEvent lastMouseEvent;
+	protected final KahinaInstance<?, ?, ?> kahina;
     
     public KahinaTreeViewListener(KahinaTreeViewPanel view, KahinaInstance<?, ?, ?> kahina)
     {
