@@ -38,11 +38,41 @@ public class FormulaTreeView extends KahinaTreeView
         nodeToFrm.clear();
         this.formula = formula;
         super.display(new KahinaMemTree());
+        model.setRootID(0);
         int rootID = model.getRootID();
         model.setNodeCaption(rootID,generateNodeCaption(formula));
         frmToNode.put(formula, rootID);
         nodeToFrm.put(rootID, formula);
         recalculate();
+    }
+    
+    public void toggleFormulaCollapse(int nodeID)
+    {
+        model.setNodeStatus(nodeID, 1);
+        BooleanFormula frm = nodeToFrm.get(nodeID);
+        if (frm != null)
+        {
+            if (frm instanceof Conjunction)
+            {
+                Conjunction f = (Conjunction) frm;
+                for (BooleanFormula subf : f.getFms())
+                {
+                    addFormulaNode(subf, nodeID);
+                }
+            }
+            else if (frm instanceof Disjunction)
+            {
+                
+            }
+        }
+    }
+    
+    private void addFormulaNode(BooleanFormula f, int parentID)
+    {
+        int nodeID = model.addNode(generateNodeCaption(f), "", 0);
+        frmToNode.put(f, nodeID);
+        nodeToFrm.put(nodeID, f);
+        model.addChild(parentID, nodeID);
     }
 
     private String generateNodeCaption(BooleanFormula f)

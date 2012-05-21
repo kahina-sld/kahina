@@ -1,5 +1,6 @@
 package org.kahina.logic.sat.test;
 
+import java.awt.Color;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -30,7 +31,9 @@ public class BooleanFormulaTest
             
             BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.simplified.abc");
             final FormulaTreeView view = new FormulaTreeView(kahina);
-            view.getConfig().setZoomLevel(5);
+            view.getConfig().setZoomLevel(10);
+            view.setStatusColorEncoding(0, Color.YELLOW);
+            view.setStatusColorEncoding(1, Color.WHITE);
             view.displayFormula(f);  
             
             SwingUtilities.invokeLater(new Runnable() 
