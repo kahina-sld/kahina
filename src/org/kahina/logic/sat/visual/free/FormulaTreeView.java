@@ -62,7 +62,11 @@ public class FormulaTreeView extends KahinaTreeView
             }
             else if (frm instanceof Disjunction)
             {
-                
+                Disjunction f = (Disjunction) frm;
+                for (BooleanFormula subf : f.getFms())
+                {
+                    addFormulaNode(subf, nodeID);
+                }
             }
         }
     }

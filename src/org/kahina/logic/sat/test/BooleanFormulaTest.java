@@ -29,7 +29,7 @@ public class BooleanFormulaTest
             final KahinaController control = new KahinaController();
             final KahinaInstance<?, ?, ?> kahina = new KahinaDefaultInstance();
             
-            BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.simplified.abc");
+            BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.abc");
             final FormulaTreeView view = new FormulaTreeView(kahina);
             view.getConfig().setZoomLevel(10);
             view.setStatusColorEncoding(0, Color.YELLOW);
