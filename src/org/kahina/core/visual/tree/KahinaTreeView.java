@@ -849,7 +849,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	{
 		resetAllStructures();
 		calculateCoordinates();
-		// System.err.println("Levels:\n" + showLevels());
+		//System.err.println("Levels:\n" + showLevels());
 	}
 
 	/**

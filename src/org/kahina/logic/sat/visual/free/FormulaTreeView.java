@@ -34,13 +34,13 @@ public class FormulaTreeView extends KahinaTreeView
     
     public void displayFormula(BooleanFormula formula)
     {
+        System.err.println("displayFormula(" + formula + ")");
         frmToNode.clear();
         nodeToFrm.clear();
         this.formula = formula;
         super.display(new KahinaMemTree());
-        model.setRootID(0);
-        int rootID = model.getRootID();
-        model.setNodeCaption(rootID,generateNodeCaption(formula));
+        int rootID = model.addNode(generateNodeCaption(formula), "", 0);
+        model.setRootID(rootID);
         frmToNode.put(formula, rootID);
         nodeToFrm.put(rootID, formula);
         recalculate();
@@ -69,10 +69,15 @@ public class FormulaTreeView extends KahinaTreeView
                 }
             }
         }
+        else
+        {
+            System.err.println("ERROR: node to be collapsed is not associated with any subformula!");
+        }
     }
     
     private void addFormulaNode(BooleanFormula f, int parentID)
     {
+        System.err.println("addFormulaNode(" + f + "," + parentID + ")");
         int nodeID = model.addNode(generateNodeCaption(f), "", 0);
         frmToNode.put(f, nodeID);
         nodeToFrm.put(nodeID, f);
