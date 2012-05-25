@@ -9,6 +9,11 @@ public class Negation extends BooleanFormula
         this.fm = fm;
     }
     
+    public BooleanFormula getArg()
+    {
+        return fm;
+    }
+    
     @Override
     public String toString() 
     {
