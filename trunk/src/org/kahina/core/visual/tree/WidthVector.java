@@ -7,7 +7,7 @@ public class WidthVector
     public ArrayList<Integer> start;
     public ArrayList<Integer> end;
     
-    public static boolean VERBOSE = false;
+    public static boolean VERBOSE = true;
     
     public WidthVector()
     {
