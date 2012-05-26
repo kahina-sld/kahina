@@ -138,15 +138,20 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
             List<Integer> nodes = view.nodeLevels.get(i);
             for (int j = 0; j < nodes.size(); j++)
             {
-                if (view.getConfig().getNodeShapePolicy() == KahinaTreeViewOptions.BOX_SHAPE)
+                if (view.getConfig().getNodeShapePolicy() == KahinaTreeViewOptions.NODE_SHAPE_POINT)
                 {
-                    printBoxAroundNodeTag(cnv, nodes.get(j));               
+                    printNodePoint(cnv, nodes.get(j));
                 }
-                else if (view.getConfig().getNodeShapePolicy() == KahinaTreeViewOptions.OVAL_SHAPE)
+                else if (view.getConfig().getNodeShapePolicy() == KahinaTreeViewOptions.NODE_SHAPE_BOX)
+                {
+                    printBoxAroundNodeTag(cnv, nodes.get(j));    
+                    printNodeTag(cnv, nodes.get(j));
+                }
+                else if (view.getConfig().getNodeShapePolicy() == KahinaTreeViewOptions.NODE_SHAPE_OVAL)
                 {
                     printOvalAroundNodeTag(cnv, nodes.get(j));
+                    printNodeTag(cnv, nodes.get(j));
                 }
-                printNodeTag(cnv, nodes.get(j));
             }
         }
     }
@@ -242,6 +247,26 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         //canvas.drawString(tag + " " + nodeID, x, y);
         canvas.setStroke(new BasicStroke(1));
         canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, view.getConfig().getZoomLevel()));
+    }
+    
+    public void printNodePoint(Graphics2D canvas, int vertex)
+    {
+        int size = view.getConfig().getZoomLevel();
+        int x = view.getNodeX(vertex) - size / 2;
+        int y = view.getNodeY(vertex) - size / 2;
+        Color color = view.getNodeColor(vertex);
+        if (color != null)
+        { 
+            canvas.setColor(color);
+            canvas.fillOval(x, y, size, size);
+            Color nodeBorderColor = view.getNodeBorderColor(vertex);
+            if (nodeBorderColor == null || nodeBorderColor == Color.WHITE)
+            {
+                nodeBorderColor = Color.black;
+            }
+            canvas.setColor(nodeBorderColor);
+            canvas.drawOval(x - 1, y - 1, size + 2, size + 2);
+        }
     }
     
     public void printTreeEdges(Graphics canvas)

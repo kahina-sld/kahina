@@ -5,8 +5,9 @@ public class KahinaTreeViewOptions
 	// DISPLAY CONSTANTS
 
 	// possible values for shape policies
-	public static final int BOX_SHAPE = 0;
-	public static final int OVAL_SHAPE = 1;
+    public static final int NODE_SHAPE_POINT = 0;
+	public static final int NODE_SHAPE_BOX = 1;
+	public static final int NODE_SHAPE_OVAL = 2;
 
 	// possible values for node display policy
 	public static final int ALWAYS = 0;

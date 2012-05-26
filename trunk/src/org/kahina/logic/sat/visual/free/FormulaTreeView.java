@@ -45,6 +45,15 @@ public class FormulaTreeView extends KahinaTreeView
         recalculate();
     }
     
+    public void recursiveDecollapse(int nodeID)
+    {
+        toggleFormulaCollapse(nodeID);
+        for (int childID : model.getChildren(nodeID))
+        {
+            recursiveDecollapse(childID);
+        }
+    }
+    
     public void toggleFormulaCollapse(int nodeID)
     {
         if (model.getNodeStatus(nodeID) == 0)
