@@ -313,7 +313,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 		// System.err.println(terminalLayer);
 
 		totalTreeWidth = 50;
-		totalTreeHeight = (nodeLevels.size() + 2) * verticalDistance * 10 + 10;
+		totalTreeHeight = (nodeLevels.size() + 1) * verticalDistance * 10 + 10;
 
 		if (model.getRootID(treeLayer) != -1)
 		{
@@ -348,35 +348,32 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 				System.err.println("COMPLETE: Calculate subtree widths for layer " + treeLayer);
 			if (VERBOSE)
 				System.err.println("maxNodeWidth = " + maxNodeWidth);
-			nodeX.put(model.getRootID(treeLayer), subtreeWidths.get(model.getRootID(treeLayer)).maximumLeftDistance() * horizontalDistance * fontSize / 2);
+			WidthVector rootWidthVector = subtreeWidths.get(model.getRootID(treeLayer));
+			int rootLeftDistance = rootWidthVector.maximumLeftDistance();
+            int rootRightDistance = rootWidthVector.maximumRightDistance();
+            // adapt total tree width to maximum level width (i.e. maximum x position of a node in any level)
+            totalTreeWidth = (rootLeftDistance + rootRightDistance) * horizontalDistance * 10;
+			//nodeX.put(model.getRootID(treeLayer), rootLeftDistance * horizontalDistance * 10);
 			// Nodes in this view whose secondary parent is not in this view.
 			// Will start from there to display secondary tree:
 			ArrayList<Integer> indentAgenda = new ArrayList<Integer>();
-			System.err.println("-----------------------");
+			if (VERBOSE) System.err.println("-----------------------");
 			for (int i = 0; i < nodeLevels.size(); i++)
 			{
 				if (VERBOSE)
 					System.err.println("Node level: " + i);
 				List<Integer> nodes = nodeLevels.get(i);
-				int xOffset = 0;
-				if (nodes.size() > 0)
-				{
-					xOffset = subtreeWidths.get(nodes.get(0)).maximumLeftDistance() * horizontalDistance * 10;
-				    System.err.println(xOffset + " = " + subtreeWidths.get(nodes.get(0)).maximumLeftDistance() + " * " + horizontalDistance * 10);
-				}
-				else
-				{
-				    xOffset = horizontalDistance;
-				}
+				int xOffset = (1 + rootLeftDistance - rootWidthVector.getStart(i)) * horizontalDistance * 10;
+				if (VERBOSE) System.err.println(xOffset + " = (1 + " + rootLeftDistance + " - " + rootWidthVector.getStart(i) + ") * " + horizontalDistance * 10);
 				// TODO: find out why this does not seem to have any effect
-				if (config.getNodePositionPolicy() == KahinaTreeViewOptions.CENTERED_NODES)
+				/*if (config.getNodePositionPolicy() == KahinaTreeViewOptions.CENTERED_NODES)
 				{
 					xOffset += maxNodeWidth;
 				}
 				if (config.getNodePositionPolicy() == KahinaTreeViewOptions.RIGHT_ALIGNED_NODES)
 				{
 					xOffset += maxNodeWidth;
-				}
+				}*/
 				int parent = -1;
 				WidthVector subtreeWidth = new WidthVector();
 				WidthVector lastSubtreeWidth = null;
@@ -399,13 +396,10 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 							System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
 						// old variant of xOffset computation
 						// xOffset = (int)((nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) * 0.5 - 0.5) * horizontalDistance * fontSize));
-						xOffset = nodeX.get(parent) - subtreeWidths.get(parent).getStart(1) * horizontalDistance * 5;
+						xOffset = nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) - 1) * horizontalDistance * 10;
 					}
-					if (i > 0)
-					{
-						nodeX.put(node, xOffset);
-					}
-					nodeY.put(node, verticalDistance * 10 * i + 10);
+					nodeX.put(node, xOffset);
+					nodeY.put(node, verticalDistance * 10 * i + 20);
 					if (VERBOSE)
 						System.err.println(" X:" + nodeX.get(node) + " Y:" + nodeY.get(node));
 					if (VERBOSE)
@@ -427,23 +421,13 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					}
 	                lastSubtreeWidth = subtreeWidth;
 				}
-				// adapt total tree width to maximum level width (i.e. maximum x
-				// position of a node in any level)
-				if (nodes.size() > 0)
-				{
-					int nodeLevelWidth = nodeX.get(nodes.get(nodes.size() - 1)) + horizontalDistance * fontSize;
-					if (nodeLevelWidth > totalTreeWidth)
-					{
-						totalTreeWidth = nodeLevelWidth;
-					}
-				}
 			}
 			// position terminals
 			nodeLevels.get(nodeLevels.size() - 1).addAll(terminalLayer);
 			for (int i : terminalLayer)
 			{
 				nodeX.put(i, nodeX.get(model.getParent(i, treeLayer)));
-				nodeY.put(i, (nodeLevels.size() + 1) * verticalDistance * fontSize);
+				nodeY.put(i, (nodeLevels.size() + 1) * verticalDistance * 10 + 10);
 			}
 			// move nodes around according to secondary tree structure and policy
 			if (isSecondDimensionDisplayed())
