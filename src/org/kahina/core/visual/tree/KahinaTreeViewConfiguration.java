@@ -14,7 +14,7 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 	private int horizontalDistance = 5;
 	private int verticalDistance = 25;
 	private Color bgColor = Color.WHITE;
-	private int nodeShapePolicy = KahinaTreeViewOptions.BOX_SHAPE;
+	private int nodeShapePolicy = KahinaTreeViewOptions.NODE_SHAPE_BOX;
     private int edgeTagPolicy = KahinaTreeViewOptions.OVAL_EDGE_TAGS;
 	private int nodeDisplayPolicy = KahinaTreeViewOptions.STATUS_DEFAULT_YES;
 	private int collapsePolicy = KahinaTreeViewOptions.COLLAPSE_SECONDARY;
@@ -168,7 +168,7 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 
     public void setNodeShapePolicy(int newPolicy)
     {
-        if (newPolicy >= 0 && newPolicy <= 1)
+        if (newPolicy >= 0 && newPolicy <= 2)
         {
             nodeShapePolicy = newPolicy;
         } 

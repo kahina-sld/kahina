@@ -225,6 +225,10 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         
         JMenu nodeShapePolicySubmenu = new JMenu("Node shape");
         ButtonGroup nodeShapePolicyGroup = new ButtonGroup();
+        JRadioButtonMenuItem pointShapeItem = new JRadioButtonMenuItem("Point nodes");
+        pointShapeItem.addActionListener(l);
+        nodeShapePolicyGroup.add(pointShapeItem);
+        nodeShapePolicySubmenu.add(pointShapeItem);
         JRadioButtonMenuItem boxShapeItem = new JRadioButtonMenuItem("Box nodes");
         boxShapeItem.addActionListener(l);
         nodeShapePolicyGroup.add(boxShapeItem);
@@ -237,9 +241,13 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         {
             case 0:
             {
-                boxShapeItem.setSelected(true); break;
+                pointShapeItem.setSelected(true); break;
             }
             case 1:
+            {
+                boxShapeItem.setSelected(true); break;
+            }
+            case 2:
             {
                 ovalShapeItem.setSelected(true);
             }

@@ -182,13 +182,17 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
             view.view.getConfig().setCollapsePolicy(KahinaTreeViewOptions.COLLAPSE_SECONDARY);
             view.view.recalculate();
         }
+        else if (command.equals("Point nodes"))
+        {
+            view.view.getConfig().setNodeShapePolicy(KahinaTreeViewOptions.NODE_SHAPE_POINT);
+        }
         else if (command.equals("Box nodes"))
         {
-            view.view.getConfig().setNodeShapePolicy(KahinaTreeViewOptions.BOX_SHAPE);
+            view.view.getConfig().setNodeShapePolicy(KahinaTreeViewOptions.NODE_SHAPE_BOX);
         }
         else if (command.equals("Oval nodes"))
         {
-            view.view.getConfig().setNodeShapePolicy(KahinaTreeViewOptions.OVAL_SHAPE);
+            view.view.getConfig().setNodeShapePolicy(KahinaTreeViewOptions.NODE_SHAPE_OVAL);
         }
         else if (command.equals("No tags"))
         {
