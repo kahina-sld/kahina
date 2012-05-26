@@ -7,7 +7,7 @@ public class WidthVector
     public ArrayList<Integer> start;
     public ArrayList<Integer> end;
     
-    public static boolean VERBOSE = true;
+    public static boolean VERBOSE = false;
     
     public WidthVector()
     {
@@ -121,8 +121,18 @@ public class WidthVector
         return end.get(level);
     }
     
+    /**
+     * 
+     * @param w1 (may be null)
+     * @param w2 (may NOT be null)
+     * @return
+     */
     public static int computeNecessaryDistance(WidthVector w1, WidthVector w2)
     {
+        if (w1 == null)
+        {
+            return w2.maximumLeftDistance();
+        }
         //System.err.println("Distance between: " + w1 + " and " + w2);
         int w1size = w1.start.size();
         int w2size = w2.start.size();

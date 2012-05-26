@@ -33,7 +33,7 @@ public class BooleanFormulaTest
             BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.abc");
             final FormulaTreeView view = new FormulaTreeView(kahina);
             view.getConfig().setZoomLevel(10);
-            view.getConfig().setHorizontalDistance(8);
+            view.getConfig().setHorizontalDistance(4);
             view.getConfig().setVerticalDistance(5);
             view.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
             view.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
