@@ -14,6 +14,7 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 import org.kahina.logic.sat.data.free.BooleanFormula;
+import org.kahina.logic.sat.data.free.RandomFormulaGenerator;
 import org.kahina.logic.sat.io.free.BooleanFormulaParser;
 import org.kahina.logic.sat.visual.free.FormulaTreeView;
 
@@ -30,8 +31,9 @@ public class BooleanFormulaTest
             final KahinaController control = new KahinaController();
             final KahinaInstance<?, ?, ?> kahina = new KahinaDefaultInstance();
             
-            //BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/timout_01.abc");
-            BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.abc");
+            if (false) { BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/timout_01.abc");} ;
+            //BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.abc");
+            BooleanFormula f = RandomFormulaGenerator.randomFormula(10, 10, 3, false);
             final FormulaTreeView view = new FormulaTreeView(kahina);
             view.getConfig().setNodeSize(10);
             view.getConfig().setHorizontalDistance(12);
