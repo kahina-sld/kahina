@@ -70,7 +70,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
             canvas.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         }
         //determine font size
-        int fontSize = view.getConfig().getZoomLevel();
+        int fontSize = view.getConfig().getNodeSize();
         Font font = new Font("Arial", Font.PLAIN, fontSize);
         canvas.setFont(font);
 
@@ -83,7 +83,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         canvas.setColor(Color.BLACK);
         if (view.getConfig().getTerminalsPolicy() == KahinaTreeViewOptions.GRAPHICALLY_SEPARATED)
         {
-            int y = view.getDisplayHeight() - 2 * view.getConfig().getZoomLevel() * view.getConfig().getVerticalDistance();
+            int y = view.getDisplayHeight() - 2 * view.getConfig().getNodeSize() * view.getConfig().getVerticalDistance();
             int y2 = view.getDisplayHeight();
             canvas.drawLine(0, y, view.getDisplayWidth() - 1, y);
             canvas.drawLine(3, y+3, view.getDisplayWidth() - 4, y+3);
@@ -246,12 +246,12 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
         canvas.drawString(tag, x, y);
         //canvas.drawString(tag + " " + nodeID, x, y);
         canvas.setStroke(new BasicStroke(1));
-        canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, view.getConfig().getZoomLevel()));
+        canvas.setFont(new Font(canvas.getFont().getFontName(),Font.PLAIN, view.getConfig().getNodeSize()));
     }
     
     public void printNodePoint(Graphics2D canvas, int vertex)
     {
-        int size = view.getConfig().getZoomLevel();
+        int size = view.getConfig().getNodeSize();
         int x = view.getNodeX(vertex) - size / 2;
         int y = view.getNodeY(vertex) - size / 2;
         Color color = view.getNodeColor(vertex);
@@ -291,8 +291,8 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
                     int y2 = view.getNodeY(nodeID);
                     if (view.getConfig().getDisplayOrientation() == KahinaTreeViewOptions.TOP_DOWN_DISPLAY)
                     {
-                        y1 += view.getNodeHeight(view.getModel().getParent(nodeID,view.getTreeLayer())) - view.getConfig().getZoomLevel();
-                        y2 -= view.getConfig().getZoomLevel() - 2;
+                        y1 += view.getNodeHeight(view.getModel().getParent(nodeID,view.getTreeLayer())) - view.getConfig().getNodeSize();
+                        y2 -= view.getConfig().getNodeSize() - 2;
                     }
                     String edgeTag = view.getContentfulTreeModel().getEdgeLabel(nodeID);
                     switch (view.getConfig().getLineShapePolicy())
@@ -381,7 +381,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
                     int x2 = view.getNodeX(node);
                     int y1 = view.getNodeY(parent);
                     int y2 = view.getNodeY(node);
-                    int zoomLevel = view.getConfig().getZoomLevel();
+                    int zoomLevel = view.getConfig().getNodeSize();
                     if (view.getConfig().getDisplayOrientation() == KahinaTreeViewOptions.BOTTOM_UP_DISPLAY)
                     {
                         y2 += zoomLevel / 2;

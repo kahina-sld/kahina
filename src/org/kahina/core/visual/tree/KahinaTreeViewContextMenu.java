@@ -26,18 +26,20 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         JMenuItem zoomOutItem = new JMenuItem("Zoom Out");
         zoomOutItem.addActionListener(l);
         zoomSubmenu.add(zoomOutItem);
-        zoomSubmenu.addSeparator();
+        add(zoomSubmenu);
+        
+        JMenu nodeSizeSubmenu = new JMenu("Node Size");
         ButtonGroup sizeGroup = new ButtonGroup();
         //size buttons visible depend on current size
-        for (int i = 6; i <= 30; i += 1)
+        for (int i = 1; i <= 20; i += 1)
         {
-            JRadioButtonMenuItem sizeItem = new JRadioButtonMenuItem(i + "0 %");
-            if (i == v.getConfig().getZoomLevel()) sizeItem.setSelected(true);
+            JRadioButtonMenuItem sizeItem = new JRadioButtonMenuItem(i + " pt");
+            if (i == v.getConfig().getNodeSize()) sizeItem.setSelected(true);
             sizeItem.addActionListener(l);
             sizeGroup.add(sizeItem);
-            zoomSubmenu.add(sizeItem);
+            nodeSizeSubmenu.add(sizeItem);
         }
-        add(zoomSubmenu);
+        add(nodeSizeSubmenu);
         
         JMenu verticalDistanceSubmenu = new JMenu("Vertical distance");
         JMenuItem increaseVerticalDistanceItem = new JMenuItem("Increase");
@@ -51,7 +53,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         verticalDistanceSubmenu.addSeparator();
         ButtonGroup verticalDistanceGroup = new ButtonGroup();
         //size buttons visible depend on current size
-        for (int i = 2; i <= 20; i += 1)
+        for (int i = 1; i <= 20; i += 1)
         {
             JRadioButtonMenuItem distanceItem = new JRadioButtonMenuItem(i + " px");
             distanceItem.setActionCommand(i + " vertical distance");
@@ -74,7 +76,7 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         horizontalDistanceSubmenu.addSeparator();
         ButtonGroup horizontalDistanceGroup = new ButtonGroup();
         //size buttons visible depend on current size
-        for (int i = 2; i <= 20; i += 1)
+        for (int i = 1; i <= 20; i += 1)
         {
             JRadioButtonMenuItem distanceItem = new JRadioButtonMenuItem(i + " px");
             distanceItem.setActionCommand(i + " horizontal distance");
