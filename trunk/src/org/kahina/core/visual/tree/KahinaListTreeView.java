@@ -92,16 +92,16 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 		{
 			if (model.isCollapsed(nodeID) && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_PRIMARY)
 			{
-				return new Font(Font.SANS_SERIF, Font.BOLD, config.getZoomLevel());
+				return new Font(Font.SANS_SERIF, Font.BOLD, config.getNodeSize());
 			}
 			if (secondaryTreeModel != null && secondaryTreeModel.isCollapsed(nodeID) && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_SECONDARY)
 			{
-				return new Font(Font.SANS_SERIF, Font.BOLD, config.getZoomLevel());
+				return new Font(Font.SANS_SERIF, Font.BOLD, config.getNodeSize());
 			}
-			return new Font(Font.SANS_SERIF, Font.PLAIN, config.getZoomLevel());
+			return new Font(Font.SANS_SERIF, Font.PLAIN, config.getNodeSize());
 		} else
 		{
-			return new Font(fnt.getFamily(), fnt.getStyle(), config.getZoomLevel());
+			return new Font(fnt.getFamily(), fnt.getStyle(), config.getNodeSize());
 		}
 	}
 

@@ -30,12 +30,12 @@ public class BooleanFormulaTest
             final KahinaController control = new KahinaController();
             final KahinaInstance<?, ?, ?> kahina = new KahinaDefaultInstance();
             
-            BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/timout_01.abc");
-            //BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.abc");
+            //BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/timout_01.abc");
+            BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.abc");
             final FormulaTreeView view = new FormulaTreeView(kahina);
-            view.getConfig().setZoomLevel(10);
-            view.getConfig().setHorizontalDistance(4);
-            view.getConfig().setVerticalDistance(5);
+            view.getConfig().setNodeSize(10);
+            view.getConfig().setHorizontalDistance(12);
+            view.getConfig().setVerticalDistance(15);
             view.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
             view.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
             view.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);

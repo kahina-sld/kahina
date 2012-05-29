@@ -167,16 +167,17 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 		{
 			if (model.isCollapsed(nodeID) && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_PRIMARY)
 			{
-				return new Font(Font.SANS_SERIF, Font.BOLD, config.getZoomLevel());
+				return new Font(Font.SANS_SERIF, Font.BOLD, config.getNodeSize());
 			}
 			if (secondaryTreeModel != null && secondaryTreeModel.isCollapsed(nodeID) && config.getCollapsePolicy() == KahinaTreeViewOptions.COLLAPSE_SECONDARY)
 			{
-				return new Font(Font.SANS_SERIF, Font.BOLD, config.getZoomLevel());
+				return new Font(Font.SANS_SERIF, Font.BOLD, config.getNodeSize());
 			}
-			return new Font(Font.SANS_SERIF, Font.PLAIN, config.getZoomLevel());
-		} else
+			return new Font(Font.SANS_SERIF, Font.PLAIN, config.getNodeSize());
+		} 
+		else
 		{
-			return new Font(fnt.getFamily(), fnt.getStyle(), config.getZoomLevel());
+			return new Font(fnt.getFamily(), fnt.getStyle(), config.getNodeSize());
 		}
 	}
 
@@ -299,7 +300,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 
 	public void calculateCoordinates()
 	{
-		int fontSize = config.getZoomLevel();
+		int fontSize = config.getNodeSize();
 		int verticalDistance = config.getVerticalDistance();
 		int horizontalDistance = config.getHorizontalDistance();
 		if (VERBOSE)
@@ -313,7 +314,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 		// System.err.println(terminalLayer);
 
 		totalTreeWidth = 50;
-		totalTreeHeight = (nodeLevels.size() + 1) * verticalDistance * 10 + 10;
+		totalTreeHeight = (nodeLevels.size() + 1) * verticalDistance * 3 + 10;
 
 		if (model.getRootID(treeLayer) != -1)
 		{
@@ -352,7 +353,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			int rootLeftDistance = rootWidthVector.maximumLeftDistance();
             int rootRightDistance = rootWidthVector.maximumRightDistance();
             // adapt total tree width to maximum level width (i.e. maximum x position of a node in any level)
-            totalTreeWidth = (rootLeftDistance + rootRightDistance) * horizontalDistance * 10;
+            totalTreeWidth = (rootLeftDistance + rootRightDistance) * horizontalDistance * 3;
 			//nodeX.put(model.getRootID(treeLayer), rootLeftDistance * horizontalDistance * 10);
 			// Nodes in this view whose secondary parent is not in this view.
 			// Will start from there to display secondary tree:
@@ -363,7 +364,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 				if (VERBOSE)
 					System.err.println("Node level: " + i);
 				List<Integer> nodes = nodeLevels.get(i);
-				int xOffset = (1 + rootLeftDistance - rootWidthVector.getStart(i)) * horizontalDistance * 10;
+				int xOffset = (1 + rootLeftDistance - rootWidthVector.getStart(i)) * horizontalDistance * 3;
 				if (VERBOSE) System.err.println(xOffset + " = (1 + " + rootLeftDistance + " - " + rootWidthVector.getStart(i) + ") * " + horizontalDistance * 10);
 				// TODO: find out why this does not seem to have any effect
 				/*if (config.getNodePositionPolicy() == KahinaTreeViewOptions.CENTERED_NODES)
@@ -383,7 +384,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					subtreeWidth = subtreeWidths.get(node);
 					if (lastSubtreeWidth != null)
 					{
-					    xOffset += WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth) * horizontalDistance * 10;
+					    xOffset += WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth) * horizontalDistance * 3;
 					}
 					// switch to children of next parent node --> jump in x offset
 					int newParent = getVisibleParent(node);
@@ -396,10 +397,10 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 							System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
 						// old variant of xOffset computation
 						// xOffset = (int)((nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) * 0.5 - 0.5) * horizontalDistance * fontSize));
-						xOffset = nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) - 1) * horizontalDistance * 10;
+						xOffset = nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) - 1) * horizontalDistance * 3;
 					}
 					nodeX.put(node, xOffset);
-					nodeY.put(node, verticalDistance * 10 * i + 20);
+					nodeY.put(node, verticalDistance * 3 * i + 20);
 					if (VERBOSE)
 						System.err.println(" X:" + nodeX.get(node) + " Y:" + nodeY.get(node));
 					if (VERBOSE)
@@ -427,7 +428,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			for (int i : terminalLayer)
 			{
 				nodeX.put(i, nodeX.get(model.getParent(i, treeLayer)));
-				nodeY.put(i, (nodeLevels.size() + 1) * verticalDistance * 10 + 10);
+				nodeY.put(i, (nodeLevels.size() + 1) * verticalDistance * 3 + 10);
 			}
 			// move nodes around according to secondary tree structure and policy
 			if (isSecondDimensionDisplayed())
@@ -680,7 +681,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	// TODO: make this work also with bottom-up display orientation
 	public int nodeAtCoordinates(int x, int y)
 	{
-		int fontSize = config.getZoomLevel();
+		int fontSize = config.getNodeSize();
 		boolean bottomUpVariant = false;
 		// change display orientation locally to simplify computations
 		int displayOrientation = config.getDisplayOrientation();
@@ -849,7 +850,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	{
 		// stepwise increase of horizontal distance until all clashes are
 		// avoided
-		while (maxNodeWidth > config.getHorizontalDistance() * config.getZoomLevel() / 2)
+		while (maxNodeWidth > config.getHorizontalDistance() * config.getNodeSize() / 2)
 		{
 			config.setHorizontalDistance(config.getHorizontalDistance() + 1);
 		}

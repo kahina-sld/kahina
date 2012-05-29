@@ -27,46 +27,51 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
     private int cuttingPolicy = KahinaTreeViewOptions.SECONDARY_CUT;
     private int autoscrollPolicy = KahinaTreeViewOptions.AUTOSCROLL_TO_MARKED_NODE;
 	private boolean displaySecondDimension = true;
-	private int fontSize; // also determines zoom factor
+	private int nodeSize;
 	
 	public KahinaTreeViewConfiguration()
 	{
-		horizontalDistance = 10;
-		verticalDistance = 2;
-		fontSize = 10;
+		horizontalDistance = 30;
+		verticalDistance = 6;
+		nodeSize = 10;
 	}
 	
 	public void zoomIn()
 	{
-		if (fontSize < 30)
+		if (nodeSize < 20)
 		{
-			fontSize += 1;
-		} else
+			nodeSize += 1;
+			horizontalDistance *= (nodeSize / (double) (nodeSize - 1));
+			verticalDistance  *= (nodeSize / (double) (nodeSize - 1));
+		} 
+		else
 		{
-			System.err.println("No zoom levels beyond 30 allowed!");
+			System.err.println("No zoom levels beyond 20 allowed!");
 		}
 	}
 
 	public void zoomOut()
 	{
-		if (fontSize > 6)
+		if (nodeSize > 0)
 		{
-			fontSize -= 1;
+            nodeSize -= 1;
+            horizontalDistance *= (nodeSize / (double) (nodeSize + 1));
+            verticalDistance  *= (nodeSize / (double) (nodeSize + 1));
 		} 
 		else
 		{
-			System.err.println("No zoom levels below 6 allowed!");
+			System.err.println("No zoom levels below 1 allowed!");
 		}
 	}
 
-	public void setZoomLevel(int level)
+	public void setNodeSize(int size)
 	{
-		fontSize = level;
+		nodeSize = size;
 	}
 
-	public int getZoomLevel()
+	public int getNodeSize()
 	{
-		return fontSize;
+		return nodeSize;
 	}
 	
 	public void setBackgroundColor(Color bgColor)
@@ -99,12 +104,12 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 
 	public void decreaseHorizontalDistance()
 	{
-		if (horizontalDistance > 2)
+		if (horizontalDistance > 1)
 		{
 			horizontalDistance -= 1;
 		} else
 		{
-			System.err.println("No horizontal distance values under 2 allowed!");
+			System.err.println("No horizontal distance values under 1 allowed!");
 		}
 	}
 
@@ -141,12 +146,12 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 
 	public void decreaseVerticalDistance()
 	{
-		if (verticalDistance > 2)
+		if (verticalDistance > 1)
 		{
 			verticalDistance -= 1;
 		} else
 		{
-			System.err.println("No vertical distance values under 2 allowed!");
+			System.err.println("No vertical distance values under 1 allowed!");
 		}
 	}
 
@@ -358,9 +363,9 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 			{
 				config.verticalDistance = XMLUtil.attrIntVal(optionEl, "kahina:value");
 			}
-			else if (optName.equals("fontSize"))
+			else if (optName.equals("nodeSize"))
 			{
-				config.fontSize = XMLUtil.attrIntVal(optionEl, "kahina:value");
+				config.nodeSize = XMLUtil.attrIntVal(optionEl, "kahina:value");
 			}
 			else if (optName.equals("displaySecondDimension"))
 			{
@@ -434,8 +439,8 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 		el.appendChild(verDistEl);
 		
 		Element fontSizeEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");
-		fontSizeEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","fontSize");
-		fontSizeEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",fontSize + "");	
+		fontSizeEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:name","nodeSize");
+		fontSizeEl.setAttributeNS("http://www.kahina.org/xml/kahina","kahina:value",nodeSize + "");	
 		el.appendChild(fontSizeEl);
 		
 		Element displaySecondDimEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:option");

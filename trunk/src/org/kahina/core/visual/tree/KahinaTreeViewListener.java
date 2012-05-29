@@ -257,10 +257,10 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
         {
             view.view.getConfig().setAntialiasingPolicy(KahinaTreeViewOptions.NO_ANTIALIASING);
         }
-        else if (command.endsWith("0 %"))
+        else if (command.endsWith(" pt"))
         {
-            int zoomLevel = Integer.parseInt(command.substring(0, command.length() - 3));
-            view.view.getConfig().setZoomLevel(zoomLevel);
+            int nodeSize = Integer.parseInt(command.substring(0, command.length() - 3));
+            view.view.getConfig().setNodeSize(nodeSize);
             view.view.recalculate();
         }
         else if (command.endsWith(" vertical distance"))
