@@ -15,7 +15,9 @@ import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 import org.kahina.logic.sat.data.free.BooleanFormula;
 import org.kahina.logic.sat.data.free.RandomFormulaGenerator;
+import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.free.BooleanFormulaParser;
+import org.kahina.logic.sat.io.free.TseitinTransformationVisitor;
 import org.kahina.logic.sat.visual.free.FormulaTreeView;
 
 public class BooleanFormulaTest
@@ -34,6 +36,10 @@ public class BooleanFormulaTest
             if (false) { BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/timout_01.abc");} ;
             //BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.abc");
             BooleanFormula f = RandomFormulaGenerator.randomFormula(10, 10, 2, false);
+            TseitinTransformationVisitor visitor = new TseitinTransformationVisitor();
+            f.accept(visitor);
+            DimacsCnfOutput.writeDimacsCnfFile("/stud/dellert/test/tseitin/tseitin.cnf", visitor.getCNF());
+            
             final FormulaTreeView view = new FormulaTreeView(kahina);
             view.getConfig().setNodeSize(8);
             view.getConfig().setHorizontalDistance(6);

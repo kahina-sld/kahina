@@ -1,5 +1,7 @@
 package org.kahina.logic.sat.data.free;
 
+import org.kahina.logic.sat.io.free.BooleanFormulaVisitor;
+
 public class Negation extends BooleanFormula
 {
     BooleanFormula fm;
@@ -37,5 +39,10 @@ public class Negation extends BooleanFormula
     public int getSize()
     {
         return fm.getSize();
+    }
+    
+    public <A> A accept(BooleanFormulaVisitor<A> visitor) 
+    {
+        return visitor.visitNegation(this);
     }
 }

@@ -38,9 +38,9 @@ public class GroupCnfSatInstance extends CnfSatInstance
     @SuppressWarnings("unchecked")
     public void computeGroupOccurrenceMap()
     {
-        System.err.print("Generating group occurrence map for " + (numVars * 2) + " literals ... ");
-        occurrenceMap = (List<Integer>[]) new List[numVars * 2];
-        for (int i = 0; i < numVars * 2; i++)
+        System.err.print("Generating group occurrence map for " + (getNumVars() * 2) + " literals ... ");
+        occurrenceMap = (List<Integer>[]) new List[getNumVars() * 2];
+        for (int i = 0; i < getNumVars() * 2; i++)
         {
             occurrenceMap[i] = new LinkedList<Integer>();
         }
@@ -53,7 +53,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                 for (int literal : clause)
                 {
                     int pos = literal;
-                    if (literal < 0) pos = numVars + Math.abs(literal);
+                    if (literal < 0) pos = getNumVars() + Math.abs(literal);
                     occurrenceMap[pos-1].add(g);
                 }
             }
@@ -132,7 +132,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                         }
                     }
                     //negative occurrences of var
-                    for (int j : occurrenceMap[numVars + var-1])
+                    for (int j : occurrenceMap[getNumVars() + var-1])
                     {
                         //do not add undirected nodes twice!
                         if (j > i)
@@ -173,7 +173,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                 for (int literal : clause)
                 {
                     int pos = literal;
-                    if (literal < 0) pos = numVars + Math.abs(literal);
+                    if (literal < 0) pos = getNumVars() + Math.abs(literal);
                     for (int j : occurrenceMap[pos-1])
                     {
                         //do not add undirected nodes twice!
@@ -219,7 +219,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                     if (literal < 0) pos = Math.abs(literal);
                     else
                     {
-                        pos += numVars;
+                        pos += getNumVars();
                     }
                     for (int j : occurrenceMap[pos-1])
                     {
@@ -245,20 +245,20 @@ public class GroupCnfSatInstance extends CnfSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureGroupOccurrenceMapExists();
-        System.err.println("Generating varByClaGroup graph of " + numVars + " variables:");
+        System.err.println("Generating varByClaGroup graph of " + getNumVars() + " variables:");
         //generate variable vertices
-        for (int i = 1; i <= numVars; i++)
+        for (int i = 1; i <= getNumVars(); i++)
         {
             graph.addVertex(i, i + "");
         }
         //link variable vertices via clause edges
         int numEdges = 0;
-        for (int var1 = 1; var1 <= numVars; var1++)
+        for (int var1 = 1; var1 <= getNumVars(); var1++)
         {
             Set<Integer> groupsWithVar1 = new HashSet<Integer>();
             groupsWithVar1.addAll(groupOccurrenceMap[var1 - 1]);
-            groupsWithVar1.addAll(groupOccurrenceMap[numVars + var1 - 1]);
-            for (int var2 = var1 + 1; var2 <= numVars; var2++)
+            groupsWithVar1.addAll(groupOccurrenceMap[getNumVars() + var1 - 1]);
+            for (int var2 = var1 + 1; var2 <= getNumVars(); var2++)
             {
                 int found = 0;
                 for (int group : groupOccurrenceMap[var2 - 1])
@@ -271,7 +271,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                 }
                 if (found == 0)
                 {
-                    for (int group : groupOccurrenceMap[numVars + var2 - 1])
+                    for (int group : groupOccurrenceMap[getNumVars() + var2 - 1])
                     {
                         if (groupsWithVar1.contains(group))
                         {
@@ -299,23 +299,23 @@ public class GroupCnfSatInstance extends CnfSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureGroupOccurrenceMapExists();
-        System.err.println("Generating litByClaGroup graph of " + numVars * 2 + " literals:");
+        System.err.println("Generating litByClaGroup graph of " + getNumVars() * 2 + " literals:");
         //generate literal vertices
-        for (int i = 1; i <= numVars; i++)
+        for (int i = 1; i <= getNumVars(); i++)
         {
             graph.addVertex(i, i + "");
         }
-        for (int i = 1; i <= numVars; i++)
+        for (int i = 1; i <= getNumVars(); i++)
         {
-            graph.addVertex(numVars + i, "-" + i);
+            graph.addVertex(getNumVars() + i, "-" + i);
         }
         //link literal vertices via clause group edges
         int numEdges = 0;
-        for (int lit1 = 1; lit1 <= numVars * 2; lit1++)
+        for (int lit1 = 1; lit1 <= getNumVars() * 2; lit1++)
         {
             Set<Integer> groupsWithLit1 = new HashSet<Integer>();
             groupsWithLit1.addAll(groupOccurrenceMap[lit1 - 1]);
-            for (int lit2 = lit1 + 1; lit2 <= numVars * 2; lit2++)
+            for (int lit2 = lit1 + 1; lit2 <= getNumVars() * 2; lit2++)
             {
                 int found = 0;
                 for (int group : groupOccurrenceMap[lit2 - 1])
@@ -367,10 +367,10 @@ public class GroupCnfSatInstance extends CnfSatInstance
                 System.err.println("ERROR: Parsing a non-group CNF Dimacs file with the Dimacs group CNF parser!");
                 System.err.println("       Returning empty group SAT instance!");
             }
-            sat.numVars = Integer.parseInt(params[2]);
-            sat.numClauses = Integer.parseInt(params[3]);
+            sat.setNumVars(Integer.parseInt(params[2]));
+            sat.setNumClauses(Integer.parseInt(params[3]));
             sat.numGroups = Integer.parseInt(params[4]);
-            sat.clauseToGroup = new int[sat.numClauses];
+            sat.clauseToGroup = new int[sat.getNumClauses()];
             sat.groupToClauses = (List<Integer>[]) new List[sat.numGroups];
             //read in clauses
             List<Integer> currentClause = new LinkedList<Integer>();

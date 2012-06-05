@@ -1,5 +1,7 @@
 package org.kahina.logic.sat.data.free;
 
+import org.kahina.logic.sat.io.free.BooleanFormulaVisitor;
+
 public class BooleanVariable extends BooleanFormula
 {
     final VarName var;
@@ -7,6 +9,11 @@ public class BooleanVariable extends BooleanFormula
     public BooleanVariable(VarName var) 
     {
         this.var = var;
+    }
+    
+    public VarName getName()
+    {
+        return var;
     }
     
     @Override
@@ -25,5 +32,10 @@ public class BooleanVariable extends BooleanFormula
     public int getSize()
     {
         return 1;
+    }
+    
+    public <A> A accept(BooleanFormulaVisitor<A> visitor) 
+    {
+        return visitor.visitVariable(this);
     }
 }

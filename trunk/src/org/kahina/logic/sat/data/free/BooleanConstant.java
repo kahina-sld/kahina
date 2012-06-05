@@ -1,5 +1,7 @@
 package org.kahina.logic.sat.data.free;
 
+import org.kahina.logic.sat.io.free.BooleanFormulaVisitor;
+
 public class BooleanConstant extends BooleanFormula
 {
     boolean value;
@@ -25,5 +27,10 @@ public class BooleanConstant extends BooleanFormula
     public int getSize()
     {
         return 1;
+    }
+    
+    public <A> A accept(BooleanFormulaVisitor<A> visitor) 
+    {
+        return visitor.visitConstant(this);
     }
 }
