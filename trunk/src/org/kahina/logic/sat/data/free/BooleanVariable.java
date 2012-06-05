@@ -20,4 +20,10 @@ public class BooleanVariable extends BooleanFormula
     {
         return toString();
     }
+
+    @Override
+    public int getSize()
+    {
+        return 1;
+    }
 }

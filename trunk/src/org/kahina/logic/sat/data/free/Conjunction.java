@@ -52,4 +52,15 @@ public class Conjunction extends BooleanFormula
     {
         return fms;
     }
+    
+    @Override
+    public int getSize()
+    {
+        int size = 1;
+        for (BooleanFormula fm : fms)
+        {
+            size += fm.getSize();
+        }
+        return size;
+    }
 }
