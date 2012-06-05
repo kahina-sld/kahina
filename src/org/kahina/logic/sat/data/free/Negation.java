@@ -32,4 +32,10 @@ public class Negation extends BooleanFormula
             return "-(" + fm.toStringWithMinimumBracing() + ")";
         }
     }
+
+    @Override
+    public int getSize()
+    {
+        return fm.getSize();
+    }
 }

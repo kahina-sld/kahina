@@ -112,19 +112,19 @@ public class FormulaTreeView extends KahinaTreeView
         }
         else if (f instanceof Conjunction)
         {
-            return "and(" + ((Conjunction) f).getFms().size() + ")";
+            return "∧(" + ((Conjunction) f).getFms().size() + ")(" + f.getSize() + ")";
         }
         else if (f instanceof Disjunction)
         {
-            return "or(" + ((Disjunction) f).getFms().size() + ")";
+            return "v(" + ((Disjunction) f).getFms().size() + ")(" + f.getSize() + ")";
         }
         else if (f instanceof Negation)
         {
-            return "not(" + generateNodeCaption(((Negation) f).getArg()) + ")";
+            return "¬" + generateNodeCaption(((Negation) f).getArg());
         }
         else
         {
-            return "???";
+            return "?";
         }
     }
     

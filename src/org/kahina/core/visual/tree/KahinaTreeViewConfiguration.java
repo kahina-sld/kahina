@@ -41,8 +41,8 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 		if (nodeSize < 20)
 		{
 			nodeSize += 1;
-			horizontalDistance *= (nodeSize / (double) (nodeSize - 1));
-			verticalDistance  *= (nodeSize / (double) (nodeSize - 1));
+			horizontalDistance = (int) (horizontalDistance * (nodeSize / (double) (nodeSize - 1)));
+			verticalDistance  = (int) (verticalDistance *  (nodeSize / (double) (nodeSize - 1)));
 		} 
 		else
 		{
@@ -55,8 +55,8 @@ public class KahinaTreeViewConfiguration extends KahinaViewConfiguration
 		if (nodeSize > 0)
 		{
             nodeSize -= 1;
-            horizontalDistance *= (nodeSize / (double) (nodeSize + 1));
-            verticalDistance  *= (nodeSize / (double) (nodeSize + 1));
+            horizontalDistance = (int) (verticalDistance * (nodeSize / (double) (nodeSize + 1)));
+            verticalDistance  = (int) (verticalDistance * (nodeSize / (double) (nodeSize + 1)));
 		} 
 		else
 		{
