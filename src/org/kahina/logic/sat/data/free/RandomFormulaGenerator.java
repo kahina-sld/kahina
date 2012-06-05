@@ -23,7 +23,7 @@ public class RandomFormulaGenerator
         if (fan == 0)
         {
             //literal
-            BooleanVariable var = new BooleanVariable(new VarName((int) (Math.random() * numVars)));
+            BooleanVariable var = new BooleanVariable(new VarName((int) (Math.random() * numVars) + 1));
             if (Math.random() > 0.5)
             {
                 return new Negation(var);

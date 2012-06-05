@@ -2,24 +2,28 @@ package org.kahina.logic.sat.data.free;
 
 public class VarName
 {
-    final int number;
+    public final int num;
     
     private static int nextName = 1;
 
     public VarName() 
     {
-        this.number = freshName();
+        this.num = freshName();
     }
     
     public VarName(int n) 
     {
-        this.number = n;
+        this.num = n;
+        if (num >= nextName)
+        {
+            nextName = n + 1;
+        }
     }
 
     @Override
     public String toString() 
     {
-        return "L" + number;
+        return "L" + num;
     }
     
     public static int freshName()

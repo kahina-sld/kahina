@@ -18,8 +18,8 @@ import org.kahina.logic.sat.data.KahinaSatInstance;
 
 public class CnfSatInstance extends KahinaSatInstance
 {
-    protected int numClauses;
-    protected int numVars;
+    private int numClauses;
+    private int numVars;
     protected List<List<Integer>> clauses;
     
     //literals -> clauses; important for efficient computation of views
@@ -29,8 +29,8 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public CnfSatInstance()
     {
-        numClauses = 0;
-        numVars = 0;
+        setNumClauses(0);
+        setNumVars(0);
         clauses = new ArrayList<List<Integer>>();
         occurrenceMap = null;
     }
@@ -40,9 +40,9 @@ public class CnfSatInstance extends KahinaSatInstance
     @SuppressWarnings("unchecked")
     public void computeOccurrenceMap()
     {
-        System.err.print("Generating occurrence map for " + (numVars * 2) + " literals ... ");
-        occurrenceMap = (List<Integer>[]) new List[numVars * 2];
-        for (int i = 0; i < numVars * 2; i++)
+        System.err.print("Generating occurrence map for " + (getNumVars() * 2) + " literals ... ");
+        occurrenceMap = (List<Integer>[]) new List[getNumVars() * 2];
+        for (int i = 0; i < getNumVars() * 2; i++)
         {
             occurrenceMap[i] = new LinkedList<Integer>();
         }
@@ -52,7 +52,7 @@ public class CnfSatInstance extends KahinaSatInstance
             for (int literal : clause)
             {
                 int pos = literal;
-                if (literal < 0) pos = numVars + Math.abs(literal);
+                if (literal < 0) pos = getNumVars() + Math.abs(literal);
                 occurrenceMap[pos-1].add(i);
             }
         }
@@ -80,7 +80,7 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public int getNumVariables()
     {
-        return numVars;
+        return getNumVars();
     }
     
     public List<List<Integer>> getClauses()
@@ -92,7 +92,7 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating claByVar graph of " + numClauses + " clauses:");
+        System.err.println("Generating claByVar graph of " + getNumClauses() + " clauses:");
         //generate clause vertices
         for (int i = 1; i <= clauses.size(); i++)
         {
@@ -117,7 +117,7 @@ public class CnfSatInstance extends KahinaSatInstance
                     }
                 }
                 //negative occurrences of var
-                for (int j : occurrenceMap[numVars + var-1])
+                for (int j : occurrenceMap[getNumVars() + var-1])
                 {
                     //do not add undirected nodes twice!
                     if (j > i)
@@ -140,7 +140,7 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating claByLit graph of " + numClauses + " clauses:");
+        System.err.println("Generating claByLit graph of " + getNumClauses() + " clauses:");
         //generate clause vertices
         for (int i = 1; i <= clauses.size(); i++)
         {
@@ -154,7 +154,7 @@ public class CnfSatInstance extends KahinaSatInstance
             for (int literal : clause)
             {
                 int pos = literal;
-                if (literal < 0) pos = numVars + Math.abs(literal);
+                if (literal < 0) pos = getNumVars() + Math.abs(literal);
                 for (int j : occurrenceMap[pos-1])
                 {
                     //do not add undirected nodes twice!
@@ -178,7 +178,7 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating claByCompLit graph of " + numClauses + " clauses:");
+        System.err.println("Generating claByCompLit graph of " + getNumClauses() + " clauses:");
         //generate clause vertices
         for (int i = 1; i <= clauses.size(); i++)
         {
@@ -196,7 +196,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 if (literal < 0) pos = Math.abs(literal);
                 else
                 {
-                    pos += numVars;
+                    pos += getNumVars();
                 }
                 for (int j : occurrenceMap[pos-1])
                 {
@@ -221,20 +221,20 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating varByCla graph of " + numVars + " variables:");
+        System.err.println("Generating varByCla graph of " + getNumVars() + " variables:");
         //generate variable vertices
-        for (int i = 1; i <= numVars; i++)
+        for (int i = 1; i <= getNumVars(); i++)
         {
             graph.addVertex(i, i + "");
         }
         //link variable vertices via clause edges
         int numEdges = 0;
-        for (int var1 = 1; var1 <= numVars; var1++)
+        for (int var1 = 1; var1 <= getNumVars(); var1++)
         {
             Set<Integer> clausesWithVar1 = new HashSet<Integer>();
             clausesWithVar1.addAll(occurrenceMap[var1 - 1]);
-            clausesWithVar1.addAll(occurrenceMap[numVars + var1 - 1]);
-            for (int var2 = var1 + 1; var2 <= numVars; var2++)
+            clausesWithVar1.addAll(occurrenceMap[getNumVars() + var1 - 1]);
+            for (int var2 = var1 + 1; var2 <= getNumVars(); var2++)
             {
                 int found = 0;
                 for (int clause : occurrenceMap[var2 - 1])
@@ -247,7 +247,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 }
                 if (found == 0)
                 {
-                    for (int clause : occurrenceMap[numVars + var2 - 1])
+                    for (int clause : occurrenceMap[getNumVars() + var2 - 1])
                     {
                         if (clausesWithVar1.contains(clause))
                         {
@@ -275,23 +275,23 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating litByCla graph of " + numVars * 2 + " literals:");
+        System.err.println("Generating litByCla graph of " + getNumVars() * 2 + " literals:");
         //generate literal vertices
-        for (int i = 1; i <= numVars; i++)
+        for (int i = 1; i <= getNumVars(); i++)
         {
             graph.addVertex(i, i + "");
         }
-        for (int i = 1; i <= numVars; i++)
+        for (int i = 1; i <= getNumVars(); i++)
         {
-            graph.addVertex(numVars + i, "-" + i);
+            graph.addVertex(getNumVars() + i, "-" + i);
         }
         //link literal vertices via clause edges
         int numEdges = 0;
-        for (int lit1 = 1; lit1 <= numVars * 2; lit1++)
+        for (int lit1 = 1; lit1 <= getNumVars() * 2; lit1++)
         {
             Set<Integer> clausesWithLit1 = new HashSet<Integer>();
             clausesWithLit1.addAll(occurrenceMap[lit1 - 1]);
-            for (int lit2 = lit1 + 1; lit2 <= numVars * 2; lit2++)
+            for (int lit2 = lit1 + 1; lit2 <= getNumVars() * 2; lit2++)
             {
                 int found = 0;
                 for (int clause : occurrenceMap[lit2 - 1])
@@ -316,55 +316,19 @@ public class CnfSatInstance extends KahinaSatInstance
         System.err.println("  Ready! Total number of edges: " + numEdges);
         return graph;
     }
-    
-    public static CnfSatInstance parseDimacsCnfFile(String fileName)
+
+    public void setNumVars(int numVars)
     {
-        CnfSatInstance sat = new CnfSatInstance();
-        try
-        {
-            Scanner in = new Scanner(new File(fileName));
-            //ignore comment lines
-            while (in.hasNext(Pattern.compile("c (.*)\n")))
-            {
-                in.nextLine();
-            }
-            //process the problem line
-            String problemLine = in.nextLine();
-            String[] params = problemLine.split(" ");
-            if (!params[0].equals("p"))
-            {
-                System.err.println("ERROR: Dimacs CNF file appears to miss the problem line!");
-                System.err.println("       Returning empty SAT instance!");
-                return sat;
-            }
-            if (!params[1].equals("cnf"))
-            {
-                System.err.println("ERROR: Parsing a non-CNF Dimacs file with the Dimacs CNF parser!");
-                System.err.println("       Returning empty SAT instance!");
-            }
-            sat.numVars = Integer.parseInt(params[2]);
-            sat.numClauses = Integer.parseInt(params[3]);
-            //read in clauses
-            List<Integer> currentClause = new LinkedList<Integer>();
-            while (in.hasNext())
-            {
-                Integer literal = Integer.parseInt(in.next());
-                if (literal == 0)
-                {
-                    sat.clauses.add(currentClause);
-                    currentClause = new LinkedList<Integer>();
-                }
-                else
-                {
-                    currentClause.add(literal);
-                }
-            }
-        }
-        catch (FileNotFoundException e)
-        {
-            System.err.println("ERROR: Dimacs CNF file not found: " + fileName);
-            System.err.println("       Returning empty SAT instance!");
-        }
-        return sat;
+        this.numVars = numVars;
+    }
+
+    public int getNumVars()
+    {
+        return numVars;
+    }
+
+    public void setNumClauses(int numClauses)
+    {
+        this.numClauses = numClauses;
     }
 }

@@ -2,6 +2,8 @@ package org.kahina.logic.sat.data.free;
 
 import java.util.List;
 
+import org.kahina.logic.sat.io.free.BooleanFormulaVisitor;
+
 public class Conjunction extends BooleanFormula
 {
     final List<BooleanFormula> fms;
@@ -9,6 +11,11 @@ public class Conjunction extends BooleanFormula
     public Conjunction(List<BooleanFormula> fms) 
     {
         this.fms = fms;
+    }
+    
+    public List<BooleanFormula> getConjuncts()
+    {
+        return fms;
     }
     
     @Override
@@ -62,5 +69,10 @@ public class Conjunction extends BooleanFormula
             size += fm.getSize();
         }
         return size;
+    }
+    
+    public <A> A accept(BooleanFormulaVisitor<A> visitor) 
+    {
+        return visitor.visitConjunction(this);
     }
 }
