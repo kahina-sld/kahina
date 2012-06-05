@@ -33,11 +33,11 @@ public class BooleanFormulaTest
             
             if (false) { BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/timout_01.abc");} ;
             //BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.abc");
-            BooleanFormula f = RandomFormulaGenerator.randomFormula(10, 10, 3, false);
+            BooleanFormula f = RandomFormulaGenerator.randomFormula(10, 8, 2, false);
             final FormulaTreeView view = new FormulaTreeView(kahina);
             view.getConfig().setNodeSize(10);
-            view.getConfig().setHorizontalDistance(12);
-            view.getConfig().setVerticalDistance(15);
+            view.getConfig().setHorizontalDistance(8);
+            view.getConfig().setVerticalDistance(10);
             view.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
             view.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
             view.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);

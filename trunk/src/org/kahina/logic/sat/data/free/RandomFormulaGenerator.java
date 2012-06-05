@@ -8,8 +8,8 @@ public class RandomFormulaGenerator
     public static BooleanFormula randomFormula(int numVars, int maxHeight, int maxFan, boolean complete)
     {
         double[] fanProb = new double[maxFan + 1];
-        fanProb[0] = 0.3;
-        fanProb[1] = 0.0;
+        fanProb[0] = 0.15;
+        fanProb[1] = 0.15;
         for (int i = 2; i <= maxFan; i++)
         {
             fanProb[i] = 0.7 / (maxFan - 1);
@@ -22,8 +22,16 @@ public class RandomFormulaGenerator
         int fan = randomFan(fanProb, maxHeight, complete);
         if (fan == 0)
         {
-            //atom
-            return new BooleanVariable(new VarName((int) (Math.random() * numVars)));
+            //literal
+            BooleanVariable var = new BooleanVariable(new VarName((int) (Math.random() * numVars)));
+            if (Math.random() > 0.5)
+            {
+                return new Negation(var);
+            }
+            else
+            {
+                return var;
+            }
         }
         else if (fan == 1)
         {
@@ -51,15 +59,18 @@ public class RandomFormulaGenerator
     
     private static int randomFan(double[] fanProb, int maxHeight, boolean complete)
     {
-        if (maxHeight == 1) return 0;
+        if (maxHeight == 1)
+        {
+            return 0;
+        }
         double rnd = Math.random();
-        int fan = 0;
+        int fan = -1;
         while (rnd > 0.0 && fan < fanProb.length)
         {
-            rnd -= fanProb[fan];
             fan++;
+            rnd -= fanProb[fan];
         }
-        if (complete && fan == 0) return 2;
+        if (complete && fan < 2) return 2;
         return fan;
     }
 }
