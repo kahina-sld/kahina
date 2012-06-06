@@ -31,6 +31,9 @@ public class FormulaTreeViewListener extends KahinaTreeViewListener
         }
         else
         {
+            view.view.toggleFormulaCollapse(clickedNode);
+            view.view.recalculate();
+            view.updateDisplayAndRepaintFromEventDispatchThread();
             //kahina.dispatchEvent(new KahinaSelectionEvent(clickedNode));
             lastMouseEvent = e;
         }
