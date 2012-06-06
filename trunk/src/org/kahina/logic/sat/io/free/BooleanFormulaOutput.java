@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.kahina.logic.sat.data.free.BooleanFormula;
+import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 
 public class BooleanFormulaOutput
 {
@@ -21,5 +22,12 @@ public class BooleanFormulaOutput
             System.err.println("ERROR: Could not write to DIMACS CNF file: " + fileName);
             e.printStackTrace();
         }
+    }
+    
+    public static void writeDimacsCnfFile(String fileName, BooleanFormula f)
+    {
+        TseitinTransformationVisitor visitor = new TseitinTransformationVisitor();
+        f.accept(visitor);
+        DimacsCnfOutput.writeDimacsCnfFile(fileName, visitor.getCNF());
     }
 }
