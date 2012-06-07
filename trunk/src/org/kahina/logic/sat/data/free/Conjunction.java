@@ -75,4 +75,31 @@ public class Conjunction extends BooleanFormula
     {
         return visitor.visitConjunction(this);
     }
+    
+    @Override
+    public boolean equals(Object obj) 
+    {
+      if (obj == null) 
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass()) 
+      {
+        return false;
+      }
+      final Conjunction other = (Conjunction) obj;
+      if (this.fms != other.fms && (this.fms == null || !this.fms.equals(other.fms))) 
+      {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public int hashCode() 
+    {
+      int hash = 3;
+      hash = 73 * hash + (this.fms != null ? this.fms.hashCode() : 0);
+      return hash;
+    }
 }

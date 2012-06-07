@@ -35,4 +35,31 @@ public class VarName
     {
         nextName = 1;
     }
+    
+    @Override
+    public boolean equals(Object obj) 
+    {
+      if (obj == null) 
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass()) 
+      {
+        return false;
+      }
+      final VarName other = (VarName) obj;
+      if (this.num != other.num) 
+      {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public int hashCode() 
+    {
+      int hash = 7;
+      hash = 79 * hash + this.num;
+      return hash;
+    }
 }

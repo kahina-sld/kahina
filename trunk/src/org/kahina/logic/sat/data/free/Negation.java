@@ -45,4 +45,31 @@ public class Negation extends BooleanFormula
     {
         return visitor.visitNegation(this);
     }
+    
+    @Override
+    public boolean equals(Object obj) 
+    {
+      if (obj == null) 
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass()) 
+      {
+        return false;
+      }
+      final Negation other = (Negation) obj;
+      if (this.fm != other.fm && (this.fm == null || !this.fm.equals(other.fm))) 
+      {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public int hashCode() 
+    {
+      int hash = 5;
+      hash = 37 * hash + (this.fm != null ? this.fm.hashCode() : 0);
+      return hash;
+    }
 }

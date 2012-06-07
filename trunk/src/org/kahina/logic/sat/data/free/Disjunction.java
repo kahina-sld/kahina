@@ -75,4 +75,31 @@ public class Disjunction extends BooleanFormula
     {
         return visitor.visitDisjunction(this);
     }
+    
+    @Override
+    public boolean equals(Object obj) 
+    {
+      if (obj == null) 
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass()) 
+      {
+        return false;
+      }
+      final Disjunction other = (Disjunction) obj;
+      if (this.fms != other.fms && (this.fms == null || !this.fms.equals(other.fms))) 
+      {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public int hashCode() 
+    {
+      int hash = 7;
+      hash = 97 * hash + (this.fms != null ? this.fms.hashCode() : 0);
+      return hash;
+    }
 }
