@@ -58,12 +58,15 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
         List<Integer> xs = new LinkedList<Integer>();
         for (BooleanFormula f : fm.getDisjuncts()) 
         {
-          Integer x = tseitinVar.get(f);
-          if (x == null) 
-          {
-            x = f.accept(this);
-          }
-          xs.add(x);
+            if (!f.isPruned())
+            {
+                Integer x = tseitinVar.get(f);
+                if (x == null) 
+                {
+                    x = f.accept(this);
+                }
+                xs.add(x);
+            }
         }
         
         Integer x = VarName.freshName();
@@ -90,12 +93,15 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
         List<Integer> xs = new LinkedList<Integer>();
         for (BooleanFormula f : fm.getConjuncts()) 
         {
-            Integer x = tseitinVar.get(f);
-            if (x == null) 
+            if (!f.isPruned())
             {
-                x = f.accept(this);
+                Integer x = tseitinVar.get(f);
+                if (x == null) 
+                {
+                    x = f.accept(this);
+                }
+                xs.add(x);
             }
-            xs.add(x);
         }
         Integer x = VarName.freshName();
         tseitinVar.put(fm, x);
