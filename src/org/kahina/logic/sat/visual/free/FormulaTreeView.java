@@ -25,11 +25,15 @@ public class FormulaTreeView extends KahinaTreeView
     //map from tree node IDs to subformulas
     Map<Integer, BooleanFormula> nodeToFrm;
     
+    boolean textDisplay;
+    String displayText;
+    
     public FormulaTreeView(KahinaInstance<?, ?, ?> kahina)
     {
         super(kahina);
         frmToNode = new HashMap<BooleanFormula, Integer>();
         nodeToFrm = new HashMap<Integer, BooleanFormula>();
+        textDisplay = false;
     }
     
     public void displayFormula(BooleanFormula formula)
@@ -43,6 +47,15 @@ public class FormulaTreeView extends KahinaTreeView
         frmToNode.put(formula, rootID);
         nodeToFrm.put(rootID, formula);
         recalculate();
+        textDisplay = false;
+    }
+    
+    //allows to display a text instead of a graph
+    //TODO: consider adding this option to all views per default!
+    public void displayText(String text)
+    {
+        textDisplay = true;
+        displayText = text;
     }
     
     public void recursiveDecollapse(int nodeID)
