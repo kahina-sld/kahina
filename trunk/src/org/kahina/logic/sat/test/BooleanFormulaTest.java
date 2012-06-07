@@ -37,8 +37,8 @@ public class BooleanFormulaTest
             //BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.abc");
             BooleanFormula f = RandomFormulaGenerator.randomFormula(10, 10, 2, false);
             TseitinTransformationVisitor visitor = new TseitinTransformationVisitor();
-            f.accept(visitor);
-            DimacsCnfOutput.writeDimacsCnfFile("/stud/dellert/test/tseitin/tseitin.cnf", visitor.getCNF());
+            int topVar = f.accept(visitor);
+            DimacsCnfOutput.writeDimacsCnfFile("/stud/dellert/test/tseitin/tseitin.cnf", visitor.getCNF(topVar));
             
             final FormulaTreeView view = new FormulaTreeView(kahina);
             view.getConfig().setNodeSize(8);
