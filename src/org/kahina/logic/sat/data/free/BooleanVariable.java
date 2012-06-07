@@ -38,4 +38,31 @@ public class BooleanVariable extends BooleanFormula
     {
         return visitor.visitVariable(this);
     }
+    
+    @Override
+    public boolean equals(Object obj) 
+    {
+      if (obj == null) 
+      {
+        return false;
+      }
+      if (getClass() != obj.getClass()) 
+      {
+        return false;
+      }
+      final BooleanVariable other = (BooleanVariable) obj;
+      if (this.var != other.var && (this.var == null || !this.var.equals(other.var))) 
+      {
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public int hashCode() 
+    {
+      int hash = 3;
+      hash = 41 * hash + (this.var != null ? this.var.hashCode() : 0);
+      return hash;
+    }
 }
