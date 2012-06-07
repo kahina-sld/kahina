@@ -127,8 +127,11 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
         return null;
     }
     
-    public CnfSatInstance getCNF()
+    public CnfSatInstance getCNF(int topVar)
     {
+        List<Integer> assertionClause = new LinkedList<Integer>();
+        assertionClause.add(topVar);
+        cnf.getClauses().add(assertionClause);
         cnf.setNumClauses(cnf.getClauses().size());
         cnf.setNumVars(VarName.freshName() - 1);
         return cnf;

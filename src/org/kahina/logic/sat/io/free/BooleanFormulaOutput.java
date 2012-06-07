@@ -27,7 +27,7 @@ public class BooleanFormulaOutput
     public static void writeDimacsCnfFile(String fileName, BooleanFormula f)
     {
         TseitinTransformationVisitor visitor = new TseitinTransformationVisitor();
-        f.accept(visitor);
-        DimacsCnfOutput.writeDimacsCnfFile(fileName, visitor.getCNF());
+        int topVar = f.accept(visitor);
+        DimacsCnfOutput.writeDimacsCnfFile(fileName, visitor.getCNF(topVar));
     }
 }
