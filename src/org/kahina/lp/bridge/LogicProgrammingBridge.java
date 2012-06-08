@@ -56,7 +56,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 	// nodes
 	protected HashMap<Integer, Integer> stepIDConv;
 
-	// always contains the internal ID of the most recent step
+	// always contains the internal ID of the step one of whose ports we
+	// encountered most recently
 	protected int currentID = -1;
 
 	// always contains the internal ID of the step which, if a call occurs, will
@@ -81,7 +82,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	protected LogicProgrammingState state;
 
-	public LogicProgrammingBridge(LogicProgrammingInstance<?,?,?> kahina)
+	public LogicProgrammingBridge(LogicProgrammingInstance<?, ?, ?> kahina)
 	{
 		super(kahina);
 		this.state = (LogicProgrammingState) kahina.getState();
@@ -118,7 +119,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 *            as a prose description of what {@code append/3} does. Will be
 	 *            displayed in the message console.
 	 */
-	public void step(int extID, String type, String description, String consoleMessage)	
+	public void step(int extID, String type, String description, String consoleMessage)
 	{
 		try
 		{
@@ -126,7 +127,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 				System.err.println("LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + type + ",\"" + description + "\")");
 			int stepID = convertStepID(extID);
 			LogicProgrammingStep step = state.get(stepID);
-			step.setGoalDesc(type); // TODO Also save goal in step in a separate field?
+			step.setGoalDesc(type); // TODO Also save goal in step in a separate
+									// field?
 			if (waitingForReturnFromSkip != -1)
 			{
 				state.hideStep(stepID);
@@ -194,8 +196,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			step.setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1));
 			currentID = stepID;
 			state.store(stepID, step);
-		} 
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -243,8 +244,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			// used by tree behavior:
 			kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, parentCandidateID));
-			// used by node counter:
-			kahina.dispatchEvent(new KahinaSystemEvent(KahinaSystemEvent.NODE_COUNT, stepID));
 			currentID = stepID;
 			parentCandidateID = stepID;
 			if (VERBOSE)
@@ -255,6 +254,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				System.err.println("Selecting if paused...");
 			}
+
+			maybeUpdateStepCount(true);
 			selectIfPaused(stepID);
 			if (VERBOSE)
 			{
@@ -354,6 +355,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			currentID = newStepID;
 			parentCandidateID = newStepID;
 
+			maybeUpdateStepCount(false);
 			selectIfPaused(newStepID);
 		} catch (Exception e)
 		{
@@ -397,8 +399,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (deterministic)
 			{
 				kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_DET_EXIT, stepID));
-			} 
-			else
+			} else
 			{
 				kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_NONDET_EXIT, stepID));
 			}
@@ -444,6 +445,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				}
 			}
 
+			maybeUpdateStepCount(false);
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
@@ -451,11 +453,12 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.exit(1);
 		}
 	}
-	
+
 	/**
 	 * Call to check if a given step has the special property of being the query
 	 * root, i.e. when it exits (deterministically) or fails, the whole session
 	 * is over.
+	 * 
 	 * @param stepID
 	 * @return
 	 */
@@ -499,6 +502,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				bridgeState = 'c';
 			}
 
+			maybeUpdateStepCount(false);
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
@@ -540,6 +544,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				bridgeState = 'c';
 			}
 
+			maybeUpdateStepCount(false);
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
@@ -777,6 +782,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 		return intID;
 	}
 
+	protected boolean isPaused()
+	{
+		return bridgeState == 'n';
+	}
+
 	/**
 	 * Selects the given step and updates the GUI if the debugger is not
 	 * currently leaping or autocompleting.
@@ -787,9 +797,33 @@ public class LogicProgrammingBridge extends KahinaBridge
 		{
 			System.err.println(this + ".selectIfPaused(" + stepID + ")");
 		}
-		if (bridgeState == 'n')
+		if (isPaused())
 		{
 			kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
+		}
+	}
+
+	/**
+	 * Update step count in GUI. In fast-forward mode, this is only done every
+	 * 100 steps to reduce graphics load.
+	 * 
+	 * @param firstEncounter
+	 *            Should be true at call goals, false otherwise. The latter
+	 *            avoids unnecessary multiple updates per step.
+	 */
+	protected void maybeUpdateStepCount(boolean firstEncounter)
+	{
+		int stepCount = state.getStepCount();
+		// TODO || currentID < 3 is a HACK, because when the top goal completes
+		// while Kahina is fast-forwarding, the client might wait prompting for
+		// more solutions rather than calling the end method, thus Kahina still
+		// thinks it's fast-forwarding and doesn't update without this hack. The
+		// root problem is with how to handle aforementioned solution prompts,
+		// so when we solve that, we should be able to get rid of this hack here
+		// too.
+		if (isPaused() || (stepCount % 100 == 0 && firstEncounter) || currentID < 3)
+		{
+			kahina.dispatchEvent(new KahinaSystemEvent(KahinaSystemEvent.NODE_COUNT, stepCount));
 		}
 	}
 
@@ -814,6 +848,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	protected void processWarnEvent(KahinaWarnEvent e)
 	{
 		bridgeState = 'n';
+		maybeUpdateStepCount(false);
 		selectIfPaused(currentID);
 	}
 

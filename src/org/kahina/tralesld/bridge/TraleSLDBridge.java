@@ -440,6 +440,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				bridgeState = 'c';
 			}
 
+			maybeUpdateStepCount(false);
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
@@ -477,6 +478,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 				bridgeState = 'c';
 			}
 
+			maybeUpdateStepCount(false);
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
