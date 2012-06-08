@@ -12,7 +12,6 @@ import javax.swing.Action;
 import javax.swing.JMenu;
 
 import org.kahina.core.control.KahinaControlEvent;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
@@ -81,7 +80,7 @@ public class QTypeCommander implements KahinaListener
     {
         if (parseExampleMenu == null)
         {
-            parseExampleMenu = new QTypeParseExampleMenu(kahina.getControl());
+            parseExampleMenu = new QTypeParseExampleMenu(kahina);
         }
 
         return parseExampleMenu;
@@ -176,6 +175,10 @@ public class QTypeCommander implements KahinaListener
         }
         else if (QTypeControlEventCommands.REGISTER_EXAMPLE.equals(command))
         {
+        	if (VERBOSE)
+        	{
+        		System.err.println("Example registered: " + event);
+        	}
             Object[] arguments = event.getArguments();
             int number = (Integer) arguments[0];
             ListUtil.ensureSize(examples, number + 1);
