@@ -14,6 +14,8 @@ import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 
 public class QTypeBridge extends SICStusPrologBridge
 {
+	
+	private static final boolean VERBOSE = false;
 
 	private static final Pattern SENTENCE_PATTERN = Pattern.compile("\\[([^\\]]+)\\]");
 
@@ -46,6 +48,10 @@ public class QTypeBridge extends SICStusPrologBridge
 
 	public void registerExample(int number, String expectation, String sentence)
 	{
+		if (VERBOSE)
+		{
+			System.err.println(this + ".registerExample(" + number + ", " + expectation + ", " + sentence + ")");
+		}
 		try
 		{
 			kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_EXAMPLE, new Object[] { number, expectation, PrologUtil.parsePrologStringList(sentence) }));
@@ -53,7 +59,6 @@ public class QTypeBridge extends SICStusPrologBridge
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			
 			System.exit(-1);
 		}
 	}
