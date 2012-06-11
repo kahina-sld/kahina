@@ -35,13 +35,12 @@ public class LogicProgrammingState extends KahinaState
     Set<Integer> hiddenSteps;
     
     //store profiles for the various types of  control points
-    protected KahinaControlPointProfile primaryBreakpoints;
-    protected KahinaControlPointProfile secondaryBreakpoints;
-    protected KahinaControlPointProfile primaryWarnPoints;
-    protected KahinaControlPointProfile secondaryWarnPoints;
-    protected KahinaControlPointProfile skipPoints;
+    protected KahinaControlPointProfile breakPoints;
     protected KahinaControlPointProfile creepPoints;
+    protected KahinaControlPointProfile completePoints;
+    protected KahinaControlPointProfile skipPoints;
     protected KahinaControlPointProfile failPoints;
+    protected KahinaControlPointProfile warnPoints;
     
     protected LogicProgrammingProfile profile;
     
@@ -53,13 +52,13 @@ public class LogicProgrammingState extends KahinaState
         anchorsByTarget = new HashMap<Integer, List<Integer>>();
         targetByAnchor = new HashMap<Integer, Integer>();
         hiddenSteps = new HashSet<Integer>();
-        primaryBreakpoints = new KahinaControlPointProfile();
-        secondaryBreakpoints = new KahinaControlPointProfile();
-        primaryWarnPoints = new KahinaControlPointProfile();
-        secondaryWarnPoints = new KahinaControlPointProfile();
-        skipPoints = new KahinaControlPointProfile();
+        breakPoints = new KahinaControlPointProfile();
         creepPoints = new KahinaControlPointProfile();
+        completePoints = new KahinaControlPointProfile();
+        skipPoints = new KahinaControlPointProfile();
         failPoints = new KahinaControlPointProfile();
+        warnPoints = new KahinaControlPointProfile();
+        
         profile = new LogicProgrammingProfile();
     }
     
@@ -140,29 +139,9 @@ public class LogicProgrammingState extends KahinaState
         return secondaryStepTree;
     }
     
-    public KahinaControlPointProfile getPrimaryBreakpoints()
+    public KahinaControlPointProfile getBreakPoints()
     {
-        return primaryBreakpoints;
-    }
-    
-    public KahinaControlPointProfile getSecondaryBreakpoints()
-    {
-        return secondaryBreakpoints;
-    }
-    
-    public KahinaControlPointProfile getPrimaryWarnPoints()
-    {
-        return primaryWarnPoints;
-    }
-    
-    public KahinaControlPointProfile getSecondaryWarnPoints()
-    {
-        return secondaryWarnPoints;
-    }
-    
-    public KahinaControlPointProfile getSkipPoints()
-    {
-        return skipPoints;
+        return breakPoints;
     }
     
     public KahinaControlPointProfile getCreepPoints()
@@ -170,9 +149,24 @@ public class LogicProgrammingState extends KahinaState
         return creepPoints;
     }
     
+    public KahinaControlPointProfile getCompletePoints()
+    {
+        return completePoints;
+    }
+    
+    public KahinaControlPointProfile getSkipPoints()
+    {
+        return skipPoints;
+    }
+    
     public KahinaControlPointProfile getFailPoints()
     {
         return failPoints;
+    }
+    
+    public KahinaControlPointProfile getWarnPoints()
+    {
+        return warnPoints;
     }
     
     public void linkNodes(int anchor, int target)

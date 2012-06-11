@@ -22,7 +22,7 @@ public class LogicProgrammingMainWindow extends KahinaMainWindow
 	
 	protected void addMenusBeforeHelpMenu()
 	{
-		menuBar.add(new KahinaControlPointMenu(kahina));
+		//menuBar.add(new KahinaControlPointMenu(kahina));
 		menuBar.add(new KahinaProfilerMenu(kahina));
 	}
 }

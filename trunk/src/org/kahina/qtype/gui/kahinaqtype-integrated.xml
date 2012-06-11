@@ -8,7 +8,14 @@
 	          <kahina:control-window kahina:binding="History" kahina:border="true" kahina:height="100" kahina:id="17" kahina:primary="true" kahina:title="History" kahina:width="200" kahina:xpos="420" kahina:ypos="25"></kahina:control-window>
 	          <kahina:control-window kahina:binding="Control" kahina:border="true" kahina:height="100" kahina:id="16" kahina:primary="true" kahina:title="Control" kahina:width="400" kahina:xpos="120" kahina:ypos="25"/>
 	        </kahina:hori-split-window>
-	        <kahina:default-window kahina:binding="breakpointProfile" kahina:border="true" kahina:height="200" kahina:id="21" kahina:primary="true" kahina:title="Breakpoint Profile" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+	        <kahina:tabbed-window kahina:border="true" kahina:height="200" kahina:id="21" kahina:title="Control Automation / Search" kahina:width="600" kahina:xpos="0" kahina:ypos="125">
+	          <kahina:default-window kahina:binding="breakPoints" kahina:border="false" kahina:height="200" kahina:id="22" kahina:primary="true" kahina:title="Break" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+	          <kahina:default-window kahina:binding="creepPoints" kahina:border="false" kahina:height="200" kahina:id="23" kahina:primary="true" kahina:title="Creep" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+	          <kahina:default-window kahina:binding="completePoints" kahina:border="false" kahina:height="200" kahina:id="24" kahina:primary="true" kahina:title="Complete" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+	          <kahina:default-window kahina:binding="skipPoints" kahina:border="false" kahina:height="200" kahina:id="25" kahina:primary="true" kahina:title="Skip" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+	          <kahina:default-window kahina:binding="failPoints" kahina:border="false" kahina:height="200" kahina:id="26" kahina:primary="true" kahina:title="Fail" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+	          <kahina:default-window kahina:binding="warnPoints" kahina:border="false" kahina:height="200" kahina:id="27" kahina:primary="true" kahina:title="Warn" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+            </kahina:tabbed-window>
         </kahina:vert-split-window>
         <kahina:vert-split-window kahina:height="573" kahina:id="5" kahina:title="Data" kahina:width="553" kahina:xpos="1024" kahina:ypos="146">
           <kahina:hori-split-window kahina:height="200" kahina:id="10" kahina:title="Upper half" kahina:width="600" kahina:xpos="1140" kahina:ypos="208">

@@ -20,7 +20,7 @@ public class QTypeWindowManager extends KahinaWindowManager
     	}
     	else
     	{
-    		System.err.println("FATAL ERROR: TraleSLDWindowManager could not create main window!");
+    		System.err.println("FATAL ERROR: QTypeWindowManager could not create main window!");
     		System.err.println("             Building default window with dummy functionality instead.");
     		return new KahinaMainWindow(windowManager, kahina);
     	}

@@ -1,8 +1,10 @@
 package org.kahina.core.visual.breakpoint;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JList;
@@ -28,18 +30,19 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         
         JPanel profileButtonsPanel = new JPanel();
         profileButtonsPanel.setLayout(new BoxLayout(profileButtonsPanel, BoxLayout.PAGE_AXIS));
+        profileButtonsPanel.setBorder(BorderFactory.createTitledBorder("Profile"));
         
-        JButton newProfileButton = new JButton("New Profile");
+        JButton newProfileButton = new JButton("New");
         newProfileButton.setActionCommand("newProfile");
         newProfileButton.addActionListener(profileListener);
         profileButtonsPanel.add(newProfileButton);
         
-        JButton loadProfileButton = new JButton("Load Profile");
+        JButton loadProfileButton = new JButton("Load");
         loadProfileButton.setActionCommand("loadProfile");
         loadProfileButton.addActionListener(profileListener);
         profileButtonsPanel.add(loadProfileButton);
         
-        JButton saveProfileButton = new JButton("Save Profile");
+        JButton saveProfileButton = new JButton("Save");
         saveProfileButton.setActionCommand("saveProfile");
         saveProfileButton.addActionListener(profileListener);
         profileButtonsPanel.add(saveProfileButton);
@@ -48,6 +51,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         
         JPanel profileDisplayPanel = new JPanel();
         profileDisplayPanel.setLayout(new BoxLayout(profileDisplayPanel, BoxLayout.LINE_AXIS));
+        profileDisplayPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         
         JPanel profileManagementPanel = new JPanel();
         profileManagementPanel.setLayout(new BoxLayout(profileManagementPanel, BoxLayout.PAGE_AXIS));
@@ -68,10 +72,9 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         profileManagementPanel.add(profileManagementButtonPanel);
         
         pointList = new JList();
-        pointList.setListData(view.getModel().getControlPoints());
         pointList.addListSelectionListener(profileListener);
         JScrollPane listScroller = new JScrollPane(pointList);
-        listScroller.setPreferredSize(new Dimension(250, 80));
+        listScroller.setPreferredSize(new Dimension(100, 50));
         listScroller.setMaximumSize(new Dimension(300, 1000));
         listScroller.setAlignmentX(CENTER_ALIGNMENT);
         profileManagementPanel.add(listScroller);
@@ -86,6 +89,6 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
     
     public void updateDisplay()
     {
-        
+        pointList.setListData(view.getModel().getControlPoints());
     }
 }

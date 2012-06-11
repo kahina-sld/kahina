@@ -11,14 +11,15 @@ public class KahinaControlPointProfileView extends KahinaView<KahinaControlPoint
     public KahinaControlPointProfileView(KahinaInstance<?, ?, ?> kahina)
     {
         super(kahina);
-        // TODO Auto-generated constructor stub
+        model = new KahinaControlPointProfile();
     }
 
     @Override
     public JComponent makePanel()
     {
-        // TODO Auto-generated method stub
-        return null;
+        KahinaControlPointProfileViewPanel panel = new KahinaControlPointProfileViewPanel(kahina);
+        panel.setView(this);
+        return panel;
     }
     
 }
