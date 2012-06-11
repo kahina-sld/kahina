@@ -32,7 +32,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
         kahina.getControl().registerListener("traleSLD bridge", this);
     }
     
-    @Override
+    /*@Override
 	public void initializeSkipPoints()
     {
         List<KahinaBreakpoint> skipPoints = ((LogicProgrammingState) kahina.getState()).getSkipPoints();
@@ -46,7 +46,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     	List<KahinaBreakpoint> creepPoints = ((LogicProgrammingState) kahina.getState()).getCreepPoints();
     	creepPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("creep over lexical lookup", "[0-9]* lex\\(.*", KahinaBreakpointType.CREEP_POINT));
     	creepPoints.add(KahinaBreakpointFactory.createMatchingLabelBreakpoint("creep away from compilation", "[0-9]* compile_gram.*", KahinaBreakpointType.CREEP_POINT));
-    }
+    }*/
     
     public void processRuleApplication(int stepID, int externalID, String ruleName)
     {

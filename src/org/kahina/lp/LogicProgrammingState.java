@@ -11,6 +11,7 @@ import java.util.Set;
 import org.kahina.core.KahinaState;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
+import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
@@ -33,14 +34,14 @@ public class LogicProgrammingState extends KahinaState
     
     Set<Integer> hiddenSteps;
     
-    //store the three types of breakpoints
-    protected List<KahinaBreakpoint> primaryBreakpoints;
-    protected List<KahinaBreakpoint> secondaryBreakpoints;
-    protected List<KahinaBreakpoint> primaryWarnPoints;
-    protected List<KahinaBreakpoint> secondaryWarnPoints;
-    protected List<KahinaBreakpoint> skipPoints;
-    protected List<KahinaBreakpoint> creepPoints;
-    protected List<KahinaBreakpoint> failPoints;
+    //store profiles for the various types of  control points
+    protected KahinaControlPointProfile primaryBreakpoints;
+    protected KahinaControlPointProfile secondaryBreakpoints;
+    protected KahinaControlPointProfile primaryWarnPoints;
+    protected KahinaControlPointProfile secondaryWarnPoints;
+    protected KahinaControlPointProfile skipPoints;
+    protected KahinaControlPointProfile creepPoints;
+    protected KahinaControlPointProfile failPoints;
     
     protected LogicProgrammingProfile profile;
     
@@ -52,13 +53,13 @@ public class LogicProgrammingState extends KahinaState
         anchorsByTarget = new HashMap<Integer, List<Integer>>();
         targetByAnchor = new HashMap<Integer, Integer>();
         hiddenSteps = new HashSet<Integer>();
-        primaryBreakpoints = new ArrayList<KahinaBreakpoint>();
-        secondaryBreakpoints = new ArrayList<KahinaBreakpoint>();
-        primaryWarnPoints = new ArrayList<KahinaBreakpoint>();
-        secondaryWarnPoints = new ArrayList<KahinaBreakpoint>();
-        skipPoints = new ArrayList<KahinaBreakpoint>();
-        creepPoints = new ArrayList<KahinaBreakpoint>();
-        failPoints = new ArrayList<KahinaBreakpoint>();
+        primaryBreakpoints = new KahinaControlPointProfile();
+        secondaryBreakpoints = new KahinaControlPointProfile();
+        primaryWarnPoints = new KahinaControlPointProfile();
+        secondaryWarnPoints = new KahinaControlPointProfile();
+        skipPoints = new KahinaControlPointProfile();
+        creepPoints = new KahinaControlPointProfile();
+        failPoints = new KahinaControlPointProfile();
         profile = new LogicProgrammingProfile();
     }
     
@@ -139,37 +140,37 @@ public class LogicProgrammingState extends KahinaState
         return secondaryStepTree;
     }
     
-    public List<KahinaBreakpoint> getPrimaryBreakpoints()
+    public KahinaControlPointProfile getPrimaryBreakpoints()
     {
         return primaryBreakpoints;
     }
     
-    public List<KahinaBreakpoint> getSecondaryBreakpoints()
+    public KahinaControlPointProfile getSecondaryBreakpoints()
     {
         return secondaryBreakpoints;
     }
     
-    public List<KahinaBreakpoint> getPrimaryWarnPoints()
+    public KahinaControlPointProfile getPrimaryWarnPoints()
     {
         return primaryWarnPoints;
     }
     
-    public List<KahinaBreakpoint> getSecondaryWarnPoints()
+    public KahinaControlPointProfile getSecondaryWarnPoints()
     {
         return secondaryWarnPoints;
     }
     
-    public List<KahinaBreakpoint> getSkipPoints()
+    public KahinaControlPointProfile getSkipPoints()
     {
         return skipPoints;
     }
     
-    public List<KahinaBreakpoint> getCreepPoints()
+    public KahinaControlPointProfile getCreepPoints()
     {
         return creepPoints;
     }
     
-    public List<KahinaBreakpoint> getFailPoints()
+    public KahinaControlPointProfile getFailPoints()
     {
         return failPoints;
     }
