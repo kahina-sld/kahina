@@ -35,13 +35,13 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	protected int lastActiveID;
 
 	// this stores the different breakpoint automata
-	protected List<TreeAutomaton> primaryBreakpoints;
+	/*protected List<TreeAutomaton> primaryBreakpoints;
 	protected List<TreeAutomaton> secondaryBreakpoints;
 	protected List<TreeAutomaton> primaryWarnPoints;
 	protected List<TreeAutomaton> secondaryWarnPoints;
 	protected List<TreeAutomaton> skipPoints;
 	protected List<TreeAutomaton> creepPoints;
-	protected List<TreeAutomaton> failPoints;
+	protected List<TreeAutomaton> failPoints;*/
 
 	protected int stepBeingRedone = -1;
 	protected Map<Integer, Integer> newStepIDByLastStepID = new HashMap<Integer, Integer>();
@@ -59,7 +59,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 		kahina.getControl().registerListener(KahinaEventTypes.STEP_DESCRIPTION, this);
 		kahina.getControl().registerListener(KahinaEventTypes.TREE, this);
-		primaryBreakpoints = new ArrayList<TreeAutomaton>();
+		/*primaryBreakpoints = new ArrayList<TreeAutomaton>();
 		initializePrimaryBreakpoints();
 		compilePrimaryBreakpoints();
 		secondaryBreakpoints = new ArrayList<TreeAutomaton>();
@@ -79,7 +79,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		compileCreepPoints();
 		failPoints = new ArrayList<TreeAutomaton>();
 		initializeFailPoints();
-		compileFailPoints();
+		compileFailPoints();*/
 	}
 
 	public int getMaxNodeLabelLength()
@@ -157,7 +157,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 
 	}
 
-	public void compilePrimaryBreakpoints()
+	/*public void compilePrimaryBreakpoints()
 	{
 		this.primaryBreakpoints.clear();
 		for (KahinaBreakpoint bp : ((LogicProgrammingState) kahina.getState()).getPrimaryBreakpoints())
@@ -246,13 +246,13 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			aut.setConstellationMatch(true);
 			this.failPoints.add(aut);
 		}
-	}
+	}*/
 
 	/**
 	 * checks for breakpoint matches caused by adding or modifying the step at
 	 * stepID; causes events to be fired in the case of matches
 	 */
-	public void breakpointCheck(int stepID)
+	/*public void breakpointCheck(int stepID)
 	{
 		for (TreeAutomaton aut : primaryBreakpoints)
 		{
@@ -282,13 +282,13 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			aut.process(stepID);
 		}
-	}
+	}*/
 
 	/**
 	 * checks for breakpoint matches caused by failure of the step at stepID;
 	 * causes events to be fired in the case of matches
 	 */
-	public void failureBreakpointCheck(int stepID)
+	/*public void failureBreakpointCheck(int stepID)
 	{
 		for (TreeAutomaton aut : primaryBreakpoints)
 		{
@@ -302,13 +302,13 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			aut.process(stepID);
 		}
-	}
+	}*/
 
 	/**
 	 * checks for breakpoint matches caused by exception of the step at stepID;
 	 * causes events to be fired in the case of matches
 	 */
-	public void exceptionBreakpointCheck(int stepID)
+	/*public void exceptionBreakpointCheck(int stepID)
 	{
 		for (TreeAutomaton aut : primaryBreakpoints)
 		{
@@ -322,7 +322,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		{
 			aut.process(stepID);
 		}
-	}
+	}*/
 
 	/**
 	 * contains the logic by which the tree is formed out of callstacks called
@@ -362,7 +362,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			System.err.println("Secondary tree: " + secondaryTree);
 		}
 		lastActiveID = stepID;
-		breakpointCheck(stepID);
+		//breakpointCheck(stepID);
 	}
 
 	/**
@@ -477,7 +477,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 
 		lastActiveID = newStepID;
 		stepBeingRedone = newStepID;
-		breakpointCheck(newStepID);
+		//breakpointCheck(newStepID);
 	}
 
 	/**
@@ -528,7 +528,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		stepBeingRedone = -1;
 		object.setNodeStatus(stepID, LogicProgrammingStepType.FAIL);
 		lastActiveID = object.getParent(stepID);
-		failureBreakpointCheck(stepID);
+		//failureBreakpointCheck(stepID);
 	}
 
 	public void processStepException(int stepID)
@@ -540,7 +540,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		stepBeingRedone = -1;
 		object.setNodeStatus(stepID, LogicProgrammingStepType.EXCEPTION);
 		lastActiveID = object.getParent(stepID);
-		exceptionBreakpointCheck(stepID);
+		//exceptionBreakpointCheck(stepID);
 	}
 
 	@Override
@@ -619,7 +619,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 
 	public void processSystemEvent(KahinaSystemEvent e)
 	{
-		if (e.getSystemEventType() == KahinaSystemEvent.APPLY_BREAKPOINTS)
+		/*if (e.getSystemEventType() == KahinaSystemEvent.APPLY_BREAKPOINTS)
 		{
 			switch (e.getIntContent())
 			{
@@ -659,7 +659,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 				break;
 			}
 			}
-		}
+		}*/
 	}
 
 	public void processStepDescriptionEvent(KahinaStepDescriptionEvent e)

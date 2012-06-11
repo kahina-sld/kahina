@@ -117,7 +117,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 		super.processDialogEvent(e);
 		switch (e.getDialogEventType())
 		{
-			case KahinaDialogEvent.PRIMARY_BREAKPOINTS:
+			/*case KahinaDialogEvent.PRIMARY_BREAKPOINTS:
 			{
 				if (VERBOSE)
 				{
@@ -184,7 +184,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 				breakpointEditor.loadBreakpointProfile(((LogicProgrammingState) kahina.getState()).getFailPoints());
 				breakpointEditor.setVisible(true);
 				break;
-			}
+			}*/
 			case KahinaDialogEvent.FULL_PROFILE:
 			{
 				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingState) kahina.getState()).getFullProfile());
