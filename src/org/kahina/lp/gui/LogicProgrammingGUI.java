@@ -18,6 +18,7 @@ import org.kahina.core.gui.breakpoint.ThresholdedBreakpointEditorWindow;
 import org.kahina.core.profiler.DefaultProfileEntryMapper;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
+import org.kahina.core.visual.breakpoint.KahinaControlPointProfileView;
 import org.kahina.core.visual.tree.KahinaAbstractTreeView;
 import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.LogicProgrammingInstance;
@@ -32,7 +33,12 @@ public class LogicProgrammingGUI extends KahinaGUI
 	protected KahinaAbstractTreeView mainTreeView;
 	//protected KahinaLayeredTreeView mainTreeView;
 	
-	protected KahinaBreakpointProfileEditor breakpointProfileEditor;
+	protected KahinaControlPointProfileView breakPointView;
+    protected KahinaControlPointProfileView creepPointView;
+    protected KahinaControlPointProfileView completePointView;
+    protected KahinaControlPointProfileView skipPointView;
+    protected KahinaControlPointProfileView failPointView;
+    protected KahinaControlPointProfileView warnPointView;
 
 	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
 	{
@@ -45,11 +51,41 @@ public class LogicProgrammingGUI extends KahinaGUI
 		livingViews.add(mainTreeView);
 		varNameToView.put("controlFlowTree", mainTreeView);
 		
-		breakpointProfileEditor = new KahinaBreakpointProfileEditor(kahina);
-	    breakpointProfileEditor.setTitle("Breakpoint Profile");
-	    views.add(breakpointProfileEditor);
-	    livingViews.add(breakpointProfileEditor);
-        varNameToView.put("breakpointProfile", breakpointProfileEditor);
+        breakPointView = new KahinaControlPointProfileView(kahina);
+        breakPointView.setTitle("Break");
+        views.add(breakPointView);
+        livingViews.add(breakPointView);
+        varNameToView.put("breakPoints", breakPointView);
+        
+        creepPointView = new KahinaControlPointProfileView(kahina);
+        creepPointView.setTitle("Creep");
+        views.add(creepPointView);
+        livingViews.add(creepPointView);
+        varNameToView.put("creepPoints", creepPointView);
+        
+        completePointView = new KahinaControlPointProfileView(kahina);
+        completePointView.setTitle("Complete");
+        views.add(completePointView);
+        livingViews.add(completePointView);
+        varNameToView.put("completePoints", completePointView);
+        
+        skipPointView = new KahinaControlPointProfileView(kahina);
+        skipPointView.setTitle("Skip");
+        views.add(skipPointView);
+        livingViews.add(skipPointView);
+        varNameToView.put("skipPoints", skipPointView);
+        
+        failPointView = new KahinaControlPointProfileView(kahina);
+        failPointView.setTitle("Fail");
+        views.add(failPointView);
+        livingViews.add(failPointView);
+        varNameToView.put("failPoints", failPointView);
+        
+        warnPointView = new KahinaControlPointProfileView(kahina);
+        warnPointView.setTitle("Warn");
+        views.add(warnPointView);
+        livingViews.add(warnPointView);
+        varNameToView.put("warnPoints", warnPointView);
 		
 		addControlButton("Control", "gui/icons/creep.png", "creep", "(C)ontinue to next step", KeyEvent.VK_C);
 		addControlButton("Control", "gui/icons/roundskip.png", "auto-complete", "(A)uto-complete this step", KeyEvent.VK_A);
