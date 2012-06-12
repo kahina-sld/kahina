@@ -355,7 +355,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			currentID = newStepID;
 			parentCandidateID = newStepID;
 
-			maybeUpdateStepCount(false);
+			maybeUpdateStepCount(true);
 			selectIfPaused(newStepID);
 		} catch (Exception e)
 		{
@@ -592,6 +592,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		try
 		{
 			bridgeState = 'n';
+			maybeUpdateStepCount(false);
 			kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
 		} catch (Exception e)
 		{
@@ -784,7 +785,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	protected boolean isPaused()
 	{
-		return bridgeState == 'n';
+		return bridgeState == 'n' || bridgeState == 'c';
 	}
 
 	/**
@@ -808,8 +809,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 * 100 steps to reduce graphics load.
 	 * 
 	 * @param firstEncounter
-	 *            Should be true at call goals, false otherwise. The latter
-	 *            avoids unnecessary multiple updates per step.
+	 *            Should be true at call and redo goals, false otherwise. The
+	 *            latter avoids unnecessary multiple updates per step.
 	 */
 	protected void maybeUpdateStepCount(boolean firstEncounter)
 	{
