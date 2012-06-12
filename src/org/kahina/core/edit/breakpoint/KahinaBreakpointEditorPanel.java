@@ -54,6 +54,7 @@ public class KahinaBreakpointEditorPanel extends KahinaViewPanel<KahinaBreakpoin
     public KahinaBreakpointEditorPanel(KahinaController control)
     {
         super();
+        this.control = control;
         control.registerListener("breakpoint_editor", this);
         
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
