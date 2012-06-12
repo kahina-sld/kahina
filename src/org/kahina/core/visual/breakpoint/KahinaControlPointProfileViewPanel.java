@@ -2,6 +2,7 @@ package org.kahina.core.visual.breakpoint;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
@@ -35,16 +36,22 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         JButton newProfileButton = new JButton("New");
         newProfileButton.setActionCommand("newProfile");
         newProfileButton.addActionListener(profileListener);
+        newProfileButton.setMargin(new Insets(0, 5, 0, 5));
+        newProfileButton.setMaximumSize(new Dimension(65,25));
         profileButtonsPanel.add(newProfileButton);
         
         JButton loadProfileButton = new JButton("Load");
         loadProfileButton.setActionCommand("loadProfile");
         loadProfileButton.addActionListener(profileListener);
+        loadProfileButton.setMargin(new Insets(0, 5, 0, 5));
+        loadProfileButton.setMaximumSize(new Dimension(65,25));
         profileButtonsPanel.add(loadProfileButton);
         
         JButton saveProfileButton = new JButton("Save");
         saveProfileButton.setActionCommand("saveProfile");
         saveProfileButton.addActionListener(profileListener);
+        saveProfileButton.setMargin(new Insets(0, 5, 0, 5));
+        saveProfileButton.setMaximumSize(new Dimension(65,25));
         profileButtonsPanel.add(saveProfileButton);
         
         this.add(profileButtonsPanel);
