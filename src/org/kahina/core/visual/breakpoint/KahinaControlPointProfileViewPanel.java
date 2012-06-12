@@ -88,7 +88,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         
         profileDisplayPanel.add(profileManagementPanel);
         
-        pointPanel = new KahinaControlPointViewPanel();
+        pointPanel = new KahinaControlPointViewPanel(kahina);
         profileDisplayPanel.add(pointPanel);
         
         this.add(profileDisplayPanel);     
