@@ -17,7 +17,7 @@ public class KahinaControlPointView extends KahinaView<KahinaControlPoint>
     @Override
     public JComponent makePanel()
     {
-        KahinaControlPointViewPanel panel = new KahinaControlPointViewPanel();
+        KahinaControlPointViewPanel panel = new KahinaControlPointViewPanel(kahina);
         panel.setView(this);
         return panel;
     }

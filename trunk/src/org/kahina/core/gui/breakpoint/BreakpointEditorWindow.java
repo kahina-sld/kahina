@@ -71,6 +71,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 		this.breakpointType = breakpointType;
 
 		this.kahina = kahina;
+        this.control = kahina.getControl();
 		control.registerListener("breakpoint_editor", this);
 		this.setTitle("Kahina Breakpoint Editor");
 		this.setSize(800, 600);
