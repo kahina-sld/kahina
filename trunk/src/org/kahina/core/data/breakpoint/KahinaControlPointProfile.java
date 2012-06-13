@@ -16,9 +16,19 @@ public class KahinaControlPointProfile extends KahinaObject
         controlPoints = new ArrayList<KahinaControlPoint>();
     }
     
+    public void addControlPoint(KahinaControlPoint controlPoint)
+    {
+        controlPoints.add(controlPoint);
+    }
+    
     public KahinaControlPoint[] getControlPoints()
     {
         return controlPoints.toArray(new KahinaControlPoint[controlPoints.size()]);
+    }
+    
+    public int getSize()
+    {
+        return controlPoints.size();
     }
     
     public Element exportXML(Document dom)
