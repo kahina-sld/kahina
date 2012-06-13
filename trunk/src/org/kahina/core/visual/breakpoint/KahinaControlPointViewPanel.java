@@ -10,6 +10,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import org.kahina.core.KahinaInstance;
@@ -21,6 +22,8 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
     
     JButton activationButton;
     JButton colorButton;
+    
+    JTextField nameEditLine;
     
     public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?> kahina)
     {
@@ -95,7 +98,30 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             
             optionsPanel.add(activateColorPanel);
             
-            //TODO: name selection panel
+            JPanel nameSelectionPanel = new JPanel();
+            nameSelectionPanel.setLayout(new BoxLayout(nameSelectionPanel, BoxLayout.PAGE_AXIS));
+            nameSelectionPanel.setBorder(new LineBorder(Color.BLACK, 1));
+            
+            JPanel nameControlPanel = new JPanel();
+            nameControlPanel.setLayout(new BoxLayout(nameSelectionPanel, BoxLayout.LINE_AXIS));
+            
+            JLabel nameLabel = new JLabel("Name: ");
+            nameControlPanel.add(nameLabel);
+            
+            JButton suggestNameButton = new JButton("Suggest");
+            suggestNameButton.setMargin(new Insets(0, 5, 0, 5));
+            suggestNameButton.setActionCommand("suggestName");
+            //suggestNameButton.addActionListener(patternListener);
+            nameControlPanel.add(suggestNameButton);
+            
+            nameSelectionPanel.add(nameControlPanel);
+            
+            nameEditLine = new JTextField();
+            nameEditLine.setText(view.getModel().getName());
+            //TODO: listener for key strokes, directly adapting the name
+            nameSelectionPanel.add(nameEditLine);
+            
+            optionsPanel.add(nameSelectionPanel);
             
             this.add(optionsPanel);
             
