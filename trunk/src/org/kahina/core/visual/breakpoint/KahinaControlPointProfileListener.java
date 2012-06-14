@@ -51,7 +51,16 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
 
     public void valueChanged(ListSelectionEvent arg0)
     {
-        // TODO Auto-generated method stub
-        
+        int curID = profilePanel.pointList.getSelectedIndex();
+        if (curID == -1)
+        {
+            profilePanel.pointPanel.view.display(null);
+        } 
+        else
+        {
+            profilePanel.pointPanel.view.display(profilePanel.view.getModel().getControlPoint(curID));
+        }
+        //TODO: deal with the activation status!
+        //adaptActivationStatus();
     }  
 }

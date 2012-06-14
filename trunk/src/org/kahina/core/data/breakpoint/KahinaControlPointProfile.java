@@ -21,6 +21,11 @@ public class KahinaControlPointProfile extends KahinaObject
         controlPoints.add(controlPoint);
     }
     
+    public KahinaControlPoint getControlPoint(int index)
+    {
+        return controlPoints.get(index);
+    }
+    
     public KahinaControlPoint[] getControlPoints()
     {
         return controlPoints.toArray(new KahinaControlPoint[controlPoints.size()]);

@@ -8,10 +8,13 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaControlPointProfileView extends KahinaView<KahinaControlPointProfile>
 {
+    KahinaControlPointView pointView;
+    
     public KahinaControlPointProfileView(KahinaInstance<?, ?, ?> kahina)
     {
         super(kahina);
         model = new KahinaControlPointProfile();
+        pointView = new KahinaControlPointView(kahina);
     }
 
     @Override

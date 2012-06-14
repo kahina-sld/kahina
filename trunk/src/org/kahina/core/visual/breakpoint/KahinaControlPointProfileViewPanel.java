@@ -94,6 +94,15 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         this.add(profileDisplayPanel);     
     }
     
+    public void setView(KahinaControlPointProfileView view)
+    {
+        super.setView(view);
+        if (view != null)
+        {
+            pointPanel.setView(view.pointView);
+        }
+    }
+    
     public void updateDisplay()
     {
         pointList.setListData(view.getModel().getControlPoints());
