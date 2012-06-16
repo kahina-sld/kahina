@@ -69,7 +69,7 @@ public class QTypeLayerDecider extends LayerDecider
 			return 0;
 		}
 		
-		if (caption.contains("("))
+		if (caption.contains("(") || caption.endsWith(" copy_dbfs2"))
 		{
 			return 1;
 		}
