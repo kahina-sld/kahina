@@ -43,6 +43,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
 	// GUI component handling
 	private MouseEvent lastMouseEvent;
+	private int lastClickedIndex = -1;
 
 	private final int[] oldReferenceNodeByLayer;
 
@@ -488,7 +489,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 				return;
 			}
 		}
-		if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
+		if (lastMouseEvent != null && clickedIndex == lastClickedIndex && e.getWhen() - lastMouseEvent.getWhen() < 500)
 		{
 			view.secondaryTreeModel.toggleCollapse(clickedNode);
 			updateDisplayAndRepaintFromEventDispatchThread();
@@ -497,6 +498,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		{
 			kahina.dispatchEvent(new KahinaSelectionEvent(clickedNode));
 			lastMouseEvent = e;
+			lastClickedIndex = clickedIndex;
 		}
 	}
 
