@@ -10,6 +10,8 @@ import java.awt.event.WindowListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.border.Border;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaSystemEvent;
@@ -27,6 +29,8 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     
     public KahinaWindowManager wm;
     protected KahinaTransferablePanel mainPanel;
+    
+    protected JScrollPane topScrollPane;
     
     protected final int windowID;
     protected boolean cloned;
@@ -74,7 +78,10 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
         mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
         mainPanel.addMouseListener(new KahinaWindowListener(this));
         cloned = false;
-        this.getContentPane().add(mainPanel);
+        topScrollPane = new JScrollPane(mainPanel);
+        Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+        topScrollPane.setBorder(border);
+        this.getContentPane().add(topScrollPane);
         this.addWindowListener(this);
         this.addComponentListener(this);
         wm.registerWindow(this);
