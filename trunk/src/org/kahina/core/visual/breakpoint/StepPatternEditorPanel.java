@@ -1,6 +1,7 @@
 package org.kahina.core.visual.breakpoint;
 
 import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
@@ -25,29 +26,33 @@ public class StepPatternEditorPanel extends JPanel
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         
         JPanel opsAndHintPanel = new JPanel();
-        opsAndHintPanel.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        opsAndHintPanel.setLayout(new BoxLayout(opsAndHintPanel, BoxLayout.LINE_AXIS));
         
         JPanel boolOpPanel = new JPanel();
-        boolOpPanel.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-        boolOpPanel.setBorder(BorderFactory.createTitledBorder("Boolean Operations"));
+        boolOpPanel.setLayout(new BoxLayout(boolOpPanel, BoxLayout.LINE_AXIS));
+        boolOpPanel.setBorder(BorderFactory.createTitledBorder("Boolean Ops"));
         
-        andOperationButton = new JButton("&");
+        andOperationButton = new JButton("and");
         andOperationButton.setActionCommand("andOperation");
+        andOperationButton.setMargin(new Insets(0, 1, 0, 1));
         //andOperationButton.addActionListener(listener);
         boolOpPanel.add(andOperationButton);
         
-        orOperationButton = new JButton("v");
+        orOperationButton = new JButton("or");
         orOperationButton.setActionCommand("orOperation");
+        orOperationButton.setMargin(new Insets(0, 1, 0, 1));
         //orOperationButton.addActionListener(listener);
         boolOpPanel.add(orOperationButton);
         
-        negOperationButton = new JButton("~");
+        negOperationButton = new JButton("not");
         negOperationButton.setActionCommand("negOperation");
+        negOperationButton.setMargin(new Insets(0, 1, 0, 1));
         //negOperationButton.addActionListener(listener);
         boolOpPanel.add(negOperationButton);
         
         implOperationButton = new JButton("->");
         implOperationButton.setActionCommand("implOperation");
+        implOperationButton.setMargin(new Insets(0, 1, 0, 1));
         //implOperationButton.addActionListener(listener);
         boolOpPanel.add(implOperationButton);
         
@@ -57,6 +62,8 @@ public class StepPatternEditorPanel extends JPanel
         opsAndHintPanel.add(hintPanel);
         
         this.add(opsAndHintPanel);
+        
+        this.add(Box.createVerticalGlue());
     }
     
     @Override

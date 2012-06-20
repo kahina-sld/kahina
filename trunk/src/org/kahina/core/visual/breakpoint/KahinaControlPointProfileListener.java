@@ -60,6 +60,8 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         {
             profilePanel.pointPanel.view.display(profilePanel.view.getModel().getControlPoint(curID));
         }
+        profilePanel.pointPanel.updateDisplay();
+        profilePanel.pointPanel.revalidate();
         //TODO: deal with the activation status!
         //adaptActivationStatus();
     }  
