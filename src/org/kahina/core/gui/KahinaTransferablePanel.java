@@ -33,7 +33,7 @@ public class KahinaTransferablePanel extends JPanel implements Transferable
     public void setTitle(String title)
     {
     	this.title = title;
-    	if (getBorder() != null)
+    	if (getBorder() != null && getBorder() instanceof TitledBorder)
     	{
     	    ((TitledBorder) getBorder()).setTitle(title);
     	}

@@ -143,7 +143,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	}
     	else
     	{
-    		mainPanel.setBorder(null);
+    		mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     	}
     }
     
