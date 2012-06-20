@@ -425,6 +425,11 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
     {
     }
     
+    public void setNodeSelectionMode(int selectionMode)
+    {
+        nodeSelectionMode = selectionMode;
+    }
+    
     public void processEvent(KahinaEvent event)
     {
         if (event.getType().equals("breakpoint_editor"))

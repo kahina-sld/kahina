@@ -5,6 +5,7 @@ import java.awt.Color;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.breakpoint.patterns.TreeNodePattern;
 import org.kahina.core.data.breakpoint.patterns.TreePattern;
+import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 import org.kahina.core.io.color.ColorUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,7 +18,7 @@ public class KahinaControlPoint extends KahinaObject
     private String name;
     private boolean active;
     private Color signalColor;
-    private TreeNodePattern pattern;
+    private TreePatternNode pattern;
     //has one of the constant values in KahinaBreakpointType
     private int type;
     
@@ -37,7 +38,7 @@ public class KahinaControlPoint extends KahinaObject
         setName("Control point " + number);
         signalColor = ColorUtil.randomColor();
         active = true;
-        pattern = new TreeNodePattern();
+        pattern = new TreePatternNode();
         this.type = type;
     }
     
@@ -124,7 +125,7 @@ public class KahinaControlPoint extends KahinaObject
      * Gets the step pattern associated with this control point.
      * @return the step pattern associated with this control point
      */
-    public TreeNodePattern getPattern()
+    public TreePatternNode getPattern()
     {
         return pattern;
     }
@@ -133,7 +134,7 @@ public class KahinaControlPoint extends KahinaObject
      * Associates this control point with a new sep pattern.
      * @param pattern the step pattern to be associated with this control point
      */
-    public void setPattern(TreeNodePattern pattern)
+    public void setPattern(TreePatternNode pattern)
     {
         this.pattern = pattern;
     }
@@ -195,7 +196,7 @@ public class KahinaControlPoint extends KahinaObject
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlPointNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlPointNode.getAttribute("active"));
         //expect only one step pattern
-        newControlPoint.pattern = TreeNodePattern.importXML((Element) controlPointNode.getElementsByTagName("pattern").item(0));
+        newControlPoint.pattern = TreePatternNode.importXML((Element) controlPointNode.getElementsByTagName("pattern").item(0));
         return newControlPoint;
     }
 }
