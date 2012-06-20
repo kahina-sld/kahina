@@ -6,9 +6,9 @@
         <kahina:hori-split-window kahina:height="-600" kahina:id="28" kahina:title="Upper Half" kahina:width="0" kahina:xpos="0" kahina:ypos="25">
           <kahina:vert-split-window kahina:height="0" kahina:id="29" kahina:title="Control Structure" kahina:width="653" kahina:xpos="0" kahina:ypos="25">
             <kahina:vert-split-window kahina:height="195" kahina:id="20" kahina:title="Control and Breakpoints" kahina:width="0" kahina:xpos="0" kahina:ypos="40">
-              <kahina:hori-split-window kahina:height="45" kahina:id="18" kahina:title="Control" kahina:width="400" kahina:xpos="0" kahina:ypos="40">
-                <kahina:control-window kahina:binding="Control" kahina:border="false" kahina:height="0" kahina:id="16" kahina:primary="true" kahina:title="Control" kahina:width="350" kahina:xpos="0" kahina:ypos="25"/>
-                <kahina:control-window kahina:binding="History" kahina:border="false" kahina:height="0" kahina:id="17" kahina:primary="true" kahina:title="History" kahina:width="50" kahina:xpos="350" kahina:ypos="25"/>
+              <kahina:hori-split-window kahina:height="45" kahina:id="18" kahina:title="Control" kahina:width="0" kahina:xpos="0" kahina:ypos="40">
+                <kahina:control-window kahina:binding="Control" kahina:border="false" kahina:height="0" kahina:id="16" kahina:primary="true" kahina:title="Control" kahina:width="-506" kahina:xpos="0" kahina:ypos="25"/>
+                <kahina:control-window kahina:binding="History" kahina:border="false" kahina:height="0" kahina:id="17" kahina:primary="true" kahina:title="History" kahina:width="506" kahina:xpos="400" kahina:ypos="25"/>
               </kahina:hori-split-window>
 	          <kahina:tabbed-window kahina:border="false" kahina:height="150" kahina:id="21" kahina:title="Control Automation / Search" kahina:width="600" kahina:xpos="0" kahina:ypos="125">
 	            <kahina:default-window kahina:binding="breakPoints" kahina:border="false" kahina:height="200" kahina:id="22" kahina:primary="true" kahina:title="Break" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
