@@ -49,6 +49,8 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         this.setBorder(new LineBorder(Color.BLACK, 1));
         
+        this.setBackground(Color.CYAN);
+        
         noSelectionPanel = new JPanel();
         noSelectionPanel.setLayout(new GridBagLayout());
         JLabel noSelectionLabel = new JLabel("First select or create a new control point.");
@@ -174,7 +176,7 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             
             this.add(Box.createVerticalGlue());
             
-            StepPatternEditorPanel patternEditor = new StepPatternEditorPanel(); 
+            StepPatternEditorPanel patternEditor = new StepPatternEditorPanel(this); 
             
             //TODO: load pattern into editor; write StepPatternEditorPanel
             

@@ -1,8 +1,11 @@
 package org.kahina.core.edit.breakpoint;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -15,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -34,7 +39,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     private NodeConstraintOptions constrOptions;
     private int elementaryConstraintNumber;
     
-    //  data structures for the construction of the node pattern
+    //data structures for the construction of the node pattern
     private List<TreeNodePattern> basePatterns;
     private TreeNodePattern virtualRootPattern;
     private Map<TreeNodePattern,TreeNodePattern> parentPatterns;
@@ -67,6 +72,10 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         parentPatterns = new HashMap<TreeNodePattern,TreeNodePattern>();
         virtualRootPattern = new TreeNodePattern();
         
+        this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
+        
+        this.add(Box.createRigidArea(new Dimension(0,0)));
+        
         elConstPanel = new JPanel();
         elConstPanel.setLayout(new GridBagLayout());
         elConstPanel.setBorder(BorderFactory.createTitledBorder("Node Constraint")); 
@@ -88,7 +97,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         elConstPanel.add(boolPanel, c);
         
         addElementaryConstraint(0); 
-        this.add(elConstPanel);
+        this.add(elConstPanel, Component.LEFT_ALIGNMENT);
     }
     
     public SingleNodeConstraintPanel(NodeConstraintOptions constrOptions, KahinaController control, TreePatternNode patternNode)
@@ -103,9 +112,13 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         parentPatterns = new HashMap<TreeNodePattern,TreeNodePattern>();
         virtualRootPattern = new TreeNodePattern();
         
+        this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
+        
+        this.add(Box.createRigidArea(new Dimension(0,0)));
+        
         elConstPanel = new JPanel();
         elConstPanel.setLayout(new GridBagLayout());
-        elConstPanel.setBorder(BorderFactory.createTitledBorder("Node Constraint")); 
+        elConstPanel.setBorder(BorderFactory.createTitledBorder("Pattern")); 
         
         typeComboBoxes = new ArrayList<NodeConstraintComboBox>();
         relComboBoxes = new ArrayList<NodeConstraintComboBox>();
@@ -129,7 +142,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         addStructure(getRootPattern());
         synchronizationMode = false;
 
-        this.add(elConstPanel);
+        this.add(elConstPanel, Component.LEFT_ALIGNMENT);
         displayChangeInConnectiveStructure();
     }
     
@@ -143,7 +156,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
             generateElementaryConstraintRow(elementaryConstraintNumber);        
             adaptNamingAndLayout(elementaryConstraintNumber);           
             basePatterns.add(node);
-            System.err.println("displaying TreeNodePattern " + node.hashCode() + ": " + node);
+            //System.err.println("displaying TreeNodePattern " + node.hashCode() + ": " + node);
             typeComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getTypeAsString());
             relComboBoxes.get(elementaryConstraintNumber).setModel(constrOptions.getRelationsForType(node.getTypeAsString()));
             relComboBoxes.get(elementaryConstraintNumber).setSelectedItem(node.getRelAsString());
@@ -269,6 +282,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         addConstButton.setForeground(Color.GREEN);
         addConstButton.setActionCommand("addConst" + rowID);    
         addConstButton.addActionListener(this);  
+        addConstButton.setMargin(new Insets(1,0,2,0));
         c.gridx = 4;
         elConstPanel.add(addConstButton, c);
         addButtons.add(rowID, addConstButton);
@@ -278,6 +292,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         if (rowID == 0) remConstButton.setEnabled(false);
         remConstButton.setActionCommand("remConst" + rowID);    
         remConstButton.addActionListener(this);  
+        remConstButton.setMargin(new Insets(1,1,2,1));
         c.gridx = 5;
         elConstPanel.add(remConstButton, c);
         remButtons.add(rowID, remConstButton);
@@ -686,6 +701,11 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     
     public void mouseReleased(MouseEvent arg0)
     {
+    }
+    
+    public void setNodeSelectionMode(int selectionMode)
+    {
+        boolPanel.setNodeSelectionMode(selectionMode);
     }
     
     private void announceUpdate()
