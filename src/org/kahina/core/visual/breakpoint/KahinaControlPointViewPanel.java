@@ -1,11 +1,13 @@
 package org.kahina.core.visual.breakpoint;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -54,6 +56,9 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             
             JPanel optionsPanel = new JPanel();
             optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.PAGE_AXIS));
+            optionsPanel.setMaximumSize(new Dimension(150,500));
+            
+            optionsPanel.add(Box.createRigidArea(new Dimension(5,0)));
             
             JPanel exportRemovePanel = new JPanel();
             exportRemovePanel.setLayout(new BoxLayout(exportRemovePanel, BoxLayout.LINE_AXIS));
@@ -72,6 +77,8 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             
             optionsPanel.add(exportRemovePanel);
             
+            optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
+            
             JPanel activateColorPanel = new JPanel();
             activateColorPanel.setLayout(new BoxLayout(activateColorPanel, BoxLayout.LINE_AXIS));
             
@@ -87,43 +94,52 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             activationButton.setActionCommand("toogleActivation");
             //activationButton.addActionListener(patternListener);
             activationButton.setMargin(new Insets(0, 5, 0, 5));
-            activateColorPanel.add(activationButton);
+            activateColorPanel.add(activationButton, Component.LEFT_ALIGNMENT);
+            
+            activateColorPanel.add(Box.createHorizontalGlue());
             
             colorButton = new JButton("Color");
             colorButton.setBackground(view.getModel().getSignalColor());
             colorButton.setActionCommand("changeColor");
             //colorButton.addActionListener(patternListener);
             colorButton.setMargin(new Insets(0, 5, 0, 5));
-            activateColorPanel.add(colorButton);
+            activateColorPanel.add(colorButton, Component.RIGHT_ALIGNMENT);
             
             optionsPanel.add(activateColorPanel);
+            
+            optionsPanel.add(Box.createRigidArea(new Dimension(0,5)));
             
             JPanel nameSelectionPanel = new JPanel();
             nameSelectionPanel.setLayout(new BoxLayout(nameSelectionPanel, BoxLayout.PAGE_AXIS));
             nameSelectionPanel.setBorder(new LineBorder(Color.BLACK, 1));
             
             JPanel nameControlPanel = new JPanel();
-            nameControlPanel.setLayout(new BoxLayout(nameSelectionPanel, BoxLayout.LINE_AXIS));
+            nameControlPanel.setLayout(new BoxLayout(nameControlPanel, BoxLayout.LINE_AXIS));
             
             JLabel nameLabel = new JLabel("Name: ");
-            nameControlPanel.add(nameLabel);
+            nameControlPanel.add(nameLabel, Component.LEFT_ALIGNMENT);
+            
+            nameControlPanel.add(Box.createHorizontalGlue());
             
             JButton suggestNameButton = new JButton("Suggest");
             suggestNameButton.setMargin(new Insets(0, 5, 0, 5));
             suggestNameButton.setActionCommand("suggestName");
             //suggestNameButton.addActionListener(patternListener);
-            nameControlPanel.add(suggestNameButton);
+            nameControlPanel.add(suggestNameButton, Component.RIGHT_ALIGNMENT);
             
             nameSelectionPanel.add(nameControlPanel);
             
             nameEditLine = new JTextField();
             nameEditLine.setText(view.getModel().getName());
+            nameEditLine.setMaximumSize(new Dimension(150,20));
             //TODO: listener for key strokes, directly adapting the name
             nameSelectionPanel.add(nameEditLine);
             
             optionsPanel.add(nameSelectionPanel);
             
-            this.add(optionsPanel);
+            this.add(optionsPanel);  
+            
+            this.add(Box.createVerticalGlue());
             
             StepPatternEditorPanel patternEditor = new StepPatternEditorPanel(); 
             

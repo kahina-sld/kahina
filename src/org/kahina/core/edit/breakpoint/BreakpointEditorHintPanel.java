@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -13,10 +15,16 @@ public class BreakpointEditorHintPanel extends JPanel
     
     public BreakpointEditorHintPanel()
     {
-        setBorder(BorderFactory.createTitledBorder("Hint"));  
+        this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+        this.setBorder(BorderFactory.createTitledBorder("Hint")); 
         setMaximumSize(new Dimension(2000, 60));
+        
         hintLabel = new JLabel("Define a node constraint by selecting a type.");
-        add(hintLabel);
+        this.add(hintLabel);
+        //hintLabel.getBorder().getBorderInsets(this).bottom = 0;
+        //hintLabel.getBorder().getBorderInsets(this).top = 0;
+        
+        this.add(Box.createHorizontalGlue());
     }
     
     public void hint(String hint)

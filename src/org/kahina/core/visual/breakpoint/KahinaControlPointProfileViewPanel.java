@@ -69,11 +69,13 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         JButton newControlPointButton = new JButton("New");
         newControlPointButton.setActionCommand("newControlPoint");
         newControlPointButton.addActionListener(profileListener);
+        newControlPointButton.setMargin(new Insets(0, 5, 0, 5));
         profileManagementButtonPanel.add(newControlPointButton);
         
         JButton importControlPointButton = new JButton("Import");
         importControlPointButton.setActionCommand("loadControlPoint");
         importControlPointButton.addActionListener(profileListener);
+        importControlPointButton.setMargin(new Insets(0, 5, 0, 5));
         profileManagementButtonPanel.add(importControlPointButton);
         
         profileManagementPanel.add(profileManagementButtonPanel);
