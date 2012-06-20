@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaControlPointProfileView>
@@ -24,6 +26,8 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
     public KahinaControlPointProfileViewPanel(KahinaInstance<?, ?, ?> kahina)
     {
         view = null;
+        
+        kahina.getControl().registerListener("breakpoint_editor", this);
         
         KahinaControlPointProfileListener profileListener = new KahinaControlPointProfileListener(this);
         
@@ -108,5 +112,34 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
     public void updateDisplay()
     {
         pointList.setListData(view.getModel().getControlPoints());
+    }
+    
+    public void processEvent(KahinaEvent event)
+    {
+        //System.err.println("processEvent(" + event + ")");
+        if (event.getType().equals("breakpoint_editor"))
+        {
+            processEditorEvent((BreakpointEditorEvent) event);
+        }
+        else
+        {
+            super.processEvent(event);
+        }
+    }
+    
+    public void processEditorEvent(BreakpointEditorEvent event)
+    {
+        switch (event.getEditorEventType())
+        {
+            case BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE:
+            {
+                pointList.repaint();
+                break;
+            }
+            default:
+            {
+                //other editor events do not concern the profile view
+            }
+        }
     }
 }

@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPointView>
@@ -27,9 +28,15 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
     
     JTextField nameEditLine;
     
+    KahinaControlPointListener pointListener;
+    
+    KahinaInstance<?,?,?> kahina;
+    
     public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?> kahina)
     {
         view = null;
+        pointListener = new KahinaControlPointListener(this);
+        this.kahina = kahina;
         
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         this.setBorder(new LineBorder(Color.BLACK, 1));
@@ -47,6 +54,29 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
         this.add(noSelectionPanel, gbc);     
     }
     
+    public void adaptActivationButtonLabel()
+    {
+        if (view.getModel().isActive())
+        {
+            activationButton.setText("Deactivate");
+            activationButton.setMargin(new Insets(0, 5, 0, 5));
+        }
+        else
+        {
+            activationButton.setText("Activate");
+            activationButton.setMargin(new Insets(0, 15, 0, 14));
+        }
+        this.revalidate();
+        kahina.dispatchEvent(new BreakpointEditorEvent(BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE));
+    }
+    
+    public void processNameChange()
+    {
+        nameEditLine.setText(view.getModel().getName());
+        this.revalidate();
+        kahina.dispatchEvent(new BreakpointEditorEvent(BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE));
+    }
+    
     @Override
     public void updateDisplay()
     {
@@ -56,7 +86,8 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             
             JPanel optionsPanel = new JPanel();
             optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.PAGE_AXIS));
-            optionsPanel.setMaximumSize(new Dimension(150,500));
+            optionsPanel.setMinimumSize(new Dimension(200,500));
+            optionsPanel.setMaximumSize(new Dimension(200,500));
             
             optionsPanel.add(Box.createRigidArea(new Dimension(5,0)));
             
@@ -83,17 +114,9 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             activateColorPanel.setLayout(new BoxLayout(activateColorPanel, BoxLayout.LINE_AXIS));
             
             activationButton = new JButton();
-            if (view.getModel().isActive())
-            {
-                activationButton.setText("Activate");
-            }
-            else
-            {
-                activationButton.setText("Deactivate");
-            }
-            activationButton.setActionCommand("toogleActivation");
-            //activationButton.addActionListener(patternListener);
-            activationButton.setMargin(new Insets(0, 5, 0, 5));
+            adaptActivationButtonLabel();
+            activationButton.setActionCommand("toggleActivation");
+            activationButton.addActionListener(pointListener);
             activateColorPanel.add(activationButton, Component.LEFT_ALIGNMENT);
             
             activateColorPanel.add(Box.createHorizontalGlue());
@@ -101,7 +124,7 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             colorButton = new JButton("Color");
             colorButton.setBackground(view.getModel().getSignalColor());
             colorButton.setActionCommand("changeColor");
-            //colorButton.addActionListener(patternListener);
+            colorButton.addActionListener(pointListener);
             colorButton.setMargin(new Insets(0, 5, 0, 5));
             activateColorPanel.add(colorButton, Component.RIGHT_ALIGNMENT);
             
@@ -124,14 +147,16 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             JButton suggestNameButton = new JButton("Suggest");
             suggestNameButton.setMargin(new Insets(0, 5, 0, 5));
             suggestNameButton.setActionCommand("suggestName");
-            //suggestNameButton.addActionListener(patternListener);
+            suggestNameButton.addActionListener(pointListener);
             nameControlPanel.add(suggestNameButton, Component.RIGHT_ALIGNMENT);
             
             nameSelectionPanel.add(nameControlPanel);
             
             nameEditLine = new JTextField();
             nameEditLine.setText(view.getModel().getName());
-            nameEditLine.setMaximumSize(new Dimension(150,20));
+            nameEditLine.addKeyListener(pointListener);
+            nameEditLine.setMinimumSize(new Dimension(180,20));
+            nameEditLine.setMaximumSize(new Dimension(180,20));
             //TODO: listener for key strokes, directly adapting the name
             nameSelectionPanel.add(nameEditLine);
             
