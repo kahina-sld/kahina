@@ -5,8 +5,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.JColorChooser;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.data.breakpoint.KahinaControlPoint;
@@ -39,7 +43,6 @@ public class KahinaControlPointListener implements ActionListener, KeyListener
         }
         else if (s.equals("toggleActivation"))
         {
-            System.err.println("toggleActivation");
             KahinaControlPoint point = viewPanel.view.getModel();
             if (point.isActive())
             {
@@ -49,10 +52,30 @@ public class KahinaControlPointListener implements ActionListener, KeyListener
             {
                 point.activate();
             }
-            //TODO: find out how to safely update this
             viewPanel.adaptActivationButtonLabel();
             //control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.ACTIVATE_BREAKPOINT, curID));
         } 
+        else if (s.equals("exportControlPoint"))
+        {
+            try
+            {
+                JFileChooser chooser = new JFileChooser(new File("."));
+                chooser.setDialogTitle("Export control point");
+                chooser.showSaveDialog(viewPanel);
+                File dataFile = chooser.getSelectedFile();
+                if (dataFile != null)
+                {
+                    FileWriter fw = new FileWriter(dataFile);
+                    fw.write(viewPanel.view.getModel().exportXML(true));
+                    fw.close();
+                }
+            } 
+            catch (IOException ex)
+            {
+                System.err.println("IOException: Could not export control point!");
+                ex.printStackTrace();
+            }
+        }
     }
     
     public void keyPressed(KeyEvent e) 
