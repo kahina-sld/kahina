@@ -25,22 +25,14 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         String s = e.getActionCommand();
         if (s.equals("newControlPoint"))
         {
-            //TODO: adapt type argument, 0 is not an ideal default value!
+            //TODO: adapt type argument, 0 must not be the default value in all cases!
             KahinaControlPoint newControlPoint = new KahinaControlPoint(0);
             profilePanel.view.getModel().addControlPoint(newControlPoint);
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
             profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
         } 
         //TODO: reactivate these parts!
-        /*else if (s.equals("activateBreakpoint"))
-        {
-            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.ACTIVATE_BREAKPOINT, curID));
-        } 
-        else if (s.equals("deactivateBreakpoint"))
-        {
-            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.DEACTIVATE_BREAKPOINT, curID));
-        } 
-        else if (s.equals("removeBreakpoint"))
+        /*else if (s.equals("removeBreakpoint"))
         {
             control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.REMOVE_BREAKPOINT, curID));
         }*/
