@@ -2,7 +2,11 @@ package org.kahina.core.visual.breakpoint;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
+import javax.swing.JFileChooser;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -31,11 +35,10 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
             profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
         } 
-        //TODO: reactivate these parts!
-        /*else if (s.equals("removeBreakpoint"))
+        else if (s.equals("removeControlPoint"))
         {
-            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.REMOVE_BREAKPOINT, curID));
-        }*/
+            profilePanel.removeCurrentControlPoint();
+        }
         //TODO: new profile, import profile, save profile etc.
         //TODO: deal with the activation status!
         //adaptActivationStatus();

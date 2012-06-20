@@ -26,6 +26,11 @@ public class KahinaControlPointProfile extends KahinaObject
         return controlPoints.get(index);
     }
     
+    public KahinaControlPoint removeControlPoint(int index)
+    {
+        return controlPoints.remove(index);
+    }
+    
     public KahinaControlPoint[] getControlPoints()
     {
         return controlPoints.toArray(new KahinaControlPoint[controlPoints.size()]);

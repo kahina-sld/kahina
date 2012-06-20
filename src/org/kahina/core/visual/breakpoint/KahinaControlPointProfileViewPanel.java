@@ -94,7 +94,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         
         profileDisplayPanel.add(profileManagementPanel);
         
-        pointPanel = new KahinaControlPointViewPanel(kahina);
+        pointPanel = new KahinaControlPointViewPanel(kahina, profileListener);
         profileDisplayPanel.add(pointPanel);
         
         this.add(profileDisplayPanel);     
@@ -107,6 +107,13 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         {
             pointPanel.setView(view.pointView);
         }
+    }
+    
+    public void removeCurrentControlPoint()
+    {
+        view.getModel().removeControlPoint(pointList.getSelectedIndex());
+        updateDisplay();
+        pointList.setSelectedIndex(-1);
     }
     
     public void updateDisplay()

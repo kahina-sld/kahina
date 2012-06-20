@@ -29,14 +29,22 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
     JTextField nameEditLine;
     
     KahinaControlPointListener pointListener;
+    KahinaControlPointProfileListener profileListener;
     
     KahinaInstance<?,?,?> kahina;
     
+    //TODO: give some sensible behavior to this constructor
     public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?> kahina)
     {
-        view = null;
-        pointListener = new KahinaControlPointListener(this);
         this.kahina = kahina;
+    }
+    
+    public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?> kahina, KahinaControlPointProfileListener profileListener)
+    {
+        this.kahina = kahina;
+        this.profileListener = profileListener;
+        pointListener = new KahinaControlPointListener(this);
+        view = null;
         
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         this.setBorder(new LineBorder(Color.BLACK, 1));
@@ -95,14 +103,14 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             exportRemovePanel.setLayout(new BoxLayout(exportRemovePanel, BoxLayout.LINE_AXIS));
             
             JButton exportPatternButton = new JButton("Export");
-            exportPatternButton.setActionCommand("savePattern");
-            //exportPatternButton.addActionListener(patternListener);
+            exportPatternButton.setActionCommand("exportControlPoint");
+            exportPatternButton.addActionListener(pointListener);
             exportPatternButton.setMargin(new Insets(0, 5, 0, 5));
             exportRemovePanel.add(exportPatternButton);
             
             JButton removePatternButton = new JButton("Remove");
-            removePatternButton.setActionCommand("removePattern");
-            //removePatternButton.addActionListener(profileListener);
+            removePatternButton.setActionCommand("removeControlPoint");
+            removePatternButton.addActionListener(profileListener);
             removePatternButton.setMargin(new Insets(0, 5, 0, 5));
             exportRemovePanel.add(removePatternButton);
             
