@@ -237,7 +237,6 @@ act_source_code_location(Bridge,JVM,Inv,Options) :-
     ; true).
 
 :- dynamic top/1.
-:- dynamic end_det/0.
 
 top_start(_) :-
   top(_),
@@ -251,8 +250,7 @@ top_end(Inv,Bridge,JVM) :-
   jasper_call(JVM,
       method('org/kahina/sicstus/bridge/SICStusPrologBridge','select',[instance]),
       select(+object('org/kahina/sicstus/bridge/SICStusPrologBridge'),+integer),
-      select(Bridge,1)),
-  assert(end_det).
+      select(Bridge,1)).
 top_end(_,_,_).
 
 act_step(Bridge,JVM,Inv,PredChars,GoalDescChars) :-
@@ -335,9 +333,6 @@ send_variable_binding(Bridge,JVM,Inv,Port,Name,Value) :-
 % ------------------------------------------------------------------------------
 
 get_action(unblock,_,_,99) :- % c
-  !.
-get_action(_,_,_,99) :-
-  retract(end_det),
   !.
 get_action(_,Bridge,JVM,Action) :-
   wait_for_action(Bridge,JVM,Action),
