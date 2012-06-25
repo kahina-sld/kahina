@@ -7,6 +7,8 @@ import org.kahina.lp.bridge.LogicProgrammingBridge;
 public class PrologBridge extends LogicProgrammingBridge
 {
 	
+	private static final boolean VERBOSE = false;
+	
 	Integer queryRootID = null;
 
 	public PrologBridge(LogicProgrammingInstance kahina)
@@ -22,7 +24,12 @@ public class PrologBridge extends LogicProgrammingBridge
 	@Override
 	protected boolean isQueryRoot(int stepID)
 	{
-		return super.isQueryRoot(state.getStepTree().getParent(stepID));
+		boolean result = super.isQueryRoot(state.getStepTree().getParent(stepID));
+		if (VERBOSE)
+		{
+			System.err.println(this + ".isQueryRoot(" + stepID + ") = " + result);
+		}
+		return result;
 	}
 
 }
