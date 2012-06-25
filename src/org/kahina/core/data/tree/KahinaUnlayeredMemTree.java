@@ -409,7 +409,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 	@Override
 	public boolean removeLeaf(int id)
 	{
-		if (children.get(id) == null)
+		if (children.get(id) == null || children.get(id).size() == 0)
 		{
 			children.get(parents.get(id)).remove(new Integer(id));
 			parents.remove(id);

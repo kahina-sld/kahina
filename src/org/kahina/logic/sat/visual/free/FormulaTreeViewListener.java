@@ -22,20 +22,9 @@ public class FormulaTreeViewListener extends KahinaTreeViewListener
     public void mouseClicked(MouseEvent e)
     {
         int clickedNode = view.view.nodeAtCoordinates(e.getX(), e.getY());
-        if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
-        {
-            view.view.recursiveDecollapse(clickedNode);
-            //view.view.toggleFormulaCollapse(clickedNode);
-            view.view.recalculate();
-            view.updateDisplayAndRepaintFromEventDispatchThread();
-        }
-        else
-        {
-            view.view.toggleFormulaCollapse(clickedNode);
-            view.view.recalculate();
-            view.updateDisplayAndRepaintFromEventDispatchThread();
-            //kahina.dispatchEvent(new KahinaSelectionEvent(clickedNode));
-            lastMouseEvent = e;
-        }
+        //view.view.recursiveDecollapse(clickedNode);
+        view.view.cycleDecollapsePrune(clickedNode);
+        view.view.recalculate();
+        view.updateDisplayAndRepaintFromEventDispatchThread();
     }
 }
