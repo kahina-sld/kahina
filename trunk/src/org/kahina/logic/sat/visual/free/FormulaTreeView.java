@@ -1,6 +1,7 @@
 package org.kahina.logic.sat.visual.free;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.JComponent;
@@ -60,46 +61,76 @@ public class FormulaTreeView extends KahinaTreeView
     
     public void recursiveDecollapse(int nodeID)
     {
-        toggleFormulaCollapse(nodeID);
+        formulaDecollapse(nodeID);
         for (int childID : model.getChildren(nodeID))
         {
             recursiveDecollapse(childID);
         }
     }
     
-    public void toggleFormulaCollapse(int nodeID)
+    public void formulaDecollapse(int nodeID)
+    {
+        model.setNodeStatus(nodeID, 1);
+        BooleanFormula frm = nodeToFrm.get(nodeID);
+        if (frm != null)
+        {
+            if (frm instanceof Negation)
+            {
+                frm = ((Negation) frm).getArg();
+            }
+            
+            if (frm instanceof Conjunction)
+            {
+                Conjunction f = (Conjunction) frm;
+                for (BooleanFormula subf : f.getFms())
+                {
+                    addFormulaNode(subf, nodeID);
+                }
+            }
+            else if (frm instanceof Disjunction)
+            {
+                Disjunction f = (Disjunction) frm;
+                for (BooleanFormula subf : f.getFms())
+                {
+                    addFormulaNode(subf, nodeID);
+                }
+            }
+        }
+    }
+    
+    public void formulaCollapse(int nodeID)
+    {
+        model.setNodeStatus(nodeID, 0);
+        List<Integer> children = model.getChildren(nodeID);
+        while (children.size() > 0)
+        {
+            removeNode(children.get(0));
+        }
+    }
+    
+    public void cycleDecollapsePrune(int nodeID)
     {
         if (model.getNodeStatus(nodeID) == 0)
         {
-            model.setNodeStatus(nodeID, 1);
+            formulaDecollapse(nodeID);
+        }
+        else if (model.getNodeStatus(nodeID) == 1)
+        {
+            formulaCollapse(nodeID);
+            model.setNodeStatus(nodeID, 2);
             BooleanFormula frm = nodeToFrm.get(nodeID);
             if (frm != null)
             {
-                if (frm instanceof Negation)
-                {
-                    frm = ((Negation) frm).getArg();
-                }
-                
-                if (frm instanceof Conjunction)
-                {
-                    Conjunction f = (Conjunction) frm;
-                    for (BooleanFormula subf : f.getFms())
-                    {
-                        addFormulaNode(subf, nodeID);
-                    }
-                }
-                else if (frm instanceof Disjunction)
-                {
-                    Disjunction f = (Disjunction) frm;
-                    for (BooleanFormula subf : f.getFms())
-                    {
-                        addFormulaNode(subf, nodeID);
-                    }
-                }
+                frm.setPruned(true);
             }
-            else
+        }
+        else if (model.getNodeStatus(nodeID) == 2)
+        {     
+            model.setNodeStatus(nodeID, 0);
+            BooleanFormula frm = nodeToFrm.get(nodeID);
+            if (frm != null)
             {
-                System.err.println("ERROR: node to be collapsed is not associated with any subformula!");
+                frm.setPruned(false);
             }
         }
     }
@@ -111,6 +142,18 @@ public class FormulaTreeView extends KahinaTreeView
         frmToNode.put(f, nodeID);
         nodeToFrm.put(nodeID, f);
         model.addChild(parentID, nodeID);
+    }
+    
+    private void removeNode(int nodeID)
+    {
+        List<Integer> children = model.getChildren(nodeID);
+        while (children.size() > 0)
+        {
+            removeNode(children.get(0));
+        }
+        model.removeLeaf(nodeID);
+        BooleanFormula frm = nodeToFrm.remove(nodeID);
+        frmToNode.remove(frm);
     }
 
     private String generateNodeCaption(BooleanFormula f)
