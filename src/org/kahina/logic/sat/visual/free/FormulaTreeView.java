@@ -74,7 +74,7 @@ public class FormulaTreeView extends KahinaTreeView
         BooleanFormula frm = nodeToFrm.get(nodeID);
         if (frm != null)
         {
-            if (frm instanceof Negation)
+            while (frm instanceof Negation)
             {
                 frm = ((Negation) frm).getArg();
             }
