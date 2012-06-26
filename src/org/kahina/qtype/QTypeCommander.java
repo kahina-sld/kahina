@@ -189,7 +189,10 @@ public class QTypeCommander implements KahinaListener
         {
             grammar = (String) event.getArguments()[0];
             sentence = Collections.emptyList();
-            examples = new ArrayList<List<String>>();
+            if (grammar == null)
+            {
+            	examples = new ArrayList<List<String>>();
+            }
             kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
             updateActions();
             if (VERBOSE)

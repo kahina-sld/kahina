@@ -31,11 +31,15 @@ public class QTypeBridge extends SICStusPrologBridge
 	public void step(int extID, String type, String description, String consoleMessage)
 	{
 		super.step(extID, type, description, consoleMessage);
+		
+		// For compile_grammar steps, unregister any previously registered grammar:
 		if (description.startsWith("compile_grammar(") && description.endsWith(")"))
 		{
-			String path = PrologUtil.atomLiteralToString(description.substring(16, description.length() - 1));
-			kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { path }));
-		} else if (description.startsWith("lc(") && description.endsWith(")"))
+			kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { null }));
+		}
+		
+		// For lc steps, register the sentence:
+		if (description.startsWith("lc(") && description.endsWith(")"))
 		{
 			Matcher matcher = SENTENCE_PATTERN.matcher(description.substring(3, description.length() - 1));
 
@@ -43,6 +47,19 @@ public class QTypeBridge extends SICStusPrologBridge
 			{
 				kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtil.parsePrologStringList(matcher.group(0)) }));
 			}
+		}
+	}
+	
+	@Override
+	public void exit(int extID, boolean deterministic, String newDescription)
+	{		
+		super.exit(extID, deterministic, newDescription);
+		
+		// At exit of compile_grammar steps, register the grammar:
+		if (newDescription.startsWith("compile_grammar(") && newDescription.endsWith(")"))
+		{
+			String path = PrologUtil.atomLiteralToString(newDescription.substring(16, newDescription.length() - 1));
+			kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { path }));
 		}
 	}
 
