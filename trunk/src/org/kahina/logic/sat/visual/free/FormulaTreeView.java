@@ -24,7 +24,7 @@ public class FormulaTreeView extends KahinaTreeView
     //map from subformulas to tree node IDs
     Map<BooleanFormula, Integer> frmToNode;
     //map from tree node IDs to subformulas
-    Map<Integer, BooleanFormula> nodeToFrm;
+    public Map<Integer, BooleanFormula> nodeToFrm;
     
     boolean textDisplay;
     String displayText;
