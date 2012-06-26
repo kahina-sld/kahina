@@ -7,7 +7,7 @@ import org.kahina.core.visual.tree.KahinaTreeViewPanel;
 
 public class FormulaTreeViewPanel extends KahinaTreeViewPanel
 {
-    FormulaTreeView view;
+    public FormulaTreeView view;
     
     public FormulaTreeViewPanel(KahinaInstance<?, ?, ?> kahina)
     {
