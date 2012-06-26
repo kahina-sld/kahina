@@ -27,102 +27,153 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
     
     public Integer visitVariable(BooleanVariable fm) 
     {
-        tseitinVar.put(fm, fm.getName().num);
-        return fm.getName().num;
+        if (!fm.isPruned())
+        {
+            tseitinVar.put(fm, fm.getName().num);
+            return fm.getName().num;
+        }
+        else
+        {
+            Integer x = VarName.freshName();
+            tseitinVar.put(fm, x);
+            return x;
+        }
     }
     
     public Integer visitNegation(Negation fm) 
     {
-        Integer xarg = tseitinVar.get(fm.getArg());
-        if (xarg == null) 
+        if (!fm.isPruned())
         {
-          xarg = fm.getArg().accept(this);
+            Integer xarg = tseitinVar.get(fm.getArg());
+            if (xarg == null) 
+            {
+              xarg = fm.getArg().accept(this);
+            }
+            Integer x = VarName.freshName();
+            tseitinVar.put(fm, x);
+            
+            List<Integer> clause1 = new LinkedList<Integer>();
+            clause1.add(x);
+            clause1.add(xarg);
+            List<Integer> clause2 = new LinkedList<Integer>();
+            clause2.add(-x);
+            clause2.add(-xarg);
+            cnf.getClauses().add(clause1);
+            cnf.getClauses().add(clause2);     
+            
+            return x;
         }
-        Integer x = VarName.freshName();
-        tseitinVar.put(fm, x);
-        
-        List<Integer> clause1 = new LinkedList<Integer>();
-        clause1.add(x);
-        clause1.add(xarg);
-        List<Integer> clause2 = new LinkedList<Integer>();
-        clause2.add(-x);
-        clause2.add(-xarg);
-        cnf.getClauses().add(clause1);
-        cnf.getClauses().add(clause2);     
-        
-        return x;
+        else
+        {
+            Integer x = VarName.freshName();
+            tseitinVar.put(fm, x);
+            return x;
+        }
     }
     
     public Integer visitDisjunction(Disjunction fm) 
     {
-        List<Integer> xs = new LinkedList<Integer>();
-        for (BooleanFormula f : fm.getDisjuncts()) 
+        if (!fm.isPruned())
         {
-            if (!f.isPruned())
+            List<Integer> xs = new LinkedList<Integer>();
+            for (BooleanFormula f : fm.getDisjuncts()) 
             {
-                Integer x = tseitinVar.get(f);
-                if (x == null) 
+                if (!f.isPruned())
                 {
-                    x = f.accept(this);
+                    Integer x = tseitinVar.get(f);
+                    if (x == null) 
+                    {
+                        x = f.accept(this);
+                    }
+                    if (x != -1)
+                    {
+                        xs.add(x);
+                    }
                 }
-                xs.add(x);
+            }
+            
+            if (xs.size() > 0)
+            {
+                Integer x = VarName.freshName();
+                tseitinVar.put(fm, x);
+        
+                List<Integer> clause = new LinkedList<Integer>();
+                clause.add(-x);
+                clause.addAll(xs);
+                cnf.getClauses().add(clause);
+        
+                for (Integer y : xs) 
+                {
+                    clause = new LinkedList<Integer>();
+                    clause.add(x);
+                    clause.add(-y);
+                    cnf.getClauses().add(clause);
+                }
+        
+                return x;
             }
         }
-        
-        Integer x = VarName.freshName();
-        tseitinVar.put(fm, x);
-
-        List<Integer> clause = new LinkedList<Integer>();
-        clause.add(-x);
-        clause.addAll(xs);
-        cnf.getClauses().add(clause);
-
-        for (Integer y : xs) 
+        else
         {
-            clause = new LinkedList<Integer>();
-            clause.add(x);
-            clause.add(-y);
-            cnf.getClauses().add(clause);
+            Integer x = VarName.freshName();
+            tseitinVar.put(fm, x);
+            return x;
         }
-
-        return x;
+        return -1;
     }
     
     public Integer visitConjunction(Conjunction fm) 
     {
-        List<Integer> xs = new LinkedList<Integer>();
-        for (BooleanFormula f : fm.getConjuncts()) 
+        if (!fm.isPruned())
         {
-            if (!f.isPruned())
+            List<Integer> xs = new LinkedList<Integer>();
+            for (BooleanFormula f : fm.getConjuncts()) 
             {
-                Integer x = tseitinVar.get(f);
-                if (x == null) 
+                if (!f.isPruned())
                 {
-                    x = f.accept(this);
+                    Integer x = tseitinVar.get(f);
+                    if (x == null) 
+                    {
+                        x = f.accept(this);
+                    }
+                    if (x != -1)
+                    {
+                        xs.add(x);
+                    }
                 }
-                xs.add(x);
+            }
+            
+            if (xs.size() > 0)
+            {
+                Integer x = VarName.freshName();
+                tseitinVar.put(fm, x);
+                
+                List<Integer> clause = new LinkedList<Integer>();
+                clause.add(x);
+                for (Integer y : xs) 
+                {
+                  clause.add(-y);
+                }
+                cnf.getClauses().add(clause);
+    
+                for (Integer y : xs) 
+                {
+                  clause = new LinkedList<Integer>();
+                  clause.add(-x);
+                  clause.add(y);
+                  cnf.getClauses().add(clause);
+                }
+    
+                return x;
             }
         }
-        Integer x = VarName.freshName();
-        tseitinVar.put(fm, x);
-
-        List<Integer> clause = new LinkedList<Integer>();
-        clause.add(x);
-        for (Integer y : xs) 
+        else
         {
-          clause.add(-y);
+            Integer x = VarName.freshName();
+            tseitinVar.put(fm, x);
+            return x;
         }
-        cnf.getClauses().add(clause);
-
-        for (Integer y : xs) 
-        {
-          clause = new LinkedList<Integer>();
-          clause.add(-x);
-          clause.add(y);
-          cnf.getClauses().add(clause);
-        }
-
-        return x;
+        return -1;
     }
 
     @Override
