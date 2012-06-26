@@ -186,6 +186,7 @@ public class FormulaTreeView extends KahinaTreeView
     
     private int generateInitialStatus(BooleanFormula f)
     {
+        if (formula.isPruned()) return 2;
         if (f instanceof Conjunction || f instanceof Disjunction)
         {
             return 0;
