@@ -32,12 +32,13 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
             tseitinVar.put(fm, fm.getName().num);
             return fm.getName().num;
         }
-        else
+        /*else
         {
             Integer x = VarName.freshName();
             tseitinVar.put(fm, x);
             return x;
-        }
+        }*/
+        return -1;
     }
     
     public Integer visitNegation(Negation fm) 
@@ -63,12 +64,13 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
             
             return x;
         }
-        else
+        /*else
         {
             Integer x = VarName.freshName();
             tseitinVar.put(fm, x);
             return x;
-        }
+        }*/
+        return -1;
     }
     
     public Integer visitDisjunction(Disjunction fm) 
@@ -113,12 +115,12 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
                 return x;
             }
         }
-        else
+        /*else
         {
             Integer x = VarName.freshName();
             tseitinVar.put(fm, x);
             return x;
-        }
+        }*/
         return -1;
     }
     
@@ -167,12 +169,12 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
                 return x;
             }
         }
-        else
+        /*else
         {
             Integer x = VarName.freshName();
             tseitinVar.put(fm, x);
             return x;
-        }
+        }*/
         return -1;
     }
 
