@@ -17,6 +17,7 @@ import org.kahina.logic.sat.data.free.BooleanVariable;
 import org.kahina.logic.sat.data.free.Conjunction;
 import org.kahina.logic.sat.data.free.Disjunction;
 import org.kahina.logic.sat.data.free.Negation;
+import org.kahina.logic.sat.io.free.NegationLayerVisitor;
 
 public class FormulaTreeView extends KahinaTreeView
 {
@@ -25,6 +26,8 @@ public class FormulaTreeView extends KahinaTreeView
     Map<BooleanFormula, Integer> frmToNode;
     //map from tree node IDs to subformulas
     public Map<Integer, BooleanFormula> nodeToFrm;
+    //store the number of negations above each node
+    public Map<Integer, Integer> numberNegationLayers;
     
     boolean textDisplay;
     String displayText;
@@ -34,6 +37,7 @@ public class FormulaTreeView extends KahinaTreeView
         super(kahina);
         frmToNode = new HashMap<BooleanFormula, Integer>();
         nodeToFrm = new HashMap<Integer, BooleanFormula>();
+        numberNegationLayers = new HashMap<Integer, Integer>();
         textDisplay = false;
     }
     
@@ -41,12 +45,14 @@ public class FormulaTreeView extends KahinaTreeView
     {
         frmToNode.clear();
         nodeToFrm.clear();
+        numberNegationLayers.clear();
         this.formula = formula;
         super.display(new KahinaMemTree());
         int rootID = model.addNode(generateNodeCaption(formula), "", 0);
         model.setRootID(rootID);
         frmToNode.put(formula, rootID);
         nodeToFrm.put(rootID, formula);
+        numberNegationLayers.put(rootID, formula.accept(new NegationLayerVisitor()));
         recalculate();
         textDisplay = false;
     }
@@ -72,6 +78,7 @@ public class FormulaTreeView extends KahinaTreeView
     {
         model.setNodeStatus(nodeID, 1);
         BooleanFormula frm = nodeToFrm.get(nodeID);
+        int negationLayer = numberNegationLayers.get(nodeID);
         if (frm != null)
         {
             while (frm instanceof Negation)
@@ -80,11 +87,12 @@ public class FormulaTreeView extends KahinaTreeView
             }
             
             if (frm instanceof Conjunction)
-            {
+            {       
                 Conjunction f = (Conjunction) frm;
                 for (BooleanFormula subf : f.getFms())
                 {
-                    addFormulaNode(subf, nodeID);
+                    int subnodeID = addFormulaNode(subf, nodeID);
+                    numberNegationLayers.put(subnodeID, negationLayer + subf.accept(new NegationLayerVisitor()));
                 }
             }
             else if (frm instanceof Disjunction)
@@ -92,7 +100,8 @@ public class FormulaTreeView extends KahinaTreeView
                 Disjunction f = (Disjunction) frm;
                 for (BooleanFormula subf : f.getFms())
                 {
-                    addFormulaNode(subf, nodeID);
+                    int subnodeID = addFormulaNode(subf, nodeID);
+                    numberNegationLayers.put(subnodeID, negationLayer + subf.accept(new NegationLayerVisitor()));
                 }
             }
         }
@@ -135,13 +144,14 @@ public class FormulaTreeView extends KahinaTreeView
         }
     }
     
-    private void addFormulaNode(BooleanFormula f, int parentID)
+    private int addFormulaNode(BooleanFormula f, int parentID)
     {
         //System.err.println("addFormulaNode(" + f + "," + parentID + ")");
         int nodeID = model.addNode(generateNodeCaption(f), "", generateInitialStatus(f));
         frmToNode.put(f, nodeID);
         nodeToFrm.put(nodeID, f);
         model.addChild(parentID, nodeID);
+        return nodeID;
     }
     
     private void removeNode(int nodeID)
@@ -208,6 +218,63 @@ public class FormulaTreeView extends KahinaTreeView
         /*JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getViewport().setBackground(config.getBackgroundColor());
         return scrollPane;*/
+    }
+    
+    public boolean isConjunction(int nodeID)
+    {
+        BooleanFormula frm= nodeToFrm.get(nodeID);
+        int negationLayer = numberNegationLayers.get(nodeID);
+        if (frm != null)
+        {
+            while (frm instanceof Negation)
+            {
+                frm = ((Negation) frm).getArg();
+            }
+            
+            if (frm instanceof Conjunction)
+            {
+                if (negationLayer % 2 == 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else if (frm instanceof Disjunction)
+            {
+                if (negationLayer % 2 == 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            System.err.println("WARNING: could not determine whether node " + nodeID + " is implicitly a conjunction!");
+            System.err.println("         Assuming it is NOT a conjunct to preclude erroneous pruning possibilities.");
+            return false;
+        }
+        return false;
+    }
+    
+    public boolean isConjunct(int nodeID)
+    {
+        int parentID = model.getParent(nodeID);
+        if (parentID == -1)
+        {
+            System.err.println("Attempting to prune away the root node?");
+            return true;
+        }
+        else
+        {
+            return isConjunction(parentID);
+        }
     }
 
 }
