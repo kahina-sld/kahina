@@ -36,8 +36,20 @@ public class QTypeGoalViewPanel extends KahinaViewPanel<QTypeGoalView>
 			return;
 		}
 		
+		TraleSLDFS fs = model.getFS();
+		TraleSLDFS tree = model.getTree();
 		TraleSLDFS in = model.getIn();
 		TraleSLDFS out = model.getOut();
+		
+		if (fs != null)
+		{
+			innerPanel.add(util.createFSFrame("fs", fs.toString()));
+		}
+		
+		if (tree != null)
+		{
+			innerPanel.add(util.createFSFrame("tree", tree.toString()));
+		}
 		
 		if (in != null)
 		{
