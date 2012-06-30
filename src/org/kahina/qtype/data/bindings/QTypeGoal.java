@@ -12,6 +12,10 @@ public class QTypeGoal extends KahinaObject
 	
 	private static final boolean TEST_MODE = false;
 
+	private TraleSLDFS fs;
+	
+	private TraleSLDFS tree;
+
 	private TraleSLDFS in;
 	
 	private TraleSLDFS out;
@@ -25,8 +29,22 @@ public class QTypeGoal extends KahinaObject
 	public QTypeGoal(QTypeGoal original)
 	{
 		this();
+		fs = original.fs;
+		tree = original.tree;
 		in = original.in;
 		out = original.out;
+	}
+	
+	public void setFS(TraleSLDFS grisu)
+	{
+		test(grisu);
+		fs = grisu;
+	}
+	
+	public void setTree(TraleSLDFS grisu)
+	{
+		test(grisu);
+		tree = grisu;
 	}
 	
 	public void setIn(TraleSLDFS grisu)
@@ -39,6 +57,16 @@ public class QTypeGoal extends KahinaObject
 	{
 		test(grisu);
 		out = grisu;
+	}
+	
+	public TraleSLDFS getFS()
+	{
+		return fs;
+	}
+	
+	public TraleSLDFS getTree()
+	{
+		return tree;
 	}
 	
 	public TraleSLDFS getIn()

@@ -91,8 +91,15 @@ public class QTypeBridge extends SICStusPrologBridge
 		try
 		{
 			QTypeGoal goal = state.retrieve(QTypeStep.class, stepIDConv.get(extID)).getGoal();
+			System.err.println(key);
 
-			if ("in".equals(key))
+			if ("fs".equals(key))
+			{
+				goal.setFS(packer.pack(grisu));
+			} else if ("tree".equals(key))
+			{
+				goal.setTree(packer.pack(grisu));
+			} else if ("in".equals(key))
 			{
 				goal.setIn(packer.pack(grisu));
 			} else if ("out".equals(key))
