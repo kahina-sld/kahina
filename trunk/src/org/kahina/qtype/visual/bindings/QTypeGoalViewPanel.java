@@ -48,7 +48,7 @@ public class QTypeGoalViewPanel extends KahinaViewPanel<QTypeGoalView>
 		
 		if (tree != null)
 		{
-			innerPanel.add(util.createFSFrame("tree", tree.toString()));
+			innerPanel.add(util.createFSFrame("cs", tree.toString()));
 		}
 		
 		if (in != null)
