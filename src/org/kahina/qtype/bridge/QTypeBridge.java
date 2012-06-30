@@ -91,7 +91,6 @@ public class QTypeBridge extends SICStusPrologBridge
 		try
 		{
 			QTypeGoal goal = state.retrieve(QTypeStep.class, stepIDConv.get(extID)).getGoal();
-			System.err.println(key);
 
 			if ("fs".equals(key))
 			{
