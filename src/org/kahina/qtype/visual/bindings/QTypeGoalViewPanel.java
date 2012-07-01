@@ -6,14 +6,15 @@ import javax.swing.JScrollPane;
 
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.qtype.data.bindings.QTypeGoal;
+import org.kahina.qtype.visual.fs.QTypeFSVisualizationUtility;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
-import org.kahina.tralesld.visual.fs.VisualizationUtility;
+import org.kahina.tralesld.visual.fs.FSVisualizationUtility;
 
 public class QTypeGoalViewPanel extends KahinaViewPanel<QTypeGoalView>
 {
 	private static final long serialVersionUID = 6523823660347470157L;
 	
-	private final VisualizationUtility util = new VisualizationUtility();
+	private final FSVisualizationUtility util = new QTypeFSVisualizationUtility();
 	
 	private final JPanel innerPanel;
 
@@ -25,7 +26,6 @@ public class QTypeGoalViewPanel extends KahinaViewPanel<QTypeGoalView>
 		add(new JScrollPane(innerPanel));
 	}
 
-	@Override
 	public void updateDisplay()
 	{
 		innerPanel.removeAll();

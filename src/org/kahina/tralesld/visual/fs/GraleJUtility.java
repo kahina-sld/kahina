@@ -1567,7 +1567,7 @@ public class GraleJUtility
 		IDataPackage data = null;
 		try
 		{
-			data = VisualizationUtility.getDefault().parseGrisu(grisu);
+			data = FSVisualizationUtility.getDefault().parseGrisu(grisu);
 		}
 		catch (ParseException e)
 		{
