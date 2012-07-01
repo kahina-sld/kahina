@@ -183,7 +183,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 					e.printStackTrace();
 					return;
 				}
-				blockPanel = VisualizationUtility.buildEditor(data);
+				blockPanel = FSVisualizationUtility.buildEditor(data);
 				JPanel blockCanvas = blockPanel.getCanvas();
 				blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(this, blockPanel));
 				innerPanel.add(blockCanvas);
@@ -204,7 +204,7 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 				e.printStackTrace();
 				return;
 			}
-			blockPanel = VisualizationUtility.buildEditor(data);
+			blockPanel = FSVisualizationUtility.buildEditor(data);
 			JPanel blockCanvas = blockPanel.getCanvas();
 			blockCanvas.addMouseListener(new TraleSLDFeatureStructureEditorMouseListener(this, blockPanel));
 			innerPanel.add(blockCanvas);

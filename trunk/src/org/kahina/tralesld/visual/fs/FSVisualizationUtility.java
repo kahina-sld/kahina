@@ -20,24 +20,24 @@ import javax.swing.JPanel;
  * 
  * @author ke
  */
-public class VisualizationUtility
+public class FSVisualizationUtility
 {
 	private static final boolean verbose = false;
 
-	private static VisualizationUtility def;
+	private static FSVisualizationUtility def;
 
 	private IGraleParser parser;
 
-	public static VisualizationUtility getDefault()
+	public static FSVisualizationUtility getDefault()
 	{
 		if (def == null)
 		{
-			def = new VisualizationUtility();
+			def = new FSVisualizationUtility();
 		}
 		return def;
 	}
 
-	public VisualizationUtility()
+	public FSVisualizationUtility()
 	{
 		try
 		{
@@ -55,6 +55,15 @@ public class VisualizationUtility
 		config.set("behavior.alwaysfitsize", false);
 		config.set("log.message.error", "stderr");
 		config.set("log.message.critical", "stderr");
+		applyAdditionalConfigSettings(config);
+	}
+
+	/**
+	 * Override to customize. This default implementation does nothing.
+	 * @param config
+	 */
+	protected void applyAdditionalConfigSettings(Config config)
+	{
 	}
 
 	public IDataPackage parseGrisu(String grisuMessage) throws ParseException

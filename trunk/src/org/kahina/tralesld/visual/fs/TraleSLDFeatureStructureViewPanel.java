@@ -13,13 +13,13 @@ public class TraleSLDFeatureStructureViewPanel extends KahinaViewPanel<TraleSLDF
 
 	protected JPanel innerPanel;
 
-	protected VisualizationUtility util;
+	protected FSVisualizationUtility util;
 
 	private static final boolean verbose = false;
 
 	public TraleSLDFeatureStructureViewPanel()
 	{
-		util = VisualizationUtility.getDefault();
+		util = FSVisualizationUtility.getDefault();
 		innerPanel = new JPanel();
 		innerPanel.setLayout(new BoxLayout(innerPanel, BoxLayout.Y_AXIS));
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

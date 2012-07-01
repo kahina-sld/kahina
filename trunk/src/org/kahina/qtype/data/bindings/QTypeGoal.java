@@ -3,8 +3,9 @@ package org.kahina.qtype.data.bindings;
 import gralej.parsers.ParseException;
 
 import org.kahina.core.data.KahinaObject;
+import org.kahina.qtype.visual.fs.QTypeFSVisualizationUtility;
 import org.kahina.tralesld.data.fs.TraleSLDFS;
-import org.kahina.tralesld.visual.fs.VisualizationUtility;
+import org.kahina.tralesld.visual.fs.FSVisualizationUtility;
 
 public class QTypeGoal extends KahinaObject
 {
@@ -20,7 +21,7 @@ public class QTypeGoal extends KahinaObject
 	
 	private TraleSLDFS out;
 	
-	private static final VisualizationUtility util = new VisualizationUtility();
+	private static final FSVisualizationUtility util = new QTypeFSVisualizationUtility();
 	
 	public QTypeGoal()
 	{

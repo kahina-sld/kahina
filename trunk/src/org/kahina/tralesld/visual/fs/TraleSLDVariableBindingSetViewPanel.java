@@ -26,7 +26,7 @@ public class TraleSLDVariableBindingSetViewPanel extends KahinaViewPanel<TraleSL
 	
 	private final TraleSLDVariableBindingTableModel tableModel = new TraleSLDVariableBindingTableModel();
 
-	private final VisualizationUtility util = VisualizationUtility.getDefault();
+	private final FSVisualizationUtility util = FSVisualizationUtility.getDefault();
 
 	public TraleSLDVariableBindingSetViewPanel()
 	{
