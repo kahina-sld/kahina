@@ -67,7 +67,7 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
     
     public void adaptActivationButtonLabel()
     {
-        if (view.getModel().isActive())
+        /*if (view.getModel().isActive())
         {
             activationButton.setText("Deactivate");
             activationButton.setMargin(new Insets(0, 5, 0, 5));
@@ -77,14 +77,14 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             activationButton.setText("Activate");
             activationButton.setMargin(new Insets(0, 15, 0, 14));
         }
-        this.revalidate();
+        this.revalidate();*/
         kahina.dispatchEvent(new BreakpointEditorEvent(BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE));
     }
     
     public void processNameChange()
     {
-        nameEditLine.setText(view.getModel().getName());
-        this.revalidate();
+        //nameEditLine.setText(view.getModel().getName());
+        //this.revalidate();
         kahina.dispatchEvent(new BreakpointEditorEvent(BreakpointEditorEvent.BREAKPOINT_NAME_UPDATE));
     }
     
@@ -95,7 +95,7 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
         {
             this.removeAll();
             
-            JPanel optionsPanel = new JPanel();
+            /*JPanel optionsPanel = new JPanel();
             optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.PAGE_AXIS));
             optionsPanel.setMinimumSize(new Dimension(200,500));
             optionsPanel.setMaximumSize(new Dimension(200,500));
@@ -172,14 +172,11 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             
             optionsPanel.add(nameSelectionPanel);
             
-            this.add(optionsPanel);  
+            this.add(optionsPanel); */ 
             
             this.add(Box.createVerticalGlue());
             
             StepPatternEditorPanel patternEditor = new StepPatternEditorPanel(this); 
-            
-            //TODO: load pattern into editor; write StepPatternEditorPanel
-            
             this.add(patternEditor);
             
         }
