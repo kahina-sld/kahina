@@ -3,17 +3,18 @@ package org.kahina.core.visual.breakpoint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import javax.swing.JFileChooser;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.kahina.core.data.breakpoint.KahinaBreakpoint;
 import org.kahina.core.data.breakpoint.KahinaControlPoint;
-import org.kahina.core.data.breakpoint.patterns.TreeAutomaton;
-import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
+import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
+import org.kahina.core.io.util.XMLUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class KahinaControlPointProfileListener implements ActionListener, ListSelectionListener
 {
@@ -29,7 +30,7 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         String s = e.getActionCommand();
         if (s.equals("newControlPoint"))
         {
-            //TODO: adapt type argument, 0 must not be the default value in all cases!
+            //TODO: adapt type argument, 0 is just the value for breakpoints!
             KahinaControlPoint newControlPoint = new KahinaControlPoint(0);
             profilePanel.view.getModel().addControlPoint(newControlPoint);
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
@@ -39,7 +40,37 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         {
             profilePanel.removeCurrentControlPoint();
         }
-        //TODO: new profile, import profile, save profile etc.
+        else if (s.equals("newProfile"))
+        {
+            profilePanel.view.display(new KahinaControlPointProfile());
+            profilePanel.updateDisplay();
+        }
+        else if (s.equals("saveProfile"))
+        {      
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.showSaveDialog(profilePanel);
+            File outputFile = chooser.getSelectedFile();
+            
+            Document dom = XMLUtil.newEmptyDocument();
+            Element profileElement = profilePanel.view.getModel().exportXML(dom);
+            XMLUtil.writeXML(profileElement, outputFile.getAbsolutePath());
+        }
+        else if (s.equals("loadProfile"))
+        {
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.showOpenDialog(profilePanel);
+            File inputFile = chooser.getSelectedFile();
+            try
+            {
+                Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
+                profilePanel.view.display(KahinaControlPointProfile.importXML(dom.getDocumentElement()));
+                profilePanel.updateDisplay();
+            }
+            catch (FileNotFoundException ex)
+            {
+                System.err.println("Input file not found!");
+            }
+        }
         //TODO: deal with the activation status!
         //adaptActivationStatus();
     }

@@ -196,7 +196,7 @@ public class KahinaControlPoint extends KahinaObject
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlPointNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlPointNode.getAttribute("active"));
         //expect only one step pattern
-        newControlPoint.pattern = TreePatternNode.importXML((Element) controlPointNode.getElementsByTagName("pattern").item(0));
+        newControlPoint.pattern = TreePatternNode.importXML((Element) controlPointNode.getElementsByTagName("kahina:pattern").item(0));
         return newControlPoint;
     }
 }
