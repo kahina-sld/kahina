@@ -40,6 +40,19 @@ public class KahinaControlPointListener implements ActionListener, KeyListener
             //TODO: save current breakpoint for adaptation in view
             viewPanel.view.getModel().setSignalColor(newColor);
         }
+        else if (s.equals("rename"))
+        {
+            String newName = JOptionPane.showInputDialog(viewPanel,
+                    "Enter a new name for the control point.",
+                    "Control Point Editor",
+                    JOptionPane.PLAIN_MESSAGE);
+            if (newName != null)
+            {
+                KahinaControlPoint point = viewPanel.view.getModel();
+                point.setName(newName);
+                viewPanel.processNameChange();
+            }
+        }
         else if (s.equals("suggestName"))
         {
             KahinaControlPoint point = viewPanel.view.getModel();
