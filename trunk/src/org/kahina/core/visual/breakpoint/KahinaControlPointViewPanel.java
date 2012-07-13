@@ -39,11 +39,12 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
         this.kahina = kahina;
     }
     
-    public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?> kahina, KahinaControlPointProfileListener profileListener)
+    public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?> kahina, KahinaControlPointProfileListener profileListener, KahinaControlPointListener pointListener)
     {
         this.kahina = kahina;
         this.profileListener = profileListener;
-        pointListener = new KahinaControlPointListener(this);
+        this.pointListener = pointListener;
+        pointListener.setViewPanel(this);
         view = null;
         
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -167,7 +168,6 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             nameEditLine.addKeyListener(pointListener);
             nameEditLine.setMinimumSize(new Dimension(180,20));
             nameEditLine.setMaximumSize(new Dimension(180,20));
-            //TODO: listener for key strokes, directly adapting the name
             nameSelectionPanel.add(nameEditLine);
             
             optionsPanel.add(nameSelectionPanel);

@@ -20,7 +20,12 @@ public class KahinaControlPointListener implements ActionListener, KeyListener
 {
     KahinaControlPointViewPanel viewPanel;
     
-    public KahinaControlPointListener(KahinaControlPointViewPanel viewPanel)
+    public KahinaControlPointListener()
+    {
+        this.viewPanel = null;
+    }
+    
+    public void setViewPanel(KahinaControlPointViewPanel viewPanel)
     {
         this.viewPanel = viewPanel;
     }
