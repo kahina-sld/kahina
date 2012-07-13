@@ -35,9 +35,8 @@ public class KahinaControlPointListener implements ActionListener, KeyListener
         String s = e.getActionCommand();
         if (s.equals("changeColor"))
         {
-            Color newColor = JColorChooser.showDialog(viewPanel,"Choose Background Color",viewPanel.colorButton.getBackground());
-            viewPanel.colorButton.setBackground(newColor);
-            //TODO: save current breakpoint for adaptation in view
+            Color newColor = JColorChooser.showDialog(viewPanel,"Choose Background Color",viewPanel.view.getModel().getSignalColor());
+            //viewPanel.colorButton.setBackground(newColor);
             viewPanel.view.getModel().setSignalColor(newColor);
         }
         else if (s.equals("rename"))
@@ -71,7 +70,6 @@ public class KahinaControlPointListener implements ActionListener, KeyListener
                 point.activate();
             }
             viewPanel.adaptActivationButtonLabel();
-            //control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.ACTIVATE_BREAKPOINT, curID));
         } 
         else if (s.equals("exportControlPoint"))
         {
