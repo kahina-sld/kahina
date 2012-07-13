@@ -647,26 +647,26 @@ public class TreeNodePattern implements Serializable
         patternEl.setAttribute("rel", getRelAsXMLString());
         if (intValue != -1)
         {
-            Element intValEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:int-val");
+            Element intValEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:intVal");
             intValEl.setTextContent(intValue + "");
             patternEl.appendChild(intValEl);
         }
         if (stringValue.length() > 0 && !stringValue.equals("--"))
         {
-            Element strValEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:str-val");
+            Element strValEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:strVal");
             strValEl.setAttribute("regex", (regexValue != null) + "");
             strValEl.setTextContent(stringValue);
             patternEl.appendChild(strValEl);
         }
         if (leftArg != null)
         {
-            Element leftArgEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:left-arg");
+            Element leftArgEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:leftArg");
             leftArgEl.appendChild(leftArg.exportXML(dom));
             patternEl.appendChild(leftArgEl);
         }
         if (rightArg != null)
         {
-            Element rightArgEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:right-arg");
+            Element rightArgEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:rightArg");
             rightArgEl.appendChild(rightArg.exportXML(dom));
             patternEl.appendChild(rightArgEl);
         }
@@ -691,24 +691,24 @@ public class TreeNodePattern implements Serializable
         for (int i = 0; i < childNodes.getLength(); i++)
         {
             String nodeName = childNodes.item(i).getNodeName();
-            if (nodeName.equals("intVal"))
+            if (nodeName.equals("kahina:intVal"))
             {
                 String intValString = childNodes.item(i).getTextContent();
                 newTreeNodePattern.intValue = Integer.parseInt(intValString);
             }
-            else if (nodeName.equals("stringVal"))
+            else if (nodeName.equals("kahina:strVal"))
             {
                 newTreeNodePattern.stringValue = childNodes.item(i).getTextContent();
-                if (((Element) (childNodes.item(i))).getAttribute("regEx").equals(true))
+                if (((Element) (childNodes.item(i))).getAttribute("regex").equals(true))
                 {
                     newTreeNodePattern.regexValue = Pattern.compile(newTreeNodePattern.stringValue);
                 }
             }
-            else if (nodeName.equals("leftArg"))
+            else if (nodeName.equals("kahina:leftArg"))
             {
                 newTreeNodePattern.leftArg = TreeNodePattern.importXML((Element) childNodes.item(i));
             }
-            else if (nodeName.equals("rightArg"))
+            else if (nodeName.equals("kahina:rightArg"))
             {
                 newTreeNodePattern.rightArg = TreeNodePattern.importXML((Element) childNodes.item(i));
             }
