@@ -38,6 +38,25 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
             profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
         } 
+        if (s.equals("loadControlPoint"))
+        {
+            //TODO: adapt type argument, 0 is just the value for breakpoints!
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.showOpenDialog(profilePanel);
+            File inputFile = chooser.getSelectedFile();
+            try
+            {
+                Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
+                KahinaControlPoint newControlPoint = KahinaControlPoint.importXML(dom.getDocumentElement());
+                profilePanel.view.getModel().addControlPoint(newControlPoint);
+                profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
+                profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
+            }
+            catch (FileNotFoundException ex)
+            {
+                System.err.println("Input file not found!");
+            }           
+        } 
         else if (s.equals("removeControlPoint"))
         {
             System.err.println("removeControlPoint");
