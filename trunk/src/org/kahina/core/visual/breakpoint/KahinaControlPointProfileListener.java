@@ -2,9 +2,11 @@ package org.kahina.core.visual.breakpoint;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import javax.swing.JFileChooser;
 import javax.swing.event.ListSelectionEvent;
@@ -38,7 +40,9 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         } 
         else if (s.equals("removeControlPoint"))
         {
+            System.err.println("removeControlPoint");
             profilePanel.removeCurrentControlPoint();
+            profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
         }
         else if (s.equals("newProfile"))
         {

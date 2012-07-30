@@ -25,6 +25,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
     JList pointList;
     
     KahinaControlPointViewPanel pointPanel;
+    KahinaControlPointProfileListener profileListener;
     
     public KahinaControlPointProfileViewPanel(KahinaInstance<?, ?, ?> kahina)
     {
@@ -32,7 +33,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         
         kahina.getControl().registerListener("breakpoint_editor", this);
         
-        KahinaControlPointProfileListener profileListener = new KahinaControlPointProfileListener(this);
+        profileListener = new KahinaControlPointProfileListener(this);
         KahinaControlPointListener pointListener = new KahinaControlPointListener();
         
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -182,7 +183,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         {
             if (e.isPopupTrigger()) 
             {
-                KahinaControlPointContextMenu.getMenu(pointListener, pointView).show(e.getComponent(),e.getX(), e.getY());
+                KahinaControlPointContextMenu.getMenu(pointListener, profileListener, pointView).show(e.getComponent(),e.getX(), e.getY());
             }
         }
     }
