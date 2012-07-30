@@ -15,6 +15,9 @@ import javax.swing.JOptionPane;
 
 import org.kahina.core.data.breakpoint.KahinaControlPoint;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
+import org.kahina.core.io.util.XMLUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class KahinaControlPointListener implements ActionListener, KeyListener
 {
@@ -73,23 +76,15 @@ public class KahinaControlPointListener implements ActionListener, KeyListener
         } 
         else if (s.equals("exportControlPoint"))
         {
-            try
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.setDialogTitle("Export control point");
+            chooser.showSaveDialog(viewPanel);
+            File outputFile = chooser.getSelectedFile();
+            if (outputFile != null)
             {
-                JFileChooser chooser = new JFileChooser(new File("."));
-                chooser.setDialogTitle("Export control point");
-                chooser.showSaveDialog(viewPanel);
-                File dataFile = chooser.getSelectedFile();
-                if (dataFile != null)
-                {
-                    FileWriter fw = new FileWriter(dataFile);
-                    fw.write(viewPanel.view.getModel().exportXML(true));
-                    fw.close();
-                }
-            } 
-            catch (IOException ex)
-            {
-                System.err.println("IOException: Could not export control point!");
-                ex.printStackTrace();
+                Document dom = XMLUtil.newEmptyDocument();
+                Element pointElement = viewPanel.view.getModel().exportXML(dom);
+                XMLUtil.writeXML(pointElement, outputFile.getAbsolutePath());
             }
         }     
     }
