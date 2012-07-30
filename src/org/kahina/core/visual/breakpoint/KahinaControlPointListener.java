@@ -91,7 +91,7 @@ public class KahinaControlPointListener implements ActionListener, KeyListener
                 System.err.println("IOException: Could not export control point!");
                 ex.printStackTrace();
             }
-        }
+        }     
     }
     
     public void keyPressed(KeyEvent e) 

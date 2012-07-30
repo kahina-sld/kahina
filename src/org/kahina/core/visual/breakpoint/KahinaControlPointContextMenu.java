@@ -13,39 +13,41 @@ public class KahinaControlPointContextMenu extends JPopupMenu
     
     KahinaControlPointViewPanel v;
     
-    public KahinaControlPointContextMenu(ActionListener l, KahinaControlPointViewPanel v)
+    public KahinaControlPointContextMenu(KahinaControlPointListener pointListener, 
+                                         KahinaControlPointProfileListener profileListener,
+                                         KahinaControlPointViewPanel v)
     {
         JMenuItem exportPatternItem = new JMenuItem("Export");
         exportPatternItem.setActionCommand("exportControlPoint");
-        exportPatternItem.addActionListener(l);
+        exportPatternItem.addActionListener(pointListener);
         add(exportPatternItem);
         
         JMenuItem removePatternItem = new JMenuItem("Remove");
         removePatternItem.setActionCommand("removeControlPoint");
-        removePatternItem.addActionListener(l);
+        removePatternItem.addActionListener(profileListener);
         add(removePatternItem);
         
         addSeparator();
         
         JMenuItem toggleActivationItem = new JMenuItem(generateActivationItemLabel(v));
         toggleActivationItem.setActionCommand("toggleActivation");
-        toggleActivationItem.addActionListener(l);
+        toggleActivationItem.addActionListener(pointListener);
         add(toggleActivationItem);
         
         JMenuItem suggestNameItem = new JMenuItem("Suggest Name");
         suggestNameItem.setActionCommand("suggestName");
-        suggestNameItem.addActionListener(l);
+        suggestNameItem.addActionListener(pointListener);
         add(suggestNameItem);
         
         JMenuItem renameItem = new JMenuItem("Rename");
         renameItem.setActionCommand("rename");
-        renameItem.addActionListener(l);
+        renameItem.addActionListener(pointListener);
         add(renameItem);
         
         JMenuItem colorItem = new JMenuItem("Change Signal Color");
         colorItem.setBackground(v.view.getModel().getSignalColor());
         colorItem.setActionCommand("changeColor");
-        colorItem.addActionListener(l);
+        colorItem.addActionListener(pointListener);
         add(colorItem);   
     }
     
@@ -61,8 +63,10 @@ public class KahinaControlPointContextMenu extends JPopupMenu
         }
     }
     
-    public static JPopupMenu getMenu(ActionListener l, KahinaControlPointViewPanel v)
+    public static JPopupMenu getMenu(KahinaControlPointListener pointListener, 
+                                     KahinaControlPointProfileListener profileListener,
+                                     KahinaControlPointViewPanel v)
     {
-        return new KahinaControlPointContextMenu(l, v);
+        return new KahinaControlPointContextMenu(pointListener, profileListener, v);
     }
 }
