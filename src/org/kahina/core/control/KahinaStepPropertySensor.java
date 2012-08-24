@@ -18,4 +18,14 @@ public class KahinaStepPropertySensor
     {
         return stepProperty;
     }
+
+    /**
+     * Returns true iff a step has the property detected by this sensor. The default sensor never detects a pattern.
+     * @param stepID ID of the step which the sensor is to detect for its property.
+     * @return true if the sensor's step property is detected, false if it is not.
+     */
+    public boolean detectPattern(int stepID)
+    {
+        return false;
+    }
 }

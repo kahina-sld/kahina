@@ -30,4 +30,10 @@ public class KahinaTreePatternSensor extends KahinaStepPropertySensor
     {
         this.pattern = pattern;
     }
+    
+    public boolean detectPattern(int stepID)
+    {
+        //TODO: compute local pattern match without the detour via a tree automaton
+        return false;
+    }
 }

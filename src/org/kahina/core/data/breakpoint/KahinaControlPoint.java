@@ -2,26 +2,30 @@ package org.kahina.core.data.breakpoint;
 
 import java.awt.Color;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaStepPropertySensor;
 import org.kahina.core.control.KahinaTreePatternSensor;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.breakpoint.patterns.TreeNodePattern;
 import org.kahina.core.data.breakpoint.patterns.TreePattern;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.color.ColorUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class KahinaControlPoint extends KahinaObject
+public class KahinaControlPoint extends KahinaObject implements KahinaListener
 {
     /** a static counter keeping track of the number of breakpoints created so far
      *  only used for default naming purposes */
     static int number = 0;
     
     //
-    private KahinaController control;
+    private KahinaInstance kahina;
     
     //elementary properties
     private String name;
@@ -35,13 +39,15 @@ public class KahinaControlPoint extends KahinaObject
     //OBSOLETE, SCHEDULED FOR REMOVAL has one of the constant values in KahinaBreakpointType
     private int type;
     
-    public KahinaControlPoint(KahinaController control)
+    public KahinaControlPoint(KahinaInstance kahina)
     {
-        this.control = control;
+        this.kahina = kahina;
         number++;
         setName("Control point " + number);
         signalColor = ColorUtil.randomColor();
         active = true;
+        //TODO: perhaps change this to another type if KahinaUpdateEvents turn out not to be the correct choice
+        kahina.getControl().registerListener("update", this);
     }
     
     /**
@@ -65,7 +71,7 @@ public class KahinaControlPoint extends KahinaObject
     
     public KahinaController getControl()
     {
-        return control;
+        return kahina.getControl();
     }
     
     public KahinaControlActuator getActuator()
@@ -228,5 +234,19 @@ public class KahinaControlPoint extends KahinaObject
         treePatternSensor.setPattern(TreePatternNode.importXML((Element) controlPointNode.getElementsByTagName("kahina:pattern").item(0)));
         newControlPoint.setSensor(treePatternSensor);
         return newControlPoint;
+    }
+    
+    public void processEvent(KahinaEvent event)
+    {
+        //TODO: consider more thoroughly whether listening for KahinaUpdateEvents is the right design choice
+        if (event instanceof KahinaUpdateEvent)
+        {
+            int stepID = ((KahinaUpdateEvent) event).getSelectedStep();
+            //check step data against sensor, let the actuator fire if successful
+            if (sensor.detectPattern(stepID))
+            {
+                actuator.act();
+            }
+        }     
     }
 }
