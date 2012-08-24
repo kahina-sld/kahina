@@ -12,6 +12,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import org.kahina.core.control.KahinaTreePatternSensor;
+import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.edit.breakpoint.BreakpointEditorHintPanel;
 import org.kahina.core.edit.breakpoint.KahinaBreakpointEditorPanel;
@@ -81,7 +83,9 @@ public class StepPatternEditorPanel extends JPanel implements ActionListener
         
         NodeConstraintOptions constrOptions = new NodeConstraintOptions();
         constrOptions.setStandardOptions();
-        patternPanel = new SingleNodeConstraintPanel(constrOptions, viewPanel.kahina.getControl(), viewPanel.view.getModel().getPattern());
+        //TODO: make this more general, avoid the cast
+        TreePatternNode patternNode = ((KahinaTreePatternSensor) viewPanel.view.getModel().getSensor()).getPattern();
+        patternPanel = new SingleNodeConstraintPanel(constrOptions, viewPanel.kahina.getControl(), patternNode);
         patternPanel.setHintPanel(hintPanel);
         
         this.add(patternPanel);
