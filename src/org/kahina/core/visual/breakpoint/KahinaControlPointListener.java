@@ -58,7 +58,7 @@ public class KahinaControlPointListener implements ActionListener, KeyListener
         else if (s.equals("suggestName"))
         {
             KahinaControlPoint point = viewPanel.view.getModel();
-            point.setName(point.getPattern().toString());
+            point.setName(point.getSensor().getStepProperty().toString());
             viewPanel.processNameChange();
         }
         else if (s.equals("toggleActivation"))

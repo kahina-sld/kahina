@@ -4,11 +4,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kahina.core.control.KahinaStepProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class TreePatternNode implements Serializable
+public class TreePatternNode extends KahinaStepProperty implements Serializable
 {
     /**
 	 * 
