@@ -13,6 +13,6 @@ public class KahinaStepProperty
 
     public Element exportXML(Document dom)
     {
-        return dom.createElement("stepProperty");
+        return dom.createElement("kahina:stepProperty");
     } 
 }
