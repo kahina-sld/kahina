@@ -25,7 +25,7 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
     static int number = 0;
     
     //
-    private KahinaInstance kahina;
+    private KahinaController control;
     
     //elementary properties
     private String name;
@@ -36,42 +36,31 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
     private KahinaStepPropertySensor sensor;
     private KahinaControlActuator actuator;
     
-    //OBSOLETE, SCHEDULED FOR REMOVAL has one of the constant values in KahinaBreakpointType
-    private int type;
-    
-    public KahinaControlPoint(KahinaInstance kahina)
-    {
-        this.kahina = kahina;
-        number++;
-        setName("Control point " + number);
-        signalColor = ColorUtil.randomColor();
-        active = true;
-        //TODO: perhaps change this to another type if KahinaUpdateEvents turn out not to be the correct choice
-        kahina.getControl().registerListener("update", this);
-    }
-    
     /**
-     * Class constructor specifying the control point type as an integer constant.
+     * Class constructor for control points.
      * <p>
      * The breakpoint starts out with the following default values:<br>
      * <code>name</code> - "Breakpoint " + a number<br>
      * <code>signalColor</code> - a random RGB color<br>
      * <code>active</code> - true (= activated)<br>
      * <code>pattern</code> - the empty pattern 
-     * @param type one of the constant values in {@link KahinaBreakpointType}
+     * @param a backpointer to the relevant KahinaController
      */
-    public KahinaControlPoint(int type)
+    public KahinaControlPoint(KahinaController control)
     {
+        this.control = control;
         number++;
         setName("Control point " + number);
         signalColor = ColorUtil.randomColor();
         active = true;
-        this.type = type;
+        //TODO: perhaps change this to another type if KahinaUpdateEvents turn out not to be the correct choice
+        control.registerListener("update", this);
+        sensor = new KahinaTreePatternSensor(this);
     }
     
     public KahinaController getControl()
     {
-        return kahina.getControl();
+        return control;
     }
     
     public KahinaControlActuator getActuator()
@@ -172,24 +161,6 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
             return "#" + name;
         }
     }
-
-    /**
-     * Gets the type of this control point.
-     * @return an integer representing the control point's type
-     */
-    public int getType()
-    {
-        return type;
-    }
-
-    /**
-     * Changes the type of this control point.
-     * @param type one of the constant values in {@link KahinaBreakpointType}
-     */
-    public void setType(int type)
-    {
-        this.type = type;
-    }
     
     /**
      * Generates an XML representation of this control point, optionally featuring an XML header.
@@ -200,7 +171,7 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
     {
         StringBuilder b = new StringBuilder("");
         if (asFile) b.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-        b.append("<controlPoint name=\"" + name + "\" type=\"" + type + "\" color=\"" + ColorUtil.encodeHTML(signalColor) +"\" active=\"" + active + "\">\n");
+        b.append("<controlPoint name=\"" + name + "\" color=\"" + ColorUtil.encodeHTML(signalColor) +"\" active=\"" + active + "\">\n");
         b.append(sensor.getStepProperty().exportXML(false));
         b.append("</controlPoint>");
         return b.toString();
@@ -210,7 +181,6 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
     {
         Element breakpointEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:controlPoint");
         breakpointEl.setAttribute("name", name);
-        breakpointEl.setAttribute("type", type + "");
         breakpointEl.setAttribute("color", ColorUtil.encodeHTML(signalColor));
         breakpointEl.setAttribute("active", active + "");
         breakpointEl.appendChild(sensor.getStepProperty().exportXML(dom));
@@ -222,11 +192,10 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
      * @param controlPointNode an XML DOM element with name "controlPoint" as produced when parsing the result of <code>exportXML</code>
      * @return a new control point object corresponding to the XML representation contained in the DOM element
      */
-    public static KahinaControlPoint importXML(Element controlPointNode)
+    public static KahinaControlPoint importXML(Element controlPointNode, KahinaController control)
     {
-        KahinaControlPoint newControlPoint = new KahinaControlPoint(-1);
+        KahinaControlPoint newControlPoint = new KahinaControlPoint(control);
         newControlPoint.setName(controlPointNode.getAttribute("name"));
-        newControlPoint.setType(Integer.parseInt(controlPointNode.getAttribute("type")));    
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlPointNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlPointNode.getAttribute("active"));
         //expect only one tree pattern, TODO: make this a lot more general)
