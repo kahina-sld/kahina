@@ -2,15 +2,19 @@ package org.kahina.core.control;
 
 import org.kahina.core.data.breakpoint.KahinaControlPoint;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
+import org.kahina.core.data.tree.KahinaMemTree;
+import org.kahina.core.data.tree.KahinaTree;
 
 public class KahinaTreePatternSensor extends KahinaStepPropertySensor
 {
     private TreePatternNode pattern;
+    private KahinaTree tree;
     
     public KahinaTreePatternSensor(KahinaControlPoint controlPoint)
     {
         super(controlPoint);
-        pattern = new TreePatternNode();
+        this.tree = new KahinaMemTree();
+        this.pattern = new TreePatternNode();
     }
     
     /**
@@ -31,9 +35,18 @@ public class KahinaTreePatternSensor extends KahinaStepPropertySensor
         this.pattern = pattern;
     }
     
+    public KahinaTree getTree()
+    {
+        return tree;
+    }
+
+    public void setTree(KahinaTree tree)
+    {
+        this.tree = tree;
+    }
+
     public boolean detectPattern(int stepID)
     {
-        //TODO: compute local pattern match without the detour via a tree automaton
-        return false;
+        return pattern.getPattern().matches(tree, stepID);
     }
 }

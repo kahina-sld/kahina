@@ -55,7 +55,7 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
         active = true;
         //TODO: perhaps change this to another type if KahinaUpdateEvents turn out not to be the correct choice
         control.registerListener("update", this);
-        sensor = new KahinaTreePatternSensor(this);
+        sensor = new KahinaStepPropertySensor(this);
     }
     
     public KahinaController getControl()
@@ -201,6 +201,8 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
         //expect only one tree pattern, TODO: make this a lot more general)
         KahinaTreePatternSensor treePatternSensor = new KahinaTreePatternSensor(newControlPoint);
         treePatternSensor.setPattern(TreePatternNode.importXML((Element) controlPointNode.getElementsByTagName("kahina:pattern").item(0)));
+        //TODO: link this to the control flow tree, this control point class needs to be turned into a specialization
+        //treePatternSensor.setTree();
         newControlPoint.setSensor(treePatternSensor);
         return newControlPoint;
     }
