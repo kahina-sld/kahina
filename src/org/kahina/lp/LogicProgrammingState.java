@@ -21,6 +21,7 @@ import org.kahina.lp.control.LogicProgrammingCompleteActuator;
 import org.kahina.lp.control.LogicProgrammingCreepActuator;
 import org.kahina.lp.control.LogicProgrammingFailActuator;
 import org.kahina.lp.control.LogicProgrammingSkipActuator;
+import org.kahina.lp.data.breakpoint.LogicProgrammingControlPointProfile;
 import org.kahina.lp.data.text.LogicProgrammingLineReference;
 import org.kahina.lp.profiler.LogicProgrammingProfile;
 
@@ -57,11 +58,11 @@ public class LogicProgrammingState extends KahinaState
         anchorsByTarget = new HashMap<Integer, List<Integer>>();
         targetByAnchor = new HashMap<Integer, Integer>();
         hiddenSteps = new HashSet<Integer>();
-        breakPoints = new KahinaControlPointProfile(new LogicProgrammingBreakActuator(control));
-        creepPoints = new KahinaControlPointProfile(new LogicProgrammingCreepActuator(control));
-        completePoints = new KahinaControlPointProfile(new LogicProgrammingCompleteActuator(control));
-        skipPoints = new KahinaControlPointProfile(new LogicProgrammingSkipActuator(control));
-        failPoints = new KahinaControlPointProfile(new LogicProgrammingFailActuator(control));
+        breakPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingBreakActuator(control), this);
+        creepPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingCreepActuator(control), this);
+        completePoints = new LogicProgrammingControlPointProfile(new LogicProgrammingCompleteActuator(control), this);
+        skipPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingSkipActuator(control), this);
+        failPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingFailActuator(control), this);
         //warnPoints = new KahinaControlPointProfile();
         
         profile = new LogicProgrammingProfile();

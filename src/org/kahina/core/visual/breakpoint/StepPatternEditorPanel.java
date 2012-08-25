@@ -84,11 +84,7 @@ public class StepPatternEditorPanel extends JPanel implements ActionListener
         NodeConstraintOptions constrOptions = new NodeConstraintOptions();
         constrOptions.setStandardOptions();
         //TODO: make this more general, avoid the cast
-        System.err.println("viewPanel = " + viewPanel);
-        System.err.println("viewPanel.view =" + viewPanel.view);
-        System.err.println("viewPanel.view.getModel() =" + viewPanel.view.getModel());
-        System.err.println("viewPanel.view.getModel().getSensor() =" + viewPanel.view.getModel().getSensor());
-        TreePatternNode patternNode = ((KahinaTreePatternSensor) viewPanel.view.getModel().getSensor()).getPattern();
+        TreePatternNode patternNode = viewPanel.view.getModel().getSensor().getPattern();
         patternPanel = new SingleNodeConstraintPanel(constrOptions, viewPanel.kahina.getControl(), patternNode);
         patternPanel.setHintPanel(hintPanel);
         

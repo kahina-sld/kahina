@@ -15,6 +15,7 @@ import org.kahina.core.data.breakpoint.patterns.TreePattern;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.color.ColorUtil;
+import org.kahina.lp.data.breakpoint.LogicProgrammingControlPoint;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -25,16 +26,16 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
     static int number = 0;
     
     //
-    private KahinaController control;
+    protected KahinaController control;
     
     //elementary properties
-    private String name;
-    private boolean active;
-    private Color signalColor;
+    protected String name;
+    protected boolean active;
+    protected Color signalColor;
     
     //interfaces
-    private KahinaStepPropertySensor sensor;
-    private KahinaControlActuator actuator;
+    protected KahinaStepPropertySensor sensor;
+    protected KahinaControlActuator actuator;
     
     /**
      * Class constructor for control points.
@@ -198,12 +199,10 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
         newControlPoint.setName(controlPointNode.getAttribute("name"));
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlPointNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlPointNode.getAttribute("active"));
-        //expect only one tree pattern, TODO: make this a lot more general)
-        KahinaTreePatternSensor treePatternSensor = new KahinaTreePatternSensor(newControlPoint);
-        treePatternSensor.setPattern(TreePatternNode.importXML((Element) controlPointNode.getElementsByTagName("kahina:pattern").item(0)));
-        //TODO: link this to the control flow tree, this control point class needs to be turned into a specialization
-        //treePatternSensor.setTree();
-        newControlPoint.setSensor(treePatternSensor);
+        //expect only one step property
+        KahinaStepPropertySensor stepPropertySensor = new KahinaStepPropertySensor(newControlPoint);
+        //TODO: define some useful default sensor here, with focus on making the architecture more easily extendable
+        newControlPoint.setSensor(stepPropertySensor);
         return newControlPoint;
     }
     

@@ -8,12 +8,12 @@ import org.kahina.core.data.tree.KahinaTree;
 public class KahinaTreePatternSensor extends KahinaStepPropertySensor
 {
     private TreePatternNode pattern;
-    private KahinaTree tree;
+    private KahinaTree stepTree;
     
-    public KahinaTreePatternSensor(KahinaControlPoint controlPoint)
+    public KahinaTreePatternSensor(KahinaControlPoint controlPoint, KahinaTree stepTree)
     {
         super(controlPoint);
-        this.tree = new KahinaMemTree();
+        this.stepTree = stepTree;
         this.pattern = new TreePatternNode();
     }
     
@@ -35,18 +35,18 @@ public class KahinaTreePatternSensor extends KahinaStepPropertySensor
         this.pattern = pattern;
     }
     
-    public KahinaTree getTree()
+    public KahinaTree getStepTree()
     {
-        return tree;
+        return stepTree;
     }
 
-    public void setTree(KahinaTree tree)
+    public void setStepTree(KahinaTree stepTree)
     {
-        this.tree = tree;
+        this.stepTree = stepTree;
     }
 
     public boolean detectPattern(int stepID)
     {
-        return pattern.getPattern().matches(tree, stepID);
+        return pattern.getPattern().matches(stepTree, stepID);
     }
 }

@@ -5,8 +5,9 @@ import javax.swing.JComponent;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.breakpoint.KahinaControlPoint;
 import org.kahina.core.visual.KahinaView;
+import org.kahina.lp.data.breakpoint.LogicProgrammingControlPoint;
 
-public class KahinaControlPointView extends KahinaView<KahinaControlPoint>
+public class KahinaControlPointView extends KahinaView<LogicProgrammingControlPoint>
 {
     public KahinaControlPointView(KahinaInstance<?, ?, ?> kahina)
     {
