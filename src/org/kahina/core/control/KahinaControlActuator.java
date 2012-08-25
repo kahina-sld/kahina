@@ -17,4 +17,9 @@ public class KahinaControlActuator
     {
         
     }
+    
+    public KahinaController getControl()
+    {
+        return control;
+    }
 }

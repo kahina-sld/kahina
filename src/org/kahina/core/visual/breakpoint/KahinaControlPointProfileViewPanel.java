@@ -27,9 +27,13 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
     KahinaControlPointViewPanel pointPanel;
     KahinaControlPointProfileListener profileListener;
     
+    KahinaInstance<?,?,?> kahina;
+    
     public KahinaControlPointProfileViewPanel(KahinaInstance<?, ?, ?> kahina)
     {
         view = null;
+        
+        this.kahina = kahina;
         
         kahina.getControl().registerListener("breakpoint_editor", this);
         
@@ -186,5 +190,10 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
                 KahinaControlPointContextMenu.getMenu(pointListener, profileListener, pointView).show(e.getComponent(),e.getX(), e.getY());
             }
         }
+    }
+
+    public KahinaInstance<?, ?, ?> getKahina()
+    {
+        return kahina;
     }
 }
