@@ -6,12 +6,13 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
 import org.kahina.core.visual.KahinaView;
+import org.kahina.lp.LogicProgrammingInstance;
 
 public class KahinaControlPointProfileView extends KahinaView<KahinaControlPointProfile>
 {
     KahinaControlPointView pointView;
     
-    public KahinaControlPointProfileView(KahinaInstance<?, ?, ?> kahina)
+    public KahinaControlPointProfileView(LogicProgrammingInstance kahina)
     {
         super(kahina);
         model = new KahinaControlPointProfile(new KahinaControlActuator(kahina.getControl()));
@@ -21,7 +22,7 @@ public class KahinaControlPointProfileView extends KahinaView<KahinaControlPoint
     @Override
     public JComponent makePanel()
     {
-        KahinaControlPointProfileViewPanel panel = new KahinaControlPointProfileViewPanel(kahina);
+        KahinaControlPointProfileViewPanel panel = new KahinaControlPointProfileViewPanel((LogicProgrammingInstance) kahina);
         panel.setView(this);
         return panel;
     }

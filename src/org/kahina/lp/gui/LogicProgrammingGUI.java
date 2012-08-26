@@ -40,7 +40,7 @@ public class LogicProgrammingGUI extends KahinaGUI
     protected KahinaControlPointProfileView failPointView;
     protected KahinaControlPointProfileView warnPointView;
 
-	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
+	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, LogicProgrammingInstance kahina)
 	{
 		super(stepType, kahina);
 		
