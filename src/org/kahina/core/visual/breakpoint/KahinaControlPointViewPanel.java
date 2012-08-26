@@ -177,8 +177,7 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
             this.add(Box.createVerticalGlue());
             
             StepPatternEditorPanel patternEditor = new StepPatternEditorPanel(this); 
-            this.add(patternEditor);
-            
+            this.add(patternEditor);       
         }
         else
         {
