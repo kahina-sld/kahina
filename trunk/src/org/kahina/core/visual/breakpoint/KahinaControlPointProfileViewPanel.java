@@ -19,6 +19,8 @@ import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.core.visual.dag.KahinaDAGViewContextMenu;
+import org.kahina.lp.LogicProgrammingInstance;
+import org.kahina.lp.LogicProgrammingState;
 
 public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaControlPointProfileView>
 {
@@ -29,7 +31,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
     
     KahinaInstance<?,?,?> kahina;
     
-    public KahinaControlPointProfileViewPanel(KahinaInstance<?, ?, ?> kahina)
+    public KahinaControlPointProfileViewPanel(LogicProgrammingInstance kahina)
     {
         view = null;
         
@@ -37,7 +39,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         
         kahina.getControl().registerListener("breakpoint_editor", this);
         
-        profileListener = new KahinaControlPointProfileListener(this);
+        profileListener = new KahinaControlPointProfileListener(this, (LogicProgrammingState) kahina.getState());
         KahinaControlPointListener pointListener = new KahinaControlPointListener();
         
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));

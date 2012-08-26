@@ -16,16 +16,21 @@ import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.data.breakpoint.KahinaControlPoint;
 import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
 import org.kahina.core.io.util.XMLUtil;
+import org.kahina.lp.LogicProgrammingState;
+import org.kahina.lp.data.breakpoint.LogicProgrammingControlPoint;
+import org.kahina.lp.data.breakpoint.LogicProgrammingControlPointProfile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class KahinaControlPointProfileListener implements ActionListener, ListSelectionListener
 {
     KahinaControlPointProfileViewPanel profilePanel;
+    LogicProgrammingState lpState;
     
-    public KahinaControlPointProfileListener(KahinaControlPointProfileViewPanel profilePanel)
+    public KahinaControlPointProfileListener(KahinaControlPointProfileViewPanel profilePanel, LogicProgrammingState lpState)
     {
         this.profilePanel = profilePanel;
+        this.lpState = lpState;
     }
 
     public void actionPerformed(ActionEvent e)
@@ -33,8 +38,7 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         String s = e.getActionCommand();
         if (s.equals("newControlPoint"))
         {
-            //TODO: adapt type argument, 0 is just the value for breakpoints!
-            KahinaControlPoint newControlPoint = new KahinaControlPoint(profilePanel.getKahina().getControl());
+            LogicProgrammingControlPoint newControlPoint = new LogicProgrammingControlPoint(profilePanel.getKahina().getControl(), lpState);
             profilePanel.view.getModel().addControlPoint(newControlPoint);
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
             profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
@@ -48,7 +52,7 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
             try
             {
                 Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
-                KahinaControlPoint newControlPoint = KahinaControlPoint.importXML(dom.getDocumentElement(), profilePanel.getKahina().getControl());
+                LogicProgrammingControlPoint newControlPoint = LogicProgrammingControlPoint.importXML(dom.getDocumentElement(), profilePanel.getKahina().getControl(), lpState);
                 profilePanel.view.getModel().addControlPoint(newControlPoint);
                 profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
                 profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
@@ -88,7 +92,7 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
             {
                 Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
                 KahinaControlActuator actuator = profilePanel.view.getModel().getActuator();
-                profilePanel.view.display(KahinaControlPointProfile.importXML(dom.getDocumentElement(), actuator));
+                profilePanel.view.display(LogicProgrammingControlPointProfile.importXML(dom.getDocumentElement(), actuator));
                 profilePanel.updateDisplay();
             }
             catch (FileNotFoundException ex)
