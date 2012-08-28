@@ -12,9 +12,14 @@ public class KahinaTreePatternSensor extends KahinaStepPropertySensor
     
     public KahinaTreePatternSensor(KahinaControlPoint controlPoint, KahinaTree stepTree)
     {
-        super(controlPoint);
+        this.controlPoint = controlPoint;
         this.stepTree = stepTree;
         this.pattern = new TreePatternNode();
+    }
+    
+    public TreePatternNode getStepProperty()
+    {
+        return pattern;
     }
     
     /**

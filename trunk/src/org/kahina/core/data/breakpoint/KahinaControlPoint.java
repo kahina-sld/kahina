@@ -7,6 +7,7 @@ import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
+import org.kahina.core.control.KahinaStepProperty;
 import org.kahina.core.control.KahinaStepPropertySensor;
 import org.kahina.core.control.KahinaTreePatternSensor;
 import org.kahina.core.data.KahinaObject;
@@ -56,7 +57,7 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
         active = true;
         //TODO: perhaps change this to another type if KahinaUpdateEvents turn out not to be the correct choice
         control.registerListener("update", this);
-        sensor = new KahinaStepPropertySensor(this);
+        sensor = new KahinaStepPropertySensor(this, new KahinaStepProperty());
     }
     
     public KahinaController getControl()
@@ -183,7 +184,7 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
         Element breakpointEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:controlPoint");
         breakpointEl.setAttribute("name", name);
         breakpointEl.setAttribute("color", ColorUtil.encodeHTML(signalColor));
-        breakpointEl.setAttribute("active", active + "");
+        breakpointEl.setAttribute("active", active + "");     
         breakpointEl.appendChild(sensor.getStepProperty().exportXML(dom));
         return breakpointEl;
     }
@@ -199,8 +200,8 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
         newControlPoint.setName(controlPointNode.getAttribute("name"));
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlPointNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlPointNode.getAttribute("active"));
-        //expect only one step property
-        KahinaStepPropertySensor stepPropertySensor = new KahinaStepPropertySensor(newControlPoint);
+        //expect only one step property, TODO: implement XML import stub for KahinaStepProperty
+        KahinaStepPropertySensor stepPropertySensor = new KahinaStepPropertySensor(newControlPoint, new KahinaStepProperty());
         //TODO: define some useful default sensor here, with focus on making the architecture more easily extendable
         newControlPoint.setSensor(stepPropertySensor);
         return newControlPoint;
