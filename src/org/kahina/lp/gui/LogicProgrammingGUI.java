@@ -121,6 +121,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 	@Override
 	public void displayMainViews()
 	{
+        super.displayMainViews();
 		if (VERBOSE)
 		{
 			System.err.println(this + ".displayMainViews()");
@@ -141,6 +142,12 @@ public class LogicProgrammingGUI extends KahinaGUI
 			System.err.println("Displaying console messages...");
 		}
 		messageConsoleView.display(state.getConsoleMessages());
+        breakPointView.display(state.getBreakPoints());
+        creepPointView.display(state.getCreepPoints());
+        completePointView.display(state.getCompletePoints());
+        skipPointView.display(state.getSkipPoints());
+        failPointView.display(state.getFailPoints());
+        warnPointView.display(state.getWarnPoints());
 		if (VERBOSE)
 		{
 			System.err.println("//" + this + ".displayMainViews()");

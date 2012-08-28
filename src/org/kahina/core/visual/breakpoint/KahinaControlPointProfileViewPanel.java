@@ -130,7 +130,10 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
     
     public void updateDisplay()
     {
-        pointList.setListData(view.getModel().getControlPoints());
+        if (view.getModel() != null)
+        {
+            pointList.setListData(view.getModel().getControlPoints());
+        }
     }
     
     public void processEvent(KahinaEvent event)
