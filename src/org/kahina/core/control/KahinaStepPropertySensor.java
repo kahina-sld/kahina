@@ -9,9 +9,15 @@ public class KahinaStepPropertySensor
     //the property this sensor is looking for
     KahinaStepProperty stepProperty;
     
-    public KahinaStepPropertySensor(KahinaControlPoint controlPoint)
+    protected KahinaStepPropertySensor()
+    {
+        
+    }
+    
+    public KahinaStepPropertySensor(KahinaControlPoint controlPoint, KahinaStepProperty stepProperty)
     {
         this.controlPoint = controlPoint;
+        this.stepProperty = stepProperty;
     }
     
     public KahinaStepProperty getStepProperty()
