@@ -864,6 +864,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	@Override
 	protected synchronized void processControlEvent(KahinaControlEvent e)
 	{
+        System.err.println("LogicProgrammingBridge.state before processControlEvent(" + e + ") = " + bridgeState);
 		// TODO update chart when exiting leap/skip. Gah.
 		String command = e.getCommand();
 		if (command.equals("creep"))
@@ -999,6 +1000,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		{
 			bridgeState = 'a';
 		}
+        System.err.println("LogicProgrammingBridge.state after processControlEvent(" + e + ") = " + bridgeState);
 	}
 
 	protected boolean canSkipOrAutocomplete()
