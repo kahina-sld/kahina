@@ -32,6 +32,7 @@ public class KahinaStepPropertySensor
      */
     public boolean detectPattern(int stepID)
     {
+        System.err.println("WARNING: non-overridden call KahinaStepPropertySensor.detectPattern(" + stepID + ") = false");
         return false;
     }
 }

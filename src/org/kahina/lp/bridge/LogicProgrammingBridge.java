@@ -9,6 +9,7 @@ import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.bridge.KahinaStepDescriptionEvent;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEventTypes;
+import org.kahina.core.control.KahinaStepUpdateEvent;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.control.KahinaWarnEvent;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
@@ -256,12 +257,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 
 			maybeUpdateStepCount(true);
+            kahina.dispatchEvent(new KahinaStepUpdateEvent(stepID));
 			selectIfPaused(stepID);
 			if (VERBOSE)
 			{
 				System.err.println("//LogicProgrammingBridge.call(" + extID + ")");
 			}
-		} catch (Exception e)
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -356,8 +359,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 			parentCandidateID = newStepID;
 
 			maybeUpdateStepCount(true);
+            kahina.dispatchEvent(new KahinaStepUpdateEvent(newStepID));
 			selectIfPaused(newStepID);
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -446,6 +451,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 
 			maybeUpdateStepCount(false);
+            kahina.dispatchEvent(new KahinaStepUpdateEvent(stepID));
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
@@ -503,6 +509,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 
 			maybeUpdateStepCount(false);
+            kahina.dispatchEvent(new KahinaStepUpdateEvent(stepID));
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
@@ -545,6 +552,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 
 			maybeUpdateStepCount(false);
+            kahina.dispatchEvent(new KahinaStepUpdateEvent(stepID));
 			selectIfPaused(stepID);
 		} catch (Exception e)
 		{
