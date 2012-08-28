@@ -4,7 +4,7 @@ public class KahinaControlActuator
 {
     protected KahinaController control;
     
-    public KahinaControlActuator(KahinaController control)
+    protected KahinaControlActuator(KahinaController control)
     {
         this.control = control;
     }

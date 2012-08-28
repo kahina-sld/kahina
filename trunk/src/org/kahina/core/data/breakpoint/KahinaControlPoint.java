@@ -6,9 +6,11 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaStepProperty;
 import org.kahina.core.control.KahinaStepPropertySensor;
+import org.kahina.core.control.KahinaStepUpdateEvent;
 import org.kahina.core.control.KahinaTreePatternSensor;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.breakpoint.patterns.TreeNodePattern;
@@ -55,8 +57,7 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
         setName("Control point " + number);
         signalColor = ColorUtil.randomColor();
         active = true;
-        //TODO: perhaps change this to another type if KahinaUpdateEvents turn out not to be the correct choice
-        control.registerListener("update", this);
+        control.registerListener(KahinaEventTypes.STEP_UPDATE, this);
         sensor = new KahinaStepPropertySensor(this, new KahinaStepProperty());
     }
     
@@ -209,13 +210,13 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
     
     public void processEvent(KahinaEvent event)
     {
-        //TODO: consider more thoroughly whether listening for KahinaUpdateEvents is the right design choice
-        if (event instanceof KahinaUpdateEvent)
+        if (event instanceof KahinaStepUpdateEvent)
         {
-            int stepID = ((KahinaUpdateEvent) event).getSelectedStep();
+            int stepID = ((KahinaStepUpdateEvent) event).getStepID();
             //check step data against sensor, let the actuator fire if successful
             if (sensor.detectPattern(stepID))
             {
+                System.err.println(this + " detected pattern, starting actuator " + actuator);
                 actuator.act();
             }
         }     
