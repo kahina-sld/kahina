@@ -51,7 +51,7 @@ import org.kahina.lp.data.text.LogicProgrammingLineReference;
  */
 public class LogicProgrammingBridge extends KahinaBridge
 {
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 
 	// a dynamic map from external step IDs to most recent corresponding tree
 	// nodes
@@ -72,7 +72,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	// store the state of the bridge, determining the next result of
 	// getPressedButton()
-	protected volatile char bridgeState = 'n';
+	private volatile char bridgeState = 'n';
 
 	// used to hand on skip commands to the logic programming system
 	protected boolean skipFlag = false;
@@ -249,7 +249,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			parentCandidateID = stepID;
 			if (VERBOSE)
 			{
-				System.err.println("Bridge state: " + bridgeState);
+				System.err.println("Bridge state: " + getBridgeState());
 			}
 			if (VERBOSE)
 			{
@@ -446,7 +446,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
 				if (deterministic)
 				{
-					bridgeState = 'c';
+					setBridgeState('c');
 				}
 			}
 
@@ -505,7 +505,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (isQueryRoot(stepID))
 			{
 				kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
-				bridgeState = 'c';
+				setBridgeState('c');
 			}
 
 			maybeUpdateStepCount(false);
@@ -548,7 +548,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (isQueryRoot(stepID))
 			{
 				kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
-				bridgeState = 'c';
+				setBridgeState('c');
 			}
 
 			maybeUpdateStepCount(false);
@@ -599,7 +599,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
-			bridgeState = 'n';
+			setBridgeState('n');
 			maybeUpdateStepCount(false);
 			kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
 		} catch (Exception e)
@@ -643,110 +643,111 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				if (VERBOSE)
 				{
-					System.err.println("Bridge state/pressed button: " + bridgeState + "/s");
+					System.err.println(this + ".getAction() == 's', skipFlag := false, waitingForReturnFromSkip := " + currentID);
 				}
 				skipFlag = false;
 				waitingForReturnFromSkip = currentID;
 				return 's';
 			}
-			switch (bridgeState)
+			switch (getBridgeState())
 			{
 			case 'n':
 			{
-				if (VERBOSE)
-				{
-					// System.err.println("Bridge state/pressed button: n/n");
-				}
+                if (VERBOSE)
+                {
+                    System.err.println(this + ".getAction() == 'n', in idle mode");
+                }
 				return 'n';
 			}
 			case 'p':
 			{
 				if (VERBOSE)
 				{
-					System.err.println("Bridge state/pressed button: p/n");
+					System.err.println(this + ".getAction() == 'n', in pause mode");
 				}
 				return 'n';
 			}
 			case 'q':
 			{
-				if (VERBOSE)
-				{
-					System.err.println("Bridge state/pressed button: q/n");
-				}
+                if (VERBOSE)
+                {
+                    System.err.println(this + ".getAction() == 'n', in paused skip mode");
+                }
 				return 'n';
 			}
 			case 'c':
 			{
-				if (VERBOSE)
-				{
-					System.err.println("Bridge state/pressed button: c/c");
-				}
-				bridgeState = 'n';
+                if (VERBOSE)
+                {
+                    System.err.println(this + ".getAction() == 'c', back to idle mode");
+                }
+				setBridgeState('n');      
 				return 'c';
 			}
 			case 'f':
 			{
-				if (VERBOSE)
-				{
-					System.err.println("Bridge state/pressed button: f/f");
-				}
-				bridgeState = 'n';
+                if (VERBOSE)
+                {
+                    System.err.println(this + ".getAction() == 'f', back to idle mode");
+                }
+				setBridgeState('n');
 				return 'f';
 			}
 			case 'l':
 			{
-				if (VERBOSE)
-				{
-					System.err.println("Bridge state/pressed button: l/c");
-				}
-				bridgeState = 'l';
+                if (VERBOSE)
+                {
+                    System.err.println(this + ".getAction() == 'c', in leap mode");
+                }
+				setBridgeState('l');
 				return 'c';
 			}
 			case 't':
 			{
-				if (VERBOSE)
-				{
-					System.err.println("Bridge state/pressed button: t/c");
-				}
-				bridgeState = 's';
+                if (VERBOSE)
+                {
+                    System.err.println(this + ".getAction() == 'c', back in skip mode");
+                }
+				setBridgeState('s');
 				return 'c';
 			}
 			case 's':
 			{
 				if (skipID == currentID)
 				{
-					if (VERBOSE)
-					{
-						System.err.println("Bridge state/pressed button: s/n");
-					}
+                    if (VERBOSE)
+                    {
+                        System.err.println(this + ".getAction() == 'n', back in idle mode because skip complete");
+                    }
 					skipID = -1;
-					bridgeState = 'n';
+					setBridgeState('n');
 					kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
 					return 'n';
-				} else
+				} 
+                else
 				{
-					if (VERBOSE)
-					{
-						System.err.println("Bridge state/pressed button: s/c");
-					}
+                    if (VERBOSE)
+                    {
+                        System.err.println(this + ".getAction() == 'c', in skip mode");
+                    }
 					return 'c';
 				}
 			}
 			case 'a':
 			{
-				if (VERBOSE)
-				{
-					System.err.println("Bridge state/pressed button: a/a");
-				}
+                if (VERBOSE)
+                {
+                    System.err.println(this + ".getAction() == 'a', in abort mode");
+                }
 				return 'a';
 			}
 			default:
 			{
-				if (VERBOSE)
-				{
-					System.err.println("Bridge state/pressed button: " + bridgeState + "/n");
-				}
-				bridgeState = 'n';
+                if (VERBOSE)
+                {
+                    System.err.println(this + ".getAction() == 'n', back to idle mode (default behavior)");
+                }
+				setBridgeState('n');
 				return 'n';
 			}
 			}
@@ -767,17 +768,19 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 */
 	protected int convertStepID(int extID)
 	{
-		if (VERBOSE)
-			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ")");
+		/*if (VERBOSE)
+			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ")");*/
 		if (extID == -1)
 		{
+            if (VERBOSE)
+                System.err.println("LogicProgrammingBridge.convertStepID(-1) = -1");
 			return -1;
 		}
 		Integer intID = stepIDConv.get(extID);
-		if (VERBOSE)
+		/*if (VERBOSE)
 		{
 			System.err.println("stepIDConv.get(" + extID + ")=" + intID);
-		}
+		}*/
 		if (intID == null)
 		{
 			LogicProgrammingStep newStep = generateStep();
@@ -793,7 +796,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	protected boolean isPaused()
 	{
-		return bridgeState == 'n' || bridgeState == 'c';
+		return getBridgeState() == 'n' || getBridgeState() == 'c';
 	}
 
 	/**
@@ -849,14 +852,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		if (e.getSystemEventType() == KahinaSystemEvent.QUIT)
 		{
-			bridgeState = 'a';
+			setBridgeState('a');
 		}
 	}
 
 	@Override
 	protected void processWarnEvent(KahinaWarnEvent e)
 	{
-		bridgeState = 'n';
+		setBridgeState('n');
 		maybeUpdateStepCount(false);
 		selectIfPaused(currentID);
 	}
@@ -864,63 +867,63 @@ public class LogicProgrammingBridge extends KahinaBridge
 	@Override
 	protected synchronized void processControlEvent(KahinaControlEvent e)
 	{
-        System.err.println("LogicProgrammingBridge.state before processControlEvent(" + e + ") = " + bridgeState);
+        if (VERBOSE) System.err.println(this + "e.processControlEvent(" + e + ")");
 		// TODO update chart when exiting leap/skip. Gah.
 		String command = e.getCommand();
 		if (command.equals("creep"))
 		{
-			if (bridgeState == 'n')
+			if (getBridgeState() == 'n')
 			{
-				bridgeState = 'c';
-			} else if (bridgeState == 'p')
-			{
-				skipID = -1;
-				bridgeState = 'c';
-			} else if (bridgeState == 'q')
+				setBridgeState('c');
+			} else if (getBridgeState() == 'p')
 			{
 				skipID = -1;
-				bridgeState = 'c';
-			} else if (bridgeState == 'l')
+				setBridgeState('c');
+			} else if (getBridgeState() == 'q')
 			{
 				skipID = -1;
-				bridgeState = 'c';
+				setBridgeState('c');
+			} else if (getBridgeState() == 'l')
+			{
+				skipID = -1;
+				setBridgeState('c');
 			}
 		} else if (command.equals("stop"))
 		{
-			if (bridgeState == 'p')
+			if (getBridgeState() == 'p')
 			{
 				skipID = -1;
-				bridgeState = 'c';
-			} else if (bridgeState == 'q')
+				setBridgeState('c');
+			} else if (getBridgeState() == 'q')
 			{
 				skipID = -1;
-				bridgeState = 'c';
-			} else if (bridgeState == 'l')
+				setBridgeState('c');
+			} else if (getBridgeState() == 'l')
 			{
 				skipID = -1;
-				bridgeState = 'c';
+				setBridgeState('c');
 			}
 		} else if (command.equals("fail"))
 		{
-			if (bridgeState == 'n')
+			if (getBridgeState() == 'n')
 			{
-				bridgeState = 'f';
-			} else if (bridgeState == 'p')
-			{
-				skipID = -1;
-				bridgeState = 'f';
-			} else if (bridgeState == 'q')
+				setBridgeState('f');
+			} else if (getBridgeState() == 'p')
 			{
 				skipID = -1;
-				bridgeState = 'f';
+				setBridgeState('f');
+			} else if (getBridgeState() == 'q')
+			{
+				skipID = -1;
+				setBridgeState('f');
 			}
 		} else if (command.equals("auto-complete"))
 		{
-			if (bridgeState == 'n')
+			if (getBridgeState() == 'n')
 			{
 				if (canSkipOrAutocomplete())
 				{
-					bridgeState = 't';
+					setBridgeState('t');
 					if (selectedID == -1)
 					{
 						if (VERBOSE)
@@ -943,12 +946,12 @@ public class LogicProgrammingBridge extends KahinaBridge
 						System.err.println("WARNING: auto-complete/skip are not valid operations right now.");
 					}
 				}
-			} else if (bridgeState == 'p')
+			} else if (getBridgeState() == 'p')
 			{
-				bridgeState = 't';
-			} else if (bridgeState == 'q')
+				setBridgeState('t');
+			} else if (getBridgeState() == 'q')
 			{
-				bridgeState = 't';
+				setBridgeState('t');
 				skipID = currentID;
 			}
 
@@ -966,16 +969,16 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 		} else if (command.equals("leap"))
 		{
-			if (bridgeState == 'n')
+			if (getBridgeState() == 'n')
 			{
-				bridgeState = 'l';
-			} else if (bridgeState == 'p')
+				setBridgeState('l');
+			} else if (getBridgeState() == 'p')
 			{
-				bridgeState = 'l';
+				setBridgeState('l');
 				skipID = -1;
-			} else if (bridgeState == 'q')
+			} else if (getBridgeState() == 'q')
 			{
-				bridgeState = 'l';
+				setBridgeState('l');
 				skipID = -1;
 			}
 		} else if (command.equals("(un)pause"))
@@ -983,24 +986,23 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// FIXME There's no visible reaction when clicking pause. The button
 			// should change, and the current step should be selected. For the
 			// time being, I removed the pause button.
-			if (bridgeState == 't')
+			if (getBridgeState() == 't')
 			{
-				bridgeState = 'p';
-			} else if (bridgeState == 's')
+				setBridgeState('p');
+			} else if (getBridgeState() == 's')
 			{
-				bridgeState = 'q';
-			} else if (bridgeState == 'p')
+				setBridgeState('q');
+			} else if (getBridgeState() == 'p')
 			{
-				bridgeState = 't';
-			} else if (bridgeState == 'q')
+				setBridgeState('t');
+			} else if (getBridgeState() == 'q')
 			{
-				bridgeState = 's';
+				setBridgeState('s');
 			}
 		} else if (command.equals("abort"))
 		{
-			bridgeState = 'a';
+			setBridgeState('a');
 		}
-        System.err.println("LogicProgrammingBridge.state after processControlEvent(" + e + ") = " + bridgeState);
 	}
 
 	protected boolean canSkipOrAutocomplete()
@@ -1044,9 +1046,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 	protected void processCreepPointMatch(int nodeID, KahinaBreakpoint bp)
 	{
 		// no change if we are in leap or skip mode anyway
-		if (bridgeState != 's' && bridgeState != 't' && bridgeState != 'l')
+		if (getBridgeState() != 's' && getBridgeState() != 't' && getBridgeState() != 'l')
 		{
-			bridgeState = 'c';
+			setBridgeState('c');
 		}
 	}
 
@@ -1055,7 +1057,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		// TODO: handle this more elegantly if in skip or leap mode (possibly
 		// additional state)
-		bridgeState = 'f';
+		setBridgeState('f');
 	}
 
 	@Override
@@ -1063,17 +1065,29 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		// TODO: temporarily mark matching node in the breakpoint's signal color
 		// same reaction as in pause mode
-		if (bridgeState == 't')
+		if (getBridgeState() == 't')
 		{
-			bridgeState = 'p';
-		} else if (bridgeState == 's')
+			setBridgeState('p');
+		} else if (getBridgeState() == 's')
 		{
-			bridgeState = 'q';
-		} else if (bridgeState == 'l')
+			setBridgeState('q');
+		} else if (getBridgeState() == 'l')
 		{
-			bridgeState = 'n';
+			setBridgeState('n');
 		}
 		state.breakpointConsoleMessage(currentID, "Breakpoint match: " + bp.getName() + " at node " + currentID);
 		kahina.dispatchEvent(new KahinaSelectionEvent(nodeID));
 	}
+
+    protected void setBridgeState(char bridgeState)
+    {
+        if (VERBOSE) System.err.println(this + ".setBridgeState(" + bridgeState + ")");
+        this.bridgeState = bridgeState;
+    }
+
+    protected char getBridgeState()
+    {
+        if (VERBOSE) System.err.println(this + ".getBridgeState() == " + bridgeState);
+        return bridgeState;
+    }
 }
