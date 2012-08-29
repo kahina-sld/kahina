@@ -28,7 +28,7 @@ public class SICStusPrologBridge extends PrologBridge
 			step.bindings.addBinding(variableName, direction, value);
 			state.store(internalStepID, step);
 
-			if (bridgeState == 'n')
+			if (getBridgeState() == 'n')
 			{
 				kahina.dispatchEvent(new KahinaSelectionEvent(internalStepID));
 			}

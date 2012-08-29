@@ -429,7 +429,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 			if (VERBOSE)
 			{
-				System.err.println("Bridge state after chart edge was marked as failed: " + bridgeState);
+				System.err.println("Bridge state after chart edge was marked as failed: " + getBridgeState());
 			}
 
 			// Stop autocomplete/leap when we're done. Also, set to creep so
@@ -437,7 +437,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			if (isQueryRoot(stepID))
 			{
 				kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
-				bridgeState = 'c';
+				setBridgeState('c');
 			}
 
 			maybeUpdateStepCount(false);
@@ -475,7 +475,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			if (isQueryRoot(stepID))
 			{
 				kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
-				bridgeState = 'c';
+				setBridgeState('c');
 			}
 
 			maybeUpdateStepCount(false);

@@ -43,7 +43,7 @@ public class SWIPrologBridge extends PrologBridge
 
 			state.store(internalStepID, step);
 
-			if (bridgeState == 'n')
+			if (getBridgeState() == 'n')
 			{
 				kahina.dispatchEvent(new KahinaSelectionEvent(internalStepID));
 			}
