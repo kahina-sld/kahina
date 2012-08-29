@@ -71,7 +71,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		try
 		{
 			fillViewRegistry();
-			initializeNewSession(true); //WAS: dummy session so views have something (empty) to show
+			initializeNewSession(true); //avoid creating a dummy session so views have something (empty) to show
 		} 
 		catch (Exception e)
 		{
