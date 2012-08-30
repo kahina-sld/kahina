@@ -10,17 +10,21 @@ import java.util.Set;
 
 import org.kahina.core.KahinaState;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
+import org.kahina.core.data.breakpoint.KahinaControlPoint;
 import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.event.KahinaMessageEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.lp.control.LogicProgrammingBreakActuator;
 import org.kahina.lp.control.LogicProgrammingCompleteActuator;
 import org.kahina.lp.control.LogicProgrammingCreepActuator;
 import org.kahina.lp.control.LogicProgrammingFailActuator;
 import org.kahina.lp.control.LogicProgrammingSkipActuator;
+import org.kahina.lp.control.NewControlAgentEvent;
 import org.kahina.lp.data.breakpoint.LogicProgrammingControlPointProfile;
 import org.kahina.lp.data.text.LogicProgrammingLineReference;
 import org.kahina.lp.profiler.LogicProgrammingProfile;
@@ -66,6 +70,7 @@ public class LogicProgrammingState extends KahinaState
         //warnPoints = new KahinaControlPointProfile();
         
         profile = new LogicProgrammingProfile();
+        control.registerListener("new agent", this);
     }
     
 	public void initialize() 
@@ -231,6 +236,48 @@ public class LogicProgrammingState extends KahinaState
     public LogicProgrammingStep get(int id)
     {
         return retrieve(LogicProgrammingStep.class, id);
+    }
+    
+    public void processEvent(KahinaEvent event)
+    {
+        super.processEvent(event);
+        if (event instanceof NewControlAgentEvent)
+        {
+            processNewAgentEvent((NewControlAgentEvent) event);
+        }
+    }
+    
+    private void processNewAgentEvent(NewControlAgentEvent event)
+    {
+        KahinaControlPoint controlAgent = event.getControlAgent();
+        switch (event.getAgentType())
+        {
+            case BREAK_AGENT:
+            {
+                breakPoints.addControlPoint(controlAgent);
+                break;
+            }
+            case CREEP_AGENT:
+            {
+                creepPoints.addControlPoint(controlAgent);
+                break;
+            }
+            case COMPLETE_AGENT:
+            {
+                completePoints.addControlPoint(controlAgent);
+                break;
+            }
+            case SKIP_AGENT:
+            {
+                skipPoints.addControlPoint(controlAgent);
+                break;
+            }
+            case FAIL_AGENT:
+            {
+                failPoints.addControlPoint(controlAgent);
+                break;
+            }
+        }
     }
     
 }

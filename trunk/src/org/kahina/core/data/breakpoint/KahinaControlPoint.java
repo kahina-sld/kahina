@@ -41,7 +41,7 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
     protected KahinaControlActuator actuator;
     
     /**
-     * Class constructor for control points.
+     * Class constructor for control points. An actuator must be set before the control point can be used.
      * <p>
      * The breakpoint starts out with the following default values:<br>
      * <code>name</code> - "Breakpoint " + a number<br>
