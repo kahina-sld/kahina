@@ -73,7 +73,7 @@ public class KahinaJEditPanel extends JPanel
 	public KahinaJEditPanel(File file, LogicProgrammingInstance instance)
 	{
 		this.file = file;
-        ActionListener actionListener = new KahinaJEditActionListener(instance, this);
+        actionListener = new KahinaJEditActionListener(instance, this);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(Box.createRigidArea(SPACE));
 		add(createControlPanel());

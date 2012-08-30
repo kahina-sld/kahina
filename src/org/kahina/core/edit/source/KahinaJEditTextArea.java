@@ -23,7 +23,7 @@ public class KahinaJEditTextArea extends StandaloneTextArea
     public void createPopupMenu(MouseEvent evt)
     {
         //store the line of the mouse event
-        int popupLine = getLineOfOffset(xyToOffset(evt.getX(),evt.getY()));
+        popupLine = getLineOfOffset(xyToOffset(evt.getX(),evt.getY()));
         super.createPopupMenu(evt);
         JPopupMenu menu = getRightClickPopup();
         
