@@ -10,6 +10,11 @@ public abstract class LogicProgrammingInstance<S extends LogicProgrammingState, 
 {
 
 	public abstract LogicProgrammingProfiler getProfiler();
+    
+    public S getState()
+    {
+        return state;
+    }
 	
 	@Override
 	protected void createTreeBehavior()

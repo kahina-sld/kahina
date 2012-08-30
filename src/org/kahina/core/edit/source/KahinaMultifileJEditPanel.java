@@ -11,9 +11,12 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import org.kahina.lp.LogicProgrammingInstance;
+
 public class KahinaMultifileJEditPanel extends JPanel
 {
-	
+	protected LogicProgrammingInstance instance;
+    
 	// TODO allow for closing files
 	
 	private static final long serialVersionUID = 7289857419713715346L;
@@ -22,8 +25,9 @@ public class KahinaMultifileJEditPanel extends JPanel
 	
 	private final Map<File, KahinaJEditPanel> panelByFile = new HashMap<File, KahinaJEditPanel>();
 	
-	public KahinaMultifileJEditPanel()
+	public KahinaMultifileJEditPanel(LogicProgrammingInstance instance)
 	{
+        this.instance = instance;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(createTabbedPane());
 	}
@@ -76,7 +80,7 @@ public class KahinaMultifileJEditPanel extends JPanel
 	
 	protected KahinaJEditPanel createPanel(File file)
 	{
-		return new KahinaJEditPanel(file);
+		return new KahinaJEditPanel(file, instance);
 	}
 
 	private void updateDirty(int index, boolean dirty)

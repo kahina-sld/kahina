@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -22,6 +23,7 @@ import org.kahina.core.io.util.FileUtil;
 import org.kahina.core.util.ListUtil;
 import org.kahina.core.util.MsgUtil;
 import org.kahina.core.util.SwingUtil;
+import org.kahina.lp.LogicProgrammingInstance;
 
 public class KahinaJEditPanel extends JPanel
 {
@@ -51,14 +53,15 @@ public class KahinaJEditPanel extends JPanel
 
 	private JButton saveButton;
 
-	private StandaloneTextArea textArea;
+	private KahinaJEditTextArea textArea;
 
 	private JEditBuffer buffer;
 
 	private File file;
 
 	private boolean dirty = false;
-    private KahinaJEditActionListener actionListener;
+    
+    private ActionListener actionListener;
 
 	// TODO retain last modified date when opening/saving file and warn user if
 	// it's modified by another application
@@ -67,10 +70,10 @@ public class KahinaJEditPanel extends JPanel
 	 * @param file
 	 *            The text file to edit in this editor panel.
 	 */
-	public KahinaJEditPanel(File file)
+	public KahinaJEditPanel(File file, LogicProgrammingInstance instance)
 	{
 		this.file = file;
-		actionListener = new KahinaJEditActionListener();
+        ActionListener actionListener = new KahinaJEditActionListener(instance, this);
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(Box.createRigidArea(SPACE));
 		add(createControlPanel());
@@ -101,10 +104,6 @@ public class KahinaJEditPanel extends JPanel
 	{
 		textArea = new KahinaJEditTextArea(new KahinaJEditPropertyManager(), actionListener);
 		textArea.setSize(100, 100);
-        textArea.addMenuItem("addLineCreepPoint", "Add Creep Point");
-        textArea.addMenuItem("addLineSkipPoint", "Add Skip Point");
-        textArea.addMenuItem("addLineCompletePoint", "Add Complete Point");
-        textArea.addMenuItem("addLineFailPoint", "Add Fail Point");
 		if (VERBOSE)
 		{
 			System.err.println("Created text area: " + textArea);
@@ -150,6 +149,16 @@ public class KahinaJEditPanel extends JPanel
 	protected void configureBuffer(JEditBuffer buffer) throws Exception
 	{
 	}
+    
+    public File getFile()
+    {
+        return file;
+    }
+    
+    public KahinaJEditTextArea getTextArea()
+    {
+        return textArea;
+    }
 
 	private void setDirty(boolean newValue)
 	{
