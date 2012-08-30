@@ -7,7 +7,6 @@ import org.kahina.core.data.KahinaObject;
 
 public class KahinaSourceCodeLocation extends KahinaObject
 {    
-
 	private static final long serialVersionUID = 2916702640971956581L;
 
 	private static final Map<String, String> ABSOLUTE_PATHS = new HashMap<String, String>();
