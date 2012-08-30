@@ -58,6 +58,7 @@ public class KahinaJEditPanel extends JPanel
 	private File file;
 
 	private boolean dirty = false;
+    private KahinaJEditActionListener actionListener;
 
 	// TODO retain last modified date when opening/saving file and warn user if
 	// it's modified by another application
@@ -69,6 +70,7 @@ public class KahinaJEditPanel extends JPanel
 	public KahinaJEditPanel(File file)
 	{
 		this.file = file;
+		actionListener = new KahinaJEditActionListener();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(Box.createRigidArea(SPACE));
 		add(createControlPanel());
@@ -97,8 +99,12 @@ public class KahinaJEditPanel extends JPanel
 
 	private Component createTextArea() throws Exception
 	{
-		textArea = new StandaloneTextArea(new KahinaJEditPropertyManager());
+		textArea = new KahinaJEditTextArea(new KahinaJEditPropertyManager(), actionListener);
 		textArea.setSize(100, 100);
+        textArea.addMenuItem("addLineCreepPoint", "Add Creep Point");
+        textArea.addMenuItem("addLineSkipPoint", "Add Skip Point");
+        textArea.addMenuItem("addLineCompletePoint", "Add Complete Point");
+        textArea.addMenuItem("addLineFailPoint", "Add Fail Point");
 		if (VERBOSE)
 		{
 			System.err.println("Created text area: " + textArea);
