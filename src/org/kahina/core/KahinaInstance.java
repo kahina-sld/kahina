@@ -143,10 +143,13 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	protected void initializeNewSession(boolean withBridge)
 	{
-		control = new KahinaController();
-		control.registerListener(KahinaEventTypes.UPDATE, this);
-		control.registerListener(KahinaEventTypes.SESSION, this);
-		control.registerListener(KahinaEventTypes.SYSTEM, this);
+        if (control == null)
+        {
+    		control = new KahinaController();
+    		control.registerListener(KahinaEventTypes.UPDATE, this);
+    		control.registerListener(KahinaEventTypes.SESSION, this);
+    		control.registerListener(KahinaEventTypes.SYSTEM, this);
+        }
 		if (state != null)
 		{
 			state.initialize();

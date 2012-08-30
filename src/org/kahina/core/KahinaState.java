@@ -122,7 +122,6 @@ public class KahinaState implements Serializable, KahinaListener
     
     public void processEvent(KahinaEvent event)
     {
-        System.err.println("KahinaState.processEvent(" + event + ")");
     	if (event instanceof KahinaSelectionEvent)
     	{
     		processSelectionEvent((KahinaSelectionEvent) event);
