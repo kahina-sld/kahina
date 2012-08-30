@@ -8,6 +8,7 @@ import javax.swing.BoxLayout;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.edit.source.KahinaMultifileJEditPanel;
 import org.kahina.core.visual.KahinaViewPanel;
+import org.kahina.lp.LogicProgrammingInstance;
 
 public class KahinaJEditSourceCodeViewPanel extends KahinaViewPanel<KahinaJEditSourceCodeView>
 {
@@ -16,21 +17,21 @@ public class KahinaJEditSourceCodeViewPanel extends KahinaViewPanel<KahinaJEditS
 	
 	private KahinaMultifileJEditPanel editPanel;
 	
-	public KahinaJEditSourceCodeViewPanel()
+	public KahinaJEditSourceCodeViewPanel(LogicProgrammingInstance instance)
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		add(createEditPanel2());
+		add(createEditPanel2(instance));
 	}
 
-	private Component createEditPanel2()
+	private Component createEditPanel2(LogicProgrammingInstance instance)
 	{
-		editPanel = createEditPanel();
+		editPanel = createEditPanel(instance);
 		return editPanel;
 	}
 	
-	protected KahinaMultifileJEditPanel createEditPanel()
+	protected KahinaMultifileJEditPanel createEditPanel(LogicProgrammingInstance instance)
 	{
-		return new KahinaMultifileJEditPanel();
+		return new KahinaMultifileJEditPanel(instance);
 	}
 
 	@Override

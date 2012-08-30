@@ -33,14 +33,22 @@ public class KahinaViewRegistry
 			viewType = map.get(type);
 		}
 		KahinaView<?> view;
-		try
-		{
-			view = viewType.getConstructor(KahinaInstance.class).newInstance(kahina);
-		} catch (Exception e)
-		{
-			throw new KahinaException("Problem generating view for " + type, e);
-		}
-		return view;
+        Class<?> instanceClass = kahina.getClass();
+        while (!instanceClass.equals(Object.class))
+        {
+            System.err.println("instanceClass = " + instanceClass);
+    		try
+    		{
+    			view = viewType.getConstructor(instanceClass).newInstance(kahina);
+                return view;
+    		} 
+            catch (Exception e)
+    		{
+    			instanceClass = instanceClass.getSuperclass();
+    		}
+        }
+		System.err.println("ERROR: KahinaViewRegistry did not find any usable view for type " + type);
+        return null;
 	}
 
 	// TODO: implement this

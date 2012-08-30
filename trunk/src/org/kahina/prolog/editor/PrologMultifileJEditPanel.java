@@ -3,16 +3,21 @@ package org.kahina.prolog.editor;
 import java.io.File;
 
 import org.kahina.core.edit.source.KahinaMultifileJEditPanel;
+import org.kahina.lp.LogicProgrammingInstance;
 
 public class PrologMultifileJEditPanel extends KahinaMultifileJEditPanel
 {
-
 	private static final long serialVersionUID = 2236124422015782405L;
 	
-	@Override
+	public PrologMultifileJEditPanel(LogicProgrammingInstance instance)
+    {
+       super(instance);
+    }
+
+    @Override
 	protected PrologJEditPanel createPanel(File file)
 	{
-		return new PrologJEditPanel(file);
+		return new PrologJEditPanel(file, instance);
 	}
 
 }

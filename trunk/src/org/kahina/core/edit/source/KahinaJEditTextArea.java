@@ -12,6 +12,7 @@ import org.gjt.sp.jedit.textarea.StandaloneTextArea;
 public class KahinaJEditTextArea extends StandaloneTextArea
 {
     private ActionListener actionListener;
+    private int popupLine = -1;
     
     public KahinaJEditTextArea(IPropertyManager propMng, ActionListener actionListener)
     {
@@ -21,6 +22,8 @@ public class KahinaJEditTextArea extends StandaloneTextArea
     
     public void createPopupMenu(MouseEvent evt)
     {
+        //store the line of the mouse event
+        int popupLine = getLineOfOffset(xyToOffset(evt.getX(),evt.getY()));
         super.createPopupMenu(evt);
         JPopupMenu menu = getRightClickPopup();
         
@@ -49,7 +52,11 @@ public class KahinaJEditTextArea extends StandaloneTextArea
         JMenuItem addLineFailPointItem = new JMenuItem("Add Fail Point");
         addLineFailPointItem.setActionCommand("addLineFailPoint");
         addLineFailPointItem.addActionListener(actionListener);
-        menu.add(addLineFailPointItem);
-        
+        menu.add(addLineFailPointItem);       
+    }
+    
+    public int getLastPopupLine()
+    {
+        return popupLine;
     }
 }
