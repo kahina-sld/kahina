@@ -240,7 +240,6 @@ public class LogicProgrammingState extends KahinaState
     
     public void processEvent(KahinaEvent event)
     {
-        System.err.println("LogicProgrammingState.processNewAgentEvent(" + event + ")");
         super.processEvent(event);
         if (event instanceof NewControlAgentEvent)
         {
@@ -250,7 +249,6 @@ public class LogicProgrammingState extends KahinaState
     
     private void processNewAgentEvent(NewControlAgentEvent event)
     {
-        System.err.println("LogicProgrammingState.processNewAgentEvent(" + event + ")");
         KahinaControlPoint controlAgent = event.getControlAgent();
         switch (event.getAgentType())
         {
