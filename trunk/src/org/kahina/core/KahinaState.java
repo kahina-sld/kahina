@@ -175,4 +175,14 @@ public class KahinaState implements Serializable, KahinaListener
     {
     	return warnThresholdByBreakpoint;
     }
+    
+    /**
+     * Shortcut for quick access to step data; should be overriden in the obvios way for custom step types.
+     * @param stepID
+     * @return
+     */
+    public KahinaStep get(int stepID)
+    {
+        return retrieve(KahinaStep.class, stepID);
+    }
 }
