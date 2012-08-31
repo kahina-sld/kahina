@@ -18,4 +18,9 @@ public class KahinaCodeLineProperty extends KahinaStepProperty
         if (location.getLineNumber() != otherLocation.getLineNumber()) return false;
         return true;
     }
+
+    public KahinaSourceCodeLocation getCodeLocation()
+    {
+        return location;
+    }
 }

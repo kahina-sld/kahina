@@ -2,6 +2,7 @@ package org.kahina.core.edit.source;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import org.kahina.core.control.KahinaCodeLineProperty;
 import org.kahina.core.control.KahinaCodeLinePropertySensor;
@@ -28,7 +29,9 @@ public class KahinaJEditActionListener implements ActionListener
         String command = action.getActionCommand();
         KahinaControlPoint controlAgent = new KahinaControlPoint(instance.getControl());
         int line = panel.getTextArea().getLastPopupLine();
-        String absolutePath = panel.getFile().getAbsolutePath();
+        File file = panel.getFile();
+        controlAgent.setName(file.getName() + ":" + line);
+        String absolutePath = file.getAbsolutePath();
         KahinaSourceCodeLocation codeLocation = new KahinaSourceCodeLocation(absolutePath, line);
         KahinaCodeLineProperty lineProperty = new KahinaCodeLineProperty(codeLocation);
         controlAgent.setSensor(new KahinaCodeLinePropertySensor(controlAgent, instance.getState(), lineProperty));
