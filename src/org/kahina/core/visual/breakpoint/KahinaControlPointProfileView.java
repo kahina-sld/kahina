@@ -24,6 +24,7 @@ public class KahinaControlPointProfileView extends KahinaView<KahinaControlPoint
     public JComponent makePanel()
     {
         KahinaControlPointProfileViewPanel panel = new KahinaControlPointProfileViewPanel((LogicProgrammingInstance) kahina);
+        kahina.getGuiControl().registerListener("redraw", panel);
         panel.setView(this);
         return panel;
     }

@@ -19,6 +19,7 @@ import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.event.KahinaMessageEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.lp.control.LogicProgrammingBreakActuator;
 import org.kahina.lp.control.LogicProgrammingCompleteActuator;
 import org.kahina.lp.control.LogicProgrammingCreepActuator;
