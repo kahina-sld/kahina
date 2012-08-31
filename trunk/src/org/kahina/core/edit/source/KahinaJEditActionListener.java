@@ -7,6 +7,7 @@ import org.kahina.core.control.KahinaCodeLineProperty;
 import org.kahina.core.control.KahinaCodeLinePropertySensor;
 import org.kahina.core.data.breakpoint.KahinaControlPoint;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.control.NewControlAgentEvent;
 import org.kahina.lp.control.ControlAgentType;
@@ -56,6 +57,8 @@ public class KahinaJEditActionListener implements ActionListener
             System.err.println("WARNING: unknown JEdit action command " + command + ", ignoring it.");
             return;
         }
+        //update event needed for the control point editor to be redrawn
+        instance.dispatchGUIEvent(new KahinaRedrawEvent());
     }
     
 }
