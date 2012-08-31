@@ -7,7 +7,7 @@ import org.kahina.core.data.breakpoint.KahinaControlPoint;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.lp.data.breakpoint.LogicProgrammingControlPoint;
 
-public class KahinaControlPointView extends KahinaView<LogicProgrammingControlPoint>
+public class KahinaControlPointView extends KahinaView<KahinaControlPoint>
 {
     public KahinaControlPointView(KahinaInstance<?, ?, ?> kahina)
     {

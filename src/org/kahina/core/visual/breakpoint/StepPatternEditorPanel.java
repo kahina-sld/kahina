@@ -10,10 +10,16 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
+import org.kahina.core.control.KahinaCodeLineProperty;
+import org.kahina.core.control.KahinaStepProperty;
+import org.kahina.core.control.KahinaStepPropertySensor;
 import org.kahina.core.control.KahinaTreePatternSensor;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
+import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.edit.breakpoint.BreakpointEditorHintPanel;
 import org.kahina.core.edit.breakpoint.KahinaBreakpointEditorPanel;
@@ -27,8 +33,8 @@ public class StepPatternEditorPanel extends JPanel implements ActionListener
     JButton negOperationButton;
     JButton implOperationButton;
     
-    BreakpointEditorHintPanel hintPanel;
-    SingleNodeConstraintPanel patternPanel;
+    private BreakpointEditorHintPanel hintPanel;
+    private SingleNodeConstraintPanel patternPanel;
     
     KahinaControlPointViewPanel viewPanel;
     
@@ -38,57 +44,65 @@ public class StepPatternEditorPanel extends JPanel implements ActionListener
         
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         
-        this.setBackground(Color.PINK);
+        KahinaStepProperty pattern =  viewPanel.view.getModel().getSensor().getStepProperty();
         
-        JPanel opsAndHintPanel = new JPanel();
-        opsAndHintPanel.setLayout(new BoxLayout(opsAndHintPanel, BoxLayout.LINE_AXIS));
-        opsAndHintPanel.setBackground(Color.BLUE);
-        
-        JPanel boolOpPanel = new JPanel();
-        boolOpPanel.setLayout(new BoxLayout(boolOpPanel, BoxLayout.LINE_AXIS));
-        boolOpPanel.setBorder(BorderFactory.createTitledBorder("Boolean Ops"));
-        
-        andOperationButton = new JButton("and");
-        andOperationButton.setActionCommand("andOperation");
-        andOperationButton.setMargin(new Insets(0, 1, 0, 1));
-        andOperationButton.addActionListener(this);
-        boolOpPanel.add(andOperationButton);
-        
-        orOperationButton = new JButton("or");
-        orOperationButton.setActionCommand("orOperation");
-        orOperationButton.setMargin(new Insets(0, 1, 0, 1));
-        orOperationButton.addActionListener(this);
-        boolOpPanel.add(orOperationButton);
-        
-        negOperationButton = new JButton("not");
-        negOperationButton.setActionCommand("negOperation");
-        negOperationButton.setMargin(new Insets(0, 1, 0, 1));
-        negOperationButton.addActionListener(this);
-        boolOpPanel.add(negOperationButton);
-        
-        implOperationButton = new JButton("->");
-        implOperationButton.setActionCommand("implOperation");
-        implOperationButton.setMargin(new Insets(0, 1, 0, 1));
-        implOperationButton.addActionListener(this);
-        boolOpPanel.add(implOperationButton);
-        
-        opsAndHintPanel.add(boolOpPanel);
-        
-        hintPanel = new BreakpointEditorHintPanel();
-        opsAndHintPanel.add(hintPanel);
-        
-        this.add(opsAndHintPanel);
-        
-        this.add(Box.createRigidArea(new Dimension(0,0)));
-        
-        NodeConstraintOptions constrOptions = new NodeConstraintOptions();
-        constrOptions.setStandardOptions();
-        TreePatternNode patternNode = viewPanel.view.getModel().getSensor().getPattern();
-        patternPanel = new SingleNodeConstraintPanel(constrOptions, viewPanel.kahina.getControl(), patternNode);
-        patternPanel.setHintPanel(hintPanel);
-        
-        this.add(patternPanel);
-        
+        if (pattern instanceof TreePatternNode)
+        {     
+            JPanel opsAndHintPanel = new JPanel();
+            opsAndHintPanel.setLayout(new BoxLayout(opsAndHintPanel, BoxLayout.LINE_AXIS));
+            opsAndHintPanel.setBackground(Color.BLUE);
+            
+            JPanel boolOpPanel = new JPanel();
+            boolOpPanel.setLayout(new BoxLayout(boolOpPanel, BoxLayout.LINE_AXIS));
+            boolOpPanel.setBorder(BorderFactory.createTitledBorder("Boolean Ops"));
+            
+            andOperationButton = new JButton("and");
+            andOperationButton.setActionCommand("andOperation");
+            andOperationButton.setMargin(new Insets(0, 1, 0, 1));
+            andOperationButton.addActionListener(this);
+            boolOpPanel.add(andOperationButton);
+            
+            orOperationButton = new JButton("or");
+            orOperationButton.setActionCommand("orOperation");
+            orOperationButton.setMargin(new Insets(0, 1, 0, 1));
+            orOperationButton.addActionListener(this);
+            boolOpPanel.add(orOperationButton);
+            
+            negOperationButton = new JButton("not");
+            negOperationButton.setActionCommand("negOperation");
+            negOperationButton.setMargin(new Insets(0, 1, 0, 1));
+            negOperationButton.addActionListener(this);
+            boolOpPanel.add(negOperationButton);
+            
+            implOperationButton = new JButton("->");
+            implOperationButton.setActionCommand("implOperation");
+            implOperationButton.setMargin(new Insets(0, 1, 0, 1));
+            implOperationButton.addActionListener(this);
+            boolOpPanel.add(implOperationButton);
+            
+            opsAndHintPanel.add(boolOpPanel);
+            
+            hintPanel = new BreakpointEditorHintPanel();
+            opsAndHintPanel.add(hintPanel);
+            
+            this.add(opsAndHintPanel);
+            
+            this.add(Box.createRigidArea(new Dimension(0,0)));
+            
+            NodeConstraintOptions constrOptions = new NodeConstraintOptions();
+            constrOptions.setStandardOptions();
+
+            TreePatternNode patternNode = (TreePatternNode) pattern;
+            patternPanel = new SingleNodeConstraintPanel(constrOptions, viewPanel.kahina.getControl(), patternNode);
+            patternPanel.setHintPanel(hintPanel);
+            this.add(patternPanel);
+        }
+        else if (pattern instanceof KahinaCodeLineProperty)
+        {
+            KahinaSourceCodeLocation location = ((KahinaCodeLineProperty) pattern).getCodeLocation();
+            this.setBorder(new TitledBorder("Source code location"));
+            this.add(new JLabel(location.getAbsolutePath() + ":" + location.getLineNumber()));
+        }    
         this.add(Box.createVerticalGlue());
     }
     
