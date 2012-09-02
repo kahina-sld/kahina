@@ -2,6 +2,7 @@ package org.kahina.core.gui.windows;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.WindowAdapter;
@@ -80,8 +81,8 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
         //mainPanel.addMouseListener(new KahinaWindowListener(this));
         cloned = false;
         topScrollPane = new JScrollPane(mainPanel);
-        Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
-        topScrollPane.setBorder(border);
+        //Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+        topScrollPane.setBorder(null);
         topScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         topScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
         topScrollPane.addMouseListener(new KahinaWindowListener(this));
@@ -147,7 +148,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	}
     	else
     	{
-    		topScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    		topScrollPane.setBorder(null);
     	}
     }
     
@@ -223,6 +224,9 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     public void setSize(int width, int height)
     {
         super.setSize(width,height);
+        topScrollPane.setSize(width,height);
+        mainPanel.setMinimumSize(new Dimension(width,height));
+        mainPanel.setViewportSize(width,height);
         wm.getArrangement().setSize(windowID,this.getWidth(),this.getHeight());
     }
     
