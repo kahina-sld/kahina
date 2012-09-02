@@ -217,7 +217,7 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
             if (sensor.detectPattern(stepID))
             {
                 System.err.println(this + " detected pattern, starting actuator " + actuator);
-                actuator.act();
+                actuator.act(this);
             }
         }     
     }

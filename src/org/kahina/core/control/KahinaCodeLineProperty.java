@@ -13,6 +13,7 @@ public class KahinaCodeLineProperty extends KahinaStepProperty
 
     public boolean matches(KahinaSourceCodeLocation otherLocation)
     {
+        if (otherLocation == null) return false;
         //exploit the fact that KahinaSourceCodeLocation enforces identity of equal absolute paths
         if (location.getAbsolutePath() != otherLocation.getAbsolutePath()) return false;
         if (location.getLineNumber() != otherLocation.getLineNumber()) return false;

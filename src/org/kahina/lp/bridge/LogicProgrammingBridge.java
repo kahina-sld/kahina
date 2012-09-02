@@ -8,11 +8,13 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.bridge.KahinaStepDescriptionEvent;
 import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaStepUpdateEvent;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.control.KahinaWarnEvent;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
+import org.kahina.core.data.breakpoint.KahinaControlPoint;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.KahinaTreeEvent;
@@ -22,6 +24,8 @@ import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.LogicProgrammingStep;
 import org.kahina.lp.LogicProgrammingStepType;
+import org.kahina.lp.control.ControlAgentType;
+import org.kahina.lp.control.LogicProgrammingAgentMatchEvent;
 import org.kahina.lp.data.text.LogicProgrammingLineReference;
 
 /**
@@ -91,6 +95,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 		kahina.getControl().registerListener(KahinaEventTypes.SELECTION, this);
 		kahina.getControl().registerListener(KahinaEventTypes.WARN, this);
+        kahina.getControl().registerListener("LP agent match", this);
 		if (VERBOSE)
 			System.err.println("new LogicProgrammingBridge()");
 	}
@@ -846,6 +851,47 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.err.println("LogicProgrammingBridge.generateStep()");
 		return new LogicProgrammingStep();
 	}
+    
+    @Override
+    public void processEvent(KahinaEvent e)
+    {
+        if (e instanceof LogicProgrammingAgentMatchEvent)
+        {
+            LogicProgrammingAgentMatchEvent match = (LogicProgrammingAgentMatchEvent) e;
+            switch (match.getAgentType())
+            {
+                case BREAK_AGENT:
+                {
+                    performBreakAction(match.getAgent());
+                    break;
+                }
+                case CREEP_AGENT:
+                {
+                    performCreepAction(match.getAgent());
+                    break;
+                }
+                case COMPLETE_AGENT:
+                {
+                    performCompleteAction(match.getAgent());
+                    break;
+                }
+                case SKIP_AGENT:
+                {
+                    performSkipAction(match.getAgent());
+                    break;
+                }
+                case FAIL_AGENT:
+                {
+                    performFailAction(match.getAgent());
+                    break;
+                }
+            }
+        }
+        else
+        {
+            super.processEvent(e);
+        }
+    }
 
 	@Override
 	protected void processSystemEvent(KahinaSystemEvent e)
@@ -1011,7 +1057,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 		if (selectedID == -1)
 		{
 			candidateID = currentID;
-		} else
+		} 
+        else
 		{
 			candidateID = selectedID;
 		}
@@ -1036,32 +1083,50 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	@Override
-	protected void processSkipPointMatch(int nodeID, KahinaBreakpoint bp)
+	protected void performSkipAction(KahinaControlPoint agent)
 	{
-		skipFlag = true;
+        if (canSkipOrAutocomplete())
+        {
+            skipFlag = true;
+            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a skip.");
+        }
+        else
+        {
+            state.breakpointConsoleMessage(currentID, "ERROR: Sensor " + agent.getName() + " matched at node " + currentID + ", but skip operation was disallowed.");
+        }
 	}
+    
+    protected void performCompleteAction(KahinaControlPoint agent)
+    {
+        if (canSkipOrAutocomplete())
+        {
+            skipFlag = true;
+            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing auto-complete.");
+        }
+        else
+        {
+            state.breakpointConsoleMessage(currentID, "ERROR: Sensor " + agent.getName() + " matched at node " + currentID + ", but auto-complete operation was disallowed.");
+        }
+    }
 
-	@Override
-	protected void processCreepPointMatch(int nodeID, KahinaBreakpoint bp)
+	protected void performCreepAction(KahinaControlPoint agent)
 	{
 		// no change if we are in leap or skip mode anyway
 		if (getBridgeState() != 's' && getBridgeState() != 't' && getBridgeState() != 'l')
 		{
 			setBridgeState('c');
+            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing an additional creep operation.");
 		}
 	}
 
-	@Override
-	protected void processFailPointMatch(int nodeID, KahinaBreakpoint bp)
+	public void performFailAction(KahinaControlPoint agent)
 	{
-		// TODO: handle this more elegantly if in skip or leap mode (possibly
-		// additional state)
+		// TODO: handle this more elegantly if in skip or leap mode (possibly additional state)
 		setBridgeState('f');
+        state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a fail operation.");
 	}
 
-	@Override
-	protected void processBreakPointMatch(int nodeID, KahinaBreakpoint bp)
+	public void performBreakAction(KahinaControlPoint agent)
 	{
 		// TODO: temporarily mark matching node in the breakpoint's signal color
 		// same reaction as in pause mode
@@ -1075,17 +1140,17 @@ public class LogicProgrammingBridge extends KahinaBridge
 		{
 			setBridgeState('n');
 		}
-		state.breakpointConsoleMessage(currentID, "Breakpoint match: " + bp.getName() + " at node " + currentID);
-		kahina.dispatchEvent(new KahinaSelectionEvent(nodeID));
+        state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a break.");
+        kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
 	}
 
-    protected void setBridgeState(char bridgeState)
+    public void setBridgeState(char bridgeState)
     {
         if (VERBOSE) System.err.println(this + ".setBridgeState(" + bridgeState + ")");
         this.bridgeState = bridgeState;
     }
 
-    protected char getBridgeState()
+    public char getBridgeState()
     {
         if (VERBOSE) System.err.println(this + ".getBridgeState() == " + bridgeState);
         return bridgeState;
