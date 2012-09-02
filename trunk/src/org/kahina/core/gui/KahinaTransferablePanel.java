@@ -21,7 +21,7 @@ public class KahinaTransferablePanel extends JPanel implements Transferable
 		this.windowID = windowID;
 		this.setTransferHandler(new KahinaWindowTransferHandler());
 	    this.setLayout(new BorderLayout());
-	    this.setBorder(BorderFactory.createTitledBorder(title));
+	    //this.setBorder(BorderFactory.createTitledBorder(title));
 	}
 	
 	//for now, only transmit the window ID of the dragged pane

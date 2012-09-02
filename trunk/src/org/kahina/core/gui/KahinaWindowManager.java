@@ -127,6 +127,7 @@ public class KahinaWindowManager implements KahinaListener
                     view.setTitle(getArrangement().getTitle(winID));
                     KahinaWindow viewWindow = new KahinaDefaultWindow(view, this, kahina, winID);
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
+                    viewWindow.setScrollable(getArrangement().isScrollable(winID));
                     break;
                 }
                 case KahinaWindowType.CONTROL_WINDOW:
@@ -138,6 +139,7 @@ public class KahinaWindowManager implements KahinaListener
                         System.err.println("  Generating control view " + winID + " for binding " + binding + " (primary window: " + getArrangement().getPrimaryWinIDForName(binding) + ")");
                     }
                     controlWindow.setBorder(getArrangement().hasBorder(winID));
+                    controlWindow.setScrollable(getArrangement().isScrollable(winID));
                     controlWindow.setTitle(getArrangement().getTitle(winID));
                     for (KahinaControlButton button : kahina.gui.controlWindows.get(binding))
                     {
@@ -157,6 +159,7 @@ public class KahinaWindowManager implements KahinaListener
                     mainWindow.setSize(getArrangement().getWidth(winID), getArrangement().getHeight(winID));
                     mainWindow.setLocation(getArrangement().getXPos(winID), getArrangement().getYPos(winID));
                     mainWindow.setBorder(getArrangement().hasBorder(winID));
+                    mainWindow.setScrollable(getArrangement().isScrollable(winID));
                     break;
                 }
                 case KahinaWindowType.HORI_SPLIT_WINDOW:
@@ -164,6 +167,7 @@ public class KahinaWindowManager implements KahinaListener
                     KahinaWindow viewWindow = new KahinaHorizontallySplitWindow(this, kahina, winID);
                     viewWindow.setTitle(getArrangement().getTitle(winID));
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
+                    viewWindow.setScrollable(getArrangement().isScrollable(winID));
                     break;
                 }
                 case KahinaWindowType.VERT_SPLIT_WINDOW:
@@ -171,6 +175,7 @@ public class KahinaWindowManager implements KahinaListener
                     KahinaWindow viewWindow = new KahinaVerticallySplitWindow(this, kahina, winID, getArrangement().getResizeWeight(winID));
                     viewWindow.setTitle(getArrangement().getTitle(winID));
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
+                    viewWindow.setScrollable(getArrangement().isScrollable(winID));
                     break;
                 }
                 case KahinaWindowType.TABBED_WINDOW:
@@ -178,6 +183,7 @@ public class KahinaWindowManager implements KahinaListener
                     KahinaWindow viewWindow = new KahinaTabbedWindow(this, kahina, winID);
                     viewWindow.setTitle(getArrangement().getTitle(winID));
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
+                    viewWindow.setScrollable(getArrangement().isScrollable(winID));
                     break;
                 }
                 case KahinaWindowType.LIST_WINDOW:
@@ -185,6 +191,7 @@ public class KahinaWindowManager implements KahinaListener
                     KahinaWindow viewWindow = new KahinaListWindow(this, kahina, winID);
                     viewWindow.setTitle(getArrangement().getTitle(winID));
                     viewWindow.setBorder(getArrangement().hasBorder(winID));
+                    viewWindow.setScrollable(getArrangement().isScrollable(winID));
                     break;
                 }
                 default:

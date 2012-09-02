@@ -39,9 +39,10 @@ public class KahinaArrangement
 	private Map<Integer, Integer> width;
 	private Map<Integer, Double> resizeWeight;
 	private Map<Integer, String> title;
-	// border status of windows and views; also determines whether they are
-	// manipulable
+	// border status of windows and views; also determines whether they are manipulable
 	Map<Integer, Boolean> border;
+    //scrollability status of windows and views: also determines the behavior of nestings
+    Map<Integer, Boolean> scrollable;
 
 	// this mapping provides the connection between node data and (primary)
 	// associated view windows
@@ -70,6 +71,7 @@ public class KahinaArrangement
 		resizeWeight = new HashMap<Integer, Double>();
 		title = new HashMap<Integer, String>();
 		border = new HashMap<Integer, Boolean>();
+        scrollable = new HashMap<Integer, Boolean>();
 		winIDToBinding = new HashMap<Integer, String>();
 		primaryWindow = new HashMap<String, Integer>();
 		windowType = new HashMap<Integer, Integer>();
@@ -86,6 +88,7 @@ public class KahinaArrangement
 		copy.width.putAll(width);
 		copy.title.putAll(title);
 		copy.border.putAll(border);
+        copy.scrollable.putAll(scrollable);
 		copy.winIDToBinding.putAll(winIDToBinding);
 		copy.primaryWindow.putAll(primaryWindow);
 		copy.setMainWindowID(mainWindowID);
@@ -162,6 +165,11 @@ public class KahinaArrangement
 	{
 		border.put(viewID, bor);
 	}
+    
+    public void setScrollable(int viewID, boolean scrollable)
+    {
+        border.put(viewID, scrollable);
+    }
 
 	public void setEmbeddingWindowID(int windowID, int embeddingID)
 	{
@@ -261,6 +269,15 @@ public class KahinaArrangement
 			return true;
 		return bor;
 	}
+    
+    // windows and views are not scrollable by default
+    public boolean isScrollable(int viewID)
+    {
+        Boolean bor = scrollable.get(viewID);
+        if (bor == null)
+            return false;
+        return bor;
+    }
 
 	public int getEmbeddingWindowID(int windowID)
 	{
@@ -366,7 +383,8 @@ public class KahinaArrangement
 					arr.setResizeWeight(winID, Double.parseDouble(resizeWeight));
 				}
 				arr.setTitle(winID, XMLUtil.attrStrVal(el, "kahina:title"));
-				arr.setBorder(winID, XMLUtil.attrBoolVal(el, "kahina:border"));
+				arr.setBorder(winID, XMLUtil.attrBoolValWithDefault(el, "kahina:border", true));
+                arr.setBorder(winID, XMLUtil.attrBoolValWithDefault(el, "kahina:scroll", false));
 				String type = el.getLocalName();
 				// System.err.println("  Window is of type " + type + ".");
 				if (type.equals("default-window"))
@@ -437,7 +455,8 @@ public class KahinaArrangement
 			el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:id", windowID + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:primary", (primaryWindow.get(winIDToBinding.get(windowID)) == windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:title", title.get(windowID));
-			el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:border", border.get(windowID) + "");
+			el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:border", hasBorder(windowID) + "");
+            el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:scroll", isScrollable(windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:xpos", xPos.get(windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:ypos", yPos.get(windowID) + "");
 			el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:height", height.get(windowID) + "");

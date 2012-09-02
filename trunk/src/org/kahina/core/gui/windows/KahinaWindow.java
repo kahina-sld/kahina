@@ -76,11 +76,14 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     {
         setLayout(new BorderLayout());
         mainPanel = new KahinaTransferablePanel(this.getTitle(), windowID);
-        mainPanel.addMouseListener(new KahinaWindowListener(this));
+        //mainPanel.addMouseListener(new KahinaWindowListener(this));
         cloned = false;
         topScrollPane = new JScrollPane(mainPanel);
         Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
         topScrollPane.setBorder(border);
+        topScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        topScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        topScrollPane.addMouseListener(new KahinaWindowListener(this));
         this.getContentPane().add(topScrollPane);
         this.addWindowListener(this);
         this.addComponentListener(this);
@@ -139,12 +142,27 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	wm.getArrangement().setBorder(windowID, border);
     	if (border)
     	{
-        	mainPanel.setBorder(BorderFactory.createTitledBorder(mainPanel.getTitle()));
+        	topScrollPane.setBorder(BorderFactory.createTitledBorder(mainPanel.getTitle()));
     	}
     	else
     	{
-    		mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    		topScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
     	}
+    }
+    
+    public void setScrollable(boolean scrollable)
+    {
+        wm.getArrangement().setScrollable(windowID, scrollable);
+        if (scrollable)
+        {
+            topScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            topScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        }
+        else
+        {
+            topScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+            topScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        }
     }
     
     /**

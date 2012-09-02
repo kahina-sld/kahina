@@ -153,6 +153,13 @@ public class XMLUtil
 	{
 		return Boolean.parseBoolean(el.getAttribute(attrName));
 	}
+    
+    public static boolean attrBoolValWithDefault(Element el, String attrName, boolean defaultValue)
+    {
+        String value = el.getAttribute(attrName);
+        if (value == null) return defaultValue;
+        return Boolean.parseBoolean(el.getAttribute(attrName));
+    }
 	
 	/**
 	 * Constructs a color from an attribute value in an XML document.
