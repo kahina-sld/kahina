@@ -203,10 +203,13 @@ public class KahinaWindowManager implements KahinaListener
         }
         if (VERBOSE) System.err.println("KahinaWindowManager finished creating the window stubs.");
 
-        // ... then process the embedding structure ...
-        if (VERBOSE) System.err.println("KahinaWindowManager is processing the embedding structure.");
+        // ... adapt the coordinates and process the embedding structure ...
+        if (VERBOSE) System.err.println("KahinaWindowManager is adapting coordnates and processing the embedding structure.");
         for (int winID : getArrangement().getAllWindows())
         {
+            KahinaWindow w = windowByID.get(winID);
+            w.setSize(getArrangement().getWidth(w.getID()), getArrangement().getHeight(w.getID()));
+            w.setLocation(getArrangement().getXPos(w.getID()), getArrangement().getYPos(w.getID()));
             Integer embeddingID = getArrangement().getEmbeddingWindowID(winID);
             // System.err.println("Embedding window " + winID + " into window "
             // + embeddingID);
@@ -217,31 +220,16 @@ public class KahinaWindowManager implements KahinaListener
             		System.err.println("Embedding window " + winID + " into window " + embeddingID);
             	}
                 KahinaWindow embeddingWindow = windowByID.get(embeddingID);
-                KahinaWindow embeddedWindow = windowByID.get(winID);
-                boolean success = embeddingWindow.addSubwindow(embeddedWindow);
+                boolean success = embeddingWindow.addSubwindow(w);
                 if (!success)
                 {
                     System.err.println("  ERROR: ill-defined window arrangement directly under window " + embeddingID);
                 }
             }
         }
-        if (VERBOSE) System.err.println("KahinaWindowManager finished processing the embedding structure.");
+        if (VERBOSE) System.err.println("KahinaWindowManager finished adapting coordinates and processing the embedding structure.");
 
-        // ... then adapt the coordinates ...
-        if (VERBOSE) System.err.println("KahinaWindowManager is adapting the window coordinates.");
-        for (int winID : getArrangement().getTopLevelWindows())
-        {
-            // System.err.println("Setting coordinates of top level window " +
-            // winID);
-
-            KahinaWindow w = getWindowByID(winID);
-            w.setSize(getArrangement().getWidth(w.getID()), getArrangement().getHeight(w.getID()));
-            w.setLocation(getArrangement().getXPos(w.getID()), getArrangement().getYPos(w.getID()));
-        }
-        if (VERBOSE) System.err.println("KahinaWindowManager finished adapting the window coordinates.");
-
-        // ... flip the subwindows of composed windows if inconsistent with the
-        // coordinates ...
+        // ... flip the subwindows of composed windows if inconsistent with the coordinates ...
         for (int winID : getArrangement().getAllWindows())
         {
 
@@ -257,14 +245,11 @@ public class KahinaWindowManager implements KahinaListener
                     ((KahinaVerticallySplitWindow) windowByID.get(winID)).flipSubwindowsIfIndicatedByCoordinates();
                     break;
                 }
-                    // TODO: adapt this system for tabbed and list windows as
-                    // well
-                    // (sorting involved!)
+                // TODO: adapt this system for tabbed and list windows as well (sorting involved!)
             }
         }
 
-        // ... and fill the content windows with the content specified by the
-        // bindings.
+        // ... and fill the content windows with the content specified by the bindings.
         if (VERBOSE) System.err.println("KahinaWindowManager is filling the content windows...");
         for (int winID : getArrangement().getContentWindowsWithoutMainWindow())
         {
