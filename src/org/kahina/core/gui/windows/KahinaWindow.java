@@ -144,7 +144,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	wm.getArrangement().setBorder(windowID, border);
     	if (border)
     	{
-        	topScrollPane.setBorder(BorderFactory.createTitledBorder(mainPanel.getTitle()));
+        	topScrollPane.setBorder(BorderFactory.createTitledBorder(getTitle()));
     	}
     	else
     	{
