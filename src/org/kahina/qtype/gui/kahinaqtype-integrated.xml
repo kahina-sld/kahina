@@ -23,8 +23,8 @@
             <kahina:default-window kahina:binding="goal" kahina:border="true" kahina:height="408" kahina:id="1" kahina:primary="true" kahina:title="goal" kahina:width="146" kahina:xpos="625" kahina:ypos="116"/>
           </kahina:hori-split-window>
           <kahina:tabbed-window kahina:height="200" kahina:id="8" kahina:title="Lower half" kahina:width="300" kahina:xpos="794" kahina:ypos="318">
-            <kahina:default-window kahina:binding="codeLocation" kahina:border="true" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:title="codeLocation" kahina:width="194" kahina:xpos="1010" kahina:ypos="24"/>
-            <kahina:default-window kahina:binding="messageConsole" kahina:border="true" kahina:height="360" kahina:id="3" kahina:primary="true" kahina:title="Message console" kahina:width="230" kahina:xpos="760" kahina:ypos="24"/>
+            <kahina:default-window kahina:binding="codeLocation" kahina:border="false" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:title="codeLocation" kahina:width="194" kahina:xpos="1010" kahina:ypos="24"/>
+            <kahina:default-window kahina:binding="messageConsole" kahina:border="false" kahina:height="360" kahina:id="3" kahina:primary="true" kahina:title="Message console" kahina:width="230" kahina:xpos="760" kahina:ypos="24"/>
           </kahina:tabbed-window>
         </kahina:vert-split-window>
       </kahina:vert-split-window>
