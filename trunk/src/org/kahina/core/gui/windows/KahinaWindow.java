@@ -12,6 +12,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaSystemEvent;
@@ -183,7 +184,10 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     		System.err.println(this + ".setTitle(" + title + ")");
     	}
     	super.setTitle(title);
-    	mainPanel.setTitle(title);
+        if (topScrollPane.getBorder() instanceof TitledBorder)        
+        {
+            ((TitledBorder) topScrollPane.getBorder()).setTitle(title);
+        }
     	//mainPanel.setTitle(title + " (" + windowID + ")");
     	wm.getArrangement().setTitle(windowID, title);
     }
