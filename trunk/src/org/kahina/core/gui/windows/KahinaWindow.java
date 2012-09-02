@@ -225,7 +225,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     {
         super.setSize(width,height);
         topScrollPane.setSize(width,height);
-        mainPanel.setMinimumSize(new Dimension(width,height));
+        //mainPanel.setMinimumSize(new Dimension(width,height));
         mainPanel.setViewportSize(width,height);
         wm.getArrangement().setSize(windowID,this.getWidth(),this.getHeight());
     }
