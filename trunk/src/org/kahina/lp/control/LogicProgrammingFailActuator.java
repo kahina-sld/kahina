@@ -3,6 +3,7 @@ package org.kahina.lp.control;
 import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.data.breakpoint.KahinaControlPoint;
 
 public class LogicProgrammingFailActuator extends KahinaControlActuator
 {
@@ -11,8 +12,8 @@ public class LogicProgrammingFailActuator extends KahinaControlActuator
         super(control);
     }
     
-    public void act()
+    public void act(KahinaControlPoint agent)
     {
-        control.processEvent(new KahinaControlEvent("fail"));
+        control.processEvent(new LogicProgrammingAgentMatchEvent(agent, ControlAgentType.FAIL_AGENT));
     }
 }

@@ -1,5 +1,7 @@
 package org.kahina.core.control;
 
+import org.kahina.core.data.breakpoint.KahinaControlPoint;
+
 public class KahinaControlActuator
 {
     protected KahinaController control;
@@ -13,7 +15,7 @@ public class KahinaControlActuator
      * Causes this actuator to execute its action (usually sending out a control event).
      * The default actuator does nothing.
      */
-    public void act()
+    public void act(KahinaControlPoint agent)
     {
         
     }
