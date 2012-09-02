@@ -1077,8 +1077,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		Integer linkTarget = state.getLinkTarget(selectedID);
 		if (linkTarget != null)
 		{
-			// TODO only jump on doubleclick to reduce user surprise and risk
-			// of event cycles
+			// TODO only jump on doubleclick to reduce user surprise and risk of event cycles
 			kahina.dispatchEvent(new KahinaSelectionEvent(linkTarget));
 		}
 	}

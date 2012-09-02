@@ -19,12 +19,12 @@
 	            <kahina:default-window kahina:binding="warnPoints" kahina:border="false" kahina:height="200" kahina:id="27" kahina:primary="true" kahina:title="Warn" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
               </kahina:tabbed-window>
             </kahina:vert-split-window>
-            <kahina:default-window kahina:binding="controlFlowTree" kahina:border="true" kahina:height="500" kahina:id="2" kahina:primary="true" kahina:title="Control flow tree" kahina:width="0" kahina:xpos="784" kahina:ypos="409"/>
+            <kahina:default-window kahina:binding="controlFlowTree" kahina:border="true" kahina:scroll="true" kahina:height="500" kahina:id="2" kahina:primary="true" kahina:title="Control flow tree" kahina:width="0" kahina:xpos="784" kahina:ypos="409"/>
           </kahina:vert-split-window>
           <kahina:default-window kahina:binding="goal" kahina:border="true" kahina:height="0" kahina:id="1" kahina:primary="true" kahina:title="goal" kahina:width="-653" kahina:xpos="457" kahina:ypos="488"/>
         </kahina:hori-split-window>
         <kahina:tabbed-window kahina:height="600" kahina:id="8" kahina:title="Lower half" kahina:width="0" kahina:xpos="0" kahina:ypos="172">
-          <kahina:default-window kahina:binding="codeLocation" kahina:border="true" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:title="codeLocation" kahina:width="194" kahina:xpos="1010" kahina:ypos="24"/>
+          <kahina:default-window kahina:binding="codeLocation" kahina:border="true" kahina:scroll="true" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:title="codeLocation" kahina:width="194" kahina:xpos="1010" kahina:ypos="24"/>
           <kahina:default-window kahina:binding="messageConsole" kahina:border="true" kahina:height="360" kahina:id="3" kahina:primary="true" kahina:title="Message console" kahina:width="230" kahina:xpos="760" kahina:ypos="24"/>
         </kahina:tabbed-window>
       </kahina:vert-split-window>
