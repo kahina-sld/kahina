@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.Scrollable;
 import javax.swing.border.TitledBorder;
 
-public class KahinaTransferablePanel extends JPanel implements Transferable//, Scrollable
+public class KahinaTransferablePanel extends JPanel implements Transferable, Scrollable
 {
 	private String title;
 	int windowID;
@@ -95,12 +95,12 @@ public class KahinaTransferablePanel extends JPanel implements Transferable//, S
 
     public boolean getScrollableTracksViewportHeight()
     {
-        return false;
+        return true;
     }
 
     public boolean getScrollableTracksViewportWidth()
     {
-        return false;
+        return true;
     }
 
     public int getScrollableUnitIncrement(Rectangle arg0, int arg1, int arg2)
