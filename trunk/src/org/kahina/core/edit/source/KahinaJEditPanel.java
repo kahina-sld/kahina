@@ -103,7 +103,7 @@ public class KahinaJEditPanel extends JPanel
 	private Component createTextArea() throws Exception
 	{
 		textArea = new KahinaJEditTextArea(new KahinaJEditPropertyManager(), actionListener);
-		textArea.setSize(100, 100);
+		textArea.setMaximumSize(new Dimension(800,300));
 		if (VERBOSE)
 		{
 			System.err.println("Created text area: " + textArea);
@@ -138,6 +138,19 @@ public class KahinaJEditPanel extends JPanel
 		});
 		textArea.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return textArea;
+	}
+	
+	//TODO: find out how to dynamically set textArea.maximumSize when this.size changes
+	public void setSize(Dimension dim)
+	{
+	    super.setSize(dim);
+	    textArea.setMaximumSize(dim);
+	}
+	
+	public void setSize(int width, int height)
+	{
+	    super.setSize(width,height);
+	    textArea.setMaximumSize(new Dimension(width, height));
 	}
 	
 	/**
