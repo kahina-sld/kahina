@@ -166,9 +166,9 @@ public class KahinaArrangement
 		border.put(viewID, bor);
 	}
     
-    public void setScrollable(int viewID, boolean scrollable)
+    public void setScrollable(int viewID, boolean value)
     {
-        border.put(viewID, scrollable);
+        scrollable.put(viewID, value);
     }
 
 	public void setEmbeddingWindowID(int windowID, int embeddingID)
@@ -384,7 +384,7 @@ public class KahinaArrangement
 				}
 				arr.setTitle(winID, XMLUtil.attrStrVal(el, "kahina:title"));
 				arr.setBorder(winID, XMLUtil.attrBoolValWithDefault(el, "kahina:border", true));
-                arr.setBorder(winID, XMLUtil.attrBoolValWithDefault(el, "kahina:scroll", false));
+                arr.setScrollable(winID, XMLUtil.attrBoolValWithDefault(el, "kahina:scroll", false));
 				String type = el.getLocalName();
 				// System.err.println("  Window is of type " + type + ".");
 				if (type.equals("default-window"))
