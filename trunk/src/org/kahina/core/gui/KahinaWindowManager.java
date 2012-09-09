@@ -62,7 +62,7 @@ public class KahinaWindowManager implements KahinaListener
     {
     	this.kahina = kahina;
         getGuiControl().registerListener(KahinaEventTypes.WINDOW, this);
-        setPerspective(new KahinaPerspective("Default", "default"));
+        setPerspective(new KahinaPerspective("default", "default"));
         this.windowByID = new HashMap<Integer, KahinaWindow>();
         
         if (!standaloneMode)
