@@ -135,6 +135,11 @@ public class KahinaGUI implements KahinaListener
 	{
 		return kahina;
 	}
+    
+    public KahinaPerspective getPerspective()
+    {
+        return windowManager.getPerspective();
+    }
 	
 	public KahinaMainWindow getMainWindow()
 	{

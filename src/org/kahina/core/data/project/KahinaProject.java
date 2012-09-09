@@ -18,7 +18,10 @@ public class KahinaProject extends KahinaObject
     //the Kahina application this project is assigned to, default "unkown"
     protected String appID;
     
-    //for source files and the like
+    //a primary source file
+    protected File mainFile;
+    
+    //for additional source files and the like
 	protected List<File> openedFiles;
 	
 	protected KahinaPerspective perspective;
@@ -29,6 +32,16 @@ public class KahinaProject extends KahinaObject
 		openedFiles = new ArrayList<File>();
         this.perspective = new KahinaPerspective(appID, "default");
 	}
+    
+    public File getMainFile()
+    {
+        return mainFile;
+    }
+    
+    public void setMainFile(File mainFile)
+    {
+        this.mainFile = mainFile;
+    }
 
 	public void setPerspective(KahinaPerspective perspective) 
 	{
@@ -44,6 +57,22 @@ public class KahinaProject extends KahinaObject
 	{
         Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:project");
         el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:appid", appID);
+        Element mainFileEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:mainFile");
+        try
+        {
+            mainFileEl.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:path", mainFile.getCanonicalPath());
+        }
+        catch (DOMException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        el.appendChild(mainFileEl);
         Element filesEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:files");
         for (File file : openedFiles)
         {
@@ -69,7 +98,7 @@ public class KahinaProject extends KahinaObject
         return el;
 	}
 	
-	//TODO
+    //TODO: import all the structures produced by exportXML
 	public static KahinaProject importXML(Element topEl)
 	{
 	    return new KahinaProject("unknown");

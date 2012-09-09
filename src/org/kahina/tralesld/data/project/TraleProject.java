@@ -7,6 +7,7 @@ import java.util.List;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.parse.data.project.TestSet;
 import org.kahina.parse.data.project.TestSetExtension;
+import org.w3c.dom.Element;
 
 public class TraleProject extends KahinaProject implements TestSetExtension
 {
@@ -49,5 +50,11 @@ public class TraleProject extends KahinaProject implements TestSetExtension
     public void setTestSet(TestSet testSet)
     {
         this.testSet = testSet;
+    }
+    
+    //TODO: import all the structures produced by exportXML
+    public static TraleProject importXML(Element topEl)
+    {
+        return new TraleProject();
     }
 }

@@ -440,15 +440,18 @@ public class KahinaArrangement
 		{
 			// System.err.println("Processing windowID " + windowID);
 			Element el = null;
+            //System.err.println("windowType: " + windowType + ", windowType.get(" + windowID + ") = " + windowType.get(windowID));
 			if (windowType.get(windowID) == KahinaWindowType.DEFAULT_WINDOW)
 			{
 				el = dom.createElementNS("http://www.kahina.org/xml/kahina", "kahina:default-window");
 				el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:binding", winIDToBinding.get(windowID));
-			} else if (windowType.get(windowID) == KahinaWindowType.CONTROL_WINDOW)
+			} 
+            else if (windowType.get(windowID) == KahinaWindowType.CONTROL_WINDOW)
 			{
 				el = dom.createElementNS("http://www.kahina.org/xml/kahina", "kahina:control-window");
 				el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:binding", winIDToBinding.get(windowID));
-			} else if (windowType.get(windowID) == KahinaWindowType.MAIN_WINDOW)
+			} 
+            else if (windowType.get(windowID) == KahinaWindowType.MAIN_WINDOW)
 			{
 				el = dom.createElementNS("http://www.kahina.org/xml/kahina", "kahina:main-window");
 			}
