@@ -1,13 +1,23 @@
 package org.kahina.qtype;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import org.kahina.core.KahinaState;
 import org.kahina.core.data.breakpoint.KahinaBreakpointProfile;
+import org.kahina.core.data.project.KahinaProject;
+import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.gui.KahinaViewRegistry;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.qtype.bridge.QTypeBridge;
 import org.kahina.qtype.data.bindings.QTypeGoal;
+import org.kahina.qtype.data.project.QTypeProject;
 import org.kahina.qtype.gui.QTypeGUI;
 import org.kahina.qtype.visual.bindings.QTypeGoalView;
 import org.kahina.sicstus.SICStusPrologDebuggerInstance;
+import org.w3c.dom.Document;
 
 public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 {	
@@ -80,7 +90,29 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 	@Override
 	public String getApplicationName()
 	{
-		return "Kahina for QType";
+		return "qtype";
 	}
-
+    
+     @Override
+    protected KahinaProject createNewProject()
+    {
+        return new QTypeProject();
+    }
+        
+    public void loadProject(File projectFile)
+    {
+        Document dom;
+        try
+        {
+            dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
+            project = QTypeProject.importXML(dom.getDocumentElement());
+            gui.setPerspective(project.getPerspective());
+            setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+        }
+        catch (FileNotFoundException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

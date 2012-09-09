@@ -52,6 +52,7 @@ public class KahinaDefaultInstance extends KahinaInstance<KahinaState, KahinaGUI
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
             project = KahinaProject.importXML(dom.getDocumentElement());
+            gui.setPerspective(project.getPerspective());
             setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         }
         catch (FileNotFoundException e)

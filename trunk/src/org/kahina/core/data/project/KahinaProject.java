@@ -12,6 +12,7 @@ import org.kahina.parse.data.project.TestSet;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class KahinaProject extends KahinaObject
 {
@@ -41,6 +42,16 @@ public class KahinaProject extends KahinaObject
     public void setMainFile(File mainFile)
     {
         this.mainFile = mainFile;
+    }
+    
+    public void addOpenedFile(File file)
+    {
+        openedFiles.add(file);
+    }
+    
+    public List<File> getOpenedFiles()
+    {
+        return openedFiles;
     }
 
 	public void setPerspective(KahinaPerspective perspective) 
@@ -98,9 +109,35 @@ public class KahinaProject extends KahinaObject
         return el;
 	}
 	
-    //TODO: import all the structures produced by exportXML
 	public static KahinaProject importXML(Element topEl)
 	{
-	    return new KahinaProject("unknown");
+        if (!"kahina:project".equals(topEl.getNodeName()))
+        {
+            System.err.println("ERROR: attempted to loaded project file with wrong top element! Loading an empty project.");
+            return new KahinaProject("default");
+        }
+        String appID = topEl.getAttribute("kahina:appid");
+	    KahinaProject project = new KahinaProject(appID);
+        NodeList mainFileList = topEl.getElementsByTagName("kahina:mainFile");
+        if (mainFileList.getLength() != 1)
+        {
+            System.err.println("ERROR: project file does not contain exactly one main file! Loading an empty project.");
+            return project;
+        }
+        project.setMainFile(new File(((Element) mainFileList.item(0)).getAttribute("kahina:path")));
+        NodeList fileList = topEl.getElementsByTagName("kahina:file");
+        for (int i = 0; i < fileList.getLength(); i++)
+        {
+            project.addOpenedFile(new File(((Element) fileList.item(i)).getAttribute("kahina:path")));
+        }
+        NodeList perspectiveList = topEl.getElementsByTagName("kahina:perspective");
+        if (mainFileList.getLength() == 0)
+        {
+            System.err.println("ERROR: project file does not contain a perspective declaration! Loading an empty perspective.");
+            project.setPerspective(new KahinaPerspective("default","default"));
+            return project;
+        }
+        project.setPerspective(KahinaPerspective.importXML((Element) perspectiveList.item(0)));
+        return project;
 	}
 }
