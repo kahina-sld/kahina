@@ -64,7 +64,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     HashMap<Integer,Integer> segmentOffsets = new HashMap<Integer,Integer>();
     int chartWidth;
     
-    public KahinaChartView(KahinaInstance<?, ?, ?> kahina)
+    public KahinaChartView(KahinaInstance<?, ?, ?, ?> kahina)
     {
     	super(kahina);
         g = null;
@@ -85,7 +85,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         kahina.getGuiControl().registerListener("chart update", this);
     }
     
-    public KahinaChartView(KahinaChart chartModel, KahinaInstance<?, ?, ?> kahina)
+    public KahinaChartView(KahinaChart chartModel, KahinaInstance<?, ?, ?, ?> kahina)
     {
         this(kahina);
         display(chartModel);

@@ -13,6 +13,7 @@ import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
+import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.text.KahinaTextModel;
 import org.kahina.core.gui.event.KahinaMessageEvent;

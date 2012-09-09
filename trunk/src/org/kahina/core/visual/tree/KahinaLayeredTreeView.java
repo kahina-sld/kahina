@@ -23,12 +23,12 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 
 	private final KahinaLayeredTreeViewPanel.Orientation orientation;
 
-	public KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation orientation, KahinaInstance<?, ?, ?> kahina, int... layers)
+	public KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation orientation, KahinaInstance<?, ?, ?, ?> kahina, int... layers)
 	{
 		this(false, orientation, kahina, layers);
 	}
 
-	public KahinaLayeredTreeView(boolean displaySecondDimensionInTopLayer, KahinaLayeredTreeViewPanel.Orientation orientation, KahinaInstance<?, ?, ?> kahina, int... layers)
+	public KahinaLayeredTreeView(boolean displaySecondDimensionInTopLayer, KahinaLayeredTreeViewPanel.Orientation orientation, KahinaInstance<?, ?, ?, ?> kahina, int... layers)
 	{
 		super(kahina);
 		if (VERBOSE)

@@ -26,7 +26,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
     boolean textDisplay;
     String displayText;
     
-    public KahinaSatInstanceView(KahinaInstance<?, ?, ?> kahina, KahinaGraphLayouter layout)
+    public KahinaSatInstanceView(KahinaInstance<?, ?, ?, ?> kahina, KahinaGraphLayouter layout)
     {
         super(kahina, layout);
         clauseGraph = false;

@@ -25,7 +25,7 @@ public class KahinaLayeredTreeViewPanel extends KahinaViewPanel<KahinaLayeredTre
 		VERTICAL, HORIZONTAL;
 	}
 
-	public KahinaLayeredTreeViewPanel(int layers, KahinaTreeViewMarker marker, KahinaInstance<?, ?, ?> kahina, Orientation orientation)
+	public KahinaLayeredTreeViewPanel(int layers, KahinaTreeViewMarker marker, KahinaInstance<?, ?, ?, ?> kahina, Orientation orientation)
 	{
 		if (VERBOSE)
 		{

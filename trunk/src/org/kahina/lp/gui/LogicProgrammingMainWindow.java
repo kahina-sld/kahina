@@ -10,12 +10,12 @@ public class LogicProgrammingMainWindow extends KahinaMainWindow
 {
 	private static final long serialVersionUID = -8044329699904664157L;
 
-	public LogicProgrammingMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
+	public LogicProgrammingMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(windowManager, kahina);
 	}
 	
-	public LogicProgrammingMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina, int winID)
+	public LogicProgrammingMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?, ?> kahina, int winID)
 	{
 		super(windowManager, kahina, winID);
 	}

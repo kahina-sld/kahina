@@ -13,7 +13,7 @@ public class TraleSLDSignatureAppropriatenessViewPanel extends KahinaViewPanel<T
 	private static final long serialVersionUID = 4258442224074530109L;
 	private JEditorPane htmlPane;
 	
-	public TraleSLDSignatureAppropriatenessViewPanel(KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDSignatureAppropriatenessViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		

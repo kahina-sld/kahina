@@ -1,9 +1,10 @@
 package org.kahina.core;
 
 import org.kahina.core.bridge.KahinaBridge;
+import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.gui.KahinaGUI;
 
-public class KahinaDefaultInstance extends KahinaInstance<KahinaState, KahinaGUI, KahinaBridge>
+public class KahinaDefaultInstance extends KahinaInstance<KahinaState, KahinaGUI, KahinaBridge, KahinaProject>
 {
 	@Override
 	protected KahinaBridge createBridge() 

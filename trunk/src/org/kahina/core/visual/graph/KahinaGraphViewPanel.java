@@ -30,7 +30,7 @@ public class KahinaGraphViewPanel extends KahinaViewPanel<KahinaGraphView>
     
     KahinaGraphViewTaskManager taskManager;
     
-    public KahinaGraphViewPanel(KahinaInstance<?, ?, ?> kahina)
+    public KahinaGraphViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {       
         view = new KahinaGraphView(kahina, new GridLayouter());
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);

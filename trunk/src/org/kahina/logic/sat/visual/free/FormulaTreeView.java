@@ -32,7 +32,7 @@ public class FormulaTreeView extends KahinaTreeView
     boolean textDisplay;
     String displayText;
     
-    public FormulaTreeView(KahinaInstance<?, ?, ?> kahina)
+    public FormulaTreeView(KahinaInstance<?, ?, ?, ?> kahina)
     {
         super(kahina);
         frmToNode = new HashMap<BooleanFormula, Integer>();

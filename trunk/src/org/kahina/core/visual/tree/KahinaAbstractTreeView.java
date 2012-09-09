@@ -9,7 +9,7 @@ import org.kahina.core.visual.KahinaView;
 public abstract class KahinaAbstractTreeView extends KahinaView<KahinaTree>
 {
 
-	public KahinaAbstractTreeView(KahinaInstance<?, ?, ?> kahina)
+	public KahinaAbstractTreeView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 	}

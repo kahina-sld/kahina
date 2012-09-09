@@ -17,10 +17,10 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 public class KahinaDAGViewListener extends MouseAdapter implements ActionListener
 {
     private final KahinaDAGViewPanel view;
-    private final KahinaInstance<?, ?, ?> kahina;
+    private final KahinaInstance<?, ?, ?, ?> kahina;
     private MouseEvent lastMouseEvent;
     
-    public KahinaDAGViewListener(KahinaDAGViewPanel view, KahinaInstance<?, ?, ?> kahina)
+    public KahinaDAGViewListener(KahinaDAGViewPanel view, KahinaInstance<?, ?, ?, ?> kahina)
     {
         this.view = view;
         this.kahina = kahina;

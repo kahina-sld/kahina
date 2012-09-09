@@ -46,7 +46,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 
 	private int latestOriginLayer = 0;
 
-	public KahinaListTreeView(KahinaInstance<?, ?, ?> kahina, int... layers)
+	public KahinaListTreeView(KahinaInstance<?, ?, ?, ?> kahina, int... layers)
 	{
 		super(kahina);
 		this.layers = layers;

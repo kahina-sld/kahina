@@ -9,7 +9,7 @@ import org.kahina.lp.data.breakpoint.LogicProgrammingControlPoint;
 
 public class KahinaControlPointView extends KahinaView<KahinaControlPoint>
 {
-    public KahinaControlPointView(KahinaInstance<?, ?, ?> kahina)
+    public KahinaControlPointView(KahinaInstance<?, ?, ?, ?> kahina)
     {
         super(kahina);
         // TODO Auto-generated constructor stub

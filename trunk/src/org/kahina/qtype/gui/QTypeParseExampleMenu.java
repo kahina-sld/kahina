@@ -19,9 +19,9 @@ public class QTypeParseExampleMenu extends JMenu implements KahinaListener
 {
 	private static final long serialVersionUID = 5337584282998019751L;
 	
-	private final KahinaInstance<?, ?, ?> kahina;
+	private final KahinaInstance<?, ?, ?, ?> kahina;
 
-	public QTypeParseExampleMenu(KahinaInstance<?, ?, ?> kahina)
+	public QTypeParseExampleMenu(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super("Parse example");
 		this.kahina = kahina;

@@ -12,7 +12,7 @@ import org.kahina.tralesld.data.fs.TraleSLDFS;
 public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS>
 {
 	
-    public TraleSLDFeatureStructureView(KahinaInstance<?, ?, ?> kahina)
+    public TraleSLDFeatureStructureView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 	}

@@ -21,7 +21,7 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
     protected DefaultListModel listModel;
     protected ListSelectionModel selectionModel;
     
-    public KahinaTextView(KahinaInstance<?, ?, ?> kahina)
+    public KahinaTextView(KahinaInstance<?, ?, ?, ?> kahina)
     {
     	super(kahina);
         listModel = new DefaultListModel();

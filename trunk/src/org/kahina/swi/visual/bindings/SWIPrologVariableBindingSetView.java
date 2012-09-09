@@ -9,7 +9,7 @@ import org.kahina.swi.data.bindings.SWIPrologVariableBindingSet;
 public class SWIPrologVariableBindingSetView extends KahinaView<SWIPrologVariableBindingSet>
 {
 
-	public SWIPrologVariableBindingSetView(KahinaInstance<?, ?, ?> kahina)
+	public SWIPrologVariableBindingSetView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 	}

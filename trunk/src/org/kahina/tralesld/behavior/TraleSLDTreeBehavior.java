@@ -26,7 +26,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
 {   
 	private static final boolean VERBOSE = false;
 	
-    public TraleSLDTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?> kahina, KahinaTree secondaryTree)
+    public TraleSLDTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?, ?> kahina, KahinaTree secondaryTree)
     {
         super(tree, kahina, secondaryTree);  
         kahina.getControl().registerListener("traleSLD bridge", this);

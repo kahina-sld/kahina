@@ -11,7 +11,7 @@ public class QTypeParseMenu extends JMenu
 {
 	private static final long serialVersionUID = -1290849167486564257L;
 
-	public QTypeParseMenu(KahinaInstance<?, ?, ?> kahina)
+	public QTypeParseMenu(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super("Grammar");
 		QTypeCommander commander = ((QTypeDebuggerInstance) kahina).getCommander();

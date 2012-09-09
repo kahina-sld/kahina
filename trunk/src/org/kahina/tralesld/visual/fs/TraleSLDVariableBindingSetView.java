@@ -9,7 +9,7 @@ import org.kahina.tralesld.data.fs.TraleSLDVariableBindingSet;
 public class TraleSLDVariableBindingSetView extends KahinaView<TraleSLDVariableBindingSet>
 {
 
-	public TraleSLDVariableBindingSetView(KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDVariableBindingSetView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 	}

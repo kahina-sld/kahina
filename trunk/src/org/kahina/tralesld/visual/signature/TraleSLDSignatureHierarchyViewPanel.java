@@ -11,7 +11,7 @@ public class TraleSLDSignatureHierarchyViewPanel extends KahinaViewPanel<TraleSL
 	private static final long serialVersionUID = 5154672597479209987L;
 	private JTextPane htmlPane;
 	
-	public TraleSLDSignatureHierarchyViewPanel(KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDSignatureHierarchyViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
 	{		
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		

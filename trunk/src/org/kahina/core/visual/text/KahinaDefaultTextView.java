@@ -6,7 +6,7 @@ import org.kahina.core.data.text.KahinaLineReference;
 public class KahinaDefaultTextView extends KahinaTextView<KahinaLineReference>
 {
 
-	public KahinaDefaultTextView(KahinaInstance<?, ?, ?> kahina)
+	public KahinaDefaultTextView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 	}

@@ -12,9 +12,9 @@ import org.kahina.core.util.SwingUtil;
 public class KahinaProfilerMenu extends JMenu implements ActionListener
 {
 	private static final long serialVersionUID = -7484775954027995992L;
-	private final KahinaInstance<?, ?, ?> kahina;
+	private final KahinaInstance<?, ?, ?, ?> kahina;
 
-	public KahinaProfilerMenu(KahinaInstance<?, ?, ?> kahina)
+	public KahinaProfilerMenu(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super("Profiler");
 		this.kahina = kahina;

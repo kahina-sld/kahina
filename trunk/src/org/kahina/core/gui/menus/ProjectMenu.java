@@ -9,17 +9,16 @@ import org.kahina.core.KahinaInstance;
 
 public class ProjectMenu extends JMenu
 {
-	JMenuItem newProjectItem;
-	JMenuItem loadProjectItem;
-	JMenuItem saveProjectItem;
-	JMenuItem closeProjectItem;
+	public JMenuItem newProjectItem;
+	public JMenuItem loadProjectItem;
+	public JMenuItem saveProjectItem;
 	
-	public ProjectMenu(KahinaInstance<?, ?, ?> kahina)
+	public ProjectMenu(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super("Project");
 		
 		//default action listener
-		ProjectMenuListener defaultListener = new ProjectMenuListener();
+		ProjectMenuListener defaultListener = new ProjectMenuListener(kahina, this);
 		
 		newProjectItem = new JMenuItem("New project");
 		newProjectItem.setActionCommand("newProject");
@@ -37,13 +36,6 @@ public class ProjectMenu extends JMenu
 		saveProjectItem.setActionCommand("saveProject");
 		saveProjectItem.addActionListener(defaultListener);
 		this.add(saveProjectItem);
-		
-		this.addSeparator();
-		
-		closeProjectItem = new JMenuItem("Close project");
-		closeProjectItem.setActionCommand("closeProject");
-		closeProjectItem.addActionListener(defaultListener);
-		this.add(closeProjectItem);
 	}
 	
 	/**
@@ -71,11 +63,5 @@ public class ProjectMenu extends JMenu
 			saveProjectItem.removeActionListener(oldListener);
 		}
 		saveProjectItem.addActionListener(listener);
-		
-		for (ActionListener oldListener : closeProjectItem.getActionListeners())
-		{
-			closeProjectItem.removeActionListener(oldListener);
-		}
-		closeProjectItem.addActionListener(listener);
 	}
 }

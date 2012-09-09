@@ -7,7 +7,7 @@ import org.kahina.core.visual.graph.KahinaGraphViewPanel;
 
 public class KahinaSatInstanceViewPanel extends KahinaGraphViewPanel
 {
-    public KahinaSatInstanceViewPanel(KahinaInstance<?, ?, ?> kahina)
+    public KahinaSatInstanceViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {       
         super(kahina);
     }

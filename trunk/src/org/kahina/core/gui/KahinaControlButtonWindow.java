@@ -19,13 +19,13 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
 	private static final long serialVersionUID = -809546592680882505L;
 	List<KahinaControlButton> buttons;
 	
-	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina) 
+	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina) 
 	{
 		super(wm, kahina);
 		buttons = new LinkedList<KahinaControlButton>();
 	}
 	
-	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID) 
+	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina, int winID) 
 	{
 		super(wm, kahina, winID);
 		buttons = new LinkedList<KahinaControlButton>();

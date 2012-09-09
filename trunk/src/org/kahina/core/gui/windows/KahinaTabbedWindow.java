@@ -20,13 +20,13 @@ public class KahinaTabbedWindow  extends KahinaWindow
     
     List<KahinaWindow> windows;
     
-    public KahinaTabbedWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina)
+    public KahinaTabbedWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina)
     {
     	super(wm, kahina);
     	this.initialize();
     }
     
-    public KahinaTabbedWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID)
+    public KahinaTabbedWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina, int winID)
     {
     	super(wm, kahina, winID);
     	this.initialize();

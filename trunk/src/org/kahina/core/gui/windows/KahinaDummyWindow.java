@@ -12,7 +12,7 @@ public class KahinaDummyWindow extends KahinaDefaultWindow
 
 	private static final long serialVersionUID = 6198599746412653039L;
 
-	public KahinaDummyWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina)
+	public KahinaDummyWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(new KahinaEmptyView(kahina), wm, kahina);
         setSize(300,150);

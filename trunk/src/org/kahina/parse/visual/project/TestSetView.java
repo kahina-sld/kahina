@@ -8,7 +8,7 @@ import org.kahina.parse.data.project.TestSet;
 
 public class TestSetView extends KahinaView<TestSet>
 {
-	public TestSetView(KahinaInstance<?, ?, ?> kahina) 
+	public TestSetView(KahinaInstance<?, ?, ?, ?> kahina) 
 	{
 		super(kahina);
 	}

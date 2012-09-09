@@ -10,7 +10,7 @@ import org.kahina.sicstus.data.bindings.SICStusPrologVariableBindingSet;
 public class SICStusPrologVariableBindingSetView extends KahinaView<SICStusPrologVariableBindingSet>
 {
 
-	public SICStusPrologVariableBindingSetView(KahinaInstance<?, ?, ?> kahina)
+	public SICStusPrologVariableBindingSetView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 	}

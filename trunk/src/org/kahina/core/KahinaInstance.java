@@ -17,9 +17,12 @@ import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
+import org.kahina.core.control.KahinaProjectEvent;
 import org.kahina.core.control.KahinaSessionEvent;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.data.KahinaObject;
+import org.kahina.core.data.project.KahinaProject;
+import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaTree;
@@ -38,19 +41,23 @@ import org.kahina.core.visual.source.KahinaJEditSourceCodeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.tralesld.TraleSLDState;
 
-public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge> implements KahinaListener
+public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge, P extends KahinaProject> implements KahinaListener
 {
 	private static final boolean VERBOSE = false;
 
 	public G gui;
 
-	// TODO maybe group state, bridge, profiler etc. under a new Session type
+	//TODO maybe group state, bridge, profiler etc. under a new Session type
 
 	protected S state;
 
 	protected B bridge;
+    
+    protected P project;
 
 	protected ObjectMagazine<KahinaStep> steps;
+    
+    private KahinaProjectStatus projectStatus;
 
 	/**
 	 * GUI and views listen to this controller. It never changes.
@@ -58,8 +65,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	protected final KahinaController guiControl;
 	
 	/**
-	 * Everything else (e.g. bridges) listens to this controller. It changes
-	 * with every session.
+	 * Everything else (e.g. bridges) listens to this controller. It changes with every session.
 	 */
 	protected KahinaController control;
 
@@ -90,6 +96,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		gui = createGUI();
 		gui.prepare();
 		guiStarted = true;
+        setProjectStatus(KahinaProjectStatus.NO_OPEN_PROJECT);
 	}
 	
     public void startNewSessionWithoutBridge()
@@ -148,6 +155,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     		control = new KahinaController();
     		control.registerListener(KahinaEventTypes.UPDATE, this);
     		control.registerListener(KahinaEventTypes.SESSION, this);
+            control.registerListener(KahinaEventTypes.PROJECT, this);
     		control.registerListener(KahinaEventTypes.SYSTEM, this);
         }
 		if (state != null)
@@ -201,6 +209,17 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
 		return state;
 	}
+    
+    public void setProjectStatus(KahinaProjectStatus projectStatus)
+    {
+        this.projectStatus = projectStatus;
+        gui.getMainWindow().processProjectStatus(projectStatus);
+    }
+    
+    public KahinaProjectStatus getProjectStatus()
+    {
+        return projectStatus;
+    }
 
 	/**
 	 * overwrite this to register views for user-defined datatypes MUST register
@@ -248,10 +267,16 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		if (e instanceof KahinaUpdateEvent)
 		{
 			processUpdateEvent((KahinaUpdateEvent) e);
-		} else if (e instanceof KahinaSessionEvent)
+		} 
+        else if (e instanceof KahinaSessionEvent)
 		{
 			processSessionEvent((KahinaSessionEvent) e);
-		} else if (e instanceof KahinaSystemEvent)
+		} 
+        else if (e instanceof KahinaProjectEvent)
+        {
+            processProjectEvent((KahinaProjectEvent) e);
+        } 
+        else if (e instanceof KahinaSystemEvent)
 		{
 			processSystemEvent((KahinaSystemEvent) e);
 		}
@@ -281,6 +306,28 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			loadSession(e.getFile());
 		}
 	}
+    
+    protected void processProjectEvent(KahinaProjectEvent e)
+    {
+        switch (e.getProjectEventType())
+        {
+            case NEW_PROJECT:
+            {
+                newProject(e.getFile());
+                break;
+            }
+            case LOAD_PROJECT:
+            {
+                loadProject(e.getFile());
+                break;
+            }
+            case SAVE_PROJECT:
+            {
+                saveProjectAs(e.getFile());
+                break;
+            }
+        }
+    }
 
 	private void loadSession(File file)
 	{
@@ -437,4 +484,22 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
 		return "Kahina";
 	}
+    
+    //TODO
+    public void newProject(File grammarFile)
+    {
+        setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+    }
+    
+    //TODO
+    public void saveProjectAs(File projectFile)
+    {
+        
+    }
+    
+    //TODO
+    public void loadProject(File projectFile)
+    {
+        setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+    }
 }

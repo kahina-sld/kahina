@@ -1,5 +1,6 @@
 package org.kahina.sicstus;
 
+import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.lp.LogicProgrammingInstance;
@@ -12,7 +13,7 @@ import org.kahina.sicstus.data.bindings.SICStusPrologVariableBindingSet;
 import org.kahina.sicstus.gui.SICStusPrologGUI;
 import org.kahina.sicstus.visual.bindings.SICStusPrologVariableBindingSetView;
 
-public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SICStusPrologGUI, SICStusPrologBridge>
+public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SICStusPrologGUI, SICStusPrologBridge, KahinaProject>
 {
 
 	PrologProfiler profiler;

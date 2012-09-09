@@ -25,14 +25,14 @@ public class KahinaVerticallySplitWindow extends KahinaWindow
     
     private double resizeWeight;
     
-    public KahinaVerticallySplitWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, double resizeWeight)
+    public KahinaVerticallySplitWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina, double resizeWeight)
     {
     	super(wm, kahina);
     	this.resizeWeight = resizeWeight;
     	this.initialize();
     }
     
-    public KahinaVerticallySplitWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID, double resizeWeight)
+    public KahinaVerticallySplitWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina, int winID, double resizeWeight)
     {
     	super(wm, kahina, winID);
     	this.resizeWeight = resizeWeight;

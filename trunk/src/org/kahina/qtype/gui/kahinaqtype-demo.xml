@@ -21,12 +21,12 @@
           </kahina:vert-split-window>
         </kahina:vert-split-window>
         <kahina:tabbed-window kahina:height="515" kahina:id="8" kahina:title="Lower half" kahina:width="553" kahina:xpos="0" kahina:ypos="172">
-          <kahina:default-window kahina:binding="codeLocation" kahina:border="false" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:scroll="true" kahina:title="codeLocation" kahina:width="194" kahina:xpos="1010" kahina:ypos="24"/>
+          <kahina:default-window kahina:binding="codeLocation" kahina:border="false" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:scroll="true" kahina:title="Source Code" kahina:width="194" kahina:xpos="1010" kahina:ypos="24"/>
           <kahina:default-window kahina:binding="messageConsole" kahina:border="false" kahina:height="360" kahina:id="3" kahina:primary="true" kahina:scroll="false" kahina:title="Message console" kahina:width="230" kahina:xpos="760" kahina:ypos="24"/>
         </kahina:tabbed-window>
       </kahina:vert-split-window>
     </kahina:main-window>
-    <kahina:default-window kahina:binding="goal" kahina:border="false" kahina:height="924" kahina:id="1" kahina:primary="true" kahina:scroll="true" kahina:title="goal" kahina:width="497" kahina:xpos="636" kahina:ypos="25"/>
+    <kahina:default-window kahina:binding="goal" kahina:border="false" kahina:height="924" kahina:id="1" kahina:primary="true" kahina:scroll="true" kahina:title="Goal Display" kahina:width="497" kahina:xpos="636" kahina:ypos="25"/>
   </kahina:arrangement>
   <kahina:configurations>
     <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="1"/>

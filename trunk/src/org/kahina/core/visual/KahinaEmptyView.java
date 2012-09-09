@@ -8,7 +8,7 @@ import org.kahina.core.data.KahinaObject;
 
 public class KahinaEmptyView extends KahinaView<KahinaObject>
 {
-    public KahinaEmptyView(KahinaInstance<?, ?, ?> kahina)
+    public KahinaEmptyView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 		setTitle("Empty View");

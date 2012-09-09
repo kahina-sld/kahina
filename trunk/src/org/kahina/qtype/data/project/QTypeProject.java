@@ -7,6 +7,11 @@ import org.kahina.core.data.project.KahinaProject;
 public class QTypeProject extends KahinaProject
 {
 	private File grammarFile;
+    
+    public QTypeProject()
+    {
+        super("qtype");
+    }
 
 	public void setGrammarFile(File grammarFile) 
 	{

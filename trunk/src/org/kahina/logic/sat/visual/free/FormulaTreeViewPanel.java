@@ -9,7 +9,7 @@ public class FormulaTreeViewPanel extends KahinaTreeViewPanel
 {
     public FormulaTreeView view;
     
-    public FormulaTreeViewPanel(KahinaInstance<?, ?, ?> kahina)
+    public FormulaTreeViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {
         super(kahina);
         this.removeMouseListener(this.getMouseListeners()[0]);

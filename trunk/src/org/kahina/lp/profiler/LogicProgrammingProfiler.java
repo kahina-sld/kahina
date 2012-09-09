@@ -20,9 +20,9 @@ public class LogicProgrammingProfiler implements KahinaListener
 
 	private final LogicProgrammingProfile profile;
 	
-	protected final LogicProgrammingInstance<?,?,?> kahina;
+	protected final LogicProgrammingInstance<?,?,?,?> kahina;
 
-	public LogicProgrammingProfiler(LogicProgrammingInstance<?,?,?> kahina, Mapper<String, ProfileEntry> mapper, LogicProgrammingProfile profile)
+	public LogicProgrammingProfiler(LogicProgrammingInstance<?,?,?,?> kahina, Mapper<String, ProfileEntry> mapper, LogicProgrammingProfile profile)
 	{
 		this.mapper = mapper;
 		this.profile = profile;

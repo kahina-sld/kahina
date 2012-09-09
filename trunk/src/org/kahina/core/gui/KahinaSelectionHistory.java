@@ -20,9 +20,9 @@ public class KahinaSelectionHistory implements KahinaListener
     
     private boolean selectionCausedByHistory;
     
-    private final KahinaInstance<?, ?, ?> kahina;
+    private final KahinaInstance<?, ?, ?, ?> kahina;
     
-    public KahinaSelectionHistory(KahinaInstance<?, ?, ?> kahina)
+    public KahinaSelectionHistory(KahinaInstance<?, ?, ?, ?> kahina)
     {
         selectionHistory = new LinkedList<Integer>();
         pointInHistory = -1;

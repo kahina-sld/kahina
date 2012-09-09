@@ -20,7 +20,7 @@ public class KahinaGraphTest
     public static void main(String[] args)
     {
         final KahinaController control = new KahinaController();
-        final KahinaInstance<?, ?, ?> kahina = new KahinaDefaultInstance();
+        final KahinaInstance<?, ?, ?, ?> kahina = new KahinaDefaultInstance();
         
         KahinaGraph graph = KahinaGraph.importTGF("/home/dellert/workspace/Kahina/src/org/kahina/core/test/test-graph.tgf");
         final KahinaGraphView view = new KahinaGraphView(kahina, new SpringLayouter());
