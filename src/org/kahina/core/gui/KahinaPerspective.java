@@ -36,7 +36,7 @@ import org.w3c.dom.NodeList;
 public class KahinaPerspective 
 {
 	//the Kahina application this perspective is assigned to
-	String appID;
+	String appID ="default";
 	//the unique name this perspective is referred by in the GUI
 	String name;
 	
