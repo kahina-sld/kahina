@@ -1,6 +1,9 @@
 package org.kahina.tralesld;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +16,8 @@ import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaSystemEvent;
+import org.kahina.core.data.project.KahinaProject;
+import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaViewRegistry;
@@ -20,6 +25,7 @@ import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.util.ListUtil;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
@@ -35,6 +41,7 @@ import org.kahina.tralesld.gui.TraleSLDGUI;
 import org.kahina.tralesld.profiler.TraleSLDProfiler;
 import org.kahina.tralesld.visual.fs.TraleSLDFeatureStructureView;
 import org.kahina.tralesld.visual.fs.TraleSLDVariableBindingSetView;
+import org.w3c.dom.Document;
 
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge, TraleProject>
 {
@@ -347,4 +354,25 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		(new TraleSLDInstance(false)).start(args);
 	}
 
+    @Override
+    protected TraleProject createNewProject()
+    {
+        return new TraleProject();
+    }
+
+    public void loadProject(File projectFile)
+    {
+        Document dom;
+        try
+        {
+            dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
+            project = TraleProject.importXML(dom.getDocumentElement());
+            setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+        }
+        catch (FileNotFoundException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

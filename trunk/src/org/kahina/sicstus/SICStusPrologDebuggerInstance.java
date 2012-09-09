@@ -1,8 +1,14 @@
 package org.kahina.sicstus;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import org.kahina.core.data.project.KahinaProject;
+import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaViewRegistry;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
@@ -12,6 +18,7 @@ import org.kahina.sicstus.bridge.SICStusPrologBridge;
 import org.kahina.sicstus.data.bindings.SICStusPrologVariableBindingSet;
 import org.kahina.sicstus.gui.SICStusPrologGUI;
 import org.kahina.sicstus.visual.bindings.SICStusPrologVariableBindingSetView;
+import org.w3c.dom.Document;
 
 public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SICStusPrologGUI, SICStusPrologBridge, KahinaProject>
 {
@@ -71,4 +78,25 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 		(new SICStusPrologDebuggerInstance()).start(args);
 	}
 
+    @Override
+    protected KahinaProject createNewProject()
+    {
+        return new KahinaProject("sicstus");
+    }
+
+    public void loadProject(File projectFile)
+    {
+        Document dom;
+        try
+        {
+            dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
+            project = KahinaProject.importXML(dom.getDocumentElement());
+            setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+        }
+        catch (FileNotFoundException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

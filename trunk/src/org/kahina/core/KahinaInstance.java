@@ -1,5 +1,6 @@
 package org.kahina.core;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,6 +34,7 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.magazine.ObjectMagazine;
 import org.kahina.core.io.util.FileUtil;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.profiler.KahinaWarner;
 import org.kahina.core.util.ProgressMonitorWrapper;
 import org.kahina.core.util.SwingUtil;
@@ -40,6 +42,8 @@ import org.kahina.core.visual.KahinaDefaultView;
 import org.kahina.core.visual.source.KahinaJEditSourceCodeView;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.tralesld.TraleSLDState;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge, P extends KahinaProject> implements KahinaListener
 {
@@ -204,6 +208,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	protected abstract G createGUI();
 
 	protected abstract B createBridge();
+    
+    protected abstract P createNewProject();
 
 	public S getState()
 	{
@@ -485,21 +491,20 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		return "Kahina";
 	}
     
-    //TODO
     public void newProject(File grammarFile)
     {
+        project = createNewProject();
+        project.setMainFile(grammarFile);
+        project.setPerspective(gui.getPerspective());
         setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
     }
     
-    //TODO
     public void saveProjectAs(File projectFile)
     {
-        
+        Document dom = XMLUtil.newEmptyDocument();
+        Element el = project.exportXML(dom);
+        XMLUtil.writeXML(el, projectFile.getAbsolutePath());
     }
     
-    //TODO
-    public void loadProject(File projectFile)
-    {
-        setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-    }
+    public abstract void loadProject(File projectFile);
 }
