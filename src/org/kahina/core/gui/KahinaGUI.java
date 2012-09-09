@@ -41,7 +41,7 @@ public class KahinaGUI implements KahinaListener
 {
 	private static final boolean VERBOSE = false;
 
-	protected final KahinaInstance<?, ?, ?> kahina;
+	protected final KahinaInstance<?, ?, ?, ?> kahina;
 
 	KahinaSelectionHistory selectionHistory;
 
@@ -61,7 +61,7 @@ public class KahinaGUI implements KahinaListener
 
 	Class<? extends KahinaStep> stepType;
 
-	public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
+	public KahinaGUI(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		if (VERBOSE)
 		{
@@ -102,7 +102,7 @@ public class KahinaGUI implements KahinaListener
 	 * 
 	 * @param stepType
 	 */
-	protected void fillFieldToView(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?> kahina)
+	protected void fillFieldToView(Class<? extends KahinaStep> stepType, KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		if (VERBOSE)
 		{
@@ -131,7 +131,7 @@ public class KahinaGUI implements KahinaListener
 		}
 	}
 	
-	public KahinaInstance<?,?,?> getKahinaInstance()
+	public KahinaInstance<?,?,?,?> getKahinaInstance()
 	{
 		return kahina;
 	}

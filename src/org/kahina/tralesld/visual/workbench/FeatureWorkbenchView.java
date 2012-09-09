@@ -18,7 +18,7 @@ public class FeatureWorkbenchView extends KahinaView<FeatureWorkbench>
 	
 	private AuxiliaryTraleInstance trale;
 	
-	public FeatureWorkbenchView(KahinaInstance<?, ?, ?> kahina, AuxiliaryTraleInstance trale)
+	public FeatureWorkbenchView(KahinaInstance<?, ?, ?, ?> kahina, AuxiliaryTraleInstance trale)
 	{
 		super(kahina);
 		this.trale = trale;

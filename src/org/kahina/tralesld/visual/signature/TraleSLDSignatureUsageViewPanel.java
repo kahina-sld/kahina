@@ -12,7 +12,7 @@ public class TraleSLDSignatureUsageViewPanel  extends KahinaViewPanel<TraleSLDSi
 	private static final long serialVersionUID = 6789098188340983733L;
 	private JEditorPane htmlPane;
 	
-	public TraleSLDSignatureUsageViewPanel(KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDSignatureUsageViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		

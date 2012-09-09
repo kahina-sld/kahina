@@ -12,9 +12,9 @@ import org.kahina.core.gui.KahinaDialogEvent;
 public class KahinaControlPointMenu  extends JMenu implements ActionListener
 {
     private static final long serialVersionUID = -1290849167486564257L;
-    private final KahinaInstance<?, ?, ?> kahina;
+    private final KahinaInstance<?, ?, ?, ?> kahina;
 
-    public KahinaControlPointMenu(KahinaInstance<?, ?, ?> kahina)
+    public KahinaControlPointMenu(KahinaInstance<?, ?, ?, ?> kahina)
     {
         super("Control points");       
         this.kahina = kahina;

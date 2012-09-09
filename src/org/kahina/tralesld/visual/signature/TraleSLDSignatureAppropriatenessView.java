@@ -20,7 +20,7 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
 	private Map<String,String> htmlForType;
 	String currentType = "bot";
 	
-    public TraleSLDSignatureAppropriatenessView(KahinaInstance<?, ?, ?> kahina)
+    public TraleSLDSignatureAppropriatenessView(KahinaInstance<?, ?, ?, ?> kahina)
     {
     	super(kahina);
         
@@ -29,7 +29,7 @@ public class TraleSLDSignatureAppropriatenessView extends KahinaView<TraleSLDSig
         kahina.getGuiControl().registerListener("type selection", this);
     }
     
-    public TraleSLDSignatureAppropriatenessView(TraleSLDSignature signature, KahinaInstance<?, ?, ?> kahina)
+    public TraleSLDSignatureAppropriatenessView(TraleSLDSignature signature, KahinaInstance<?, ?, ?, ?> kahina)
     {
         this(kahina);
         display(signature);

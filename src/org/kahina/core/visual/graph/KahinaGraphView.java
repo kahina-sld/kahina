@@ -61,7 +61,7 @@ public class KahinaGraphView extends KahinaView<KahinaGraph>
     //special entry -1 means "redraw everything"
     private List<Integer> redrawAgenda;
     
-    public KahinaGraphView(KahinaInstance<?, ?, ?> kahina, KahinaGraphLayouter layout)
+    public KahinaGraphView(KahinaInstance<?, ?, ?, ?> kahina, KahinaGraphLayouter layout)
     {
         super(kahina);
         this.model = new AdjacListsGraph();

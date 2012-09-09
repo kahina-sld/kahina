@@ -37,13 +37,13 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     protected final int windowID;
     protected boolean cloned;
     
-    protected final KahinaInstance<?, ?, ?> kahina;
+    protected final KahinaInstance<?, ?, ?, ?> kahina;
     
     /**
      * Constructs a KahinaWindow with a new unique window ID.
      * @param wm the window manager that is to manage this window
      */
-    public KahinaWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina)
+    public KahinaWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina)
     {     
     	this.wm = wm;
     	windowID = idCounter++;
@@ -57,7 +57,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
      * @param wm the window manager that is to manage this window
      * @param id the unique window ID that this window will be referred by (never use -1 or an ID that is already used!)
      */
-    public KahinaWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int id)
+    public KahinaWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina, int id)
     {
     	if (VERBOSE)
     	{

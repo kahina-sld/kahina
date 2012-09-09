@@ -14,7 +14,6 @@ import org.kahina.swi.SWIPrologStep;
 
 public class SWIPrologGUI extends LogicProgrammingGUI
 {
-
 	public SWIPrologGUI(Class<? extends SWIPrologStep> stepType, SWIPrologDebuggerInstance kahina)
 	{
 		super(stepType, kahina);

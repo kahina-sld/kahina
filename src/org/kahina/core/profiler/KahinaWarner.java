@@ -15,9 +15,9 @@ import org.kahina.core.util.ObjectUtil;
 public class KahinaWarner implements KahinaListener
 {
 	
-	private KahinaInstance<?, ?, ?> kahina;
+	private KahinaInstance<?, ?, ?, ?> kahina;
 	
-	public KahinaWarner(KahinaInstance<?, ?, ?> kahina)
+	public KahinaWarner(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		this.kahina = kahina;
 		kahina.getControl().registerListener(KahinaEventTypes.TREE_MATCH, this);

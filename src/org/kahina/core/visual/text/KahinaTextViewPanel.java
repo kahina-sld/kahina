@@ -20,9 +20,9 @@ public class KahinaTextViewPanel extends KahinaViewPanel<KahinaTextView<?>>
     //determines how many lines are automatically displayed before and after the lead selection line
     //also determines the minimum height of the component
     private int displayContext = 2;
-    private final KahinaInstance<?, ?, ?> kahina;
+    private final KahinaInstance<?, ?, ?, ?> kahina;
     
-    public KahinaTextViewPanel(KahinaInstance<?, ?, ?> kahina)
+    public KahinaTextViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {
         this.setLayout(new GridLayout());
         this.kahina = kahina;

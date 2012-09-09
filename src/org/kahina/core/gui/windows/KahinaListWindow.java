@@ -28,13 +28,13 @@ public class KahinaListWindow extends KahinaWindow implements MouseListener
     List<KahinaWindow> windows;
     int selectedWindow;
     
-    public KahinaListWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina)
+    public KahinaListWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina)
     {
     	super(wm, kahina);
     	this.initialize();
     }
     
-    public KahinaListWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID)
+    public KahinaListWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina, int winID)
     {
     	super(wm, kahina, winID);
     	this.initialize();

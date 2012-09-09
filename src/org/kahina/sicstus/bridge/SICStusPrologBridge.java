@@ -8,7 +8,7 @@ import org.kahina.sicstus.SICStusPrologStep;
 public class SICStusPrologBridge extends PrologBridge
 {
 
-	public SICStusPrologBridge(LogicProgrammingInstance<?,?,?> kahina)
+	public SICStusPrologBridge(LogicProgrammingInstance<?,?,?,?> kahina)
 	{
 		super(kahina);
 	}

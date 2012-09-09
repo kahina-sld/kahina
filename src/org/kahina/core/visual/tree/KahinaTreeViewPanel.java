@@ -26,14 +26,14 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
 	
 	BufferedImage image;
     
-    public KahinaTreeViewPanel(KahinaInstance<?, ?, ?> kahina)
+    public KahinaTreeViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {       
         view = new KahinaTreeView(kahina);
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);
         this.addMouseListener(new KahinaTreeViewListener(this, kahina));
     }
     
-    public KahinaTreeViewPanel(KahinaTreeViewMarker marker, KahinaInstance<?, ?, ?> kahina)
+    public KahinaTreeViewPanel(KahinaTreeViewMarker marker, KahinaInstance<?, ?, ?, ?> kahina)
     {       
         view = new KahinaTreeView(kahina);
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);

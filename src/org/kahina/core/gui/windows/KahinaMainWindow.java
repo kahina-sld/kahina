@@ -12,10 +12,12 @@ import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaSystemEvent;
+import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.gui.KahinaSessionMenu;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.menus.KahinaHelpMenu;
 import org.kahina.core.gui.menus.KahinaViewMenu;
+import org.kahina.core.gui.menus.ProjectMenu;
 import org.kahina.core.io.util.IconUtil;
 
 public class KahinaMainWindow extends KahinaWindow implements KahinaListener
@@ -27,16 +29,20 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	public static boolean verbose = false;
 
 	protected JMenuBar menuBar;
+    
+    protected KahinaSessionMenu sessionMenu;
+    protected ProjectMenu projectMenu;
+    protected KahinaViewMenu viewMenu;
 
 	KahinaWindow subwindow;
 
-	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(windowManager, kahina);
 		this.initializeMainWindow();
 	}
 
-	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina, int winID)
+	public KahinaMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?, ?> kahina, int winID)
 	{
 		super(windowManager, kahina, winID);
 		this.initializeMainWindow();
@@ -46,15 +52,22 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	{
 		this.setTitle(kahina.getApplicationName());
 		this.setIconImage(new ImageIcon(IconUtil.getIcon("gui/icons/logo.png")).getImage());
-		// this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// Uncomment this in order to be able to profile using JRat.
+        // this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		menuBar = new JMenuBar();
+        
+        sessionMenu = new KahinaSessionMenu(kahina.getControl());
+        menuBar.add(sessionMenu);
+        
+        projectMenu = new ProjectMenu(kahina);
+        menuBar.add(projectMenu);
+        //TODO: define and add a good ProjectMenuListener
 		
 		addMenusInFront();
-		
-		menuBar.add(new KahinaSessionMenu(kahina.getControl()));
-		menuBar.add(new KahinaViewMenu(wm));
+
+        viewMenu = new KahinaViewMenu(wm);
+		menuBar.add(viewMenu);
 
 		addMenusBeforeHelpMenu();
 
@@ -64,11 +77,9 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
 		/**
-		 * TODO This used to use getControl(), surely by mistake? Changed it to
-		 * getGuiControl(), hopefully improving functionality rather than
-		 * destroying it.
+		 * TODO this should be getGuiControl() for consistency, but thinks currently work this way
 		 */
-		kahina.getGuiControl().registerListener(KahinaEventTypes.SYSTEM, this);
+		kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 	}
 
 	public void setSize(int width, int height)
@@ -153,6 +164,25 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 			System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" not found as a tab in window \"" + this.getTitle() + "\", replacement failed.");
 		}
 	}
+    
+    public void processProjectStatus(KahinaProjectStatus projectStatus)
+    {
+        switch (projectStatus)
+        {
+            case NO_OPEN_PROJECT:
+            {
+                break;
+            }
+            case PROGRAM_UNCOMPILED:
+            {
+                break;
+            }
+            case PROGRAM_COMPILED:
+            {
+                break;
+            }
+        }
+    }
 
 	@Override
 	public void processEvent(KahinaEvent event)
@@ -168,7 +198,8 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		if (event.getSystemEventType() == KahinaSystemEvent.NODE_COUNT)
 		{
 			setTitle(kahina.getApplicationName() + " (" + event.getIntContent() + ")");
-		} else if (event.getSystemEventType() == KahinaSystemEvent.QUIT)
+		} 
+        else if (event.getSystemEventType() == KahinaSystemEvent.QUIT)
 		{
 			disposeAllWindows();
 		}

@@ -99,9 +99,9 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 	
 	private String lastDisplayID = null;
 	
-	private final KahinaInstance<?, ?, ?> kahina;
+	private final KahinaInstance<?, ?, ?, ?> kahina;
 
-	public FeatureWorkbenchViewPanel(KahinaInstance<?, ?, ?> kahina, AuxiliaryTraleInstance trale)
+	public FeatureWorkbenchViewPanel(KahinaInstance<?, ?, ?, ?> kahina, AuxiliaryTraleInstance trale)
 	{		
 		this.kahina = kahina;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

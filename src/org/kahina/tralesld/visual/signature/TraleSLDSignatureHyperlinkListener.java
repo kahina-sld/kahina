@@ -9,9 +9,9 @@ import org.kahina.tralesld.gui.TraleSLDTypeSelectionEvent;
 
 public class TraleSLDSignatureHyperlinkListener implements HyperlinkListener
 {
-	private final KahinaInstance<?, ?, ?> kahina;
+	private final KahinaInstance<?, ?, ?, ?> kahina;
 	
-	public TraleSLDSignatureHyperlinkListener(KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDSignatureHyperlinkListener(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		this.kahina = kahina;
 	}

@@ -19,29 +19,15 @@ public class KahinaProject extends KahinaObject
     protected String appID;
     
     //for source files and the like
-	private List<File> openedFiles;
+	protected List<File> openedFiles;
 	
-	//TODO: move this into kahina.parse.data.project.ParseProject
-	private TestSet testSet;
+	protected KahinaPerspective perspective;
 	
-	private KahinaPerspective perspective;
-	private KahinaBreakpointProfile breakpoints;
-	
-	public KahinaProject()
+	public KahinaProject(String appID)
 	{
-	    appID = "unknown";
+	    this.appID = appID;
 		openedFiles = new ArrayList<File>();
-		testSet = new TestSet();
-	}
-
-	public TestSet getTestSet() 
-	{
-		return testSet;
-	}
-
-	public void setTestSet(TestSet testSet) 
-	{
-		this.testSet = testSet;
+        this.perspective = new KahinaPerspective(appID, "default");
 	}
 
 	public void setPerspective(KahinaPerspective perspective) 
@@ -52,16 +38,6 @@ public class KahinaProject extends KahinaObject
 	public KahinaPerspective getPerspective() 
 	{
 		return perspective;
-	}
-
-	public KahinaBreakpointProfile getBreakpoints() 
-	{
-		return breakpoints;
-	}
-
-	public void setBreakpoints(KahinaBreakpointProfile breakpoints) 
-	{
-		this.breakpoints = breakpoints;
 	}
 	
 	public Element exportXML(Document dom)
@@ -90,13 +66,12 @@ public class KahinaProject extends KahinaObject
         }
         el.appendChild(filesEl);
         el.appendChild(perspective.exportXML(dom));
-        el.appendChild(breakpoints.exportXML(dom));
         return el;
 	}
 	
 	//TODO
 	public static KahinaProject importXML(Element topEl)
 	{
-	    return new KahinaProject();
+	    return new KahinaProject("unknown");
 	}
 }

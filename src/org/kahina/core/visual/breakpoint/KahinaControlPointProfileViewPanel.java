@@ -29,7 +29,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
     KahinaControlPointViewPanel pointPanel;
     KahinaControlPointProfileListener profileListener;
     
-    KahinaInstance<?,?,?> kahina;
+    KahinaInstance<?,?,?,?> kahina;
     
     public KahinaControlPointProfileViewPanel(LogicProgrammingInstance kahina)
     {
@@ -197,7 +197,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         }
     }
 
-    public KahinaInstance<?, ?, ?> getKahina()
+    public KahinaInstance<?, ?, ?, ?> getKahina()
     {
         return kahina;
     }

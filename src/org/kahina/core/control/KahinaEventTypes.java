@@ -10,6 +10,7 @@ public interface KahinaEventTypes
 	public static final String DIALOG = "dialog";
 	public static final String SYSTEM = "system";
 	public static final String SESSION = "session";
+    public static final String PROJECT = "project";
 	public static final String PERSPECTIVE = "perspective";
 	public static final String CONTROL = "control";
 	public static final String TREE_MATCH = "treeMatch";

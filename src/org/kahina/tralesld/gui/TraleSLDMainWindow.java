@@ -8,12 +8,12 @@ public class TraleSLDMainWindow extends LogicProgrammingMainWindow
 {
 	private static final long serialVersionUID = -8044329699904664157L;
 
-	public TraleSLDMainWindow(TraleSLDWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDMainWindow(TraleSLDWindowManager windowManager, KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(windowManager, kahina);
 	}
 	
-	public TraleSLDMainWindow(TraleSLDWindowManager windowManager, int winID, KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDMainWindow(TraleSLDWindowManager windowManager, int winID, KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(windowManager, kahina, winID);
 	}

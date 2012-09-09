@@ -31,15 +31,15 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
     KahinaControlPointListener pointListener;
     KahinaControlPointProfileListener profileListener;
     
-    KahinaInstance<?,?,?> kahina;
+    KahinaInstance<?,?,?,?> kahina;
     
     //TODO: give some sensible behavior to this constructor
-    public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?> kahina)
+    public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {
         this.kahina = kahina;
     }
     
-    public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?> kahina, KahinaControlPointProfileListener profileListener, KahinaControlPointListener pointListener)
+    public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?, ?> kahina, KahinaControlPointProfileListener profileListener, KahinaControlPointListener pointListener)
     {
         this.kahina = kahina;
         this.profileListener = profileListener;

@@ -20,9 +20,9 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
 {
     private final KahinaChartViewPanel view;
     
-    private final KahinaInstance<?, ?, ?> kahina;
+    private final KahinaInstance<?, ?, ?, ?> kahina;
     
-    public KahinaChartViewListener(KahinaChartViewPanel view, KahinaInstance<?, ?, ?> kahina)
+    public KahinaChartViewListener(KahinaChartViewPanel view, KahinaInstance<?, ?, ?, ?> kahina)
     {
         this.view = view;
         this.kahina = kahina;

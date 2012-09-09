@@ -43,7 +43,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
     Thread growthProcess;
     boolean growthMode;
     
-    public BreakpointTestWindow(List<TreeAutomaton> breakpoints, KahinaInstance<?, ?, ?> kahina)
+    public BreakpointTestWindow(List<TreeAutomaton> breakpoints, KahinaInstance<?, ?, ?, ?> kahina)
     {
         this.setTitle("Kahina Breakpoint Test Environment");
         this.setSize(800,600);

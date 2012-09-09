@@ -71,7 +71,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	private ArrayList<Integer> terminalLayer;
 	private int maxNodeWidth;
 
-	public KahinaTreeView(KahinaInstance<?, ?, ?> kahina)
+	public KahinaTreeView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 		model = new KahinaMemTree();

@@ -7,7 +7,7 @@ import org.kahina.lp.profiler.LogicProgrammingProfiler;
 
 public class PrologProfiler extends LogicProgrammingProfiler
 {
-	public PrologProfiler(LogicProgrammingInstance<?,?,?> kahina, LogicProgrammingProfile profile)
+	public PrologProfiler(LogicProgrammingInstance<?,?,?,?> kahina, LogicProgrammingProfile profile)
 	{
 		super(kahina, new DefaultProfileEntryMapper(), profile);
 	}

@@ -24,10 +24,10 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 
 	protected KahinaViewConfiguration config;
 	protected T model;
-	protected final KahinaInstance<?, ?, ?> kahina;
+	protected final KahinaInstance<?, ?, ?, ?> kahina;
 	
 
-	public KahinaView(KahinaInstance<?, ?, ?> kahina)
+	public KahinaView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		this.kahina = kahina;
 		this.title = "New View";

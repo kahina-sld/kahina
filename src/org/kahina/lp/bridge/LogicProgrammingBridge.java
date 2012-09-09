@@ -87,7 +87,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	protected LogicProgrammingState state;
 
-	public LogicProgrammingBridge(LogicProgrammingInstance<?, ?, ?> kahina)
+	public LogicProgrammingBridge(LogicProgrammingInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 		this.state = (LogicProgrammingState) kahina.getState();

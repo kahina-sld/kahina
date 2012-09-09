@@ -49,7 +49,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
     //allow marking of a single node in the graph
     private int markedNode;
     
-    public KahinaDAGView(KahinaInstance<?, ?, ?> kahina, KahinaDAGLayouter layout)
+    public KahinaDAGView(KahinaInstance<?, ?, ?, ?> kahina, KahinaDAGLayouter layout)
     {
     	super(kahina);
         this.model = new KahinaMemDAG();

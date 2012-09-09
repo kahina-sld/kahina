@@ -23,13 +23,13 @@ public class KahinaHorizontallySplitWindow extends KahinaWindow
     
     JSplitPane splitPane;
     
-    public KahinaHorizontallySplitWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina)
+    public KahinaHorizontallySplitWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina)
     {
     	super(wm, kahina);
     	this.initialize();
     }
     
-    public KahinaHorizontallySplitWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID)
+    public KahinaHorizontallySplitWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina, int winID)
     {
     	super(wm, kahina, winID);
     	this.initialize();

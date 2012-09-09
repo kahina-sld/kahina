@@ -25,7 +25,7 @@ public class KahinaChartTest
     {
         try
         {
-        	KahinaInstance<?, ?, ?> kahina = new TraleSLDInstance();
+        	KahinaInstance<?, ?, ?, ?> kahina = new TraleSLDInstance();
             File file = new File("src/org/kahina/core/test/test-chart.xml");
             DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
             DocumentBuilder db = dbf.newDocumentBuilder();

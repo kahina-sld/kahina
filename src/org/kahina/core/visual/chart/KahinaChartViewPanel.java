@@ -19,7 +19,7 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
 	
 	BufferedImage image;
     
-    public KahinaChartViewPanel(KahinaInstance<?, ?, ?> kahina)
+    public KahinaChartViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {
         view = null;
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);

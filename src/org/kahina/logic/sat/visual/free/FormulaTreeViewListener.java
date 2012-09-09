@@ -12,7 +12,7 @@ public class FormulaTreeViewListener extends KahinaTreeViewListener
 {
     protected FormulaTreeViewPanel view;
     
-    public FormulaTreeViewListener(FormulaTreeViewPanel view, KahinaInstance<?, ?, ?> kahina)
+    public FormulaTreeViewListener(FormulaTreeViewPanel view, KahinaInstance<?, ?, ?, ?> kahina)
     {
         super(view,kahina);
         this.view = view;

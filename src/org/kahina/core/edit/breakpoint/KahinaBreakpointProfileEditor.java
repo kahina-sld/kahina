@@ -11,7 +11,7 @@ import org.kahina.core.visual.chart.KahinaChartViewPanel;
 public class KahinaBreakpointProfileEditor extends KahinaView<KahinaBreakpointProfile>
 {
 
-    public KahinaBreakpointProfileEditor(KahinaInstance<?, ?, ?> kahina)
+    public KahinaBreakpointProfileEditor(KahinaInstance<?, ?, ?, ?> kahina)
     {
         super(kahina);
         // TODO Auto-generated constructor stub

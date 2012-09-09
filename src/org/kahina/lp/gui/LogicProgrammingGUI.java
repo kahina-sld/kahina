@@ -239,7 +239,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 			{
 				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
 				int stepID = state.getSelectedStepID();
-				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?>) kahina).getProfiler().profileSubtree(state.getSecondaryStepTree(), state.getStepTree(),
+				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?, ?>) kahina).getProfiler().profileSubtree(state.getSecondaryStepTree(), state.getStepTree(),
 						stepID));
 				window.setTitle("Profile of call subtree at " + ((LogicProgrammingState) kahina.getState()).get(stepID));
 				window.setVisible(true);
@@ -249,7 +249,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 			{
 				LogicProgrammingState state = (LogicProgrammingState) kahina.getState();
 				int stepID = state.getSelectedStepID();
-				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?>) kahina).getProfiler().profileSubtree(state.getStepTree(), state.getStepTree(),
+				JFrame window = new LogicProgrammingProfileWindow(((LogicProgrammingInstance<?, ?, ?, ?>) kahina).getProfiler().profileSubtree(state.getStepTree(), state.getStepTree(),
 						stepID));
 				window.setTitle("Profile of search subtree at " + ((LogicProgrammingState) kahina.getState()).get(stepID));
 				window.setVisible(true);

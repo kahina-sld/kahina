@@ -26,11 +26,15 @@ public class KahinaSessionMenu extends JMenu implements ActionListener
         JMenuItem loadSessionItem = new JMenuItem("Load...");
         loadSessionItem.setActionCommand("loadSession");
         loadSessionItem.addActionListener(this);
+        //TODO: reliably re-establish the saved state functionality
+        loadSessionItem.setEnabled(false);
         this.add(loadSessionItem);
             
         JMenuItem saveSessionItem = new JMenuItem("Save As...");
         saveSessionItem.setActionCommand("saveSessionAs");
         saveSessionItem.addActionListener(this);
+        //TODO: reliably re-establish the saved state functionality
+        saveSessionItem.setEnabled(false);
         this.add(saveSessionItem);
         
         this.addSeparator();

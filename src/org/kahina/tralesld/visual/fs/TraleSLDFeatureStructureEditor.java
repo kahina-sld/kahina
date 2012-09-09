@@ -81,9 +81,9 @@ public class TraleSLDFeatureStructureEditor extends TraleSLDFeatureStructureView
 	public static final int TF_MODE = 1;
 	public static final int TTF_MODE = 2;
 	
-	private final KahinaInstance<?, ?, ?> kahina;
+	private final KahinaInstance<?, ?, ?, ?> kahina;
 	
-	public TraleSLDFeatureStructureEditor(KahinaInstance<?, ?, ?> kahina, AuxiliaryTraleInstance trale)
+	public TraleSLDFeatureStructureEditor(KahinaInstance<?, ?, ?, ?> kahina, AuxiliaryTraleInstance trale)
 	{
 		super();
 		this.kahina = kahina;

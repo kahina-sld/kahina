@@ -17,7 +17,7 @@ public class ColoredPathDAGViewPanel extends KahinaDAGViewPanel
 {
     ColoredPathDAGView view;
     
-    public ColoredPathDAGViewPanel(KahinaInstance<?, ?, ?> kahina)
+    public ColoredPathDAGViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {
         super(kahina);
         view = new ColoredPathDAGView(kahina, new LayeredLayouter());

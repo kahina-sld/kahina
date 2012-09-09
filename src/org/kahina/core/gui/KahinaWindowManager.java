@@ -40,7 +40,7 @@ public class KahinaWindowManager implements KahinaListener
 {
     private static final boolean VERBOSE = false;
     
-    protected final KahinaInstance<?, ?, ?> kahina; 
+    protected final KahinaInstance<?, ?, ?, ?> kahina; 
 
     public KahinaMainWindow mainWindow;
     private KahinaPerspective psp;
@@ -58,7 +58,7 @@ public class KahinaWindowManager implements KahinaListener
      * @param kahina - the KahinaInstance bundling the other parts of the system
      * @param standaloneMode - true for a simple standalone application
      */
-    public KahinaWindowManager(KahinaInstance<?, ?, ?> kahina, boolean standaloneMode)
+    public KahinaWindowManager(KahinaInstance<?, ?, ?, ?> kahina, boolean standaloneMode)
     {
     	this.kahina = kahina;
         getGuiControl().registerListener(KahinaEventTypes.WINDOW, this);

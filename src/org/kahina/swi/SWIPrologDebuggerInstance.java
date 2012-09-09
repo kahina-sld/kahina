@@ -1,5 +1,6 @@
 package org.kahina.swi;
 
+import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.lp.LogicProgrammingInstance;
@@ -12,7 +13,7 @@ import org.kahina.swi.data.bindings.SWIPrologVariableBindingSet;
 import org.kahina.swi.gui.SWIPrologGUI;
 import org.kahina.swi.visual.bindings.SWIPrologVariableBindingSetView;
 
-public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SWIPrologGUI, SWIPrologBridge>
+public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SWIPrologGUI, SWIPrologBridge, KahinaProject>
 {
 
 	PrologProfiler profiler;
@@ -25,7 +26,8 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
 			super.startNewSession();
 			profiler = new PrologProfiler(this, state.getFullProfile());
 			return bridge;
-		} catch (Exception e)
+		} 
+        catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(-1);

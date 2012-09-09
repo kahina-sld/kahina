@@ -10,7 +10,7 @@ public class TraleSLDParseMenu extends JMenu
 {
 	private static final long serialVersionUID = -1290849167486564257L;
 
-	public TraleSLDParseMenu(KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDParseMenu(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super("Parse");
 		TraleSLDInstance instance = (TraleSLDInstance) kahina;

@@ -46,7 +46,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	protected int stepBeingRedone = -1;
 	protected Map<Integer, Integer> newStepIDByLastStepID = new HashMap<Integer, Integer>();
 
-	public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?> kahina, KahinaTree secondaryTree)
+	public LogicProgrammingTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?, ?> kahina, KahinaTree secondaryTree)
 	{
 		super(tree, kahina);
 		if (VERBOSE)

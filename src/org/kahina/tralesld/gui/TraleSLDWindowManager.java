@@ -6,12 +6,12 @@ import org.kahina.core.gui.windows.KahinaMainWindow;
 
 public class TraleSLDWindowManager extends KahinaWindowManager
 {
-	public TraleSLDWindowManager(KahinaInstance<?, ?, ?> kahina)
+	public TraleSLDWindowManager(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina, false);
 	}
     
-    protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?> kahina)
+    protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?, ?> kahina)
 	{
     	if (windowManager instanceof TraleSLDWindowManager)
     	{

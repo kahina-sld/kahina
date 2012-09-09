@@ -12,9 +12,9 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 public class KahinaTextViewListener implements MouseListener
 {
     JList list;
-    private final KahinaInstance<?, ?, ?> kahina;
+    private final KahinaInstance<?, ?, ?, ?> kahina;
     
-    public KahinaTextViewListener(KahinaTextViewPanel p, KahinaInstance<?, ?, ?> kahina)
+    public KahinaTextViewListener(KahinaTextViewPanel p, KahinaInstance<?, ?, ?, ?> kahina)
     {
         list = p.list;
         this.kahina = kahina;

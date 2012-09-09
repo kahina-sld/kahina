@@ -8,7 +8,7 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaProjectView extends KahinaView<KahinaProject>
 {
-	public KahinaProjectView(KahinaInstance<?, ?, ?> kahina) 
+	public KahinaProjectView(KahinaInstance<?, ?, ?, ?> kahina) 
 	{
 		super(kahina);
 	}

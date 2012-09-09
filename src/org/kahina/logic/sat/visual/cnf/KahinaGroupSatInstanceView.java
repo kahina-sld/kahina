@@ -11,7 +11,7 @@ public class KahinaGroupSatInstanceView extends KahinaSatInstanceView
 {
     GroupCnfSatInstance sat;
     
-    public KahinaGroupSatInstanceView(KahinaInstance<?, ?, ?> kahina, KahinaGraphLayouter layout)
+    public KahinaGroupSatInstanceView(KahinaInstance<?, ?, ?, ?> kahina, KahinaGraphLayouter layout)
     {
         super(kahina, layout);
     }

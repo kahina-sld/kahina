@@ -26,7 +26,7 @@ private static final long serialVersionUID = 6701252380309408342L;
     
     BufferedImage image;
     
-    public KahinaDAGViewPanel(KahinaInstance<?, ?, ?> kahina)
+    public KahinaDAGViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {       
         view = new KahinaDAGView(kahina, new LayeredLayouter());
         image = new BufferedImage(5, 5, BufferedImage.TYPE_4BYTE_ABGR);

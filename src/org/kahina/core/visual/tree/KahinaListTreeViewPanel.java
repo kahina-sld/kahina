@@ -33,7 +33,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
 	private static final boolean VERBOSE = false;
 	
-	private final KahinaInstance<?, ?, ?> kahina;
+	private final KahinaInstance<?, ?, ?, ?> kahina;
 
 	private final JPanel[] panels;
 	private final JList[] lists;
@@ -47,7 +47,7 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
 	private final int[] oldReferenceNodeByLayer;
 
-	public KahinaListTreeViewPanel(int layers, KahinaInstance<?, ?, ?> kahina)
+	public KahinaListTreeViewPanel(int layers, KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		if (VERBOSE)
 		{

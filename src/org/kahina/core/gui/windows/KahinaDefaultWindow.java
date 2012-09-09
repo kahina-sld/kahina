@@ -12,14 +12,14 @@ public class KahinaDefaultWindow extends KahinaWindow
 
 	KahinaView<?> v;
 
-	public KahinaDefaultWindow(KahinaView<?> v, KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina)
+	public KahinaDefaultWindow(KahinaView<?> v, KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(wm, kahina);
 		setContent(v, kahina.gui);
 		setTitle(v.getTitle());
 	}
 
-	public KahinaDefaultWindow(KahinaView<?> v, KahinaWindowManager wm, KahinaInstance<?, ?, ?> kahina, int winID)
+	public KahinaDefaultWindow(KahinaView<?> v, KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina, int winID)
 	{
 		super(wm, kahina, winID);
 		setContent(v, kahina.gui);

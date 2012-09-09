@@ -18,7 +18,7 @@ public class ThresholdedBreakpointEditorWindow extends BreakpointEditorWindow
 
 	private LogicProgrammingState state;
 
-	public ThresholdedBreakpointEditorWindow(KahinaInstance<?, ?, ?> kahina, int breakpointType)
+	public ThresholdedBreakpointEditorWindow(KahinaInstance<?, ?, ?, ?> kahina, int breakpointType)
 	{
 		super(kahina, breakpointType);
 	}

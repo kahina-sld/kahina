@@ -46,7 +46,7 @@ public class KahinaTreeTest
             TestLayeredTree m2 = TestLayeredTree.importXML(dom);
             //KahinaTree m2 = KahinaDbTree.importXML(dom, decider, data, m1);
             
-            KahinaInstance<?, ?, ?> kahina = new TraleSLDInstance();
+            KahinaInstance<?, ?, ?, ?> kahina = new TraleSLDInstance();
             
             KahinaTreeView v0 = new KahinaTreeView(kahina);
             v0.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);

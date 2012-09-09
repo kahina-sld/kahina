@@ -64,9 +64,9 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 	// org.kahina.core.breakpoint.KahinaBreakpointType
 	int breakpointType;
 	
-	private final KahinaInstance<?, ?, ?> kahina;
+	private final KahinaInstance<?, ?, ?, ?> kahina;
 
-	public BreakpointEditorWindow(KahinaInstance<?, ?, ?> kahina, int breakpointType)
+	public BreakpointEditorWindow(KahinaInstance<?, ?, ?, ?> kahina, int breakpointType)
 	{
 		this.breakpointType = breakpointType;
 

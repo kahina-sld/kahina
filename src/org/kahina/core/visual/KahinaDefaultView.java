@@ -9,7 +9,7 @@ import org.kahina.core.data.KahinaObject;
 public class KahinaDefaultView extends KahinaView<KahinaObject>
 {
     
-    public KahinaDefaultView(KahinaInstance<?, ?, ?> kahina)
+    public KahinaDefaultView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 	}
