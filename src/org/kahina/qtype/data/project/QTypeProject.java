@@ -2,12 +2,14 @@ package org.kahina.qtype.data.project;
 
 import java.io.File;
 
+import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.gui.KahinaPerspective;
+import org.kahina.lp.data.project.LpControlAgentExtension;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class QTypeProject extends KahinaProject
+public class QTypeProject extends KahinaProject implements LpControlAgentExtension
 { 
     /**
      * 
