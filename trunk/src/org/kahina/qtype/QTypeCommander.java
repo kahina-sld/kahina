@@ -44,7 +44,7 @@ public class QTypeCommander implements KahinaListener
         this.kahina = kahina;
     }
 
-    public final Action COMPILE_ACTION = new AbstractAction("Compile...")
+    public final Action COMPILE_ACTION = new AbstractAction("Compile")
     {
 
         private static final long serialVersionUID = -3829326193202814557L;
@@ -202,14 +202,14 @@ public class QTypeCommander implements KahinaListener
         {
             if (event.getArguments() == null || event.getArguments().length == 0)
             {
-                kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
+                //kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
             }
             else
             {
                 //abort in case another parse is being executed
                 kahina.dispatchEvent(new KahinaControlEvent("abort"));
-                compile((String) event.getArguments()[0]);
             }
+            compile(kahina.getProject().getMainFile().getAbsolutePath());
         }
         else if (QTypeControlEventCommands.PARSE.equals(command))
         {
