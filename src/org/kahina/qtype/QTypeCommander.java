@@ -16,6 +16,7 @@ import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaSystemEvent;
+import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.util.ListUtil;
 import org.kahina.prolog.util.PrologUtil;
@@ -68,24 +69,6 @@ public class QTypeCommander implements KahinaListener
 
     };
 
-    /**
-     * HACK This menu must be disabled/enabled by controller as appropriate,
-     * just like the actions. That's why we lifecycle-manage it here, even
-     * though it is a GUI element. We initialize it lazily because its
-     * constructor accesses the GUI.
-     */
-    private JMenu parseExampleMenu = null;
-
-    public JMenu getParseExampleMenu()
-    {
-        if (parseExampleMenu == null)
-        {
-            parseExampleMenu = new QTypeParseExampleMenu(kahina);
-        }
-
-        return parseExampleMenu;
-    }
-
     public final Action RESTART_ACTION = new AbstractAction("Restart parse")
     {
 
@@ -106,27 +89,22 @@ public class QTypeCommander implements KahinaListener
             if (commands.isEmpty())
             {
                 commanding = true;
-                updateActions();
+                kahina.setProjectStatus(KahinaProjectStatus.DEBUGGING_RUN);
                 return "";
             }
 
             String command = commands.remove();
             commanding = !"quit".equals(command);
-            updateActions();
+            if (!commanding)
+            {
+                kahina.setProjectStatus(KahinaProjectStatus.PROGRAM_COMPILED);
+            }
             if (VERBOSE)
             {
                 System.err.println(this + ".getCommand()=" + command + "(Queue: " + commands + ")");
             }
             return command;
         }
-    }
-
-    private void updateActions()
-    {
-        COMPILE_ACTION.setEnabled(commanding);
-        PARSE_ACTION.setEnabled(commanding && grammar != null);
-        parseExampleMenu.setEnabled(commanding && grammar != null);
-        RESTART_ACTION.setEnabled(commanding && grammar != null && !sentence.isEmpty());
     }
 
     @Override
@@ -167,7 +145,7 @@ public class QTypeCommander implements KahinaListener
         if (QTypeControlEventCommands.REGISTER_SENTENCE.equals(command))
         {
             sentence = ListUtil.castToStringList(event.getArguments()[0]);
-            updateActions();
+            kahina.setProjectStatus(KahinaProjectStatus.DEBUGGING_RUN);
             if (VERBOSE)
             {
                 System.err.println("Sentence registered.");
@@ -194,7 +172,7 @@ public class QTypeCommander implements KahinaListener
             	examples = new ArrayList<List<String>>();
             }
             kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
-            updateActions();
+            kahina.setProjectStatus(KahinaProjectStatus.PROGRAM_COMPILED);
             if (VERBOSE)
             {
                 System.err.println("Grammar registered.");
