@@ -89,21 +89,38 @@ public class QTypeCommander implements KahinaListener
             if (commands.isEmpty())
             {
                 commanding = true;
-                kahina.setProjectStatus(KahinaProjectStatus.DEBUGGING_RUN);
+                updateProjectStatus();
                 return "";
             }
 
             String command = commands.remove();
             commanding = !"quit".equals(command);
-            if (!commanding)
-            {
-                kahina.setProjectStatus(KahinaProjectStatus.PROGRAM_COMPILED);
-            }
+            updateProjectStatus();
             if (VERBOSE)
             {
                 System.err.println(this + ".getCommand()=" + command + "(Queue: " + commands + ")");
             }
             return command;
+        }
+    }
+    
+    public void updateProjectStatus()
+    {
+        if (!commanding)
+        {
+            kahina.setProjectStatus(KahinaProjectStatus.NO_OPEN_PROJECT);
+        }
+        else if (grammar == null)
+        {
+            kahina.setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+        }
+        else if (sentence.isEmpty())
+        {
+            kahina.setProjectStatus(KahinaProjectStatus.PROGRAM_COMPILED);
+        }
+        else
+        {
+            kahina.setProjectStatus(KahinaProjectStatus.DEBUGGING_RUN);
         }
     }
 
@@ -145,7 +162,7 @@ public class QTypeCommander implements KahinaListener
         if (QTypeControlEventCommands.REGISTER_SENTENCE.equals(command))
         {
             sentence = ListUtil.castToStringList(event.getArguments()[0]);
-            kahina.setProjectStatus(KahinaProjectStatus.DEBUGGING_RUN);
+            updateProjectStatus();
             if (VERBOSE)
             {
                 System.err.println("Sentence registered.");
@@ -172,7 +189,7 @@ public class QTypeCommander implements KahinaListener
             	examples = new ArrayList<List<String>>();
             }
             kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
-            kahina.setProjectStatus(KahinaProjectStatus.PROGRAM_COMPILED);
+            updateProjectStatus();
             if (VERBOSE)
             {
                 System.err.println("Grammar registered.");
