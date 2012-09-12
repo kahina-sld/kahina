@@ -159,7 +159,8 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 			wm.getArrangement().setEmbeddingWindowID(oldSubwindow.getID(), -1);
 
 			setSubwindow(newSubwindow);
-		} else
+		} 
+		else
 		{
 			System.err.println("WARNING: Window \"" + oldSubwindow.getTitle() + "\" not found as a tab in window \"" + this.getTitle() + "\", replacement failed.");
 		}

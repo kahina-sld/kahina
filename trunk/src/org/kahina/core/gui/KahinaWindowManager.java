@@ -160,7 +160,7 @@ public class KahinaWindowManager implements KahinaListener
                     mainWindow.setLocation(getArrangement().getXPos(winID), getArrangement().getYPos(winID));
                     mainWindow.setBorder(getArrangement().hasBorder(winID));
                     mainWindow.setScrollable(getArrangement().isScrollable(winID));
-                    //mainWindow.processProjectStatus(kahina.getProjectStatus());
+                    mainWindow.processProjectStatus(kahina.getProjectStatus());
                     break;
                 }
                 case KahinaWindowType.HORI_SPLIT_WINDOW:

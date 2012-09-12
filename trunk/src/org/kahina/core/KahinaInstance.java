@@ -60,7 +60,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	protected ObjectMagazine<KahinaStep> steps;
     
-    private KahinaProjectStatus projectStatus;
+    private KahinaProjectStatus projectStatus = KahinaProjectStatus.NO_OPEN_PROJECT;
 
 	/**
 	 * GUI and views listen to this controller. It never changes.

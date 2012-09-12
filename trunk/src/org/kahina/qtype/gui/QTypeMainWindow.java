@@ -30,25 +30,17 @@ public class QTypeMainWindow extends LogicProgrammingMainWindow
     
     public void processProjectStatus(KahinaProjectStatus projectStatus)
     {
+        grammarMenu.setActivationPattern(projectStatus);
         switch (projectStatus)
         {
             case NO_OPEN_PROJECT:
             {
-                grammarMenu.setEnabled(false);
                 projectMenu.saveProjectItem.setEnabled(false);
                 break;
             }
-            case PROGRAM_UNCOMPILED:
+            default:
             {
-                grammarMenu.setEnabled(true);
                 projectMenu.saveProjectItem.setEnabled(true);
-                break;
-            }
-            case PROGRAM_COMPILED:
-            {
-                grammarMenu.setEnabled(true);
-                projectMenu.saveProjectItem.setEnabled(true);
-                break;
             }
         }
     }
