@@ -496,6 +496,11 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
 		return "Kahina";
 	}
+	
+	public P getProject()
+	{
+	    return project;
+	}
     
     public void newProject(File grammarFile)
     {
