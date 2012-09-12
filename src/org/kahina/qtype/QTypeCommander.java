@@ -106,21 +106,24 @@ public class QTypeCommander implements KahinaListener
     
     public void updateProjectStatus()
     {
-        if (!commanding)
+        if (kahina.getProjectStatus() != KahinaProjectStatus.NO_OPEN_PROJECT)
         {
-            kahina.setProjectStatus(KahinaProjectStatus.NO_OPEN_PROJECT);
-        }
-        else if (grammar == null)
-        {
-            kahina.setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-        }
-        else if (sentence.isEmpty())
-        {
-            kahina.setProjectStatus(KahinaProjectStatus.PROGRAM_COMPILED);
-        }
-        else
-        {
-            kahina.setProjectStatus(KahinaProjectStatus.DEBUGGING_RUN);
+            if (!commanding)
+            {
+                kahina.setProjectStatus(KahinaProjectStatus.NO_OPEN_PROJECT);
+            }
+            else if (grammar == null)
+            {
+                kahina.setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+            }
+            else if (sentence.isEmpty())
+            {
+                kahina.setProjectStatus(KahinaProjectStatus.PROGRAM_COMPILED);
+            }
+            else
+            {
+                kahina.setProjectStatus(KahinaProjectStatus.DEBUGGING_RUN);
+            }
         }
     }
 
