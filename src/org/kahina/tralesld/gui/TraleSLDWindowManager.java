@@ -8,7 +8,7 @@ public class TraleSLDWindowManager extends KahinaWindowManager
 {
 	public TraleSLDWindowManager(KahinaInstance<?, ?, ?, ?> kahina)
 	{
-		super(kahina, false);
+		super(kahina);
 	}
     
     protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager, KahinaInstance<?, ?, ?, ?> kahina)

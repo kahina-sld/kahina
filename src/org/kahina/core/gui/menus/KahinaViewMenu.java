@@ -10,6 +10,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
@@ -23,16 +24,18 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
 {
 	private static final long serialVersionUID = -8816851369583949953L;
 	
+    private KahinaInstance<?,?,?,?> kahina;
     private KahinaWindowManager manager;
     
     private File lastPerspectiveFile;
 
-	public KahinaViewMenu(KahinaWindowManager manager)
+	public KahinaViewMenu(KahinaInstance<?,?,?,?> kahina)
     {
         super("View"); 
         
-        this.manager = manager;      
-        manager.getGuiControl().registerListener(KahinaEventTypes.WINDOW, this);
+        this.kahina = kahina; 
+        manager = kahina.gui.getWindowManager();
+        kahina.getGuiControl().registerListener(KahinaEventTypes.WINDOW, this);
       
         rebuild();
     }
@@ -100,7 +103,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         
         JMenu recentPerspectivesMenu = new JMenu("Recent Perspectives");
         int count = 0;
-        for (KahinaPerspective psp : manager.recentPerspectives)
+        for (KahinaPerspective psp : kahina.recentPerspectives)
         {
         	JMenuItem recentPerspectiveItem = new JMenuItem(psp.getName());
         	recentPerspectiveItem.setActionCommand("loadRecentPerspective:" + count++);
@@ -111,7 +114,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         
         JMenu predefinedPerspectivesMenu = new JMenu("Predefined Perspectives");
         count = 0;
-        for (KahinaPerspective psp : manager.defaultPerspectives)
+        for (KahinaPerspective psp : kahina.defaultPerspectives)
         {
         	JMenuItem predefinedPerspectiveItem = new JMenuItem(psp.getName());
         	predefinedPerspectiveItem.setActionCommand("loadDefaultPerspective:" + count++);

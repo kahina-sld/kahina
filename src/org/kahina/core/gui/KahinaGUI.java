@@ -195,13 +195,18 @@ public class KahinaGUI implements KahinaListener
 
 	public void prepare()
 	{
-		windowManager.createWindows(KahinaPerspective.generateDefaultPerspective(varNameToView));
+		windowManager.createWindows();
 		displayMainViews();
 	}	
+	
+	public KahinaWindowManager getWindowManager()
+	{
+	    return windowManager;
+	}
 
 	protected KahinaWindowManager createWindowManager()
 	{
-		return new KahinaWindowManager(kahina, false);
+		return new KahinaWindowManager(kahina);
 	}
 
 	public final void show()
@@ -286,6 +291,11 @@ public class KahinaGUI implements KahinaListener
 			e.getPanel().view.processEvent(new KahinaUpdateEvent(e.getSelectedStep(), e.getLayer()));
 			e.getPanel().processEvent(new KahinaRedrawEvent());
 		}
+	}
+	
+	public KahinaPerspective generateInitialPerspective()
+	{
+	    return KahinaPerspective.generateDefaultPerspective(varNameToView);
 	}
 
 	protected void processDialogEvent(KahinaDialogEvent e)

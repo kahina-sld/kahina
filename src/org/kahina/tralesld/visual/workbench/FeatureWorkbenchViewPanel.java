@@ -1053,7 +1053,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		workbench.setSignature(trale.getSignature(System.getProperty("user.dir") + "/signature"));
 		workbench.getSignature().inferCachedInformation();
 
-		KahinaWindowManager wManager = new KahinaWindowManager(kahina, true);
+		KahinaWindowManager wManager = new KahinaWindowManager(kahina); //TODO: standalone
 		
 		//generate a signature view window
 		TraleSLDSignatureAppropriatenessView appro = new TraleSLDSignatureAppropriatenessView(kahina);

@@ -28,21 +28,27 @@ public class QTypeGUI extends SICStusPrologGUI
 		super(stepType, instance);
 	}
 
-	@Override
+	/*@Override
 	public void prepare()
 	{
 		try
 		{
 			displayMainViews();
-			//TODO: load last perspective instead of only default perspective from XML
-			InputStream xmlStream = new BufferedInputStream(QTypeGUI.class.getResourceAsStream("kahinaqtype-integrated.xml"));
-			windowManager.createWindows(KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement()));	
+
+			windowManager.createWindows();	
 		}
 		catch (NullPointerException e)
 		{
 			e.printStackTrace();
 		}
-	}
+	}*/
+	
+    public KahinaPerspective generateInitialPerspective()
+    {
+        //TODO: load last perspective instead of only default perspective from XML
+        InputStream xmlStream = new BufferedInputStream(QTypeGUI.class.getResourceAsStream("kahinaqtype-integrated.xml"));
+        return KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement());
+    }
 
 	@Override
 	protected KahinaListTreeView generateTreeView()

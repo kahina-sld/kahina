@@ -60,15 +60,4 @@ public class TulipaGUI extends KahinaGUI
         mainDAGView.display(instance.getState().getDAG());  
         grammarView.display(instance.getState().getGrammar()); 
     }
-    
-    @Override
-    public void prepare()
-    {
-        super.prepare();
-        //TODO: put this into a default configuration
-        //getWindowForVarName("dag").setSize(800, 500);
-        //getWindowForVarName("dag").setLocation(0, 150);
-        //getWindowForVarName("grammar").setSize(800, 100);
-        //getWindowForVarName("grammar").setLocation(0, 700);
-    }
 }
