@@ -45,10 +45,6 @@ public class KahinaWindowManager implements KahinaListener
     public KahinaMainWindow mainWindow;
     private KahinaPerspective psp;
 
-    // store recent perspectives and cache default perspectives
-    public List<KahinaPerspective> recentPerspectives;
-    public List<KahinaPerspective> defaultPerspectives;
-
     // main registry for windows: access windows by their windowID
     private HashMap<Integer, KahinaWindow> windowByID;
 
@@ -56,55 +52,30 @@ public class KahinaWindowManager implements KahinaListener
      * Create a simple window manager..
      * 
      * @param kahina - the KahinaInstance bundling the other parts of the system
-     * @param standaloneMode - true for a simple standalone application
      */
-    public KahinaWindowManager(KahinaInstance<?, ?, ?, ?> kahina, boolean standaloneMode)
+    public KahinaWindowManager(KahinaInstance<?, ?, ?, ?> kahina)
     {
     	this.kahina = kahina;
         getGuiControl().registerListener(KahinaEventTypes.WINDOW, this);
-        setPerspective(new KahinaPerspective("default", "default"));
         this.windowByID = new HashMap<Integer, KahinaWindow>();
-        
-        if (!standaloneMode)
-        {
-        	getGuiControl().registerListener(KahinaEventTypes.PERSPECTIVE, this);
-        	recentPerspectives = new LinkedList<KahinaPerspective>();
-            // load the default perspectives in the bin folder of the respective KahinaGUI instance
-            defaultPerspectives = new LinkedList<KahinaPerspective>();
-            // This filter only returns XML files
-            FileFilter fileFilter = new FileFilter()
-            {
-                public boolean accept(File file)
-                {
-                    // System.err.println("Filtering file " + file.getName() + ": "
-                    // + file.getName().endsWith("xml"));
-                    return file.getName().endsWith("xml");
-                }
-            };
-            File[] files = new File(kahina.getClass().getResource("./gui").getFile()).listFiles(fileFilter);
-            for (File f : files)
-            {
-                if (VERBOSE)
-                {
-                    System.err.println("Loading default perspective: " + f.getAbsolutePath());
-                }
-                defaultPerspectives.add(loadPerspective(f));
-            }
-        }
     }
 
     /**
-     * Builds the windows according to some perspective. Must be called before
-     * first display.
+     * Builds the windows according to the perspective. Must be called before
+     * first display. A perspective must be set before this is called.
      */
-    public void createWindows(KahinaPerspective psp)
+    public void createWindows()
     {
-        registerRecentPerspective(psp);
-        this.setPerspective(psp);
-
+        //registerRecentPerspective(psp);
+        // this.setPerspective(psp);
+        if (psp == null)
+        {
+            System.err.println("ERROR: KahinaWindowManager.createWindows() called before any perspective was set!");
+            System.err.println("       Continuing with an empty default perspective.");
+            setPerspective(new KahinaPerspective("default", "default"));
+        }
         if (VERBOSE) System.err.println("KahinaWindowManager is creating windows ...");
-        // first create a window stub for all the windows mentioned in the
-        // arrangement...
+        // first create a window stub for all the windows mentioned in the arrangement...
         for (int winID : getArrangement().getAllWindows())
         {
             if (VERBOSE) System.err.println("winID" + winID + ":");
@@ -281,9 +252,10 @@ public class KahinaWindowManager implements KahinaListener
      */
     public void setAndApplyPerspective(KahinaPerspective psp)
     {
-        disposeAllWindows();
+        if (this.psp != null) disposeAllWindows();
         windowByID.clear();
-        createWindows(psp);
+        setPerspective(psp);
+        createWindows();
         displayWindows();
     }
 
@@ -432,34 +404,9 @@ public class KahinaWindowManager implements KahinaListener
     @Override
     public void processEvent(KahinaEvent e)
     {
-        if (e instanceof KahinaPerspectiveEvent)
-        {
-            processPerspectiveEvent((KahinaPerspectiveEvent) e);
-        }
-        else if (e instanceof KahinaWindowEvent)
+        if (e instanceof KahinaWindowEvent)
         {
             processWindowEvent((KahinaWindowEvent) e);
-        }
-    }
-
-    private void processPerspectiveEvent(KahinaPerspectiveEvent e)
-    {
-        int type = e.getPerspectiveEventType();
-        if (type == KahinaPerspectiveEvent.SAVE_PERSPECTIVE)
-        {
-            savePerspectiveAs(e.getFile());
-        }
-        else if (type == KahinaPerspectiveEvent.LOAD_PERSPECTIVE)
-        {
-            setAndApplyPerspective(loadPerspective(e.getFile()));
-        }
-        else if (type == KahinaPerspectiveEvent.LOAD_RECENT_PERSPECTIVE)
-        {
-            setAndApplyPerspective(recentPerspectives.get(e.getID()).copy());
-        }
-        else if (type == KahinaPerspectiveEvent.LOAD_DEFAULT_PERSPECTIVE)
-        {
-            setAndApplyPerspective(defaultPerspectives.get(e.getID()).copy());
         }
     }
 
@@ -759,39 +706,6 @@ public class KahinaWindowManager implements KahinaListener
                 }
             }
         }
-    }
-
-    private KahinaPerspective loadPerspective(File file)
-    {
-        try
-        {
-            InputStream stream = new BufferedInputStream(new FileInputStream(file));
-            KahinaPerspective result = KahinaPerspective.importXML(XMLUtil.parseXMLStream(stream, false).getDocumentElement());
-            stream.close();
-            return result;
-        }
-        catch (IOException e)
-        {
-            throw new KahinaException("Failed to load perspective.", e);
-        }
-    }
-
-    // by default, the five most recent perspectives are kept in memory
-    private void registerRecentPerspective(KahinaPerspective psp)
-    {
-        // move to the front, or add to the front
-        recentPerspectives.remove(psp);
-        recentPerspectives.add(0, psp);
-        if (recentPerspectives.size() > 5)
-        {
-            recentPerspectives.remove(5);
-        }
-    }
-
-    private void savePerspectiveAs(File file)
-    {
-        Node node = getPerspective().exportXML(XMLUtil.newEmptyDocument());
-        XMLUtil.writeXML(node, file.getAbsolutePath());
     }
 
     public KahinaController getGuiControl()

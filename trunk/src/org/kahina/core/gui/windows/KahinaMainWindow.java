@@ -66,7 +66,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		
 		addMenusInFront();
 
-        viewMenu = new KahinaViewMenu(wm);
+        viewMenu = new KahinaViewMenu(kahina);
 		menuBar.add(viewMenu);
 
 		addMenusBeforeHelpMenu();

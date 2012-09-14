@@ -1,11 +1,17 @@
 package org.kahina.core;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -27,8 +33,10 @@ import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.text.KahinaLineReference;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.KahinaGUI;
+import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
+import org.kahina.core.gui.event.KahinaPerspectiveEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.magazine.ObjectMagazine;
@@ -43,6 +51,7 @@ import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.tralesld.TraleSLDState;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge, P extends KahinaProject> implements KahinaListener
 {
@@ -57,6 +66,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	protected B bridge;
     
     protected P project;
+    
+    // store recent perspectives and cache default perspectives
+    public List<KahinaPerspective> recentPerspectives;
+    public List<KahinaPerspective> defaultPerspectives;
 
 	protected ObjectMagazine<KahinaStep> steps;
     
@@ -77,6 +90,32 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	public KahinaInstance()
 	{
 		guiControl = new KahinaController();
+        guiControl.registerListener(KahinaEventTypes.PERSPECTIVE, this);
+        //if (!standaloneMode) //TODO: think about standalone mode
+        {
+            recentPerspectives = new LinkedList<KahinaPerspective>();
+            // load the default perspectives in the bin folder of the respective KahinaGUI instance
+            defaultPerspectives = new LinkedList<KahinaPerspective>();
+            // This filter only returns XML files
+            FileFilter fileFilter = new FileFilter()
+            {
+                public boolean accept(File file)
+                {
+                    // System.err.println("Filtering file " + file.getName() + ": "
+                    // + file.getName().endsWith("xml"));
+                    return file.getName().endsWith("xml");
+                }
+            };
+            File[] files = new File(this.getClass().getResource("./gui").getFile()).listFiles(fileFilter);
+            for (File f : files)
+            {
+                if (VERBOSE)
+                {
+                    System.err.println("Loading default perspective: " + f.getAbsolutePath());
+                }
+                defaultPerspectives.add(loadPerspective(f));
+            }
+        }
 		try
 		{
 			fillViewRegistry();
@@ -97,6 +136,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	private void startGUI()
 	{
 		gui = createGUI();
+		KahinaPerspective perspective = gui.generateInitialPerspective();
+		gui.setPerspective(perspective);
+		registerRecentPerspective(perspective);
 		gui.prepare();
 		guiStarted = true;
         setProjectStatus(KahinaProjectStatus.NO_OPEN_PROJECT);
@@ -284,6 +326,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		{
 			processSessionEvent((KahinaSessionEvent) e);
 		} 
+        else if (e instanceof KahinaPerspectiveEvent)
+        {
+            processPerspectiveEvent((KahinaPerspectiveEvent) e);
+        } 
         else if (e instanceof KahinaProjectEvent)
         {
             processProjectEvent((KahinaProjectEvent) e);
@@ -318,6 +364,33 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			loadSession(e.getFile());
 		}
 	}
+	
+    private void processPerspectiveEvent(KahinaPerspectiveEvent e)
+    {
+        int type = e.getPerspectiveEventType();
+        if (type == KahinaPerspectiveEvent.SAVE_PERSPECTIVE)
+        {
+            savePerspectiveAs(e.getFile());
+        }
+        else if (type == KahinaPerspectiveEvent.LOAD_PERSPECTIVE)
+        {
+            KahinaPerspective perspective = loadPerspective(e.getFile());
+            project.setPerspective(perspective);
+            gui.setPerspective(perspective);
+        }
+        else if (type == KahinaPerspectiveEvent.LOAD_RECENT_PERSPECTIVE)
+        {
+            KahinaPerspective perspective =  recentPerspectives.get(e.getID()).copy();
+            project.setPerspective(perspective);
+            gui.setPerspective(perspective);
+        }
+        else if (type == KahinaPerspectiveEvent.LOAD_DEFAULT_PERSPECTIVE)
+        {
+            KahinaPerspective perspective =  defaultPerspectives.get(e.getID()).copy();
+            project.setPerspective(perspective);
+            gui.setPerspective(perspective);
+        }
+    }
     
     protected void processProjectEvent(KahinaProjectEvent e)
     {
@@ -339,6 +412,39 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                 break;
             }
         }
+    }
+    
+    private KahinaPerspective loadPerspective(File file)
+    {
+        try
+        {
+            InputStream stream = new BufferedInputStream(new FileInputStream(file));
+            KahinaPerspective result = KahinaPerspective.importXML(XMLUtil.parseXMLStream(stream, false).getDocumentElement());
+            stream.close();
+            return result;
+        }
+        catch (IOException e)
+        {
+            throw new KahinaException("Failed to load perspective.", e);
+        }
+    }
+
+    // by default, the five most recent perspectives are kept in memory
+    private void registerRecentPerspective(KahinaPerspective psp)
+    {
+        // move to the front, or add to the front
+        recentPerspectives.remove(psp);
+        recentPerspectives.add(0, psp);
+        if (recentPerspectives.size() > 5)
+        {
+            recentPerspectives.remove(5);
+        }
+    }
+
+    private void savePerspectiveAs(File file)
+    {
+        Node node = project.getPerspective().exportXML(XMLUtil.newEmptyDocument());
+        XMLUtil.writeXML(node, file.getAbsolutePath());
     }
 
 	private void loadSession(File file)

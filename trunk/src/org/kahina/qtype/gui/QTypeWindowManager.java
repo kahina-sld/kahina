@@ -8,7 +8,7 @@ public class QTypeWindowManager extends KahinaWindowManager
 {
 	public QTypeWindowManager(QTypeDebuggerInstance kahina)
 	{
-		super(kahina, false);
+		super(kahina);
 	}
     
 	@Override

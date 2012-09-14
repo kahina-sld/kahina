@@ -9,7 +9,7 @@ public class SICStusPrologWindowManager extends KahinaWindowManager
 {
 	public SICStusPrologWindowManager(SICStusPrologDebuggerInstance kahina)
 	{
-		super(kahina, false);
+		super(kahina);
 	}
     
     protected KahinaMainWindow createMainWindow(KahinaWindowManager windowManager)
