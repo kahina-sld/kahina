@@ -23,14 +23,12 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 {	
 	
 	private QTypeCommander commander;
-	private KahinaBreakpointProfile breakpoints;
 	
 	public QTypeDebuggerInstance()
 	{
 		super();
 		commander = new QTypeCommander(this);
 		commander.initializeForNewSession();
-		breakpoints = new KahinaBreakpointProfile();
 	}
 	
 	@Override
@@ -82,11 +80,6 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 		return commander;
 	}
 	
-	public KahinaBreakpointProfile getBreakpoints()
-	{
-	    return breakpoints;
-	}
-	
 	@Override
 	public String getApplicationName()
 	{
@@ -108,6 +101,7 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
             project = new QTypeProject(state.getStepTree(), control);
             project = QTypeProject.importXML(dom.getDocumentElement(), project);
             gui.setPerspective(project.getPerspective());
+            gui.displayMainViews();
             setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         }
         catch (FileNotFoundException e)
