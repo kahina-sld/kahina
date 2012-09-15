@@ -195,8 +195,8 @@ public class KahinaGUI implements KahinaListener
 
 	public void prepare()
 	{
-		windowManager.createWindows();
 		displayMainViews();
+	    windowManager.createWindows();
 	}	
 	
 	public KahinaWindowManager getWindowManager()
@@ -216,7 +216,7 @@ public class KahinaGUI implements KahinaListener
 
 	public void displayMainViews()
 	{
-		
+	    //System.err.println("WARNING: called stub version of KahinaGUI.displayMainViews()! This should not happen!");
 	}
 
 	public void displayStepContent(int stepID)

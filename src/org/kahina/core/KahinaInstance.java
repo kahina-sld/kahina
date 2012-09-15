@@ -137,7 +137,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
 		gui = createGUI();
 		KahinaPerspective perspective = gui.generateInitialPerspective();
-		gui.setPerspective(perspective);
+		gui.getWindowManager().setPerspective(perspective);
 		registerRecentPerspective(perspective);
 		gui.prepare();
 		guiStarted = true;
