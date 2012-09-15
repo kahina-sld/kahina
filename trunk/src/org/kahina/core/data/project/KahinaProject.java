@@ -109,15 +109,15 @@ public class KahinaProject extends KahinaObject
         return el;
 	}
 	
-	public static KahinaProject importXML(Element topEl)
+	public static KahinaProject importXML(Element topEl, KahinaProject project)
 	{
         if (!"kahina:project".equals(topEl.getNodeName()))
         {
             System.err.println("ERROR: attempted to loaded project file with wrong top element! Loading an empty project.");
-            return new KahinaProject("default");
+            return project;
         }
         String appID = topEl.getAttribute("kahina:appid");
-	    KahinaProject project = new KahinaProject(appID);
+	    project.appID = appID;
         NodeList mainFileList = topEl.getElementsByTagName("kahina:mainFile");
         if (mainFileList.getLength() != 1)
         {

@@ -15,6 +15,7 @@ import javax.swing.event.ListSelectionListener;
 import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.data.breakpoint.KahinaControlPoint;
 import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
+import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.data.breakpoint.LogicProgrammingControlPoint;
@@ -25,12 +26,12 @@ import org.w3c.dom.Element;
 public class KahinaControlPointProfileListener implements ActionListener, ListSelectionListener
 {
     KahinaControlPointProfileViewPanel profilePanel;
-    LogicProgrammingState lpState;
+    KahinaTree stepTree;
     
-    public KahinaControlPointProfileListener(KahinaControlPointProfileViewPanel profilePanel, LogicProgrammingState lpState)
+    public KahinaControlPointProfileListener(KahinaControlPointProfileViewPanel profilePanel, KahinaTree stepTree)
     {
         this.profilePanel = profilePanel;
-        this.lpState = lpState;
+        this.stepTree = stepTree;
     }
 
     public void actionPerformed(ActionEvent e)
@@ -38,7 +39,7 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         String s = e.getActionCommand();
         if (s.equals("newControlPoint"))
         {
-            LogicProgrammingControlPoint newControlPoint = new LogicProgrammingControlPoint(profilePanel.getKahina().getControl(), lpState);
+            LogicProgrammingControlPoint newControlPoint = new LogicProgrammingControlPoint(profilePanel.getKahina().getControl(), stepTree);
             profilePanel.view.getModel().addControlPoint(newControlPoint);
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
             profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
@@ -52,7 +53,7 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
             try
             {
                 Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
-                LogicProgrammingControlPoint newControlPoint = LogicProgrammingControlPoint.importXML(dom.getDocumentElement(), profilePanel.getKahina().getControl(), lpState);
+                LogicProgrammingControlPoint newControlPoint = LogicProgrammingControlPoint.importXML(dom.getDocumentElement(), profilePanel.getKahina().getControl(), stepTree);
                 profilePanel.view.getModel().addControlPoint(newControlPoint);
                 profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
                 profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);

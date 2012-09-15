@@ -11,6 +11,7 @@ import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
+import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.prolog.profiler.PrologProfiler;
@@ -20,7 +21,7 @@ import org.kahina.sicstus.gui.SICStusPrologGUI;
 import org.kahina.sicstus.visual.bindings.SICStusPrologVariableBindingSetView;
 import org.w3c.dom.Document;
 
-public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SICStusPrologGUI, SICStusPrologBridge, KahinaProject>
+public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SICStusPrologGUI, SICStusPrologBridge, LogicProgrammingProject>
 {
 
 	PrologProfiler profiler;
@@ -79,9 +80,9 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 	}
 
     @Override
-    protected KahinaProject createNewProject()
+    protected LogicProgrammingProject createNewProject()
     {
-        return new KahinaProject("sicstus");
+        return new LogicProgrammingProject("sicstus", state.getStepTree(), control);
     }
 
     public void loadProject(File projectFile)
@@ -90,7 +91,8 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = KahinaProject.importXML(dom.getDocumentElement());
+            project = createNewProject();
+            project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project);
             setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         }
         catch (FileNotFoundException e)

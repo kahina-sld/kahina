@@ -357,7 +357,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
     @Override
     protected TraleProject createNewProject()
     {
-        return new TraleProject();
+        return new TraleProject(state.getStepTree(), control);
     }
 
     public void loadProject(File projectFile)
@@ -366,7 +366,8 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = TraleProject.importXML(dom.getDocumentElement());
+            project = createNewProject();
+            project = TraleProject.importXML(dom.getDocumentElement(), project);
             setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         }
         catch (FileNotFoundException e)

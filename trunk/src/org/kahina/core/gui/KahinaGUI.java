@@ -53,7 +53,7 @@ public class KahinaGUI implements KahinaListener
 	protected List<KahinaView<?>> views;
 	protected KahinaWindowManager windowManager;
 
-	//TODO: overhaul the treatment of clones that is currently inconsistent
+	//TODO: overhaul the treatment of clones, which is currently inconsistent
 	protected Set<KahinaView<?>> livingViews;
 
 	private Map<Field, KahinaView<? extends KahinaObject>> fieldToView;
@@ -74,27 +74,30 @@ public class KahinaGUI implements KahinaListener
 		kahina.getGuiControl().registerListener(KahinaEventTypes.DIALOG, this);
 		kahina.getGuiControl().registerListener(KahinaEventTypes.CONTROL, this);
 		kahina.getGuiControl().registerListener(KahinaEventTypes.WARN, this);
+	}
+	
+	protected void initialize()
+	{
+	    this.selectionHistory = new KahinaSelectionHistory(kahina);
+	        
+        this.windowManager = createWindowManager();
 
-		this.selectionHistory = new KahinaSelectionHistory(kahina);
-		
-		this.windowManager = createWindowManager();
+        this.controlWindows = new HashMap<String,List<KahinaControlButton>>();
 
-		this.controlWindows = new HashMap<String,List<KahinaControlButton>>();
+        this.views = new ArrayList<KahinaView<?>>();
 
-		this.views = new ArrayList<KahinaView<?>>();
+        this.livingViews = new HashSet<KahinaView<?>>();
+        this.fieldToView = new HashMap<Field, KahinaView<? extends KahinaObject>>();
+        this.varNameToView = new HashMap<String, KahinaView<? extends KahinaObject>>();
+        fillFieldToView(stepType, kahina);
 
-		this.livingViews = new HashSet<KahinaView<?>>();
-		this.fieldToView = new HashMap<Field, KahinaView<? extends KahinaObject>>();
-		this.varNameToView = new HashMap<String, KahinaView<? extends KahinaObject>>();
-		fillFieldToView(stepType, kahina);
-
-		messageConsoleView = new KahinaTextView(kahina);
-		messageConsoleView.setTitle("Message console");
-		kahina.getGuiControl().registerListener("message", messageConsoleView);
-		kahina.getGuiControl().registerListener("console line", messageConsoleView);
-		views.add(messageConsoleView);
-		livingViews.add(messageConsoleView);
-		varNameToView.put("messageConsole", messageConsoleView);
+        messageConsoleView = new KahinaTextView(kahina);
+        messageConsoleView.setTitle("Message console");
+        kahina.getGuiControl().registerListener("message", messageConsoleView);
+        kahina.getGuiControl().registerListener("console line", messageConsoleView);
+        views.add(messageConsoleView);
+        livingViews.add(messageConsoleView);
+        varNameToView.put("messageConsole", messageConsoleView);
 	}
 
 	/**

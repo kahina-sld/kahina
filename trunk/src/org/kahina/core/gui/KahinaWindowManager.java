@@ -56,7 +56,7 @@ public class KahinaWindowManager implements KahinaListener
     public KahinaWindowManager(KahinaInstance<?, ?, ?, ?> kahina)
     {
     	this.kahina = kahina;
-        getGuiControl().registerListener(KahinaEventTypes.WINDOW, this);
+        kahina.getGuiControl().registerListener(KahinaEventTypes.WINDOW, this);
         this.windowByID = new HashMap<Integer, KahinaWindow>();
     }
 

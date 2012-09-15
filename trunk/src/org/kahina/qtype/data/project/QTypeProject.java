@@ -2,39 +2,41 @@ package org.kahina.qtype.data.project;
 
 import java.io.File;
 
+import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
 import org.kahina.core.data.project.KahinaProject;
+import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.KahinaPerspective;
-import org.kahina.lp.data.project.LpControlAgentExtension;
+import org.kahina.lp.LogicProgrammingState;
+import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class QTypeProject extends KahinaProject implements LpControlAgentExtension
+public class QTypeProject extends LogicProgrammingProject
 { 
     /**
      * 
      */
     private static final long serialVersionUID = -2093492979848559602L;
 
-    public QTypeProject()
+    public QTypeProject(KahinaTree stepTree, KahinaController control)
     {
-        super("qtype");
+        super("qtype", stepTree, control);
     }
     
-    public static QTypeProject importXML(Element topEl)
+    public static QTypeProject importXML(Element topEl, QTypeProject project)
     {
         if (!"kahina:project".equals(topEl.getNodeName()))
         {
             System.err.println("ERROR: attempted to loaded project file with wrong top element! Loading an empty project.");
-            return new QTypeProject();
+            return project;
         }
         String appID = topEl.getAttribute("kahina:appid");
         if (!"qtype".equals(appID))
         {
             System.err.println("ERROR: attempted to loaded project file for different application " + appID + "! Loading an empty project instead.");
-            return new QTypeProject();
+            return project;
         }
-        QTypeProject project = new QTypeProject();
         NodeList mainFileList = topEl.getElementsByTagName("kahina:mainFile");
         if (mainFileList.getLength() != 1)
         {

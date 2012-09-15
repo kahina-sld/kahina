@@ -39,10 +39,14 @@ public class LogicProgrammingGUI extends KahinaGUI
     protected KahinaControlPointProfileView skipPointView;
     protected KahinaControlPointProfileView failPointView;
     protected KahinaControlPointProfileView warnPointView;
+    
+    protected LogicProgrammingInstance<?,?,?,?> kahina;
 
-	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, LogicProgrammingInstance kahina)
+	public LogicProgrammingGUI(Class<? extends KahinaStep> stepType, LogicProgrammingInstance<?,?,?,?> kahina)
 	{
 		super(stepType, kahina);
+		this.kahina = kahina;
+		initialize();
 		
 		mainTreeView = generateTreeView();
 		mainTreeView.setTitle("Control flow tree");
@@ -142,12 +146,12 @@ public class LogicProgrammingGUI extends KahinaGUI
 			System.err.println("Displaying console messages...");
 		}
 		messageConsoleView.display(state.getConsoleMessages());
-        breakPointView.display(state.getBreakPoints());
-        creepPointView.display(state.getCreepPoints());
-        completePointView.display(state.getCompletePoints());
-        skipPointView.display(state.getSkipPoints());
-        failPointView.display(state.getFailPoints());
-        warnPointView.display(state.getWarnPoints());
+        breakPointView.display(kahina.getBreakPoints());
+        creepPointView.display(kahina.getCreepPoints());
+        completePointView.display(kahina.getCompletePoints());
+        skipPointView.display(kahina.getSkipPoints());
+        failPointView.display(kahina.getFailPoints());
+        warnPointView.display(kahina.getWarnPoints());
 		if (VERBOSE)
 		{
 			System.err.println("//" + this + ".displayMainViews()");
