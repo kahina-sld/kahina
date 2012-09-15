@@ -12,10 +12,10 @@ public class LogicProgrammingControlPointProfile extends KahinaControlPointProfi
 {
     protected KahinaTree stepTree;
     
-    public LogicProgrammingControlPointProfile(KahinaControlActuator actuator, LogicProgrammingState state)
+    public LogicProgrammingControlPointProfile(KahinaControlActuator actuator, KahinaTree stepTree)
     {
         super(actuator);
-        this.stepTree = state.getStepTree();
+        this.stepTree = stepTree;
     }
     
     public void addControlPoint(LogicProgrammingControlPoint controlPoint)
@@ -24,14 +24,14 @@ public class LogicProgrammingControlPointProfile extends KahinaControlPointProfi
         controlPoint.setStepTree(stepTree);
     }
     
-    public static LogicProgrammingControlPointProfile importXML(Element controlPointElement, KahinaControlActuator actuator, LogicProgrammingState state)
+    public static LogicProgrammingControlPointProfile importXML(Element controlPointElement, KahinaControlActuator actuator, KahinaTree stepTree)
     {
-        LogicProgrammingControlPointProfile profile = new LogicProgrammingControlPointProfile(actuator, state);
+        LogicProgrammingControlPointProfile profile = new LogicProgrammingControlPointProfile(actuator, stepTree);
         NodeList controlPointNodes = controlPointElement.getElementsByTagName("kahina:controlPoint");
         for (int i = 0; i < controlPointNodes.getLength(); i++)
         {
             Element controlPointNode = (Element) controlPointNodes.item(i);
-            LogicProgrammingControlPoint controlPoint = LogicProgrammingControlPoint.importXML(controlPointNode, actuator.getControl(), state);
+            LogicProgrammingControlPoint controlPoint = LogicProgrammingControlPoint.importXML(controlPointNode, actuator.getControl(), stepTree);
             profile.addControlPoint(controlPoint);
         }
         return profile;

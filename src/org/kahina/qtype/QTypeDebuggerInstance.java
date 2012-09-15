@@ -94,9 +94,9 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 	}
     
      @Override
-    protected KahinaProject createNewProject()
+    protected QTypeProject createNewProject()
     {
-        return new QTypeProject();
+        return new QTypeProject(state.getStepTree(), control);
     }
         
     public void loadProject(File projectFile)
@@ -105,7 +105,8 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = QTypeProject.importXML(dom.getDocumentElement());
+            project = new QTypeProject(state.getStepTree(), control);
+            project = QTypeProject.importXML(dom.getDocumentElement(), project);
             gui.setPerspective(project.getPerspective());
             setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         }

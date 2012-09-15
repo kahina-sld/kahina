@@ -15,10 +15,10 @@ public class LogicProgrammingControlPoint extends KahinaControlPoint
     protected KahinaTreePatternSensor sensor;
     protected KahinaTree stepTree;
     
-    public LogicProgrammingControlPoint(KahinaController control, LogicProgrammingState state)
+    public LogicProgrammingControlPoint(KahinaController control, KahinaTree stepTree)
     {
         super(control);
-        this.stepTree = state.getStepTree();
+        this.stepTree = stepTree;
         setSensor(new KahinaTreePatternSensor(this, stepTree));
     }
     
@@ -48,14 +48,14 @@ public class LogicProgrammingControlPoint extends KahinaControlPoint
      * @param controlPointNode an XML DOM element with name "controlPoint" as produced when parsing the result of <code>exportXML</code>
      * @return a new logic programming control point object corresponding to the XML representation contained in the DOM element
      */
-    public static LogicProgrammingControlPoint importXML(Element controlPointNode, KahinaController control, LogicProgrammingState state)
+    public static LogicProgrammingControlPoint importXML(Element controlPointNode, KahinaController control, KahinaTree stepTree)
     {
-        LogicProgrammingControlPoint newControlPoint = new LogicProgrammingControlPoint(control, state);
+        LogicProgrammingControlPoint newControlPoint = new LogicProgrammingControlPoint(control, stepTree);
         newControlPoint.setName(controlPointNode.getAttribute("name"));
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlPointNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlPointNode.getAttribute("active"));
         //expect only one tree pattern
-        KahinaTreePatternSensor treePatternSensor = new KahinaTreePatternSensor(newControlPoint, state.getStepTree());
+        KahinaTreePatternSensor treePatternSensor = new KahinaTreePatternSensor(newControlPoint, stepTree);
         treePatternSensor.setPattern(TreePatternNode.importXML((Element) controlPointNode.getElementsByTagName("kahina:pattern").item(0)));
         newControlPoint.setSensor(treePatternSensor);
         return newControlPoint;

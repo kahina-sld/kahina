@@ -208,6 +208,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     		control.registerListener(KahinaEventTypes.SESSION, this);
             control.registerListener(KahinaEventTypes.PROJECT, this);
     		control.registerListener(KahinaEventTypes.SYSTEM, this);
+            control.registerListener("new agent", this);
         }
 		if (state != null)
 		{

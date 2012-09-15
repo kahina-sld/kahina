@@ -11,6 +11,7 @@ import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
+import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.prolog.profiler.PrologProfiler;
@@ -20,7 +21,7 @@ import org.kahina.swi.gui.SWIPrologGUI;
 import org.kahina.swi.visual.bindings.SWIPrologVariableBindingSetView;
 import org.w3c.dom.Document;
 
-public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SWIPrologGUI, SWIPrologBridge, KahinaProject>
+public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SWIPrologGUI, SWIPrologBridge, LogicProgrammingProject>
 {
 
 	PrologProfiler profiler;
@@ -80,9 +81,9 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
 	}
 
     @Override
-    protected KahinaProject createNewProject()
+    protected LogicProgrammingProject createNewProject()
     {
-        return new KahinaProject("swi-prolog");
+        return new LogicProgrammingProject("swi-prolog", state.getStepTree(), control);
     }
     
     public void loadProject(File projectFile)
@@ -91,7 +92,8 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = KahinaProject.importXML(dom.getDocumentElement());
+            project = createNewProject();
+            project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project);
             setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         }
         catch (FileNotFoundException e)

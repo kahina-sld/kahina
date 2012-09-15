@@ -20,7 +20,9 @@ public class TulipaGUI extends KahinaGUI
     public TulipaGUI(Class<? extends KahinaStep> stepType, TulipaInstance instance)
     {
         super(stepType, instance);
-        this.instance = instance;      
+        this.instance = instance; 
+        
+        initialize();
         
         mainDAGView = new KahinaDAGView(instance, new LayeredLayouter());
         mainDAGView.setTitle("Item Graph");

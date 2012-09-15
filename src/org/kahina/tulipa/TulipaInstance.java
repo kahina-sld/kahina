@@ -68,7 +68,8 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = KahinaProject.importXML(dom.getDocumentElement());
+            project = createNewProject();
+            project = KahinaProject.importXML(dom.getDocumentElement(), project);
             setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         }
         catch (FileNotFoundException e)

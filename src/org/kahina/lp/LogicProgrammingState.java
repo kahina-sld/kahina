@@ -45,14 +45,6 @@ public class LogicProgrammingState extends KahinaState
     
     Set<Integer> hiddenSteps;
     
-    //store profiles for the various types of  control points
-    protected KahinaControlPointProfile breakPoints;
-    protected KahinaControlPointProfile creepPoints;
-    protected KahinaControlPointProfile completePoints;
-    protected KahinaControlPointProfile skipPoints;
-    protected KahinaControlPointProfile failPoints;
-    protected KahinaControlPointProfile warnPoints;
-    
     protected LogicProgrammingProfile profile;
     
     public LogicProgrammingState(KahinaController control)
@@ -63,15 +55,8 @@ public class LogicProgrammingState extends KahinaState
         anchorsByTarget = new HashMap<Integer, List<Integer>>();
         targetByAnchor = new HashMap<Integer, Integer>();
         hiddenSteps = new HashSet<Integer>();
-        breakPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingBreakActuator(control), this);
-        creepPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingCreepActuator(control), this);
-        completePoints = new LogicProgrammingControlPointProfile(new LogicProgrammingCompleteActuator(control), this);
-        skipPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingSkipActuator(control), this);
-        failPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingFailActuator(control), this);
-        //warnPoints = new KahinaControlPointProfile();
         
         profile = new LogicProgrammingProfile();
-        control.registerListener("new agent", this);
     }
     
 	public void initialize() 
@@ -151,36 +136,6 @@ public class LogicProgrammingState extends KahinaState
         return secondaryStepTree;
     }
     
-    public KahinaControlPointProfile getBreakPoints()
-    {
-        return breakPoints;
-    }
-    
-    public KahinaControlPointProfile getCreepPoints()
-    {
-        return creepPoints;
-    }
-    
-    public KahinaControlPointProfile getCompletePoints()
-    {
-        return completePoints;
-    }
-    
-    public KahinaControlPointProfile getSkipPoints()
-    {
-        return skipPoints;
-    }
-    
-    public KahinaControlPointProfile getFailPoints()
-    {
-        return failPoints;
-    }
-    
-    public KahinaControlPointProfile getWarnPoints()
-    {
-        return warnPoints;
-    }
-    
     public void linkNodes(int anchor, int target)
     {
         targetByAnchor.put(anchor, target);
@@ -238,47 +193,4 @@ public class LogicProgrammingState extends KahinaState
     {
         return retrieve(LogicProgrammingStep.class, id);
     }
-    
-    public void processEvent(KahinaEvent event)
-    {
-        super.processEvent(event);
-        if (event instanceof NewControlAgentEvent)
-        {
-            processNewAgentEvent((NewControlAgentEvent) event);
-        }
-    }
-    
-    private void processNewAgentEvent(NewControlAgentEvent event)
-    {
-        KahinaControlPoint controlAgent = event.getControlAgent();
-        switch (event.getAgentType())
-        {
-            case BREAK_AGENT:
-            {
-                breakPoints.addControlPoint(controlAgent);
-                break;
-            }
-            case CREEP_AGENT:
-            {
-                creepPoints.addControlPoint(controlAgent);
-                break;
-            }
-            case COMPLETE_AGENT:
-            {
-                completePoints.addControlPoint(controlAgent);
-                break;
-            }
-            case SKIP_AGENT:
-            {
-                skipPoints.addControlPoint(controlAgent);
-                break;
-            }
-            case FAIL_AGENT:
-            {
-                failPoints.addControlPoint(controlAgent);
-                break;
-            }
-        }
-    }
-    
 }
