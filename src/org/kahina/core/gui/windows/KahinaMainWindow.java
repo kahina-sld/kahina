@@ -62,7 +62,6 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
         
         projectMenu = new ProjectMenu(kahina);
         menuBar.add(projectMenu);
-        //TODO: define and add a good ProjectMenuListener
 		
 		addMenusInFront();
 
@@ -77,7 +76,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
 		/**
-		 * TODO this should be getGuiControl() for consistency, but thinks currently work this way
+		 * TODO this should be getGuiControl() for consistency, but things currently work this way
 		 */
 		kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 	}
