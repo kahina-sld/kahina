@@ -1,16 +1,23 @@
 package org.kahina.lp;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.breakpoint.KahinaControlPoint;
 import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
 import org.kahina.core.data.project.KahinaProject;
+import org.kahina.core.data.project.KahinaProjectStatus;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.lp.control.NewControlAgentEvent;
 import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
+import org.w3c.dom.Document;
 
 public abstract class LogicProgrammingInstance<S extends LogicProgrammingState, G extends LogicProgrammingGUI, B extends LogicProgrammingBridge, P extends LogicProgrammingProject> extends KahinaInstance<S, G, B, P>
 {   
@@ -102,6 +109,34 @@ public abstract class LogicProgrammingInstance<S extends LogicProgrammingState, 
                 project.addFailPoint(controlAgent);
                 break;
             }
+        }
+    }
+    
+    public void newProject(File grammarFile)
+    {
+        project = createNewProject();
+        project.setMainFile(grammarFile);
+        project.setPerspective(gui.getPerspective());
+        setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+        gui.displayMainViews();
+    }
+    
+    public void loadProject(File projectFile)
+    {
+        Document dom;
+        try
+        {
+            dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
+            project = createNewProject();
+            LogicProgrammingProject.importXML(dom.getDocumentElement(), project);
+            gui.setPerspective(project.getPerspective());
+            gui.displayMainViews();
+            setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+        }
+        catch (FileNotFoundException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 }
