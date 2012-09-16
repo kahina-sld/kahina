@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import org.kahina.core.control.KahinaCodeLineProperty;
+import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.control.KahinaStepProperty;
 import org.kahina.core.control.KahinaStepPropertySensor;
 import org.kahina.core.control.KahinaTreePatternSensor;
@@ -46,7 +47,7 @@ public class StepPatternEditorPanel extends JPanel implements ActionListener
         
         KahinaStepProperty pattern =  viewPanel.view.getModel().getSensor().getStepProperty();
         
-        if (pattern instanceof TreePatternNode)
+        if (pattern instanceof KahinaSimpleProperty)
         {     
             JPanel opsAndHintPanel = new JPanel();
             opsAndHintPanel.setLayout(new BoxLayout(opsAndHintPanel, BoxLayout.LINE_AXIS));
@@ -92,8 +93,8 @@ public class StepPatternEditorPanel extends JPanel implements ActionListener
             NodeConstraintOptions constrOptions = new NodeConstraintOptions();
             constrOptions.setStandardOptions();
 
-            TreePatternNode patternNode = (TreePatternNode) pattern;
-            patternPanel = new SingleNodeConstraintPanel(constrOptions, viewPanel.kahina.getControl(), patternNode);
+            KahinaSimpleProperty property = (KahinaSimpleProperty) pattern;
+            patternPanel = new SingleNodeConstraintPanel(constrOptions, viewPanel.kahina.getControl(), property);
             patternPanel.setHintPanel(hintPanel);
             this.add(patternPanel);
         }

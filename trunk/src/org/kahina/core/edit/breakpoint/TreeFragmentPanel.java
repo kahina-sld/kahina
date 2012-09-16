@@ -362,7 +362,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
     
     public void displayTreePattern(TreePattern pat)
     {
-        rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control, pat.getRoot());
+        rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control, pat.getRoot().getPattern());
         displaySubtreePattern(pat.getRoot(), rootConstPanel);
         rootConstPanel.setHintPanel(hintPanel);
         rootConstPanel.setSynchronized(true);
@@ -377,7 +377,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         {
             for (TreePatternNode child : node.getChildren())
             {
-                SingleNodeConstraintPanel childPanel = new SingleNodeConstraintPanel(constrOptions, control, child);
+                SingleNodeConstraintPanel childPanel = new SingleNodeConstraintPanel(constrOptions, control, child.getPattern());
                 childPanel.setHintPanel(hintPanel);
                 List<SingleNodeConstraintPanel> nodeChildren = children.get(parent);
                 if (nodeChildren == null)

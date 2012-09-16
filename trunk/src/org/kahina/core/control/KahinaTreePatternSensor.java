@@ -7,17 +7,17 @@ import org.kahina.core.data.tree.KahinaTree;
 
 public class KahinaTreePatternSensor extends KahinaStepPropertySensor
 {
-    private TreePatternNode pattern;
+    private KahinaSimpleProperty pattern;
     private KahinaTree stepTree;
     
     public KahinaTreePatternSensor(KahinaControlPoint controlPoint, KahinaTree stepTree)
     {
         this.controlPoint = controlPoint;
         this.stepTree = stepTree;
-        this.pattern = new TreePatternNode();
+        this.pattern = new KahinaSimpleProperty();
     }
     
-    public TreePatternNode getStepProperty()
+    public KahinaSimpleProperty getStepProperty()
     {
         return pattern;
     }
@@ -26,16 +26,16 @@ public class KahinaTreePatternSensor extends KahinaStepPropertySensor
      * Gets the step pattern associated with this control point.
      * @return the step pattern associated with this control point
      */
-    public TreePatternNode getPattern()
+    public KahinaSimpleProperty getPattern()
     {
         return pattern;
     }
 
     /**
-     * Associates this control point with a new sep pattern.
+     * Associates this control point with a new step pattern.
      * @param pattern the step pattern to be associated with this control point
      */
-    public void setPattern(TreePatternNode pattern)
+    public void setPattern(KahinaSimpleProperty pattern)
     {
         this.pattern = pattern;
     }
@@ -52,6 +52,6 @@ public class KahinaTreePatternSensor extends KahinaStepPropertySensor
 
     public boolean detectPattern(int stepID)
     {
-        return pattern.getPattern().matches(stepTree, stepID);
+        return pattern.matches(stepTree, stepID);
     }
 }

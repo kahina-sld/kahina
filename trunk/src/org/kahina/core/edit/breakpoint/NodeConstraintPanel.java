@@ -185,7 +185,7 @@ public class NodeConstraintPanel extends JPanel implements ActionListener, Kahin
     
     public void displayNodeConstraint(TreePatternNode n)
     {
-        constPanel = new SingleNodeConstraintPanel(constrOptions, control, n);
+        constPanel = new SingleNodeConstraintPanel(constrOptions, control, n.getPattern());
         constPanel.setHintPanel(hintPanel);
         constPanel.setSynchronized(true);
         this.add(constPanel);
