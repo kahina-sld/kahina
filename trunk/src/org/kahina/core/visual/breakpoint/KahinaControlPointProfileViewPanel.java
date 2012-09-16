@@ -121,9 +121,9 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         }
     }
     
-    public void removeCurrentControlPoint()
+    public void removeCurrentControlAgent()
     {
-        view.getModel().removeControlPoint(pointList.getSelectedIndex());
+        view.getModel().removeControlAgent(pointList.getSelectedIndex());
         updateDisplay();
         pointList.setSelectedIndex(-1);
     }

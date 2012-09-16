@@ -18,7 +18,7 @@ import org.kahina.core.control.KahinaCodeLineProperty;
 import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.control.KahinaStepProperty;
 import org.kahina.core.control.KahinaStepPropertySensor;
-import org.kahina.core.control.KahinaTreePatternSensor;
+import org.kahina.core.control.KahinaSimplePropertySensor;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;

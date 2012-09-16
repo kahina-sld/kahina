@@ -6,7 +6,7 @@ import java.io.File;
 
 import org.kahina.core.control.KahinaCodeLineProperty;
 import org.kahina.core.control.KahinaCodeLinePropertySensor;
-import org.kahina.core.data.breakpoint.KahinaControlPoint;
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.lp.LogicProgrammingInstance;
@@ -27,7 +27,7 @@ public class KahinaJEditActionListener implements ActionListener
     public void actionPerformed(ActionEvent action)
     {
         String command = action.getActionCommand();
-        KahinaControlPoint controlAgent = new KahinaControlPoint(instance.getControl());
+        KahinaControlAgent controlAgent = new KahinaControlAgent(instance.getControl());
         int line = panel.getTextArea().getLastPopupLine();
         File file = panel.getFile();
         controlAgent.setName(file.getName() + ":" + line);

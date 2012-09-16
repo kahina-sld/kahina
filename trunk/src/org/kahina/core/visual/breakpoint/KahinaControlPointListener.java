@@ -13,7 +13,7 @@ import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import org.kahina.core.data.breakpoint.KahinaControlPoint;
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.io.util.XMLUtil;
 import org.w3c.dom.Document;
@@ -50,20 +50,20 @@ public class KahinaControlPointListener implements ActionListener, KeyListener
                     JOptionPane.PLAIN_MESSAGE);
             if (newName != null)
             {
-                KahinaControlPoint point = viewPanel.view.getModel();
+                KahinaControlAgent point = viewPanel.view.getModel();
                 point.setName(newName);
                 viewPanel.processNameChange();
             }
         }
         else if (s.equals("suggestName"))
         {
-            KahinaControlPoint point = viewPanel.view.getModel();
+            KahinaControlAgent point = viewPanel.view.getModel();
             point.setName(point.getSensor().getStepProperty().toString());
             viewPanel.processNameChange();
         }
         else if (s.equals("toggleActivation"))
         {
-            KahinaControlPoint point = viewPanel.view.getModel();
+            KahinaControlAgent point = viewPanel.view.getModel();
             if (point.isActive())
             {
                 point.deactivate();

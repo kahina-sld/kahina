@@ -1,7 +1,7 @@
 package org.kahina.core.control;
 
 import org.kahina.core.KahinaState;
-import org.kahina.core.data.breakpoint.KahinaControlPoint;
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.tree.KahinaTree;
@@ -13,7 +13,7 @@ public class KahinaCodeLinePropertySensor extends KahinaStepPropertySensor
     //TODO: move this property sensor to the lp package, or enable code locations already for KahinaStep
     private LogicProgrammingState state;
     
-    public KahinaCodeLinePropertySensor(KahinaControlPoint controlPoint, LogicProgrammingState state, KahinaCodeLineProperty line)
+    public KahinaCodeLinePropertySensor(KahinaControlAgent controlPoint, LogicProgrammingState state, KahinaCodeLineProperty line)
     {
         this.controlPoint = controlPoint;
         this.state = state;
