@@ -15,6 +15,7 @@ import org.kahina.lp.control.LogicProgrammingFailActuator;
 import org.kahina.lp.control.LogicProgrammingSkipActuator;
 import org.kahina.lp.control.NewControlAgentEvent;
 import org.kahina.lp.data.breakpoint.LogicProgrammingControlPointProfile;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -97,6 +98,32 @@ public class LogicProgrammingProject extends KahinaProject
     public void addWarnPoint(KahinaControlPoint agent)
     {
         warnPoints.addControlPoint(agent);
+    }
+    
+    public Element exportXML(Document dom)
+    {
+        Element el = super.exportXML(dom);
+        Element profilesEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:controlAgentProfiles");
+        Element profileEl = breakPoints.exportXML(dom);
+        profileEl.setAttribute("kahina:type", "break");
+        profilesEl.appendChild(profileEl);
+        profileEl = creepPoints.exportXML(dom);
+        profileEl.setAttribute("kahina:type", "creep");
+        profilesEl.appendChild(profileEl);
+        profileEl = completePoints.exportXML(dom);
+        profileEl.setAttribute("kahina:type", "complete");
+        profilesEl.appendChild(profileEl);
+        profileEl = skipPoints.exportXML(dom);
+        profileEl.setAttribute("kahina:type", "skip");
+        profilesEl.appendChild(profileEl);
+        profileEl = failPoints.exportXML(dom);
+        profileEl.setAttribute("kahina:type", "fail");
+        profilesEl.appendChild(profileEl);
+        /*profileEl = warnPoints.exportXML(dom);
+        profileEl.setAttribute("kahina:type", "warn");
+        profilesEl.appendChild(profileEl);*/
+        el.appendChild(profilesEl);
+        return el;
     }
     
     public static LogicProgrammingProject importXML(Element topEl, LogicProgrammingProject project)
