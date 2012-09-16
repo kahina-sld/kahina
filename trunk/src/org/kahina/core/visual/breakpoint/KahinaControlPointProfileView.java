@@ -13,7 +13,6 @@ public class KahinaControlPointProfileView extends KahinaView<KahinaControlPoint
     public KahinaControlPointProfileView(LogicProgrammingInstance<?,?,?,?> kahina)
     {
         super(kahina);
-        //model = new KahinaControlPointProfile(new LogicProgrammingBreakActuator(kahina.getControl()));
         model = new KahinaControlPointProfile(null);
         pointView = new KahinaControlPointView(kahina);
     }
