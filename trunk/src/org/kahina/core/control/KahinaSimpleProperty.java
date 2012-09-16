@@ -1,10 +1,11 @@
-package org.kahina.core.data.breakpoint.patterns;
+package org.kahina.core.control;
 
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.kahina.core.data.breakpoint.patterns.PatternFormatException;
 import org.kahina.core.data.tree.KahinaTree;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,7 +28,7 @@ import org.w3c.dom.NodeList;
  * @author jd
  *
  */
-public class TreeNodePattern implements Serializable
+public class KahinaSimpleProperty implements Serializable
 {
     /**
 	 * 
@@ -50,8 +51,8 @@ public class TreeNodePattern implements Serializable
     private Pattern regexValue;
     
     //child pattern for complex boolean matches
-    private TreeNodePattern leftArg;
-    private TreeNodePattern rightArg;
+    private KahinaSimpleProperty leftArg;
+    private KahinaSimpleProperty rightArg;
     
     //predefined atomic match types (inheriting classes can add their own types)
     public static final int CAPTION = 1;
@@ -79,7 +80,7 @@ public class TreeNodePattern implements Serializable
     public static final int CONTAINS = 6;
     public static final int ENDS_WITH = 7;
     
-    public TreeNodePattern()
+    public KahinaSimpleProperty()
     {
         this.type = 0;
         this.rel = 0;
@@ -90,7 +91,7 @@ public class TreeNodePattern implements Serializable
         this.rightArg = null;
     }
     
-    public TreeNodePattern(int type, int rel, int value)
+    public KahinaSimpleProperty(int type, int rel, int value)
     {
         this.type = type;
         this.rel = rel;
@@ -101,7 +102,7 @@ public class TreeNodePattern implements Serializable
         this.rightArg = null;
     }
     
-    public TreeNodePattern(int type, int rel, String value)
+    public KahinaSimpleProperty(int type, int rel, String value)
     {
         this.type = type;
         this.rel = rel;
@@ -112,7 +113,7 @@ public class TreeNodePattern implements Serializable
         this.rightArg = null;
     }
     
-    public TreeNodePattern(int type, TreeNodePattern leftArg)
+    public KahinaSimpleProperty(int type, KahinaSimpleProperty leftArg)
     {
         this.type = type;
         this.rel = 0;
@@ -123,7 +124,7 @@ public class TreeNodePattern implements Serializable
         this.rightArg = null;
     }
     
-    public TreeNodePattern(int type, TreeNodePattern leftArg, TreeNodePattern rightArg)
+    public KahinaSimpleProperty(int type, KahinaSimpleProperty leftArg, KahinaSimpleProperty rightArg)
     {
         this.type = type;
         this.rel = 0;
@@ -195,12 +196,12 @@ public class TreeNodePattern implements Serializable
         //TODO: initialize or set to null leftArg and rightArg according to type
     }
     
-    public void setLeftArgument(TreeNodePattern left)
+    public void setLeftArgument(KahinaSimpleProperty left)
     {
         this.leftArg = left;
     }
     
-    public void setRightArgument(TreeNodePattern right)
+    public void setRightArgument(KahinaSimpleProperty right)
     {
         this.rightArg = right;
     }
@@ -209,18 +210,18 @@ public class TreeNodePattern implements Serializable
     {
         if (rightArg != null)
         {
-            TreeNodePattern temp = leftArg;
+            KahinaSimpleProperty temp = leftArg;
             leftArg = rightArg;
             rightArg = temp;
         }
     }
     
-    public TreeNodePattern getLeftArgument()
+    public KahinaSimpleProperty getLeftArgument()
     {
         return leftArg;
     }
     
-    public TreeNodePattern getRightArgument()
+    public KahinaSimpleProperty getRightArgument()
     {
         return rightArg;
     }
@@ -673,7 +674,7 @@ public class TreeNodePattern implements Serializable
         return patternEl;
     }
     
-    public static TreeNodePattern importXML(Element treeNodePatternNode)
+    public static KahinaSimpleProperty importXML(Element treeNodePatternNode)
     {
         //find the "pattern" child node, this will be the root element for the pattern
         for (int i = 0; i < treeNodePatternNode.getChildNodes().getLength(); i++)
@@ -684,7 +685,7 @@ public class TreeNodePattern implements Serializable
                 treeNodePatternNode = (Element) treeNodePatternNode.getChildNodes().item(i);
             }
         }
-        TreeNodePattern newTreeNodePattern = new TreeNodePattern();
+        KahinaSimpleProperty newTreeNodePattern = new KahinaSimpleProperty();
         newTreeNodePattern.setXMLType(treeNodePatternNode.getAttribute("type"));
         newTreeNodePattern.setXMLRelation(treeNodePatternNode.getAttribute("rel"));  
         NodeList childNodes = treeNodePatternNode.getChildNodes();
@@ -706,11 +707,11 @@ public class TreeNodePattern implements Serializable
             }
             else if (nodeName.equals("kahina:leftArg"))
             {
-                newTreeNodePattern.leftArg = TreeNodePattern.importXML((Element) childNodes.item(i));
+                newTreeNodePattern.leftArg = KahinaSimpleProperty.importXML((Element) childNodes.item(i));
             }
             else if (nodeName.equals("kahina:rightArg"))
             {
-                newTreeNodePattern.rightArg = TreeNodePattern.importXML((Element) childNodes.item(i));
+                newTreeNodePattern.rightArg = KahinaSimpleProperty.importXML((Element) childNodes.item(i));
             }
         }
         return newTreeNodePattern;

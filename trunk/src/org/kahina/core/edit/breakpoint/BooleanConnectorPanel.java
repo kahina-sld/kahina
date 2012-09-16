@@ -17,19 +17,19 @@ import javax.swing.JPanel;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.data.breakpoint.patterns.TreeNodePattern;
+import org.kahina.core.control.KahinaSimpleProperty;
 
 public class BooleanConnectorPanel extends JPanel implements MouseListener, KahinaListener
 {
     KahinaController control; 
     SingleNodeConstraintPanel nodeConstPanel;   
-    Map<TreeNodePattern, Integer> xCoord; 
-    Map<TreeNodePattern, Integer> yCoord;
+    Map<KahinaSimpleProperty, Integer> xCoord; 
+    Map<KahinaSimpleProperty, Integer> yCoord;
     
     int xDim; 
     int yDim;
     
-    TreeNodePattern markedPattern;
+    KahinaSimpleProperty markedPattern;
     
     // event system is responsible for synchronization with NodeConstraintPanel and TreeFragmentPanel
     private int nodeSelectionMode;
@@ -42,8 +42,8 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
         this.nodeConstPanel = nodeConstPanel;
         this.addMouseListener(this);
         
-        xCoord = new HashMap<TreeNodePattern, Integer>();
-        yCoord = new HashMap<TreeNodePattern, Integer>();
+        xCoord = new HashMap<KahinaSimpleProperty, Integer>();
+        yCoord = new HashMap<KahinaSimpleProperty, Integer>();
         
         markedPattern = null;
         
@@ -61,14 +61,14 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
     
     public void recalculateCoordinates()
     {
-        xCoord = new HashMap<TreeNodePattern, Integer>();
-        yCoord = new HashMap<TreeNodePattern, Integer>();
+        xCoord = new HashMap<KahinaSimpleProperty, Integer>();
+        yCoord = new HashMap<KahinaSimpleProperty, Integer>();
         xDim = 30;
         // first define the base nodes
-        List<TreeNodePattern> basePattern = nodeConstPanel.getBasePatterns();
+        List<KahinaSimpleProperty> basePattern = nodeConstPanel.getBasePatterns();
         for (int i = 0; i < basePattern.size(); i++)
         {
-            TreeNodePattern pat = basePattern.get(i);
+            KahinaSimpleProperty pat = basePattern.get(i);
             xCoord.put(pat, 3);
             yCoord.put(pat, i * 24 + 12);
         }
@@ -76,13 +76,13 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
         calculateCoordinatesFor(nodeConstPanel.getRootPattern());
     }
     
-    private void calculateCoordinatesFor(TreeNodePattern p)
+    private void calculateCoordinatesFor(KahinaSimpleProperty p)
     {
         if (xCoord.get(p) == null)
         {
             switch (p.getType())
             {
-                case TreeNodePattern.NEGATION:
+                case KahinaSimpleProperty.NEGATION:
                 {
                     calculateCoordinatesFor(p.getLeftArgument());
                     yCoord.put(p, yCoord.get(p.getLeftArgument()));
@@ -99,8 +99,8 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
                 // coordinates)
                 default:
                 {
-                    TreeNodePattern left = p.getLeftArgument();
-                    TreeNodePattern right = p.getRightArgument();
+                    KahinaSimpleProperty left = p.getLeftArgument();
+                    KahinaSimpleProperty right = p.getRightArgument();
                     calculateCoordinatesFor(left);
                     calculateCoordinatesFor(right);
                     yCoord.put(p, (yCoord.get(left) + yCoord.get(right)) / 2);
@@ -119,22 +119,22 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
         }
     }
     
-    private int getXfor(TreeNodePattern pat)
+    private int getXfor(KahinaSimpleProperty pat)
     {
         return xCoord.get(pat);
     }
     
-    private int getYfor(TreeNodePattern pat)
+    private int getYfor(KahinaSimpleProperty pat)
     {
         return yCoord.get(pat);
     }
     
-    public TreeNodePattern getMarkedPattern()
+    public KahinaSimpleProperty getMarkedPattern()
     {
         return markedPattern;
     }
     
-    public void setMarkedPattern(TreeNodePattern markedPattern)
+    public void setMarkedPattern(KahinaSimpleProperty markedPattern)
     {
         this.markedPattern = markedPattern;
     }
@@ -149,7 +149,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
         cnv.fillRect(0, 0, xDim, yDim);
         cnv.setColor(Color.BLACK);
         cnv.drawRect(0, 0, xDim - 1, yDim - 1);
-        for (TreeNodePattern pat : xCoord.keySet())
+        for (KahinaSimpleProperty pat : xCoord.keySet())
         {
             cnv.setColor(Color.BLACK);
             if (markedPattern == pat)
@@ -160,25 +160,25 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
             int y = getYfor(pat);
             switch (pat.getType())
             {
-                case (TreeNodePattern.NEGATION):
+                case (KahinaSimpleProperty.NEGATION):
                 {
                     cnv.drawLine(x - 4, y, x + 4, y);
                     cnv.drawLine(x + 4, y, x + 4, y + 4);
                     break;
                 }
-                case (TreeNodePattern.CONJUNCTION):
+                case (KahinaSimpleProperty.CONJUNCTION):
                 {
                     cnv.drawLine(x + 4, y + 4, x, y - 4);
                     cnv.drawLine(x - 4, y + 4, x, y - 4);
                     break;
                 }
-                case (TreeNodePattern.DISJUNCTION):
+                case (KahinaSimpleProperty.DISJUNCTION):
                 {
                     cnv.drawLine(x + 5, y - 5, x, y + 5);
                     cnv.drawLine(x - 5, y - 5, x, y + 5);
                     break;
                 }
-                case (TreeNodePattern.IMPLICATION):
+                case (KahinaSimpleProperty.IMPLICATION):
                 {
                     int leftY = yCoord.get(pat.getLeftArgument());
                     int rightY = yCoord.get(pat.getRightArgument());
@@ -202,7 +202,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
         }
     }
     
-    private void drawLinesToArguments(TreeNodePattern pat, Graphics cnv)
+    private void drawLinesToArguments(KahinaSimpleProperty pat, Graphics cnv)
     {
         if (pat.getLeftArgument() != null)
         {
@@ -236,17 +236,17 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
         }
     }
     
-    private TreeNodePattern getPatternByCoords(int x, int y)
+    private KahinaSimpleProperty getPatternByCoords(int x, int y)
     {
-        ArrayList<TreeNodePattern> searchAgenda = new ArrayList<TreeNodePattern>();
+        ArrayList<KahinaSimpleProperty> searchAgenda = new ArrayList<KahinaSimpleProperty>();
         searchAgenda.add(nodeConstPanel.getRootPattern());
         while (searchAgenda.size() > 0)
         {
-            TreeNodePattern curPat = searchAgenda.remove(0);
+            KahinaSimpleProperty curPat = searchAgenda.remove(0);
             if (x > (xDim - xCoord.get(curPat)) + 8)
             {
-                TreeNodePattern left = curPat.getLeftArgument();
-                TreeNodePattern right = curPat.getRightArgument();
+                KahinaSimpleProperty left = curPat.getLeftArgument();
+                KahinaSimpleProperty right = curPat.getRightArgument();
                 if (left != null)
                     searchAgenda.add(left);
                 if (right != null)
@@ -265,23 +265,23 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
         return null;
     }
     
-    private void switchType(TreeNodePattern pat)
+    private void switchType(KahinaSimpleProperty pat)
     {
         switch (pat.getType())
         {
-            case TreeNodePattern.CONJUNCTION:
+            case KahinaSimpleProperty.CONJUNCTION:
             {
-                pat.setType(TreeNodePattern.DISJUNCTION);
+                pat.setType(KahinaSimpleProperty.DISJUNCTION);
                 nodeConstPanel.hint("click on the same connective again to switch its type");
                 break;
             }
-            case TreeNodePattern.DISJUNCTION:
+            case KahinaSimpleProperty.DISJUNCTION:
             {
-                pat.setType(TreeNodePattern.IMPLICATION);
+                pat.setType(KahinaSimpleProperty.IMPLICATION);
                 nodeConstPanel.hint("click on the same connective again to switch its type");
                 break;
             }
-            case TreeNodePattern.IMPLICATION:
+            case KahinaSimpleProperty.IMPLICATION:
             {
                 int leftY = yCoord.get(pat.getLeftArgument());
                 int rightY = yCoord.get(pat.getRightArgument());
@@ -292,7 +292,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
                 }
                 else
                 {
-                    pat.setType(TreeNodePattern.CONJUNCTION);
+                    pat.setType(KahinaSimpleProperty.CONJUNCTION);
                     pat.switchArguments();
                 }
                 nodeConstPanel.hint("click on the same connective again to switch its type");
@@ -305,7 +305,7 @@ public class BooleanConnectorPanel extends JPanel implements MouseListener, Kahi
     {
         int x = arg0.getX();
         int y = arg0.getY();
-        TreeNodePattern selectedPattern = getPatternByCoords(x, y);
+        KahinaSimpleProperty selectedPattern = getPatternByCoords(x, y);
         if (markedPattern != null && selectedPattern == markedPattern)
         {
             switchType(markedPattern);

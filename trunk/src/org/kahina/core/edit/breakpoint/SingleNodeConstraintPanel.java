@@ -28,8 +28,8 @@ import javax.swing.border.Border;
 import javax.swing.text.JTextComponent;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.data.breakpoint.patterns.PatternFormatException;
-import org.kahina.core.data.breakpoint.patterns.TreeNodePattern;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 
 public class SingleNodeConstraintPanel extends JPanel implements ActionListener, MouseListener
@@ -40,9 +40,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     private int elementaryConstraintNumber;
     
     //data structures for the construction of the node pattern
-    private List<TreeNodePattern> basePatterns;
-    private TreeNodePattern virtualRootPattern;
-    private Map<TreeNodePattern,TreeNodePattern> parentPatterns;
+    private List<KahinaSimpleProperty> basePatterns;
+    private KahinaSimpleProperty virtualRootPattern;
+    private Map<KahinaSimpleProperty,KahinaSimpleProperty> parentPatterns;
     
     private JPanel elConstPanel;
     private BooleanConnectorPanel boolPanel;
@@ -68,9 +68,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         this.constrOptions = constrOptions;     
         elementaryConstraintNumber = 0;
         
-        basePatterns = new ArrayList<TreeNodePattern>();
-        parentPatterns = new HashMap<TreeNodePattern,TreeNodePattern>();
-        virtualRootPattern = new TreeNodePattern();
+        basePatterns = new ArrayList<KahinaSimpleProperty>();
+        parentPatterns = new HashMap<KahinaSimpleProperty,KahinaSimpleProperty>();
+        virtualRootPattern = new KahinaSimpleProperty();
         
         this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
         
@@ -108,9 +108,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         this.constrOptions = constrOptions;     
         elementaryConstraintNumber = 0;
         
-        basePatterns = new ArrayList<TreeNodePattern>();
-        parentPatterns = new HashMap<TreeNodePattern,TreeNodePattern>();
-        virtualRootPattern = new TreeNodePattern();
+        basePatterns = new ArrayList<KahinaSimpleProperty>();
+        parentPatterns = new HashMap<KahinaSimpleProperty,KahinaSimpleProperty>();
+        virtualRootPattern = new KahinaSimpleProperty();
         
         this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
         
@@ -146,10 +146,10 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         displayChangeInConnectiveStructure();
     }
     
-    private void addStructure(TreeNodePattern node)
+    private void addStructure(KahinaSimpleProperty node)
     {
-        TreeNodePattern left = node.getLeftArgument();
-        TreeNodePattern right = node.getRightArgument();
+        KahinaSimpleProperty left = node.getLeftArgument();
+        KahinaSimpleProperty right = node.getRightArgument();
         //if we have a leaf pattern, add an elementary constraint row for it
         if (left == null)
         {
@@ -183,9 +183,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         if (panel == null) return;
         elementaryConstraintNumber = 0;
         
-        basePatterns = new ArrayList<TreeNodePattern>();
-        parentPatterns = new HashMap<TreeNodePattern,TreeNodePattern>();
-        virtualRootPattern = new TreeNodePattern();
+        basePatterns = new ArrayList<KahinaSimpleProperty>();
+        parentPatterns = new HashMap<KahinaSimpleProperty,KahinaSimpleProperty>();
+        virtualRootPattern = new KahinaSimpleProperty();
         
         elConstPanel.removeAll();
         
@@ -233,12 +233,12 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         this.constrOptions = constrOptions;
     }
     
-    public TreeNodePattern getMarkedPattern()
+    public KahinaSimpleProperty getMarkedPattern()
     {
         return boolPanel.getMarkedPattern();
     }
 
-    public List<TreeNodePattern> getBasePatterns()
+    public List<KahinaSimpleProperty> getBasePatterns()
     {
         return basePatterns;
     }
@@ -298,23 +298,23 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         remButtons.add(rowID, remConstButton);
     }
     
-    public void setRootPattern(TreeNodePattern newRoot)
+    public void setRootPattern(KahinaSimpleProperty newRoot)
     {
         virtualRootPattern.setLeftArgument(newRoot);
         parentPatterns.put(newRoot, virtualRootPattern);
     }
     
-    public TreeNodePattern getRootPattern()
+    public KahinaSimpleProperty getRootPattern()
     {
         return virtualRootPattern.getLeftArgument();
     }
     
-    public TreeNodePattern getNodeConstraint()
+    public KahinaSimpleProperty getNodeConstraint()
     {
         return getRootPattern();
     }
     
-    public void setNodeConstraint(TreeNodePattern e)
+    public void setNodeConstraint(KahinaSimpleProperty e)
     {
         
     }
@@ -372,10 +372,10 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         }
     }
     
-    public void introduceNegation(TreeNodePattern argument)
+    public void introduceNegation(KahinaSimpleProperty argument)
     {
-        TreeNodePattern neg = new TreeNodePattern(TreeNodePattern.NEGATION, argument); 
-        TreeNodePattern parent = parentPatterns.get(argument);
+        KahinaSimpleProperty neg = new KahinaSimpleProperty(KahinaSimpleProperty.NEGATION, argument); 
+        KahinaSimpleProperty parent = parentPatterns.get(argument);
         parentPatterns.put(neg,parent);
         parentPatterns.put(argument,neg);
         if (argument == parent.getLeftArgument())
@@ -393,11 +393,11 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         synchronizeEditors();
     }
     
-    public boolean introduceConjunction(TreeNodePattern arg1, TreeNodePattern arg2)
+    public boolean introduceConjunction(KahinaSimpleProperty arg1, KahinaSimpleProperty arg2)
     {
         if (!consistencyCheck(arg1,arg2)) return false;
         //build the new conjunct node
-        TreeNodePattern conj = new TreeNodePattern(TreeNodePattern.CONJUNCTION, arg1, arg2);     
+        KahinaSimpleProperty conj = new KahinaSimpleProperty(KahinaSimpleProperty.CONJUNCTION, arg1, arg2);     
         //determine the "loose ends" and rebalance the structure
         rebalanceStructureForConnective(arg1, arg2);
         //establish new structure, new root is necessary
@@ -409,7 +409,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         }
         else
         {
-            TreeNodePattern newRootPattern = new TreeNodePattern(TreeNodePattern.CONJUNCTION, conj, getRootPattern());
+            KahinaSimpleProperty newRootPattern = new KahinaSimpleProperty(KahinaSimpleProperty.CONJUNCTION, conj, getRootPattern());
             parentPatterns.put(getRootPattern(), newRootPattern);
             parentPatterns.put(conj, newRootPattern);
             setRootPattern(newRootPattern); 
@@ -420,11 +420,11 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         return true;
     }
     
-    public boolean introduceDisjunction(TreeNodePattern arg1, TreeNodePattern arg2)
+    public boolean introduceDisjunction(KahinaSimpleProperty arg1, KahinaSimpleProperty arg2)
     {
         if (!consistencyCheck(arg1,arg2)) return false;
         //build the new conjunct node
-        TreeNodePattern disj = new TreeNodePattern(TreeNodePattern.DISJUNCTION, arg1, arg2);     
+        KahinaSimpleProperty disj = new KahinaSimpleProperty(KahinaSimpleProperty.DISJUNCTION, arg1, arg2);     
         rebalanceStructureForConnective(arg1, arg2);
         //establish new structure, new root is necessary
         parentPatterns.put(arg1, disj);
@@ -435,7 +435,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         }
         else
         {
-            TreeNodePattern newRootPattern = new TreeNodePattern(TreeNodePattern.CONJUNCTION, disj, getRootPattern());
+            KahinaSimpleProperty newRootPattern = new KahinaSimpleProperty(KahinaSimpleProperty.CONJUNCTION, disj, getRootPattern());
             parentPatterns.put(getRootPattern(), newRootPattern);
             parentPatterns.put(disj, newRootPattern);
             setRootPattern(newRootPattern); 
@@ -446,11 +446,11 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         return true;
     }
     
-    public boolean introduceImplication(TreeNodePattern arg1, TreeNodePattern arg2)
+    public boolean introduceImplication(KahinaSimpleProperty arg1, KahinaSimpleProperty arg2)
     {
         if (!consistencyCheck(arg1,arg2)) return false;
         //build the new conjunct node
-        TreeNodePattern impl = new TreeNodePattern(TreeNodePattern.IMPLICATION, arg1, arg2);     
+        KahinaSimpleProperty impl = new KahinaSimpleProperty(KahinaSimpleProperty.IMPLICATION, arg1, arg2);     
         rebalanceStructureForConnective(arg1, arg2);
         //establish new structure, new root is necessary
         parentPatterns.put(arg1, impl);
@@ -461,7 +461,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         }
         else
         {
-            TreeNodePattern newRootPattern = new TreeNodePattern(TreeNodePattern.CONJUNCTION, impl, getRootPattern());
+            KahinaSimpleProperty newRootPattern = new KahinaSimpleProperty(KahinaSimpleProperty.CONJUNCTION, impl, getRootPattern());
             parentPatterns.put(getRootPattern(), newRootPattern);
             parentPatterns.put(impl, newRootPattern);
             setRootPattern(newRootPattern); 
@@ -472,17 +472,17 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         return true;
     }
     
-    private boolean consistencyCheck(TreeNodePattern arg1, TreeNodePattern arg2)
+    private boolean consistencyCheck(KahinaSimpleProperty arg1, KahinaSimpleProperty arg2)
     {
         //consistency check: neither node must dominate the other
-        TreeNodePattern leftAncestor = arg1;
+        KahinaSimpleProperty leftAncestor = arg1;
         if (leftAncestor == arg2) return false;
         while (leftAncestor != getRootPattern())
         {
             leftAncestor = parentPatterns.get(leftAncestor);
             if (leftAncestor == arg2) return false;
         }
-        TreeNodePattern rightAncestor = arg2;
+        KahinaSimpleProperty rightAncestor = arg2;
         if (rightAncestor == arg1) return false;
         while (rightAncestor != null && rightAncestor != getRootPattern())
         {
@@ -492,24 +492,24 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         return true;
     }
     
-    private void rebalanceStructureForConnective(TreeNodePattern arg1, TreeNodePattern arg2)
+    private void rebalanceStructureForConnective(KahinaSimpleProperty arg1, KahinaSimpleProperty arg2)
     {
         //determine the "loose ends" and rebalance the structure
         removeFromStructureWithoutBreakingIt(arg1);
         removeFromStructureWithoutBreakingIt(arg2);
     }
     
-    private void removeFromStructureWithoutBreakingIt(TreeNodePattern arg1)
+    private void removeFromStructureWithoutBreakingIt(KahinaSimpleProperty arg1)
     {
         if (getRootPattern() == arg1 && arg1.getLeftArgument() == null)
         {
-            virtualRootPattern = new TreeNodePattern();
+            virtualRootPattern = new KahinaSimpleProperty();
             parentPatterns.remove(arg1);
             return;
         }
-        TreeNodePattern node = arg1;
-        TreeNodePattern parent = parentPatterns.get(arg1);
-        TreeNodePattern grandparent = parentPatterns.get(parent);
+        KahinaSimpleProperty node = arg1;
+        KahinaSimpleProperty parent = parentPatterns.get(arg1);
+        KahinaSimpleProperty grandparent = parentPatterns.get(parent);
         while (parent.getRightArgument() == null && parent != getRootPattern())
         {
             node = parent;
@@ -526,7 +526,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         }
     }
     
-    private void replaceChild(TreeNodePattern parent, TreeNodePattern child, TreeNodePattern newChild)
+    private void replaceChild(KahinaSimpleProperty parent, KahinaSimpleProperty child, KahinaSimpleProperty newChild)
     {
         if (child == parent.getLeftArgument())
         {
@@ -550,14 +550,14 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
        
         elementaryConstraintNumber++;
         adaptBoolPanel();
-        basePatterns.add(rowID, new TreeNodePattern());
+        basePatterns.add(rowID, new KahinaSimpleProperty());
         if (getRootPattern() == null)
         {
             setRootPattern(basePatterns.get(rowID));
         }
         else
         {
-            TreeNodePattern newRoot = new TreeNodePattern(TreeNodePattern.CONJUNCTION, getRootPattern(), basePatterns.get(rowID));
+            KahinaSimpleProperty newRoot = new KahinaSimpleProperty(KahinaSimpleProperty.CONJUNCTION, getRootPattern(), basePatterns.get(rowID));
             parentPatterns.put(getRootPattern(), newRoot);
             parentPatterns.put(basePatterns.get(rowID), newRoot);
             setRootPattern(newRoot);

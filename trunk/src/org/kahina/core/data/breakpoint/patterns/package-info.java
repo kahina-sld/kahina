@@ -5,7 +5,7 @@
 * which can be combined using boolean connectives,
 * and then used as elementary patterns to define patterns in a step tree.
 * <p>
-* The {@link org.kahina.core.data.breakpoint.patterns.TreeNodePattern} class
+* The {@link org.kahina.core.control.KahinaSimpleProperty} class
 * is used to encode (boolean combinations of) node patterns.
 * At the moment, string comparisons (including regular expressions) are allowed
 * for matching step descriptions and edge labels in a step tree,
