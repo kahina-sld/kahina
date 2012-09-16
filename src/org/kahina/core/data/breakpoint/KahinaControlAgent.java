@@ -12,17 +12,17 @@ import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.control.KahinaStepProperty;
 import org.kahina.core.control.KahinaStepPropertySensor;
 import org.kahina.core.control.KahinaStepUpdateEvent;
-import org.kahina.core.control.KahinaTreePatternSensor;
+import org.kahina.core.control.KahinaSimplePropertySensor;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.breakpoint.patterns.TreePattern;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.color.ColorUtil;
-import org.kahina.lp.data.breakpoint.LogicProgrammingControlPoint;
+import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class KahinaControlPoint extends KahinaObject implements KahinaListener
+public class KahinaControlAgent extends KahinaObject implements KahinaListener
 {
     /** a static counter keeping track of the number of breakpoints created so far
      *  only used for default naming purposes */
@@ -50,7 +50,7 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
      * <code>pattern</code> - the empty pattern 
      * @param a backpointer to the relevant KahinaController
      */
-    public KahinaControlPoint(KahinaController control)
+    public KahinaControlAgent(KahinaController control)
     {
         this.control = control;
         number++;
@@ -182,7 +182,7 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
     
     public Element exportXML(Document dom)
     {
-        Element breakpointEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:controlPoint");
+        Element breakpointEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:controlAgent");
         breakpointEl.setAttribute("name", name);
         breakpointEl.setAttribute("color", ColorUtil.encodeHTML(signalColor));
         breakpointEl.setAttribute("active", active + "");     
@@ -192,15 +192,15 @@ public class KahinaControlPoint extends KahinaObject implements KahinaListener
     
     /**
      * Constructs a control point from an XML representation as produced by <code>exportXML</code>.
-     * @param controlPointNode an XML DOM element with name "controlPoint" as produced when parsing the result of <code>exportXML</code>
+     * @param controlAgentNode an XML DOM element with name "controlPoint" as produced when parsing the result of <code>exportXML</code>
      * @return a new control point object corresponding to the XML representation contained in the DOM element
      */
-    public static KahinaControlPoint importXML(Element controlPointNode, KahinaController control)
+    public static KahinaControlAgent importXML(Element controlAgentNode, KahinaController control)
     {
-        KahinaControlPoint newControlPoint = new KahinaControlPoint(control);
-        newControlPoint.setName(controlPointNode.getAttribute("name"));
-        newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlPointNode.getAttribute("color")));
-        newControlPoint.active = Boolean.parseBoolean(controlPointNode.getAttribute("active"));
+        KahinaControlAgent newControlPoint = new KahinaControlAgent(control);
+        newControlPoint.setName(controlAgentNode.getAttribute("name"));
+        newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlAgentNode.getAttribute("color")));
+        newControlPoint.active = Boolean.parseBoolean(controlAgentNode.getAttribute("active"));
         //expect only one step property, TODO: implement XML import stub for KahinaStepProperty
         KahinaStepPropertySensor stepPropertySensor = new KahinaStepPropertySensor(newControlPoint, new KahinaStepProperty());
         //TODO: define some useful default sensor here, with focus on making the architecture more easily extendable

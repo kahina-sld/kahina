@@ -1,16 +1,16 @@
 package org.kahina.core.control;
 
-import org.kahina.core.data.breakpoint.KahinaControlPoint;
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 
-public class KahinaTreePatternSensor extends KahinaStepPropertySensor
+public class KahinaSimplePropertySensor extends KahinaStepPropertySensor
 {
     private KahinaSimpleProperty pattern;
     private KahinaTree stepTree;
     
-    public KahinaTreePatternSensor(KahinaControlPoint controlPoint, KahinaTree stepTree)
+    public KahinaSimplePropertySensor(KahinaControlAgent controlPoint, KahinaTree stepTree)
     {
         this.controlPoint = controlPoint;
         this.stepTree = stepTree;

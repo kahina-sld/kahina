@@ -3,8 +3,8 @@ package org.kahina.lp.data.project;
 import java.io.File;
 
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.data.breakpoint.KahinaControlPoint;
-import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
+import org.kahina.core.data.breakpoint.KahinaControlAgentProfile;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.KahinaPerspective;
@@ -14,7 +14,7 @@ import org.kahina.lp.control.LogicProgrammingCreepActuator;
 import org.kahina.lp.control.LogicProgrammingFailActuator;
 import org.kahina.lp.control.LogicProgrammingSkipActuator;
 import org.kahina.lp.control.NewControlAgentEvent;
-import org.kahina.lp.data.breakpoint.LogicProgrammingControlPointProfile;
+import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgentProfile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -22,82 +22,82 @@ import org.w3c.dom.NodeList;
 public class LogicProgrammingProject extends KahinaProject
 {
     //store profiles for the various types of  control points
-    protected KahinaControlPointProfile breakPoints;
-    protected KahinaControlPointProfile creepPoints;
-    protected KahinaControlPointProfile completePoints;
-    protected KahinaControlPointProfile skipPoints;
-    protected KahinaControlPointProfile failPoints;
-    protected KahinaControlPointProfile warnPoints;
+    protected KahinaControlAgentProfile breakPoints;
+    protected KahinaControlAgentProfile creepPoints;
+    protected KahinaControlAgentProfile completePoints;
+    protected KahinaControlAgentProfile skipPoints;
+    protected KahinaControlAgentProfile failPoints;
+    protected KahinaControlAgentProfile warnPoints;
     
     public LogicProgrammingProject(String appID, KahinaTree stepTree, KahinaController control)
     {
         super(appID);
-        breakPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingBreakActuator(control), stepTree);
-        creepPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingCreepActuator(control), stepTree);
-        completePoints = new LogicProgrammingControlPointProfile(new LogicProgrammingCompleteActuator(control), stepTree);
-        skipPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingSkipActuator(control), stepTree);
-        failPoints = new LogicProgrammingControlPointProfile(new LogicProgrammingFailActuator(control), stepTree);
+        breakPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingBreakActuator(control), stepTree);
+        creepPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingCreepActuator(control), stepTree);
+        completePoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingCompleteActuator(control), stepTree);
+        skipPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingSkipActuator(control), stepTree);
+        failPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingFailActuator(control), stepTree);
         //warnPoints = new KahinaControlPointProfile();
     }
     
-    public KahinaControlPointProfile getBreakPoints()
+    public KahinaControlAgentProfile getBreakPoints()
     {
         return breakPoints;
     }
     
-    public KahinaControlPointProfile getCreepPoints()
+    public KahinaControlAgentProfile getCreepPoints()
     {
         return creepPoints;
     }
     
-    public KahinaControlPointProfile getCompletePoints()
+    public KahinaControlAgentProfile getCompletePoints()
     {
         return completePoints;
     }
     
-    public KahinaControlPointProfile getSkipPoints()
+    public KahinaControlAgentProfile getSkipPoints()
     {
         return skipPoints;
     }
     
-    public KahinaControlPointProfile getFailPoints()
+    public KahinaControlAgentProfile getFailPoints()
     {
         return failPoints;
     }
     
-    public KahinaControlPointProfile getWarnPoints()
+    public KahinaControlAgentProfile getWarnPoints()
     {
         return warnPoints;
     }
     
-    public void addBreakPoint(KahinaControlPoint agent)
+    public void addBreakPoint(KahinaControlAgent agent)
     {
-        breakPoints.addControlPoint(agent);
+        breakPoints.addControlAgent(agent);
     }
     
-    public void addCreepPoint(KahinaControlPoint agent)
+    public void addCreepPoint(KahinaControlAgent agent)
     {
-        creepPoints.addControlPoint(agent);
+        creepPoints.addControlAgent(agent);
     }
     
-    public void addCompletePoint(KahinaControlPoint agent)
+    public void addCompletePoint(KahinaControlAgent agent)
     {
-        completePoints.addControlPoint(agent);
+        completePoints.addControlAgent(agent);
     }
     
-    public void addSkipPoint(KahinaControlPoint agent)
+    public void addSkipPoint(KahinaControlAgent agent)
     {
-        skipPoints.addControlPoint(agent);
+        skipPoints.addControlAgent(agent);
     }
     
-    public void addFailPoint(KahinaControlPoint agent)
+    public void addFailPoint(KahinaControlAgent agent)
     {
-        failPoints.addControlPoint(agent);
+        failPoints.addControlAgent(agent);
     }
     
-    public void addWarnPoint(KahinaControlPoint agent)
+    public void addWarnPoint(KahinaControlAgent agent)
     {
-        warnPoints.addControlPoint(agent);
+        warnPoints.addControlAgent(agent);
     }
     
     public Element exportXML(Document dom)

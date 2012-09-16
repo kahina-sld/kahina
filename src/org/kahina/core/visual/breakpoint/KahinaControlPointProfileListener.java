@@ -13,13 +13,13 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.kahina.core.control.KahinaControlActuator;
-import org.kahina.core.data.breakpoint.KahinaControlPoint;
-import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
+import org.kahina.core.data.breakpoint.KahinaControlAgentProfile;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.LogicProgrammingState;
-import org.kahina.lp.data.breakpoint.LogicProgrammingControlPoint;
-import org.kahina.lp.data.breakpoint.LogicProgrammingControlPointProfile;
+import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgent;
+import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgentProfile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -39,8 +39,8 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         String s = e.getActionCommand();
         if (s.equals("newControlPoint"))
         {
-            LogicProgrammingControlPoint newControlPoint = new LogicProgrammingControlPoint(profilePanel.getKahina().getControl(), stepTree);
-            profilePanel.view.getModel().addControlPoint(newControlPoint);
+            LogicProgrammingControlAgent newControlAgent = new LogicProgrammingControlAgent(profilePanel.getKahina().getControl(), stepTree);
+            profilePanel.view.getModel().addControlAgent(newControlAgent);
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
             profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
         } 
@@ -53,8 +53,8 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
             try
             {
                 Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
-                LogicProgrammingControlPoint newControlPoint = LogicProgrammingControlPoint.importXML(dom.getDocumentElement(), profilePanel.getKahina().getControl(), stepTree);
-                profilePanel.view.getModel().addControlPoint(newControlPoint);
+                LogicProgrammingControlAgent newControlAgent = LogicProgrammingControlAgent.importXML(dom.getDocumentElement(), profilePanel.getKahina().getControl(), stepTree);
+                profilePanel.view.getModel().addControlAgent(newControlAgent);
                 profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
                 profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
             }
@@ -66,12 +66,12 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         else if (s.equals("removeControlPoint"))
         {
             System.err.println("removeControlPoint");
-            profilePanel.removeCurrentControlPoint();
+            profilePanel.removeCurrentControlAgent();
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
         }
         else if (s.equals("newProfile"))
         {
-            profilePanel.view.display(new KahinaControlPointProfile(profilePanel.view.getModel().getActuator()));
+            profilePanel.view.display(new KahinaControlAgentProfile(profilePanel.view.getModel().getActuator()));
             profilePanel.updateDisplay();
         }
         else if (s.equals("saveProfile"))
@@ -93,7 +93,7 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
             {
                 Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
                 KahinaControlActuator actuator = profilePanel.view.getModel().getActuator();
-                profilePanel.view.display(LogicProgrammingControlPointProfile.importXML(dom.getDocumentElement(), actuator));
+                profilePanel.view.display(LogicProgrammingControlAgentProfile.importXML(dom.getDocumentElement(), actuator));
                 profilePanel.updateDisplay();
             }
             catch (FileNotFoundException ex)
@@ -114,7 +114,7 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         } 
         else
         {
-            profilePanel.pointPanel.view.display(profilePanel.view.getModel().getControlPoint(curID));
+            profilePanel.pointPanel.view.display(profilePanel.view.getModel().getControlAgent(curID));
         }
         profilePanel.pointPanel.updateDisplay();
         profilePanel.pointPanel.revalidate();

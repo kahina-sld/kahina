@@ -14,7 +14,7 @@ import org.kahina.core.control.KahinaStepUpdateEvent;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.control.KahinaWarnEvent;
 import org.kahina.core.data.breakpoint.KahinaBreakpoint;
-import org.kahina.core.data.breakpoint.KahinaControlPoint;
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.KahinaTreeEvent;
@@ -1082,7 +1082,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	protected void performSkipAction(KahinaControlPoint agent)
+	protected void performSkipAction(KahinaControlAgent agent)
 	{
         if (canSkipOrAutocomplete())
         {
@@ -1095,7 +1095,7 @@ public class LogicProgrammingBridge extends KahinaBridge
         }
 	}
     
-    protected void performCompleteAction(KahinaControlPoint agent)
+    protected void performCompleteAction(KahinaControlAgent agent)
     {
         if (canSkipOrAutocomplete())
         {
@@ -1108,7 +1108,7 @@ public class LogicProgrammingBridge extends KahinaBridge
         }
     }
 
-	protected void performCreepAction(KahinaControlPoint agent)
+	protected void performCreepAction(KahinaControlAgent agent)
 	{
 		// no change if we are in leap or skip mode anyway
 		if (getBridgeState() != 's' && getBridgeState() != 't' && getBridgeState() != 'l')
@@ -1118,14 +1118,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	public void performFailAction(KahinaControlPoint agent)
+	public void performFailAction(KahinaControlAgent agent)
 	{
 		// TODO: handle this more elegantly if in skip or leap mode (possibly additional state)
 		setBridgeState('f');
         state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a fail operation.");
 	}
 
-	public void performBreakAction(KahinaControlPoint agent)
+	public void performBreakAction(KahinaControlAgent agent)
 	{
 		// TODO: temporarily mark matching node in the breakpoint's signal color
 		// same reaction as in pause mode

@@ -1,10 +1,10 @@
 package org.kahina.core.control;
 
-import org.kahina.core.data.breakpoint.KahinaControlPoint;
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
 
 public class KahinaStepPropertySensor
 {
-    KahinaControlPoint controlPoint;
+    KahinaControlAgent controlPoint;
     
     //the property this sensor is looking for
     KahinaStepProperty stepProperty;
@@ -14,7 +14,7 @@ public class KahinaStepPropertySensor
         
     }
     
-    public KahinaStepPropertySensor(KahinaControlPoint controlPoint, KahinaStepProperty stepProperty)
+    public KahinaStepPropertySensor(KahinaControlAgent controlPoint, KahinaStepProperty stepProperty)
     {
         this.controlPoint = controlPoint;
         this.stepProperty = stepProperty;

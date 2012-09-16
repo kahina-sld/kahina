@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.data.breakpoint.KahinaControlPoint;
-import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
+import org.kahina.core.data.breakpoint.KahinaControlAgentProfile;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.io.util.XMLUtil;
@@ -34,37 +34,37 @@ public abstract class LogicProgrammingInstance<S extends LogicProgrammingState, 
 		new LogicProgrammingTreeBehavior(state.getStepTree(), this, state.getSecondaryStepTree());	
 	}
 	
-    public KahinaControlPointProfile getBreakPoints()
+    public KahinaControlAgentProfile getBreakPoints()
     {
         if (project == null) return null;
         return project.getBreakPoints();
     }
     
-    public KahinaControlPointProfile getCreepPoints()
+    public KahinaControlAgentProfile getCreepPoints()
     {
         if (project == null) return null;
         return project.getCreepPoints();
     }
     
-    public KahinaControlPointProfile getCompletePoints()
+    public KahinaControlAgentProfile getCompletePoints()
     {
         if (project == null) return null;
         return project.getCompletePoints();
     }
     
-    public KahinaControlPointProfile getSkipPoints()
+    public KahinaControlAgentProfile getSkipPoints()
     {
         if (project == null) return null;
         return project.getSkipPoints();
     }
     
-    public KahinaControlPointProfile getFailPoints()
+    public KahinaControlAgentProfile getFailPoints()
     {
         if (project == null) return null;
         return project.getFailPoints();
     }
     
-    public KahinaControlPointProfile getWarnPoints()
+    public KahinaControlAgentProfile getWarnPoints()
     {
         if (project == null) return null;
         return project.getBreakPoints();
@@ -81,7 +81,7 @@ public abstract class LogicProgrammingInstance<S extends LogicProgrammingState, 
     
     private void processNewAgentEvent(NewControlAgentEvent event)
     {
-        KahinaControlPoint controlAgent = event.getControlAgent();
+        KahinaControlAgent controlAgent = event.getControlAgent();
         switch (event.getAgentType())
         {
             case BREAK_AGENT:

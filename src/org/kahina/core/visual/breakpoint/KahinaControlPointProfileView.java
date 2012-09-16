@@ -2,18 +2,18 @@ package org.kahina.core.visual.breakpoint;
 
 import javax.swing.JComponent;
 
-import org.kahina.core.data.breakpoint.KahinaControlPointProfile;
+import org.kahina.core.data.breakpoint.KahinaControlAgentProfile;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.lp.LogicProgrammingInstance;
 
-public class KahinaControlPointProfileView extends KahinaView<KahinaControlPointProfile>
+public class KahinaControlPointProfileView extends KahinaView<KahinaControlAgentProfile>
 {
     KahinaControlPointView pointView;
     
     public KahinaControlPointProfileView(LogicProgrammingInstance<?,?,?,?> kahina)
     {
         super(kahina);
-        model = new KahinaControlPointProfile(null);
+        model = new KahinaControlAgentProfile(null);
         pointView = new KahinaControlPointView(kahina);
     }
 

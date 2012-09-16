@@ -1,21 +1,21 @@
 package org.kahina.lp.control;
 
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.data.breakpoint.KahinaControlPoint;
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
 
 public class LogicProgrammingAgentMatchEvent extends KahinaEvent
 {
-    KahinaControlPoint agent;
+    KahinaControlAgent agent;
     ControlAgentType type;
     
-    public LogicProgrammingAgentMatchEvent(KahinaControlPoint agent, ControlAgentType type)
+    public LogicProgrammingAgentMatchEvent(KahinaControlAgent agent, ControlAgentType type)
     {
         super("LP agent match");
         this.agent = agent;
         this.type = type;
     }
     
-    public KahinaControlPoint getAgent()
+    public KahinaControlAgent getAgent()
     {
         return agent;
     }
