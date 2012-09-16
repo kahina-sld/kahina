@@ -1,6 +1,6 @@
 package org.kahina.core.data.breakpoint;
 
-import org.kahina.core.data.breakpoint.patterns.TreeNodePattern;
+import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.data.breakpoint.patterns.TreePattern;
 import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
 
@@ -22,7 +22,7 @@ public class KahinaBreakpointFactory
 	{
 		TreePattern pat = new TreePattern();
         TreePatternNode rootNode = new TreePatternNode();
-        TreeNodePattern rootPattern = new TreeNodePattern(TreeNodePattern.CAPTION, TreeNodePattern.MATCHING, pattern);    
+        KahinaSimpleProperty rootPattern = new KahinaSimpleProperty(KahinaSimpleProperty.CAPTION, KahinaSimpleProperty.MATCHING, pattern);    
         rootNode.setPattern(rootPattern);
         pat.setRoot(rootNode);
         KahinaBreakpoint bp = new KahinaBreakpoint(type);

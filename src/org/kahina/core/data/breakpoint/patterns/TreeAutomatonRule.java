@@ -3,6 +3,8 @@ package org.kahina.core.data.breakpoint.patterns;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.kahina.core.control.KahinaSimpleProperty;
+
 
 /**
  * Encodes a rule within a {@link TreeAutomaton}.
@@ -24,7 +26,7 @@ public class TreeAutomatonRule
     //first condition; no order can be imposed on the required child annotations by this type of rule
     private Set<Integer> requiredChildAnnotations;
     //second condition: allow all kinds of conditions on the node to be annotated
-    private TreeNodePattern pattern;
+    private KahinaSimpleProperty pattern;
     //-1 means: no annotation, won't be stored by the tree automaton
     private int assignedLabel;
     
@@ -34,7 +36,7 @@ public class TreeAutomatonRule
     public TreeAutomatonRule()
     {
         setRequiredChildAnnotations(new HashSet<Integer>());
-        setPattern(new TreeNodePattern());
+        setPattern(new KahinaSimpleProperty());
         setAssignedLabel(-1);
     }
     /**
@@ -88,7 +90,7 @@ public class TreeAutomatonRule
 	 * Changes the tree node pattern required for the rule to apply.
 	 * @param pattern a tree node pattern defining when the rule is to apply
 	 */
-	public void setPattern(TreeNodePattern pattern) 
+	public void setPattern(KahinaSimpleProperty pattern) 
 	{
 		this.pattern = pattern;
 	}
@@ -97,7 +99,7 @@ public class TreeAutomatonRule
 	 * Gets the tree node pattern required for the rule to apply.
 	 * @return pattern a tree node pattern defining when the rule applies
 	 */
-	public TreeNodePattern getPattern() 
+	public KahinaSimpleProperty getPattern() 
 	{
 		return pattern;
 	}

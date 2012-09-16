@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.control.KahinaStepProperty;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -16,19 +17,19 @@ public class TreePatternNode extends KahinaStepProperty implements Serializable
 	 */
 	private static final long serialVersionUID = 8431727196172467206L;
 
-	private TreeNodePattern pattern;
+	private KahinaSimpleProperty pattern;
     
     private TreePatternNode parent;
     private List<TreePatternNode> children;  
     
     public TreePatternNode()
     {
-        this.pattern = new TreeNodePattern();
+        this.pattern = new KahinaSimpleProperty();
         this.parent = null;
         this.children = new ArrayList<TreePatternNode>();
     }
     
-    public TreePatternNode(TreeNodePattern pattern)
+    public TreePatternNode(KahinaSimpleProperty pattern)
     {
         this.pattern = pattern;
         this.parent = null;
@@ -61,12 +62,12 @@ public class TreePatternNode extends KahinaStepProperty implements Serializable
         this.parent = parent;
     }
 
-    public TreeNodePattern getPattern()
+    public KahinaSimpleProperty getPattern()
     {
         return pattern;
     }
 
-    public void setPattern(TreeNodePattern pattern)
+    public void setPattern(KahinaSimpleProperty pattern)
     {
         this.pattern = pattern;
     }
@@ -120,7 +121,7 @@ public class TreePatternNode extends KahinaStepProperty implements Serializable
     public static TreePatternNode importXML(Element treePatternNodeNode)
     {
         TreePatternNode newTreePatternNode = new TreePatternNode();
-        newTreePatternNode.pattern = TreeNodePattern.importXML(treePatternNodeNode);
+        newTreePatternNode.pattern = KahinaSimpleProperty.importXML(treePatternNodeNode);
         NodeList childNodes = treePatternNodeNode.getChildNodes();
         for (int i = 0; i < childNodes.getLength(); i++)
         {

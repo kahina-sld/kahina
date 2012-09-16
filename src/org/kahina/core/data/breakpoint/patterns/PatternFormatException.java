@@ -1,8 +1,10 @@
 package org.kahina.core.data.breakpoint.patterns;
 
+import org.kahina.core.control.KahinaSimpleProperty;
+
 
 /**
- * An exception type thrown when validating the values of a {@link TreeNodePattern}.
+ * An exception type thrown when validating the values of a {@link KahinaSimpleProperty}.
  * <p>
  * This type of exception is caught by the breakpoint editor in order to provide hints to the user.
  * @author jd

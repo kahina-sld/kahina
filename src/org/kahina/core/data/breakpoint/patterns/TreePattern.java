@@ -2,6 +2,7 @@ package org.kahina.core.data.breakpoint.patterns;
 
 import java.io.Serializable;
 
+import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.io.color.ColorUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -20,7 +21,7 @@ public class TreePattern implements Serializable
         root = new TreePatternNode();
     }
     
-    public TreePattern(TreeNodePattern rootPattern)
+    public TreePattern(KahinaSimpleProperty rootPattern)
     {
         root = new TreePatternNode(rootPattern);
     }
