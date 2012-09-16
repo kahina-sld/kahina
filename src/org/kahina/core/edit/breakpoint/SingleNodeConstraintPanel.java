@@ -100,7 +100,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         this.add(elConstPanel, Component.LEFT_ALIGNMENT);
     }
     
-    public SingleNodeConstraintPanel(NodeConstraintOptions constrOptions, KahinaController control, TreePatternNode patternNode)
+    public SingleNodeConstraintPanel(NodeConstraintOptions constrOptions, KahinaController control, KahinaSimpleProperty pattern)
     {
         this.control = control;
         this.addMouseListener(this);
@@ -136,7 +136,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         c.gridheight = 1;
         elConstPanel.add(boolPanel, c);
         
-        setRootPattern(patternNode.getPattern()); 
+        setRootPattern(pattern); 
         //synchronization mode to prevent combo boxes from changing the pattern during construction
         synchronizationMode = true;
         addStructure(getRootPattern());

@@ -1,6 +1,7 @@
 package org.kahina.lp.data.breakpoint;
 
 import org.kahina.core.control.KahinaController;
+import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.control.KahinaStepPropertySensor;
 import org.kahina.core.control.KahinaTreePatternSensor;
 import org.kahina.core.data.breakpoint.KahinaControlPoint;
@@ -56,7 +57,7 @@ public class LogicProgrammingControlPoint extends KahinaControlPoint
         newControlPoint.active = Boolean.parseBoolean(controlPointNode.getAttribute("active"));
         //expect only one tree pattern
         KahinaTreePatternSensor treePatternSensor = new KahinaTreePatternSensor(newControlPoint, stepTree);
-        treePatternSensor.setPattern(TreePatternNode.importXML((Element) controlPointNode.getElementsByTagName("kahina:pattern").item(0)));
+        treePatternSensor.setPattern(KahinaSimpleProperty.importXML((Element) controlPointNode.getElementsByTagName("kahina:pattern").item(0)));
         newControlPoint.setSensor(treePatternSensor);
         return newControlPoint;
     }

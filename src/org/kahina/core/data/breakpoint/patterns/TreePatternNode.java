@@ -10,7 +10,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class TreePatternNode extends KahinaStepProperty implements Serializable
+public class TreePatternNode implements Serializable
 {
     /**
 	 * 

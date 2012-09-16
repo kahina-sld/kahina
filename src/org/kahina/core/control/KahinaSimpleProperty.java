@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  * @author jd
  *
  */
-public class KahinaSimpleProperty implements Serializable
+public class KahinaSimpleProperty extends KahinaStepProperty implements Serializable
 {
     /**
 	 * 
