@@ -27,21 +27,6 @@ public class QTypeGUI extends SICStusPrologGUI
 	{
 		super(stepType, instance);
 	}
-
-	/*@Override
-	public void prepare()
-	{
-		try
-		{
-			displayMainViews();
-
-			windowManager.createWindows();	
-		}
-		catch (NullPointerException e)
-		{
-			e.printStackTrace();
-		}
-	}*/
 	
     public KahinaPerspective generateInitialPerspective()
     {

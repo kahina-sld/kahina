@@ -209,6 +209,7 @@ public class KahinaGUI implements KahinaListener
 
 	protected KahinaWindowManager createWindowManager()
 	{
+        System.err.println("MUCGUI.createWindowManager()");
 		return new KahinaWindowManager(kahina);
 	}
 

@@ -17,7 +17,8 @@ public class DimacsCnfParser
         try
         {
             Scanner in = new Scanner(new File(fileName));
-            //ignore comment lines
+
+            //ignore comment header
             while (in.hasNext(Pattern.compile("c (.*)\n")))
             {
                 in.nextLine();
@@ -38,19 +39,44 @@ public class DimacsCnfParser
             }
             sat.setNumVars(Integer.parseInt(params[2]));
             sat.setNumClauses(Integer.parseInt(params[3]));
-            //read in clauses
+            
+            String currentLine;
+            String[] tokens;
             List<Integer> currentClause = new LinkedList<Integer>();
+            //read in clauses and comment lines which encode symbol definitions
             while (in.hasNext())
             {
-                Integer literal = Integer.parseInt(in.next());
-                if (literal == 0)
+                currentLine = in.nextLine();
+                tokens = currentLine.split(" ");
+                if (tokens[0].equals("c"))
                 {
-                    sat.getClauses().add(currentClause);
-                    currentClause = new LinkedList<Integer>();
+                    //check whether the comment is a symbol definition
+                    if (tokens.length == 3)
+                    {
+                        System.err.println("Symbol definition: " + tokens[1] + " -> " + tokens[2]);
+                    }
+                    else
+                    {
+                        //ignore other comments
+                    }
                 }
                 else
                 {
-                    currentClause.add(literal);
+                    for (int i = 0; i < tokens.length; i++)
+                    {
+                        Integer literal = Integer.parseInt(tokens[i]);
+                        if (literal == 0)
+                        {
+                            sat.getClauses().add(currentClause);
+                            currentClause = new LinkedList<Integer>();
+                            break;
+                        }
+                        else
+                        {
+                            currentClause.add(literal);
+                        }
+                    }
+                   
                 }
             }
         }
