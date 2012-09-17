@@ -24,39 +24,9 @@ public class QTypeProject extends LogicProgrammingProject
         super("qtype", stepTree, control);
     }
     
-    public static QTypeProject importXML(Element topEl, QTypeProject project)
+    public static QTypeProject importXML(Element topEl, QTypeProject project, KahinaController control)
     {
-        if (!"kahina:project".equals(topEl.getNodeName()))
-        {
-            System.err.println("ERROR: attempted to loaded project file with wrong top element! Loading an empty project.");
-            return project;
-        }
-        String appID = topEl.getAttribute("kahina:appid");
-        if (!"qtype".equals(appID))
-        {
-            System.err.println("ERROR: attempted to loaded project file for different application " + appID + "! Loading an empty project instead.");
-            return project;
-        }
-        NodeList mainFileList = topEl.getElementsByTagName("kahina:mainFile");
-        if (mainFileList.getLength() != 1)
-        {
-            System.err.println("ERROR: project file does not contain exactly one main file! Loading an empty project.");
-            return project;
-        }
-        project.setMainFile(new File(((Element) mainFileList.item(0)).getAttribute("kahina:path")));
-        NodeList fileList = topEl.getElementsByTagName("kahina:file");
-        for (int i = 0; i < fileList.getLength(); i++)
-        {
-            project.addOpenedFile(new File(((Element) fileList.item(i)).getAttribute("kahina:path")));
-        }
-        NodeList perspectiveList = topEl.getElementsByTagName("kahina:perspective");
-        if (mainFileList.getLength() == 0)
-        {
-            System.err.println("ERROR: project file does not contain a perspective declaration! Loading an empty perspective.");
-            project.setPerspective(new KahinaPerspective("default","default"));
-            return project;
-        }
-        project.setPerspective(KahinaPerspective.importXML((Element) perspectiveList.item(0)));
+        LogicProgrammingProject.importXML(topEl, project, control);
         return project;
     }
 }

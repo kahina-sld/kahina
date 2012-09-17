@@ -2,6 +2,7 @@ package org.kahina.lp.data.project;
 
 import java.io.File;
 
+import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.breakpoint.KahinaControlAgent;
 import org.kahina.core.data.breakpoint.KahinaControlAgentProfile;
@@ -17,6 +18,7 @@ import org.kahina.lp.control.NewControlAgentEvent;
 import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgentProfile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class LogicProgrammingProject extends KahinaProject
@@ -126,10 +128,41 @@ public class LogicProgrammingProject extends KahinaProject
         return el;
     }
     
-    public static LogicProgrammingProject importXML(Element topEl, LogicProgrammingProject project)
+    public static LogicProgrammingProject importXML(Element topEl, LogicProgrammingProject project, KahinaController control)
     {
         KahinaProject.importXML(topEl, project);
-        //TODO: read in control agent profiles
+        //read in control agent profiles
+        NodeList profileList = topEl.getElementsByTagName("kahina:controlAgentProfile");
+        for (int i = 0; i < profileList.getLength(); i++)
+        {
+            Element profileElement = (Element) profileList.item(i);
+            String type = profileElement.getAttribute("kahina:type");
+            if (type.equals("break"))
+            {
+                KahinaControlActuator actuator = new LogicProgrammingBreakActuator(control);  
+                project.breakPoints = KahinaControlAgentProfile.importXML(profileElement, actuator);
+            }
+            else if (type.equals("creep"))
+            {
+                KahinaControlActuator actuator = new LogicProgrammingCreepActuator(control);  
+                project.creepPoints = KahinaControlAgentProfile.importXML(profileElement, actuator);
+            }
+            else if (type.equals("complete"))
+            {
+                KahinaControlActuator actuator = new LogicProgrammingCompleteActuator(control);  
+                project.completePoints = KahinaControlAgentProfile.importXML(profileElement, actuator);
+            }
+            else if (type.equals("skip"))
+            {
+                KahinaControlActuator actuator = new LogicProgrammingSkipActuator(control);  
+                project.skipPoints = KahinaControlAgentProfile.importXML(profileElement, actuator);
+            }
+            else if (type.equals("fail"))
+            {
+                KahinaControlActuator actuator = new LogicProgrammingFailActuator(control);  
+                project.failPoints = KahinaControlAgentProfile.importXML(profileElement, actuator);
+            }
+        }
         return project;
     }
 }

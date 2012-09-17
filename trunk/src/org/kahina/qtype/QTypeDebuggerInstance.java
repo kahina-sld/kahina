@@ -99,7 +99,7 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
             project = new QTypeProject(state.getStepTree(), control);
-            project = QTypeProject.importXML(dom.getDocumentElement(), project);
+            project = QTypeProject.importXML(dom.getDocumentElement(), project, control);
             gui.setPerspective(project.getPerspective());
             gui.displayMainViews();
             setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
