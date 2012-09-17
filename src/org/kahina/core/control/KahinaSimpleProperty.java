@@ -676,15 +676,7 @@ public class KahinaSimpleProperty extends KahinaStepProperty implements Serializ
     
     public static KahinaSimpleProperty importXML(Element treeNodePatternNode)
     {
-        //find the "pattern" child node, this will be the root element for the pattern
-        for (int i = 0; i < treeNodePatternNode.getChildNodes().getLength(); i++)
-        {
-            //System.err.println("   Child node of name: " + childNodes.item(i).getNodeName());
-            if (treeNodePatternNode.getChildNodes().item(i).getNodeName().equals("pattern"))
-            {
-                treeNodePatternNode = (Element) treeNodePatternNode.getChildNodes().item(i);
-            }
-        }
+
         KahinaSimpleProperty newTreeNodePattern = new KahinaSimpleProperty();
         newTreeNodePattern.setXMLType(treeNodePatternNode.getAttribute("type"));
         newTreeNodePattern.setXMLRelation(treeNodePatternNode.getAttribute("rel"));  

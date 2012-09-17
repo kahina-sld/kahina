@@ -201,8 +201,19 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
         newControlPoint.setName(controlAgentNode.getAttribute("name"));
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlAgentNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlAgentNode.getAttribute("active"));
-        //expect only one step property, TODO: implement XML import stub for KahinaStepProperty
-        KahinaStepPropertySensor stepPropertySensor = new KahinaStepPropertySensor(newControlPoint, new KahinaStepProperty());
+        //expect only one step property, TODO: extend this to source location properties
+        //find the "pattern" child node, this will be the root element for the pattern
+        for (int i = 0; i < controlAgentNode.getChildNodes().getLength(); i++)
+        {
+            //System.err.println("   Child node of name: " + childNodes.item(i).getNodeName());
+            if (controlAgentNode.getChildNodes().item(i).getNodeName().equals("pattern"))
+            {
+                //reuse the variable
+                controlAgentNode = (Element) controlAgentNode.getChildNodes().item(i);
+            }
+        }
+        KahinaSimpleProperty property = KahinaSimpleProperty.importXML(controlAgentNode);
+        KahinaStepPropertySensor stepPropertySensor = new KahinaStepPropertySensor(newControlPoint, property);
         //TODO: define some useful default sensor here, with focus on making the architecture more easily extendable
         newControlPoint.setSensor(stepPropertySensor);
         return newControlPoint;

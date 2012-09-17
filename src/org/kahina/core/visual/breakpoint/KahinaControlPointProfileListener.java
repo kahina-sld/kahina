@@ -46,7 +46,6 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
         } 
         if (s.equals("loadControlPoint"))
         {
-            //TODO: adapt type argument, 0 is just the value for breakpoints!
             JFileChooser chooser = new JFileChooser(new File("."));
             chooser.showOpenDialog(profilePanel);
             File inputFile = chooser.getSelectedFile();
@@ -108,6 +107,7 @@ public class KahinaControlPointProfileListener implements ActionListener, ListSe
     public void valueChanged(ListSelectionEvent arg0)
     {
         int curID = profilePanel.pointList.getSelectedIndex();
+        System.err.println("curID = " + curID);
         if (curID == -1)
         {
             profilePanel.pointPanel.view.display(null);
