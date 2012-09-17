@@ -53,7 +53,7 @@ public class DimacsCnfParser
                     //check whether the comment is a symbol definition
                     if (tokens.length == 3)
                     {
-                        System.err.println("Symbol definition: " + tokens[1] + " -> " + tokens[2]);
+                        sat.setSymbolMapping(Integer.parseInt(tokens[1]), tokens[2]);
                     }
                     else
                     {
