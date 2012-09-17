@@ -15,4 +15,9 @@ public class KahinaStepProperty
     {
         return dom.createElement("kahina:stepProperty");
     } 
+    
+    public static KahinaStepProperty importXML(Document dom)
+    {
+        return new KahinaStepProperty();
+    }
 }

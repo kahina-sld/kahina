@@ -9,6 +9,7 @@ import org.kahina.core.data.breakpoint.KahinaBreakpointProfile;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.gui.KahinaViewRegistry;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.qtype.bridge.QTypeBridge;
@@ -103,6 +104,7 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
             gui.setPerspective(project.getPerspective());
             gui.displayMainViews();
             setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+            dispatchGUIEvent(new KahinaRedrawEvent());
         }
         catch (FileNotFoundException e)
         {
