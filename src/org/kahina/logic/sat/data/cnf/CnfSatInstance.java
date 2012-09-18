@@ -3,6 +3,7 @@ package org.kahina.logic.sat.data.cnf;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -86,6 +87,19 @@ public class CnfSatInstance extends KahinaSatInstance
     public List<List<Integer>> getClauses()
     {
         return clauses;
+    }
+    
+    public CnfSatInstance selectClauses(Collection<Integer> clauseIDs)
+    {
+        CnfSatInstance subInstance = new CnfSatInstance();
+        for (int clauseID: clauseIDs)
+        {
+            //TODO: determine correct header values (number of clauses and maximum variable)
+            //TODO: think about risks of structure reuse!
+            subInstance.getClauses().add(clauses.get(clauseID));
+            subInstance.symbolTable = symbolTable;
+        }
+        return subInstance;
     }
     
     public KahinaGraph generateClaByVarGraph()
