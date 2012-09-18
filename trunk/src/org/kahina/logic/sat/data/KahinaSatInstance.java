@@ -6,7 +6,7 @@ import org.kahina.core.data.KahinaObject;
 
 public class KahinaSatInstance extends KahinaObject
 {
-    HashMap<Integer,String> symbolTable;
+    protected HashMap<Integer,String> symbolTable;
     
     public KahinaSatInstance()
     {
