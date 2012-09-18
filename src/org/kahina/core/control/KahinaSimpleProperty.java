@@ -676,7 +676,6 @@ public class KahinaSimpleProperty extends KahinaStepProperty implements Serializ
     
     public static KahinaSimpleProperty importXML(Element treeNodePatternNode)
     {
-
         KahinaSimpleProperty newTreeNodePattern = new KahinaSimpleProperty();
         newTreeNodePattern.setXMLType(treeNodePatternNode.getAttribute("type"));
         newTreeNodePattern.setXMLRelation(treeNodePatternNode.getAttribute("rel"));  
