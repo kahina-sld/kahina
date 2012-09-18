@@ -206,10 +206,11 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
         for (int i = 0; i < controlAgentNode.getChildNodes().getLength(); i++)
         {
             //System.err.println("   Child node of name: " + childNodes.item(i).getNodeName());
-            if (controlAgentNode.getChildNodes().item(i).getNodeName().equals("pattern"))
+            if (controlAgentNode.getChildNodes().item(i).getNodeName().equals("kahina:pattern"))
             {
                 //reuse the variable
                 controlAgentNode = (Element) controlAgentNode.getChildNodes().item(i);
+                break;
             }
         }
         KahinaSimpleProperty property = KahinaSimpleProperty.importXML(controlAgentNode);
