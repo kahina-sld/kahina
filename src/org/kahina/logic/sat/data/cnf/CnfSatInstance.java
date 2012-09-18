@@ -94,11 +94,12 @@ public class CnfSatInstance extends KahinaSatInstance
         CnfSatInstance subInstance = new CnfSatInstance();
         for (int clauseID: clauseIDs)
         {
-            //TODO: determine correct header values (number of clauses and maximum variable)
             //TODO: think about risks of structure reuse!
             subInstance.getClauses().add(clauses.get(clauseID));
             subInstance.symbolTable = symbolTable;
         }
+        subInstance.setNumClauses(subInstance.getClauses().size());
+        subInstance.setNumVars(subInstance.searchHighestVariable());
         return subInstance;
     }
     
@@ -344,5 +345,19 @@ public class CnfSatInstance extends KahinaSatInstance
     public void setNumClauses(int numClauses)
     {
         this.numClauses = numClauses;
+    }
+    
+    public int searchHighestVariable()
+    {
+        int highestVar = 0;
+        for (List<Integer> clause : clauses)
+        {
+            for (int var : clause)
+            {
+                if (var < 0) var = - var;
+                if (var > highestVar) highestVar = var;
+            }
+        }
+        return highestVar;
     }
 }
