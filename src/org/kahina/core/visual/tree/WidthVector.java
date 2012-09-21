@@ -53,6 +53,8 @@ public class WidthVector
         totalWidth += w2.end.get(maxReqDistanceLevel);
         int leftAxisMovement = totalWidth / 2 - leftAxisOffset;
         int rightAxisMovement = (w1.end.get(maxReqDistanceLevel) + w2.start.get(maxReqDistanceLevel) - leftAxisMovement);
+        /*int leftAxisMovement = maxReqDistance / 2;
+        int rightAxisMovement = leftAxisMovement;*/
         if (VERBOSE) System.err.println("  leftAxisMovement: " + leftAxisMovement);
         if (VERBOSE) System.err.println("  rightAxisMovement: " + rightAxisMovement);
         for (int i = 0; i < minSize; i++)
@@ -75,6 +77,42 @@ public class WidthVector
         }
         if (VERBOSE) System.err.println("Result: " + w3);
         return w3;
+    }
+    
+    public void add(WidthVector w2)
+    {
+        int w1size = start.size();
+        int w2size = w2.start.size();
+        int minSize = w1size;
+        if (w1size > w2size) minSize = w2size;
+        int maxReqDistance = 0;
+        for (int i = 0; i < minSize; i++)
+        {
+            int reqDistance = end.get(i) + w2.start.get(i);
+            if (reqDistance > maxReqDistance)
+            {
+                maxReqDistance = reqDistance;
+            }
+        }
+        for (int i = 0; i < w2size && i < w1size; i++)
+        {
+            end.set(i, maxReqDistance + w2.getEnde(i));
+        }
+        for (int i = w1size; i < w2size; i++)
+        {
+            start.add(0);
+            end.add(i, maxReqDistance + w2.getEnde(i));
+        }
+    }
+    
+    public void moveAxis(int axisMovement)
+    {
+        int size = start.size();
+        for (int i = 0; i < size; i++)
+        {
+            start.set(i, start.get(i) + axisMovement);
+            end.set(i, end.get(i) - axisMovement);
+        }
     }
     
     public int maximumLeftDistance()
@@ -133,7 +171,7 @@ public class WidthVector
         {
             return w2.maximumLeftDistance();
         }
-        //System.err.println("Distance between: " + w1 + " and " + w2);
+        //System.err.print(" Distance between: " + w1 + " and " + w2 + ": ");
         int w1size = w1.start.size();
         int w2size = w2.start.size();
         int minSize = w1size;
@@ -147,7 +185,7 @@ public class WidthVector
                 maxReqDistance = reqDistance;
             }
         }
-        //System.err.println("Result: " + maxReqDistance);
+        //System.err.print(maxReqDistance + " ");
         return maxReqDistance;
     }
     

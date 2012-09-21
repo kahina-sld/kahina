@@ -6,13 +6,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.kahina.logic.sat.data.proof.ResolutionProof;
+import org.kahina.core.data.dag.DAGtoTreeConversion;
+import org.kahina.core.data.tree.KahinaMemTree;
+import org.kahina.logic.sat.data.proof.ResolutionProofDAG;
+import org.kahina.logic.sat.data.proof.ResolutionProofTree;
 
 public class ResolutionProofParser
 {
-    public static ResolutionProof parseResolutionProof(String fileName)
+    public static ResolutionProofDAG createResolutionProofDAG(String fileName)
     {
-        ResolutionProof proof = new ResolutionProof();
+        ResolutionProofDAG proof = new ResolutionProofDAG();
         try
         {
             Scanner in = new Scanner(new File(fileName));
@@ -51,5 +54,22 @@ public class ResolutionProofParser
             System.err.println("       Returning empty resolution proof!");
         }
         return proof;
+    }
+    
+    public static KahinaMemTree createResolutionProofTree(String fileName)
+    {
+        ResolutionProofDAG proof = createResolutionProofDAG(fileName);
+        //find refutation node (we can find it by descending from any root via any path)
+        int arbitraryRootID = proof.getRoots().iterator().next();
+        int startID = arbitraryRootID;
+        List<Integer> outgoingEdges = proof.getOutgoingEdges(startID);
+        while (outgoingEdges.size() > 0)
+        {
+            startID = proof.getEndNode(outgoingEdges.get(0));
+            outgoingEdges = proof.getOutgoingEdges(startID);
+        }
+        KahinaMemTree tree = DAGtoTreeConversion.backwardExpansionFromNode(proof, startID);
+        //TODO: convert this into a KahinaProofTree
+        return tree;
     }
 }
