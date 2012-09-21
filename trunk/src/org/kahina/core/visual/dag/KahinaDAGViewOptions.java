@@ -16,4 +16,8 @@ public class KahinaDAGViewOptions
     // possible values for antialiasing policy
     public static final int ANTIALIASING = 0;
     public static final int NO_ANTIALIASING = 1;
+    
+    // possible values for root position policy
+    public static final int ROOT_POSITION_FIRST_LINE = 0;
+    public static final int ROOT_POSITION_DEEP = 1;
 }

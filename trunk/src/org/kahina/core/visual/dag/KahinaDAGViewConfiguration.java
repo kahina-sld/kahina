@@ -13,6 +13,7 @@ public class KahinaDAGViewConfiguration extends KahinaViewConfiguration
     
     private Color bgColor = Color.WHITE;
     
+    private int rootPositionPolicy = KahinaDAGViewOptions.ROOT_POSITION_FIRST_LINE;
     private int vertexShapePolicy = KahinaDAGViewOptions.BOX_VERTICES;
     private int edgeLabelPolicy = KahinaDAGViewOptions.NO_EDGE_LABELS;
     private int antialiasingPolicy = KahinaDAGViewOptions.ANTIALIASING;
@@ -166,6 +167,23 @@ public class KahinaDAGViewConfiguration extends KahinaViewConfiguration
     public Color getBackgroundColor()
     {
         return bgColor;
+    }
+    
+    public int getRootPositionPolicy()
+    {
+        return rootPositionPolicy;
+    }
+
+    public void setRootPositionPolicy(int newPolicy)
+    {
+        if (newPolicy >= 0 && newPolicy <= 1)
+        {
+            rootPositionPolicy = newPolicy;
+        } 
+        else
+        {
+            System.err.println("WARNING: unknown root position policy value " + newPolicy);
+        }
     }
     
     public int getVertexShapePolicy()

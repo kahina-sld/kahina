@@ -125,6 +125,20 @@ public class LayeredLayouter extends KahinaDAGLayouter
                 nodeLevelAgenda.add(nodeID);
             }
         }
+        //move roots down if deep root position policy is enforced
+        if (view.config.getRootPositionPolicy() == KahinaDAGViewOptions.ROOT_POSITION_DEEP)
+        {
+            for (int rootID : view.getModel().getRoots())
+            {
+                int newRootLevel = view.getModel().getSize();
+                for (int edgeID : view.getModel().getOutgoingEdges(rootID))
+                {
+                    int childLevel = levelForNode.get(view.getModel().getEndNode(edgeID));
+                    if (childLevel <= newRootLevel) newRootLevel = childLevel - 1;
+                }
+                levelForNode.put(rootID, newRootLevel);
+            }
+        }
 
         //assemble the layers from the node -> layer map
         int maxLevel = -1;
