@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.xml.parsers.DocumentBuilder;
@@ -52,9 +53,9 @@ public class KahinaDAGTest
             {
                 public void run() 
                 {
-                    JFrame w = new JFrame("KahinaGraphView Demo");
+                    JFrame w = new JFrame("KahinaTAGView Demo");
                     w.setSize(510, 720);
-                    w.setLayout(null);
+                    w.setLayout(new BoxLayout(w.getContentPane(), BoxLayout.LINE_AXIS));
                     w.add(v.makePanel());
                     w.setVisible(true);
                     w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
