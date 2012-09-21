@@ -10,19 +10,19 @@ import org.kahina.core.KahinaDefaultInstance;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.visual.dag.KahinaDAGView;
 import org.kahina.core.visual.dag.LayeredLayouter;
-import org.kahina.logic.sat.data.proof.ResolutionProof;
+import org.kahina.logic.sat.data.proof.ResolutionProofDAG;
 import org.kahina.logic.sat.io.proof.ResolutionProofParser;
 
-public class ResolutionProofViewer
+public class ResolutionProofDAGViewer
 {
     public static void main(String[] args)
     {
         if (args.length == 0)
         {
-            System.err.println("Usage: java ResolutionProofViewer [proof file]");
+            System.err.println("Usage: java ResolutionProofDAGViewer [proof file]");
             System.exit(1);
         }
-        ResolutionProof proof = ResolutionProofParser.parseResolutionProof(args[0]);
+        ResolutionProofDAG proof = ResolutionProofParser.createResolutionProofDAG(args[0]);
         
         KahinaDefaultInstance kahina = new KahinaDefaultInstance();
         

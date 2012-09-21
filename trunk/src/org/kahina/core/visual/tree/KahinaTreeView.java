@@ -384,20 +384,32 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					subtreeWidth = subtreeWidths.get(node);
 					if (lastSubtreeWidth != null)
 					{
-					    xOffset += WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth) * horizontalDistance * 3;
+					    int distance = WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth);
+    					xOffset += distance * horizontalDistance * 3;
+    					// switch to children of next parent node --> jump in x offset
+    					int newParent = getVisibleParent(node);
+    					if (VERBOSE)
+    						System.err.print(" VisParent:" + newParent);
+    					if (i > 0 && newParent != parent)
+    					{
+    						parent = newParent;
+    						if (VERBOSE)
+    							System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
+    						// old variant of xOffset computation
+    						// xOffset = (int)((nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) * 0.5 - 0.5) * horizontalDistance * fontSize));
+    						xOffset = nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) - 1) * horizontalDistance * 3;
+    						lastSubtreeWidth = subtreeWidth.copy();
+    					}
+    					else
+    					{
+    					    lastSubtreeWidth.add(subtreeWidth);
+    					    lastSubtreeWidth.moveAxis(distance);
+    					}
 					}
-					// switch to children of next parent node --> jump in x offset
-					int newParent = getVisibleParent(node);
-					if (VERBOSE)
-						System.err.print(" VisParent:" + newParent);
-					if (i > 0 && newParent != parent)
+					else //no offset movement for first node in row
 					{
-						parent = newParent;
-						if (VERBOSE)
-							System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
-						// old variant of xOffset computation
-						// xOffset = (int)((nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) * 0.5 - 0.5) * horizontalDistance * fontSize));
-						xOffset = nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) - 1) * horizontalDistance * 3;
+					    parent = getVisibleParent(node); 
+					    lastSubtreeWidth = subtreeWidth.copy();
 					}
 					nodeX.put(node, xOffset);
 					nodeY.put(node, verticalDistance * 3 * i + 20);
@@ -420,7 +432,6 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					{
 						System.err.println();
 					}
-	                lastSubtreeWidth = subtreeWidth;
 				}
 			}
 			// position terminals
