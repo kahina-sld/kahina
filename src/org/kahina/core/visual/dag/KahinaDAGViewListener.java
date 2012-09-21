@@ -106,6 +106,16 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
         {
             view.view.getConfig().decreaseNodeSize();
         }
+        else if (command.equals("First line"))
+        {
+            view.view.getConfig().setRootPositionPolicy(KahinaDAGViewOptions.ROOT_POSITION_FIRST_LINE);
+            view.view.getLayouter().refreshCoordinates();
+        }
+        else if (command.equals("Deep"))
+        {
+            view.view.getConfig().setRootPositionPolicy(KahinaDAGViewOptions.ROOT_POSITION_DEEP);
+            view.view.getLayouter().refreshCoordinates();
+        }
         else if (command.equals("Point vertices"))
         {
             view.view.getConfig().setVertexShapePolicy(KahinaDAGViewOptions.POINT_VERTICES);

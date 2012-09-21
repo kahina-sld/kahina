@@ -109,6 +109,29 @@ public class KahinaDAGViewContextMenu extends JPopupMenu
         
         addSeparator();
         
+        JMenu rootPositionPolicySubmenu = new JMenu("Root position");
+        ButtonGroup rootPositionPolicyGroup = new ButtonGroup();
+        JRadioButtonMenuItem firstLineItem = new JRadioButtonMenuItem("First line");
+        firstLineItem.addActionListener(l);
+        rootPositionPolicyGroup.add(firstLineItem);
+        rootPositionPolicySubmenu.add(firstLineItem);
+        JRadioButtonMenuItem deepPositionItem = new JRadioButtonMenuItem("Deep");
+        deepPositionItem.addActionListener(l);
+        rootPositionPolicyGroup.add(deepPositionItem);
+        rootPositionPolicySubmenu.add(deepPositionItem);
+        switch (v.getConfig().getRootPositionPolicy())
+        {
+            case KahinaDAGViewOptions.ROOT_POSITION_FIRST_LINE:
+            {
+                firstLineItem.setSelected(true); break;
+            }
+            case KahinaDAGViewOptions.ROOT_POSITION_DEEP:
+            {
+                deepPositionItem.setSelected(true); break;
+            }
+        }
+        add(rootPositionPolicySubmenu);
+        
         JMenu nodeShapePolicySubmenu = new JMenu("Vertex labels");
         ButtonGroup nodeShapePolicyGroup = new ButtonGroup();
         JRadioButtonMenuItem pointShapeItem = new JRadioButtonMenuItem("Point vertices");
