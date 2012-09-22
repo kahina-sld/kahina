@@ -2,10 +2,12 @@ package org.kahina.tralesld;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
@@ -28,6 +30,7 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.util.ListUtil;
 import org.kahina.lp.LogicProgrammingInstance;
+import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.prolog.util.PrologUtil;
@@ -360,20 +363,48 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
         return new TraleProject(state.getStepTree(), control);
     }
 
-    public void loadProject(File projectFile)
+    public TraleProject loadProject(File projectFile)
     {
         Document dom;
+        TraleProject project = createNewProject();
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = createNewProject();
             project = TraleProject.importXML(dom.getDocumentElement(), project);
-            setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         }
         catch (FileNotFoundException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return project;
     }
+    
+    @Override
+    protected void prepareProjectLists()
+    {
+        recentProjects = new LinkedList<TraleProject>();
+        // load the default perspectives in the bin folder of the respective Kahina application
+        defaultProjects = new LinkedList<TraleProject>();
+        // This filter only returns XML files
+        FileFilter fileFilter = new FileFilter()
+        {
+            public boolean accept(File file)
+            {
+                // System.err.println("Filtering file " + file.getName() + ": "
+                // + file.getName().endsWith("xml"));
+                return file.getName().endsWith("xml");
+            }
+        };
+        File[] files = new File(this.getClass().getResource("./data/project").getFile()).listFiles(fileFilter);
+        for (File f : files)
+        {
+            if (VERBOSE)
+            {
+                System.err.println("Loading predefined project: " + f.getAbsolutePath());
+            }
+            defaultProjects.add(loadProject(f));
+        }
+        
+    } 
 }

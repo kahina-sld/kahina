@@ -33,6 +33,25 @@ public class KahinaProject extends KahinaObject
 		openedFiles = new ArrayList<File>();
         this.perspective = new KahinaPerspective(appID, "default");
 	}
+	
+   public KahinaProject copy()
+    {
+        KahinaProject copy = new KahinaProject(appID);
+        copyDataInto(copy);
+        return copy;
+    }
+   
+    public void copyDataInto(KahinaProject copy)
+    {
+        copy.appID = appID;
+        copy.mainFile = new File(mainFile.getAbsolutePath());
+        copy.openedFiles.clear();
+        for (File openedFile : openedFiles)
+        {
+            copy.openedFiles.add(new File(openedFile.getAbsolutePath()));
+        }
+        copy.perspective = perspective.copy();  
+    }
     
     public File getMainFile()
     {

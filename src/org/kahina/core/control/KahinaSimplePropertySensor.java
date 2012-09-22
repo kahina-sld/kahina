@@ -17,6 +17,18 @@ public class KahinaSimplePropertySensor extends KahinaStepPropertySensor
         this.pattern = new KahinaSimpleProperty();
     }
     
+    public KahinaSimplePropertySensor copy(KahinaControlAgent controlPoint)
+    {
+        KahinaSimplePropertySensor copy = new KahinaSimplePropertySensor(controlPoint, stepTree);
+        copyDataInto(copy);
+        return copy;
+    }
+    
+    public void copyDataInto(KahinaSimplePropertySensor copy)
+    {
+        copy.pattern = pattern.copy();
+    }
+    
     public KahinaSimpleProperty getStepProperty()
     {
         return pattern;

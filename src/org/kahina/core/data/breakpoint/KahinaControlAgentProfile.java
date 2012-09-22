@@ -28,6 +28,16 @@ public class KahinaControlAgentProfile extends KahinaObject
         controlAgents = new ArrayList<KahinaControlAgent>();
     }
     
+    public KahinaControlAgentProfile copy()
+    {
+        KahinaControlAgentProfile copy = new KahinaControlAgentProfile(actuator);
+        for (KahinaControlAgent agent : controlAgents)
+        {
+            copy.controlAgents.add(agent.copy());
+        }
+        return copy;
+    }
+    
     public KahinaControlActuator getActuator()
     {
         return actuator;

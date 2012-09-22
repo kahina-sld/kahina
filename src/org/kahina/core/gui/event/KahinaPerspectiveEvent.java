@@ -51,16 +51,24 @@ public class KahinaPerspectiveEvent extends KahinaEvent
         String s = "perspective: ";
         if (perspectiveEventType == SAVE_PERSPECTIVE)
         {
-            s += "save -> "; 
+            s += "save -> " + file; 
         }
         else if (perspectiveEventType == LOAD_PERSPECTIVE)
         {
-            s += "restore <- "; 
+            s += "load <- " + file; 
+        }
+        else if (perspectiveEventType == LOAD_RECENT_PERSPECTIVE)
+        {
+            s += "load recent perspective #" + id; 
+        }
+        else if (perspectiveEventType == LOAD_DEFAULT_PERSPECTIVE)
+        {
+            s += "load predefined perspective #" + id; 
         }
         else
         {
-            s += "unknown operation <-> ";
+            s += "unknown operation <-> " + id + ", " + file;
         }
-        return s += file;
+        return s;
     }
 }

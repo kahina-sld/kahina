@@ -2,7 +2,7 @@ package org.kahina.qtype.gui;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.project.KahinaProjectStatus;
-import org.kahina.core.gui.menus.ProjectMenu;
+import org.kahina.core.gui.menus.KahinaProjectMenu;
 import org.kahina.lp.gui.LogicProgrammingMainWindow;
 
 public class QTypeMainWindow extends LogicProgrammingMainWindow

@@ -7,12 +7,28 @@ public class KahinaProjectEvent extends KahinaEvent
     final KahinaProjectEventType projectEventType;
     //store project file for SAVE_PROJECT and LOAD_PROJECT, and program file for NEW_PROJECT
     final File file;
+    //store selected menu item index for LOAD_DEFAULT_PROJECT and LOAD_RECENT_PROJECT
+    final int id;
     
     public KahinaProjectEvent(KahinaProjectEventType projectEventType, File file)
     {
         super(KahinaEventTypes.PROJECT);
         this.projectEventType = projectEventType;
         this.file = file;
+        this.id = -1;
+    }
+    
+    public KahinaProjectEvent(KahinaProjectEventType projectEventType, int id)
+    {
+        super(KahinaEventTypes.PROJECT);
+        this.projectEventType = projectEventType;
+        this.file = new File("");
+        this.id = id;
+    }
+    
+    public int getID()
+    {
+        return id;
     }
     
     public File getFile()
@@ -31,20 +47,28 @@ public class KahinaProjectEvent extends KahinaEvent
         String s = "project: ";
         if (projectEventType == KahinaProjectEventType.SAVE_PROJECT)
         {
-            s += "save -> "; 
+            s += "save -> " + file; 
         }
         else if (projectEventType == KahinaProjectEventType.LOAD_PROJECT)
         {
-            s += "load <- "; 
+            s += "load <- " + file; 
         }
         else if (projectEventType == KahinaProjectEventType.NEW_PROJECT)
         {
-            s += "new, grammar file: ";
+            s += "new, grammar file: " + file;
+        }
+        else if (projectEventType == KahinaProjectEventType.LOAD_RECENT_PROJECT)
+        {
+            s += "load recent project #" + id; 
+        }
+        else if (projectEventType == KahinaProjectEventType.LOAD_DEFAULT_PROJECT)
+        {
+            s += "load predefined project #" + id; 
         }
         else
         {
-            s += "unknown operation <-> ";
+            s += "unknown operation <-> " + id + ", " + file;
         }
-        return s += file;
+        return s;
     }
 }

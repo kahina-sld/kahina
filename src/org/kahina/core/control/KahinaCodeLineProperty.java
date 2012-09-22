@@ -1,6 +1,8 @@
 package org.kahina.core.control;
 
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class KahinaCodeLineProperty extends KahinaStepProperty
 {
@@ -9,6 +11,25 @@ public class KahinaCodeLineProperty extends KahinaStepProperty
     public KahinaCodeLineProperty(KahinaSourceCodeLocation location)
     {
         this.location = location;
+    }
+    
+    @Override
+    public KahinaCodeLineProperty copy()
+    {
+        return new KahinaCodeLineProperty(location.copy());
+    }
+
+    @Override
+    public Element exportXML(Document dom)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static KahinaCodeLineProperty importXML(Element el)
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     public boolean matches(KahinaSourceCodeLocation otherLocation)

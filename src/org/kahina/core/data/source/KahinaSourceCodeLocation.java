@@ -28,6 +28,11 @@ public class KahinaSourceCodeLocation extends KahinaObject
     	this.lineNumber = lineNumber;
     }
     
+    public KahinaSourceCodeLocation copy()
+    {
+        return new KahinaSourceCodeLocation(new String(absolutePath), lineNumber);
+    }
+    
     public String getAbsolutePath()
     {
     	return absolutePath;

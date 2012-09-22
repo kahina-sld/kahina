@@ -17,7 +17,7 @@ import org.kahina.core.gui.KahinaSessionMenu;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.menus.KahinaHelpMenu;
 import org.kahina.core.gui.menus.KahinaViewMenu;
-import org.kahina.core.gui.menus.ProjectMenu;
+import org.kahina.core.gui.menus.KahinaProjectMenu;
 import org.kahina.core.io.util.IconUtil;
 
 public class KahinaMainWindow extends KahinaWindow implements KahinaListener
@@ -31,7 +31,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	protected JMenuBar menuBar;
     
     protected KahinaSessionMenu sessionMenu;
-    protected ProjectMenu projectMenu;
+    protected KahinaProjectMenu projectMenu;
     protected KahinaViewMenu viewMenu;
 
 	KahinaWindow subwindow;
@@ -60,7 +60,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
         sessionMenu = new KahinaSessionMenu(kahina.getControl());
         menuBar.add(sessionMenu);
         
-        projectMenu = new ProjectMenu(kahina);
+        projectMenu = new KahinaProjectMenu(kahina);
         menuBar.add(projectMenu);
 		
 		addMenusInFront();
