@@ -33,7 +33,7 @@ public class KahinaDefaultInstance extends KahinaInstance<KahinaState, KahinaGUI
     @Override
     protected KahinaProject createNewProject()
     {
-        return new KahinaProject("default");
+        return new KahinaProject("default", "name");
     }
 
 	@Override
@@ -51,7 +51,7 @@ public class KahinaDefaultInstance extends KahinaInstance<KahinaState, KahinaGUI
     public KahinaProject loadProject(File projectFile)
     {
         Document dom;
-        KahinaProject project = new KahinaProject("default");
+        KahinaProject project = new KahinaProject("default", "no name");
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);      

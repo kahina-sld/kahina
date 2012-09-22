@@ -5,15 +5,18 @@ import java.io.File;
 public class KahinaProjectEvent extends KahinaEvent
 {
     final KahinaProjectEventType projectEventType;
+    //store project name for NEW_PROJECT
+    final String name;
     //store project file for SAVE_PROJECT and LOAD_PROJECT, and program file for NEW_PROJECT
     final File file;
     //store selected menu item index for LOAD_DEFAULT_PROJECT and LOAD_RECENT_PROJECT
     final int id;
     
-    public KahinaProjectEvent(KahinaProjectEventType projectEventType, File file)
+    public KahinaProjectEvent(KahinaProjectEventType projectEventType, File file, String name)
     {
         super(KahinaEventTypes.PROJECT);
         this.projectEventType = projectEventType;
+        this.name = name;
         this.file = file;
         this.id = -1;
     }
@@ -22,6 +25,7 @@ public class KahinaProjectEvent extends KahinaEvent
     {
         super(KahinaEventTypes.PROJECT);
         this.projectEventType = projectEventType;
+        this.name = "";
         this.file = new File("");
         this.id = id;
     }

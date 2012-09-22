@@ -6,6 +6,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.data.project.KahinaProject;
+import org.kahina.core.gui.KahinaPerspective;
 
 public class KahinaProjectMenu extends JMenu
 {
@@ -33,9 +35,25 @@ public class KahinaProjectMenu extends JMenu
 		openProjectMenu = new JMenu("Open Project");
 		
 		recentProjectsMenu = new JMenu("Recent Projects");
+        int count = 0;
+        for (KahinaProject p : kahina.recentProjects)
+        {
+            JMenuItem recentProjectItem = new JMenuItem(p.getName());
+            recentProjectItem.setActionCommand("loadRecentProject:" + count++);
+            recentProjectItem.addActionListener(defaultListener);
+            recentProjectsMenu.add(recentProjectItem);
+        }
 		openProjectMenu.add(recentProjectsMenu);
 		
 	    predefinedProjectsMenu = new JMenu("Predefined Projects");
+	    count = 0;
+        for (KahinaProject p : kahina.defaultProjects)
+        {
+            JMenuItem defaultProjectItem = new JMenuItem(p.getName());
+            defaultProjectItem.setActionCommand("loadDefaultProject:" + count++);
+            defaultProjectItem.addActionListener(defaultListener);
+            recentProjectsMenu.add(defaultProjectItem);
+        }
 	    openProjectMenu.add(predefinedProjectsMenu);
 		
 		loadProjectItem = new JMenuItem("Load Project ...");

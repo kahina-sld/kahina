@@ -34,9 +34,9 @@ public class LogicProgrammingProject extends KahinaProject
     protected KahinaTree stepTree;
     protected KahinaController control;
     
-    public LogicProgrammingProject(String appID, KahinaTree stepTree, KahinaController control)
+    public LogicProgrammingProject(String appID, String name, KahinaTree stepTree, KahinaController control)
     {
-        super(appID);
+        super(appID, name);
         this.stepTree = stepTree;
         this.control = control;
         breakPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingBreakActuator(control), stepTree);
@@ -49,7 +49,7 @@ public class LogicProgrammingProject extends KahinaProject
     
     public LogicProgrammingProject copy()
     {
-        LogicProgrammingProject copy = new LogicProgrammingProject(appID, stepTree, control);
+        LogicProgrammingProject copy = new LogicProgrammingProject(appID, new String(name), stepTree, control);
         copyDataInto(copy);
         return copy;
     }

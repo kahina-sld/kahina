@@ -85,7 +85,7 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
     @Override
     protected LogicProgrammingProject createNewProject()
     {
-        return new LogicProgrammingProject("swi-prolog", state.getStepTree(), control);
+        return new LogicProgrammingProject("swi-prolog", "no name", state.getStepTree(), control);
     }
     
     public LogicProgrammingProject loadProject(File projectFile)

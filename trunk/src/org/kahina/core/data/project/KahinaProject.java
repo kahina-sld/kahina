@@ -25,18 +25,22 @@ public class KahinaProject extends KahinaObject
     //for additional source files and the like
 	protected List<File> openedFiles;
 	
+	//the name this perspective is referred by in the GUI
+    protected String name;
+	
 	protected KahinaPerspective perspective;
 	
-	public KahinaProject(String appID)
+	public KahinaProject(String appID, String name)
 	{
 	    this.appID = appID;
+	    this.name = name;
 		openedFiles = new ArrayList<File>();
         this.perspective = new KahinaPerspective(appID, "default");
 	}
 	
    public KahinaProject copy()
     {
-        KahinaProject copy = new KahinaProject(appID);
+        KahinaProject copy = new KahinaProject(appID, new String(name));
         copyDataInto(copy);
         return copy;
     }
@@ -44,6 +48,7 @@ public class KahinaProject extends KahinaObject
     public void copyDataInto(KahinaProject copy)
     {
         copy.appID = appID;
+        copy.name = new String(name);
         copy.mainFile = new File(mainFile.getAbsolutePath());
         copy.openedFiles.clear();
         for (File openedFile : openedFiles)
@@ -51,6 +56,16 @@ public class KahinaProject extends KahinaObject
             copy.openedFiles.add(new File(openedFile.getAbsolutePath()));
         }
         copy.perspective = perspective.copy();  
+    }
+    
+    public String getName()
+    {
+        return name;
+    }
+    
+    public void setName(String name)
+    {
+        this.name = name;
     }
     
     public File getMainFile()
@@ -87,6 +102,7 @@ public class KahinaProject extends KahinaObject
 	{
         Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:project");
         el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:appid", appID);
+        el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:name", name);
         Element mainFileEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:mainFile");
         try
         {
@@ -137,6 +153,7 @@ public class KahinaProject extends KahinaObject
         }
         String appID = topEl.getAttribute("kahina:appid");
 	    project.appID = appID;
+        project.setName(topEl.getAttribute("kahina:name"));
         NodeList mainFileList = topEl.getElementsByTagName("kahina:mainFile");
         if (mainFileList.getLength() != 1)
         {

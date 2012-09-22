@@ -144,8 +144,8 @@ public class KahinaSimpleProperty extends KahinaStepProperty implements Serializ
         copy.intValue = intValue;
         copy.stringValue = new String(stringValue);
         copy.regexValue = Pattern.compile(copy.stringValue);
-        copy.leftArg = leftArg.copy();
-        copy.rightArg = rightArg.copy();
+        if (leftArg != null) copy.leftArg = leftArg.copy();
+        if (rightArg != null) copy.rightArg = rightArg.copy();
         return copy;
     }
     
