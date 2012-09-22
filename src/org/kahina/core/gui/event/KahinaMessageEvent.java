@@ -16,8 +16,7 @@ public class KahinaMessageEvent extends KahinaEvent
     public KahinaLineReference getLine()
     {
         return line;
-    }
-    
+    }  
     
     @Override
 	public String toString()
