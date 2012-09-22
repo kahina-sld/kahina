@@ -18,9 +18,9 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
 	private List<File> theoryFiles;
     private TestSet testSet;
     
-    public TraleProject(KahinaTree stepTree, KahinaController control)
+    public TraleProject(String name, KahinaTree stepTree, KahinaController control)
     {
-        super("trale", stepTree, control);
+        super("trale", name, stepTree, control);
         theoryFiles = new LinkedList<File>();
         testSet = new TestSet();
     }

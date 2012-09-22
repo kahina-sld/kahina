@@ -62,7 +62,7 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
     @Override
     protected KahinaProject createNewProject()
     {
-        return new KahinaProject("tulipa");
+        return new KahinaProject("tulipa", "no name");
     }
     
     public KahinaProject loadProject(File projectFile)

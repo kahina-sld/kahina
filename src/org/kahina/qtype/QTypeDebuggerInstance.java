@@ -94,13 +94,13 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
      @Override
     protected QTypeProject createNewProject()
     {
-        return new QTypeProject(state.getStepTree(), control);
+        return new QTypeProject("no name", state.getStepTree(), control);
     }
         
     public QTypeProject loadProject(File projectFile)
     {
         Document dom;
-        QTypeProject project = new QTypeProject(state.getStepTree(), control);
+        QTypeProject project = createNewProject();
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);

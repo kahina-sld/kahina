@@ -5,11 +5,13 @@ import java.awt.event.ActionListener;
 import java.io.File;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaProjectEvent;
 import org.kahina.core.control.KahinaProjectEventType;
 import org.kahina.core.control.KahinaSessionEvent;
+import org.kahina.core.gui.event.KahinaPerspectiveEvent;
 
 /**
  * A default listener for the project menu, only creates and dispatches KahinaProjectEvents by default.
@@ -42,6 +44,16 @@ public class KahinaProjectMenuListener implements ActionListener
 		{
 			processLoadProjectCommand();
 		}
+        else if (command.startsWith("loadRecentProject:"))
+        {
+            int counter = Integer.parseInt(command.substring(18));
+            kahina.processEvent(new KahinaProjectEvent(KahinaProjectEventType.LOAD_RECENT_PROJECT, counter));
+        }
+        else if (command.startsWith("loadDefaultProject:"))
+        {
+            int counter = Integer.parseInt(command.substring(19));
+            kahina.processEvent(new KahinaProjectEvent(KahinaProjectEventType.LOAD_RECENT_PROJECT, counter));
+        }
 		else if (command.equals("saveProject"))
 		{
 			processSaveProjectCommand();
@@ -50,11 +62,22 @@ public class KahinaProjectMenuListener implements ActionListener
 	
 	protected void processNewProjectCommand()
 	{
-        JFileChooser chooser = new JFileChooser(new File("."));
-        chooser.setDialogTitle("New Project - Select Program File");
-        chooser.showOpenDialog(menu);
-        File dataFile = chooser.getSelectedFile();
-        if (dataFile != null) kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile));
+	    String name = (String) JOptionPane.showInputDialog(menu,
+                "Enter a name for the project.",
+                "New Project",
+                JOptionPane.PLAIN_MESSAGE);
+        if (name.length() > 0)
+        {
+            JFileChooser chooser = new JFileChooser(new File("."));
+            chooser.setDialogTitle("New Project - Select Program File");
+            chooser.showOpenDialog(menu);
+            File dataFile = chooser.getSelectedFile();
+            if (dataFile != null) kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, name));
+        }
+        else
+        {
+            JOptionPane.showMessageDialog(menu, "Empty string is not a valid name!");
+        }
 	}
 	
 	protected void processLoadProjectCommand()
@@ -63,7 +86,7 @@ public class KahinaProjectMenuListener implements ActionListener
         chooser.setDialogTitle("Load Project");
         chooser.showOpenDialog(menu);
         File dataFile = chooser.getSelectedFile();
-        if (dataFile != null) kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.LOAD_PROJECT, dataFile));
+        if (dataFile != null) kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.LOAD_PROJECT, dataFile, ""));
 	}
 	
 	protected void processSaveProjectCommand()
@@ -72,6 +95,6 @@ public class KahinaProjectMenuListener implements ActionListener
         chooser.setDialogTitle("Save Project");
         chooser.showSaveDialog(menu);
         File dataFile = chooser.getSelectedFile();
-        if (dataFile != null) kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.SAVE_PROJECT, dataFile));
+        if (dataFile != null) kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.SAVE_PROJECT, dataFile, ""));
 	}
 }

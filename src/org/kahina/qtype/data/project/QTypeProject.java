@@ -19,9 +19,9 @@ public class QTypeProject extends LogicProgrammingProject
      */
     private static final long serialVersionUID = -2093492979848559602L;
 
-    public QTypeProject(KahinaTree stepTree, KahinaController control)
+    public QTypeProject(String name, KahinaTree stepTree, KahinaController control)
     {
-        super("qtype", stepTree, control);
+        super("qtype", name, stepTree, control);
     }
     
     public static QTypeProject importXML(Element topEl, QTypeProject project, KahinaController control)
