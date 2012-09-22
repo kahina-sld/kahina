@@ -30,6 +30,11 @@ public class KahinaProjectEvent extends KahinaEvent
         this.id = id;
     }
     
+    public String getName()
+    {
+        return name;
+    }
+    
     public int getID()
     {
         return id;

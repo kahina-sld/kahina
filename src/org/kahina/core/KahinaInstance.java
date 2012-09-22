@@ -408,7 +408,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
         {
             case NEW_PROJECT:
             {
-                newProject(e.getFile());
+                newProject(e.getFile(), e.getName());
                 registerRecentProject(project);
                 break;
             }
@@ -656,9 +656,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	    return project;
 	}
     
-    public void newProject(File grammarFile)
+    public void newProject(File grammarFile, String name)
     {
         project = createNewProject();
+        project.setName(name);
         project.setMainFile(grammarFile);
         project.setPerspective(gui.getPerspective());
         setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
