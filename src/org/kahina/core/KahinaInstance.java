@@ -120,8 +120,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                 }
                 defaultPerspectives.add(loadPerspective(f));
             }
-            
-            prepareProjectLists();
         }
 		try
 		{
@@ -231,6 +229,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		{
 		    bridge = createBridge();
 		}
+        prepareProjectLists();
 		createTreeBehavior();
 		createWarner();
 	}

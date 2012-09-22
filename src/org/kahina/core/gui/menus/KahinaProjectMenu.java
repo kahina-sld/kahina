@@ -52,7 +52,7 @@ public class KahinaProjectMenu extends JMenu
             JMenuItem defaultProjectItem = new JMenuItem(p.getName());
             defaultProjectItem.setActionCommand("loadDefaultProject:" + count++);
             defaultProjectItem.addActionListener(defaultListener);
-            recentProjectsMenu.add(defaultProjectItem);
+            predefinedProjectsMenu.add(defaultProjectItem);
         }
 	    openProjectMenu.add(predefinedProjectsMenu);
 		

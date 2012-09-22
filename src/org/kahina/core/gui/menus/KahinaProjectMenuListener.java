@@ -52,7 +52,7 @@ public class KahinaProjectMenuListener implements ActionListener
         else if (command.startsWith("loadDefaultProject:"))
         {
             int counter = Integer.parseInt(command.substring(19));
-            kahina.processEvent(new KahinaProjectEvent(KahinaProjectEventType.LOAD_RECENT_PROJECT, counter));
+            kahina.processEvent(new KahinaProjectEvent(KahinaProjectEventType.LOAD_DEFAULT_PROJECT, counter));
         }
 		else if (command.equals("saveProject"))
 		{
