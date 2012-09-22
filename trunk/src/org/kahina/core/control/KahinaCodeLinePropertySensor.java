@@ -20,6 +20,18 @@ public class KahinaCodeLinePropertySensor extends KahinaStepPropertySensor
         this.line = line;
     }
     
+    public KahinaCodeLinePropertySensor copy(KahinaControlAgent controlPoint)
+    {
+        KahinaCodeLinePropertySensor copy = new KahinaCodeLinePropertySensor(controlPoint, state, null);
+        copyDataInto(copy);
+        return copy;
+    }
+    
+    public void copyDataInto(KahinaCodeLinePropertySensor copy)
+    {
+        copy.line = line.copy();
+    }
+    
     public KahinaCodeLineProperty getStepProperty()
     {
         return line;

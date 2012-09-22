@@ -37,6 +37,7 @@ import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaConsoleLineEvent;
 import org.kahina.core.gui.event.KahinaPerspectiveEvent;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.magazine.ObjectMagazine;
@@ -55,7 +56,7 @@ import org.w3c.dom.Node;
 
 public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI, B extends KahinaBridge, P extends KahinaProject> implements KahinaListener
 {
-	private static final boolean VERBOSE = false;
+	protected static final boolean VERBOSE = false;
 
 	public G gui;
 
@@ -70,6 +71,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     // store recent perspectives and cache default perspectives
     public List<KahinaPerspective> recentPerspectives;
     public List<KahinaPerspective> defaultPerspectives;
+    
+    // store recent projects and cache default projects
+    public List<P> recentProjects;
+    public List<P> defaultProjects;
 
 	protected ObjectMagazine<KahinaStep> steps;
     
@@ -115,6 +120,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                 }
                 defaultPerspectives.add(loadPerspective(f));
             }
+            
+            prepareProjectLists();
         }
 		try
 		{
@@ -127,6 +134,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			System.exit(-1);
 		}
 	}
+	
+	protected abstract void prepareProjectLists();
 
 	/**
 	 * This code used to live in the constructor, but that caused problems with
@@ -393,6 +402,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
         }
     }
     
+    @SuppressWarnings("unchecked")
     protected void processProjectEvent(KahinaProjectEvent e)
     {
         switch (e.getProjectEventType())
@@ -400,16 +410,42 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
             case NEW_PROJECT:
             {
                 newProject(e.getFile());
-                break;
-            }
-            case LOAD_PROJECT:
-            {
-                loadProject(e.getFile());
+                registerRecentProject(project);
                 break;
             }
             case SAVE_PROJECT:
             {
                 saveProjectAs(e.getFile());
+                break;
+            }
+            case LOAD_PROJECT:
+            {
+                project = loadProject(e.getFile());
+                registerRecentProject(project);
+                gui.setPerspective(project.getPerspective());
+                gui.displayMainViews();
+                setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+                dispatchGUIEvent(new KahinaRedrawEvent());
+                break;
+            }
+            case LOAD_RECENT_PROJECT:
+            {
+                project = (P) recentProjects.get(e.getID()).copy();
+                registerRecentProject(project);
+                gui.setPerspective(project.getPerspective());
+                gui.displayMainViews();
+                setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+                dispatchGUIEvent(new KahinaRedrawEvent());
+                break;
+            }
+            case LOAD_DEFAULT_PROJECT:
+            {
+                project = (P) defaultProjects.get(e.getID()).copy();
+                registerRecentProject(project);
+                gui.setPerspective(project.getPerspective());
+                gui.displayMainViews();
+                setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+                dispatchGUIEvent(new KahinaRedrawEvent());
                 break;
             }
         }
@@ -439,6 +475,18 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
         if (recentPerspectives.size() > 5)
         {
             recentPerspectives.remove(5);
+        }
+    }
+    
+    // by default, the five most recent projects are kept in memory
+    private void registerRecentProject(P prj)
+    {
+        // move to the front, or add to the front
+        recentProjects.remove(prj);
+        recentProjects.add(0, prj);
+        if (recentProjects.size() > 5)
+        {
+            recentProjects.remove(5);
         }
     }
 
@@ -624,5 +672,5 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
         XMLUtil.writeXML(el, projectFile.getAbsolutePath());
     }
     
-    public abstract void loadProject(File projectFile);
+    public abstract P loadProject(File projectFile);
 }

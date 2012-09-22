@@ -31,15 +31,37 @@ public class LogicProgrammingProject extends KahinaProject
     protected KahinaControlAgentProfile failPoints;
     protected KahinaControlAgentProfile warnPoints;
     
+    protected KahinaTree stepTree;
+    protected KahinaController control;
+    
     public LogicProgrammingProject(String appID, KahinaTree stepTree, KahinaController control)
     {
         super(appID);
+        this.stepTree = stepTree;
+        this.control = control;
         breakPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingBreakActuator(control), stepTree);
         creepPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingCreepActuator(control), stepTree);
         completePoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingCompleteActuator(control), stepTree);
         skipPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingSkipActuator(control), stepTree);
         failPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingFailActuator(control), stepTree);
         //warnPoints = new KahinaControlPointProfile();
+    }
+    
+    public LogicProgrammingProject copy()
+    {
+        LogicProgrammingProject copy = new LogicProgrammingProject(appID, stepTree, control);
+        copyDataInto(copy);
+        return copy;
+    }
+   
+    public void copyDataInto(LogicProgrammingProject copy)
+    {
+        super.copyDataInto(copy);
+        copy.breakPoints = breakPoints.copy();
+        copy.creepPoints = creepPoints.copy();
+        copy.completePoints = completePoints.copy();
+        copy.skipPoints = skipPoints.copy();
+        copy.failPoints = failPoints.copy();
     }
     
     public KahinaControlAgentProfile getBreakPoints()

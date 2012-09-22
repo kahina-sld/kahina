@@ -1,8 +1,10 @@
 package org.kahina.swi;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
 
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
@@ -86,21 +88,48 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
         return new LogicProgrammingProject("swi-prolog", state.getStepTree(), control);
     }
     
-    public void loadProject(File projectFile)
+    public LogicProgrammingProject loadProject(File projectFile)
     {
         Document dom;
+        LogicProgrammingProject project = createNewProject();
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = createNewProject();
             project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project, control);
-            setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         }
         catch (FileNotFoundException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return project;
     }
+    
+    @Override
+    protected void prepareProjectLists()
+    {
+        recentProjects = new LinkedList<LogicProgrammingProject>();
+        // load the default perspectives in the bin folder of the respective Kahina application
+        defaultProjects = new LinkedList<LogicProgrammingProject>();
+        // This filter only returns XML files
+        FileFilter fileFilter = new FileFilter()
+        {
+            public boolean accept(File file)
+            {
+                // System.err.println("Filtering file " + file.getName() + ": "
+                // + file.getName().endsWith("xml"));
+                return file.getName().endsWith("xml");
+            }
+        };
+        File[] files = new File(LogicProgrammingInstance.class.getResource("./data/project").getFile()).listFiles(fileFilter);
+        for (File f : files)
+        {
+            if (VERBOSE)
+            {
+                System.err.println("Loading predefined project: " + f.getAbsolutePath());
+            }
+            defaultProjects.add(loadProject(f));
+        }   
+    } 
 
 }

@@ -121,22 +121,20 @@ public abstract class LogicProgrammingInstance<S extends LogicProgrammingState, 
         gui.displayMainViews();
     }
     
-    public void loadProject(File projectFile)
+    public P loadProject(File projectFile)
     {
         Document dom;
+        P project = createNewProject();
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = createNewProject();
             LogicProgrammingProject.importXML(dom.getDocumentElement(), project);
-            gui.setPerspective(project.getPerspective());
-            gui.displayMainViews();
-            setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         }
         catch (FileNotFoundException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return project;
     }
 }

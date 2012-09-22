@@ -20,6 +20,18 @@ public class KahinaStepPropertySensor
         this.stepProperty = stepProperty;
     }
     
+    public KahinaStepPropertySensor copy(KahinaControlAgent controlPoint)
+    {
+        KahinaStepPropertySensor copy = new KahinaStepPropertySensor(controlPoint, null);
+        copyDataInto(copy);
+        return copy;
+    }
+    
+    public void copyDataInto(KahinaStepPropertySensor copy)
+    {
+        copy.stepProperty = stepProperty.copy();
+    }
+    
     public KahinaStepProperty getStepProperty()
     {
         return stepProperty;
@@ -35,4 +47,6 @@ public class KahinaStepPropertySensor
         System.err.println("WARNING: non-overridden call KahinaStepPropertySensor.detectPattern(" + stepID + ") = false");
         return false;
     }
+
+
 }

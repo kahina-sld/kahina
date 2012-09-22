@@ -58,7 +58,18 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
         signalColor = ColorUtil.randomColor();
         active = true;
         control.registerListener(KahinaEventTypes.STEP_UPDATE, this);
-        sensor = new KahinaStepPropertySensor(this, new KahinaStepProperty());
+        sensor = new KahinaStepPropertySensor(this, new KahinaSimpleProperty());
+    }
+    
+    public KahinaControlAgent copy()
+    {
+        KahinaControlAgent copy = new KahinaControlAgent(control);
+        copy.setName(new String(name));
+        copy.active = active;
+        copy.setSignalColor(new Color(signalColor.getRGB()));
+        copy.setSensor(sensor.copy(copy));
+        copy.setActuator(actuator);
+        return copy;
     }
     
     public KahinaController getControl()

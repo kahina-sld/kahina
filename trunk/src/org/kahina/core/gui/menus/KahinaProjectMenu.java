@@ -7,32 +7,45 @@ import javax.swing.JMenuItem;
 
 import org.kahina.core.KahinaInstance;
 
-public class ProjectMenu extends JMenu
+public class KahinaProjectMenu extends JMenu
 {
 	public JMenuItem newProjectItem;
+	public JMenu openProjectMenu;
+	public JMenu recentProjectsMenu;
+	public JMenu predefinedProjectsMenu;
 	public JMenuItem loadProjectItem;
 	public JMenuItem saveProjectItem;
 	
-	public ProjectMenu(KahinaInstance<?, ?, ?, ?> kahina)
+	public KahinaProjectMenu(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super("Project");
 		
 		//default action listener
-		ProjectMenuListener defaultListener = new ProjectMenuListener(kahina, this);
+		KahinaProjectMenuListener defaultListener = new KahinaProjectMenuListener(kahina, this);
 		
-		newProjectItem = new JMenuItem("New project");
+		newProjectItem = new JMenuItem("New Project");
 		newProjectItem.setActionCommand("newProject");
 		newProjectItem.addActionListener(defaultListener);
 		this.add(newProjectItem);
 		
 		this.addSeparator();
 		
-		loadProjectItem = new JMenuItem("Load project");
+		openProjectMenu = new JMenu("Open Project");
+		
+		recentProjectsMenu = new JMenu("Recent Projects");
+		openProjectMenu.add(recentProjectsMenu);
+		
+	    predefinedProjectsMenu = new JMenu("Predefined Projects");
+	    openProjectMenu.add(predefinedProjectsMenu);
+		
+		loadProjectItem = new JMenuItem("Load Project ...");
 		loadProjectItem.setActionCommand("loadProject");
 		loadProjectItem.addActionListener(defaultListener);
-		this.add(loadProjectItem);
+		openProjectMenu.add(loadProjectItem);
 		
-		saveProjectItem = new JMenuItem("Save project");
+		this.add(openProjectMenu);
+		
+		saveProjectItem = new JMenuItem("Save Project As ...");
 		saveProjectItem.setActionCommand("saveProject");
 		saveProjectItem.addActionListener(defaultListener);
 		this.add(saveProjectItem);
@@ -44,7 +57,7 @@ public class ProjectMenu extends JMenu
 	 * The argument must inherit from ProjectMenuListener.
 	 * @param listener the listener to process the menu's ActionEvents
 	 */
-	public void setActionListener(ProjectMenuListener listener)
+	public void setActionListener(KahinaProjectMenuListener listener)
 	{
 		for (ActionListener oldListener : newProjectItem.getActionListeners())
 		{

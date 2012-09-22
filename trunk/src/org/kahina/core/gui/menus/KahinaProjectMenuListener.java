@@ -19,12 +19,12 @@ import org.kahina.core.control.KahinaSessionEvent;
  * @author jd
  *
  */
-public class ProjectMenuListener implements ActionListener
+public class KahinaProjectMenuListener implements ActionListener
 {
     KahinaInstance<?, ?, ?, ?> kahina;
-    ProjectMenu menu;
+    KahinaProjectMenu menu;
     
-    public ProjectMenuListener(KahinaInstance<?,?,?,?> kahina, ProjectMenu menu)
+    public KahinaProjectMenuListener(KahinaInstance<?,?,?,?> kahina, KahinaProjectMenu menu)
     {
         this.kahina = kahina;
         this.menu = menu;

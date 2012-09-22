@@ -135,6 +135,20 @@ public class KahinaSimpleProperty extends KahinaStepProperty implements Serializ
         this.rightArg = rightArg;
     }
     
+    @Override
+    public KahinaSimpleProperty copy()
+    {
+        KahinaSimpleProperty copy = new KahinaSimpleProperty();
+        copy.type = type;
+        copy.rel = rel;
+        copy.intValue = intValue;
+        copy.stringValue = new String(stringValue);
+        copy.regexValue = Pattern.compile(copy.stringValue);
+        copy.leftArg = leftArg.copy();
+        copy.rightArg = rightArg.copy();
+        return copy;
+    }
+    
     public void parseValue(String value) throws PatternFormatException
     {
         if (type == ID)

@@ -1,23 +1,23 @@
 package org.kahina.core.control;
 
+import org.kahina.core.data.breakpoint.KahinaControlAgent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-public class KahinaStepProperty
-{
+public abstract class KahinaStepProperty
+{   
+    public abstract KahinaStepProperty copy();
+    
     public String exportXML(boolean b)
     {
         return "";
     }
 
-    public Element exportXML(Document dom)
+    public abstract Element exportXML(Document dom);
+
+    public static KahinaStepProperty importXML(Element el)
     {
-        return dom.createElement("kahina:stepProperty");
-    } 
-    
-    public static KahinaStepProperty importXML(Document dom)
-    {
-        return new KahinaStepProperty();
+        return null;
     }
 }

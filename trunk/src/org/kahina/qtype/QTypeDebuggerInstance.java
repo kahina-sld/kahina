@@ -1,8 +1,10 @@
 package org.kahina.qtype;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.LinkedList;
 
 import org.kahina.core.KahinaState;
 import org.kahina.core.data.breakpoint.KahinaBreakpointProfile;
@@ -11,7 +13,9 @@ import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.io.util.XMLUtil;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
+import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.qtype.bridge.QTypeBridge;
 import org.kahina.qtype.data.bindings.QTypeGoal;
 import org.kahina.qtype.data.project.QTypeProject;
@@ -93,23 +97,48 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
         return new QTypeProject(state.getStepTree(), control);
     }
         
-    public void loadProject(File projectFile)
+    public QTypeProject loadProject(File projectFile)
     {
         Document dom;
+        QTypeProject project = new QTypeProject(state.getStepTree(), control);
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = new QTypeProject(state.getStepTree(), control);
             project = QTypeProject.importXML(dom.getDocumentElement(), project, control);
-            gui.setPerspective(project.getPerspective());
-            gui.displayMainViews();
-            setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-            dispatchGUIEvent(new KahinaRedrawEvent());
         }
         catch (FileNotFoundException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        return project;
     }
+    
+    @Override
+    protected void prepareProjectLists()
+    {
+        recentProjects = new LinkedList<LogicProgrammingProject>();
+        // load the default perspectives in the bin folder of the respective Kahina application
+        defaultProjects = new LinkedList<LogicProgrammingProject>();
+        // This filter only returns XML files
+        FileFilter fileFilter = new FileFilter()
+        {
+            public boolean accept(File file)
+            {
+                // System.err.println("Filtering file " + file.getName() + ": "
+                // + file.getName().endsWith("xml"));
+                return file.getName().endsWith("xml");
+            }
+        };
+        File[] files = new File(this.getClass().getResource("./data/project").getFile()).listFiles(fileFilter);
+        for (File f : files)
+        {
+            if (VERBOSE)
+            {
+                System.err.println("Loading predefined project: " + f.getAbsolutePath());
+            }
+            defaultProjects.add(loadProject(f));
+        }
+        
+    } 
 }
