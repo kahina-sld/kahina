@@ -4,7 +4,7 @@
   <kahina:files/>
   <kahina:perspective kahina:appid="" kahina:name="Kahina for QType (Demo)">
     <kahina:arrangement>
-      <kahina:main-window kahina:border="false" kahina:height="926" kahina:id="0" kahina:primary="false" kahina:scroll="false" kahina:title="qtype" kahina:width="636" kahina:xpos="0" kahina:ypos="25">
+      <kahina:main-window kahina:border="false" kahina:height="926" kahina:id="0" kahina:primary="false" kahina:scroll="false" kahina:title="qtype (10)" kahina:width="636" kahina:xpos="0" kahina:ypos="25">
         <kahina:vert-split-window kahina:height="926" kahina:id="19" kahina:title="Content" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
           <kahina:vert-split-window kahina:height="411" kahina:id="29" kahina:title="Control Structure" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
             <kahina:default-window kahina:binding="controlFlowTree" kahina:border="false" kahina:height="224" kahina:id="2" kahina:primary="true" kahina:scroll="false" kahina:title="Control flow tree" kahina:width="653" kahina:xpos="784" kahina:ypos="409"/>
@@ -59,7 +59,20 @@
     <kahina:controlAgentProfile kahina:type="break"/>
     <kahina:controlAgentProfile kahina:type="creep"/>
     <kahina:controlAgentProfile kahina:type="complete"/>
-    <kahina:controlAgentProfile kahina:type="skip"/>
+    <kahina:controlAgentProfile kahina:type="skip">
+      <kahina:controlAgent active="true" color="#D5EB3E" name="skip mgu">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true">mgu</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+      <kahina:controlAgent active="true" color="#56D1D7" name="skip unify">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true">unify</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+    </kahina:controlAgentProfile>
     <kahina:controlAgentProfile kahina:type="fail"/>
   </kahina:controlAgentProfiles>
 </kahina:project>
