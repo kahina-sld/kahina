@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kahina:project xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="qtype" kahina:name="QType Demo Project">
-  <kahina:mainFile kahina:path="/home/kahina/pro/qtype/GRM/QTG/shieb4.qtg"/>
+  <kahina:mainFile kahina:path="../GRM/QTG/shieb4.qtg"/>
   <kahina:files/>
   <kahina:perspective kahina:appid="" kahina:name="Kahina for QType (Demo)">
     <kahina:arrangement>
