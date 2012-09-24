@@ -11,6 +11,9 @@ import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
+import org.kahina.logic.sat.data.KahinaSatInstance;
+import org.kahina.logic.sat.data.proof.ResolutionProofTree;
+import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.proof.ResolutionProofParser;
 
 public class ResolutionProofTreeViewer
@@ -22,14 +25,25 @@ public class ResolutionProofTreeViewer
             System.err.println("Usage: java ResolutionProofTreeViewer [proof file]");
             System.exit(1);
         }
-        KahinaMemTree proof = ResolutionProofParser.createResolutionProofTree(args[0]);
+        KahinaSatInstance satInstance = new KahinaSatInstance();
+        if (args.length >= 2)
+        {
+            satInstance = DimacsCnfParser.parseDimacsCnfFile(args[1]);
+        }
+        else
+        {
+            System.err.println("No SAT instance given, generating view without symbols.");
+        }
+        
+        ResolutionProofTree proof = ResolutionProofParser.createResolutionProofTree(args[0], satInstance);
         
         KahinaDefaultInstance kahina = new KahinaDefaultInstance();
         
         final KahinaTreeView v = new KahinaTreeView(kahina);
         v.setTitle("Resolution Proof");
-        v.getConfig().setVerticalDistance(15);
-        v.getConfig().setHorizontalDistance(25);
+        v.getConfig().setVerticalDistance(20);
+        v.getConfig().setHorizontalDistance(15);
+        v.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
         v.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
         v.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);
         v.display(proof);

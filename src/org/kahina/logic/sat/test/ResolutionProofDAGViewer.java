@@ -10,7 +10,9 @@ import org.kahina.core.KahinaDefaultInstance;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.visual.dag.KahinaDAGView;
 import org.kahina.core.visual.dag.LayeredLayouter;
+import org.kahina.logic.sat.data.KahinaSatInstance;
 import org.kahina.logic.sat.data.proof.ResolutionProofDAG;
+import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.proof.ResolutionProofParser;
 
 public class ResolutionProofDAGViewer
@@ -22,7 +24,17 @@ public class ResolutionProofDAGViewer
             System.err.println("Usage: java ResolutionProofDAGViewer [proof file]");
             System.exit(1);
         }
-        ResolutionProofDAG proof = ResolutionProofParser.createResolutionProofDAG(args[0]);
+        KahinaSatInstance satInstance = new KahinaSatInstance();
+        if (args.length >= 2)
+        {
+            satInstance = DimacsCnfParser.parseDimacsCnfFile(args[1]);
+        }
+        else
+        {
+            System.err.println("No SAT instance given, generating view without symbols.");
+        }
+        
+        ResolutionProofDAG proof = ResolutionProofParser.createResolutionProofDAG(args[0], satInstance);
         
         KahinaDefaultInstance kahina = new KahinaDefaultInstance();
         
