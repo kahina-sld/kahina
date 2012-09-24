@@ -300,6 +300,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 
 	public void calculateCoordinates()
 	{
+	    //boolean VERBOSE = true;
 		int fontSize = config.getNodeSize();
 		int verticalDistance = config.getVerticalDistance();
 		int horizontalDistance = config.getHorizontalDistance();
@@ -325,7 +326,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			{
 				for (int node : terminalLayer)
 				{
-					subtreeWidths.put(node, constructTerminalWidthVector());
+					subtreeWidths.put(node, constructTerminalWidthVector(node, fm, horizontalDistance));
 				}
 			}
 			for (int i = nodeLevels.size() - 1; i >= 0; i--)
@@ -340,7 +341,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					// nodeLabelWidth);
 					if (maxNodeWidth < nodeLabelWidth) maxNodeWidth = nodeLabelWidth;
 					ArrayList<Integer> children = getVisibleVirtualChildren(model, node);
-					subtreeWidths.put(node, constructWidthVector(children));
+					subtreeWidths.put(node, constructWidthVector(children, node, fm, horizontalDistance));
 					if (VERBOSE)
 						System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
 				}
@@ -350,10 +351,11 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			if (VERBOSE)
 				System.err.println("maxNodeWidth = " + maxNodeWidth);
 			WidthVector rootWidthVector = subtreeWidths.get(model.getRootID(treeLayer));
+			System.err.println("rootWidthVector = " + rootWidthVector.toString());
 			int rootLeftDistance = rootWidthVector.maximumLeftDistance();
             int rootRightDistance = rootWidthVector.maximumRightDistance();
             // adapt total tree width to maximum level width (i.e. maximum x position of a node in any level)
-            totalTreeWidth = (rootLeftDistance + rootRightDistance) * horizontalDistance * 3;
+            totalTreeWidth = (rootLeftDistance + rootRightDistance); // * horizontalDistance * 3;
 			//nodeX.put(model.getRootID(treeLayer), rootLeftDistance * horizontalDistance * 10);
 			// Nodes in this view whose secondary parent is not in this view.
 			// Will start from there to display secondary tree:
@@ -364,8 +366,11 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 				if (VERBOSE)
 					System.err.println("Node level: " + i);
 				List<Integer> nodes = nodeLevels.get(i);
-				int xOffset = (1 + rootLeftDistance - rootWidthVector.getStart(i)) * horizontalDistance * 3;
-				if (VERBOSE) System.err.println(xOffset + " = (1 + " + rootLeftDistance + " - " + rootWidthVector.getStart(i) + ") * " + horizontalDistance * 10);
+				int xOffset = (1 + rootLeftDistance - rootWidthVector.getStart(i));// * horizontalDistance * 3;
+				//if (VERBOSE) 
+			    {
+			        System.err.println(xOffset + " = (1 + " + rootLeftDistance + " - " + rootWidthVector.getStart(i) + ")");
+			    }
 				// TODO: find out why this does not seem to have any effect
 				/*if (config.getNodePositionPolicy() == KahinaTreeViewOptions.CENTERED_NODES)
 				{
@@ -385,7 +390,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					if (lastSubtreeWidth != null)
 					{
 					    int distance = WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth);
-    					xOffset += distance * horizontalDistance * 3;
+    					xOffset += distance; // * horizontalDistance * 3;
     					// switch to children of next parent node --> jump in x offset
     					int newParent = getVisibleParent(node);
     					if (VERBOSE)
@@ -397,7 +402,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
     							System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
     						// old variant of xOffset computation
     						// xOffset = (int)((nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) * 0.5 - 0.5) * horizontalDistance * fontSize));
-    						xOffset = nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) - 1) * horizontalDistance * 3;
+    						xOffset = nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) - 1); //* horizontalDistance * 3;
     						lastSubtreeWidth = subtreeWidth.copy();
     					}
     					else
@@ -411,7 +416,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					    parent = getVisibleParent(node); 
 					    lastSubtreeWidth = subtreeWidth.copy();
 					}
-					nodeX.put(node, xOffset);
+					nodeX.put(node, xOffset + horizontalDistance);
 					nodeY.put(node, verticalDistance * 3 * i + 20);
 					if (VERBOSE)
 						System.err.println(" X:" + nodeX.get(node) + " Y:" + nodeY.get(node));
@@ -628,7 +633,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	}
     
 
-	private WidthVector constructWidthVector(ArrayList<Integer> children)
+	private WidthVector constructWidthVector(ArrayList<Integer> children, int nodeID, FontMetrics fm, int horizontalDistance)
 	{
 		if (children.size() > 0)
 		{
@@ -637,14 +642,15 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			{
 				sum = WidthVector.adjoin(sum, subtreeWidths.get(children.get(i)));
 			}
-			sum.start.add(0, 1);
-			sum.end.add(0, 1);
+	        int width = (int) fm.getStringBounds(model.getNodeCaption(nodeID), g).getWidth() + 1;
+			sum.start.add(0, (width + horizontalDistance) / 2);
+			sum.end.add(0, (width + horizontalDistance) / 2);
 			return sum;
 		}
-		return new WidthVector();
+		return constructTerminalWidthVector(nodeID, fm, horizontalDistance);
 	}
 
-	private WidthVector constructTerminalWidthVector()
+	/*private WidthVector constructTerminalWidthVector()
 	{
 		WidthVector widthVector = new WidthVector();
 		for (int i = 0; i < nodeLevels.size(); i++)
@@ -653,7 +659,16 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			widthVector.end.add(1);
 		}
 		return widthVector;
-	}
+	}*/
+	
+    private WidthVector constructTerminalWidthVector(int nodeID, FontMetrics fm, int horizontalDistance)
+    {
+        int width = (int) fm.getStringBounds(model.getNodeCaption(nodeID), g).getWidth() + 1;
+        WidthVector widthVector = new WidthVector();
+        widthVector.start.add((width + horizontalDistance) / 2);
+        widthVector.end.add((width + horizontalDistance) / 2);
+        return widthVector;
+    }
 
 	public FontMetrics getFontMetrics(Font f, Stroke s, int fontSize)
 	{
