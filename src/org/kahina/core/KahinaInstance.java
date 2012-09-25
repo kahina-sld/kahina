@@ -106,8 +106,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
             {
                 public boolean accept(File file)
                 {
-                    // System.err.println("Filtering file " + file.getName() + ": "
-                    // + file.getName().endsWith("xml"));
                     return file.getName().endsWith("xml");
                 }
             };
@@ -241,7 +239,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	// registerSessionListener() and registerInstanceListener() with which
 	// listeners can be registered according to their lifespan (session lifespan
 	// -> controller, instance lifespan -> GUI controller).
-	
 	public KahinaController getControl()
 	{
 		return control;

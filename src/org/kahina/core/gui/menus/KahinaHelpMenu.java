@@ -20,6 +20,7 @@ public class KahinaHelpMenu extends JMenu implements ActionListener
         this.guiControl = guiControl;
             
         JMenuItem helpItem = new JMenuItem("Help");
+        helpItem.setEnabled(false);
         helpItem.setActionCommand("help");
         helpItem.addActionListener(this);
         this.add(helpItem);

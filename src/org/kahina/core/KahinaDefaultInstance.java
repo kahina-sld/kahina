@@ -76,8 +76,6 @@ public class KahinaDefaultInstance extends KahinaInstance<KahinaState, KahinaGUI
         {
             public boolean accept(File file)
             {
-                // System.err.println("Filtering file " + file.getName() + ": "
-                // + file.getName().endsWith("xml"));
                 return file.getName().endsWith("xml");
             }
         };
