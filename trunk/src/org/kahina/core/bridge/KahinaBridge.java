@@ -8,9 +8,9 @@ import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.control.KahinaWarnEvent;
-import org.kahina.core.data.breakpoint.KahinaBreakpoint;
-import org.kahina.core.data.breakpoint.KahinaBreakpointType;
-import org.kahina.core.data.breakpoint.patterns.KahinaTreeMatchEvent;
+import org.kahina.core.data.agent.KahinaBreakpoint;
+import org.kahina.core.data.agent.KahinaBreakpointType;
+import org.kahina.core.data.agent.patterns.KahinaTreeMatchEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 
 /**

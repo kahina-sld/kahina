@@ -1,15 +1,15 @@
-package org.kahina.core.visual.breakpoint;
+package org.kahina.core.visual.agent;
 
 import javax.swing.JComponent;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.data.breakpoint.KahinaControlAgent;
+import org.kahina.core.data.agent.KahinaControlAgent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgent;
 
-public class KahinaControlPointView extends KahinaView<KahinaControlAgent>
+public class KahinaControlAgentView extends KahinaView<KahinaControlAgent>
 {
-    public KahinaControlPointView(KahinaInstance<?, ?, ?, ?> kahina)
+    public KahinaControlAgentView(KahinaInstance<?, ?, ?, ?> kahina)
     {
         super(kahina);
         // TODO Auto-generated constructor stub
@@ -18,7 +18,7 @@ public class KahinaControlPointView extends KahinaView<KahinaControlAgent>
     @Override
     public JComponent makePanel()
     {
-        KahinaControlPointViewPanel panel = new KahinaControlPointViewPanel(kahina);
+        KahinaControlAgentViewPanel panel = new KahinaControlAgentViewPanel(kahina);
         panel.setView(this);
         return panel;
     }

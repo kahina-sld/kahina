@@ -1,4 +1,4 @@
-package org.kahina.core.visual.breakpoint;
+package org.kahina.core.visual.agent;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,8 +13,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import org.kahina.core.control.KahinaControlActuator;
-import org.kahina.core.data.breakpoint.KahinaControlAgent;
-import org.kahina.core.data.breakpoint.KahinaControlAgentProfile;
+import org.kahina.core.data.agent.KahinaControlAgent;
+import org.kahina.core.data.agent.KahinaControlAgentProfile;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.LogicProgrammingState;
@@ -23,12 +23,12 @@ import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgentProfile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class KahinaControlPointProfileListener implements ActionListener, ListSelectionListener
+public class KahinaControlAgentProfileListener implements ActionListener, ListSelectionListener
 {
-    KahinaControlPointProfileViewPanel profilePanel;
+    KahinaControlAgentProfileViewPanel profilePanel;
     KahinaTree stepTree;
     
-    public KahinaControlPointProfileListener(KahinaControlPointProfileViewPanel profilePanel, KahinaTree stepTree)
+    public KahinaControlAgentProfileListener(KahinaControlAgentProfileViewPanel profilePanel, KahinaTree stepTree)
     {
         this.profilePanel = profilePanel;
         this.stepTree = stepTree;

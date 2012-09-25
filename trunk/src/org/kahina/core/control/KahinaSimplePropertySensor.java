@@ -1,7 +1,7 @@
 package org.kahina.core.control;
 
-import org.kahina.core.data.breakpoint.KahinaControlAgent;
-import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
+import org.kahina.core.data.agent.KahinaControlAgent;
+import org.kahina.core.data.agent.patterns.TreePatternNode;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 

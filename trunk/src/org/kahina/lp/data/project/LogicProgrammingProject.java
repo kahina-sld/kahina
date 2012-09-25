@@ -4,8 +4,8 @@ import java.io.File;
 
 import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.control.KahinaController;
-import org.kahina.core.data.breakpoint.KahinaControlAgent;
-import org.kahina.core.data.breakpoint.KahinaControlAgentProfile;
+import org.kahina.core.data.agent.KahinaControlAgent;
+import org.kahina.core.data.agent.KahinaControlAgentProfile;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.KahinaPerspective;

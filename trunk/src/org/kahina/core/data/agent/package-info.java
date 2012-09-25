@@ -9,16 +9,16 @@
 * the monitored process, making a particular decision at a decision point,
 * or issuing warnings.
 * <p>
-* Breakpoints are represented by {@link org.kahina.core.data.breakpoint.KahinaBreakpoint} objects,
-* and can be generated using convenience methods in {@link org.kahina.core.data.breakpoint.KahinaBreakpointFactory}.
+* Breakpoints are represented by {@link org.kahina.core.data.agent.KahinaBreakpoint} objects,
+* and can be generated using convenience methods in {@link org.kahina.core.data.agent.KahinaBreakpointFactory}.
 * Despite their name, breakpoints are used for much more comprehensive control automation
 * than their counterparts in other debugging systems. 
 * In this context, the type of a breakpoint, determining its semantics, 
-* is defined by giving it one of the constant values in {@link org.kahina.core.data.breakpoint.KahinaBreakpointType}
+* is defined by giving it one of the constant values in {@link org.kahina.core.data.agent.KahinaBreakpointType}
 * (some of these types are specific to logic programming, MOVE THEM!).
 * <p>
 * In a Kahina project, breakpoints will normally be grouped into
-* a {@link org.kahina.core.data.breakpoint.KahinaBreakpointProfile},
+* a {@link org.kahina.core.data.agent.KahinaBreakpointProfile},
 * which is used to administer the different types of breakpoints in one place.
 * If the content of a breakpoint profile is dumped into an XML representation
 * e.g. as part of the project file, the entire state of the breakpoint
@@ -27,4 +27,4 @@
 * @since 1.0 
 */
 
-package org.kahina.core.data.breakpoint;
+package org.kahina.core.data.agent;

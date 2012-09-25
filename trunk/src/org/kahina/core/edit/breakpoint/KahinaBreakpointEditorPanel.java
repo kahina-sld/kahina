@@ -20,7 +20,7 @@ import javax.swing.JTextField;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.data.breakpoint.KahinaBreakpoint;
+import org.kahina.core.data.agent.KahinaBreakpoint;
 import org.kahina.core.visual.KahinaViewPanel;
 
 public class KahinaBreakpointEditorPanel extends KahinaViewPanel<KahinaBreakpointEditor> implements ActionListener

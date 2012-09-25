@@ -1,4 +1,4 @@
-package org.kahina.core.visual.breakpoint;
+package org.kahina.core.visual.agent;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -19,7 +19,7 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 
-public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPointView>
+public class KahinaControlAgentViewPanel extends KahinaViewPanel<KahinaControlAgentView>
 {
     JPanel noSelectionPanel;
     
@@ -28,18 +28,18 @@ public class KahinaControlPointViewPanel extends KahinaViewPanel<KahinaControlPo
     
     JTextField nameEditLine;
     
-    KahinaControlPointListener pointListener;
-    KahinaControlPointProfileListener profileListener;
+    KahinaControlAgentListener pointListener;
+    KahinaControlAgentProfileListener profileListener;
     
     KahinaInstance<?,?,?,?> kahina;
     
     //TODO: give some sensible behavior to this constructor
-    public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
+    public KahinaControlAgentViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {
         this.kahina = kahina;
     }
     
-    public KahinaControlPointViewPanel(KahinaInstance<?, ?, ?, ?> kahina, KahinaControlPointProfileListener profileListener, KahinaControlPointListener pointListener)
+    public KahinaControlAgentViewPanel(KahinaInstance<?, ?, ?, ?> kahina, KahinaControlAgentProfileListener profileListener, KahinaControlAgentListener pointListener)
     {
         this.kahina = kahina;
         this.profileListener = profileListener;
