@@ -1,6 +1,6 @@
 package org.kahina.core.control;
 
-import org.kahina.core.data.breakpoint.KahinaControlAgent;
+import org.kahina.core.data.agent.KahinaControlAgent;
 
 public class KahinaControlActuator
 {

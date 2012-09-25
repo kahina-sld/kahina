@@ -4,7 +4,7 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.data.breakpoint.KahinaBreakpointProfile;
+import org.kahina.core.data.agent.KahinaBreakpointProfile;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.chart.KahinaChartViewPanel;
 

@@ -1,4 +1,4 @@
-package org.kahina.core.data.breakpoint;
+package org.kahina.core.data.agent;
 
 import java.io.File;
 import java.io.InputStream;

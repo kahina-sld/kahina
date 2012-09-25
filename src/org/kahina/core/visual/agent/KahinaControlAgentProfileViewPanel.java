@@ -1,4 +1,4 @@
-package org.kahina.core.visual.breakpoint;
+package org.kahina.core.visual.agent;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -22,16 +22,16 @@ import org.kahina.core.visual.dag.KahinaDAGViewContextMenu;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
 
-public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaControlPointProfileView>
+public class KahinaControlAgentProfileViewPanel extends KahinaViewPanel<KahinaControlAgentProfileView>
 {
     JList pointList;
     
-    KahinaControlPointViewPanel pointPanel;
-    KahinaControlPointProfileListener profileListener;
+    KahinaControlAgentViewPanel pointPanel;
+    KahinaControlAgentProfileListener profileListener;
     
     KahinaInstance<?,?,?,?> kahina;
     
-    public KahinaControlPointProfileViewPanel(LogicProgrammingInstance<?,?,?,?> kahina)
+    public KahinaControlAgentProfileViewPanel(LogicProgrammingInstance<?,?,?,?> kahina)
     {
         view = null;
         
@@ -39,8 +39,8 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         
         kahina.getControl().registerListener("breakpoint_editor", this);
         
-        profileListener = new KahinaControlPointProfileListener(this, kahina.getState().getStepTree());
-        KahinaControlPointListener pointListener = new KahinaControlPointListener();
+        profileListener = new KahinaControlAgentProfileListener(this, kahina.getState().getStepTree());
+        KahinaControlAgentListener pointListener = new KahinaControlAgentListener();
         
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         
@@ -105,14 +105,14 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         
         profileDisplayPanel.add(profileManagementPanel);
         
-        pointPanel = new KahinaControlPointViewPanel(kahina, profileListener, pointListener);
+        pointPanel = new KahinaControlAgentViewPanel(kahina, profileListener, pointListener);
         pointList.addMouseListener(new PointListMouseListener(pointPanel, pointListener));
         profileDisplayPanel.add(pointPanel);
         
         this.add(profileDisplayPanel);     
     }
     
-    public void setView(KahinaControlPointProfileView view)
+    public void setView(KahinaControlAgentProfileView view)
     {
         super.setView(view);
         if (view != null)
@@ -167,10 +167,10 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
     
     private class PointListMouseListener extends MouseAdapter
     {
-        KahinaControlPointViewPanel pointView;
-        KahinaControlPointListener pointListener;
+        KahinaControlAgentViewPanel pointView;
+        KahinaControlAgentListener pointListener;
         
-        public PointListMouseListener(KahinaControlPointViewPanel pointView, KahinaControlPointListener pointListener)
+        public PointListMouseListener(KahinaControlAgentViewPanel pointView, KahinaControlAgentListener pointListener)
         {
             this.pointView = pointView;
             this.pointListener = pointListener;
@@ -192,7 +192,7 @@ public class KahinaControlPointProfileViewPanel extends KahinaViewPanel<KahinaCo
         {
             if (e.isPopupTrigger()) 
             {
-                KahinaControlPointContextMenu.getMenu(pointListener, profileListener, pointView).show(e.getComponent(),e.getX(), e.getY());
+                KahinaControlAgentContextMenu.getMenu(pointListener, profileListener, pointView).show(e.getComponent(),e.getX(), e.getY());
             }
         }
     }

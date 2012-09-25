@@ -1,7 +1,7 @@
 package org.kahina.lp.control;
 
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.data.breakpoint.KahinaControlAgent;
+import org.kahina.core.data.agent.KahinaControlAgent;
 
 public class NewControlAgentEvent extends KahinaEvent
 {

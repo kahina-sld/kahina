@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.LinkedList;
 
 import org.kahina.core.KahinaState;
-import org.kahina.core.data.breakpoint.KahinaBreakpointProfile;
+import org.kahina.core.data.agent.KahinaBreakpointProfile;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.gui.KahinaViewRegistry;

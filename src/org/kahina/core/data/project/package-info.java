@@ -5,7 +5,7 @@
 * {@link org.kahina.core.data.project.KahinaProject} is a very simple implementation
 * of a project which specialized project classes for Kahina applications inherit from.
 * It merely provides support for managing a list of source code files,
-* a {@link org.kahina.core.gui.KahinaPerspective} and a {@link org.kahina.core.data.breakpoint.KahinaBreakpointProfile}.
+* a {@link org.kahina.core.gui.KahinaPerspective} and a {@link org.kahina.core.data.agent.KahinaBreakpointProfile}.
 * 
 * <p>
 * @since 1.0 

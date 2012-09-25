@@ -29,8 +29,8 @@ import javax.swing.text.JTextComponent;
 
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaSimpleProperty;
-import org.kahina.core.data.breakpoint.patterns.PatternFormatException;
-import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
+import org.kahina.core.data.agent.patterns.PatternFormatException;
+import org.kahina.core.data.agent.patterns.TreePatternNode;
 
 public class SingleNodeConstraintPanel extends JPanel implements ActionListener, MouseListener
 {

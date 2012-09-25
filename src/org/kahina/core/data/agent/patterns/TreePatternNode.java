@@ -1,4 +1,4 @@
-package org.kahina.core.data.breakpoint.patterns;
+package org.kahina.core.data.agent.patterns;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -5,7 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.kahina.core.data.breakpoint.patterns.PatternFormatException;
+import org.kahina.core.data.agent.patterns.PatternFormatException;
 import org.kahina.core.data.tree.KahinaTree;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

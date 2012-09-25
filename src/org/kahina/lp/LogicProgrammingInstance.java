@@ -6,8 +6,8 @@ import java.io.FileNotFoundException;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.data.breakpoint.KahinaControlAgent;
-import org.kahina.core.data.breakpoint.KahinaControlAgentProfile;
+import org.kahina.core.data.agent.KahinaControlAgent;
+import org.kahina.core.data.agent.KahinaControlAgentProfile;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.io.util.XMLUtil;

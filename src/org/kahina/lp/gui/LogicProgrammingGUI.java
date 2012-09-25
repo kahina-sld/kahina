@@ -9,7 +9,7 @@ import org.kahina.core.KahinaDefaultInstance;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaEventTypes;
-import org.kahina.core.data.breakpoint.KahinaBreakpointType;
+import org.kahina.core.data.agent.KahinaBreakpointType;
 import org.kahina.core.edit.breakpoint.KahinaBreakpointProfileEditor;
 import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaGUI;
@@ -18,7 +18,7 @@ import org.kahina.core.gui.breakpoint.ThresholdedBreakpointEditorWindow;
 import org.kahina.core.profiler.DefaultProfileEntryMapper;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
-import org.kahina.core.visual.breakpoint.KahinaControlPointProfileView;
+import org.kahina.core.visual.agent.KahinaControlAgentProfileView;
 import org.kahina.core.visual.tree.KahinaAbstractTreeView;
 import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.LogicProgrammingInstance;
@@ -33,12 +33,12 @@ public class LogicProgrammingGUI extends KahinaGUI
 	protected KahinaAbstractTreeView mainTreeView;
 	//protected KahinaLayeredTreeView mainTreeView;
 	
-	protected KahinaControlPointProfileView breakPointView;
-    protected KahinaControlPointProfileView creepPointView;
-    protected KahinaControlPointProfileView completePointView;
-    protected KahinaControlPointProfileView skipPointView;
-    protected KahinaControlPointProfileView failPointView;
-    protected KahinaControlPointProfileView warnPointView;
+	protected KahinaControlAgentProfileView breakPointView;
+    protected KahinaControlAgentProfileView creepPointView;
+    protected KahinaControlAgentProfileView completePointView;
+    protected KahinaControlAgentProfileView skipPointView;
+    protected KahinaControlAgentProfileView failPointView;
+    protected KahinaControlAgentProfileView warnPointView;
     
     protected LogicProgrammingInstance<?,?,?,?> kahina;
 
@@ -55,37 +55,37 @@ public class LogicProgrammingGUI extends KahinaGUI
 		livingViews.add(mainTreeView);
 		varNameToView.put("controlFlowTree", mainTreeView);
 		
-        breakPointView = new KahinaControlPointProfileView(kahina);
+        breakPointView = new KahinaControlAgentProfileView(kahina);
         breakPointView.setTitle("Break");
         views.add(breakPointView);
         livingViews.add(breakPointView);
         varNameToView.put("breakPoints", breakPointView);
         
-        creepPointView = new KahinaControlPointProfileView(kahina);
+        creepPointView = new KahinaControlAgentProfileView(kahina);
         creepPointView.setTitle("Creep");
         views.add(creepPointView);
         livingViews.add(creepPointView);
         varNameToView.put("creepPoints", creepPointView);
         
-        completePointView = new KahinaControlPointProfileView(kahina);
+        completePointView = new KahinaControlAgentProfileView(kahina);
         completePointView.setTitle("Complete");
         views.add(completePointView);
         livingViews.add(completePointView);
         varNameToView.put("completePoints", completePointView);
         
-        skipPointView = new KahinaControlPointProfileView(kahina);
+        skipPointView = new KahinaControlAgentProfileView(kahina);
         skipPointView.setTitle("Skip");
         views.add(skipPointView);
         livingViews.add(skipPointView);
         varNameToView.put("skipPoints", skipPointView);
         
-        failPointView = new KahinaControlPointProfileView(kahina);
+        failPointView = new KahinaControlAgentProfileView(kahina);
         failPointView.setTitle("Fail");
         views.add(failPointView);
         livingViews.add(failPointView);
         varNameToView.put("failPoints", failPointView);
         
-        warnPointView = new KahinaControlPointProfileView(kahina);
+        warnPointView = new KahinaControlAgentProfileView(kahina);
         warnPointView.setTitle("Warn");
         views.add(warnPointView);
         livingViews.add(warnPointView);

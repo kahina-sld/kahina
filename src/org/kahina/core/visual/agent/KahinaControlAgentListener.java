@@ -1,4 +1,4 @@
-package org.kahina.core.visual.breakpoint;
+package org.kahina.core.visual.agent;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -13,22 +13,22 @@ import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import org.kahina.core.data.breakpoint.KahinaControlAgent;
+import org.kahina.core.data.agent.KahinaControlAgent;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.io.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class KahinaControlPointListener implements ActionListener, KeyListener
+public class KahinaControlAgentListener implements ActionListener, KeyListener
 {
-    KahinaControlPointViewPanel viewPanel;
+    KahinaControlAgentViewPanel viewPanel;
     
-    public KahinaControlPointListener()
+    public KahinaControlAgentListener()
     {
         this.viewPanel = null;
     }
     
-    public void setViewPanel(KahinaControlPointViewPanel viewPanel)
+    public void setViewPanel(KahinaControlAgentViewPanel viewPanel)
     {
         this.viewPanel = viewPanel;
     }

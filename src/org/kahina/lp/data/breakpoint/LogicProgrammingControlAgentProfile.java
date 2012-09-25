@@ -1,8 +1,8 @@
 package org.kahina.lp.data.breakpoint;
 
 import org.kahina.core.control.KahinaControlActuator;
-import org.kahina.core.data.breakpoint.KahinaControlAgent;
-import org.kahina.core.data.breakpoint.KahinaControlAgentProfile;
+import org.kahina.core.data.agent.KahinaControlAgent;
+import org.kahina.core.data.agent.KahinaControlAgentProfile;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.lp.LogicProgrammingState;
 import org.w3c.dom.Element;

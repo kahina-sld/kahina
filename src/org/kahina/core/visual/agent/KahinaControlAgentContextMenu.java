@@ -1,4 +1,4 @@
-package org.kahina.core.visual.breakpoint;
+package org.kahina.core.visual.agent;
 
 import java.awt.Insets;
 import java.awt.event.ActionListener;
@@ -7,15 +7,15 @@ import javax.swing.JButton;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-public class KahinaControlPointContextMenu extends JPopupMenu
+public class KahinaControlAgentContextMenu extends JPopupMenu
 {
     private static final long serialVersionUID = 2789903959687639683L;
     
-    KahinaControlPointViewPanel v;
+    KahinaControlAgentViewPanel v;
     
-    public KahinaControlPointContextMenu(KahinaControlPointListener pointListener, 
-                                         KahinaControlPointProfileListener profileListener,
-                                         KahinaControlPointViewPanel v)
+    public KahinaControlAgentContextMenu(KahinaControlAgentListener pointListener, 
+                                         KahinaControlAgentProfileListener profileListener,
+                                         KahinaControlAgentViewPanel v)
     {
         JMenuItem exportPatternItem = new JMenuItem("Export");
         exportPatternItem.setActionCommand("exportControlPoint");
@@ -51,7 +51,7 @@ public class KahinaControlPointContextMenu extends JPopupMenu
         add(colorItem);   
     }
     
-    private static String generateActivationItemLabel(KahinaControlPointViewPanel v)
+    private static String generateActivationItemLabel(KahinaControlAgentViewPanel v)
     {
         if (v.view.getModel().isActive())
         {
@@ -63,10 +63,10 @@ public class KahinaControlPointContextMenu extends JPopupMenu
         }
     }
     
-    public static JPopupMenu getMenu(KahinaControlPointListener pointListener, 
-                                     KahinaControlPointProfileListener profileListener,
-                                     KahinaControlPointViewPanel v)
+    public static JPopupMenu getMenu(KahinaControlAgentListener pointListener, 
+                                     KahinaControlAgentProfileListener profileListener,
+                                     KahinaControlAgentViewPanel v)
     {
-        return new KahinaControlPointContextMenu(pointListener, profileListener, v);
+        return new KahinaControlAgentContextMenu(pointListener, profileListener, v);
     }
 }

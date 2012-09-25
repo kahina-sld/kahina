@@ -1,7 +1,7 @@
 package org.kahina.core.test;
 
 import org.kahina.core.KahinaDefaultInstance;
-import org.kahina.core.data.breakpoint.KahinaBreakpointType;
+import org.kahina.core.data.agent.KahinaBreakpointType;
 import org.kahina.core.gui.breakpoint.BreakpointEditorWindow;
 
 public class BreakpointEditorTest

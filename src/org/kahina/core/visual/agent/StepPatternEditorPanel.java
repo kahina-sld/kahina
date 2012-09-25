@@ -1,4 +1,4 @@
-package org.kahina.core.visual.breakpoint;
+package org.kahina.core.visual.agent;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,7 +19,7 @@ import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.control.KahinaStepProperty;
 import org.kahina.core.control.KahinaStepPropertySensor;
 import org.kahina.core.control.KahinaSimplePropertySensor;
-import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
+import org.kahina.core.data.agent.patterns.TreePatternNode;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.edit.breakpoint.BreakpointEditorHintPanel;
@@ -37,9 +37,9 @@ public class StepPatternEditorPanel extends JPanel implements ActionListener
     private BreakpointEditorHintPanel hintPanel;
     private SingleNodeConstraintPanel patternPanel;
     
-    KahinaControlPointViewPanel viewPanel;
+    KahinaControlAgentViewPanel viewPanel;
     
-    public StepPatternEditorPanel(KahinaControlPointViewPanel viewPanel)
+    public StepPatternEditorPanel(KahinaControlAgentViewPanel viewPanel)
     {
         this.viewPanel = viewPanel;
         

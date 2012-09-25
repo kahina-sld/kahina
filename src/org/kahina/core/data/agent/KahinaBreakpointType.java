@@ -1,4 +1,4 @@
-package org.kahina.core.data.breakpoint;
+package org.kahina.core.data.agent;
 
 
 

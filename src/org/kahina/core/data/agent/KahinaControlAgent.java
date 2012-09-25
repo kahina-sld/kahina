@@ -1,4 +1,4 @@
-package org.kahina.core.data.breakpoint;
+package org.kahina.core.data.agent;
 
 import java.awt.Color;
 
@@ -14,8 +14,8 @@ import org.kahina.core.control.KahinaStepPropertySensor;
 import org.kahina.core.control.KahinaStepUpdateEvent;
 import org.kahina.core.control.KahinaSimplePropertySensor;
 import org.kahina.core.data.KahinaObject;
-import org.kahina.core.data.breakpoint.patterns.TreePattern;
-import org.kahina.core.data.breakpoint.patterns.TreePatternNode;
+import org.kahina.core.data.agent.patterns.TreePattern;
+import org.kahina.core.data.agent.patterns.TreePatternNode;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.color.ColorUtil;
 import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgent;

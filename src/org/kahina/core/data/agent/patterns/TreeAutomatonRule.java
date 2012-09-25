@@ -1,4 +1,4 @@
-package org.kahina.core.data.breakpoint.patterns;
+package org.kahina.core.data.agent.patterns;
 
 import java.util.HashSet;
 import java.util.Set;
