@@ -1,5 +1,6 @@
 package org.kahina.core.gui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.lang.reflect.Field;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -339,9 +341,12 @@ public class KahinaGUI implements KahinaListener
 		{
 			super(parent, "About Kahina", false);
 			getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
-			add(new JLabel("Kilian Evang, Johannes Dellert"), "West");
-			add(new JLabel("Tuebingen University"), "West");
-			add(new JLabel("(c) 2009-2011"), "West");
+			add(Box.createRigidArea(new Dimension(20, 15)), "West");
+	        add(new JLabel("Kahina Debugging Environment"), "West");
+	         add(Box.createRigidArea(new Dimension(20, 15)), "West");
+			add(new JLabel("(c) Kilian Evang, Johannes Dellert"), "West");
+			add(new JLabel("Universität Tübingen"), "West");
+			add(new JLabel("2009-2012"), "West");
 
 			JPanel p2 = new JPanel();
 			JButton ok = new JButton("Ok");
@@ -355,7 +360,7 @@ public class KahinaGUI implements KahinaListener
 					setVisible(false);
 				}
 			});
-			setSize(280, 110);
+			setSize(300, 160);
 			setLocation(parent.getX() + 200, parent.getY() + 200);
 		}
 	}
