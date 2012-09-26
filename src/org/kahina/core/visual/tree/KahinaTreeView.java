@@ -341,7 +341,8 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					// nodeLabelWidth);
 					if (maxNodeWidth < nodeLabelWidth) maxNodeWidth = nodeLabelWidth;
 					ArrayList<Integer> children = getVisibleVirtualChildren(model, node);
-					subtreeWidths.put(node, constructWidthVector(children, node, fm, horizontalDistance));
+					WidthVector subtreeWidth = constructWidthVector(children, node, fm, horizontalDistance);
+					subtreeWidths.put(node, subtreeWidth);
 					if (VERBOSE)
 						System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
 				}
@@ -367,9 +368,9 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					System.err.println("Node level: " + i);
 				List<Integer> nodes = nodeLevels.get(i);
 				int xOffset = (1 + rootLeftDistance - rootWidthVector.getStart(i));// * horizontalDistance * 3;
-				//if (VERBOSE) 
+				if (VERBOSE) 
 			    {
-			        System.err.println(xOffset + " = (1 + " + rootLeftDistance + " - " + rootWidthVector.getStart(i) + ")");
+			        System.err.println("xOffset(level" + i + ") = (1 + " + rootLeftDistance + " - " + rootWidthVector.getStart(i) + ") = " + xOffset);
 			    }
 				// TODO: find out why this does not seem to have any effect
 				/*if (config.getNodePositionPolicy() == KahinaTreeViewOptions.CENTERED_NODES)
@@ -665,8 +666,8 @@ public class KahinaTreeView extends KahinaAbstractTreeView
     {
         int width = (int) fm.getStringBounds(model.getNodeCaption(nodeID), g).getWidth() + 1;
         WidthVector widthVector = new WidthVector();
-        widthVector.start.add((width + horizontalDistance) / 2);
-        widthVector.end.add((width + horizontalDistance) / 2);
+        widthVector.start.set(0, (width + horizontalDistance) / 2);
+        widthVector.end.set(0, (width + horizontalDistance) / 2);
         return widthVector;
     }
 
