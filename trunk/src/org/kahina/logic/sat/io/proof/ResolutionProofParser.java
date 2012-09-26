@@ -62,18 +62,22 @@ public class ResolutionProofParser
     public static ResolutionProofTree createResolutionProofTree(String fileName, KahinaSatInstance sat)
     {
         ResolutionProofDAG proof = createResolutionProofDAG(fileName, sat);
-        //find refutation node (we can find it by descending from any root via any path)
+        //this method does not work because the proof output includes irrelevant learned clauses!
+        /*//find refutation node (we can find it by descending from any root via any path)
         int arbitraryRootID = proof.getRoots().iterator().next();
         int startID = arbitraryRootID;
+        System.err.print("finding refutation node, startID: " + startID);
         List<Integer> outgoingEdges = proof.getOutgoingEdges(startID);
+        System.err.println(", outgoing edges: " + outgoingEdges);
         while (outgoingEdges.size() > 0)
         {
             startID = proof.getEndNode(outgoingEdges.get(0));
+            System.err.print("  startID: " + startID + " via edge " + outgoingEdges.get(0));
             outgoingEdges = proof.getOutgoingEdges(startID);
-        }
-        //TODO: convert the symbol table accordingly
+            System.err.println(", outgoing edges: " + outgoingEdges);
+        }*/
         ResolutionProofTree tree = new ResolutionProofTree(sat);
-        ResolutionProofDAGtoTreeConversion.fillTreeWithBackwardExpansionFromNode(proof, startID, tree);
+        ResolutionProofDAGtoTreeConversion.fillTreeWithBackwardExpansionFromNode(proof, proof.getRefutationNode(), tree);
         return tree;
     }
 }

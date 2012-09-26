@@ -11,16 +11,28 @@ public class ResolutionProofDAG extends KahinaMemDAG
 {
     KahinaSatInstance satInstance;
     Map<Integer,List<Integer>> clauses;
+    int refutationNode;
     
     public ResolutionProofDAG(KahinaSatInstance satInstance)
     {
         this.satInstance = satInstance;
         this.clauses = new TreeMap<Integer,List<Integer>>();
+        this.refutationNode = -1;
+    }
+    
+    public int getRefutationNode()
+    {
+        return refutationNode;
     }
     
     public void setNodeClause(int id, List<Integer> clause)
     {
         clauses.put(id, clause);
+        //detect a refutation clause
+        if (clause.size() == 0)
+        {
+            refutationNode = id;
+        }
     }
     
     public List<Integer> getClauseForNode(int nodeID)

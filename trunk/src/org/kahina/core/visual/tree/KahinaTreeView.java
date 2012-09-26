@@ -352,7 +352,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			if (VERBOSE)
 				System.err.println("maxNodeWidth = " + maxNodeWidth);
 			WidthVector rootWidthVector = subtreeWidths.get(model.getRootID(treeLayer));
-			System.err.println("rootWidthVector = " + rootWidthVector.toString());
+			//System.err.println("rootWidthVector = " + rootWidthVector.toString());
 			int rootLeftDistance = rootWidthVector.maximumLeftDistance();
             int rootRightDistance = rootWidthVector.maximumRightDistance();
             // adapt total tree width to maximum level width (i.e. maximum x position of a node in any level)
