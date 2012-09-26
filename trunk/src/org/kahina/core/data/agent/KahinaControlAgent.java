@@ -18,7 +18,8 @@ import org.kahina.core.data.agent.patterns.TreePattern;
 import org.kahina.core.data.agent.patterns.TreePatternNode;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.color.ColorUtil;
-import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgent;
+import org.kahina.lp.LogicProgrammingInstance;
+import org.kahina.lp.data.agent.LogicProgrammingControlAgent;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -206,9 +207,9 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
      * @param controlAgentNode an XML DOM element with name "controlPoint" as produced when parsing the result of <code>exportXML</code>
      * @return a new control point object corresponding to the XML representation contained in the DOM element
      */
-    public static KahinaControlAgent importXML(Element controlAgentNode, KahinaController control)
+    public static KahinaControlAgent importXML(Element controlAgentNode, LogicProgrammingInstance<?,?,?,?> instance)
     {
-        KahinaControlAgent newControlPoint = new KahinaControlAgent(control);
+        KahinaControlAgent newControlPoint = new KahinaControlAgent(instance.getControl());
         newControlPoint.setName(controlAgentNode.getAttribute("name"));
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlAgentNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlAgentNode.getAttribute("active"));
@@ -225,7 +226,8 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
             }
         }
         KahinaSimpleProperty property = KahinaSimpleProperty.importXML(controlAgentNode);
-        KahinaStepPropertySensor stepPropertySensor = new KahinaStepPropertySensor(newControlPoint, property);
+        KahinaSimplePropertySensor stepPropertySensor = new KahinaSimplePropertySensor(newControlPoint, instance.getState().getStepTree());
+        stepPropertySensor.setPattern(property);
         //TODO: define some useful default sensor here, with focus on making the architecture more easily extendable
         newControlPoint.setSensor(stepPropertySensor);
         return newControlPoint;

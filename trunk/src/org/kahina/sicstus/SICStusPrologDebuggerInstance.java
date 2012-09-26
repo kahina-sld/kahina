@@ -94,7 +94,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project, control);
+            project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project, control, state.getStepTree());
         }
         catch (FileNotFoundException e)
         {

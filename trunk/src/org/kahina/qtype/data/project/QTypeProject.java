@@ -24,9 +24,9 @@ public class QTypeProject extends LogicProgrammingProject
         super("qtype", name, stepTree, control);
     }
     
-    public static QTypeProject importXML(Element topEl, QTypeProject project, KahinaController control)
+    public static QTypeProject importXML(Element topEl, QTypeProject project, KahinaController control, KahinaTree stepTree)
     {
-        LogicProgrammingProject.importXML(topEl, project, control);
+        LogicProgrammingProject.importXML(topEl, project, control, stepTree);
         return project;
     }
 }
