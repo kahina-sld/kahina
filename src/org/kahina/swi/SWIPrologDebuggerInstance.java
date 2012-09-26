@@ -95,7 +95,7 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project, control);
+            project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project, control, state.getStepTree());
         }
         catch (FileNotFoundException e)
         {

@@ -26,7 +26,7 @@ import org.kahina.lp.control.LogicProgrammingCreepActuator;
 import org.kahina.lp.control.LogicProgrammingFailActuator;
 import org.kahina.lp.control.LogicProgrammingSkipActuator;
 import org.kahina.lp.control.NewControlAgentEvent;
-import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgentProfile;
+import org.kahina.lp.data.agent.LogicProgrammingControlAgentProfile;
 import org.kahina.lp.data.text.LogicProgrammingLineReference;
 import org.kahina.lp.profiler.LogicProgrammingProfile;
 

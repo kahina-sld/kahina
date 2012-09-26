@@ -62,6 +62,7 @@ public class KahinaSimplePropertySensor extends KahinaStepPropertySensor
         this.stepTree = stepTree;
     }
 
+    @Override
     public boolean detectPattern(int stepID)
     {
         return pattern.matches(stepTree, stepID);

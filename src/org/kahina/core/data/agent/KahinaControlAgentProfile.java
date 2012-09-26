@@ -8,6 +8,7 @@ import java.util.List;
 import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.io.util.XMLUtil;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.control.LogicProgrammingBreakActuator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -89,7 +90,7 @@ public class KahinaControlAgentProfile extends KahinaObject
         return el;
     }
     
-    public static KahinaControlAgentProfile importXML(Element controlAgentElement, KahinaControlActuator actuator)
+    public static KahinaControlAgentProfile importXML(Element controlAgentElement, KahinaControlActuator actuator, LogicProgrammingInstance<?,?,?,?> kahina)
     {
         //default actuator: LogicProgrammingBreakActuator; can be changed later
         KahinaControlAgentProfile profile = new KahinaControlAgentProfile(actuator);
@@ -97,7 +98,7 @@ public class KahinaControlAgentProfile extends KahinaObject
         for (int i = 0; i < controlAgentNodes.getLength(); i++)
         {
             Element controlPointNode = (Element) controlAgentNodes.item(i);
-            KahinaControlAgent controlAgent = KahinaControlAgent.importXML(controlPointNode, actuator.getControl());
+            KahinaControlAgent controlAgent = KahinaControlAgent.importXML(controlPointNode, kahina);
             profile.addControlAgent(controlAgent);
         }
         return profile;

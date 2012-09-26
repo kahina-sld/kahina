@@ -18,8 +18,8 @@ import org.kahina.core.data.agent.KahinaControlAgentProfile;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.LogicProgrammingState;
-import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgent;
-import org.kahina.lp.data.breakpoint.LogicProgrammingControlAgentProfile;
+import org.kahina.lp.data.agent.LogicProgrammingControlAgent;
+import org.kahina.lp.data.agent.LogicProgrammingControlAgentProfile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -92,7 +92,7 @@ public class KahinaControlAgentProfileListener implements ActionListener, ListSe
             {
                 Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
                 KahinaControlActuator actuator = profilePanel.view.getModel().getActuator();
-                profilePanel.view.display(LogicProgrammingControlAgentProfile.importXML(dom.getDocumentElement(), actuator));
+                profilePanel.view.display(LogicProgrammingControlAgentProfile.importXML(dom.getDocumentElement(), actuator, stepTree));
                 profilePanel.updateDisplay();
             }
             catch (FileNotFoundException ex)

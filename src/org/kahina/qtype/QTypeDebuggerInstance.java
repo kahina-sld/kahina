@@ -104,7 +104,7 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = QTypeProject.importXML(dom.getDocumentElement(), project, control);
+            project = QTypeProject.importXML(dom.getDocumentElement(), project, control, state.getStepTree());
         }
         catch (FileNotFoundException e)
         {
