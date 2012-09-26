@@ -41,8 +41,9 @@ public class ResolutionProofTreeViewer
         
         final KahinaTreeView v = new KahinaTreeView(kahina);
         v.setTitle("Resolution Proof");
-        v.getConfig().setVerticalDistance(20);
-        v.getConfig().setHorizontalDistance(15);
+        v.getConfig().setVerticalDistance(5);
+        v.getConfig().setHorizontalDistance(5);
+        v.getConfig().setNodeSize(5);
         v.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
         v.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
         v.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);
