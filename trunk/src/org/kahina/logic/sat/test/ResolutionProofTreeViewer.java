@@ -41,12 +41,13 @@ public class ResolutionProofTreeViewer
         
         final KahinaTreeView v = new KahinaTreeView(kahina);
         v.setTitle("Resolution Proof");
-        v.getConfig().setVerticalDistance(5);
+        v.getConfig().setVerticalDistance(10);
         v.getConfig().setHorizontalDistance(5);
-        v.getConfig().setNodeSize(5);
+        v.getConfig().setNodeSize(8);
         v.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
         v.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
         v.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);
+        v.getConfig().setCollapsePolicy(KahinaTreeViewOptions.COLLAPSE_PRIMARY);
         v.display(proof);
         v.setStatusColorEncoding(0,new Color(255,255,255));
         v.setStatusColorEncoding(1,new Color(255,0,0));

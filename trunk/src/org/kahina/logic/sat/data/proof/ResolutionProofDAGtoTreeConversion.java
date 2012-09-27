@@ -26,6 +26,7 @@ public class ResolutionProofDAGtoTreeConversion
             {
                 int endID = dag.getEndNode(edgeID);
                 int childID = tree.addNode(dag.getNodeCaption(endID), "", dag.getNodeStatus(endID));
+                tree.collapse(childID);
                 clause = dag.getClauseForNode(endID);
                 if (clause != null) tree.setNodeClause(childID, clause);
                 treeToTagID.put(childID, endID);
@@ -54,6 +55,7 @@ public class ResolutionProofDAGtoTreeConversion
             {
                 int endID = dag.getStartNode(edgeID);
                 int childID = tree.addNode(dag.getNodeCaption(endID), "", dag.getNodeStatus(endID));
+                tree.collapse(childID);
                 //System.err.print(endID + "->" + childID + " ");
                 if (!inspectedDagID.contains(endID)) expansionAgenda.add(childID);
                 clause = dag.getClauseForNode(endID);
