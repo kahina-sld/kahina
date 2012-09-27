@@ -391,7 +391,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					if (lastSubtreeWidth != null)
 					{
 					    int distance = WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth);
-    					xOffset += distance; // * horizontalDistance * 3;
+    					xOffset += distance + subtreeWidth.getStart(0); // * horizontalDistance * 3;
     					// switch to children of next parent node --> jump in x offset
     					int newParent = getVisibleParent(node);
     					if (VERBOSE)
@@ -417,7 +417,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					    parent = getVisibleParent(node); 
 					    lastSubtreeWidth = subtreeWidth.copy();
 					}
-					nodeX.put(node, xOffset + horizontalDistance);
+					nodeX.put(node, xOffset);
 					nodeY.put(node, verticalDistance * 3 * i + 20);
 					if (VERBOSE)
 						System.err.println(" X:" + nodeX.get(node) + " Y:" + nodeY.get(node));
@@ -444,7 +444,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			nodeLevels.get(nodeLevels.size() - 1).addAll(terminalLayer);
 			for (int i : terminalLayer)
 			{
-				nodeX.put(i, nodeX.get(model.getParent(i, treeLayer)));
+				nodeX.put(i, nodeX.get(model.getParent(i, treeLayer)) + subtreeWidths.get(i).getStart(0));
 				nodeY.put(i, (nodeLevels.size() + 1) * verticalDistance * 3 + 10);
 			}
 			// move nodes around according to secondary tree structure and policy
@@ -473,7 +473,6 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 							} 
 							else
 							{
-
 								nodeX.put(nodeID, nodeX.get(nodeID) + depth * fontSize);
 							}
 							if (VERBOSE)
