@@ -32,8 +32,8 @@ public class KahinaBridge implements KahinaListener
             System.err.println("         Bridge will not be functional! NullPointerExceptions might result!");
         }
     	this.kahina = kahina;
-        kahina.getControl().registerListener(KahinaEventTypes.CONTROL, this);
-        kahina.getControl().registerListener(KahinaEventTypes.TREE_MATCH, this);
+        kahina.registerSessionListener(KahinaEventTypes.CONTROL, this);
+        kahina.registerSessionListener(KahinaEventTypes.TREE_MATCH, this);
     }
     
     protected KahinaStep generateStep()

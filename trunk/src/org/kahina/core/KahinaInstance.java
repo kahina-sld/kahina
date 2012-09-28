@@ -83,19 +83,19 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	/**
 	 * GUI and views listen to this controller. It never changes.
 	 */
-	protected final KahinaController guiControl;
+	protected final KahinaController instanceControl;
 	
 	/**
 	 * Everything else (e.g. bridges) listens to this controller. It changes with every session.
 	 */
-	protected KahinaController control;
+	protected KahinaController sessionControl;
 
 	private boolean guiStarted = false;
 
 	public KahinaInstance()
 	{
-		guiControl = new KahinaController();
-        guiControl.registerListener(KahinaEventTypes.PERSPECTIVE, this);
+		instanceControl = new KahinaController();
+        instanceControl.registerListener(KahinaEventTypes.PERSPECTIVE, this);
         //if (!standaloneMode) //TODO: think about standalone mode
         {
             recentPerspectives = new LinkedList<KahinaPerspective>();
@@ -206,14 +206,14 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 
 	protected void initializeNewSession(boolean withBridge)
 	{
-        if (control == null)
+        if (sessionControl == null)
         {
-    		control = new KahinaController();
-    		control.registerListener(KahinaEventTypes.UPDATE, this);
-    		control.registerListener(KahinaEventTypes.SESSION, this);
-            control.registerListener(KahinaEventTypes.PROJECT, this);
-    		control.registerListener(KahinaEventTypes.SYSTEM, this);
-            control.registerListener("new agent", this);
+    		sessionControl = new KahinaController();
+    		sessionControl.registerListener(KahinaEventTypes.UPDATE, this);
+    		sessionControl.registerListener(KahinaEventTypes.SESSION, this);
+            sessionControl.registerListener(KahinaEventTypes.PROJECT, this);
+    		sessionControl.registerListener(KahinaEventTypes.SYSTEM, this);
+            sessionControl.registerListener("new agent", this);
         }
 		if (state != null)
 		{
@@ -239,15 +239,28 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	// registerSessionListener() and registerInstanceListener() with which
 	// listeners can be registered according to their lifespan (session lifespan
 	// -> controller, instance lifespan -> GUI controller).
+	
+	//TODO: make this obsolete
 	public KahinaController getControl()
 	{
-		return control;
+		return sessionControl;
 	}
 	
+	//TODO: make this obsolete
 	public KahinaController getGuiControl()
 	{
-		return guiControl;
+		return instanceControl;
 	}
+	
+	public void registerSessionListener(String type, KahinaListener listener)
+	{
+	    sessionControl.registerListener(type, listener);
+	}
+	
+    public void registerInstanceListener(String type, KahinaListener listener)
+    {
+        instanceControl.registerListener(type, listener);
+    }
 
 	protected abstract void createTreeBehavior();
 
@@ -299,8 +312,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     	{
     		System.err.println("KahinaInstance.dispatchEvent(" + e + ")");
     	}
-        control.processEvent(e);
-    	guiControl.processEvent(e);
+        sessionControl.processEvent(e);
+    	instanceControl.processEvent(e);
     }
     
     public void dispatchBackgroundEvent(KahinaEvent e)
@@ -309,7 +322,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     	{
     		System.err.println("KahinaInstance.dispatchBackgroundEvent(" + e + ")");
     	}
-    	guiControl.processEvent(e);
+    	instanceControl.processEvent(e);
     }
     
     public void dispatchGUIEvent(KahinaEvent e)
@@ -318,7 +331,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     	{
     		System.err.println("KahinaInstance.dispatchGUIEvent(" + e + ")");
     	}
-    	guiControl.processEvent(e);
+    	instanceControl.processEvent(e);
     }
 
 	//@Override
@@ -355,7 +368,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 				steps.close();
 				steps = null;
 			}
-			control = null;
+			sessionControl = null;
 		}
 	}
 

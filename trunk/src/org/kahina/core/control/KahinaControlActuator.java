@@ -1,14 +1,15 @@
 package org.kahina.core.control;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.agent.KahinaControlAgent;
 
 public class KahinaControlActuator
 {
-    protected KahinaController control;
+    protected KahinaInstance<?,?,?,?> kahina;
     
-    protected KahinaControlActuator(KahinaController control)
+    protected KahinaControlActuator(KahinaInstance<?,?,?,?> kahina)
     {
-        this.control = control;
+        this.kahina = kahina;
     }
     
     /**
@@ -20,8 +21,8 @@ public class KahinaControlActuator
         
     }
     
-    public KahinaController getControl()
+    public KahinaInstance<?,?,?,?> getKahina()
     {
-        return control;
+        return kahina;
     }
 }

@@ -15,10 +15,10 @@ import org.kahina.lp.control.ControlAgentType;
 
 public class KahinaJEditActionListener implements ActionListener
 {
-    LogicProgrammingInstance instance;
+    LogicProgrammingInstance<?,?,?,?> instance;
     KahinaJEditPanel panel;
     
-    public KahinaJEditActionListener(LogicProgrammingInstance instance, KahinaJEditPanel panel)
+    public KahinaJEditActionListener(LogicProgrammingInstance<?,?,?,?> instance, KahinaJEditPanel panel)
     {
         this.instance = instance;
         this.panel = panel;
@@ -27,7 +27,7 @@ public class KahinaJEditActionListener implements ActionListener
     public void actionPerformed(ActionEvent action)
     {
         String command = action.getActionCommand();
-        KahinaControlAgent controlAgent = new KahinaControlAgent(instance.getControl());
+        KahinaControlAgent controlAgent = new KahinaControlAgent(instance);
         int line = panel.getTextArea().getLastPopupLine();
         File file = panel.getFile();
         controlAgent.setName(file.getName() + ":" + line);

@@ -94,7 +94,7 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
      @Override
     protected QTypeProject createNewProject()
     {
-        return new QTypeProject("no name", state.getStepTree(), control);
+        return new QTypeProject("no name", state.getStepTree(), this);
     }
         
     public QTypeProject loadProject(File projectFile)
@@ -104,7 +104,7 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = QTypeProject.importXML(dom.getDocumentElement(), project, control, state.getStepTree());
+            project = QTypeProject.importXML(dom.getDocumentElement(), project, this, state.getStepTree());
         }
         catch (FileNotFoundException e)
         {

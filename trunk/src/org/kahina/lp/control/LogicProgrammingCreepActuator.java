@@ -4,16 +4,17 @@ import org.kahina.core.control.KahinaControlActuator;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.agent.KahinaControlAgent;
+import org.kahina.lp.LogicProgrammingInstance;
 
 public class LogicProgrammingCreepActuator extends KahinaControlActuator
 {
-    public LogicProgrammingCreepActuator(KahinaController control)
+    public LogicProgrammingCreepActuator(LogicProgrammingInstance<?,?,?,?> kahina)
     {
-        super(control);
+        super(kahina);
     }
     
     public void act(KahinaControlAgent agent)
     {
-        control.processEvent(new LogicProgrammingAgentMatchEvent(agent, ControlAgentType.CREEP_AGENT));
+        kahina.dispatchEvent(new LogicProgrammingAgentMatchEvent(agent, ControlAgentType.CREEP_AGENT));
     } 
 }
