@@ -8,7 +8,7 @@ import org.kahina.core.data.tree.KahinaTree;
 
 public class KahinaTreeOutput
 {
-    public static void toIndentedText(KahinaTree tree, String fileName)
+    public static void toIndentedText(KahinaTree tree, String fileName) throws IOException
     {
         try
         {
@@ -20,6 +20,7 @@ public class KahinaTreeOutput
         {
             System.err.println("ERROR: Could not write to tree output file: " + fileName);
             e.printStackTrace();
+            throw e;
         }
     }
     

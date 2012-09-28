@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.core.io.tree.KahinaTreeOutput;
 
 public class KahinaTreeViewListener extends MouseAdapter implements ActionListener
 {
@@ -298,6 +299,22 @@ public class KahinaTreeViewListener extends MouseAdapter implements ActionListen
             try
             {
                 ImageIO.write(view.image,"png",outputFile);
+            }
+            catch (IOException ioe)
+            {
+                JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+        else if (command.equals("Save as Indented Text File"))
+        {
+            JFileChooser chooser = new JFileChooser(new File("."));
+            //FileNameExtensionFilter filter = new FileNameExtensionFilter("PNG Images", "png");
+            //chooser.setFileFilter(filter);
+            chooser.showSaveDialog(view);
+            File outputFile = chooser.getSelectedFile();
+            try
+            {
+                KahinaTreeOutput.toIndentedText(view.view.getContentfulTreeModel(), outputFile.getAbsolutePath());
             }
             catch (IOException ioe)
             {

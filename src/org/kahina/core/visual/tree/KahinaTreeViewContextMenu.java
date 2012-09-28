@@ -439,6 +439,10 @@ public class KahinaTreeViewContextMenu extends JPopupMenu
         JMenuItem exportPNGItem = new JMenuItem("Save as PNG");
         exportPNGItem.addActionListener(l);
         add(exportPNGItem);
+        
+        JMenuItem indentedTextItem = new JMenuItem("Save as Indented Text File");
+        indentedTextItem.addActionListener(l);
+        add(indentedTextItem);
     }
     
     public static JPopupMenu getMenu(ActionListener l, KahinaTreeView v)
