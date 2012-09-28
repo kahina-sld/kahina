@@ -45,8 +45,6 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 {
 	private static final long serialVersionUID = -2695961972605190759L;
 
-	KahinaController control;
-
 	JButton newBreakpointButton;
 	JButton activateBreakpointButton;
 	JButton deactivateBreakpointButton;
@@ -64,15 +62,14 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 	// org.kahina.core.breakpoint.KahinaBreakpointType
 	int breakpointType;
 	
-	private final KahinaInstance<?, ?, ?, ?> kahina;
+	protected final KahinaInstance<?, ?, ?, ?> kahina;
 
 	public BreakpointEditorWindow(KahinaInstance<?, ?, ?, ?> kahina, int breakpointType)
 	{
 		this.breakpointType = breakpointType;
 
 		this.kahina = kahina;
-        this.control = kahina.getControl();
-		control.registerListener("breakpoint_editor", this);
+		kahina.registerSessionListener("breakpoint_editor", this);
 		this.setTitle("Kahina Breakpoint Editor");
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -89,7 +86,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 		add(mainPanel);
 
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(new BreakpointEditorFileMenu(control));
+		menuBar.add(new BreakpointEditorFileMenu(kahina.getGuiControl()));
 		this.setJMenuBar(menuBar);
 
 		adaptActivationStatus();
@@ -157,7 +154,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 
 	protected JPanel buildRightPanel()
 	{
-		editPanel = new KahinaBreakpointEditorPanel(control);
+		editPanel = new KahinaBreakpointEditorPanel(kahina.getGuiControl());
 		return editPanel;
 	}
 
@@ -166,16 +163,19 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 		String s = e.getActionCommand();
 		if (s.equals("newBreakpoint"))
 		{
-			control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.NEW_BREAKPOINT));
-		} else if (s.equals("activateBreakpoint"))
+			kahina.dispatchEvent(new BreakpointEditorEvent(BreakpointEditorEvent.NEW_BREAKPOINT));
+		} 
+		else if (s.equals("activateBreakpoint"))
 		{
-			control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.ACTIVATE_BREAKPOINT, curID));
-		} else if (s.equals("deactivateBreakpoint"))
+		    kahina.dispatchEvent(new BreakpointEditorEvent(BreakpointEditorEvent.ACTIVATE_BREAKPOINT, curID));
+		} 
+		else if (s.equals("deactivateBreakpoint"))
 		{
-			control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.DEACTIVATE_BREAKPOINT, curID));
-		} else if (s.equals("removeBreakpoint"))
+		    kahina.dispatchEvent(new BreakpointEditorEvent(BreakpointEditorEvent.DEACTIVATE_BREAKPOINT, curID));
+		} 
+		else if (s.equals("removeBreakpoint"))
 		{
-			control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.REMOVE_BREAKPOINT, curID));
+		    kahina.dispatchEvent(new BreakpointEditorEvent(BreakpointEditorEvent.REMOVE_BREAKPOINT, curID));
 		}
 		adaptActivationStatus();
 	}
@@ -238,7 +238,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 		case BreakpointEditorEvent.APPLY_QUIT:
 		{
 			compileCurrentlyOpenedBreakpoint();
-			control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.APPLY_BREAKPOINTS, breakpointType));
+			kahina.dispatchEvent(new KahinaSystemEvent(KahinaSystemEvent.APPLY_BREAKPOINTS, breakpointType));
 			this.setVisible(false);
 			this.dispose();
 			break;

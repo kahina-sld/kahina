@@ -30,7 +30,7 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
     static int number = 0;
     
     //
-    protected KahinaController control;
+    protected KahinaInstance<?,?,?,?> kahina;
     
     //elementary properties
     protected String name;
@@ -51,20 +51,20 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
      * <code>pattern</code> - the empty pattern 
      * @param a backpointer to the relevant KahinaController
      */
-    public KahinaControlAgent(KahinaController control)
+    public KahinaControlAgent(KahinaInstance<?,?,?,?> kahina)
     {
-        this.control = control;
+        this.kahina = kahina;
         number++;
         setName("Control point " + number);
         signalColor = ColorUtil.randomColor();
         active = true;
-        control.registerListener(KahinaEventTypes.STEP_UPDATE, this);
+        kahina.registerSessionListener(KahinaEventTypes.STEP_UPDATE, this);
         sensor = new KahinaStepPropertySensor(this, new KahinaSimpleProperty());
     }
     
     public KahinaControlAgent copy()
     {
-        KahinaControlAgent copy = new KahinaControlAgent(control);
+        KahinaControlAgent copy = new KahinaControlAgent(kahina);
         copy.setName(new String(name));
         copy.active = active;
         copy.setSignalColor(new Color(signalColor.getRGB()));
@@ -73,9 +73,9 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
         return copy;
     }
     
-    public KahinaController getControl()
+    public KahinaInstance<?,?,?,?> getKahina()
     {
-        return control;
+        return kahina;
     }
     
     public KahinaControlActuator getActuator()
@@ -209,7 +209,7 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
      */
     public static KahinaControlAgent importXML(Element controlAgentNode, LogicProgrammingInstance<?,?,?,?> instance)
     {
-        KahinaControlAgent newControlPoint = new KahinaControlAgent(instance.getControl());
+        KahinaControlAgent newControlPoint = new KahinaControlAgent(instance);
         newControlPoint.setName(controlAgentNode.getAttribute("name"));
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlAgentNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlAgentNode.getAttribute("active"));

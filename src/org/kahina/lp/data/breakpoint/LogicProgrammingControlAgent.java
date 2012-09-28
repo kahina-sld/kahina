@@ -1,5 +1,6 @@
 package org.kahina.lp.data.breakpoint;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.control.KahinaStepPropertySensor;
@@ -16,9 +17,9 @@ public class LogicProgrammingControlAgent extends KahinaControlAgent
     protected KahinaSimplePropertySensor sensor;
     protected KahinaTree stepTree;
     
-    public LogicProgrammingControlAgent(KahinaController control, KahinaTree stepTree)
+    public LogicProgrammingControlAgent(KahinaInstance<?,?,?,?> kahina, KahinaTree stepTree)
     {
-        super(control);
+        super(kahina);
         this.stepTree = stepTree;
         setSensor(new KahinaSimplePropertySensor(this, stepTree));
     }
@@ -49,9 +50,9 @@ public class LogicProgrammingControlAgent extends KahinaControlAgent
      * @param controlPointNode an XML DOM element with name "controlPoint" as produced when parsing the result of <code>exportXML</code>
      * @return a new logic programming control point object corresponding to the XML representation contained in the DOM element
      */
-    public static LogicProgrammingControlAgent importXML(Element controlPointNode, KahinaController control, KahinaTree stepTree)
+    public static LogicProgrammingControlAgent importXML(Element controlPointNode, KahinaInstance<?,?,?,?> kahina, KahinaTree stepTree)
     {
-        LogicProgrammingControlAgent newControlPoint = new LogicProgrammingControlAgent(control, stepTree);
+        LogicProgrammingControlAgent newControlPoint = new LogicProgrammingControlAgent(kahina, stepTree);
         newControlPoint.setName(controlPointNode.getAttribute("name"));
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlPointNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlPointNode.getAttribute("active"));

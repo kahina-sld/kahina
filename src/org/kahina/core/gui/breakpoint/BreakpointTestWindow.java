@@ -48,7 +48,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         this.setTitle("Kahina Breakpoint Test Environment");
         this.setSize(800,600);
         
-        kahina.getGuiControl().registerListener("treeMatch", this);
+        kahina.registerInstanceListener("treeMatch", this);
         
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
@@ -61,7 +61,7 @@ public class BreakpointTestWindow extends JFrame implements ActionListener, Kahi
         for (TreeAutomaton breakpoint : breakpoints)
         {
             breakpoint.setTree(model);
-            breakpoint.setController(kahina.getGuiControl());
+            breakpoint.setController(kahina.getControl());
         }
         
         treeGenPanel = new TreeGenerationPanel(this);

@@ -65,7 +65,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 	@Override
 	protected LogicProgrammingState createState()
 	{
-		return new LogicProgrammingState(control);
+		return new LogicProgrammingState(sessionControl);
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
     @Override
     protected LogicProgrammingProject createNewProject()
     {
-        return new LogicProgrammingProject("sicstus", "no name", state.getStepTree(), control);
+        return new LogicProgrammingProject("sicstus", "no name", state.getStepTree(), this);
     }
 
     public LogicProgrammingProject loadProject(File projectFile)
@@ -94,7 +94,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project, control, state.getStepTree());
+            project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project, this, state.getStepTree());
         }
         catch (FileNotFoundException e)
         {

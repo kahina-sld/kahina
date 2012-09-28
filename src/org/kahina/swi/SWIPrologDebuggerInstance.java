@@ -66,7 +66,7 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
 	@Override
 	protected LogicProgrammingState createState()
 	{
-		return new LogicProgrammingState(control);
+		return new LogicProgrammingState(sessionControl);
 	}
 	
 	@Override
@@ -85,7 +85,7 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
     @Override
     protected LogicProgrammingProject createNewProject()
     {
-        return new LogicProgrammingProject("swi-prolog", "no name", state.getStepTree(), control);
+        return new LogicProgrammingProject("swi-prolog", "no name", state.getStepTree(), this);
     }
     
     public LogicProgrammingProject loadProject(File projectFile)
@@ -95,7 +95,7 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
         try
         {
             dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project, control, state.getStepTree());
+            project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project, this, state.getStepTree());
         }
         catch (FileNotFoundException e)
         {

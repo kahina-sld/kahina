@@ -11,13 +11,13 @@ import org.kahina.lp.bridge.LogicProgrammingBridge;
 
 public class LogicProgrammingBreakActuator extends KahinaControlActuator
 {
-    public LogicProgrammingBreakActuator(KahinaController control)
+    public LogicProgrammingBreakActuator(LogicProgrammingInstance<?,?,?,?> kahina)
     {
-        super(control);
+        super(kahina);
     }
     
     public void act(KahinaControlAgent agent)
     {
-        control.processEvent(new LogicProgrammingAgentMatchEvent(agent, ControlAgentType.BREAK_AGENT));
+        kahina.dispatchEvent(new LogicProgrammingAgentMatchEvent(agent, ControlAgentType.BREAK_AGENT));
     }
 }

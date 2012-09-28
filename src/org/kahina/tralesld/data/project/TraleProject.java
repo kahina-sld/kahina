@@ -10,6 +10,7 @@ import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.parse.data.project.TestSet;
 import org.kahina.parse.data.project.TestSetExtension;
+import org.kahina.tralesld.TraleSLDInstance;
 import org.w3c.dom.Element;
 
 public class TraleProject extends LogicProgrammingProject implements TestSetExtension
@@ -18,9 +19,9 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
 	private List<File> theoryFiles;
     private TestSet testSet;
     
-    public TraleProject(String name, KahinaTree stepTree, KahinaController control)
+    public TraleProject(String name, KahinaTree stepTree, TraleSLDInstance kahina)
     {
-        super("trale", name, stepTree, control);
+        super("trale", name, stepTree, kahina);
         theoryFiles = new LinkedList<File>();
         testSet = new TestSet();
     }

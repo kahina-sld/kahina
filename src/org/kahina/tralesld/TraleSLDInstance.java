@@ -127,9 +127,9 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			super.startNewSession();
 			profiler = new TraleSLDProfiler(this, state.getFullProfile());
-			control.registerListener("edge select", this);
-			control.registerListener("update", this);
-			control.registerListener(KahinaEventTypes.CONTROL, this);
+			sessionControl.registerListener("edge select", this);
+			sessionControl.registerListener("update", this);
+			sessionControl.registerListener(KahinaEventTypes.CONTROL, this);
 			return bridge;
 		}
 		catch (NullPointerException e)
@@ -191,7 +191,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	@Override
 	protected TraleSLDState createState()
 	{
-		return new TraleSLDState(control, withAuxiliaryInstance);
+		return new TraleSLDState(sessionControl, withAuxiliaryInstance);
 	}
 
 	@Override
@@ -360,7 +360,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
     @Override
     protected TraleProject createNewProject()
     {
-        return new TraleProject("no name", state.getStepTree(), control);
+        return new TraleProject("no name", state.getStepTree(), this);
     }
 
     public TraleProject loadProject(File projectFile)

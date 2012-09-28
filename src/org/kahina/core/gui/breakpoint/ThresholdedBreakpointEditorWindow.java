@@ -26,7 +26,7 @@ public class ThresholdedBreakpointEditorWindow extends BreakpointEditorWindow
 	@Override
 	protected JPanel buildRightPanel()
 	{
-		thresholdedEditPanel = new ThresholdedBreakpointEditPanel(control);
+		thresholdedEditPanel = new ThresholdedBreakpointEditPanel(kahina.getGuiControl());
 		editPanel = thresholdedEditPanel;
 		return editPanel;
 	}

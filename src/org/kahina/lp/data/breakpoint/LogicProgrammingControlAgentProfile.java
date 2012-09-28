@@ -31,7 +31,7 @@ public class LogicProgrammingControlAgentProfile extends KahinaControlAgentProfi
         for (int i = 0; i < controlAgentNodes.getLength(); i++)
         {
             Element controlAgentNode = (Element) controlAgentNodes.item(i);
-            LogicProgrammingControlAgent controlAgent = LogicProgrammingControlAgent.importXML(controlAgentNode, actuator.getControl(), stepTree);
+            LogicProgrammingControlAgent controlAgent = LogicProgrammingControlAgent.importXML(controlAgentNode, actuator.getKahina(), stepTree);
             profile.addControlAgent(controlAgent);
         }
         return profile;

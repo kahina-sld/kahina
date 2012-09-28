@@ -21,7 +21,7 @@ public class KahinaBreakpointProfileEditor extends KahinaView<KahinaBreakpointPr
     public JComponent makePanel()
     {
         KahinaBreakpointProfileEditorPanel panel = new KahinaBreakpointProfileEditorPanel(kahina);
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
     }
