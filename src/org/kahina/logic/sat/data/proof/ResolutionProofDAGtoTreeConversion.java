@@ -47,6 +47,7 @@ public class ResolutionProofDAGtoTreeConversion
         if (clause != null) tree.setNodeClause(rootID, clause);
         List<Integer> expansionAgenda = new LinkedList<Integer>();
         expansionAgenda.add(rootID);
+        inspectedDagID.add(rootID);
         while (expansionAgenda.size() > 0)
         {
             int currentID = expansionAgenda.remove(0);
@@ -57,7 +58,11 @@ public class ResolutionProofDAGtoTreeConversion
                 int childID = tree.addNode(dag.getNodeCaption(endID), "", dag.getNodeStatus(endID));
                 tree.collapse(childID);
                 //System.err.print(endID + "->" + childID + " ");
-                if (!inspectedDagID.contains(endID)) expansionAgenda.add(childID);
+                if (!inspectedDagID.contains(endID))
+                {
+                    expansionAgenda.add(childID);
+                    inspectedDagID.add(endID);
+                }
                 clause = dag.getClauseForNode(endID);
                 if (clause != null) 
                 {
@@ -66,7 +71,6 @@ public class ResolutionProofDAGtoTreeConversion
                 treeToDagID.put(childID, endID);
                 tree.addChild(currentID, childID);
             }
-            inspectedDagID.add(currentID);
             //System.err.println();
         }    
     }
