@@ -57,8 +57,28 @@
   </kahina:perspective>
   <kahina:controlAgentProfiles>
     <kahina:controlAgentProfile kahina:type="break"/>
-    <kahina:controlAgentProfile kahina:type="creep"/>
-    <kahina:controlAgentProfile kahina:type="complete"/>
+    <kahina:controlAgentProfile kahina:type="creep">
+      <kahina:controlAgent active="true" color="#0000CC" name="creep db_rule">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true">db_rule</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+            <kahina:controlAgent active="true" color="#0000CC" name="creep db_word">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true">db_word</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+    </kahina:controlAgentProfile>
+    <kahina:controlAgentProfile kahina:type="complete">
+      <kahina:controlAgent active="true" color="#00DD00" name="complete lexentry">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true">lexentry_existence</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+    </kahina:controlAgentProfile>
     <kahina:controlAgentProfile kahina:type="skip">
       <kahina:controlAgent active="true" color="#D5EB3E" name="skip mgu">
         <kahina:pattern rel="contains" type="caption">
