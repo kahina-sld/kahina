@@ -39,7 +39,7 @@ public class KahinaDefaultInstance extends KahinaInstance<KahinaState, KahinaGUI
 	@Override
 	protected KahinaState createState() 
 	{
-		return new KahinaState(sessionControl);
+		return new KahinaState(this);
 	}
 
 	@Override

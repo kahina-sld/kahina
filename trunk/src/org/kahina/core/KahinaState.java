@@ -51,16 +51,16 @@ public class KahinaState implements Serializable, KahinaListener
     
     private int nextStepID = 1;
     
-    protected KahinaController control;
+    protected KahinaInstance<?,?,?,?> kahina;
     
     private static ObjectMagazine<KahinaStep> steps;
     
-    public KahinaState(KahinaController control)
+    public KahinaState(KahinaInstance<?,?,?,?> kahina)
     {
 		steps = ObjectMagazine.create();
         initialize();
-        this.control = control;
-        control.registerListener(KahinaEventTypes.SELECTION, this);
+        this.kahina = kahina;
+        kahina.registerInstanceListener(KahinaEventTypes.SELECTION, this);
     }
     
 	public void initialize() 
@@ -154,7 +154,7 @@ public class KahinaState implements Serializable, KahinaListener
             consoleLines.put(stepID, refs);
         }
         refs.add(ref);
-        control.processEvent(new KahinaMessageEvent(ref));
+        kahina.dispatchInstanceEvent(new KahinaMessageEvent(ref));
     }
     
     public KahinaTextModel getConsoleMessages()

@@ -75,10 +75,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
-		/**
-		 * TODO this should be getGuiControl() for consistency, but things currently work using getControl()
-		 */
-		kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
+		kahina.registerInstanceListener(KahinaEventTypes.SYSTEM, this);
 	}
 
 	public void setSize(int width, int height)

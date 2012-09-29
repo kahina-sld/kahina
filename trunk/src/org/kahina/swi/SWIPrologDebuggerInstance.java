@@ -66,7 +66,7 @@ public class SWIPrologDebuggerInstance extends LogicProgrammingInstance<LogicPro
 	@Override
 	protected LogicProgrammingState createState()
 	{
-		return new LogicProgrammingState(sessionControl);
+		return new LogicProgrammingState(this);
 	}
 	
 	@Override

@@ -191,7 +191,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	@Override
 	protected TraleSLDState createState()
 	{
-		return new TraleSLDState(sessionControl, withAuxiliaryInstance);
+		return new TraleSLDState(this, withAuxiliaryInstance);
 	}
 
 	@Override
@@ -268,7 +268,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			else
 			{
 				// Lazy hack: set bridge to abort - if we go through the controller,
-				// KahinaRunner will deinitialize and thwart subsequent eventing
+				// the instance will deinitialize and thwart subsequent eventing
 				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 				compile((String) event.getArguments()[0]);
 			}
