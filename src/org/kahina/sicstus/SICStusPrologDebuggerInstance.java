@@ -25,7 +25,6 @@ import org.w3c.dom.Document;
 
 public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<LogicProgrammingState, SICStusPrologGUI, SICStusPrologBridge, LogicProgrammingProject>
 {
-
 	PrologProfiler profiler;
 
 	@Override
@@ -65,7 +64,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 	@Override
 	protected LogicProgrammingState createState()
 	{
-		return new LogicProgrammingState(sessionControl);
+		return new LogicProgrammingState(this);
 	}
 
 	@Override

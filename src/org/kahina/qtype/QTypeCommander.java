@@ -42,6 +42,7 @@ public class QTypeCommander implements KahinaListener
     public QTypeCommander(QTypeDebuggerInstance kahina)
     {
         this.kahina = kahina;
+        kahina.registerInstanceListener(KahinaEventTypes.SYSTEM, this);
     }
 
     public final Action COMPILE_ACTION = new AbstractAction("Compile")
@@ -253,7 +254,6 @@ public class QTypeCommander implements KahinaListener
 
     public void initializeForNewSession()
     {
-        kahina.registerSessionListener(KahinaEventTypes.SYSTEM, this);
         kahina.registerSessionListener(KahinaEventTypes.CONTROL, this);
     }
 

@@ -96,8 +96,8 @@ public class KahinaGUI implements KahinaListener
         messageConsoleView = new KahinaTextView(kahina);
         messageConsoleView.setTitle("Message console");
         //TODO: this should happen via GUI control
-        kahina.getControl().registerListener("message", messageConsoleView);
-        kahina.getControl().registerListener("console line", messageConsoleView);
+        kahina.registerInstanceListener("message", messageConsoleView);
+        kahina.registerInstanceListener("console line", messageConsoleView);
         views.add(messageConsoleView);
         livingViews.add(messageConsoleView);
         varNameToView.put("messageConsole", messageConsoleView);

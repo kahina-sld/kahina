@@ -55,8 +55,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		}
 		this.secondaryTree = secondaryTree;
 		this.lastActiveID = -1;
+	      kahina.registerInstanceListener(KahinaEventTypes.SYSTEM, this);
 		kahina.registerSessionListener(KahinaEventTypes.LPBRIDGE, this);
-		kahina.registerSessionListener(KahinaEventTypes.SYSTEM, this);
 		kahina.registerSessionListener(KahinaEventTypes.STEP_DESCRIPTION, this);
 		kahina.registerSessionListener(KahinaEventTypes.TREE, this);
 		/*primaryBreakpoints = new ArrayList<TreeAutomaton>();

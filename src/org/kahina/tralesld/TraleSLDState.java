@@ -24,9 +24,9 @@ public class TraleSLDState extends LogicProgrammingState
 	HashMap<Integer, Integer> edgeToNode;
 	HashMap<Integer, Integer> nodeToEdge;
 
-	public TraleSLDState(KahinaController control, boolean withAuxiliaryInstance)
+	public TraleSLDState(TraleSLDInstance kahina, boolean withAuxiliaryInstance)
 	{
-		super(control);
+		super(kahina);
 		System.err.println("New TraleSLDState() and empty signature");
 		System.err.println("Current heap size: " + Runtime.getRuntime().totalMemory());
 		

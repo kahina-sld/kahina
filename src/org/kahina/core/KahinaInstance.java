@@ -96,6 +96,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
 		instanceControl = new KahinaController();
         instanceControl.registerListener(KahinaEventTypes.PERSPECTIVE, this);
+        instanceControl.registerListener(KahinaEventTypes.SYSTEM, this);
         //if (!standaloneMode) //TODO: think about standalone mode
         {
             recentPerspectives = new LinkedList<KahinaPerspective>();
@@ -212,7 +213,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     		sessionControl.registerListener(KahinaEventTypes.UPDATE, this);
     		sessionControl.registerListener(KahinaEventTypes.SESSION, this);
             sessionControl.registerListener(KahinaEventTypes.PROJECT, this);
-    		sessionControl.registerListener(KahinaEventTypes.SYSTEM, this);
             sessionControl.registerListener("new agent", this);
         }
 		if (state != null)
