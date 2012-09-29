@@ -25,7 +25,7 @@ public class QTypeParseExampleMenu extends JMenu implements KahinaListener
 	{
 		super("Parse example");
 		this.kahina = kahina;
-		kahina.getGuiControl().registerListener(KahinaEventTypes.CONTROL, this);
+		kahina.registerInstanceListener(KahinaEventTypes.CONTROL, this);
 	}
 
 	@Override

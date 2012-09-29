@@ -94,7 +94,7 @@ public class StepPatternEditorPanel extends JPanel implements ActionListener
             constrOptions.setStandardOptions();
 
             KahinaSimpleProperty property = (KahinaSimpleProperty) pattern;
-            patternPanel = new SingleNodeConstraintPanel(constrOptions, viewPanel.kahina.getControl(), property);
+            patternPanel = new SingleNodeConstraintPanel(constrOptions, viewPanel.kahina, property);
             patternPanel.setHintPanel(hintPanel);
             this.add(patternPanel);
         }

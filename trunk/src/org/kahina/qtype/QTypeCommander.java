@@ -253,8 +253,8 @@ public class QTypeCommander implements KahinaListener
 
     public void initializeForNewSession()
     {
-        kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
-        kahina.getControl().registerListener(KahinaEventTypes.CONTROL, this);
+        kahina.registerSessionListener(KahinaEventTypes.SYSTEM, this);
+        kahina.registerSessionListener(KahinaEventTypes.CONTROL, this);
     }
 
 }

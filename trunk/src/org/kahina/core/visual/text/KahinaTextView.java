@@ -54,7 +54,7 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
 	public JComponent makePanel()
     {
         KahinaTextViewPanel panel = new KahinaTextViewPanel(kahina);
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return panel;
     }

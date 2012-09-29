@@ -27,6 +27,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.text.JTextComponent;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaSimpleProperty;
 import org.kahina.core.data.agent.patterns.PatternFormatException;
@@ -34,7 +35,7 @@ import org.kahina.core.data.agent.patterns.TreePatternNode;
 
 public class SingleNodeConstraintPanel extends JPanel implements ActionListener, MouseListener
 {
-    private KahinaController control;
+    private KahinaInstance<?,?,?,?> kahina;
     
     private NodeConstraintOptions constrOptions;
     private int elementaryConstraintNumber;
@@ -60,9 +61,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     private boolean synchronizationMode = false;
     private boolean isSynchronized = false;
     
-    public SingleNodeConstraintPanel(NodeConstraintOptions constrOptions, KahinaController control)
+    public SingleNodeConstraintPanel(NodeConstraintOptions constrOptions, KahinaInstance<?,?,?,?> kahina)
     {
-        this.control = control;
+        this.kahina = kahina;
         this.addMouseListener(this);
         
         this.constrOptions = constrOptions;     
@@ -88,7 +89,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         addButtons = new ArrayList<JButton>();
         remButtons = new ArrayList<JButton>();
 
-        boolPanel = new BooleanConnectorPanel(this, control);
+        boolPanel = new BooleanConnectorPanel(this, kahina);
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
@@ -100,9 +101,9 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         this.add(elConstPanel, Component.LEFT_ALIGNMENT);
     }
     
-    public SingleNodeConstraintPanel(NodeConstraintOptions constrOptions, KahinaController control, KahinaSimpleProperty pattern)
+    public SingleNodeConstraintPanel(NodeConstraintOptions constrOptions, KahinaInstance<?,?,?,?> kahina, KahinaSimpleProperty pattern)
     {
-        this.control = control;
+        this.kahina = kahina;
         this.addMouseListener(this);
         
         this.constrOptions = constrOptions;     
@@ -128,7 +129,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         addButtons = new ArrayList<JButton>();
         remButtons = new ArrayList<JButton>();
 
-        boolPanel = new BooleanConnectorPanel(this, control);
+        boolPanel = new BooleanConnectorPanel(this, kahina);
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
@@ -197,7 +198,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
         addButtons = new ArrayList<JButton>();
         remButtons = new ArrayList<JButton>();
 
-        boolPanel = new BooleanConnectorPanel(this, control);
+        boolPanel = new BooleanConnectorPanel(this, kahina);
         GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.gridx = 0;
@@ -684,7 +685,7 @@ public class SingleNodeConstraintPanel extends JPanel implements ActionListener,
     
     public void mouseClicked(MouseEvent arg0)
     {
-        control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE, this));
+        kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_NODE_UPDATE, this));
     }
     
     public void mouseEntered(MouseEvent arg0)

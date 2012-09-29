@@ -28,7 +28,7 @@ public class KahinaSelectionHistory implements KahinaListener
         pointInHistory = -1;
         selectionCausedByHistory = false;
         this.kahina = kahina;
-        kahina.getGuiControl().registerListener(KahinaEventTypes.SELECTION, this);
+        kahina.registerInstanceListener(KahinaEventTypes.SELECTION, this);
     }
     
     public boolean canMoveToPrevious()

@@ -208,7 +208,7 @@ public class KahinaListTreeView extends KahinaAbstractTreeView implements Kahina
 	public JComponent makePanel()
 	{
 		KahinaListTreeViewPanel panel = new KahinaListTreeViewPanel(layers.length, kahina);
-		kahina.getGuiControl().registerListener("redraw", panel);
+		kahina.registerInstanceListener("redraw", panel);
 		panel.setView(this);
 		return panel;
 	}

@@ -101,7 +101,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 				//TODO: find out what condition KahinaRunner.isInitialized() did here
 				if (containsMainWindow())
 				{
-					kahina.dispatchEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));					
+					kahina.dispatchInstanceEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));					
 				}
 			}
 			
@@ -301,7 +301,7 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
 	@Override
 	public void windowClosing(WindowEvent e) 
 	{
-		wm.getGuiControl().processEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE,this.getID()));
+		wm.getKahina().dispatchInstanceEvent(new KahinaWindowEvent(KahinaWindowEventType.TOGGLE_VISIBLE,this.getID()));
 	}
 
 	@Override

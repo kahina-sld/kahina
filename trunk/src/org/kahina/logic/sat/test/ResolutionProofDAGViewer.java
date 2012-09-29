@@ -48,9 +48,9 @@ public class ResolutionProofDAGViewer
         v.setStatusColorEncoding(2,new Color(0,255,255));
         v.setStatusColorEncoding(3,new Color(255,255,255)); 
         
-        kahina.getGuiControl().registerListener(KahinaEventTypes.SELECTION, v);
-        kahina.getGuiControl().registerListener(KahinaEventTypes.UPDATE, v);
-        kahina.getGuiControl().registerListener(KahinaEventTypes.REDRAW, v);
+        kahina.registerInstanceListener(KahinaEventTypes.SELECTION, v);
+        kahina.registerInstanceListener(KahinaEventTypes.UPDATE, v);
+        kahina.registerInstanceListener(KahinaEventTypes.REDRAW, v);
         
         SwingUtilities.invokeLater(new Runnable() 
         {

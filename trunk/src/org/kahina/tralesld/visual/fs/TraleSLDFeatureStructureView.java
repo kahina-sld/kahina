@@ -21,7 +21,7 @@ public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS>
 	public JComponent makePanel()
     {
         TraleSLDFeatureStructureViewPanel panel = new TraleSLDFeatureStructureViewPanel();
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
     }
@@ -30,8 +30,8 @@ public class TraleSLDFeatureStructureView extends KahinaView<TraleSLDFS>
 	{
         TraleSLDFeatureStructureEditor panel = new TraleSLDFeatureStructureEditor(kahina, state.getTrale());
         panel.setSignature(state.getSignature());
-        kahina.getGuiControl().registerListener("redraw", panel);
-        kahina.getGuiControl().registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, panel);
+        kahina.registerInstanceListener("redraw", panel);
+        kahina.registerInstanceListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, panel);
         panel.setView(this);
         return new JScrollPane(panel);
 	}

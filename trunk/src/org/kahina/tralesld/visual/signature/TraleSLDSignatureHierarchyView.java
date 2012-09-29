@@ -29,7 +29,7 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
         
         htmlForType = new HashMap<String,String>();
         
-        kahina.getGuiControl().registerListener("type selection", this);
+        kahina.registerInstanceListener("type selection", this);
     }
     
     public TraleSLDSignatureHierarchyView(TraleSLDSignature signature, KahinaInstance<?, ?, ?, ?> kahina)
@@ -176,7 +176,7 @@ public class TraleSLDSignatureHierarchyView extends KahinaView<TraleSLDSignature
 	public JComponent makePanel()
 	{
         TraleSLDSignatureHierarchyViewPanel panel = new TraleSLDSignatureHierarchyViewPanel(kahina);
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         //TODO: somehow prevent the editor pane from exceeding the viewport bounds instead of line wrapping
         JScrollPane scrollPane = new JScrollPane(panel);

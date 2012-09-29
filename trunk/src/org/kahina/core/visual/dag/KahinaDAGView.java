@@ -71,7 +71,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
 
         this.markedNode = -1;
         
-        kahina.getGuiControl().registerListener("update", this);
+        kahina.registerInstanceListener("update", this);
     }
 
 	public void display(KahinaDAG dagModel)
@@ -236,7 +236,7 @@ public class KahinaDAGView extends KahinaView<KahinaDAG>
         KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaDAGViewPanel panel = new KahinaDAGViewPanel(kahina);
         panel.setPreferredSize(new Dimension(200,300));
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         JPanel scrollPaneAndProgressBar = new JPanel();
         JScrollPane scrollPane = new JScrollPane();

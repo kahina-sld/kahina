@@ -21,7 +21,7 @@ public class KahinaJEditSourceCodeView extends KahinaView<KahinaSourceCodeLocati
 	public JComponent makePanel()
 	{
 		KahinaJEditSourceCodeViewPanel panel = createPanel();
-        kahina.getGuiControl().registerListener("redraw", panel);
+		kahina.registerInstanceListener("redraw", panel);
 		panel.setView(this);
 		return panel;
 	}

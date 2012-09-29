@@ -853,7 +853,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	public JComponent makePanel()
 	{
 		KahinaTreeViewPanel panel = new KahinaTreeViewPanel(kahina);
-		kahina.getGuiControl().registerListener("redraw", panel);
+		kahina.registerInstanceListener("redraw", panel);
 		panel.setView(this);
 		JScrollPane scrollPane = new JScrollPane(panel);
 		scrollPane.getViewport().setBackground(config.getBackgroundColor());

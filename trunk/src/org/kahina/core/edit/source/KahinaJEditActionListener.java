@@ -61,7 +61,7 @@ public class KahinaJEditActionListener implements ActionListener
             return;
         }
         //update event needed for the control point editor to be redrawn
-        instance.dispatchGUIEvent(new KahinaRedrawEvent());
+        instance.dispatchInstanceEvent(new KahinaRedrawEvent());
     }
     
 }

@@ -11,6 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaListener;
@@ -19,7 +20,7 @@ import org.kahina.core.data.agent.patterns.TreePatternNode;
 
 public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaListener
 {
-    KahinaController control;
+    KahinaInstance<?,?,?,?> kahina;
     
     NodeConstraintOptions constrOptions;  
     
@@ -40,10 +41,10 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
     
     private SingleNodeConstraintPanel markedTreeNode;
     
-    public TreeFragmentPanel(KahinaController control)
+    public TreeFragmentPanel(KahinaInstance<?,?,?,?> kahina)
     {
-        this.control = control;
-        control.registerListener("breakpoint_editor", this);
+        this.kahina = kahina;
+        kahina.registerInstanceListener("breakpoint_editor", this);
         
         constrOptions = new NodeConstraintOptions();
         constrOptions.setStandardOptions();
@@ -63,7 +64,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         add(hintPanel);   
 
         treePanel = new TreeEditorPanel(this);
-        rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control);
+        rootConstPanel = new SingleNodeConstraintPanel(constrOptions, kahina);
         rootConstPanel.setHintPanel(hintPanel);  
         rootConstPanel.setSynchronized(true);
         treePanel.add(rootConstPanel);
@@ -79,9 +80,9 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         markedTreeNode = null;
     }
     
-    public TreeFragmentPanel(KahinaController control, NodeConstraintOptions constrOptions)
+    public TreeFragmentPanel(KahinaInstance<?,?,?,?> kahina, NodeConstraintOptions constrOptions)
     {
-        this(control);
+        this(kahina);
         this.constrOptions = constrOptions;
         rootConstPanel.setConstrOptions(constrOptions);
     }
@@ -117,7 +118,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         {
             if (markedTreeNode.getMarkedPattern() != null)
             {
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, KahinaBreakpointEditorPanel.PENDING_AND_OPERATION));
+                kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, KahinaBreakpointEditorPanel.PENDING_AND_OPERATION));
                 hint("Now select the second conjunct.", Color.BLACK);
             }
             else
@@ -129,7 +130,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         {
             if (markedTreeNode.getMarkedPattern() != null)
             {
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, KahinaBreakpointEditorPanel.PENDING_OR_OPERATION));
+                kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, KahinaBreakpointEditorPanel.PENDING_OR_OPERATION));
                 hint("Now select the second disjunct.", Color.BLACK);
             }
             else
@@ -141,7 +142,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         {
             if (markedTreeNode.getMarkedPattern() != null)
             {
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, KahinaBreakpointEditorPanel.PENDING_IMPL_OPERATION));
+                kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.CHANGE_NODE_SELECTION_MODE, KahinaBreakpointEditorPanel.PENDING_IMPL_OPERATION));
                 hint("Now select the consequent.", Color.BLACK);
             }
             else
@@ -155,7 +156,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
             {
                 addNewChildNode(markedTreeNode);
                 hint("Manipulate the tree structure or define complex node constraints.", Color.BLACK);
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_PATTERN_CHANGE));
+                kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_PATTERN_CHANGE));
             }
             else
             {
@@ -176,14 +177,14 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
             {
                 removeMarkedNode();
                 hint("Manipulate the tree structure or define complex node constraints.", Color.BLACK);
-                control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_PATTERN_CHANGE));
+                kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TREE_PATTERN_CHANGE));
             }
         }
     }
     
     private void addNewChildNode(SingleNodeConstraintPanel parent)
     {
-        SingleNodeConstraintPanel child = new SingleNodeConstraintPanel(constrOptions, control);
+        SingleNodeConstraintPanel child = new SingleNodeConstraintPanel(constrOptions, kahina);
         child.setHintPanel(hintPanel);
         List<SingleNodeConstraintPanel> nodeChildren = children.get(parent);
         if (nodeChildren == null)
@@ -253,7 +254,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
     {
         if (rootConstPanel == null)
         {
-            rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control);   
+            rootConstPanel = new SingleNodeConstraintPanel(constrOptions, kahina);   
             rootConstPanel.setHintPanel(hintPanel);
             rootConstPanel.setSynchronized(true);
             treePanel.add(rootConstPanel);
@@ -362,7 +363,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
     
     public void displayTreePattern(TreePattern pat)
     {
-        rootConstPanel = new SingleNodeConstraintPanel(constrOptions, control, pat.getRoot().getPattern());
+        rootConstPanel = new SingleNodeConstraintPanel(constrOptions, kahina, pat.getRoot().getPattern());
         displaySubtreePattern(pat.getRoot(), rootConstPanel);
         rootConstPanel.setHintPanel(hintPanel);
         rootConstPanel.setSynchronized(true);
@@ -377,7 +378,7 @@ public class TreeFragmentPanel extends JPanel implements ActionListener, KahinaL
         {
             for (TreePatternNode child : node.getChildren())
             {
-                SingleNodeConstraintPanel childPanel = new SingleNodeConstraintPanel(constrOptions, control, child.getPattern());
+                SingleNodeConstraintPanel childPanel = new SingleNodeConstraintPanel(constrOptions, kahina, child.getPattern());
                 childPanel.setHintPanel(hintPanel);
                 List<SingleNodeConstraintPanel> nodeChildren = children.get(parent);
                 if (nodeChildren == null)

@@ -19,7 +19,7 @@ public class SICStusPrologVariableBindingSetView extends KahinaView<SICStusProlo
 	public JComponent makePanel()
 	{
 		SICStusPrologVariableBindingSetViewPanel panel = new SICStusPrologVariableBindingSetViewPanel();
-        kahina.getGuiControl().registerListener(KahinaEventTypes.REDRAW, panel);
+		kahina.registerInstanceListener(KahinaEventTypes.REDRAW, panel);
 		panel.setView(this);
 		return panel;
 	}

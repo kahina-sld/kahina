@@ -26,7 +26,7 @@ public class TraleSLDSignatureUsageView extends KahinaView<TraleSLDSignature>
         
         htmlForType = new HashMap<String,String>();
         
-        kahina.getGuiControl().registerListener("type selection", this);
+        kahina.registerInstanceListener("type selection", this);
     }
     
     public TraleSLDSignatureUsageView(TraleSLDSignature signature, KahinaInstance<?, ?, ?, ?> kahina)
@@ -91,7 +91,7 @@ public class TraleSLDSignatureUsageView extends KahinaView<TraleSLDSignature>
 	public JComponent makePanel()
 	{
         TraleSLDSignatureUsageViewPanel panel = new TraleSLDSignatureUsageViewPanel(kahina);
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
 	}

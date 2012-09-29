@@ -50,7 +50,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 		
 		mainTreeView = generateTreeView();
 		mainTreeView.setTitle("Control flow tree");
-		kahina.getGuiControl().registerListener(KahinaEventTypes.UPDATE, mainTreeView);
+		kahina.registerInstanceListener(KahinaEventTypes.UPDATE, mainTreeView);
 		views.add(mainTreeView);
 		livingViews.add(mainTreeView);
 		varNameToView.put("controlFlowTree", mainTreeView);

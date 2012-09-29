@@ -71,11 +71,11 @@ public class KahinaGUI implements KahinaListener
 		}
 		this.stepType = stepType;
 		this.kahina = kahina;
-		kahina.getGuiControl().registerListener(KahinaEventTypes.STEP_FOCUS, this);
-		kahina.getGuiControl().registerListener(KahinaEventTypes.SELECTION, this);
-		kahina.getGuiControl().registerListener(KahinaEventTypes.DIALOG, this);
-		kahina.getGuiControl().registerListener(KahinaEventTypes.CONTROL, this);
-		kahina.getGuiControl().registerListener(KahinaEventTypes.WARN, this);
+		kahina.registerInstanceListener(KahinaEventTypes.STEP_FOCUS, this);
+		kahina.registerInstanceListener(KahinaEventTypes.SELECTION, this);
+		kahina.registerInstanceListener(KahinaEventTypes.DIALOG, this);
+		kahina.registerInstanceListener(KahinaEventTypes.CONTROL, this);
+		kahina.registerInstanceListener(KahinaEventTypes.WARN, this);
 	}
 	
 	protected void initialize()
@@ -123,7 +123,7 @@ public class KahinaGUI implements KahinaListener
 			if (KahinaObject.class.isAssignableFrom(field.getType()))
 			{
 				KahinaView<?> newView = KahinaViewRegistry.generateViewFor(field.getType(), kahina);
-				kahina.getGuiControl().registerListener("update", newView);
+				kahina.registerInstanceListener("update", newView);
 				if (VERBOSE)
 				{
 					System.err.println("\t\tview: " + newView);
@@ -178,18 +178,18 @@ public class KahinaGUI implements KahinaListener
 		return null;
 	}*/
 
-	public void integrateWindows(int integrationType, int window1ID, int window2ID, String newTitle, KahinaController control)
+	public void integrateWindows(int integrationType, int window1ID, int window2ID, String newTitle)
 	{
 		switch (integrationType)
 		{
 			case KahinaViewIntegrationType.VERTICAL:
 			{
-				windowManager.integrateInVerticallySplitWindow(window1ID, window2ID, newTitle, control);
+				windowManager.integrateInVerticallySplitWindow(window1ID, window2ID, newTitle);
 				break;
 			}
 			case KahinaViewIntegrationType.HORIZONTAL:
 			{
-				windowManager.integrateInHorizontallySplitWindow(window1ID, window2ID, newTitle, control);
+				windowManager.integrateInHorizontallySplitWindow(window1ID, window2ID, newTitle);
 				break;
 			}
 			case KahinaViewIntegrationType.TABBED:

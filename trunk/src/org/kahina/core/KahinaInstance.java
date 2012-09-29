@@ -232,26 +232,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		createWarner();
 	}
 	
-	// TODO remove the following two methods - client classes should not have
-	// direct access to the controllers, there is too much that they could do
-	// wrong, i.e. call processEvent instead of dispatchEvent or register
-	// listeners to the wrong constructor. Instead, add
-	// registerSessionListener() and registerInstanceListener() with which
-	// listeners can be registered according to their lifespan (session lifespan
-	// -> controller, instance lifespan -> GUI controller).
-	
-	//TODO: make this obsolete
-	public KahinaController getControl()
-	{
-		return sessionControl;
-	}
-	
-	//TODO: make this obsolete
-	public KahinaController getGuiControl()
-	{
-		return instanceControl;
-	}
-	
 	public void registerSessionListener(String type, KahinaListener listener)
 	{
 	    sessionControl.registerListener(type, listener);
@@ -316,20 +296,20 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     	instanceControl.processEvent(e);
     }
     
-    public void dispatchBackgroundEvent(KahinaEvent e)
+    public void dispatchSessionEvent(KahinaEvent e)
     {
-    	if (VERBOSE)
-    	{
-    		System.err.println("KahinaInstance.dispatchBackgroundEvent(" + e + ")");
-    	}
-    	instanceControl.processEvent(e);
+        if (VERBOSE)
+        {
+            System.err.println("KahinaInstance.dispatchSessionEvent(" + e + ")");
+        }
+        sessionControl.processEvent(e);
     }
     
-    public void dispatchGUIEvent(KahinaEvent e)
+    public void dispatchInstanceEvent(KahinaEvent e)
     {
     	if (VERBOSE)
     	{
-    		System.err.println("KahinaInstance.dispatchGUIEvent(" + e + ")");
+    		System.err.println("KahinaInstance.dispatchInstanceEvent(" + e + ")");
     	}
     	instanceControl.processEvent(e);
     }
@@ -434,7 +414,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                 gui.setPerspective(project.getPerspective());
                 gui.displayMainViews();
                 setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-                dispatchGUIEvent(new KahinaRedrawEvent());
+                dispatchInstanceEvent(new KahinaRedrawEvent());
                 break;
             }
             case LOAD_RECENT_PROJECT:
@@ -444,7 +424,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                 gui.setPerspective(project.getPerspective());
                 gui.displayMainViews();
                 setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-                dispatchGUIEvent(new KahinaRedrawEvent());
+                dispatchInstanceEvent(new KahinaRedrawEvent());
                 break;
             }
             case LOAD_DEFAULT_PROJECT:
@@ -454,7 +434,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                 gui.setPerspective(project.getPerspective());
                 gui.displayMainViews();
                 setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-                dispatchGUIEvent(new KahinaRedrawEvent());
+                dispatchInstanceEvent(new KahinaRedrawEvent());
                 break;
             }
         }

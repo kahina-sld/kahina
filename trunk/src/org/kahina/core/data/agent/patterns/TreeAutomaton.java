@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.behavior.KahinaTreeBehavior;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.agent.KahinaBreakpoint;
@@ -43,8 +44,8 @@ public class TreeAutomaton
     //a map from node IDs to state IDs they are annotated with
     HashMap<Integer,Set<Integer>> annotations;
     
-    //reports to this controller if the encoded pattern was found in the tree
-    KahinaController ctrl;
+    //reports to this instance if the encoded pattern was found in the tree
+    KahinaInstance<?,?,?,?> kahina;
     //link to the breakpoint this automaton implements; contains more contextual info
     KahinaBreakpoint bp;
     
@@ -96,23 +97,19 @@ public class TreeAutomaton
         this.constellationMatch = constellationMatch;
     }
     
-    /**
-     * Gets the controller this automaton is informing about matches.
-     * @return the controller this automaton is informing about matches
-     */
-    public KahinaController getController()
+    public KahinaInstance<?,?,?,?> getKahina()
     {
-        return ctrl;
+        return kahina;
     }
 
     /**
-     * Sets the controller this automaton is to inform about matches.
-     * Default is <code>null</code>, a controller must be determined for the breakpoint system to work.
-     * @param ctrl the controller this automaton is to inform about matches
+     * Sets the Kahina instance this automaton is to inform about matches.
+     * Default is <code>null</code>, an instance must be determined for the breakpoint system to work.
+     * @param kahina the Kahina instance this automaton is to inform about matches
      */
-    public void setController(KahinaController ctrl)
+    public void setKahina(KahinaInstance<?,?,?,?> kahina)
     {
-        this.ctrl = ctrl;
+        this.kahina = kahina;
     }
 
     /**
@@ -239,16 +236,16 @@ public class TreeAutomaton
     private void announcePatternMatch(int nodeID)
     {
         if (VERBOSE) System.err.println("Skip Point automaton matched at node " + nodeID);
-        if (VERBOSE && ctrl == null)
+        if (VERBOSE && kahina == null)
         {
-            System.err.println("WARNING! Tree pattern match, but no controller is listening!");
+            System.err.println("WARNING! Tree pattern match, but no Kahina instance is listening!");
         }
         else
         {
             if (bp.isActive())
             {
                 if (VERBOSE) System.err.println("Skip Point fired TreeMatchEvent at node " + nodeID);
-                ctrl.processEvent(new KahinaTreeMatchEvent(bp, nodeID));
+                kahina.dispatchEvent(new KahinaTreeMatchEvent(bp, nodeID));
             }
         }
     }

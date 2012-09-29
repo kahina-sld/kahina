@@ -63,8 +63,8 @@ public class KahinaTreeTest
             v0.setStatusColorEncoding(2,new Color(0,255,255));
             v0.setStatusColorEncoding(3,new Color(255,255,255)); 
             
-            kahina.getGuiControl().registerListener(KahinaEventTypes.SELECTION, v0);
-            kahina.getGuiControl().registerListener(KahinaEventTypes.UPDATE, v0);
+            kahina.registerInstanceListener(KahinaEventTypes.SELECTION, v0);
+            kahina.registerInstanceListener(KahinaEventTypes.UPDATE, v0);
             
             KahinaTreeView v1 = new KahinaTreeView(kahina);
             v1.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
@@ -81,8 +81,8 @@ public class KahinaTreeTest
             v1.setStatusColorEncoding(2,new Color(0,255,255));
             v1.setStatusColorEncoding(3,new Color(255,255,255));  
             
-            kahina.getGuiControl().registerListener(KahinaEventTypes.SELECTION, v1);
-            kahina.getGuiControl().registerListener(KahinaEventTypes.UPDATE, v1);
+            kahina.registerInstanceListener(KahinaEventTypes.SELECTION, v1);
+            kahina.registerInstanceListener(KahinaEventTypes.UPDATE, v1);
             
             KahinaTreeView v2 = new KahinaTreeView(kahina);
             v2.getConfig().setHorizontalDistance(15);
@@ -94,8 +94,8 @@ public class KahinaTreeTest
             v2.setStatusColorEncoding(2,new Color(0,255,255));
             v2.setStatusColorEncoding(3,new Color(255,255,255));  
             
-            kahina.getGuiControl().registerListener(KahinaEventTypes.SELECTION, v2);
-            kahina.getGuiControl().registerListener(KahinaEventTypes.UPDATE, v2);
+            kahina.registerInstanceListener(KahinaEventTypes.SELECTION, v2);
+            kahina.registerInstanceListener(KahinaEventTypes.UPDATE, v2);
 
             KahinaTreeViewMarker treeMarker = new KahinaTreeViewMarker(m1,m2);
             KahinaTreeViewPanel vp0 = new KahinaTreeViewPanel(treeMarker, kahina);
@@ -114,9 +114,9 @@ public class KahinaTreeTest
             JLabel vp2label = new JLabel("Layer 2 (Detail View)");
             vp2label.setBounds(0, 470, 500, 15);
             
-            kahina.getGuiControl().registerListener("redraw", vp0);
-            kahina.getGuiControl().registerListener("redraw", vp1);
-            kahina.getGuiControl().registerListener("redraw", vp2);
+            kahina.registerInstanceListener("redraw", vp0);
+            kahina.registerInstanceListener("redraw", vp1);
+            kahina.registerInstanceListener("redraw", vp2);
             
             JFrame w = new JFrame("Kahina TreeView Demo");
             w.setSize(510, 720);

@@ -92,10 +92,12 @@ public class LogicProgrammingBridge extends KahinaBridge
 		super(kahina);
 		this.state = (LogicProgrammingState) kahina.getState();
 		stepIDConv = new HashMap<Integer, Integer>();
-		kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
-		kahina.getControl().registerListener(KahinaEventTypes.SELECTION, this);
-		kahina.getControl().registerListener(KahinaEventTypes.WARN, this);
-        kahina.getControl().registerListener("LP agent match", this);
+		//TODO: the first three should be instance listeners!
+		kahina.getControl();
+		kahina.registerSessionListener(KahinaEventTypes.SYSTEM, this);
+		kahina.registerSessionListener(KahinaEventTypes.SELECTION, this);
+		kahina.registerSessionListener(KahinaEventTypes.WARN, this);
+		kahina.registerSessionListener("LP agent match", this);
 		if (VERBOSE)
 			System.err.println("new LogicProgrammingBridge()");
 	}
