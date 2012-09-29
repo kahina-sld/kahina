@@ -37,6 +37,7 @@ public class KahinaControlAgentProfileViewPanel extends KahinaViewPanel<KahinaCo
         
         this.kahina = kahina;
         
+        //TODO: should be instance instead of session listener!
         kahina.getControl().registerListener("breakpoint_editor", this);
         
         profileListener = new KahinaControlAgentProfileListener(this, kahina.getState().getStepTree());

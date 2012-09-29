@@ -82,7 +82,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
 
         setDisplayDecider(new KahinaChartEdgeDisplayDecider());
 
-        kahina.getGuiControl().registerListener("chart update", this);
+        kahina.registerInstanceListener("chart update", this);
     }
     
     public KahinaChartView(KahinaChart chartModel, KahinaInstance<?, ?, ?, ?> kahina)
@@ -772,7 +772,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
 	public JComponent makePanel()
     {
         KahinaChartViewPanel panel = new KahinaChartViewPanel(kahina);
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
     }

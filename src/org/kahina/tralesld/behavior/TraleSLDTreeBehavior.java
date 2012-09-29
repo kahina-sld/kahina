@@ -29,7 +29,7 @@ public class TraleSLDTreeBehavior extends LogicProgrammingTreeBehavior
     public TraleSLDTreeBehavior(KahinaTree tree, KahinaInstance<?, ?, ?, ?> kahina, KahinaTree secondaryTree)
     {
         super(tree, kahina, secondaryTree);  
-        kahina.getControl().registerListener("traleSLD bridge", this);
+        kahina.registerSessionListener("traleSLD bridge", this);
     }
     
     /*@Override

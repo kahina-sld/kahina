@@ -18,7 +18,7 @@ public class KahinaEmptyView extends KahinaView<KahinaObject>
 	public JComponent makePanel()
     {
         KahinaEmptyViewPanel panel = new KahinaEmptyViewPanel();
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return new JScrollPane(panel);
     }

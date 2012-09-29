@@ -13,9 +13,9 @@ import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.data.project.KahinaProjectStatus;
-import org.kahina.core.gui.KahinaSessionMenu;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.gui.menus.KahinaHelpMenu;
+import org.kahina.core.gui.menus.KahinaSessionMenu;
 import org.kahina.core.gui.menus.KahinaViewMenu;
 import org.kahina.core.gui.menus.KahinaProjectMenu;
 import org.kahina.core.io.util.IconUtil;
@@ -57,7 +57,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		menuBar = new JMenuBar();
         
-        sessionMenu = new KahinaSessionMenu(kahina.getControl());
+        sessionMenu = new KahinaSessionMenu(kahina);
         menuBar.add(sessionMenu);
         
         projectMenu = new KahinaProjectMenu(kahina);
@@ -70,13 +70,13 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		addMenusBeforeHelpMenu();
 
-		menuBar.add(new KahinaHelpMenu(wm.getGuiControl()));
+		menuBar.add(new KahinaHelpMenu(kahina));
 		this.setJMenuBar(menuBar);
 
 		mainPanel.setDropTarget(new DropTarget(mainPanel, new KahinaDropTargetListener(this)));
 
 		/**
-		 * TODO this should be getGuiControl() for consistency, but things currently work this way
+		 * TODO this should be getGuiControl() for consistency, but things currently work using getControl()
 		 */
 		kahina.getControl().registerListener(KahinaEventTypes.SYSTEM, this);
 	}

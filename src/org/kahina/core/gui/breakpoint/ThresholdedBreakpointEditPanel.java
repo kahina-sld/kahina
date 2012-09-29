@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaState;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.edit.breakpoint.KahinaBreakpointEditorPanel;
@@ -28,9 +29,9 @@ public class ThresholdedBreakpointEditPanel extends KahinaBreakpointEditorPanel
 	
 	private KahinaState state;
 
-	public ThresholdedBreakpointEditPanel(KahinaController control)
+	public ThresholdedBreakpointEditPanel(KahinaInstance<?, ?, ?, ?> kahina)
 	{
-		super(control);
+		super(kahina);
 	}
 	
 	public void setState(KahinaState state)

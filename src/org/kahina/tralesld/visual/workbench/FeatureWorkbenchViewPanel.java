@@ -272,7 +272,7 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		editor = new TraleSLDFeatureStructureEditor(kahina, trale);
 		GraleJUtility.setFeatureStructureEditor(editor);
 		editor.setSignature(new TraleSLDSignature());
-        kahina.getGuiControl().registerListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, editor);
+		kahina.registerInstanceListener(TraleSLDEventTypes.FS_EDITOR_MESSAGE, editor);
 		JScrollPane editorScrollPane = new JScrollPane(editor);
 		contentPanel.add(editorScrollPane);
 		
@@ -1067,11 +1067,11 @@ public class FeatureWorkbenchViewPanel extends KahinaViewPanel<FeatureWorkbenchV
 		hieraWindow.setTitle("Type hierarchy");
 		KahinaWindow approWindow = wManager.integrateInDefaultWindow(appro);
 		approWindow.setTitle("Appropriateness");
-		KahinaWindow upperWindow = wManager.integrateInHorizontallySplitWindow(hieraWindow.getID(), approWindow.getID(), "Hierarchy & Appropriateness", kahina.getControl());
+		KahinaWindow upperWindow = wManager.integrateInHorizontallySplitWindow(hieraWindow.getID(), approWindow.getID(), "Hierarchy & Appropriateness");
 		upperWindow.setBorder(false);
 		KahinaWindow usageWindow = wManager.integrateInDefaultWindow(usage);
 		usageWindow.setTitle("Usage");
-		KahinaWindow signatureWindow = wManager.integrateInVerticallySplitWindow(upperWindow.getID(), usageWindow.getID(), "Signature Inspection", kahina.getControl());
+		KahinaWindow signatureWindow = wManager.integrateInVerticallySplitWindow(upperWindow.getID(), usageWindow.getID(), "Signature Inspection");
 		signatureWindow.setBorder(false);
 		signatureWindow.setSize(800, 500);
 		signatureWindow.setLocation(400, 300);

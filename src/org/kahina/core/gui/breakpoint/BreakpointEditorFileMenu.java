@@ -8,6 +8,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 
@@ -15,12 +16,12 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
 {
  
 	private static final long serialVersionUID = 7163623733563539175L;
-	KahinaController control;
+	KahinaInstance<?,?,?,?> kahina;
     
-    public BreakpointEditorFileMenu(KahinaController control)
+    public BreakpointEditorFileMenu(KahinaInstance<?,?,?,?> kahina)
     {
         super("Profile");
-        this.control = control;
+        this.kahina = kahina;
         
         JMenuItem newBreakpointProfileItem = new JMenuItem("New Profile");
         newBreakpointProfileItem.setActionCommand("newBreakpointProfile");
@@ -76,7 +77,7 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
         String s = e.getActionCommand();
         if (s.equals("newBreakpoint"))
         {
-            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.NEW_BREAKPOINT));
+            kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.NEW_BREAKPOINT));
         }
         else if (s.equals("exportBreakpointProfile"))
         {
@@ -84,7 +85,7 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Export breakpoint profile");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.EXPORT_BREAKPOINT_PROFILE, dataFile));
+            if (dataFile != null) kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.EXPORT_BREAKPOINT_PROFILE, dataFile));
         }
         else if (s.equals("importBreakpointProfile"))
         {
@@ -92,7 +93,7 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Import breakpoint profile");
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.IMPORT_BREAKPOINT_PROFILE, dataFile));
+            if (dataFile != null) kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.IMPORT_BREAKPOINT_PROFILE, dataFile));
         }
         else if (s.equals("exportBreakpoint"))
         {
@@ -100,7 +101,7 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Export breakpoint");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.EXPORT_BREAKPOINT, dataFile));
+            if (dataFile != null) kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.EXPORT_BREAKPOINT, dataFile));
         }
         else if (s.equals("importBreakpoint"))
         {
@@ -108,15 +109,15 @@ public class BreakpointEditorFileMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Import breakpoint");
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.IMPORT_BREAKPOINT, dataFile));
+            if (dataFile != null) kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.IMPORT_BREAKPOINT, dataFile));
         }
         else if (s.equals("testBreakpoints"))
         {
-            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TEST_BREAKPOINTS));
+            kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.TEST_BREAKPOINTS));
         }
         else if (s.equals("applyQuit"))
         {
-            control.processEvent(new BreakpointEditorEvent(BreakpointEditorEvent.APPLY_QUIT));
+            kahina.dispatchInstanceEvent(new BreakpointEditorEvent(BreakpointEditorEvent.APPLY_QUIT));
         }
     }
 }

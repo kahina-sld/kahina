@@ -22,7 +22,7 @@ public class TulipaGrammarView extends KahinaView<TulipaGrammar>
 	public JComponent makePanel()
     {
         TulipaGrammarViewPanel panel = new TulipaGrammarViewPanel();
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return panel;
     }

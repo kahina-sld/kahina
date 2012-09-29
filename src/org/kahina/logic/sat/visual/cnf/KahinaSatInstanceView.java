@@ -124,7 +124,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
     {
         KahinaProgressBar progressBar = new KahinaProgressBar();
         KahinaSatInstanceViewPanel panel = new KahinaSatInstanceViewPanel(kahina);
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         JScrollPane scrollPane = new JScrollPane(panel);
         scrollPane.getViewport().setBackground(config.getBackgroundColor());

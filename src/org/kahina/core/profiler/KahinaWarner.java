@@ -20,7 +20,7 @@ public class KahinaWarner implements KahinaListener
 	public KahinaWarner(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		this.kahina = kahina;
-		kahina.getControl().registerListener(KahinaEventTypes.TREE_MATCH, this);
+		kahina.registerSessionListener(KahinaEventTypes.TREE_MATCH, this);
 	}
 
 	@Override
@@ -43,7 +43,7 @@ public class KahinaWarner implements KahinaListener
 			int newMatchCount = ObjectUtil.nullToZero(matchCountByBreakpoint.get(breakpoint)) + 1;
 			if (newMatchCount == threshold)
 			{
-				kahina.dispatchBackgroundEvent(new KahinaWarnEvent(breakpoint, newMatchCount));
+				kahina.dispatchInstanceEvent(new KahinaWarnEvent(breakpoint, newMatchCount));
 				newMatchCount = 0;
 			}
 			matchCountByBreakpoint.put(breakpoint, newMatchCount);

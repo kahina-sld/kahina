@@ -18,7 +18,7 @@ public class TraleSLDVariableBindingSetView extends KahinaView<TraleSLDVariableB
 	public JComponent makePanel()
 	{
 		TraleSLDVariableBindingSetViewPanel panel = new TraleSLDVariableBindingSetViewPanel();
-        kahina.getGuiControl().registerListener("redraw", panel);
+		kahina.registerInstanceListener("redraw", panel);
 		panel.setView(this);
 		return panel;
 	}

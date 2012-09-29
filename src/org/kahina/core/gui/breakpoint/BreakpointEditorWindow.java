@@ -86,7 +86,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 		add(mainPanel);
 
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(new BreakpointEditorFileMenu(kahina.getGuiControl()));
+		menuBar.add(new BreakpointEditorFileMenu(kahina));
 		this.setJMenuBar(menuBar);
 
 		adaptActivationStatus();
@@ -154,7 +154,7 @@ public class BreakpointEditorWindow extends JFrame implements ActionListener, Ka
 
 	protected JPanel buildRightPanel()
 	{
-		editPanel = new KahinaBreakpointEditorPanel(kahina.getGuiControl());
+		editPanel = new KahinaBreakpointEditorPanel(kahina);
 		return editPanel;
 	}
 

@@ -16,8 +16,8 @@ public class TulipaDAGBehavior extends KahinaDAGBehavior
     public TulipaDAGBehavior(KahinaDAG dag, TulipaInstance kahina)
     {
         super(dag, kahina);
-        kahina.getControl().registerListener("dag", this);
-        kahina.getControl().registerListener("tulipa bridge", this);
+        kahina.registerSessionListener("dag", this);
+        kahina.registerSessionListener("tulipa bridge", this);
     }
     
     public void initializeDAG()

@@ -85,7 +85,7 @@ public class ColoredPathDAGView extends KahinaDAGView
         KahinaProgressBar progressBar = new KahinaProgressBar();
         ColoredPathDAGViewPanel panel = new ColoredPathDAGViewPanel(kahina);
         panel.setPreferredSize(new Dimension(200,300));
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         JPanel scrollPaneAndProgressBar = new JPanel();
         JScrollPane scrollPane = new JScrollPane();

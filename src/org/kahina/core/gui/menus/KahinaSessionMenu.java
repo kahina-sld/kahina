@@ -1,4 +1,4 @@
-package org.kahina.core.gui;
+package org.kahina.core.gui.menus;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +8,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaSessionEvent;
 import org.kahina.core.control.KahinaSystemEvent;
@@ -16,12 +17,12 @@ public class KahinaSessionMenu extends JMenu implements ActionListener
 {
 	private static final long serialVersionUID = -3140345218228195395L;
 	
-	KahinaController control;
+	KahinaInstance<?,?,?,?> kahina;
     
-    public KahinaSessionMenu(KahinaController control)
+    public KahinaSessionMenu(KahinaInstance<?,?,?,?> kahina)
     {
         super("Session");
-        this.control = control;
+        this.kahina = kahina;
         
         JMenuItem loadSessionItem = new JMenuItem("Load...");
         loadSessionItem.setActionCommand("loadSession");
@@ -55,7 +56,7 @@ public class KahinaSessionMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Load Session");
             chooser.showOpenDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null) control.processEvent(new KahinaSessionEvent(KahinaSessionEvent.LOAD_SESSION, dataFile));
+            if (dataFile != null) kahina.dispatchInstanceEvent(new KahinaSessionEvent(KahinaSessionEvent.LOAD_SESSION, dataFile));
         }
         else if (s.equals("saveSessionAs"))
         {
@@ -63,11 +64,11 @@ public class KahinaSessionMenu extends JMenu implements ActionListener
             chooser.setDialogTitle("Save Session As");
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
-            if (dataFile != null)  control.processEvent(new KahinaSessionEvent(KahinaSessionEvent.SAVE_SESSION, dataFile));
+            if (dataFile != null)  kahina.dispatchInstanceEvent(new KahinaSessionEvent(KahinaSessionEvent.SAVE_SESSION, dataFile));
         }
         else if (s.equals("quit"))
         {
-            control.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
+            kahina.dispatchInstanceEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
         }
     }
 }

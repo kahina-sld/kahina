@@ -53,7 +53,7 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 		for (int i = 1; i < views.length; i++)
 		{
 			views[i] = new KahinaTreeView(kahina);
-			kahina.getGuiControl().registerListener("update", views[i]);
+			kahina.registerInstanceListener("update", views[i]);
 		}
 	}
 
@@ -121,7 +121,7 @@ public class KahinaLayeredTreeView extends KahinaAbstractTreeView
 	{
 		marker = new KahinaTreeViewMarker(model, secondaryModel);
 		KahinaLayeredTreeViewPanel panel = new KahinaLayeredTreeViewPanel(views.length, marker, kahina, orientation);
-		kahina.getGuiControl().registerListener("redraw", panel);
+		kahina.registerInstanceListener("redraw", panel);
 		panel.setView(this);
 		return panel;
 	}

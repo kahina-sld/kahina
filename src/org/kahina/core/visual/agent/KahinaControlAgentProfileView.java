@@ -21,7 +21,7 @@ public class KahinaControlAgentProfileView extends KahinaView<KahinaControlAgent
     public JComponent makePanel()
     {
         KahinaControlAgentProfileViewPanel panel = new KahinaControlAgentProfileViewPanel((LogicProgrammingInstance<?,?,?,?>) kahina);
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return panel;
     }

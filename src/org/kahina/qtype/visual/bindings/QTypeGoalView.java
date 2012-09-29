@@ -20,7 +20,7 @@ public class QTypeGoalView extends KahinaView<QTypeGoal>
 	public JComponent makePanel()
 	{
 		QTypeGoalViewPanel panel = new QTypeGoalViewPanel();
-        kahina.getGuiControl().registerListener(KahinaEventTypes.REDRAW, panel);
+		kahina.registerInstanceListener(KahinaEventTypes.REDRAW, panel);
 		panel.setView(this);
 		return panel;
 	}

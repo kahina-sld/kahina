@@ -212,7 +212,7 @@ public class FormulaTreeView extends KahinaTreeView
     public JComponent makePanel()
     {
         KahinaTreeViewPanel panel = new FormulaTreeViewPanel(kahina);
-        kahina.getGuiControl().registerListener("redraw", panel);
+        kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return panel;
         /*JScrollPane scrollPane = new JScrollPane(panel);

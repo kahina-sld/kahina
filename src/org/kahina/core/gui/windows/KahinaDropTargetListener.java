@@ -10,6 +10,7 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.gui.event.KahinaWindowEvent;
 import org.kahina.core.gui.event.KahinaWindowEventType;
@@ -17,12 +18,12 @@ import org.kahina.core.gui.event.KahinaWindowEventType;
 public class KahinaDropTargetListener implements DropTargetListener 
 {	 
     KahinaWindow w;
-    private KahinaController guiControl;
+    KahinaInstance<?,?,?,?> kahina;
     
     public KahinaDropTargetListener(KahinaWindow w) 
     {
         this.w = w;
-        this.guiControl = w.wm.getGuiControl();
+        this.kahina = w.wm.getKahina();
     }
 
     public void dragEnter(DropTargetDragEvent dtde) 
@@ -56,7 +57,7 @@ public class KahinaDropTargetListener implements DropTargetListener
                 
 	                System.err.println("Moved window " + winID);
 	                
-	                guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, winID)); 
+	                kahina.dispatchInstanceEvent(new KahinaWindowEvent(KahinaWindowEventType.UNDOCK, winID)); 
 	                if (w.isDummyWindow())
 	                {
 		                if (!w.isTopLevelWindow())
@@ -66,11 +67,11 @@ public class KahinaDropTargetListener implements DropTargetListener
 		                	w.wm.getArrangement().setEmbeddingWindowID(winID, embWin.getID());
 		                	embWin.validate();
 		                	embWin.repaint(); 
-		                    guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));
+		                	kahina.dispatchInstanceEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));
 		                }
 		                else
 		                {
-		                	guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, w.getID()));
+		                    kahina.dispatchInstanceEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, w.getID()));
 		                	//move positions of new window to simulate replacement
 		                	KahinaWindow newWindow = w.wm.getWindowByID(winID);
 		                	newWindow.setLocation(w.getLocation());
@@ -101,7 +102,7 @@ public class KahinaDropTargetListener implements DropTargetListener
 	                			break;
 	                		}
 	                	}
-	                	guiControl.processEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));
+	                	kahina.dispatchInstanceEvent(new KahinaWindowEvent(KahinaWindowEventType.REMOVE, winID));
 	                }
                 }
                 else
