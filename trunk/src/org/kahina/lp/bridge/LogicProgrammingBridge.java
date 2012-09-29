@@ -95,11 +95,20 @@ public class LogicProgrammingBridge extends KahinaBridge
 		//TODO: the first two should probably be instance listeners!
 		kahina.registerSessionListener(KahinaEventTypes.SELECTION, this);
 		kahina.registerSessionListener(KahinaEventTypes.WARN, this);
-	      kahina.registerInstanceListener(KahinaEventTypes.SYSTEM, this);
+	    kahina.registerInstanceListener(KahinaEventTypes.SYSTEM, this);
 		kahina.registerSessionListener("LP agent match", this);
 		if (VERBOSE)
 			System.err.println("new LogicProgrammingBridge()");
 	}
+	
+    public void deregister()
+    {
+        super.deregister();
+        kahina.deregisterSessionListener(KahinaEventTypes.SELECTION, this);
+        kahina.deregisterSessionListener(KahinaEventTypes.WARN, this);
+        kahina.deregisterInstanceListener(KahinaEventTypes.SYSTEM, this);
+        kahina.deregisterSessionListener("LP agent match", this);
+    }
 
 	/**
 	 * For each new procedure box that is created, this method or one of its
@@ -964,7 +973,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 				skipID = -1;
 				setBridgeState('f');
 			}
-		} else if (command.equals("auto-complete"))
+		} 
+		else if (command.equals("auto-complete"))
 		{
 			if (getBridgeState() == 'n')
 			{
@@ -978,7 +988,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 							System.err.println("Auto-completing current step: " + currentID);
 						}
 						skipID = currentID;
-					} else
+					} 
+					else
 					{
 						if (VERBOSE)
 						{
@@ -986,49 +997,58 @@ public class LogicProgrammingBridge extends KahinaBridge
 						}
 						skipID = selectedID;
 					}
-				} else
+				} 
+				else
 				{
 					if (VERBOSE)
 					{
 						System.err.println("WARNING: auto-complete/skip are not valid operations right now.");
 					}
 				}
-			} else if (getBridgeState() == 'p')
+			} 
+			else if (getBridgeState() == 'p')
 			{
 				setBridgeState('t');
-			} else if (getBridgeState() == 'q')
+			} 
+			else if (getBridgeState() == 'q')
 			{
 				setBridgeState('t');
 				skipID = currentID;
 			}
 
-		} else if (command.equals("skip"))
+		} 
+		else if (command.equals("skip"))
 		{
 			if (canSkipOrAutocomplete())
 			{
 				skipFlag = true;
-			} else
+			} 
+			else
 			{
 				if (VERBOSE)
 				{
 					System.err.println("WARNING: auto-complete/skip are not valid operations right now.");
 				}
 			}
-		} else if (command.equals("leap"))
+		} 
+		else if (command.equals("leap"))
 		{
 			if (getBridgeState() == 'n')
 			{
 				setBridgeState('l');
-			} else if (getBridgeState() == 'p')
+			} 
+			else if (getBridgeState() == 'p')
 			{
 				setBridgeState('l');
 				skipID = -1;
-			} else if (getBridgeState() == 'q')
+			} 
+			else if (getBridgeState() == 'q')
 			{
 				setBridgeState('l');
 				skipID = -1;
 			}
-		} else if (command.equals("(un)pause"))
+		} 
+		else if (command.equals("(un)pause"))
 		{
 			// FIXME There's no visible reaction when clicking pause. The button
 			// should change, and the current step should be selected. For the
@@ -1036,13 +1056,16 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (getBridgeState() == 't')
 			{
 				setBridgeState('p');
-			} else if (getBridgeState() == 's')
+			} 
+			else if (getBridgeState() == 's')
 			{
 				setBridgeState('q');
-			} else if (getBridgeState() == 'p')
+			} 
+			else if (getBridgeState() == 'p')
 			{
 				setBridgeState('t');
-			} else if (getBridgeState() == 'q')
+			} 
+			else if (getBridgeState() == 'q')
 			{
 				setBridgeState('s');
 			}
@@ -1088,11 +1111,11 @@ public class LogicProgrammingBridge extends KahinaBridge
         if (canSkipOrAutocomplete())
         {
             skipFlag = true;
-            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a skip.");
+            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a skip in " + this + ".");
         }
         else
         {
-            state.breakpointConsoleMessage(currentID, "ERROR: Sensor " + agent.getName() + " matched at node " + currentID + ", but skip operation was disallowed.");
+            state.breakpointConsoleMessage(currentID, "ERROR: Sensor " + agent.getName() + " matched at node " + currentID + ", but skip operation was disallowed in " + this + ".");
         }
 	}
     
@@ -1100,12 +1123,14 @@ public class LogicProgrammingBridge extends KahinaBridge
     {
         if (canSkipOrAutocomplete())
         {
-            skipFlag = true;
-            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing auto-complete.");
+            //skipFlag = true;
+            setBridgeState('t');
+            skipID = currentID;
+            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing auto-complete in " + this + ".");
         }
         else
         {
-            state.breakpointConsoleMessage(currentID, "ERROR: Sensor " + agent.getName() + " matched at node " + currentID + ", but auto-complete operation was disallowed.");
+            state.breakpointConsoleMessage(currentID, "ERROR: Sensor " + agent.getName() + " matched at node " + currentID + ", but auto-complete operation was disallowed in " + this + ".");
         }
     }
 
@@ -1115,7 +1140,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		if (getBridgeState() != 's' && getBridgeState() != 't' && getBridgeState() != 'l')
 		{
 			setBridgeState('c');
-            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing an additional creep operation.");
+            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing an additional creep operation in " + this + ".");
 		}
 	}
 
@@ -1123,24 +1148,26 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		// TODO: handle this more elegantly if in skip or leap mode (possibly additional state)
 		setBridgeState('f');
-        state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a fail operation.");
+        state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a fail operation in " + this + ".");
 	}
 
 	public void performBreakAction(KahinaControlAgent agent)
 	{
 		// TODO: temporarily mark matching node in the breakpoint's signal color
-		// same reaction as in pause mode
+		// otherwise same reaction as in pause mode
 		if (getBridgeState() == 't')
 		{
 			setBridgeState('p');
-		} else if (getBridgeState() == 's')
+		} 
+		else if (getBridgeState() == 's')
 		{
 			setBridgeState('q');
-		} else if (getBridgeState() == 'l')
+		} 
+		else if (getBridgeState() == 'l')
 		{
 			setBridgeState('n');
 		}
-        state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a break.");
+        state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a break in " + this + ".");
         kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
 	}
 

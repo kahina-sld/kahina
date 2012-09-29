@@ -225,6 +225,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		}
 		if (withBridge)
 		{
+		    if (bridge != null) bridge.deregister();
 		    bridge = createBridge();
 		}
         prepareProjectLists();
@@ -240,6 +241,16 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     public void registerInstanceListener(String type, KahinaListener listener)
     {
         instanceControl.registerListener(type, listener);
+    }
+    
+    public void deregisterSessionListener(String type, KahinaListener listener)
+    {
+        sessionControl.removeListener(type, listener);
+    }
+    
+    public void deregisterInstanceListener(String type, KahinaListener listener)
+    {
+        instanceControl.removeListener(type, listener);
     }
 
 	protected abstract void createTreeBehavior();

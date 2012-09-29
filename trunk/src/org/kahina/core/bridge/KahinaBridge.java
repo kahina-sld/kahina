@@ -36,6 +36,12 @@ public class KahinaBridge implements KahinaListener
         kahina.registerSessionListener(KahinaEventTypes.TREE_MATCH, this);
     }
     
+    public void deregister()
+    {
+        kahina.deregisterSessionListener(KahinaEventTypes.CONTROL, this);
+        kahina.deregisterSessionListener(KahinaEventTypes.TREE_MATCH, this);
+    }
+    
     protected KahinaStep generateStep()
     {
     	if (VERBOSE) System.err.println("KahinaBridge.generateStep()");
