@@ -1054,15 +1054,20 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	protected boolean canSkipOrAutocomplete()
 	{
-		int candidateID;
-		if (selectedID == -1)
+	    //TODO: think about how to handle this consistently for selectedID != candidateID
+		int candidateID = currentID;
+		/*if (selectedID == -1 || getBridgeState() != 'n')
 		{
 			candidateID = currentID;
 		} 
         else
 		{
 			candidateID = selectedID;
-		}
+		}*/
+		/*state.breakpointConsoleMessage(candidateID,"calling canSkipOrAutocomplete(" 
+		                                         + state.get(currentID).externalID + "/" 
+		                                         + state.get(selectedID).externalID +") = " 
+		                                         + state.get(candidateID).externalID);*/
 		int status = state.getStepTree().getNodeStatus(candidateID);
 		return status == LogicProgrammingStepType.CALL || status == LogicProgrammingStepType.REDO;
 	}
@@ -1088,11 +1093,11 @@ public class LogicProgrammingBridge extends KahinaBridge
         if (canSkipOrAutocomplete())
         {
             skipFlag = true;
-            state.breakpointConsoleMessage(currentID, agentString + " causes skip at step " + currentID + ".");
+            state.breakpointConsoleMessage(currentID, agentString + " causes skip at step " + state.get(currentID).externalID + ".");
         } 
         else
         {
-            state.breakpointConsoleMessage(currentID, agentString + " attempted to skip at step " + currentID + ", but skip operation was disallowed.");
+            state.breakpointConsoleMessage(currentID, agentString + " attempted to skip at step " + state.get(currentID).externalID + ", but skip operation was disallowed.");
         }
 	}
     
@@ -1103,20 +1108,21 @@ public class LogicProgrammingBridge extends KahinaBridge
             if (canSkipOrAutocomplete())
             {
                 setBridgeState('t');
-                if (selectedID == -1)
+                //TODO: rethink and debug the selectedID case
+                //if (selectedID == -1)
                 {
-                    state.breakpointConsoleMessage(currentID, agentString + " causes auto-complete at step " + currentID + ".");
+                    state.breakpointConsoleMessage(currentID, agentString + " causes auto-complete at step " + state.get(currentID).externalID + ".");
                     skipID = currentID;
                 } 
-                else
+                /*else
                 {
-                    state.breakpointConsoleMessage(selectedID, agentString + " causes auto-complete at step " + selectedID + ".");
+                    state.breakpointConsoleMessage(selectedID, agentString + " causes auto-complete at step " + state.get(selectedID).externalID + ".");
                     skipID = selectedID;
-                }
+                }*/
             } 
             else
             {
-                state.breakpointConsoleMessage(currentID, agentString + " attempted auto-complete at " + currentID + ", but auto-complete operation was disallowed.");
+                state.breakpointConsoleMessage(currentID, agentString + " attempted auto-complete at " + state.get(currentID).externalID + ", but auto-complete operation was disallowed.");
             }
         } 
         else if (getBridgeState() == 'p')
