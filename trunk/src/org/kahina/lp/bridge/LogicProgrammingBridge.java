@@ -160,7 +160,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			state.consoleMessage(stepID, extID, LogicProgrammingStepType.CALL, consoleMessage);
 			if (VERBOSE)
 				System.err.println("//LogicProgrammingBridge.registerStepInformation(" + extID + ",\"" + type + ",\"" + description + "\")");
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -212,7 +213,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			step.setSourceCodeLocation(new KahinaSourceCodeLocation(absolutePath, lineNumber - 1));
 			currentID = stepID;
 			state.store(stepID, step);
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -228,7 +230,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 		try
 		{
 			kahina.dispatchEvent(new KahinaTreeEvent(KahinaTreeEventType.LAYER, convertStepID(extID), layer));
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -344,7 +347,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					throw new KahinaException("Unexpected redo of " + lastStepID + " under " + parentCandidateID + ".");
 				}
-			} while (id != parentCandidateID);
+			} 
+			while (id != parentCandidateID);
 
 			int newStepID = -1;
 
@@ -412,6 +416,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (VERBOSE)
 				System.err.println("LogicProgrammingBridge.registerStepExit(" + extID + "," + deterministic + ")");
 			int stepID = convertStepID(extID);
+			//waitingForReturnFromSkip has done its duty here
 			if (stepID == waitingForReturnFromSkip)
 			{
 				waitingForReturnFromSkip = -1;
@@ -419,7 +424,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (deterministic)
 			{
 				kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_DET_EXIT, stepID));
-			} else
+			} 
+			else
 			{
 				kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_NONDET_EXIT, stepID));
 			}
@@ -440,7 +446,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 				if (deterministic)
 				{
 					port = LogicProgrammingStepType.DET_EXIT;
-				} else
+				} 
+				else
 				{
 					port = LogicProgrammingStepType.EXIT;
 				}
@@ -448,7 +455,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					// use old text
 					state.consoleMessage(reference.generatePortVariant(port));
-				} else
+				} 
+				else
 				{
 					state.consoleMessage(stepID, extID, port, newConsoleMessage);
 				}
@@ -466,9 +474,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 
 			maybeUpdateStepCount(false);
+			//let control agents act
             kahina.dispatchEvent(new KahinaStepUpdateEvent(stepID));
 			selectIfPaused(stepID);
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -526,7 +536,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			maybeUpdateStepCount(false);
             kahina.dispatchEvent(new KahinaStepUpdateEvent(stepID));
 			selectIfPaused(stepID);
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -569,7 +580,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			maybeUpdateStepCount(false);
             kahina.dispatchEvent(new KahinaStepUpdateEvent(stepID));
 			selectIfPaused(stepID);
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -598,7 +610,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 		try
 		{
 			state.linkNodes(convertStepID(anchor), convertStepID(target));
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -617,7 +630,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			setBridgeState('n');
 			maybeUpdateStepCount(false);
 			kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -635,7 +649,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 		try
 		{
 			kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -666,107 +681,108 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			switch (getBridgeState())
 			{
-			case 'n':
-			{
-                if (VERBOSE)
-                {
-                    System.err.println(this + ".getAction() == 'n', in idle mode");
-                }
-				return 'n';
-			}
-			case 'p':
-			{
-				if (VERBOSE)
-				{
-					System.err.println(this + ".getAction() == 'n', in pause mode");
-				}
-				return 'n';
-			}
-			case 'q':
-			{
-                if (VERBOSE)
-                {
-                    System.err.println(this + ".getAction() == 'n', in paused skip mode");
-                }
-				return 'n';
-			}
-			case 'c':
-			{
-                if (VERBOSE)
-                {
-                    System.err.println(this + ".getAction() == 'c', back to idle mode");
-                }
-				setBridgeState('n');      
-				return 'c';
-			}
-			case 'f':
-			{
-                if (VERBOSE)
-                {
-                    System.err.println(this + ".getAction() == 'f', back to idle mode");
-                }
-				setBridgeState('n');
-				return 'f';
-			}
-			case 'l':
-			{
-                if (VERBOSE)
-                {
-                    System.err.println(this + ".getAction() == 'c', in leap mode");
-                }
-				setBridgeState('l');
-				return 'c';
-			}
-			case 't':
-			{
-                if (VERBOSE)
-                {
-                    System.err.println(this + ".getAction() == 'c', back in skip mode");
-                }
-				setBridgeState('s');
-				return 'c';
-			}
-			case 's':
-			{
-				if (skipID == currentID)
-				{
+    			case 'n':
+    			{
                     if (VERBOSE)
                     {
-                        System.err.println(this + ".getAction() == 'n', back in idle mode because skip complete");
+                        System.err.println(this + ".getAction() == 'n', in idle mode");
                     }
-					skipID = -1;
-					setBridgeState('n');
-					kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
-					return 'n';
-				} 
-                else
-				{
+    				return 'n';
+    			}
+    			case 'p':
+    			{
+    				if (VERBOSE)
+    				{
+    					System.err.println(this + ".getAction() == 'n', in pause mode");
+    				}
+    				return 'n';
+    			}
+    			case 'q':
+    			{
                     if (VERBOSE)
                     {
-                        System.err.println(this + ".getAction() == 'c', in skip mode");
+                        System.err.println(this + ".getAction() == 'n', in paused skip mode");
                     }
-					return 'c';
-				}
+    				return 'n';
+    			}
+    			case 'c':
+    			{
+                    if (VERBOSE)
+                    {
+                        System.err.println(this + ".getAction() == 'c', back to idle mode");
+                    }
+    				setBridgeState('n');      
+    				return 'c';
+    			}
+    			case 'f':
+    			{
+                    if (VERBOSE)
+                    {
+                        System.err.println(this + ".getAction() == 'f', back to idle mode");
+                    }
+    				setBridgeState('n');
+    				return 'f';
+    			}
+    			case 'l':
+    			{
+                    if (VERBOSE)
+                    {
+                        System.err.println(this + ".getAction() == 'c', in leap mode");
+                    }
+    				setBridgeState('l');
+    				return 'c';
+    			}
+    			case 't':
+    			{
+                    if (VERBOSE)
+                    {
+                        System.err.println(this + ".getAction() == 'c', back in skip mode");
+                    }
+    				setBridgeState('s');
+    				return 'c';
+    			}
+    			case 's':
+    			{
+    				if (skipID == currentID)
+    				{
+                        if (VERBOSE)
+                        {
+                            System.err.println(this + ".getAction() == 'n', back in idle mode because skip complete");
+                        }
+    					skipID = -1;
+    					setBridgeState('n');
+    					kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
+    					return 'n';
+    				} 
+                    else
+    				{
+                        if (VERBOSE)
+                        {
+                            System.err.println(this + ".getAction() == 'c', in skip mode");
+                        }
+    					return 'c';
+    				}
+    			}
+    			case 'a':
+    			{
+                    if (VERBOSE)
+                    {
+                        System.err.println(this + ".getAction() == 'a', in abort mode");
+                    }
+    				return 'a';
+    			}
+    			default:
+    			{
+                    if (VERBOSE)
+                    {
+                        System.err.println(this + ".getAction() == 'n', back to idle mode (default behavior)");
+                    }
+    				setBridgeState('n');
+    				return 'n';
+    			}
 			}
-			case 'a':
-			{
-                if (VERBOSE)
-                {
-                    System.err.println(this + ".getAction() == 'a', in abort mode");
-                }
-				return 'a';
-			}
-			default:
-			{
-                if (VERBOSE)
-                {
-                    System.err.println(this + ".getAction() == 'n', back to idle mode (default behavior)");
-                }
-				setBridgeState('n');
-				return 'n';
-			}
-			}
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);
@@ -882,12 +898,12 @@ public class LogicProgrammingBridge extends KahinaBridge
                 }
                 case COMPLETE_AGENT:
                 {
-                    performCompleteAction(match.getAgent());
+                    performCompleteAction("Agent \"" + match.getAgent().getName() + "\"");
                     break;
                 }
                 case SKIP_AGENT:
                 {
-                    performSkipAction(match.getAgent());
+                    performSkipAction("Agent \"" + match.getAgent().getName() + "\"");
                     break;
                 }
                 case FAIL_AGENT:
@@ -931,44 +947,53 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (getBridgeState() == 'n')
 			{
 				setBridgeState('c');
-			} else if (getBridgeState() == 'p')
+			} 
+			else if (getBridgeState() == 'p')
 			{
 				skipID = -1;
 				setBridgeState('c');
-			} else if (getBridgeState() == 'q')
+			} 
+			else if (getBridgeState() == 'q')
 			{
 				skipID = -1;
 				setBridgeState('c');
-			} else if (getBridgeState() == 'l')
+			} 
+			else if (getBridgeState() == 'l')
 			{
 				skipID = -1;
 				setBridgeState('c');
 			}
-		} else if (command.equals("stop"))
+		} 
+		else if (command.equals("stop"))
 		{
 			if (getBridgeState() == 'p')
 			{
 				skipID = -1;
 				setBridgeState('c');
-			} else if (getBridgeState() == 'q')
+			} 
+			else if (getBridgeState() == 'q')
 			{
 				skipID = -1;
 				setBridgeState('c');
-			} else if (getBridgeState() == 'l')
+			} 
+			else if (getBridgeState() == 'l')
 			{
 				skipID = -1;
 				setBridgeState('c');
 			}
-		} else if (command.equals("fail"))
+		} 
+		else if (command.equals("fail"))
 		{
 			if (getBridgeState() == 'n')
 			{
 				setBridgeState('f');
-			} else if (getBridgeState() == 'p')
+			} 
+			else if (getBridgeState() == 'p')
 			{
 				skipID = -1;
 				setBridgeState('f');
-			} else if (getBridgeState() == 'q')
+			} 
+			else if (getBridgeState() == 'q')
 			{
 				skipID = -1;
 				setBridgeState('f');
@@ -976,60 +1001,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 		} 
 		else if (command.equals("auto-complete"))
 		{
-			if (getBridgeState() == 'n')
-			{
-				if (canSkipOrAutocomplete())
-				{
-					setBridgeState('t');
-					if (selectedID == -1)
-					{
-						if (VERBOSE)
-						{
-							System.err.println("Auto-completing current step: " + currentID);
-						}
-						skipID = currentID;
-					} 
-					else
-					{
-						if (VERBOSE)
-						{
-							System.err.println("Auto-completing selected step: " + selectedID);
-						}
-						skipID = selectedID;
-					}
-				} 
-				else
-				{
-					if (VERBOSE)
-					{
-						System.err.println("WARNING: auto-complete/skip are not valid operations right now.");
-					}
-				}
-			} 
-			else if (getBridgeState() == 'p')
-			{
-				setBridgeState('t');
-			} 
-			else if (getBridgeState() == 'q')
-			{
-				setBridgeState('t');
-				skipID = currentID;
-			}
-
+		    performCompleteAction("User");
 		} 
 		else if (command.equals("skip"))
 		{
-			if (canSkipOrAutocomplete())
-			{
-				skipFlag = true;
-			} 
-			else
-			{
-				if (VERBOSE)
-				{
-					System.err.println("WARNING: auto-complete/skip are not valid operations right now.");
-				}
-			}
+	        performSkipAction("User");
 		} 
 		else if (command.equals("leap"))
 		{
@@ -1069,7 +1045,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				setBridgeState('s');
 			}
-		} else if (command.equals("abort"))
+		} 
+		else if (command.equals("abort"))
 		{
 			setBridgeState('a');
 		}
@@ -1106,31 +1083,50 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	protected void performSkipAction(KahinaControlAgent agent)
+	protected void performSkipAction(String agentString)
 	{
         if (canSkipOrAutocomplete())
         {
             skipFlag = true;
-            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a skip in " + this + ".");
-        }
+            state.breakpointConsoleMessage(currentID, agentString + " causes skip at step " + currentID + ".");
+        } 
         else
         {
-            state.breakpointConsoleMessage(currentID, "ERROR: Sensor " + agent.getName() + " matched at node " + currentID + ", but skip operation was disallowed in " + this + ".");
+            state.breakpointConsoleMessage(currentID, agentString + " attempted to skip at step " + currentID + ", but skip operation was disallowed.");
         }
 	}
     
-    protected void performCompleteAction(KahinaControlAgent agent)
+    protected void performCompleteAction(String agentString)
     {
-        if (canSkipOrAutocomplete())
+        if (getBridgeState() == 'n')
         {
-            //skipFlag = true;
+            if (canSkipOrAutocomplete())
+            {
+                setBridgeState('t');
+                if (selectedID == -1)
+                {
+                    state.breakpointConsoleMessage(currentID, agentString + " causes auto-complete at step " + currentID + ".");
+                    skipID = currentID;
+                } 
+                else
+                {
+                    state.breakpointConsoleMessage(selectedID, agentString + " causes auto-complete at step " + selectedID + ".");
+                    skipID = selectedID;
+                }
+            } 
+            else
+            {
+                state.breakpointConsoleMessage(currentID, agentString + " attempted auto-complete at " + currentID + ", but auto-complete operation was disallowed.");
+            }
+        } 
+        else if (getBridgeState() == 'p')
+        {
+            setBridgeState('t');
+        } 
+        else if (getBridgeState() == 'q')
+        {
             setBridgeState('t');
             skipID = currentID;
-            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing auto-complete in " + this + ".");
-        }
-        else
-        {
-            state.breakpointConsoleMessage(currentID, "ERROR: Sensor " + agent.getName() + " matched at node " + currentID + ", but auto-complete operation was disallowed in " + this + ".");
         }
     }
 
@@ -1144,14 +1140,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 		}
 	}
 
-	public void performFailAction(KahinaControlAgent agent)
+	protected void performFailAction(KahinaControlAgent agent)
 	{
 		// TODO: handle this more elegantly if in skip or leap mode (possibly additional state)
 		setBridgeState('f');
         state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a fail operation in " + this + ".");
 	}
 
-	public void performBreakAction(KahinaControlAgent agent)
+	protected void performBreakAction(KahinaControlAgent agent)
 	{
 		// TODO: temporarily mark matching node in the breakpoint's signal color
 		// otherwise same reaction as in pause mode
