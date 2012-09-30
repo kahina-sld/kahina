@@ -16,6 +16,7 @@ import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.data.agent.KahinaControlAgent;
 import org.kahina.core.edit.breakpoint.BreakpointEditorEvent;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.core.visual.dag.KahinaDAGViewContextMenu;
@@ -123,7 +124,8 @@ public class KahinaControlAgentProfileViewPanel extends KahinaViewPanel<KahinaCo
     
     public void removeCurrentControlAgent()
     {
-        view.getModel().removeControlAgent(pointList.getSelectedIndex());
+        KahinaControlAgent agent = view.getModel().removeControlAgent(pointList.getSelectedIndex());
+        agent.deregister();
         updateDisplay();
         pointList.setSelectedIndex(-1);
     }

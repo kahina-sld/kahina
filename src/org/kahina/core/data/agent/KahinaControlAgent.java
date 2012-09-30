@@ -62,6 +62,11 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
         sensor = new KahinaStepPropertySensor(this, new KahinaSimpleProperty());
     }
     
+    public void deregister()
+    {
+        kahina.deregisterSessionListener(KahinaEventTypes.STEP_UPDATE, this);
+    }
+    
     public KahinaControlAgent copy()
     {
         KahinaControlAgent copy = new KahinaControlAgent(kahina);
