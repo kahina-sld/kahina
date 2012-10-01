@@ -38,7 +38,23 @@ public class KahinaProject extends KahinaObject
         this.perspective = new KahinaPerspective(appID, "default");
 	}
 	
-   public KahinaProject copy()
+	/**
+	 * Tells the project to register itself with the necessary listeners.
+	 */
+	public void register()
+	{
+	    
+	}
+	
+	/**
+     * Tells the project to deregister itself with its listeners.
+     */
+    public void deregister()
+    {
+        
+    }
+	
+    public KahinaProject copy()
     {
         KahinaProject copy = new KahinaProject(appID, new String(name));
         copyDataInto(copy);

@@ -48,6 +48,24 @@ public class LogicProgrammingProject extends KahinaProject
         //warnPoints = new KahinaControlPointProfile();
     }
     
+    public void register()
+    {
+        breakPoints.registerAll();
+        creepPoints.registerAll();
+        completePoints.registerAll();
+        skipPoints.registerAll();
+        failPoints.registerAll();
+    }
+    
+    public void deregister()
+    {
+        breakPoints.deregisterAll();
+        creepPoints.deregisterAll();
+        completePoints.deregisterAll();
+        skipPoints.deregisterAll();
+        failPoints.deregisterAll();
+    }
+    
     public LogicProgrammingProject copy()
     {
         LogicProgrammingProject copy = new LogicProgrammingProject(appID, new String(name), stepTree, kahina);

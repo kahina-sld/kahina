@@ -223,9 +223,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		{
 			state = createState();
 		}
+		if (bridge != null) bridge.deregister();
 		if (withBridge)
-		{
-		    if (bridge != null) bridge.deregister();
+		{	    
 		    bridge = createBridge();
 		}
         prepareProjectLists();
@@ -409,7 +409,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
         {
             case NEW_PROJECT:
             {
+                if (project != null) project.deregister();
                 newProject(e.getFile(), e.getName());
+                project.register();
                 registerRecentProject(project);
                 break;
             }
@@ -420,7 +422,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
             }
             case LOAD_PROJECT:
             {
+                if (project != null) project.deregister();
                 project = loadProject(e.getFile());
+                project.register();
                 registerRecentProject(project);
                 gui.setPerspective(project.getPerspective());
                 gui.displayMainViews();
@@ -430,7 +434,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
             }
             case LOAD_RECENT_PROJECT:
             {
+                if (project != null) project.deregister();
                 project = (P) recentProjects.get(e.getID()).copy();
+                project.register();
                 registerRecentProject(project);
                 gui.setPerspective(project.getPerspective());
                 gui.displayMainViews();
@@ -440,7 +446,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
             }
             case LOAD_DEFAULT_PROJECT:
             {
+                if (project != null) project.deregister();
                 project = (P) defaultProjects.get(e.getID()).copy();
+                project.register();
                 registerRecentProject(project);
                 gui.setPerspective(project.getPerspective());
                 gui.displayMainViews();

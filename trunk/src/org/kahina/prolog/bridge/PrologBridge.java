@@ -11,7 +11,7 @@ public class PrologBridge extends LogicProgrammingBridge
 	
 	Integer queryRootID = null;
 
-	public PrologBridge(LogicProgrammingInstance kahina)
+	public PrologBridge(LogicProgrammingInstance<?,?,?,?> kahina)
 	{
 		super(kahina);
 	}
