@@ -883,6 +883,7 @@ public class LogicProgrammingBridge extends KahinaBridge
         if (e instanceof LogicProgrammingAgentMatchEvent)
         {
             LogicProgrammingAgentMatchEvent match = (LogicProgrammingAgentMatchEvent) e;
+            System.err.println("Match detected by agent " + match.getAgent());
             switch (match.getAgentType())
             {
                 case BREAK_AGENT:

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.kahina.core.control.KahinaControlActuator;
+import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.LogicProgrammingInstance;
@@ -27,6 +28,22 @@ public class KahinaControlAgentProfile extends KahinaObject
     {
         this.actuator = actuator;
         controlAgents = new ArrayList<KahinaControlAgent>();
+    }
+    
+    public void registerAll()
+    {
+        for (KahinaControlAgent agent : controlAgents)
+        {
+            agent.register();
+        }
+    }
+    
+    public void deregisterAll()
+    {
+        for (KahinaControlAgent agent : controlAgents)
+        {
+            agent.deregister();
+        }
     }
     
     public KahinaControlAgentProfile copy()

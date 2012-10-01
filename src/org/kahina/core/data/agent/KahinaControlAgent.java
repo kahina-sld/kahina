@@ -58,8 +58,13 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
         setName("Control point " + number);
         signalColor = ColorUtil.randomColor();
         active = true;
-        kahina.registerSessionListener(KahinaEventTypes.STEP_UPDATE, this);
         sensor = new KahinaStepPropertySensor(this, new KahinaSimpleProperty());
+    }
+    
+    //this needs to be done before the control agents work!
+    public void register()
+    {
+        kahina.registerSessionListener(KahinaEventTypes.STEP_UPDATE, this);
     }
     
     public void deregister()
@@ -174,7 +179,7 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
     {
         if (active)
         {
-            return name;
+            return name + super.toString();
         }
         else
         {
