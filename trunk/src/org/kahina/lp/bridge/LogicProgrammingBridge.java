@@ -67,8 +67,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	// always contains the internal ID of the step which, if a call occurs, will
 	// be the parent of the new step
-	// TODO we can move this to the tree behavior so bridge doesn't have to
-	// access the tree
+	// TODO we can move this to the tree behavior so bridge doesn't have to access the tree
 	protected int parentCandidateID = -1;
 
 	// always contains the internal ID of the selected step
@@ -888,12 +887,12 @@ public class LogicProgrammingBridge extends KahinaBridge
             {
                 case BREAK_AGENT:
                 {
-                    performBreakAction(match.getAgent());
+                    performBreakAction("Agent \"" + match.getAgent().getName() + "\"");
                     break;
                 }
                 case CREEP_AGENT:
                 {
-                    performCreepAction(match.getAgent());
+                    performCreepAction("Agent \"" + match.getAgent().getName() + "\"");
                     break;
                 }
                 case COMPLETE_AGENT:
@@ -908,7 +907,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                 }
                 case FAIL_AGENT:
                 {
-                    performFailAction(match.getAgent());
+                    performFailAction("Agent \"" + match.getAgent().getName() + "\"");
                     break;
                 }
             }
@@ -944,25 +943,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		String command = e.getCommand();
 		if (command.equals("creep"))
 		{
-			if (getBridgeState() == 'n')
-			{
-				setBridgeState('c');
-			} 
-			else if (getBridgeState() == 'p')
-			{
-				skipID = -1;
-				setBridgeState('c');
-			} 
-			else if (getBridgeState() == 'q')
-			{
-				skipID = -1;
-				setBridgeState('c');
-			} 
-			else if (getBridgeState() == 'l')
-			{
-				skipID = -1;
-				setBridgeState('c');
-			}
+		    performCreepAction("User");
 		} 
 		else if (command.equals("stop"))
 		{
@@ -984,20 +965,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		} 
 		else if (command.equals("fail"))
 		{
-			if (getBridgeState() == 'n')
-			{
-				setBridgeState('f');
-			} 
-			else if (getBridgeState() == 'p')
-			{
-				skipID = -1;
-				setBridgeState('f');
-			} 
-			else if (getBridgeState() == 'q')
-			{
-				skipID = -1;
-				setBridgeState('f');
-			}
+            performFailAction("User");
 		} 
 		else if (command.equals("auto-complete"))
 		{
@@ -1029,22 +997,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			// FIXME There's no visible reaction when clicking pause. The button
 			// should change, and the current step should be selected. For the
 			// time being, I removed the pause button.
-			if (getBridgeState() == 't')
-			{
-				setBridgeState('p');
-			} 
-			else if (getBridgeState() == 's')
-			{
-				setBridgeState('q');
-			} 
-			else if (getBridgeState() == 'p')
-			{
-				setBridgeState('t');
-			} 
-			else if (getBridgeState() == 'q')
-			{
-				setBridgeState('s');
-			}
+			performBreakAction("User");
 		} 
 		else if (command.equals("abort"))
 		{
@@ -1136,41 +1089,58 @@ public class LogicProgrammingBridge extends KahinaBridge
         }
     }
 
-	protected void performCreepAction(KahinaControlAgent agent)
+	protected void performCreepAction(String agentString)
 	{
 		// no change if we are in leap or skip mode anyway
 		if (getBridgeState() != 's' && getBridgeState() != 't' && getBridgeState() != 'l')
 		{
 			setBridgeState('c');
-            state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing an additional creep operation in " + this + ".");
+			if (!"User".equals(agentString))
+			{
+			    state.breakpointConsoleMessage(currentID, agentString + " causes creep at step " + state.get(currentID).externalID + ".");
+			}
 		}
 	}
 
-	protected void performFailAction(KahinaControlAgent agent)
+	protected void performFailAction(String agentString)
 	{
 		// TODO: handle this more elegantly if in skip or leap mode (possibly additional state)
 		setBridgeState('f');
-        state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a fail operation in " + this + ".");
+        state.breakpointConsoleMessage(currentID,  agentString + " causes failure at step " + state.get(currentID).externalID + ".");
 	}
 
-	protected void performBreakAction(KahinaControlAgent agent)
+	protected void performBreakAction(String agentString)
 	{
-		// TODO: temporarily mark matching node in the breakpoint's signal color
-		// otherwise same reaction as in pause mode
+		// is used for breakpoint mechanism as well as for the pause mode
+	    // TODO: in case of non-user agent, mark matching node in the breakpoint's signal color
 		if (getBridgeState() == 't')
 		{
 			setBridgeState('p');
+	        state.breakpointConsoleMessage(currentID, agentString + " causes auto-complete break at step " + state.get(currentID).externalID + ".");
+	        kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
 		} 
 		else if (getBridgeState() == 's')
 		{
 			setBridgeState('q');
+	        state.breakpointConsoleMessage(currentID, agentString + " causes skip break at step " + state.get(currentID).externalID + ".");
+	        kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
 		} 
 		else if (getBridgeState() == 'l')
 		{
 			setBridgeState('n');
+	        state.breakpointConsoleMessage(currentID, agentString + " stops leap at step " + state.get(currentID).externalID + ".");
+	        kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
 		}
-        state.breakpointConsoleMessage(currentID, "Sensor " + agent.getName() + " matched at node " + currentID + ", causing a break in " + this + ".");
-        kahina.dispatchEvent(new KahinaSelectionEvent(currentID));
+        else if (getBridgeState() == 'p')
+        {
+            setBridgeState('t');
+            state.breakpointConsoleMessage(currentID, agentString + " unpauses auto-complete at step " + state.get(currentID).externalID + ".");
+        } 
+        else if (getBridgeState() == 'q')
+        {
+            setBridgeState('s');
+            state.breakpointConsoleMessage(currentID, agentString + " unpauses skip at step " + state.get(currentID).externalID + ".");
+        }
 	}
 
     public void setBridgeState(char bridgeState)
