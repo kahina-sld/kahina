@@ -19,6 +19,7 @@ import javax.swing.JTextArea;
 import org.gjt.sp.jedit.buffer.BufferAdapter;
 import org.gjt.sp.jedit.buffer.JEditBuffer;
 import org.gjt.sp.jedit.textarea.StandaloneTextArea;
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.io.util.FileUtil;
 import org.kahina.core.util.ListUtil;
 import org.kahina.core.util.MsgUtil;
@@ -70,7 +71,7 @@ public class KahinaJEditPanel extends JPanel
 	 * @param file
 	 *            The text file to edit in this editor panel.
 	 */
-	public KahinaJEditPanel(File file, LogicProgrammingInstance instance)
+	public KahinaJEditPanel(File file, KahinaInstance<?,?,?,?> instance)
 	{
 		this.file = file;
         actionListener = new KahinaJEditActionListener(instance, this);

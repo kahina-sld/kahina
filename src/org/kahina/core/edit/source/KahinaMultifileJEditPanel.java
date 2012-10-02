@@ -11,11 +11,12 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.lp.LogicProgrammingInstance;
 
 public class KahinaMultifileJEditPanel extends JPanel
 {
-	protected LogicProgrammingInstance instance;
+	protected KahinaInstance<?,?,?,?> instance;
     
 	// TODO allow for closing files
 	
@@ -25,7 +26,7 @@ public class KahinaMultifileJEditPanel extends JPanel
 	
 	private final Map<File, KahinaJEditPanel> panelByFile = new HashMap<File, KahinaJEditPanel>();
 	
-	public KahinaMultifileJEditPanel(LogicProgrammingInstance instance)
+	public KahinaMultifileJEditPanel(KahinaInstance<?,?,?,?> instance)
 	{
         this.instance = instance;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

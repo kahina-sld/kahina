@@ -16,8 +16,6 @@ public class LogicProgrammingStep extends KahinaStep
     public String goalDesc;    
     //the step ID used by the surveyed logic programming system
     public int externalID;
-    //the source code location associated with this step
-    public KahinaSourceCodeLocation codeLocation;
     
     public int redone;
     
@@ -60,16 +58,6 @@ public class LogicProgrammingStep extends KahinaStep
     public void setExternalID(int externalID)
     {
         this.externalID = externalID;
-    }
-    
-    public KahinaSourceCodeLocation getSourceCodeLocation()
-    {
-        return codeLocation;
-    }
-    
-    public void setSourceCodeLocation(KahinaSourceCodeLocation codeLocation)
-    {
-        this.codeLocation = codeLocation;
     }
     
     public int getRedone()
