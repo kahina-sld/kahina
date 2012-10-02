@@ -2,33 +2,44 @@ package org.kahina.core.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.control.KahinaActivationEvent;
 import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaEventTypes;
+import org.kahina.core.control.KahinaListener;
 import org.kahina.core.gui.windows.KahinaWindow;
 import org.kahina.core.gui.windows.KahinaWindowType;
 
-public class KahinaControlButtonWindow extends KahinaWindow implements ActionListener
+public class KahinaControlButtonWindow extends KahinaWindow implements ActionListener, KahinaListener
 {
 
 	private static final long serialVersionUID = -809546592680882505L;
 	List<KahinaControlButton> buttons;
+	Map<String,JButton> buttonByID;
 	
 	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina) 
 	{
 		super(wm, kahina);
 		buttons = new LinkedList<KahinaControlButton>();
+		buttonByID = new HashMap<String,JButton>();
+		kahina.registerInstanceListener(KahinaEventTypes.ACTIVATION, this);
 	}
 	
 	public KahinaControlButtonWindow(KahinaWindowManager wm, KahinaInstance<?, ?, ?, ?> kahina, int winID) 
 	{
 		super(wm, kahina, winID);
 		buttons = new LinkedList<KahinaControlButton>();
+	    buttonByID = new HashMap<String,JButton>();
+	    kahina.registerInstanceListener(KahinaEventTypes.ACTIVATION, this);
 	}
 	
     //used to add simple button definitions (not more than an icon path, a command, a tool tip and a mnemonic)
@@ -40,12 +51,14 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
     //needs to be built before the window can be displayed
     public void build()
     {
-        //this.removeAll();
+        mainPanel.removeAll();
+        buttonByID.clear();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         for (KahinaControlButton controlButton : buttons)
         {
             JButton button = controlButton.create();
             button.addActionListener(this);
+            buttonByID.put(controlButton.command, button);
             mainPanel.add(button);
         }
     }
@@ -59,5 +72,23 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
     public int getWindowType()
     {
     	return KahinaWindowType.CONTROL_WINDOW;
+    }
+
+    @Override
+    public void processEvent(KahinaEvent event)
+    {
+        if (event.getType().equals(KahinaEventTypes.ACTIVATION))
+        {
+            processEvent((KahinaActivationEvent) event);
+        }     
+    }
+    
+    public void processEvent(KahinaActivationEvent event)
+    {
+        JButton button = buttonByID.get(event.getElementID());
+        if (button != null)
+        {
+            button.setEnabled(event.getStatus());
+        }
     }
 }
