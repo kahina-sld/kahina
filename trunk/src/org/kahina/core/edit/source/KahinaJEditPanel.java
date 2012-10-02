@@ -103,8 +103,10 @@ public class KahinaJEditPanel extends JPanel
 
 	private Component createTextArea() throws Exception
 	{
-		textArea = new KahinaJEditTextArea(new KahinaJEditPropertyManager(), actionListener);
-		textArea.setMaximumSize(new Dimension(800,300));
+	    KahinaJEditPropertyManager propMng = new KahinaJEditPropertyManager();
+		textArea = new KahinaJEditTextArea(propMng, actionListener);
+	    textArea.setMinimumSize(new Dimension(200,50));
+		//textArea.setMaximumSize(new Dimension(800,100));
 		if (VERBOSE)
 		{
 			System.err.println("Created text area: " + textArea);
