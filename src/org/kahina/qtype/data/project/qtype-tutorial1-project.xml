@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kahina:project xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="qtype" kahina:name="QType Tutorial 1">
+  <kahina:mainFile kahina:path="/home/kahina/pro/qtype/GRM/QTG/shieb4.qtg"/>
+  <kahina:files/>
+  <kahina:perspective kahina:appid="" kahina:name="Kahina for QType Tutorial 1">
+    <kahina:arrangement>
+      <kahina:main-window kahina:border="false" kahina:height="809" kahina:id="0" kahina:primary="false" kahina:scroll="false" kahina:title="qtype (15)" kahina:width="941" kahina:xpos="0" kahina:ypos="25">
+        <kahina:vert-split-window kahina:height="926" kahina:id="30" kahina:title="Larger Content" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
+          <kahina:hori-split-window kahina:height="516" kahina:id="32" kahina:title="Middle Content Pane" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
+            <kahina:vert-split-window kahina:height="463" kahina:id="19" kahina:title="Content" kahina:width="632" kahina:xpos="0" kahina:ypos="25">
+              <kahina:vert-split-window kahina:height="228" kahina:id="29" kahina:title="Control Structure" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
+                <kahina:hori-split-window kahina:height="50" kahina:id="18" kahina:title="Control" kahina:width="553" kahina:xpos="0" kahina:ypos="40">
+                  <kahina:control-window kahina:binding="History" kahina:border="false" kahina:height="49" kahina:id="17" kahina:primary="true" kahina:scroll="false" kahina:title="History" kahina:width="164" kahina:xpos="400" kahina:ypos="25"/>
+                  <kahina:control-window kahina:binding="Control" kahina:border="false" kahina:height="49" kahina:id="16" kahina:primary="true" kahina:scroll="false" kahina:title="Control" kahina:width="489" kahina:xpos="0" kahina:ypos="25"/>
+                </kahina:hori-split-window>
+                <kahina:default-window kahina:binding="controlFlowTree" kahina:border="false" kahina:height="361" kahina:id="2" kahina:primary="true" kahina:scroll="false" kahina:title="Control flow tree" kahina:width="553" kahina:xpos="784" kahina:ypos="409"/>
+              </kahina:vert-split-window>
+              <kahina:default-window kahina:binding="codeLocation" kahina:border="true" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:scroll="true" kahina:title="Source Code" kahina:width="553" kahina:xpos="1010" kahina:ypos="172"/>
+            </kahina:vert-split-window>
+            <kahina:default-window kahina:binding="messageConsole" kahina:border="true" kahina:height="463" kahina:id="3" kahina:primary="true" kahina:scroll="false" kahina:title="Message console" kahina:width="-79" kahina:xpos="636" kahina:ypos="25"/>
+          </kahina:hori-split-window>
+          <kahina:default-window kahina:binding="goal" kahina:border="true" kahina:height="410" kahina:id="1" kahina:primary="true" kahina:scroll="true" kahina:title="Goal Display" kahina:width="553" kahina:xpos="0" kahina:ypos="537"/>
+        </kahina:vert-split-window>
+      </kahina:main-window>
+    </kahina:arrangement>
+    <kahina:configurations>
+      <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="1"/>
+      <kahina:configuration kahina:type="org.kahina.core.visual.tree.KahinaTreeViewConfiguration" kahina:viewid="2">
+        <kahina:option kahina:name="horizontalDistance" kahina:value="10"/>
+        <kahina:option kahina:name="verticalDistance" kahina:value="2"/>
+        <kahina:option kahina:name="nodeSize" kahina:value="10"/>
+        <kahina:option kahina:name="displaySecondDimension" kahina:value="true"/>
+        <kahina:option kahina:name="bgColor" kahina:value="(255,255,255)"/>
+        <kahina:option kahina:name="nodeShapePolicy" kahina:value="0"/>
+        <kahina:option kahina:name="edgeTagPolicy" kahina:value="2"/>
+        <kahina:option kahina:name="nodeDisplayPolicy" kahina:value="1"/>
+        <kahina:option kahina:name="collapsePolicy" kahina:value="2"/>
+        <kahina:option kahina:name="terminalsPolicy" kahina:value="0"/>
+        <kahina:option kahina:name="lineShapePolicy" kahina:value="2"/>
+        <kahina:option kahina:name="secondaryLineShapePolicy" kahina:value="1"/>
+        <kahina:option kahina:name="nodePositionPolicy" kahina:value="1"/>
+        <kahina:option kahina:name="antialiasingPolicy" kahina:value="0"/>
+        <kahina:option kahina:name="displayOrientation" kahina:value="0"/>
+        <kahina:option kahina:name="cuttingPolicy" kahina:value="1"/>
+      </kahina:configuration>
+      <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="3"/>
+      <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="4"/>
+    </kahina:configurations>
+  </kahina:perspective>
+  <kahina:controlAgentProfiles>
+    <kahina:controlAgentProfile kahina:type="break"/>
+    <kahina:controlAgentProfile kahina:type="creep"/>
+    <kahina:controlAgentProfile kahina:type="complete"/>
+    <kahina:controlAgentProfile kahina:type="skip"/>
+    <kahina:controlAgentProfile kahina:type="fail"/>
+  </kahina:controlAgentProfiles>
+</kahina:project>
