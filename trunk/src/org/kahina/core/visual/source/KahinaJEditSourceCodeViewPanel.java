@@ -5,10 +5,12 @@ import java.io.File;
 
 import javax.swing.BoxLayout;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.edit.source.KahinaMultifileJEditPanel;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.lp.LogicProgrammingInstance;
+import org.kahina.prolog.editor.PrologMultifileJEditPanel;
 
 public class KahinaJEditSourceCodeViewPanel extends KahinaViewPanel<KahinaJEditSourceCodeView>
 {
@@ -17,19 +19,19 @@ public class KahinaJEditSourceCodeViewPanel extends KahinaViewPanel<KahinaJEditS
 	
 	private KahinaMultifileJEditPanel editPanel;
 	
-	public KahinaJEditSourceCodeViewPanel(LogicProgrammingInstance instance)
+	public KahinaJEditSourceCodeViewPanel(KahinaInstance<?,?,?,?> instance)
 	{
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		add(createEditPanel2(instance));
 	}
 
-	private Component createEditPanel2(LogicProgrammingInstance instance)
+	private Component createEditPanel2(KahinaInstance<?,?,?,?> instance)
 	{
 		editPanel = createEditPanel(instance);
 		return editPanel;
 	}
 	
-	protected KahinaMultifileJEditPanel createEditPanel(LogicProgrammingInstance instance)
+	protected KahinaMultifileJEditPanel createEditPanel(KahinaInstance<?,?,?,?> instance)
 	{
 		return new KahinaMultifileJEditPanel(instance);
 	}
@@ -44,5 +46,4 @@ public class KahinaJEditSourceCodeViewPanel extends KahinaViewPanel<KahinaJEditS
 			editPanel.showLine(location.getLineNumber());
 		}
 	}
-
 }

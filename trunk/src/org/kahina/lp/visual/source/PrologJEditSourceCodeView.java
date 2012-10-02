@@ -6,9 +6,12 @@ import org.kahina.lp.LogicProgrammingInstance;
 
 public class PrologJEditSourceCodeView extends KahinaJEditSourceCodeView
 {
-	public PrologJEditSourceCodeView(LogicProgrammingInstance kahina)
+    LogicProgrammingInstance<?,?,?,?> kahina;
+    
+	public PrologJEditSourceCodeView(LogicProgrammingInstance<?,?,?,?> kahina)
 	{
 		super(kahina);
+		this.kahina = kahina;
 	}
 
 	@Override

@@ -10,10 +10,9 @@ import org.kahina.lp.LogicProgrammingState;
 public class KahinaCodeLinePropertySensor extends KahinaStepPropertySensor
 {
     private KahinaCodeLineProperty line;
-    //TODO: move this property sensor to the lp package, or enable code locations already for KahinaStep
-    private LogicProgrammingState state;
+    private KahinaState state;
     
-    public KahinaCodeLinePropertySensor(KahinaControlAgent controlPoint, LogicProgrammingState state, KahinaCodeLineProperty line)
+    public KahinaCodeLinePropertySensor(KahinaControlAgent controlPoint, KahinaState state, KahinaCodeLineProperty line)
     {
         this.controlPoint = controlPoint;
         this.state = state;
@@ -55,7 +54,7 @@ public class KahinaCodeLinePropertySensor extends KahinaStepPropertySensor
         this.line = new KahinaCodeLineProperty(location);
     }
     
-    public LogicProgrammingState getState()
+    public KahinaState getState()
     {
         return state;
     }

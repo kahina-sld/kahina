@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
+import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaCodeLineProperty;
 import org.kahina.core.control.KahinaCodeLinePropertySensor;
 import org.kahina.core.data.agent.KahinaControlAgent;
@@ -15,10 +16,10 @@ import org.kahina.lp.control.ControlAgentType;
 
 public class KahinaJEditActionListener implements ActionListener
 {
-    LogicProgrammingInstance<?,?,?,?> instance;
+    KahinaInstance<?,?,?,?> instance;
     KahinaJEditPanel panel;
     
-    public KahinaJEditActionListener(LogicProgrammingInstance<?,?,?,?> instance, KahinaJEditPanel panel)
+    public KahinaJEditActionListener(KahinaInstance<?,?,?,?> instance, KahinaJEditPanel panel)
     {
         this.instance = instance;
         this.panel = panel;
