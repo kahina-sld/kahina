@@ -1,6 +1,7 @@
 package org.kahina.qtype.gui;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.control.KahinaActivationEvent;
 import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.gui.menus.KahinaProjectMenu;
 import org.kahina.lp.gui.LogicProgrammingMainWindow;
@@ -41,6 +42,30 @@ public class QTypeMainWindow extends LogicProgrammingMainWindow
             default:
             {
                 projectMenu.saveProjectItem.setEnabled(true);
+            }
+        }
+        switch (projectStatus)
+        {
+            case NO_OPEN_PROJECT:
+            {
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",false));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",false));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",false));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",false));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",false));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",false));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",false));
+                break;
+            }
+            default:
+            {
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",true));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",true));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",true));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",true));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",true));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",true));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",true));
             }
         }
     }
