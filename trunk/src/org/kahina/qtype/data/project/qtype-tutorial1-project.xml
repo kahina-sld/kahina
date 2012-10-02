@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kahina:project xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="qtype" kahina:name="QType Tutorial 1">
+<kahina:project xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="qtype" kahina:name="QType Tutorials 1-3">
   <kahina:mainFile kahina:path="/home/kahina/pro/qtype/GRM/QTG/shieb4.qtg"/>
   <kahina:files/>
-  <kahina:perspective kahina:appid="" kahina:name="Kahina for QType Tutorial 1">
+  <kahina:perspective kahina:appid="" kahina:name="Kahina for QType Tutorials 1-3">
     <kahina:arrangement>
       <kahina:main-window kahina:border="false" kahina:height="809" kahina:id="0" kahina:primary="false" kahina:scroll="false" kahina:title="qtype (15)" kahina:width="941" kahina:xpos="0" kahina:ypos="25">
         <kahina:vert-split-window kahina:height="926" kahina:id="30" kahina:title="Larger Content" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
