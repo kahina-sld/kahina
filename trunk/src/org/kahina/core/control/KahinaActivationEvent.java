@@ -3,9 +3,9 @@ package org.kahina.core.control;
 public class KahinaActivationEvent extends KahinaEvent
 {
     private final String elementID;
-    private final boolean status;
+    private final KahinaActivationStatus status;
     
-    public KahinaActivationEvent(String elementID, boolean status)
+    public KahinaActivationEvent(String elementID, KahinaActivationStatus status)
     {
         super(KahinaEventTypes.ACTIVATION);
         this.elementID = elementID;
@@ -17,7 +17,7 @@ public class KahinaActivationEvent extends KahinaEvent
         return elementID;
     }
     
-    public boolean getStatus()
+    public KahinaActivationStatus getStatus()
     {
         return status;
     }

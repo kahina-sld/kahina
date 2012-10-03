@@ -1,5 +1,6 @@
 package org.kahina.core.gui;
 
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -7,11 +8,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaActivationEvent;
+import org.kahina.core.control.KahinaActivationStatus;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
@@ -88,7 +91,26 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
         JButton button = buttonByID.get(event.getElementID());
         if (button != null)
         {
-            button.setEnabled(event.getStatus());
+            switch (event.getStatus())
+            {
+                case ACTIVE:
+                {
+                    button.setEnabled(true);
+                    //button.setBorder(BorderFactory.createRaisedBevelBorder());
+                    break;
+                }
+                case INACTIVE:
+                {
+                    button.setEnabled(false);
+                    break;
+                }
+                case PRESSED:
+                {
+                    button.setEnabled(true);
+                    //button.setBorder(BorderFactory.createLoweredBevelBorder());
+                    break;
+                }
+            }
         }
     }
 }

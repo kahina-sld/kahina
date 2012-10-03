@@ -8,6 +8,7 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.bridge.KahinaStepDescriptionEvent;
 import org.kahina.core.control.KahinaActivationEvent;
+import org.kahina.core.control.KahinaActivationStatus;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
@@ -1155,57 +1156,57 @@ public class LogicProgrammingBridge extends KahinaBridge
             {
                 case 'n':
                 {
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",true));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.ACTIVE));
                     break;
                 }
                 case 's':
                 {
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",false));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.PRESSED));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
                     break;
                 }
                 case 'p':
                 {
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",false));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.PRESSED));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.PRESSED));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
                     break;
                 }
                 case 'q':
                 {
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",false));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.PRESSED));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.PRESSED));
                     break;
                 }
                 case 'l':
                 {
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",false));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",true));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",false));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.PRESSED));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
                     break;
                 }
             }
