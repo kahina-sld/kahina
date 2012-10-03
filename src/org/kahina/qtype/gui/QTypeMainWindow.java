@@ -54,8 +54,10 @@ public class QTypeMainWindow extends LogicProgrammingMainWindow
                 kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.INACTIVE));
                 kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
                 kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.INACTIVE));
-                kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.INACTIVE));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.INACTIVE));
                 kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("backInHistory",KahinaActivationStatus.INACTIVE));
+                kahina.dispatchInstanceEvent(new KahinaActivationEvent("forwardInHistory",KahinaActivationStatus.INACTIVE));
                 break;
             }
         }
