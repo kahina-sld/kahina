@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="" kahina:name="MinUnsatCore Default">
+  <kahina:arrangement>
+    <kahina:main-window kahina:border="false" kahina:height="1000" kahina:id="0" kahina:primary="false" kahina:title="Kahina" kahina:width="1680" kahina:xpos="0" kahina:ypos="25">
+      <kahina:hori-split-window kahina:height="1000" kahina:id="9" kahina:title="MinUnsatCore Visualization" kahina:width="1680" kahina:xpos="0" kahina:ypos="0">
+          <kahina:default-window kahina:binding="decisionGraph" kahina:border="true" kahina:height="471" kahina:id="1" kahina:primary="true" kahina:title="Decision graph" kahina:width="800" kahina:xpos="320" kahina:ypos="25"/>
+          <kahina:tabbed-window kahina:height="0" kahina:id="12" kahina:primary="false" kahina:title="Reduction" kahina:width="877" kahina:xpos="800" kahina:ypos="133">
+            <kahina:default-window kahina:binding="reducers" kahina:border="true" kahina:height="-471" kahina:id="13" kahina:primary="true" kahina:title="Automated UC Reduction" kahina:width="800" kahina:xpos="800" kahina:ypos="200"/>
+            <kahina:default-window kahina:binding="stepController" kahina:border="true" kahina:height="-471" kahina:id="2" kahina:primary="true" kahina:title="Manual UC Reduction" kahina:width="800" kahina:xpos="811" kahina:ypos="223"/> 
+          </kahina:tabbed-window>
+      </kahina:hori-split-window>
+    </kahina:main-window>
+    <kahina:default-window kahina:visible="false" kahina:binding="satInstance" kahina:border="true" kahina:height="0" kahina:id="3" kahina:primary="true" kahina:title="SAT Instance" kahina:width="-877" kahina:xpos="975" kahina:ypos="100"/>
+  </kahina:arrangement>
+  <kahina:configurations>
+    <kahina:configuration kahina:type="org.kahina.core.visual.tree.KahinaTreeViewConfiguration" kahina:viewid="1">
+      <kahina:option kahina:name="horizontalDistance" kahina:value="3"/>
+      <kahina:option kahina:name="verticalDistance" kahina:value="5"/>
+      <kahina:option kahina:name="fontSize" kahina:value="10"/>
+      <kahina:option kahina:name="displaySecondDimension" kahina:value="true"/>
+      <kahina:option kahina:name="bgColor" kahina:value="(255,255,255)"/>
+      <kahina:option kahina:name="nodeShapePolicy" kahina:value="0"/>
+      <kahina:option kahina:name="edgeTagPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="nodeDisplayPolicy" kahina:value="1"/>
+      <kahina:option kahina:name="collapsePolicy" kahina:value="0"/>
+      <kahina:option kahina:name="terminalsPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="lineShapePolicy" kahina:value="0"/>
+      <kahina:option kahina:name="secondaryLineShapePolicy" kahina:value="1"/>
+      <kahina:option kahina:name="nodePositionPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="antialiasingPolicy" kahina:value="0"/>
+      <kahina:option kahina:name="displayOrientation" kahina:value="0"/>
+      <kahina:option kahina:name="cuttingPolicy" kahina:value="1"/>
+    </kahina:configuration>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="2"/>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="3"/>
+    <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="4"/>
+  </kahina:configurations>
+</kahina:perspective>
