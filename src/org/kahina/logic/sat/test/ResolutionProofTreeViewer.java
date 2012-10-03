@@ -8,7 +8,6 @@ import javax.swing.SwingUtilities;
 
 import org.kahina.core.KahinaDefaultInstance;
 import org.kahina.core.control.KahinaEventTypes;
-import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 import org.kahina.logic.sat.data.KahinaSatInstance;
