@@ -1161,8 +1161,8 @@ public class LogicProgrammingBridge extends KahinaBridge
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.ACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.ACTIVE));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.ACTIVE));
                     break;
                 }
                 case 's':
@@ -1172,7 +1172,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.INACTIVE));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
                     break;
                 }
@@ -1183,7 +1183,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.PRESSED));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.PRESSED));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
                     break;
                 }
@@ -1194,7 +1194,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.PRESSED));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.INACTIVE));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.ACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.PRESSED));
                     break;
                 }
@@ -1205,7 +1205,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.ACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.PRESSED));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("stop",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.ACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
                     break;
                 }

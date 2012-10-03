@@ -97,7 +97,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 		addControlButton("Control", "gui/icons/skip.png", "skip", "(S)kip this step", KeyEvent.VK_S);
 		addControlButton("Control", "gui/icons/leap.png", "leap", "(L)eap to next breakpoint match", KeyEvent.VK_L);
 	    addControlButton("Control", "gui/icons/pause.png", "(un)pause", "(P)ause the current skip or leap", KeyEvent.VK_P);
-		addControlButton("Control", "gui/icons/stop.png", "stop", "abort skip or leap (X)", KeyEvent.VK_X);
+		addControlButton("Control", "gui/icons/stop.png", "abort", "abort trace (A)", KeyEvent.VK_A);
 		
 		addControlButton("History", "gui/icons/back.png", "backInHistory", "Back (Q)", KeyEvent.VK_Q);
 		addControlButton("History", "gui/icons/forward.png", "forwardInHistory", "Forward (W)", KeyEvent.VK_W);

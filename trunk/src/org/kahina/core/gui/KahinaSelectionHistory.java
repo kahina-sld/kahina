@@ -15,7 +15,7 @@ public class KahinaSelectionHistory implements KahinaListener
     
     // TODO move history from GUI to state?
     
-    LinkedList<Integer> selectionHistory;
+    private LinkedList<Integer> selectionHistory;
     int pointInHistory;
     
     private boolean selectionCausedByHistory;

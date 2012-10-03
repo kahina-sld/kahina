@@ -24,6 +24,8 @@ import javax.swing.JPanel;
 import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.KahinaStep;
+import org.kahina.core.control.KahinaActivationEvent;
+import org.kahina.core.control.KahinaActivationStatus;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
@@ -285,6 +287,22 @@ public class KahinaGUI implements KahinaListener
 				}
 				displayStepContent(stepID);
 				kahina.dispatchEvent(new KahinaUpdateEvent(stepID, e.getLayer()));
+                if (selectionHistory.canMoveToPrevious())
+                {
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("backInHistory",KahinaActivationStatus.ACTIVE));
+                }
+                else
+                {
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("backInHistory",KahinaActivationStatus.INACTIVE));
+                }
+                if (selectionHistory.canMoveToNext())
+                {
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("forwardInHistory",KahinaActivationStatus.ACTIVE));
+                }
+                else
+                {
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("forwardInHistory",KahinaActivationStatus.INACTIVE));
+                }
 				kahina.dispatchEvent(new KahinaRedrawEvent());
 			}
 		}
