@@ -1,5 +1,7 @@
 package org.kahina.core.gui;
 
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -56,7 +58,8 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
     {
         mainPanel.removeAll();
         buttonByID.clear();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        mainPanel.setLayout(new GridLayout());
+        //mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
         for (KahinaControlButton controlButton : buttons)
         {
             JButton button = controlButton.create();
@@ -91,12 +94,14 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
         JButton button = buttonByID.get(event.getElementID());
         if (button != null)
         {
+            Dimension size = button.getSize();
             switch (event.getStatus())
             {
                 case ACTIVE:
                 {
                     button.setEnabled(true);
-                    //button.setBorder(BorderFactory.createRaisedBevelBorder());
+                    button.setBorder(BorderFactory.createRaisedBevelBorder());
+                    button.setSize(size);
                     break;
                 }
                 case INACTIVE:
@@ -107,7 +112,9 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
                 case PRESSED:
                 {
                     button.setEnabled(true);
-                    //button.setBorder(BorderFactory.createLoweredBevelBorder());
+
+                    button.setBorder(BorderFactory.createLoweredBevelBorder());
+                    button.setSize(size);
                     break;
                 }
             }
