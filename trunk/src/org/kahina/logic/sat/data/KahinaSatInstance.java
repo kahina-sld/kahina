@@ -30,7 +30,7 @@ public class KahinaSatInstance extends KahinaObject
         {
             String symbol = symbolTable.get(-literal);
             if (symbol == null) return literal + "";
-            return symbol;
+            return "-" + symbol;
         }
     }
 }
