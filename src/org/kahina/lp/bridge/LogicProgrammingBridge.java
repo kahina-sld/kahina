@@ -994,12 +994,13 @@ public class LogicProgrammingBridge extends KahinaBridge
 				setBridgeState('l');
 				skipID = -1;
 			}
+			else if (getBridgeState() == 'l')
+			{
+			    setBridgeState('n');
+			}
 		} 
 		else if (command.equals("(un)pause"))
 		{
-			// FIXME There's no visible reaction when clicking pause. The button
-			// should change, and the current step should be selected. For the
-			// time being, I removed the pause button.
 			performBreakAction("User");
 		} 
 		else if (command.equals("abort"))
@@ -1090,6 +1091,11 @@ public class LogicProgrammingBridge extends KahinaBridge
             setBridgeState('t');
             skipID = currentID;
         }
+        else if (getBridgeState() == 's')
+        {
+            skipID = -1;
+            setBridgeState('c');
+        } 
     }
 
 	protected void performCreepAction(String agentString)
@@ -1167,13 +1173,24 @@ public class LogicProgrammingBridge extends KahinaBridge
                 }
                 case 's':
                 {
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.INACTIVE));
+                    /*kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.PRESSED));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
+                    break;*/
+                }
+                case 't':
+                {
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.PRESSED));
                     break;
                 }
                 case 'p':
@@ -1182,20 +1199,20 @@ public class LogicProgrammingBridge extends KahinaBridge
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.PRESSED));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.PRESSED));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.INACTIVE));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.PRESSED));
                     break;
                 }
                 case 'q':
                 {
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.INACTIVE));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.PRESSED));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.PRESSED));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.ACTIVE));
-                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.PRESSED));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
                     break;
                 }
                 case 'l':
