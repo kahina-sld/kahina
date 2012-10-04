@@ -88,7 +88,7 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 	@Override
 	public String getApplicationName()
 	{
-		return "qtype";
+		return "Kahina for QType";
 	}
     
      @Override

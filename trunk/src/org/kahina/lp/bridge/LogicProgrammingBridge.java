@@ -93,7 +93,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		super(kahina);
 		this.state = (LogicProgrammingState) kahina.getState();
 		stepIDConv = new HashMap<Integer, Integer>();
-		//TODO: the first two should probably be instance listeners!
+		setBridgeState('n');
 		kahina.registerSessionListener(KahinaEventTypes.SELECTION, this);
 		kahina.registerSessionListener(KahinaEventTypes.WARN, this);
 	    kahina.registerInstanceListener(KahinaEventTypes.SYSTEM, this);
@@ -1006,6 +1006,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 		else if (command.equals("abort"))
 		{
 			setBridgeState('a');
+            state.breakpointConsoleMessage(currentID, "User causes abort at step " + state.get(currentID).externalID + ". Trace closed.");
 		}
 	}
 
@@ -1171,6 +1172,17 @@ public class LogicProgrammingBridge extends KahinaBridge
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.ACTIVE));
                     break;
                 }
+                case 'c':
+                {
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.ACTIVE));
+                    break;
+                }
                 case 's':
                 {
                     /*kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.INACTIVE));
@@ -1223,6 +1235,17 @@ public class LogicProgrammingBridge extends KahinaBridge
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.PRESSED));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.ACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
+                    break;
+                }
+                case 'a':
+                {
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("creep",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("skip",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("(un)pause",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("fail",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("leap",KahinaActivationStatus.INACTIVE));
+                    kahina.dispatchInstanceEvent(new KahinaActivationEvent("abort",KahinaActivationStatus.INACTIVE));
                     kahina.dispatchInstanceEvent(new KahinaActivationEvent("auto-complete",KahinaActivationStatus.INACTIVE));
                     break;
                 }
