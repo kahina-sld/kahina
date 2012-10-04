@@ -1,6 +1,7 @@
 package org.kahina.core.visual.tree;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -86,7 +87,8 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 			splitPane.setDividerSize(2);
 			splitPanes.add(splitPane);
 			add(splitPane);
-		} else
+		} 
+		else
 		{
 			add(createPane(panels[0]));
 		}
@@ -95,17 +97,18 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 
 	private void updateDividerLocations()
 	{
+	    //problem: this.getWidth() is often 0!
 		for (JSplitPane splitPane : splitPanes)
 		{
-			splitPane.setDividerLocation(this.getWidth() / panels.length);
+			splitPane.setDividerLocation(1.0 / panels.length);
 		}
-		for (int i = 0; i < panels.length; i++)
+		/*for (int i = 0; i < panels.length; i++)
 		{
-			// lists[i].setMinimumSize(new Dimension(this.getWidth() /
-			// panels.length, this.getHeight()));
-			// lists[i].setPreferredSize(new Dimension(this.getWidth() /
-			// panels.length, this.getHeight()));
-		}
+			lists[i].setMinimumSize(new Dimension(this.getWidth() /
+			panels.length, this.getHeight()));
+			lists[i].setPreferredSize(new Dimension(this.getWidth() /
+			panels.length, this.getHeight()));
+		}*/
 	}
 
 	private JSplitPane createSplitPane(int index)
@@ -120,13 +123,16 @@ public class KahinaListTreeViewPanel extends KahinaViewPanel<KahinaListTreeView>
 		if (index + 1 == panels.length)
 		{
 			right = createPane(panels[index]);
-		} else
+		} 
+		else
 		{
 			right = createSplitPane(index);
 			((JSplitPane) right).setDividerSize(2);
 			splitPanes.add((JSplitPane) right);
 		}
-		return new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, left, right);
+		JSplitPane splitPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, left, right);
+		splitPanel.setDividerLocation(1.0 / panels.length);
+		return splitPanel;
 	}
 
 	private JComponent createPane(JComponent panel)

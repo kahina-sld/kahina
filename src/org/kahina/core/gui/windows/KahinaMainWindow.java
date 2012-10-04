@@ -194,7 +194,14 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	{
 		if (event.getSystemEventType() == KahinaSystemEvent.NODE_COUNT)
 		{
-			setTitle(kahina.getApplicationName() + " (" + event.getIntContent() + ")");
+		    if (kahina.getProject() == null)
+		    {
+		        setTitle(kahina.getApplicationName());
+		    }
+		    else
+		    {
+		        setTitle(kahina.getApplicationName() + " - " + kahina.getProject().getName() + " (" + event.getIntContent() + ")");
+		    }
 		} 
         else if (event.getSystemEventType() == KahinaSystemEvent.QUIT)
 		{

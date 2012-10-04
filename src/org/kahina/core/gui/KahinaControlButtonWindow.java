@@ -107,12 +107,13 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
                 case INACTIVE:
                 {
                     button.setEnabled(false);
+                    button.setBorder(BorderFactory.createRaisedBevelBorder());
+                    button.setSize(size);
                     break;
                 }
                 case PRESSED:
                 {
                     button.setEnabled(true);
-
                     button.setBorder(BorderFactory.createLoweredBevelBorder());
                     button.setSize(size);
                     break;
