@@ -735,7 +735,6 @@ public class LogicProgrammingBridge extends KahinaBridge
                     {
                         System.err.println(this + ".getAction() == 'c', in leap mode");
                     }
-    				setBridgeState('l');
     				return 'c';
     			}
     			case 't':
@@ -1286,9 +1285,9 @@ public class LogicProgrammingBridge extends KahinaBridge
         //reflect changes to the bridge state in the control button activation pattern
         if (this.bridgeState != bridgeState)
         {
+            this.bridgeState = bridgeState;
             updateControlElementActivations();
         }
-        this.bridgeState = bridgeState;
     }
 
     public char getBridgeState()
