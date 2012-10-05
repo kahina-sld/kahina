@@ -144,8 +144,7 @@ public class LogicProgrammingGUI extends KahinaGUI
 		if (VERBOSE)
 		{
 			System.err.println("Displaying console messages...");
-		}
-		messageConsoleView.display(state.getConsoleMessages());
+		};
         breakPointView.display(kahina.getBreakPoints());
         creepPointView.display(kahina.getCreepPoints());
         completePointView.display(kahina.getCompletePoints());

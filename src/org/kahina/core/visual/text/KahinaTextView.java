@@ -31,6 +31,8 @@ public class KahinaTextView<T extends KahinaLineReference> extends KahinaView<T>
     @Override
     public void doDisplay()
     {
+        listModel.clear();
+        selectionModel.clearSelection();
     	// FIXME create listModel and selectionModel from existing model, e.g.
     	// when a stored session is loaded.
     }
