@@ -216,6 +216,7 @@ public class QTypeCommander implements KahinaListener
         {
             if (event.getArguments() == null || event.getArguments().length == 0)
             {
+                kahina.dispatchEvent(new KahinaControlEvent("abort"));
                 kahina.dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { ListUtil.join(" ", sentence) }));
             }
             else

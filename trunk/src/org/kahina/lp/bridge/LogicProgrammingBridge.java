@@ -1155,7 +1155,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 
     public void setBridgeState(char bridgeState)
     {
-        if (VERBOSE) System.err.println(this + ".setBridgeState(" + bridgeState + ")");
+        //if (VERBOSE) 
+            System.err.println(this + ".setBridgeState(" + bridgeState + ")");
         //reflect changes to the bridge state in the control button activation pattern
         if (this.bridgeState != bridgeState)
         {
