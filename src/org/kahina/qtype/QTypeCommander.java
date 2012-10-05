@@ -90,13 +90,11 @@ public class QTypeCommander implements KahinaListener
             if (commands.isEmpty())
             {
                 commanding = true;
-                updateProjectStatus();
                 return "";
             }
 
             String command = commands.remove();
             commanding = !"quit".equals(command);
-            updateProjectStatus();
             if (VERBOSE)
             {
                 System.err.println(this + ".getCommand()=" + command + "(Queue: " + commands + ")");
@@ -109,7 +107,7 @@ public class QTypeCommander implements KahinaListener
     {
         if (kahina.getProjectStatus() != KahinaProjectStatus.NO_OPEN_PROJECT)
         {
-            if (!commanding)
+            if (kahina.getProject() == null)
             {
                 kahina.setProjectStatus(KahinaProjectStatus.NO_OPEN_PROJECT);
             }
