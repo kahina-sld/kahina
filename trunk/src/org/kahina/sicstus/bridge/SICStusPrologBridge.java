@@ -32,7 +32,8 @@ public class SICStusPrologBridge extends PrologBridge
 			{
 				kahina.dispatchEvent(new KahinaSelectionEvent(internalStepID));
 			}
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(1);

@@ -40,6 +40,11 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         rebuild();
     }
 	
+	public void deregister()
+	{
+	    kahina.deregisterInstanceListener(KahinaEventTypes.WINDOW, this);
+	}
+	
 	public void rebuild()
 	{
 		this.removeAll();

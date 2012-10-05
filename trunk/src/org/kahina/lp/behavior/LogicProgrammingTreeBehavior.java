@@ -496,7 +496,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		if (caption.startsWith("block "))
 		{
 			object.setNodeStatus(stepID, LogicProgrammingStepType.PSEUDO_BLOCKED);
-		} else if (caption.startsWith("unblock "))
+		} 
+		else if (caption.startsWith("unblock "))
 		{
 			object.setNodeStatus(stepID, LogicProgrammingStepType.PSEUDO_UNBLOCKED);
 		} else

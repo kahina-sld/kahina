@@ -74,6 +74,11 @@ public class KahinaWindow extends JFrame implements WindowListener, ComponentLis
     	initialize();
     }
     
+    public void deregister()
+    {
+        
+    }
+    
     private void initialize()
     {
         setLayout(new BorderLayout());

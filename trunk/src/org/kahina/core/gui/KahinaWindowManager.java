@@ -293,10 +293,15 @@ public class KahinaWindowManager implements KahinaListener
     public void disposeAllWindows()
     {
         // TODO: this should be done a little more carefully
+        for (int windowID : getArrangement().getAllWindows())
+        {
+            getWindowByID(windowID).deregister();
+        }
         for (int windowID : getArrangement().getTopLevelWindows())
         {
             getWindowByID(windowID).dispose();
         }
+        mainWindow.deregister();
         mainWindow.dispose();
     }
 

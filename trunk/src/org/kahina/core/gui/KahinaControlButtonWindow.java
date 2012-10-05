@@ -47,6 +47,11 @@ public class KahinaControlButtonWindow extends KahinaWindow implements ActionLis
 	    kahina.registerInstanceListener(KahinaEventTypes.ACTIVATION, this);
 	}
 	
+	public void deregister()
+	{
+	    kahina.deregisterInstanceListener(KahinaEventTypes.ACTIVATION, this);
+	}
+	
     //used to add simple button definitions (not more than an icon path, a command, a tool tip and a mnemonic)
     public void addControlButton(KahinaControlButton button)
     {
