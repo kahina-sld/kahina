@@ -97,7 +97,6 @@ public class KahinaGUI implements KahinaListener
 
         messageConsoleView = new KahinaTextView(kahina);
         messageConsoleView.setTitle("Message console");
-        //TODO: this should happen via GUI control
         kahina.registerInstanceListener("message", messageConsoleView);
         kahina.registerInstanceListener("console line", messageConsoleView);
         views.add(messageConsoleView);
@@ -225,7 +224,7 @@ public class KahinaGUI implements KahinaListener
 
 	public void displayMainViews()
 	{
-	    //System.err.println("WARNING: called stub version of KahinaGUI.displayMainViews()! This should not happen!");
+	    messageConsoleView.display(kahina.getState().getConsoleMessages());
 	}
 
 	public void displayStepContent(int stepID)
