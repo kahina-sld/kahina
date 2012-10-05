@@ -77,6 +77,12 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		kahina.registerInstanceListener(KahinaEventTypes.SYSTEM, this);
 	}
+	
+	public void deregister()
+	{
+	    viewMenu.deregister();
+	    kahina.deregisterInstanceListener(KahinaEventTypes.SYSTEM, this);
+	}
 
 	public void setSize(int width, int height)
 	{
@@ -100,7 +106,8 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		{
 			setSubwindow(w);
 			return true;
-		} else
+		} 
+		else
 		{
 			return false;
 		}
