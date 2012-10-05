@@ -75,9 +75,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 	// always contains the internal ID of the selected step
 	protected int selectedID = -1;
 
-	// store the state of the bridge, determining the next result of
-	// getPressedButton()
-	private volatile char bridgeState = 'n';
+	// store the state of the bridge, determining the next result of getPressedButton()
+	// and the activation pattern of the GUI's control buttons
+	private volatile char bridgeState = '0';
 
 	// used to hand on skip commands to the logic programming system
 	protected boolean skipFlag = false;
