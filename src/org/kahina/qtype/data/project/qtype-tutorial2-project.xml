@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kahina:project xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="qtype" kahina:name="QType Tutorials 4-5">
+  <kahina:mainFile kahina:path="../GRM/QTG/shieb4.qtg"/>
+  <kahina:files/>
+  <kahina:perspective kahina:appid="" kahina:name="Kahina for QType Tutorials 4-5">
+    <kahina:arrangement>
+      <kahina:main-window kahina:border="false" kahina:height="926" kahina:id="0" kahina:primary="false" kahina:scroll="false" kahina:title="Kahina for QType" kahina:width="1022" kahina:xpos="0" kahina:ypos="25">
+        <kahina:vert-split-window kahina:height="926" kahina:id="19" kahina:title="Content" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
+          <kahina:hori-split-window kahina:height="169" kahina:id="53" kahina:title="Lower Half" kahina:width="264" kahina:xpos="596" kahina:ypos="622">
+            <kahina:default-window kahina:binding="goal" kahina:border="true" kahina:height="169" kahina:id="1" kahina:primary="true" kahina:scroll="true" kahina:title="Goal Display" kahina:width="-89" kahina:xpos="860" kahina:ypos="622"/>
+            <kahina:default-window kahina:binding="codeLocation" kahina:border="true" kahina:height="169" kahina:id="4" kahina:primary="true" kahina:scroll="true" kahina:title="Source Code" kahina:width="353" kahina:xpos="358" kahina:ypos="77"/>
+          </kahina:hori-split-window>
+          <kahina:hori-split-window kahina:height="411" kahina:id="33" kahina:title="Upper Half" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
+            <kahina:vert-split-window kahina:height="411" kahina:id="29" kahina:title="Control Structure" kahina:width="698" kahina:xpos="0" kahina:ypos="25">
+              <kahina:default-window kahina:binding="controlFlowTree" kahina:border="false" kahina:height="18" kahina:id="2" kahina:primary="true" kahina:scroll="false" kahina:title="Control flow tree" kahina:width="553" kahina:xpos="784" kahina:ypos="409"/>
+              <kahina:vert-split-window kahina:height="187" kahina:id="20" kahina:title="Control and Breakpoints" kahina:width="553" kahina:xpos="0" kahina:ypos="40">
+                <kahina:hori-split-window kahina:height="49" kahina:id="18" kahina:title="Control" kahina:width="653" kahina:xpos="0" kahina:ypos="40">
+                  <kahina:control-window kahina:binding="History" kahina:border="false" kahina:height="49" kahina:id="17" kahina:primary="true" kahina:scroll="false" kahina:title="History" kahina:width="144" kahina:xpos="400" kahina:ypos="25"/>
+                  <kahina:control-window kahina:binding="Control" kahina:border="false" kahina:height="49" kahina:id="16" kahina:primary="true" kahina:scroll="false" kahina:title="Control" kahina:width="509" kahina:xpos="0" kahina:ypos="25"/>
+                </kahina:hori-split-window>
+                <kahina:tabbed-window kahina:height="138" kahina:id="21" kahina:title="Control Automation / Search" kahina:width="653" kahina:xpos="0" kahina:ypos="125">
+                  <kahina:default-window kahina:binding="creepPoints" kahina:border="false" kahina:height="200" kahina:id="23" kahina:primary="true" kahina:scroll="true" kahina:title="Creep" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+                  <kahina:default-window kahina:binding="breakPoints" kahina:border="false" kahina:height="200" kahina:id="22" kahina:primary="true" kahina:scroll="true" kahina:title="Break" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+                  <kahina:default-window kahina:binding="skipPoints" kahina:border="false" kahina:height="200" kahina:id="25" kahina:primary="true" kahina:scroll="true" kahina:title="Skip" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+                  <kahina:default-window kahina:binding="completePoints" kahina:border="false" kahina:height="200" kahina:id="24" kahina:primary="true" kahina:scroll="true" kahina:title="Complete" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+                  <kahina:default-window kahina:binding="warnPoints" kahina:border="false" kahina:height="200" kahina:id="27" kahina:primary="true" kahina:scroll="true" kahina:title="Warn" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+                  <kahina:default-window kahina:binding="failPoints" kahina:border="false" kahina:height="200" kahina:id="26" kahina:primary="true" kahina:scroll="true" kahina:title="Fail" kahina:width="600" kahina:xpos="0" kahina:ypos="125"/>
+                </kahina:tabbed-window>
+              </kahina:vert-split-window>
+            </kahina:vert-split-window>
+            <kahina:default-window kahina:binding="messageConsole" kahina:border="true" kahina:height="411" kahina:id="3" kahina:primary="true" kahina:scroll="false" kahina:title="Message console" kahina:width="-145" kahina:xpos="681" kahina:ypos="171"/>
+          </kahina:hori-split-window>
+        </kahina:vert-split-window>
+      </kahina:main-window>
+    </kahina:arrangement>
+    <kahina:configurations>
+      <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="1"/>
+      <kahina:configuration kahina:type="org.kahina.core.visual.tree.KahinaTreeViewConfiguration" kahina:viewid="2">
+        <kahina:option kahina:name="horizontalDistance" kahina:value="10"/>
+        <kahina:option kahina:name="verticalDistance" kahina:value="2"/>
+        <kahina:option kahina:name="nodeSize" kahina:value="10"/>
+        <kahina:option kahina:name="displaySecondDimension" kahina:value="true"/>
+        <kahina:option kahina:name="bgColor" kahina:value="(255,255,255)"/>
+        <kahina:option kahina:name="nodeShapePolicy" kahina:value="0"/>
+        <kahina:option kahina:name="edgeTagPolicy" kahina:value="2"/>
+        <kahina:option kahina:name="nodeDisplayPolicy" kahina:value="1"/>
+        <kahina:option kahina:name="collapsePolicy" kahina:value="2"/>
+        <kahina:option kahina:name="terminalsPolicy" kahina:value="0"/>
+        <kahina:option kahina:name="lineShapePolicy" kahina:value="2"/>
+        <kahina:option kahina:name="secondaryLineShapePolicy" kahina:value="1"/>
+        <kahina:option kahina:name="nodePositionPolicy" kahina:value="1"/>
+        <kahina:option kahina:name="antialiasingPolicy" kahina:value="0"/>
+        <kahina:option kahina:name="displayOrientation" kahina:value="0"/>
+        <kahina:option kahina:name="cuttingPolicy" kahina:value="1"/>
+      </kahina:configuration>
+      <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="3"/>
+      <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="4"/>
+    </kahina:configurations>
+  </kahina:perspective>
+  <kahina:controlAgentProfiles>
+    <kahina:controlAgentProfile kahina:type="break"/>
+    <kahina:controlAgentProfile kahina:type="creep">
+      <kahina:controlAgent active="true" color="#0000CC" name="creep db_rule">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true">db_rule</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+      <kahina:controlAgent active="true" color="#0000CC" name="creep db_word">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true">db_word</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+    </kahina:controlAgentProfile>
+    <kahina:controlAgentProfile kahina:type="complete">
+      <kahina:controlAgent active="true" color="#00DD00" name="complete lexentry">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true">lexentry_existence</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+    </kahina:controlAgentProfile>
+    <kahina:controlAgentProfile kahina:type="skip">
+      <kahina:controlAgent active="true" color="#D5EB3E" name="skip mgu">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true">mgu</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+      <kahina:controlAgent active="true" color="#56D1D7" name="skip unify">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true">unify</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+    </kahina:controlAgentProfile>
+    <kahina:controlAgentProfile kahina:type="fail"/>
+  </kahina:controlAgentProfiles>
+</kahina:project>
