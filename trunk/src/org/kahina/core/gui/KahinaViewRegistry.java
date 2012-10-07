@@ -36,7 +36,7 @@ public class KahinaViewRegistry
         Class<?> instanceClass = kahina.getClass();
         while (!instanceClass.equals(Object.class))
         {
-            System.err.println("instanceClass = " + instanceClass);
+            //System.err.println("instanceClass = " + instanceClass);
     		try
     		{
     			view = viewType.getConstructor(instanceClass).newInstance(kahina);
