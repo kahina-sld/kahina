@@ -1105,7 +1105,8 @@ public class LogicProgrammingBridge extends KahinaBridge
         {
             setBridgeState('t');
         } 
-        else if (getBridgeState() == 't')
+        //do not let control agents abort auto-complete operations!
+        else if (getBridgeState() == 't' && "User".equals(agentString))
         {
             setBridgeState('n');
         }
