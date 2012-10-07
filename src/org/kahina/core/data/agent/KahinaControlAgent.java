@@ -179,7 +179,7 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
     {
         if (active)
         {
-            return name + super.toString();
+            return name;
         }
         else
         {

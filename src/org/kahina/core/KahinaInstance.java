@@ -276,7 +276,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     
     public void setProjectStatus(KahinaProjectStatus projectStatus)
     {
-        System.err.println("setProjectStatus(" + projectStatus + ")");
+        //System.err.println("setProjectStatus(" + projectStatus + ")");
         this.projectStatus = projectStatus;
         gui.getMainWindow().processProjectStatus(projectStatus);
     }
