@@ -37,13 +37,6 @@ public class KahinaSessionMenu extends JMenu implements ActionListener
         //TODO: reliably re-establish the saved state functionality
         saveSessionItem.setEnabled(false);
         this.add(saveSessionItem);
-        
-        this.addSeparator();
-        
-        JMenuItem quitItem = new JMenuItem("Quit");
-        quitItem.setActionCommand("quit");
-        quitItem.addActionListener(this);
-        this.add(quitItem);
     }
     
     @Override
@@ -65,10 +58,6 @@ public class KahinaSessionMenu extends JMenu implements ActionListener
             chooser.showSaveDialog(this);
             File dataFile = chooser.getSelectedFile();
             if (dataFile != null)  kahina.dispatchInstanceEvent(new KahinaSessionEvent(KahinaSessionEvent.SAVE_SESSION, dataFile));
-        }
-        else if (s.equals("quit"))
-        {
-            kahina.dispatchInstanceEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
         }
     }
 }

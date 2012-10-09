@@ -67,6 +67,13 @@ public class KahinaProjectMenu extends JMenu
 		saveProjectItem.setActionCommand("saveProject");
 		saveProjectItem.addActionListener(defaultListener);
 		this.add(saveProjectItem);
+		
+        this.addSeparator();
+        
+        JMenuItem quitItem = new JMenuItem("Quit Kahina");
+        quitItem.setActionCommand("quit");
+        quitItem.addActionListener(defaultListener);
+        this.add(quitItem);
 	}
 	
 	/**
