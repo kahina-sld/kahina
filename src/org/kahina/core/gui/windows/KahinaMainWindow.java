@@ -57,11 +57,12 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		menuBar = new JMenuBar();
         
-        sessionMenu = new KahinaSessionMenu(kahina);
-        menuBar.add(sessionMenu);
-        
         projectMenu = new KahinaProjectMenu(kahina);
         menuBar.add(projectMenu);
+        
+        //TODO: reactivate this menu and the functionality it once provided
+        //sessionMenu = new KahinaSessionMenu(kahina);
+        //menuBar.add(sessionMenu);
 		
 		addMenusInFront();
 
@@ -148,7 +149,8 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 			removedWindow.setContentPane((Container) mainPanel.getComponents()[0]);
 			subwindow = null;
-		} else
+		} 
+		else
 		{
 			System.err.println("WARNING: Window \"" + removedWindow.getTitle() + "\" is not embedded directly under the main window, release failed.");
 		}

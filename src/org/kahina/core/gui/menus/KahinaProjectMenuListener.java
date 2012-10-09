@@ -11,6 +11,7 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaProjectEvent;
 import org.kahina.core.control.KahinaProjectEventType;
 import org.kahina.core.control.KahinaSessionEvent;
+import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.gui.event.KahinaPerspectiveEvent;
 
 /**
@@ -58,6 +59,10 @@ public class KahinaProjectMenuListener implements ActionListener
 		{
 			processSaveProjectCommand();
 		}
+        else if (command.equals("quit"))
+        {
+            kahina.dispatchInstanceEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
+        }
 	}
 	
 	protected void processNewProjectCommand()
