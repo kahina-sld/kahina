@@ -245,7 +245,7 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
     
     public void processEvent(KahinaEvent event)
     {
-        if (event instanceof KahinaStepUpdateEvent)
+        if (active && event instanceof KahinaStepUpdateEvent)
         {
             int stepID = ((KahinaStepUpdateEvent) event).getStepID();
             //check step data against sensor, let the actuator fire if successful
