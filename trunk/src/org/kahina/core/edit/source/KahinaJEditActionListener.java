@@ -29,6 +29,7 @@ public class KahinaJEditActionListener implements ActionListener
     {
         String command = action.getActionCommand();
         KahinaControlAgent controlAgent = new KahinaControlAgent(instance);
+        controlAgent.register();
         int line = panel.getTextArea().getLastPopupLine();
         File file = panel.getFile();
         controlAgent.setName(file.getName() + ":" + line);

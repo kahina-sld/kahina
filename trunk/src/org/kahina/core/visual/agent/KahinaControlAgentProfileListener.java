@@ -40,6 +40,7 @@ public class KahinaControlAgentProfileListener implements ActionListener, ListSe
         if (s.equals("newControlPoint"))
         {
             LogicProgrammingControlAgent newControlAgent = new LogicProgrammingControlAgent(profilePanel.getKahina(), stepTree);
+            newControlAgent.register();
             profilePanel.view.getModel().addControlAgent(newControlAgent);
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
             profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
@@ -53,6 +54,7 @@ public class KahinaControlAgentProfileListener implements ActionListener, ListSe
             {
                 Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
                 LogicProgrammingControlAgent newControlAgent = LogicProgrammingControlAgent.importXML(dom.getDocumentElement(), profilePanel.getKahina(), stepTree);
+                newControlAgent.register();
                 profilePanel.view.getModel().addControlAgent(newControlAgent);
                 profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
                 profilePanel.pointList.setSelectedIndex(profilePanel.view.getModel().getSize() - 1);
@@ -64,7 +66,6 @@ public class KahinaControlAgentProfileListener implements ActionListener, ListSe
         } 
         else if (s.equals("removeControlPoint"))
         {
-            System.err.println("removeControlPoint");
             profilePanel.removeCurrentControlAgent();
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
         }
