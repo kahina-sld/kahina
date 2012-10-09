@@ -1013,7 +1013,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			else if (getBridgeState() == 'l')
 			{
-			    setBridgeState('n');
+			    performBreakAction("User");
+			    state.breakpointConsoleMessage(currentID, "User starts leap at step " + state.get(currentID).externalID + ".");
 			}
 		} 
 		else if (command.equals("(un)pause"))
@@ -1134,7 +1135,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	protected void performBreakAction(String agentString)
 	{
-		// is used for breakpoint mechanism as well as for the pause mode
+		// is used for the pause mode of auto-completion as well as for breakpoints
 	    // TODO: in case of non-user agent, mark matching node in the breakpoint's signal color
 		if (getBridgeState() == 't')
 		{
