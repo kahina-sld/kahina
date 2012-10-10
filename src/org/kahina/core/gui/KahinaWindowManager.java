@@ -84,7 +84,7 @@ public class KahinaWindowManager implements KahinaListener
                 case KahinaWindowType.DEFAULT_WINDOW:
                 {
                     String binding = getArrangement().getBindingForWinID(winID);
-                    KahinaView<?> view = kahina.gui.varNameToView.get(binding);
+                    KahinaView<?> view = kahina.getGUI().varNameToView.get(binding);
                     if (view == null)
                     {
                         System.err.println("  WARNING: No view defined for binding \"" + binding + "\"");
@@ -112,7 +112,7 @@ public class KahinaWindowManager implements KahinaListener
                     controlWindow.setBorder(getArrangement().hasBorder(winID));
                     controlWindow.setScrollable(getArrangement().isScrollable(winID));
                     controlWindow.setTitle(getArrangement().getTitle(winID));
-                    for (KahinaControlButton button : kahina.gui.controlWindows.get(binding))
+                    for (KahinaControlButton button : kahina.getGUI().controlWindows.get(binding))
                     {
                         controlWindow.addControlButton(button);
                     }
@@ -237,7 +237,7 @@ public class KahinaWindowManager implements KahinaListener
                 // implementation
                 // TODO: allow different configurations (and therefore different
                 // views) for clones
-                kahina.gui.varNameToView.get(binding).setConfig(psp.getConfiguration(winID));
+                kahina.getGUI().varNameToView.get(binding).setConfig(psp.getConfiguration(winID));
             }
         }
         if (VERBOSE) System.err.println("KahinaWindowManager finished filling the content windows...");

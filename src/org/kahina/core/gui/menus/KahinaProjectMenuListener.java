@@ -74,7 +74,7 @@ public class KahinaProjectMenuListener implements ActionListener
         if (name.length() > 0)
         {
             JFileChooser chooser = new JFileChooser(new File("."));
-            chooser.setDialogTitle("New Project - Select Program File");
+            chooser.setDialogTitle(kahina.getGUI().getNewGrammarString());
             chooser.showOpenDialog(menu);
             File dataFile = chooser.getSelectedFile();
             if (dataFile != null) kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, name));

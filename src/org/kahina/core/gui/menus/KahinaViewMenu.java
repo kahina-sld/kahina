@@ -34,7 +34,7 @@ public class KahinaViewMenu  extends JMenu implements ActionListener, KahinaList
         super("View"); 
         
         this.kahina = kahina; 
-        manager = kahina.gui.getWindowManager();
+        manager = kahina.getGUI().getWindowManager();
         kahina.registerInstanceListener(KahinaEventTypes.WINDOW, this);
       
         rebuild();

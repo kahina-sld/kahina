@@ -141,4 +141,9 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
         }
         
     } 
+    
+    public QTypeGUI getGUI()
+    {
+        return (QTypeGUI) gui;
+    }
 }
