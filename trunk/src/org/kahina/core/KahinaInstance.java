@@ -59,7 +59,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 {
 	protected static final boolean VERBOSE = false;
 
-	public G gui;
+	protected G gui;
 
 	//TODO maybe group state, bridge, profiler etc. under a new Session type
 
@@ -700,4 +700,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     }
     
     public abstract P loadProject(File projectFile);
+    
+    public G getGUI()
+    {
+        return gui;
+    }
 }

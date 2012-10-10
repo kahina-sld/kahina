@@ -396,5 +396,14 @@ public class KahinaGUI implements KahinaListener
 	{
 		JOptionPane.showMessageDialog(windowManager.mainWindow, message, title, messageType);
 	}
+	
+	/**
+	 * Defines the title of the program file chooser while creating a new project.
+	 * @return the string to display in the title of the program file chooser
+	 */
+	public String getNewGrammarString()
+	{
+	    return "New Project - Select Program File";
+	}
 
 }

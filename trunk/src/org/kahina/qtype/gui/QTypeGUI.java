@@ -112,5 +112,8 @@ public class QTypeGUI extends SICStusPrologGUI
 		}
 	}
 
-
+    public String getNewGrammarString()
+    {
+        return "New Project - Select Grammar File";
+    }
 }
