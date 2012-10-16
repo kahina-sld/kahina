@@ -10,9 +10,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -43,6 +45,7 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.magazine.ObjectMagazine;
 import org.kahina.core.io.util.FileUtil;
+import org.kahina.core.io.util.ResourceList;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.profiler.KahinaWarner;
 import org.kahina.core.util.ProgressMonitorWrapper;
@@ -103,6 +106,16 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
             recentPerspectives = new LinkedList<KahinaPerspective>();
             // load the default perspectives in the bin folder of the respective KahinaGUI instance
             defaultPerspectives = new LinkedList<KahinaPerspective>();
+            //try a JAR-enabled way of finding and loading the default perspective XML files
+            /*String programDirectory = ResourceList.getProgramDirectory(this);
+            System.err.println("Program directory: " + programDirectory);
+            String guiResourcePath = this.getClass().getPackage().getName().replaceAll("\\.", "/") + "/gui";
+            System.err.println("GUI resource path: " + guiResourcePath);
+            System.err.println("GUI resource: " + ClassLoader.getSystemResource(guiResourcePath));
+            String defaultPerspectivesLocation = ClassLoader.getSystemResource(guiResourcePath).getFile();
+            System.err.println("Location of default perspectives: " + defaultPerspectivesLocation);
+            Collection<String> defaultPerspectiveURLs = ResourceList.getResources(defaultPerspectivesLocation, Pattern.compile(".*.xml"));
+            System.err.println(defaultPerspectiveURLs);*/
             // This filter only returns XML files
             FileFilter fileFilter = new FileFilter()
             {
@@ -111,7 +124,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                     return file.getName().endsWith("xml");
                 }
             };
-            File[] files = new File(this.getClass().getResource("./gui").getFile()).listFiles(fileFilter);
+            File[] files = new File(this.getClass().getResource("gui").getFile()).listFiles(fileFilter);
             for (File f : files)
             {
                 if (VERBOSE)
