@@ -3,6 +3,8 @@
 	<property name="src" location="src"/>
 	<property name="bin" location="bin"/>
 	<property name="lib" location="lib"/>
+	<property name="dist" location="dist"/>
+	
 	<target name="compile" depends="init">
 		<javac srcdir="${src}" destdir="${bin}" source="1.6" target="1.6" compiler="javac1.6" includeantruntime="false">
 			<classpath>
@@ -20,4 +22,21 @@
 	<target name="clean">
 		<delete dir="${bin}"/>
 	</target>
+	
+	<target name="qtype-jar" depends="compile">
+	        <mkdir dir="${dist}"/>
+	        <jar destfile="${dist}/kahina-qtype.jar">
+	            <manifest>
+	                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+	                <attribute name="Rsrc-Main-Class" value="org.kahina.qtype.QTypeDebuggerInstance"/>
+	                <attribute name="Class-Path" value="."/>
+	                <attribute name="Rsrc-Class-Path" value="./ "/>
+	            </manifest>
+	            <zipfileset src="jar-in-jar-loader.zip"/>
+	            <fileset dir="${bin}"/>
+	            <zipfileset dir="${lib}" includes="*.jar"/>
+	        	<zipfileset dir="${lib}/gralej" includes="*.jar"/>
+	        	<zipfileset dir="${lib}/gralej/lib" includes="*.jar"/>
+	        </jar>
+	 </target>
 </project>
