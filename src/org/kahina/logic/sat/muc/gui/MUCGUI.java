@@ -28,8 +28,8 @@ import org.kahina.logic.sat.muc.heuristics.AlwaysLastHeuristics;
 import org.kahina.logic.sat.muc.heuristics.CenterHeuristics;
 import org.kahina.logic.sat.muc.visual.MUCStepController;
 import org.kahina.logic.sat.muc.visual.UCReducerListView;
-import org.kahina.logic.sat.visual.cnf.KahinaGroupSatInstanceGraphView;
-import org.kahina.logic.sat.visual.cnf.KahinaSatInstanceGraphView;
+import org.kahina.logic.sat.visual.cnf.graph.KahinaGroupSatInstanceGraphView;
+import org.kahina.logic.sat.visual.cnf.graph.KahinaSatInstanceGraphView;
 
 public class MUCGUI extends KahinaGUI
 {
