@@ -82,7 +82,7 @@ public class MiniSAT
      */
     public static boolean solveAndDeriveUnits(File cnfFile, File tmpResultFile, File unitsFile) throws TimeoutException, InterruptedException, IOException
     {
-        Process p = Runtime.getRuntime().exec("minisat " + cnfFile.getAbsolutePath() + " -c -r " + tmpResultFile.getAbsolutePath() + " -u " + unitsFile.getAbsolutePath());
+        Process p = Runtime.getRuntime().exec("minisat-units " + cnfFile.getAbsolutePath() + " -c -r " + tmpResultFile.getAbsolutePath() + " -u " + unitsFile.getAbsolutePath());
         BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
         // Set a timer to interrupt the process if it does not return within
         // the timeout period
@@ -352,6 +352,7 @@ public class MiniSAT
                 {
                     if (!line.equals("0"))
                     {
+                        System.err.println(line + "-> freezeVariables[" + (((-1) * Integer.parseInt(line)) - offsetID) + "] = true");
                         freezeVariables[((-1) * Integer.parseInt(line)) - offsetID] = true;
                         relevantAssumptions.add(((-1) * Integer.parseInt(line)) - offsetID);
                     }
