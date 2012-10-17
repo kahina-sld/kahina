@@ -72,6 +72,60 @@ public class MiniSAT
         return !wasUnsatisfiable(tmpResultFile);
     }
     
+    /**
+     * Solves a SAT instance and writes the learned unit clauses out into a file.
+     * Requires a custom variant of MiniSAT to be installed!
+     * @param cnfFile the SAT instance file (in DIMACS CNF format)
+     * @param tmpResultFile the temporary file in which the result is to be stored
+     * @param unitsFile the file where to store the units
+     * @return whether the SAT instance was satisfiable or not; units are written to unitsFile
+     */
+    public static boolean solveAndDeriveUnits(File cnfFile, File tmpResultFile, File unitsFile) throws TimeoutException, InterruptedException, IOException
+    {
+        Process p = Runtime.getRuntime().exec("minisat " + cnfFile.getAbsolutePath() + " -c -r " + tmpResultFile.getAbsolutePath() + " -u " + unitsFile.getAbsolutePath());
+        BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        // Set a timer to interrupt the process if it does not return within
+        // the timeout period
+        Timer timer = new Timer();
+        timer.schedule((new MiniSAT()).new InterruptScheduler(Thread.currentThread()), timeout);
+        try
+        {
+            p.waitFor();
+        }
+        catch (InterruptedException e)
+        {
+            // Stop the process from running
+            p.getInputStream().close();
+            p.getErrorStream().close();
+            p.getOutputStream().close();
+            p.destroy();
+            throw new TimeoutException("did not return after " + timeout + " milliseconds");
+        }
+        finally
+        {
+            // Stop the timer
+            timer.cancel();
+        }
+        String line;
+        while ((line = input.readLine()) != null)
+        {
+            if (VERBOSE) System.err.println(line);
+        }
+        input.close();
+        BufferedReader input2 = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+        String line2;
+        while ((line2 = input2.readLine()) != null)
+        {
+            if (VERBOSE) System.err.println(line2);
+        }
+        input2.close();
+        p.getInputStream().close();
+        p.getErrorStream().close();
+        p.getOutputStream().close();
+        p.destroy();
+        return !wasUnsatisfiable(tmpResultFile);
+    }
+    
     public static List<Integer> findUnsatisfiableCore(MUCStatistics stat, MiniSATFiles files) throws TimeoutException, InterruptedException
     {
         try
@@ -317,6 +371,48 @@ public class MiniSAT
             System.exit(0);
         }
         return null;
+    }
+    
+    public static List<Integer> getLearnedUnitClauses(File unitFile)
+    {
+        List<Integer> units = new ArrayList<Integer>();
+        BufferedReader input;
+        try
+        {
+            input = new BufferedReader(new FileReader(unitFile));
+            String line = input.readLine();
+            if (line != null)
+            {
+                StringTokenizer st = new StringTokenizer(line);
+                int i = 0;
+                while (st.hasMoreTokens())
+                {
+                    line = st.nextToken();
+                    if (i == 0)
+                    {
+                        i++;
+                    }
+                    else
+                    {
+                        if (!line.equals("0"))
+                        {
+                            units.add((Integer.parseInt(line)));
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                input.close();
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            System.err.println("ERROR: Could not read units file, returning empty unit list!");
+        }
+        return units;
     }
     
     //extract the relevant assumptions from proof file
