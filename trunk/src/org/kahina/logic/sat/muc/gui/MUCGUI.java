@@ -28,12 +28,12 @@ import org.kahina.logic.sat.muc.heuristics.AlwaysLastHeuristics;
 import org.kahina.logic.sat.muc.heuristics.CenterHeuristics;
 import org.kahina.logic.sat.muc.visual.MUCStepController;
 import org.kahina.logic.sat.muc.visual.UCReducerListView;
-import org.kahina.logic.sat.visual.cnf.KahinaGroupSatInstanceView;
-import org.kahina.logic.sat.visual.cnf.KahinaSatInstanceView;
+import org.kahina.logic.sat.visual.cnf.KahinaGroupSatInstanceGraphView;
+import org.kahina.logic.sat.visual.cnf.KahinaSatInstanceGraphView;
 
 public class MUCGUI extends KahinaGUI
 {
-    protected KahinaSatInstanceView satInstanceView;
+    protected KahinaSatInstanceGraphView satInstanceView;
     protected ColoredPathDAGView decisionGraphView;
     protected MUCStepController stepController;
     protected UCReducerListView reducerListView;
@@ -52,7 +52,7 @@ public class MUCGUI extends KahinaGUI
         super.initialize();
         varNameToView.remove("controlFlowTree");
         
-        satInstanceView = new KahinaGroupSatInstanceView(kahina, new SpringLayouter());
+        satInstanceView = new KahinaGroupSatInstanceGraphView(kahina, new SpringLayouter());
         if (isInGroupMode())
         {
             satInstanceView.setTitle("Group SAT Instance");
@@ -133,7 +133,7 @@ public class MUCGUI extends KahinaGUI
         {
             if (isInGroupMode())
             {
-                ((KahinaGroupSatInstanceView) satInstanceView).display((GroupCnfSatInstance) sat);
+                ((KahinaGroupSatInstanceGraphView) satInstanceView).display((GroupCnfSatInstance) sat);
             }
             else
             {

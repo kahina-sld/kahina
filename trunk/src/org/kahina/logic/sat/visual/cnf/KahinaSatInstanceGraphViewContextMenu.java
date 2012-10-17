@@ -11,16 +11,16 @@ import javax.swing.JRadioButtonMenuItem;
 import org.kahina.core.visual.graph.KahinaGraphView;
 import org.kahina.core.visual.graph.KahinaGraphViewContextMenu;
 
-public class KahinaSatInstanceViewContextMenu extends KahinaGraphViewContextMenu
+public class KahinaSatInstanceGraphViewContextMenu extends KahinaGraphViewContextMenu
 {
-    public KahinaSatInstanceViewContextMenu(ActionListener l, KahinaGraphView v)
+    public KahinaSatInstanceGraphViewContextMenu(ActionListener l, KahinaGraphView v)
     {
         super(l, v);
     }
 
     public static JPopupMenu getMenu(ActionListener l, KahinaGraphView v)
     {
-        return new KahinaSatInstanceViewContextMenu(l, v);
+        return new KahinaSatInstanceGraphViewContextMenu(l, v);
     }
     
     //deriving classes can implement this to extend the context menu

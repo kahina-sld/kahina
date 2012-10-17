@@ -7,11 +7,11 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.graph.KahinaGraphLayouter;
 import org.kahina.logic.sat.data.cnf.GroupCnfSatInstance;
 
-public class KahinaGroupSatInstanceView extends KahinaSatInstanceView
+public class KahinaGroupSatInstanceGraphView extends KahinaSatInstanceGraphView
 {
     GroupCnfSatInstance sat;
     
-    public KahinaGroupSatInstanceView(KahinaInstance<?, ?, ?, ?> kahina, KahinaGraphLayouter layout)
+    public KahinaGroupSatInstanceGraphView(KahinaInstance<?, ?, ?, ?> kahina, KahinaGraphLayouter layout)
     {
         super(kahina, layout);
     }

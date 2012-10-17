@@ -18,7 +18,7 @@ import org.kahina.core.visual.graph.KahinaGraphView;
 import org.kahina.core.visual.graph.KahinaGraphViewPanel;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
-public class KahinaSatInstanceView extends KahinaGraphView
+public class KahinaSatInstanceGraphView extends KahinaGraphView
 {
     CnfSatInstance sat;
     boolean clauseGraph;
@@ -26,7 +26,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
     boolean textDisplay;
     String displayText;
     
-    public KahinaSatInstanceView(KahinaInstance<?, ?, ?, ?> kahina, KahinaGraphLayouter layout)
+    public KahinaSatInstanceGraphView(KahinaInstance<?, ?, ?, ?> kahina, KahinaGraphLayouter layout)
     {
         super(kahina, layout);
         clauseGraph = false;
@@ -123,7 +123,7 @@ public class KahinaSatInstanceView extends KahinaGraphView
     public JComponent makePanel()
     {
         KahinaProgressBar progressBar = new KahinaProgressBar();
-        KahinaSatInstanceViewPanel panel = new KahinaSatInstanceViewPanel(kahina);
+        KahinaSatInstanceGraphViewPanel panel = new KahinaSatInstanceGraphViewPanel(kahina);
         kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         JScrollPane scrollPane = new JScrollPane(panel);
