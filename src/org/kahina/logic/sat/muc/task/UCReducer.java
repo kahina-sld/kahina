@@ -76,6 +76,8 @@ public class UCReducer extends KahinaTaskManager
                 //uc and ucID just stay the same
                 state.addAndDistributeUnreducibilityInfo(ucID, ucTask.candidate);
                 numSATReductions++;
+                //we learn that the current selector variables cannot be 1 together
+                //TODO: state.learnMetaClause();
                 //System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clause " + ucTask.candidate + " at step " + ucID + " led to satisfiable instance! No change!");
             }
             //attempt was successful, we might have arrived at a new UC
