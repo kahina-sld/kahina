@@ -407,6 +407,17 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
                 {
                     //uc and ucID just stay the same
                     state.addAndDistributeUnreducibilityInfo(ucTask.ucID, ucTask.candidate);
+                    //we learn that the current selector variables cannot be 1 together
+                    List<Integer> metaClause = new LinkedList<Integer>();
+                    int numClauses = state.getStatistics().numClausesOrGroups;
+                    for (int i = 1; i <= numClauses; i++)
+                    {
+                        if (!result.getUc().contains(i) || i == ucTask.reductionID)
+                        {
+                            metaClause.add(-i);
+                        }
+                    }
+                    state.learnMetaClause(metaClause);
                 }
                 //attempt was successful, we might have arrived at a new UC
                 else
