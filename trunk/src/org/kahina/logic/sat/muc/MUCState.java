@@ -18,6 +18,7 @@ public class MUCState extends KahinaState
     public static boolean VERBOSE = false;
     
     CnfSatInstance satInstance;
+    CnfSatInstance metaInstance;
     MUCStatistics stat;
     MiniSATFiles files;
     
@@ -30,6 +31,7 @@ public class MUCState extends KahinaState
     {
         super(kahina);
         this.satInstance = null;
+        this.metaInstance = null;
         this.stat = null;
         this.files = null;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
@@ -39,6 +41,7 @@ public class MUCState extends KahinaState
     {
         super(kahina);
         this.satInstance = satInstance;
+        this.metaInstance = new CnfSatInstance();
         this.stat = stat;
         this.files = files;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
@@ -54,6 +57,7 @@ public class MUCState extends KahinaState
     public void reset()
     {
         this.satInstance = null;
+        this.metaInstance = null;
         this.stat = null;
         this.files = null;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
@@ -63,6 +67,11 @@ public class MUCState extends KahinaState
     public CnfSatInstance getSatInstance()
     {
         return satInstance;
+    }
+    
+    public CnfSatInstance getMetaInstance()
+    {
+        return metaInstance;
     }
     
     public MUCStatistics getStatistics()
@@ -197,6 +206,7 @@ public class MUCState extends KahinaState
     public void setSatInstance(CnfSatInstance satInstance)
     {
         this.satInstance = satInstance;
+        this.metaInstance = new CnfSatInstance();
     }
     
     public void setStatistics(MUCStatistics stat)
@@ -207,6 +217,12 @@ public class MUCState extends KahinaState
     public void setFiles(MiniSATFiles files)
     {
         this.files = files;
+    }
+    
+    public synchronized void learnMetaClause(List<Integer> metaClause)
+    {
+        System.err.println("Leaning meta clause: " + metaClause);
+        metaInstance.getClauses().add(metaClause);
     }
     
     public synchronized void addAndDistributeUnreducibilityInfo(int parentID, int failedReductionID)
