@@ -239,4 +239,18 @@ public class MUCExtension
         }
 
     }
+    
+    public static void main(String[] args)
+    {
+        if (args.length != 2)
+        {
+            System.err.println("Usage: java MUCExtension [cnf file] [extended file]");
+        }
+        File satFile = new File(args[0]);
+        File extendedFile = new File(args[1]);
+        MUCStatistics stat = new MUCStatistics();
+        stat.instanceName = satFile.getAbsolutePath();
+        MUCExtension.extendCNFBySelVars(satFile, extendedFile, stat);
+        System.err.println(stat.toString());
+    }
 }
