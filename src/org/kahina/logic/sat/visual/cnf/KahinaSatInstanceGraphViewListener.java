@@ -4,9 +4,9 @@ import java.awt.event.MouseEvent;
 
 import org.kahina.core.visual.graph.KahinaGraphViewListener;
 
-public class KahinaSatInstanceViewListener extends KahinaGraphViewListener
+public class KahinaSatInstanceGraphViewListener extends KahinaGraphViewListener
 {
-    public KahinaSatInstanceViewListener(KahinaSatInstanceViewPanel view)
+    public KahinaSatInstanceGraphViewListener(KahinaSatInstanceGraphViewPanel view)
     {
         super(view);
     }
@@ -15,13 +15,13 @@ public class KahinaSatInstanceViewListener extends KahinaGraphViewListener
     {
         if (e.isPopupTrigger()) 
         {
-            KahinaSatInstanceViewContextMenu.getMenu(this, view.view).show(e.getComponent(),e.getX(), e.getY());
+            KahinaSatInstanceGraphViewContextMenu.getMenu(this, view.view).show(e.getComponent(),e.getX(), e.getY());
         }
     }
     
     protected void processExtensionCommand(String command)
     {
-        KahinaSatInstanceView satView = (KahinaSatInstanceView) view.view;
+        KahinaSatInstanceGraphView satView = (KahinaSatInstanceGraphView) view.view;
         if (command.equals("claByVar"))
         {
             satView.displayClausesByVariables();
