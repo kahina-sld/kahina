@@ -53,4 +53,10 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
         panel.setView(this);
         return panel;
     }
+
+    public void displayText(String string)
+    {
+        listModel = new DefaultListModel();
+        listModel.addElement(string);
+    }
 }

@@ -30,10 +30,12 @@ import org.kahina.logic.sat.muc.visual.MUCStepController;
 import org.kahina.logic.sat.muc.visual.UCReducerListView;
 import org.kahina.logic.sat.visual.cnf.graph.KahinaGroupSatInstanceGraphView;
 import org.kahina.logic.sat.visual.cnf.graph.KahinaSatInstanceGraphView;
+import org.kahina.logic.sat.visual.cnf.list.KahinaSatInstanceListView;
 
 public class MUCGUI extends KahinaGUI
 {
-    protected KahinaSatInstanceGraphView satInstanceView;
+    protected KahinaSatInstanceListView satInstanceView;
+    protected KahinaSatInstanceListView metaInstanceView;
     protected ColoredPathDAGView decisionGraphView;
     protected MUCStepController stepController;
     protected UCReducerListView reducerListView;
@@ -52,7 +54,9 @@ public class MUCGUI extends KahinaGUI
         super.initialize();
         varNameToView.remove("controlFlowTree");
         
-        satInstanceView = new KahinaGroupSatInstanceGraphView(kahina, new SpringLayouter());
+        kahina.registerInstanceListener("clauseSelection", this);
+        
+        satInstanceView = new KahinaSatInstanceListView(kahina);
         if (isInGroupMode())
         {
             satInstanceView.setTitle("Group SAT Instance");
@@ -62,15 +66,21 @@ public class MUCGUI extends KahinaGUI
             satInstanceView.setTitle("SAT Instance");
         }
         kahina.registerInstanceListener(KahinaEventTypes.UPDATE, satInstanceView);
-        kahina.registerInstanceListener("clauseSelection", this);
         views.add(satInstanceView);
         livingViews.add(satInstanceView);
         varNameToView.put("satInstance", satInstanceView);
         
+        metaInstanceView = new KahinaSatInstanceListView(kahina);
+        metaInstanceView.setTitle("Meta Instance over Selection Variables");
+        kahina.registerInstanceListener(KahinaEventTypes.UPDATE, metaInstanceView);
+        views.add(metaInstanceView);
+        livingViews.add(metaInstanceView);
+        varNameToView.put("metaInstance", metaInstanceView);
+        
         Color NICE_GREEN = new Color(102, 153, 102);
         Color NICE_RED = new Color(183, 50, 50);
         
-        satInstanceView.setVertexStatusVertexColorEncoding(0, Color.WHITE);
+        /*satInstanceView.setVertexStatusVertexColorEncoding(0, Color.WHITE);
         satInstanceView.setVertexStatusVertexColorEncoding(1, NICE_GREEN);
         satInstanceView.setVertexStatusVertexColorEncoding(2, NICE_RED);
         satInstanceView.setVertexStatusEdgeColorEncoding(0, 0, Color.BLACK);
@@ -84,7 +94,7 @@ public class MUCGUI extends KahinaGUI
         satInstanceView.setVertexStatusEdgeColorEncoding(2, 2, NICE_RED);
         satInstanceView.getConfig().setVertexVisibilityPolicy(KahinaGraphViewOptions.VERTICES_SPECIAL_VISIBLE);
         satInstanceView.getConfig().setZoomLevel(5);
-        satInstanceView.getConfig().setNodeSize(2);
+        satInstanceView.getConfig().setNodeSize(2);*/
         
         decisionGraphView = new ColoredPathDAGView(kahina, new LayeredLayouter());
         decisionGraphView.setTitle("Decision graph");
@@ -133,16 +143,19 @@ public class MUCGUI extends KahinaGUI
         {
             if (isInGroupMode())
             {
-                ((KahinaGroupSatInstanceGraphView) satInstanceView).display((GroupCnfSatInstance) sat);
+                //TODO: treat group SAT instances in list view as well!
+                //((KahinaGroupSatInstanceGraphView) satInstanceView).display((GroupCnfSatInstance) sat);
             }
             else
             {
                 satInstanceView.display(sat);
             }
+            metaInstanceView.display(state.getMetaInstance());
         }
         else
         {
             satInstanceView.displayText("No SAT Instance loaded yet.");
+            metaInstanceView.displayText("No SAT Instance loaded yet.");
         }
     }
     
@@ -165,7 +178,9 @@ public class MUCGUI extends KahinaGUI
         System.err.println("displayStepContent(" + stepID + ")");
         super.displayStepContent(stepID);
         MUCStep step = (MUCStep) kahina.getState().getSteps().retrieve(stepID);
-        if (satInstanceView.showsClauseGraph())
+        //TODO: mark the current MUS in the sat instance display
+        
+        /*if (satInstanceView.showsClauseGraph())
         {
             satInstanceView.setSpecialVertices(step.getUc());
             for (int ic : step.getUc())
@@ -178,7 +193,7 @@ public class MUCGUI extends KahinaGUI
             satInstanceView.turnSpecialVerticesBackToNormal();
             //TODO: show only edges corresponding to clauses in UC!
         }
-        satInstanceView.flushRedrawAgenda();
+        satInstanceView.flushRedrawAgenda();*/
     }
     
     //in this somewhat roundabout way, handing on the mode information is avoided
@@ -201,12 +216,12 @@ public class MUCGUI extends KahinaGUI
     
     public void processEvent(ClauseSelectionEvent e)
     {
-        if (satInstanceView.showsClauseGraph())
+        /*if (satInstanceView.showsClauseGraph())
         {
             satInstanceView.getRedrawAgenda().add(satInstanceView.getMarkedVertex());
             satInstanceView.setMarkedVertex(e.getClauseID());
             satInstanceView.getRedrawAgenda().add(e.getClauseID());
             kahina.dispatchInstanceEvent(new KahinaRedrawEvent());
-        }
+        }*/
     }
 }
