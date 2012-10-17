@@ -1,4 +1,4 @@
-package org.kahina.logic.sat.visual.cnf;
+package org.kahina.logic.sat.visual.cnf.graph;
 
 import java.awt.Color;
 import java.awt.GridLayout;
