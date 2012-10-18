@@ -1024,7 +1024,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 		else if (command.equals("abort"))
 		{
 			setBridgeState('a');
-            state.breakpointConsoleMessage(currentID, "User causes abort at step " + state.get(currentID).externalID + ". Trace closed.");
+			if (currentID != -1)
+			{
+			    state.breakpointConsoleMessage(currentID, "User causes abort at step " + state.get(currentID).externalID + ". Trace closed.");
+			}
 		}
 	}
 
