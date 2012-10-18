@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -22,6 +23,7 @@ import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaDialogEvent;
+import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
@@ -363,20 +365,12 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
         return new TraleProject("no name", state.getStepTree(), this);
     }
 
-    public TraleProject loadProject(File projectFile)
+    public TraleProject loadProject(InputStream stream)
     {
         Document dom;
         TraleProject project = createNewProject();
-        try
-        {
-            dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = TraleProject.importXML(dom.getDocumentElement(), project);
-        }
-        catch (FileNotFoundException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        dom = XMLUtil.parseXMLStream(stream, false);
+        project = TraleProject.importXML(dom.getDocumentElement(), project);
         return project;
     }
     
@@ -384,27 +378,13 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
     protected void prepareProjectLists()
     {
         recentProjects = new LinkedList<TraleProject>();
-        // load the default perspectives in the bin folder of the respective Kahina application
         defaultProjects = new LinkedList<TraleProject>();
-        // This filter only returns XML files
-        FileFilter fileFilter = new FileFilter()
-        {
-            public boolean accept(File file)
-            {
-                // System.err.println("Filtering file " + file.getName() + ": "
-                // + file.getName().endsWith("xml"));
-                return file.getName().endsWith("xml");
-            }
-        };
-        File[] files = new File(this.getClass().getResource("./data/project").getFile()).listFiles(fileFilter);
-        for (File f : files)
-        {
-            if (VERBOSE)
-            {
-                System.err.println("Loading predefined project: " + f.getAbsolutePath());
-            }
-            defaultProjects.add(loadProject(f));
-        }
-        
+    } 
+    
+    @Override
+    protected void preparePerspectiveLists()
+    {
+        recentPerspectives = new LinkedList<KahinaPerspective>();
+        defaultPerspectives = new LinkedList<KahinaPerspective>();    
     } 
 }

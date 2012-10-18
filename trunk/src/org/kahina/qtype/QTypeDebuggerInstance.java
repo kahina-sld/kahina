@@ -4,16 +4,14 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.LinkedList;
 
-import org.kahina.core.KahinaState;
-import org.kahina.core.data.agent.KahinaBreakpointProfile;
-import org.kahina.core.data.project.KahinaProject;
-import org.kahina.core.data.project.KahinaProjectStatus;
+import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
-import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.io.util.XMLUtil;
-import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.qtype.bridge.QTypeBridge;
@@ -97,20 +95,12 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
         return new QTypeProject("no name", state.getStepTree(), this);
     }
         
-    public QTypeProject loadProject(File projectFile)
+    public QTypeProject loadProject(FileInputStream stream)
     {
         Document dom;
         QTypeProject project = createNewProject();
-        try
-        {
-            dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = QTypeProject.importXML(dom.getDocumentElement(), project, this, state.getStepTree());
-        }
-        catch (FileNotFoundException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        dom = XMLUtil.parseXMLStream(stream, false);
+        project = QTypeProject.importXML(dom.getDocumentElement(), project, this, state.getStepTree());
         return project;
     }
     
@@ -118,29 +108,50 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
     protected void prepareProjectLists()
     {
         recentProjects = new LinkedList<LogicProgrammingProject>();
-        // load the default perspectives in the bin folder of the respective Kahina application
         defaultProjects = new LinkedList<LogicProgrammingProject>();
-        // This filter only returns XML files
-        FileFilter fileFilter = new FileFilter()
-        {
-            public boolean accept(File file)
-            {
-                // System.err.println("Filtering file " + file.getName() + ": "
-                // + file.getName().endsWith("xml"));
-                return file.getName().endsWith("xml");
-            }
-        };
-        File[] files = new File(this.getClass().getResource("./data/project").getFile()).listFiles(fileFilter);
-        for (File f : files)
-        {
-            if (VERBOSE)
-            {
-                System.err.println("Loading predefined project: " + f.getAbsolutePath());
-            }
-            defaultProjects.add(loadProject(f));
-        }
-        
+        addDefaultProject("data/project/qtype-tutorial1-project.xml");
+        addDefaultProject("data/project/qtype-tutorial2-project.xml");
+        addDefaultProject("data/project/qtype-demo-project.xml");
     } 
+    
+    private void addDefaultProject(String resourcePath)
+    {
+        URL projectLocation = this.getClass().getResource(resourcePath);
+        try
+        {
+            InputStream projectInputStream = projectLocation.openStream();
+            defaultProjects.add(loadProject(projectInputStream));
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    protected void preparePerspectiveLists()
+    {
+        recentPerspectives = new LinkedList<KahinaPerspective>();
+        defaultPerspectives = new LinkedList<KahinaPerspective>(); 
+        addDefaultPerspective("gui/kahinaqtype-demo.xml");
+        addDefaultPerspective("gui/kahinaqtype-integrated.xml");
+    } 
+    
+    private void addDefaultPerspective(String resourcePath)
+    {
+        URL perspectiveLocation = this.getClass().getResource(resourcePath);
+        try
+        {
+            InputStream perspectiveInputStream = perspectiveLocation.openStream();
+            defaultPerspectives.add(loadPerspective(perspectiveInputStream));
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     
     public QTypeGUI getGUI()
     {

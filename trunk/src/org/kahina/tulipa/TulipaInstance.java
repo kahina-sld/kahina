@@ -4,11 +4,13 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.LinkedList;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
+import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.data.project.LogicProgrammingProject;
@@ -65,20 +67,12 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
         return new KahinaProject("tulipa", "no name");
     }
     
-    public KahinaProject loadProject(File projectFile)
+    public KahinaProject loadProject(InputStream stream)
     {
         Document dom;
         KahinaProject project = createNewProject();
-        try
-        {
-            dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            project = KahinaProject.importXML(dom.getDocumentElement(), project);
-        }
-        catch (FileNotFoundException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        dom = XMLUtil.parseXMLStream(stream, false);
+        project = KahinaProject.importXML(dom.getDocumentElement(), project);
         return project;
     }
     
@@ -86,27 +80,13 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
     protected void prepareProjectLists()
     {
         recentProjects = new LinkedList<KahinaProject>();
-        // load the default perspectives in the bin folder of the respective Kahina application
-        defaultProjects = new LinkedList<KahinaProject>();
-        // This filter only returns XML files
-        FileFilter fileFilter = new FileFilter()
-        {
-            public boolean accept(File file)
-            {
-                // System.err.println("Filtering file " + file.getName() + ": "
-                // + file.getName().endsWith("xml"));
-                return file.getName().endsWith("xml");
-            }
-        };
-        File[] files = new File(KahinaInstance.class.getResource("./data/project").getFile()).listFiles(fileFilter);
-        for (File f : files)
-        {
-            if (VERBOSE)
-            {
-                System.err.println("Loading predefined project: " + f.getAbsolutePath());
-            }
-            defaultProjects.add(loadProject(f));
-        }
-        
+        defaultProjects = new LinkedList<KahinaProject>();    
+    }
+
+    @Override
+    protected void preparePerspectiveLists()
+    {
+        recentPerspectives = new LinkedList<KahinaPerspective>();
+        defaultPerspectives = new LinkedList<KahinaPerspective>();    
     } 
 }

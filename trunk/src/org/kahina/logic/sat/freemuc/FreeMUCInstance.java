@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.concurrent.TimeoutException;
 
@@ -18,6 +19,7 @@ import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.data.project.KahinaProject;
+import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.logic.sat.data.free.BooleanFormula;
 import org.kahina.logic.sat.freemuc.control.FreeMUCControlEventCommands;
@@ -258,7 +260,7 @@ public class FreeMUCInstance extends KahinaInstance<FreeMUCState, FreeMUCGUI, Ka
     }
 
     @Override
-    public KahinaProject loadProject(File projectFile)
+    public KahinaProject loadProject(InputStream stream)
     {
         // TODO Auto-generated method stub
         return null;
@@ -269,5 +271,12 @@ public class FreeMUCInstance extends KahinaInstance<FreeMUCState, FreeMUCGUI, Ka
     {
         recentProjects = new LinkedList<KahinaProject>();
         defaultProjects = new LinkedList<KahinaProject>(); 
+    }
+
+    @Override
+    protected void preparePerspectiveLists()
+    {
+        recentPerspectives = new LinkedList<KahinaPerspective>();
+        defaultPerspectives = new LinkedList<KahinaPerspective>();      
     }
 }

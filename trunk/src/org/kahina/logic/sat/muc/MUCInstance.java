@@ -2,6 +2,7 @@ package org.kahina.logic.sat.muc;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -18,6 +19,7 @@ import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.data.project.KahinaProject;
+import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
@@ -366,7 +368,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     }
 
     @Override
-    public KahinaProject loadProject(File projectFile)
+    public KahinaProject loadProject(InputStream stream)
     {
         // TODO Auto-generated method stub
         return new KahinaProject("default", "none");
@@ -377,5 +379,12 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     {
         recentProjects = new LinkedList<KahinaProject>();
         defaultProjects = new LinkedList<KahinaProject>();
+    }
+
+    @Override
+    protected void preparePerspectiveLists()
+    {
+        recentPerspectives = new LinkedList<KahinaPerspective>();
+        defaultPerspectives = new LinkedList<KahinaPerspective>();       
     }
 }
