@@ -27,12 +27,11 @@
 	        <mkdir dir="${dist}"/>
 		<jar destfile="${dist}/kahina-qtype.jar">
 	            <fileset dir="${bin}">
-                      <exclude name="**/logic/**"/>
-                      <exclude name="**/parse/**"/>
-                      <exclude name="**/swi/**"/>
-                      <exclude name="**/tralesld/**"/>
-                      <exclude name="**/tulipa/**"/>
-                    </fileset>
+	            	  <exclude name="org/kahina/logic/**"/>
+                      <exclude name="org/kahina/parse/**"/>
+	            	  <exclude name="org/kahina/swi/**"/>
+                      <exclude name="org/kahina/tulipa/**"/>
+                </fileset>
 		    <zipgroupfileset dir="${lib}" includes="*.jar"/>
 		    <zipgroupfileset dir="${lib}/gralej" includes="*.jar"/>
 		    <zipgroupfileset dir="${lib}/gralej/lib" includes="*.jar"/>
