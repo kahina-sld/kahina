@@ -192,7 +192,7 @@ public class KahinaControlAgentProfileViewPanel extends KahinaViewPanel<KahinaCo
 
         private void maybeShowPopup(MouseEvent e) 
         {
-            if (e.isPopupTrigger()) 
+            if (e.isPopupTrigger() && pointView.view.getModel() != null) 
             {
                 KahinaControlAgentContextMenu.getMenu(pointListener, profileListener, pointView).show(e.getComponent(),e.getX(), e.getY());
             }
