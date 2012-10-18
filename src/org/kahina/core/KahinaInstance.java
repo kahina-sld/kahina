@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -101,39 +102,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		instanceControl = new KahinaController();
         instanceControl.registerListener(KahinaEventTypes.PERSPECTIVE, this);
         instanceControl.registerListener(KahinaEventTypes.SYSTEM, this);
-        //if (!standaloneMode) //TODO: think about standalone mode
-        {
-            recentPerspectives = new LinkedList<KahinaPerspective>();
-            // load the default perspectives in the bin folder of the respective KahinaGUI instance
-            defaultPerspectives = new LinkedList<KahinaPerspective>();
-            //try a JAR-enabled way of finding and loading the default perspective XML files
-            /*String programDirectory = ResourceList.getProgramDirectory(this);
-            System.err.println("Program directory: " + programDirectory);
-            String guiResourcePath = this.getClass().getPackage().getName().replaceAll("\\.", "/") + "/gui";
-            System.err.println("GUI resource path: " + guiResourcePath);
-            System.err.println("GUI resource: " + ClassLoader.getSystemResource(guiResourcePath));
-            String defaultPerspectivesLocation = ClassLoader.getSystemResource(guiResourcePath).getFile();
-            System.err.println("Location of default perspectives: " + defaultPerspectivesLocation);
-            Collection<String> defaultPerspectiveURLs = ResourceList.getResources(defaultPerspectivesLocation, Pattern.compile(".*.xml"));
-            System.err.println(defaultPerspectiveURLs);*/
-            // This filter only returns XML files
-            FileFilter fileFilter = new FileFilter()
-            {
-                public boolean accept(File file)
-                {
-                    return file.getName().endsWith("xml");
-                }
-            };
-            File[] files = new File(this.getClass().getResource("gui").getFile()).listFiles(fileFilter);
-            for (File f : files)
-            {
-                if (VERBOSE)
-                {
-                    System.err.println("Loading default perspective: " + f.getAbsolutePath());
-                }
-                defaultPerspectives.add(loadPerspective(f));
-            }
-        }
 		try
 		{
 			fillViewRegistry();
@@ -145,6 +113,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			System.exit(-1);
 		}
 	}
+	
+	protected abstract void preparePerspectiveLists();
 	
 	protected abstract void prepareProjectLists();
 
@@ -244,6 +214,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 		    bridge = createBridge();
 		}
         prepareProjectLists();
+        preparePerspectiveLists();
 		createTreeBehavior();
 		createWarner();
 	}
@@ -399,9 +370,18 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
         }
         else if (type == KahinaPerspectiveEvent.LOAD_PERSPECTIVE)
         {
-            KahinaPerspective perspective = loadPerspective(e.getFile());
-            project.setPerspective(perspective);
-            gui.setPerspective(perspective);
+            KahinaPerspective perspective;
+            try
+            {
+                perspective = loadPerspective(new FileInputStream(e.getFile()));
+                project.setPerspective(perspective);
+                gui.setPerspective(perspective);
+            }
+            catch (FileNotFoundException e1)
+            {
+                System.err.println("ERROR: could not load perspective " + e.getFile());
+                e1.printStackTrace();
+            }
         }
         else if (type == KahinaPerspectiveEvent.LOAD_RECENT_PERSPECTIVE)
         {
@@ -446,13 +426,22 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                     dispatchEvent(new KahinaControlEvent("abort"));
                     project.deregister();
                 }
-                project = loadProject(e.getFile());
-                project.register();
-                registerRecentProject(project);
-                gui.setPerspective(project.getPerspective());
-                gui.displayMainViews();
-                setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-                dispatchInstanceEvent(new KahinaRedrawEvent());
+                try
+                {
+                    project = loadProject(new FileInputStream(e.getFile()));
+                    project.register();
+                    registerRecentProject(project);
+                    gui.setPerspective(project.getPerspective());
+                    gui.displayMainViews();
+                    setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+                    dispatchInstanceEvent(new KahinaRedrawEvent());
+                }
+                catch (FileNotFoundException e1)
+                {
+                    System.err.println("ERROR: Project file not found!");
+                    e1.printStackTrace();
+                }
+
                 break;
             }
             case LOAD_RECENT_PROJECT:
@@ -490,11 +479,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
         }
     }
     
-    private KahinaPerspective loadPerspective(File file)
+    protected KahinaPerspective loadPerspective(InputStream stream)
     {
         try
         {
-            InputStream stream = new BufferedInputStream(new FileInputStream(file));
             KahinaPerspective result = KahinaPerspective.importXML(XMLUtil.parseXMLStream(stream, false).getDocumentElement());
             stream.close();
             return result;
@@ -712,7 +700,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
         XMLUtil.writeXML(el, projectFile.getAbsolutePath());
     }
     
-    public abstract P loadProject(File projectFile);
+    public abstract P loadProject(InputStream stream);
     
     public G getGUI()
     {

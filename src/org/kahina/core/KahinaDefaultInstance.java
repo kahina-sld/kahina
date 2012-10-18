@@ -48,20 +48,12 @@ public class KahinaDefaultInstance extends KahinaInstance<KahinaState, KahinaGUI
 		// TODO Auto-generated method stub	
 	}
     
-    public KahinaProject loadProject(File projectFile)
+    public KahinaProject loadProject(InputStream stream)
     {
         Document dom;
         KahinaProject project = new KahinaProject("default", "no name");
-        try
-        {
-            dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);      
-            project = KahinaProject.importXML(dom.getDocumentElement(), project);
-        }
-        catch (FileNotFoundException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        dom = XMLUtil.parseXMLStream(stream, false);      
+        project = KahinaProject.importXML(dom.getDocumentElement(), project);
         return project;
     }
 
@@ -69,25 +61,13 @@ public class KahinaDefaultInstance extends KahinaInstance<KahinaState, KahinaGUI
     protected void prepareProjectLists()
     {
         recentProjects = new LinkedList<KahinaProject>();
-        // load the default perspectives in the bin folder of the respective Kahina application
         defaultProjects = new LinkedList<KahinaProject>();
-        // This filter only returns XML files
-        FileFilter fileFilter = new FileFilter()
-        {
-            public boolean accept(File file)
-            {
-                return file.getName().endsWith("xml");
-            }
-        };
-        File[] files = new File(this.getClass().getResource("./data/project").getFile()).listFiles(fileFilter);
-        for (File f : files)
-        {
-            if (VERBOSE)
-            {
-                System.err.println("Loading predefined project: " + f.getAbsolutePath());
-            }
-            defaultProjects.add(loadProject(f));
-        }
-        
+    }
+
+    @Override
+    protected void preparePerspectiveLists()
+    {
+        recentPerspectives = new LinkedList<KahinaPerspective>();
+        defaultPerspectives = new LinkedList<KahinaPerspective>();  
     } 
 }
