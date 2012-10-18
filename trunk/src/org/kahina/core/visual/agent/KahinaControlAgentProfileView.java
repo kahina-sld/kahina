@@ -13,7 +13,7 @@ public class KahinaControlAgentProfileView extends KahinaView<KahinaControlAgent
     public KahinaControlAgentProfileView(LogicProgrammingInstance<?,?,?,?> kahina)
     {
         super(kahina);
-        model = new KahinaControlAgentProfile(null);
+        display(new KahinaControlAgentProfile(null));
         pointView = new KahinaControlAgentView(kahina);
     }
 

@@ -412,6 +412,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                 newProject(e.getFile(), e.getName());
                 project.register();
                 registerRecentProject(project);
+                gui.displayMainViews();
                 break;
             }
             case SAVE_PROJECT:
