@@ -64,6 +64,13 @@ public class MUCState extends KahinaState
         initialize();
     }
     
+    public MUCStep getSelectedStep()
+    {
+        int stepID = getSelectedStepID();
+        if (stepID == -1) return null;
+        return retrieve(MUCStep.class, stepID);
+    }
+    
     public CnfSatInstance getSatInstance()
     {
         return satInstance;
