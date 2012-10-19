@@ -28,6 +28,7 @@ public class KahinaSatInstanceListViewPanel extends KahinaViewPanel<KahinaSatIns
         list.setSelectionBackground(Color.YELLOW);
         list.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         list.setFixedCellHeight(16);
+        list.setCellRenderer(new KahinaSatInstanceListCellRenderer(this));
         
         listScrollPane = new JScrollPane(list);
         this.add(listScrollPane);          
