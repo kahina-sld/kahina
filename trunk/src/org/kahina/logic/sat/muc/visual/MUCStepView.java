@@ -41,12 +41,52 @@ public class MUCStepView extends KahinaSatInstanceListView
     
     public void processEvent(KahinaSelectionEvent e)
     {
-        if (e.getSelectedStep() != -1)
+        if (model != null) 
         {
-            MUCStep step = kahina.getState().retrieve(MUCStep.class, e.getSelectedStep());
-            CnfSatInstance usInstance = kahina.getSatInstance().selectClauses(step.getUc());
-            display(usInstance);
+            recalculate();
+            kahina.dispatchEvent(new KahinaRedrawEvent());
         }
-        kahina.dispatchEvent(new KahinaRedrawEvent());
+    }
+    
+    public void recalculate()
+    {
+        int stepID = kahina.getState().getSelectedStepID();
+        List<List<Integer>> clauses = model.getClauses();
+        listModel.clear();
+        if (stepID == -1)
+        {
+            for (int i = 1; i < clauses.size(); i++)
+            {
+                StringBuilder s = new StringBuilder();
+                s.append(i);
+                s.append(": {");
+                for (Integer literal : clauses.get(i))
+                {
+                    s.append(literal);
+                    s.append(',');
+                }
+                s.deleteCharAt(s.length() - 1);
+                s.append('}');
+                listModel.addElement(s.toString());
+            }
+        }
+        else
+        {
+            MUCStep step = kahina.getState().retrieve(MUCStep.class, stepID);
+            for (int ic : step.getUc())
+            {
+                StringBuilder s = new StringBuilder();
+                s.append(ic);
+                s.append(": {");
+                for (Integer literal : clauses.get(ic))
+                {
+                    s.append(literal);
+                    s.append(',');
+                }
+                s.deleteCharAt(s.length() - 1);
+                s.append('}');
+                listModel.addElement(s.toString());
+            }
+        }
     }
 }
