@@ -114,11 +114,14 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     MUCStatistics stat;
     MiniSATFiles files;
     
+    private MUCReductionManager reductionManager;
+    
     public MUCInstance()
     {
         this.satInstance = null;
         this.stat = null;
         this.files = null;
+        this.reductionManager = new MUCReductionManager(this);
     }
     
     public MUCInstance(CnfSatInstance satInstance,  MUCStatistics stat, MiniSATFiles files)
@@ -126,6 +129,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         this.satInstance = satInstance;
         this.stat = stat;
         this.files = files;
+        this.reductionManager = new MUCReductionManager(this);
         state.setSatInstance(satInstance);
         state.setStatistics(stat);
         state.setFiles(files);
@@ -386,5 +390,10 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     {
         recentPerspectives = new LinkedList<KahinaPerspective>();
         defaultPerspectives = new LinkedList<KahinaPerspective>();       
+    }
+
+    public MUCReductionManager getReductionManager()
+    {
+        return reductionManager;
     }
 }

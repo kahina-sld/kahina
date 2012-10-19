@@ -51,7 +51,6 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
     public final static long DBL_CLICK_INTERVAL = 200;
     
     private MUCInstance kahina;
-    private ReductionManager reductionManager;
     
     int selectedClause = -1;
     
@@ -60,8 +59,6 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
         super();
         this.kahina = kahina;
         kahina.registerSessionListener("clauseSelection", this);
-        
-        reductionManager = new ReductionManager(this);
         
         this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
         controlPanel = new JPanel();
@@ -195,11 +192,11 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
             {
                 if (view.icStatus[i] == 0)
                 {
-                    UCReductionTask redTask = new UCReductionTask(  null, reductionManager, state.getStatistics(), 
+                    UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                             ucStep, state.getSelectedStepID(), 
                             view.ics[i], state.getFiles()
                           );
-                    reductionManager.addTask(redTask); 
+                    kahina.getReductionManager().addTask(redTask); 
                 }
             }
             /*kahina.dispatchEvent(new KahinaControlEvent("begin"));
@@ -232,11 +229,11 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
                     {
                         if (view.icStatus[i] == 0)
                         {
-                            UCReductionTask redTask = new UCReductionTask(  null, reductionManager, state.getStatistics(), 
+                            UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                     ucStep, nextID, 
                                     view.ics[i], state.getFiles()
                                   );
-                            reductionManager.addTask(redTask); 
+                            kahina.getReductionManager().addTask(redTask); 
                         }
                     }
                     //TODO: must wait until all previous reduction tasks have finished
@@ -273,11 +270,11 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
             {
                 MUCState state = kahina.getState();
                 MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
-                UCReductionTask redTask = new UCReductionTask(  null, reductionManager, state.getStatistics(), 
+                UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                                                 ucStep, state.getSelectedStepID(), 
                                                                 label, state.getFiles()
                                                               );
-                reductionManager.addTask(redTask);
+                kahina.getReductionManager().addTask(redTask);
                 //kahina.dispatchEvent(new KahinaControlEvent(label + ""));
                 lastClick = 0;
             }
@@ -382,53 +379,5 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
                 }
             }     
         }     
-    }
-    
-    private class ReductionManager extends KahinaTaskManager
-    {
-        MUCStepControllerPanel panel;
-        
-        public ReductionManager(MUCStepControllerPanel panel)
-        {
-            super();
-            this.panel = panel;
-        }
-        
-        public void taskFinished(KahinaTask task)
-        {
-            super.taskFinished(task);
-            if (task instanceof UCReductionTask)
-            {
-                MUCState state = panel.kahina.getState();
-                UCReductionTask ucTask = (UCReductionTask) task;
-                MUCStep result = ucTask.getResult();
-                //attempt was unsuccessful
-                if (ucTask.uc == result)
-                {
-                    //uc and ucID just stay the same
-                    state.addAndDistributeUnreducibilityInfo(ucTask.ucID, ucTask.candidate);
-                    //we learn that the current selector variables cannot be 1 together
-                    List<Integer> metaClause = new LinkedList<Integer>();
-                    int numClauses = state.getStatistics().numClausesOrGroups;
-                    for (int i = 1; i <= numClauses; i++)
-                    {
-                        if (!result.getUc().contains(i) || i == ucTask.reductionID)
-                        {
-                            metaClause.add(-i);
-                        }
-                    }
-                    state.learnMetaClause(metaClause);
-                }
-                //attempt was successful, we might have arrived at a new UC
-                else
-                {
-                    int stepID = state.registerMUC(result, ucTask.ucID, ucTask.candidate);
-                    ucTask.uc.setRemovalLink(ucTask.candidate, stepID);
-                }
-                panel.updateLabelColors(ucTask.uc);
-                kahina.dispatchEvent(new KahinaUpdateEvent(kahina.getState().getSelectedStepID()));
-                kahina.dispatchEvent(new KahinaRedrawEvent());
-            }
-        }
     }
 }
