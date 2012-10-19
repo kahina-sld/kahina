@@ -8,7 +8,10 @@
               <kahina:default-window kahina:binding="metaInstance" kahina:border="true" kahina:height="400" kahina:id="16" kahina:primary="true" kahina:title="Meta Instance over Selector Variables" kahina:width="500" kahina:xpos="0" kahina:ypos="600"/>
           </kahina:vert-split-window>
 	      <kahina:vert-split-window kahina:height="1000" kahina:id="9" kahina:title="MinUnsatCore Visualization" kahina:width="1680" kahina:xpos="300" kahina:ypos="0">
-	          <kahina:default-window kahina:binding="decisionGraph" kahina:border="true" kahina:height="471" kahina:id="1" kahina:primary="true" kahina:title="Decision graph" kahina:width="800" kahina:xpos="320" kahina:ypos="25"/>
+	          <kahina:hori-split-window kahina:height="500" kahina:id="17" kahina:title="Decision Graph and Current UC" kahina:border="false" kahina:width="1680" kahina:xpos="300" kahina:ypos="0">
+	            <kahina:default-window kahina:binding="decisionGraph" kahina:border="true" kahina:height="471" kahina:id="1" kahina:primary="true" kahina:title="Decision graph" kahina:width="600" kahina:xpos="320" kahina:ypos="25"/>
+	            <kahina:default-window kahina:binding="currentUC" kahina:border="true" kahina:height="471" kahina:id="18" kahina:primary="true" kahina:title="Selected UC" kahina:width="200" kahina:xpos="320" kahina:ypos="25"/>
+	          </kahina:hori-split-window>
 	          <kahina:tabbed-window kahina:height="0" kahina:id="12" kahina:primary="false" kahina:title="Reduction" kahina:width="877" kahina:xpos="800" kahina:ypos="133">
 	            <kahina:default-window kahina:binding="reducers" kahina:border="true" kahina:height="-471" kahina:id="13" kahina:primary="true" kahina:title="Automated UC Reduction" kahina:width="800" kahina:xpos="800" kahina:ypos="200"/>
 	            <kahina:default-window kahina:binding="stepController" kahina:border="true" kahina:height="-471" kahina:id="2" kahina:primary="true" kahina:title="Manual UC Reduction" kahina:width="800" kahina:xpos="811" kahina:ypos="223"/> 

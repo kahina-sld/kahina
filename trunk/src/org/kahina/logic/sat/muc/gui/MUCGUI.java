@@ -27,6 +27,7 @@ import org.kahina.logic.sat.muc.heuristics.AlwaysFirstHeuristics;
 import org.kahina.logic.sat.muc.heuristics.AlwaysLastHeuristics;
 import org.kahina.logic.sat.muc.heuristics.CenterHeuristics;
 import org.kahina.logic.sat.muc.visual.MUCStepController;
+import org.kahina.logic.sat.muc.visual.MUCStepView;
 import org.kahina.logic.sat.muc.visual.UCReducerListView;
 import org.kahina.logic.sat.visual.cnf.graph.KahinaGroupSatInstanceGraphView;
 import org.kahina.logic.sat.visual.cnf.graph.KahinaSatInstanceGraphView;
@@ -38,6 +39,7 @@ public class MUCGUI extends KahinaGUI
     protected KahinaSatInstanceListView metaInstanceView;
     protected ColoredPathDAGView decisionGraphView;
     protected MUCStepController stepController;
+    protected MUCStepView mucView;
     protected UCReducerListView reducerListView;
     
     private MUCInstance kahina;
@@ -113,6 +115,12 @@ public class MUCGUI extends KahinaGUI
         livingViews.add(stepController);
         varNameToView.put("stepController", stepController);
         
+        mucView = new MUCStepView(kahina);
+        kahina.registerInstanceListener(KahinaEventTypes.SELECTION, mucView);
+        views.add(mucView);
+        livingViews.add(mucView);
+        varNameToView.put("currentUC", mucView);
+        
         //TODO: hand over a useful files object
         reducerListView = new UCReducerListView(kahina, new MiniSATFiles());
         reducerListView.addHeuristic(AlwaysFirstHeuristics.class);
@@ -151,11 +159,14 @@ public class MUCGUI extends KahinaGUI
                 satInstanceView.display(sat);
             }
             metaInstanceView.display(state.getMetaInstance());
+            //TODO: if a step is selected, display the corresponding UC
+            mucView.display(sat);
         }
         else
         {
             satInstanceView.displayText("No SAT Instance loaded yet.");
             metaInstanceView.displayText("No SAT Instance loaded yet.");
+            mucView.displayText("No SAT Instance loaded yet.");
         }
     }
     
