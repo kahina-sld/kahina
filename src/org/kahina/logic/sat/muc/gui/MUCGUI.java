@@ -121,6 +121,10 @@ public class MUCGUI extends KahinaGUI
         livingViews.add(mucView);
         varNameToView.put("currentUC", mucView);
         
+        mucView.setStatusColorEncoding(0, Color.BLACK);
+        mucView.setStatusColorEncoding(1, NICE_GREEN);
+        mucView.setStatusColorEncoding(2, NICE_RED);
+        
         //TODO: hand over a useful files object
         reducerListView = new UCReducerListView(kahina, new MiniSATFiles());
         reducerListView.addHeuristic(AlwaysFirstHeuristics.class);

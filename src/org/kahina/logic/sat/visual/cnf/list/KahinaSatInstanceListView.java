@@ -1,5 +1,7 @@
 package org.kahina.logic.sat.visual.cnf.list;
 
+import java.awt.Color;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
@@ -14,16 +16,44 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
 {
     protected DefaultListModel listModel;
     
+    // mapping from status values to display properties
+    HashMap<Integer, Color> statusColorEncoding;
+    
     public KahinaSatInstanceListView(KahinaInstance<?, ?, ?, ?> kahina)
     {
         super(kahina);
         listModel = new DefaultListModel();
+        statusColorEncoding = new HashMap<Integer, Color>();
     }
     
     public void doDisplay()
     {
         listModel.clear();
         recalculate();
+    }
+    
+    public void setStatusColorEncoding(int status, Color color)
+    {
+        statusColorEncoding.put(status, color);
+    }
+    
+    public int getLineStatus(int lineID)
+    {
+        return 0;
+    }
+    
+    public Color getLineColor(int lineID)
+    {
+        int status = getLineStatus(lineID);
+        Color col = statusColorEncoding.get(status);
+        if (col == null)
+        {
+            return Color.BLACK;
+        } 
+        else
+        {
+            return col;
+        }
     }
     
     public ListModel getListModel()

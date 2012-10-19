@@ -15,11 +15,13 @@ import org.kahina.logic.sat.visual.cnf.list.KahinaSatInstanceListView;
 public class MUCStepView extends KahinaSatInstanceListView
 {
     MUCInstance kahina;
+    MUCStep currentStep;
     
     public MUCStepView(MUCInstance kahina)
     {
         super(kahina);
         this.kahina = kahina;
+        this.currentStep = null;
     }
     
     @Override
@@ -29,6 +31,15 @@ public class MUCStepView extends KahinaSatInstanceListView
         kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return panel;
+    }
+    
+    public int getLineStatus(int lineID)
+    {
+        if (currentStep != null)
+        {
+            return currentStep.getIcStatus(currentStep.getUc().get(lineID));
+        }
+        return 0;
     }
     
     public void processEvent(KahinaEvent e)
@@ -72,8 +83,8 @@ public class MUCStepView extends KahinaSatInstanceListView
         }
         else
         {
-            MUCStep step = kahina.getState().retrieve(MUCStep.class, stepID);
-            for (int ic : step.getUc())
+            currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
+            for (int ic : currentStep.getUc())
             {
                 StringBuilder s = new StringBuilder();
                 s.append(ic);
