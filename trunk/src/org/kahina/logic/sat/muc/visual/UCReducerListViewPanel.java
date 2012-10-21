@@ -160,8 +160,6 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
             UCReducer newReducer = new UCReducer(kahina.getState(), kahina.getState().getSelectedStepID(), kahina.getState().getFiles());
             try
             {
-                //TODO: make this dependent on an additional option!
-                newReducer.setMetaLearningUse(true);
                 newReducer.setHeuristics(view.heuristics.get(heuristicsChooser.getSelectedItem()).newInstance());
                 newReducer.setSignalColor(signalColor.getBackground());
                 signalColor.setBackground(ColorUtil.randomColor());

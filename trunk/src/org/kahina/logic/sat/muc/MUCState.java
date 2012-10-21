@@ -17,6 +17,9 @@ public class MUCState extends KahinaState
 {
     public static boolean VERBOSE = false;
     
+    //an option: use meta-learning or not?
+    boolean useMetaLearning = true;
+    
     CnfSatInstance satInstance;
     CnfSatInstance metaInstance;
     MUCStatistics stat;
@@ -62,6 +65,16 @@ public class MUCState extends KahinaState
         this.files = null;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
         initialize();
+    }
+    
+    public boolean usesMetaLearning()
+    {
+        return useMetaLearning;
+    }
+
+    public void setMetaLearningUse(boolean useMetaLearning)
+    {
+        this.useMetaLearning = useMetaLearning;
     }
     
     public MUCStep getSelectedStep()
