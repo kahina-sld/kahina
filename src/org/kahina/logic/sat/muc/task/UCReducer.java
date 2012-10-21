@@ -8,6 +8,7 @@ import org.kahina.core.data.dag.ColoredPath;
 import org.kahina.core.io.color.ColorUtil;
 import org.kahina.core.task.KahinaTask;
 import org.kahina.core.task.KahinaTaskManager;
+import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
@@ -18,6 +19,9 @@ public class UCReducer extends KahinaTaskManager
 {
     //provides access to the decision DAG that is constructed by multiple UCReducers
     MUCState state;
+    
+    //an option: use meta-learning or not?
+    boolean useMetaLearning;
     
     //remember at which step ID we started
     int startID;
@@ -43,6 +47,8 @@ public class UCReducer extends KahinaTaskManager
     public UCReducer(MUCState state, int startID, MiniSATFiles files)
     {
         this.state = state;
+        this.useMetaLearning = false;
+        
         System.err.println("Retrieving start MUCStep with ID " + startID);
         this.uc = state.retrieve(MUCStep.class, startID);
         this.ucID = startID;
@@ -102,6 +108,29 @@ public class UCReducer extends KahinaTaskManager
                 uc = state.retrieve(MUCStep.class, stepID);
                 ucID = stepID;
                 heuristics.setNewUC(uc);
+                if (useMetaLearning)
+                {
+                    List<Integer> posSelVars = new LinkedList<Integer>();
+                    int numClauses = state.getStatistics().numClausesOrGroups;
+                    for (int i = 1; i <= numClauses; i++)
+                    {
+                        if (!uc.getUc().contains(i))
+                        {
+                            posSelVars.add(i);
+                        }
+                    }
+                    List<Integer> learnedUnits = MiniSAT.getImpliedUnits(state.getMetaInstance(), posSelVars);
+                    //System.err.println("Learned Units: " + learnedUnits);
+                    for (int learnedUnit : learnedUnits)
+                    {
+                        //TODO: extend this to positive units as soon as we can learn some!
+                        if (learnedUnit < 0)
+                        {
+                            System.err.println("Unit from meta problem: " + learnedUnit);
+                            uc.setRemovalLink(-learnedUnit, -1);
+                        }
+                    }
+                }
                 if (getPanel() != null) getPanel().requestViewUpdate();
             }
             startNextReduction();
@@ -169,6 +198,16 @@ public class UCReducer extends KahinaTaskManager
         }    
     }
     
+    public boolean usesMetaLearning()
+    {
+        return useMetaLearning;
+    }
+
+    public void setMetaLearningUse(boolean useMetaLearning)
+    {
+        this.useMetaLearning = useMetaLearning;
+    }
+
     public MiniSATFiles getFiles()
     {
         return files;

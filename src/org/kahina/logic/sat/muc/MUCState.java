@@ -228,7 +228,7 @@ public class MUCState extends KahinaState
     
     public synchronized void learnMetaClause(List<Integer> metaClause)
     {
-        System.err.println("Leaning meta clause: " + metaClause);
+        //System.err.println("Leaning meta clause: " + metaClause);
         metaInstance.getClauses().add(metaClause);
     }
     

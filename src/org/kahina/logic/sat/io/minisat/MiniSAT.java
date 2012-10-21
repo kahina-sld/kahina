@@ -16,6 +16,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeoutException;
 
+import org.kahina.logic.sat.data.cnf.CnfSatInstance;
+import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 
 public class MiniSAT
@@ -124,6 +126,39 @@ public class MiniSAT
         p.getOutputStream().close();
         p.destroy();
         return !wasUnsatisfiable(tmpResultFile);
+    }
+    
+    public static List<Integer> getImpliedUnits(CnfSatInstance instance, List<Integer> setVars)
+    {
+        File tempResultsFile = new File("unit-temp-res.cnf");
+        File unitsFile = new File("units-temp.txt");
+        File instancePlusUnits = new File("unit-temp.cnf");
+        DimacsCnfOutput.writeDimacsCnfFileAndUnits("unit-temp.cnf", instance, setVars);
+        List<Integer> units;
+        try
+        {
+            solveAndDeriveUnits(instancePlusUnits, tempResultsFile, unitsFile);
+        }
+        catch (TimeoutException e)
+        {
+            e.printStackTrace();
+            units = new LinkedList<Integer>();
+        }
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            units = new LinkedList<Integer>();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            units = new LinkedList<Integer>();
+        }
+        units = getLearnedUnitClauses(unitsFile);
+        instancePlusUnits.delete();
+        tempResultsFile.delete();
+        unitsFile.delete();
+        return units;
     }
     
     public static List<Integer> findUnsatisfiableCore(MUCStatistics stat, MiniSATFiles files) throws TimeoutException, InterruptedException
