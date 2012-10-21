@@ -20,9 +20,6 @@ public class UCReducer extends KahinaTaskManager
     //provides access to the decision DAG that is constructed by multiple UCReducers
     MUCState state;
     
-    //an option: use meta-learning or not?
-    boolean useMetaLearning;
-    
     //remember at which step ID we started
     int startID;
     int startSize;
@@ -47,7 +44,6 @@ public class UCReducer extends KahinaTaskManager
     public UCReducer(MUCState state, int startID, MiniSATFiles files)
     {
         this.state = state;
-        this.useMetaLearning = false;
         
         System.err.println("Retrieving start MUCStep with ID " + startID);
         this.uc = state.retrieve(MUCStep.class, startID);
@@ -108,7 +104,7 @@ public class UCReducer extends KahinaTaskManager
                 uc = state.retrieve(MUCStep.class, stepID);
                 ucID = stepID;
                 heuristics.setNewUC(uc);
-                if (useMetaLearning)
+                if (state.usesMetaLearning())
                 {
                     List<Integer> posSelVars = new LinkedList<Integer>();
                     int numClauses = state.getStatistics().numClausesOrGroups;
@@ -196,16 +192,6 @@ public class UCReducer extends KahinaTaskManager
                 this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidate, newUC));
             }
         }    
-    }
-    
-    public boolean usesMetaLearning()
-    {
-        return useMetaLearning;
-    }
-
-    public void setMetaLearningUse(boolean useMetaLearning)
-    {
-        this.useMetaLearning = useMetaLearning;
     }
 
     public MiniSATFiles getFiles()
