@@ -79,10 +79,9 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
     public void recalculate()
     {
         List<List<Integer>> clauses = model.getClauses();
-        if (clauses.size() != listModel.getSize())
+        if (clauses.size() > listModel.getSize())
         {
-            listModel.clear();
-            for (int i = 1; i < clauses.size(); i++)
+            for (int i = listModel.getSize(); i < clauses.size(); i++)
             {
                 StringBuilder s = new StringBuilder();
                 s.append(i);
