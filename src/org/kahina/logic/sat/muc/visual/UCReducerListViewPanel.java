@@ -2,6 +2,7 @@ package org.kahina.logic.sat.muc.visual;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
@@ -42,14 +44,15 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
     {
         this.kahina = kahina;
         
-        this.setLayout(new BoxLayout(this,BoxLayout.PAGE_AXIS));
+        this.setLayout(new BoxLayout(this,BoxLayout.LINE_AXIS));
         
-        JPanel upperPanel = new JPanel();
+        JPanel leftPanel = new JPanel();
         
         newReducerPanel = new JPanel();
         newReducerPanel.setBorder(BorderFactory.createTitledBorder("Start a new reducer at the selected node"));
-        newReducerPanel.setLayout(new BoxLayout(newReducerPanel,BoxLayout.LINE_AXIS));
-        //controlPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        
+        JLabel heuristicsLabel = new JLabel("Basic heuristics: ");
+        newReducerPanel.add(heuristicsLabel);
         
         heuristicsChooser = new JComboBox();
         heuristicsChooser.setActionCommand("chooseHeuristics");
@@ -77,14 +80,37 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
         startReducerButton.addActionListener(this);
         newReducerPanel.add(startReducerButton);
         
-        upperPanel.add(newReducerPanel);
+        GroupLayout layout = new GroupLayout(newReducerPanel);
+        newReducerPanel.setLayout(layout);
         
-        JButton shortestPathButton = new JButton("Shortest Path");
+        layout.setHorizontalGroup(
+            layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(heuristicsLabel)
+                    .addComponent(colorLabel)
+                    .addComponent(startReducerButton))
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(heuristicsChooser)
+                    .addComponent(signalColor)));
+        
+        layout.setVerticalGroup(
+            layout.createSequentialGroup()
+               .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                   .addComponent(heuristicsLabel)
+                   .addComponent(heuristicsChooser))
+               .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                   .addComponent(colorLabel)
+                   .addComponent(signalColor))
+               .addComponent(startReducerButton));     
+        
+        leftPanel.add(newReducerPanel);
+        
+        /*JButton shortestPathButton = new JButton("Shortest Path");
         shortestPathButton.setActionCommand("shortestPath");
         shortestPathButton.addActionListener(this);
-        upperPanel.add(shortestPathButton);
+        leftPanel.add(shortestPathButton);*/
         
-        this.add(upperPanel);
+        this.add(leftPanel);
         
         runningReducersPanel = new JPanel();
         runningReducersPanel.setLayout(new WrapLayout());

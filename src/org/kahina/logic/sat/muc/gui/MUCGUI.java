@@ -38,7 +38,7 @@ public class MUCGUI extends KahinaGUI
     protected KahinaSatInstanceListView satInstanceView;
     protected KahinaSatInstanceListView metaInstanceView;
     protected ColoredPathDAGView decisionGraphView;
-    protected MUCStepController stepController;
+    //protected MUCStepController stepController;
     protected MUCStepView mucView;
     protected UCReducerListView reducerListView;
     
@@ -109,11 +109,12 @@ public class MUCGUI extends KahinaGUI
         decisionGraphView.setStatusColorEncoding(MUCStepType.MINIMAL, NICE_GREEN);
         decisionGraphView.setStatusColorEncoding(MUCStepType.SAT, NICE_RED);
         
-        stepController = new MUCStepController(kahina);
+        //this one is not needed any longer, it became obsolete with the mucView
+        /*stepController = new MUCStepController(kahina);
         kahina.registerInstanceListener(KahinaEventTypes.SELECTION, stepController);
         views.add(stepController);
         livingViews.add(stepController);
-        varNameToView.put("stepController", stepController);
+        varNameToView.put("stepController", stepController);*/
         
         mucView = new MUCStepView(kahina);
         kahina.registerInstanceListener(KahinaEventTypes.SELECTION, mucView);
