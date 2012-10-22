@@ -84,7 +84,7 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
             for (int i = listModel.getSize(); i < clauses.size(); i++)
             {
                 StringBuilder s = new StringBuilder();
-                s.append(i);
+                s.append(i + 1);
                 s.append(": {");
                 for (Integer literal : clauses.get(i))
                 {

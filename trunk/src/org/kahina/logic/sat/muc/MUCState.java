@@ -1,6 +1,7 @@
 package org.kahina.logic.sat.muc;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ import org.kahina.core.KahinaState;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.dag.ColoredPathDAG;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
+import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.bridge.MUCInstruction;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
@@ -239,10 +241,44 @@ public class MUCState extends KahinaState
         this.files = files;
     }
     
+    protected void processSelection()
+    {
+        if (usesMetaLearning() && getSelectedStep() != null)
+        {
+            learnMetaUnits(getSelectedStep());
+        }
+    }
+    
     public synchronized void learnMetaClause(List<Integer> metaClause)
     {
         //System.err.println("Leaning meta clause: " + metaClause);
         metaInstance.getClauses().add(metaClause);
+    }
+    
+    public synchronized void learnMetaUnits(MUCStep uc)
+    {
+        System.err.print("Learning meta units: ");
+        List<Integer> posSelVars = new LinkedList<Integer>();
+        int numClauses = getStatistics().numClausesOrGroups;
+        for (int i = 1; i <= numClauses; i++)
+        {
+            if (!uc.getUc().contains(i))
+            {
+                posSelVars.add(i);
+            }
+        }
+        List<Integer> learnedUnits = MiniSAT.getImpliedUnits(getMetaInstance(), posSelVars);
+        //System.err.println("Learned Units: " + learnedUnits);
+        for (int learnedUnit : learnedUnits)
+        {
+            //TODO: extend this to positive units as soon as we can learn some!
+            if (learnedUnit < 0)
+            {
+                System.err.print(learnedUnit + " ");
+                uc.setRemovalLink(-learnedUnit, -1);
+            }
+        }
+        System.err.println();
     }
     
     public synchronized void addAndDistributeUnreducibilityInfo(int parentID, int failedReductionID)

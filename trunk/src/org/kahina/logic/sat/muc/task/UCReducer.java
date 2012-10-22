@@ -78,19 +78,25 @@ public class UCReducer extends KahinaTaskManager
             if (uc == result)
             {
                 //uc and ucID just stay the same
-                state.addAndDistributeUnreducibilityInfo(ucID, ucTask.candidate);
                 numSATReductions++;
-                //we learn that the current selector variables cannot be 1 together
-                List<Integer> metaClause = new LinkedList<Integer>();
-                int numClauses = state.getStatistics().numClausesOrGroups;
-                for (int i = 1; i <= numClauses; i++)
+                if (!state.usesMetaLearning())
                 {
-                    if (!result.getUc().contains(i) || i == ucTask.reductionID)
-                    {
-                        metaClause.add(-i);
-                    }
+                    state.addAndDistributeUnreducibilityInfo(ucID, ucTask.candidate);
                 }
-                state.learnMetaClause(metaClause);
+                else
+                {
+                    //we learn that the current selector variables cannot be 1 together
+                    List<Integer> metaClause = new LinkedList<Integer>();
+                    int numClauses = state.getStatistics().numClausesOrGroups;
+                    for (int i = 1; i <= numClauses; i++)
+                    {
+                        if (!result.getUc().contains(i) || i == ucTask.reductionID)
+                        {
+                            metaClause.add(-i);
+                        }
+                    }
+                    state.learnMetaClause(metaClause);
+                }
                 //System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clause " + ucTask.candidate + " at step " + ucID + " led to satisfiable instance! No change!");
             }
             //attempt was successful, we might have arrived at a new UC
@@ -106,26 +112,7 @@ public class UCReducer extends KahinaTaskManager
                 heuristics.setNewUC(uc);
                 if (state.usesMetaLearning())
                 {
-                    List<Integer> posSelVars = new LinkedList<Integer>();
-                    int numClauses = state.getStatistics().numClausesOrGroups;
-                    for (int i = 1; i <= numClauses; i++)
-                    {
-                        if (!uc.getUc().contains(i))
-                        {
-                            posSelVars.add(i);
-                        }
-                    }
-                    List<Integer> learnedUnits = MiniSAT.getImpliedUnits(state.getMetaInstance(), posSelVars);
-                    //System.err.println("Learned Units: " + learnedUnits);
-                    for (int learnedUnit : learnedUnits)
-                    {
-                        //TODO: extend this to positive units as soon as we can learn some!
-                        if (learnedUnit < 0)
-                        {
-                            System.err.println("Unit from meta problem: " + learnedUnit);
-                            uc.setRemovalLink(-learnedUnit, -1);
-                        }
-                    }
+                    state.learnMetaUnits(uc);
                 }
                 if (getPanel() != null) getPanel().requestViewUpdate();
             }

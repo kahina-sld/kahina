@@ -82,7 +82,7 @@ public class MiniSAT
      * @param unitsFile the file where to store the units
      * @return whether the SAT instance was satisfiable or not; units are written to unitsFile
      */
-    public static boolean solveAndDeriveUnits(File cnfFile, File tmpResultFile, File unitsFile) throws TimeoutException, InterruptedException, IOException
+    public static synchronized boolean solveAndDeriveUnits(File cnfFile, File tmpResultFile, File unitsFile) throws TimeoutException, InterruptedException, IOException
     {
         Process p = Runtime.getRuntime().exec("minisat-units " + cnfFile.getAbsolutePath() + " -c -r " + tmpResultFile.getAbsolutePath() + " -u " + unitsFile.getAbsolutePath());
         BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -128,7 +128,7 @@ public class MiniSAT
         return !wasUnsatisfiable(tmpResultFile);
     }
     
-    public static List<Integer> getImpliedUnits(CnfSatInstance instance, List<Integer> setVars)
+    public static synchronized List<Integer> getImpliedUnits(CnfSatInstance instance, List<Integer> setVars)
     {
         File tempResultsFile = new File("unit-temp-res.cnf");
         File unitsFile = new File("units-temp.txt");
