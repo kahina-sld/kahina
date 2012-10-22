@@ -66,12 +66,12 @@ public class MUCStepView extends KahinaSatInstanceListView
         listModel.clear();
         if (stepID == -1)
         {
-            for (int i = 1; i < clauses.size(); i++)
+            for (int i = 1; i <= clauses.size(); i++)
             {
                 StringBuilder s = new StringBuilder();
                 s.append(i);
                 s.append(": {");
-                for (Integer literal : clauses.get(i))
+                for (Integer literal : clauses.get(i-1))
                 {
                     s.append(literal);
                     s.append(',');
