@@ -155,9 +155,9 @@ public class MiniSAT
             units = new LinkedList<Integer>();
         }
         units = getLearnedUnitClauses(unitsFile);
-        instancePlusUnits.delete();
-        tempResultsFile.delete();
-        unitsFile.delete();
+        //instancePlusUnits.delete();
+        //tempResultsFile.delete();
+        //unitsFile.delete();
         return units;
     }
     

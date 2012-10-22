@@ -257,6 +257,7 @@ public class MUCState extends KahinaState
     
     public synchronized void learnMetaUnits(MUCStep uc)
     {
+        System.err.println("learnMetaUnits uc :" + uc.getUc());
         System.err.print("Learning meta units: ");
         List<Integer> posSelVars = new LinkedList<Integer>();
         int numClauses = getStatistics().numClausesOrGroups;
