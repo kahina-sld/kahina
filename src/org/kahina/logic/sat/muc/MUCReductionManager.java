@@ -43,7 +43,7 @@ public class MUCReductionManager extends KahinaTaskManager
                     int numClauses = state.getStatistics().numClausesOrGroups;
                     for (int i = 1; i <= numClauses; i++)
                     {
-                        if (!result.getUc().contains(i) || i == ucTask.reductionID)
+                        if (!result.getUc().contains(i) || i == ucTask.candidate)
                         {
                             metaClause.add(-i);
                         }
