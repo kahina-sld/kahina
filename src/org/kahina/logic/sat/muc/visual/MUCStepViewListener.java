@@ -1,28 +1,33 @@
 package org.kahina.logic.sat.muc.visual;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 
+import org.kahina.core.visual.graph.KahinaGraphViewContextMenu;
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.gui.ClauseSelectionEvent;
 import org.kahina.logic.sat.muc.task.UCReductionTask;
 
-public class MUCStepViewPanelMouseListener extends MouseAdapter
+public class MUCStepViewListener extends MouseAdapter implements ActionListener
 {
     private final MUCInstance kahina;
+    private final MUCStepViewPanel view;
     
     long lastClick = 0;
     public final static long DBL_CLICK_INTERVAL = 200;
     
-    public MUCStepViewPanelMouseListener(MUCInstance kahina)
+    public MUCStepViewListener(MUCInstance kahina, MUCStepViewPanel view)
     {
         this.kahina = kahina;
+        this.view = view;
     }
     
     @Override
@@ -56,5 +61,30 @@ public class MUCStepViewPanelMouseListener extends MouseAdapter
                 }
             }
         }
+    }
+    
+    public void mousePressed(MouseEvent e)
+    {
+        maybeShowPopup(e);
+    }
+    
+    public void mouseReleased(MouseEvent e)
+    {
+        maybeShowPopup(e);
+    }
+    
+    protected void maybeShowPopup(MouseEvent e) 
+    {
+        if (e.isPopupTrigger()) 
+        {
+            MUCStepViewContextMenu.getMenu(this, view.view, kahina).show(e.getComponent(),e.getX(), e.getY());
+        }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0)
+    {
+        // TODO Auto-generated method stub
+        
     }
 }
