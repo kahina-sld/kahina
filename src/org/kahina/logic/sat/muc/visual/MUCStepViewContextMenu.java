@@ -9,15 +9,19 @@ import org.kahina.logic.sat.muc.MUCInstance;
 
 public class MUCStepViewContextMenu extends JPopupMenu
 {
-    MUCStepView view;
+    MUCStepViewPanel view;
     MUCInstance kahina;
     
-    public MUCStepViewContextMenu(ActionListener l, MUCStepView view, MUCInstance kahina)
+    public MUCStepViewContextMenu(ActionListener l, MUCStepViewPanel view, MUCInstance kahina, int listIndex)
     {
         this.view = view;
         this.kahina = kahina;
         
         JMenuItem selectAllItem = new JMenuItem("Select all");
+        if (view.view.currentStep == null)
+        {
+            selectAllItem.setEnabled(false);
+        }
         selectAllItem.setActionCommand("selectAll");
         selectAllItem.addActionListener(l);
         add(selectAllItem);
@@ -31,22 +35,30 @@ public class MUCStepViewContextMenu extends JPopupMenu
         addSeparator();
         
         JMenuItem reduceItem = new JMenuItem("Reduce by this clause (= double-click)");
-        reduceItem.setActionCommand("reduce");
+        reduceItem.setActionCommand("reduce" + listIndex);
         reduceItem.addActionListener(l);
         add(reduceItem);
         
         JMenuItem reduceMRItem = new JMenuItem("Reduce by this clause + model rotation");
         selectDialogItem.setEnabled(false);
-        reduceMRItem.setActionCommand("reduceMR");
+        reduceMRItem.setActionCommand("reduceMR" + listIndex);
         reduceMRItem.addActionListener(l);
         add(reduceMRItem);
         
         JMenuItem reduceSelectedOnceItem = new JMenuItem("Reduce by selected clauses at once");
+        if (view.getList().getSelectedIndices().length == 0)
+        {
+            reduceSelectedOnceItem.setEnabled(false);
+        }
         reduceSelectedOnceItem.setActionCommand("reduceSelOnce");
         reduceSelectedOnceItem.addActionListener(l);
         add(reduceSelectedOnceItem);
         
         JMenuItem reduceSelectedIndividuallyItem = new JMenuItem("Reduce by selected clauses individually");
+        if (view.getList().getSelectedIndices().length == 0)
+        {
+            reduceSelectedIndividuallyItem.setEnabled(false);
+        }
         reduceSelectedIndividuallyItem.setActionCommand("reduceSelIndiv");
         reduceSelectedIndividuallyItem.addActionListener(l);
         add(reduceSelectedIndividuallyItem);
@@ -60,8 +72,8 @@ public class MUCStepViewContextMenu extends JPopupMenu
         add(findAutarkiesItem);
     }
     
-    public static JPopupMenu getMenu(ActionListener l, MUCStepView view, MUCInstance kahina)
+    public static JPopupMenu getMenu(ActionListener l, MUCStepViewPanel view, MUCInstance kahina, int listIndex)
     {
-        return new MUCStepViewContextMenu(l, view, kahina);
+        return new MUCStepViewContextMenu(l, view, kahina, listIndex);
     }
 }
