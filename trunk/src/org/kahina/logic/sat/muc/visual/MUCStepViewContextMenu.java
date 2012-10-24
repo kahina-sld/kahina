@@ -50,7 +50,7 @@ public class MUCStepViewContextMenu extends JPopupMenu
         {
             reduceSelectedOnceItem.setEnabled(false);
         }
-        reduceSelectedOnceItem.setActionCommand("reduceSelOnce");
+        reduceSelectedOnceItem.setActionCommand("redSelOnce");
         reduceSelectedOnceItem.addActionListener(l);
         add(reduceSelectedOnceItem);
         
@@ -59,7 +59,7 @@ public class MUCStepViewContextMenu extends JPopupMenu
         {
             reduceSelectedIndividuallyItem.setEnabled(false);
         }
-        reduceSelectedIndividuallyItem.setActionCommand("reduceSelIndiv");
+        reduceSelectedIndividuallyItem.setActionCommand("redSelIndiv");
         reduceSelectedIndividuallyItem.addActionListener(l);
         add(reduceSelectedIndividuallyItem);
         

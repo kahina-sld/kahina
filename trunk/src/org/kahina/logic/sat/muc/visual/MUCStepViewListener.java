@@ -113,13 +113,22 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             int listIndex = Integer.parseInt(s.substring(8));
             //TODO
         }
-        else if (s.equals("reduceSelOnce"))
+        else if (s.equals("redSelOnce"))
         {
             //TODO
         }
-        else if (s.equals("reduceSelIndiv"))
+        else if (s.equals("redSelIndiv"))
         {
-            //TODO
+            int[] redList = view.getList().getSelectedIndices();
+            MUCStep uc = kahina.getState().getSelectedStep();
+            if (uc != null)
+            {
+                for (int listIndex : redList)
+                {
+                    int ic = uc.getUc().get(listIndex);
+                    reduce(ic);
+                }
+            }
         }
         else if (s.equals("findAutarkies"))
         {
