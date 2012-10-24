@@ -14,7 +14,7 @@ import org.kahina.core.visual.text.KahinaTextViewListener;
 
 public class KahinaSatInstanceListViewPanel extends KahinaViewPanel<KahinaSatInstanceListView>
 {
-    protected JList list;
+    private JList list;
     JScrollPane listScrollPane;
     
     private final KahinaInstance<?, ?, ?, ?> kahina;
@@ -30,14 +30,14 @@ public class KahinaSatInstanceListViewPanel extends KahinaViewPanel<KahinaSatIns
         list.setFixedCellHeight(16);
         list.setCellRenderer(new KahinaSatInstanceListCellRenderer(this));
         
-        listScrollPane = new JScrollPane(list);
+        listScrollPane = new JScrollPane(getList());
         this.add(listScrollPane);          
     }
     
     public void setView(KahinaSatInstanceListView view)
     {
         this.view = view;
-        list.setModel(view.getListModel());
+        getList().setModel(view.getListModel());
         //list.setSelectionModel(view.getSelectionModel());
         /*for (MouseListener mouseListener : list.getMouseListeners())
         {
@@ -51,5 +51,10 @@ public class KahinaSatInstanceListViewPanel extends KahinaViewPanel<KahinaSatIns
     public void updateDisplay()
     {
         repaint();    
+    }
+
+    public JList getList()
+    {
+        return list;
     }
 }

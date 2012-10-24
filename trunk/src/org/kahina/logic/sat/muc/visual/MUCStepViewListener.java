@@ -49,18 +49,22 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 }
                 else
                 {
-                    MUCState state = kahina.getState();
-                    MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
-                    UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
-                                                                    ucStep, state.getSelectedStepID(), 
-                                                                    ic, state.getFiles()
-                                                                  );
-                    kahina.getReductionManager().addTask(redTask);
-                    //kahina.dispatchEvent(new KahinaControlEvent(label + ""));
+                    reduce(ic);
                     lastClick = 0;
                 }
             }
         }
+    }
+    
+    private void reduce(int ic)
+    {
+        MUCState state = kahina.getState();
+        MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
+        UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
+                                                        ucStep, state.getSelectedStepID(), 
+                                                        ic, state.getFiles()
+                                                      );
+        kahina.getReductionManager().addTask(redTask);
     }
     
     public void mousePressed(MouseEvent e)
@@ -77,14 +81,49 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
     {
         if (e.isPopupTrigger()) 
         {
-            MUCStepViewContextMenu.getMenu(this, view.view, kahina).show(e.getComponent(),e.getX(), e.getY());
+            int listIndex = ((JList) e.getSource()).locationToIndex(new Point(e.getX(), e.getY()));
+            MUCStepViewContextMenu.getMenu(this, view, kahina, listIndex).show(e.getComponent(),e.getX(), e.getY());
         }
     }
 
     @Override
-    public void actionPerformed(ActionEvent arg0)
+    public void actionPerformed(ActionEvent e)
     {
-        // TODO Auto-generated method stub
-        
+        String s = e.getActionCommand();
+        if (s.equals("selectAll"))
+        {
+            view.selectAll();
+        }
+        else if (s.equals("selectDialog"))
+        {
+            //TODO
+        }
+        else if (s.startsWith("reduce"))
+        {
+            int listIndex = Integer.parseInt(s.substring(6));
+            MUCStep uc = kahina.getState().getSelectedStep();
+            if (uc != null)
+            {
+                int ic = uc.getUc().get(listIndex);
+                reduce(ic);
+            }
+        }
+        else if (s.startsWith("reduceMR"))
+        {
+            int listIndex = Integer.parseInt(s.substring(8));
+            //TODO
+        }
+        else if (s.equals("reduceSelOnce"))
+        {
+            //TODO
+        }
+        else if (s.equals("reduceSelIndiv"))
+        {
+            //TODO
+        }
+        else if (s.equals("findAutarkies"))
+        {
+            //TODO
+        }
     }
 }
