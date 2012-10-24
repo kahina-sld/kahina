@@ -12,6 +12,7 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.bridge.MUCInstruction;
+import org.kahina.logic.sat.muc.data.MUCMetaInstance;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.data.UCReducerList;
 
@@ -23,7 +24,7 @@ public class MUCState extends KahinaState
     boolean useMetaLearning = true;
     
     CnfSatInstance satInstance;
-    CnfSatInstance metaInstance;
+    MUCMetaInstance metaInstance;
     MUCStatistics stat;
     MiniSATFiles files;
     
@@ -46,7 +47,7 @@ public class MUCState extends KahinaState
     {
         super(kahina);
         this.satInstance = satInstance;
-        this.metaInstance = new CnfSatInstance();
+        this.metaInstance = new MUCMetaInstance();
         this.stat = stat;
         this.files = files;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
@@ -228,7 +229,7 @@ public class MUCState extends KahinaState
     public void setSatInstance(CnfSatInstance satInstance)
     {
         this.satInstance = satInstance;
-        this.metaInstance = new CnfSatInstance();
+        this.metaInstance = new MUCMetaInstance();
     }
     
     public void setStatistics(MUCStatistics stat)
@@ -252,7 +253,15 @@ public class MUCState extends KahinaState
     public synchronized void learnMetaClause(List<Integer> metaClause)
     {
         //System.err.println("Leaning meta clause: " + metaClause);
-        metaInstance.getClauses().add(metaClause);
+        int overlapIndex = metaInstance.findHighestOverlapBlock(metaClause);
+        if (overlapIndex == -1)
+        {
+            metaInstance.defineNewBlock(metaClause);
+        }
+        else
+        {
+            System.err.println("Highest overlap index: " + overlapIndex);
+        }
     }
     
     public synchronized void learnMetaUnits(MUCStep uc)
