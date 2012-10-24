@@ -19,7 +19,7 @@ import org.kahina.logic.sat.data.KahinaSatInstance;
 
 public class CnfSatInstance extends KahinaSatInstance
 {
-    private int numClauses;
+    protected int numClauses;
     private int numVars;
     protected List<List<Integer>> clauses;
     
@@ -30,7 +30,7 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public CnfSatInstance()
     {
-        setNumClauses(0);
+        setNumClauses(1);
         setNumVars(0);
         clauses = new ArrayList<List<Integer>>();
         occurrenceMap = null;
