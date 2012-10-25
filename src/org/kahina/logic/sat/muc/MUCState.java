@@ -47,7 +47,7 @@ public class MUCState extends KahinaState
     {
         super(kahina);
         this.satInstance = satInstance;
-        this.metaInstance = new MUCMetaInstance();
+        this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
         this.stat = stat;
         this.files = files;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
@@ -229,7 +229,7 @@ public class MUCState extends KahinaState
     public void setSatInstance(CnfSatInstance satInstance)
     {
         this.satInstance = satInstance;
-        this.metaInstance = new MUCMetaInstance();
+        this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
     }
     
     public void setStatistics(MUCStatistics stat)
