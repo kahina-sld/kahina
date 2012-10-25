@@ -117,7 +117,7 @@ public class MUCState extends KahinaState
         return reducers;
     }
     
-    public synchronized int registerMUC(MUCStep newStep, int parentID, int selCandidate)
+    public synchronized int registerMUC(MUCStep newStep, int parentID, List<Integer> selCandidates)
     {
         Integer stepID = nodeForStep.get(newStep);
         if (stepID == null)
@@ -137,16 +137,22 @@ public class MUCState extends KahinaState
             {
                 decisionGraph.addNode(stepID, newStep.getUc().size() + "", MUCStepType.ACTIVE);
                 if (VERBOSE) System.err.println("Adding decision graph edge (" + parentID + "," + stepID + ")");
-                decisionGraph.addEdgeNoDuplicates(parentID, stepID, selCandidate + "");
-                retrieve(MUCStep.class, parentID).setRemovalLink(selCandidate, stepID);
+                decisionGraph.addEdgeNoDuplicates(parentID, stepID, selCandidates + "");
+                for (int selCandidate : selCandidates)
+                {
+                    retrieve(MUCStep.class, parentID).setRemovalLink(selCandidate, stepID);
+                }
                 propagateReducibilityInfo(parentID, stepID);
             }
         }
         else
         {
             if (VERBOSE) System.err.println("Adding decision graph edge (" + parentID + "," + stepID + ")");
-            decisionGraph.addEdgeNoDuplicates(parentID, stepID, selCandidate + "");
-            retrieve(MUCStep.class, parentID).setRemovalLink(selCandidate, stepID);
+            decisionGraph.addEdgeNoDuplicates(parentID, stepID, selCandidates + "");
+            for (int selCandidate : selCandidates)
+            {
+                retrieve(MUCStep.class, parentID).setRemovalLink(selCandidate, stepID);
+            }
             propagateReducibilityInfo(parentID, stepID);
         }
         if (VERBOSE)

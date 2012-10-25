@@ -34,7 +34,10 @@ public class MUCReductionManager extends KahinaTaskManager
                 //uc and ucID just stay the same
                 if (!kahina.getState().usesMetaLearning())
                 {
-                    state.addAndDistributeUnreducibilityInfo(ucTask.ucID, ucTask.candidate);
+                    if (ucTask.candidates.size() == 1)
+                    {
+                        state.addAndDistributeUnreducibilityInfo(ucTask.ucID, ucTask.candidates.get(0));
+                    }
                 }
                 else
                 {
@@ -43,7 +46,7 @@ public class MUCReductionManager extends KahinaTaskManager
                     int numClauses = state.getStatistics().numClausesOrGroups;
                     for (int i = 1; i <= numClauses; i++)
                     {
-                        if (!result.getUc().contains(i) || i == ucTask.candidate)
+                        if (!result.getUc().contains(i) || ucTask.candidates.contains(i))
                         {
                             metaClause.add(-i);
                         }
@@ -54,8 +57,11 @@ public class MUCReductionManager extends KahinaTaskManager
             //attempt was successful, we might have arrived at a new UC
             else
             {
-                int stepID = state.registerMUC(result, ucTask.ucID, ucTask.candidate);
-                ucTask.uc.setRemovalLink(ucTask.candidate, stepID);
+                int stepID = state.registerMUC(result, ucTask.ucID, ucTask.candidates);
+                for (int candidate : ucTask.candidates)
+                {
+                    ucTask.uc.setRemovalLink(candidate, stepID);
+                }
                 MUCStep uc = state.retrieve(MUCStep.class, stepID);
                 if (kahina.getState().usesMetaLearning())
                 {
