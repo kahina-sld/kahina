@@ -81,7 +81,10 @@ public class UCReducer extends KahinaTaskManager
                 numSATReductions++;
                 if (!state.usesMetaLearning())
                 {
-                    state.addAndDistributeUnreducibilityInfo(ucID, ucTask.candidate);
+                    if (ucTask.candidates.size() == 1)
+                    {
+                        state.addAndDistributeUnreducibilityInfo(ucTask.ucID, ucTask.candidates.get(0));
+                    }
                 }
                 else
                 {
@@ -90,7 +93,7 @@ public class UCReducer extends KahinaTaskManager
                     int numClauses = state.getStatistics().numClausesOrGroups;
                     for (int i = 1; i <= numClauses; i++)
                     {
-                        if (!result.getUc().contains(i) || i == ucTask.candidate)
+                        if (!result.getUc().contains(i) || ucTask.candidates.contains(i))
                         {
                             metaClause.add(-i);
                         }
@@ -103,10 +106,13 @@ public class UCReducer extends KahinaTaskManager
             else
             {
                 numUNSATReductions++;
-                System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clause " + ucTask.candidate + " at step " + ucID + " was successful!");
-                int stepID = state.registerMUC(result, ucID, ucTask.candidate);
+                System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clauses " + ucTask.candidates + " at step " + ucID + " was successful!");
+                int stepID = state.registerMUC(result, ucID, ucTask.candidates);
                 getPath().append(stepID);
-                uc.setRemovalLink(ucTask.candidate, stepID);
+                for (int candidate : ucTask.candidates)
+                {
+                    uc.setRemovalLink(candidate, stepID);
+                }
                 uc = state.retrieve(MUCStep.class, stepID);
                 ucID = stepID;
                 heuristics.setNewUC(uc);
@@ -155,6 +161,8 @@ public class UCReducer extends KahinaTaskManager
         }
         else
         {
+            List<Integer> candidates = new LinkedList<Integer>();
+            candidates.add(candidate);
             //System.err.println(this + ": Reducing " + candidate + " at step " + ucID);
             if (getPanel() != null)
             {
@@ -167,16 +175,16 @@ public class UCReducer extends KahinaTaskManager
             Integer removalLink = uc.getRemovalLink(candidate);
             if (removalLink == null)
             {
-                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidate, files));
+                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files));
             }
             else if (removalLink == -1)
             {
-                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidate, uc));
+                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, uc));
             }
             else
             {
                 MUCStep newUC = state.retrieve(MUCStep.class, removalLink);
-                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidate, newUC));
+                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, newUC));
             }
         }    
     }

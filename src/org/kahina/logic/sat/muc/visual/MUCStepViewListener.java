@@ -5,6 +5,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -60,9 +62,22 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
     {
         MUCState state = kahina.getState();
         MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
+        List<Integer> cands = new LinkedList<Integer>();
+        cands.add(ic);
         UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                                         ucStep, state.getSelectedStepID(), 
-                                                        ic, state.getFiles()
+                                                        cands, state.getFiles()
+                                                      );
+        kahina.getReductionManager().addTask(redTask);
+    }
+    
+    private void reduce(List<Integer> ics)
+    {
+        MUCState state = kahina.getState();
+        MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
+        UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
+                                                        ucStep, state.getSelectedStepID(), 
+                                                        ics, state.getFiles()
                                                       );
         kahina.getReductionManager().addTask(redTask);
     }
@@ -115,7 +130,18 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         }
         else if (s.equals("redSelOnce"))
         {
-            //TODO
+            List<Integer> ics = new LinkedList<Integer>();
+            int[] redList = view.getList().getSelectedIndices();
+            MUCStep uc = kahina.getState().getSelectedStep();
+            if (uc != null)
+            {
+                for (int listIndex : redList)
+                {
+                    int ic = uc.getUc().get(listIndex);
+                    ics.add(ic);
+                }
+                reduce(ics);
+            }
         }
         else if (s.equals("redSelIndiv"))
         {

@@ -22,7 +22,7 @@ public class UCReductionTask extends KahinaTask
     
     public final MUCStep uc;
     public final int ucID;
-    public final int candidate;
+    public final List<Integer> candidates;
     
     MUCStep result;
     
@@ -38,7 +38,7 @@ public class UCReductionTask extends KahinaTask
      * @param ucID
      * @param candidate
      */
-    public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat, MUCStep uc, int ucID, int candidate, MUCStep result)
+    public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat, MUCStep uc, int ucID, List<Integer> candidates, MUCStep result)
     {
         super(progressBar, manager);
         //this.reducer = reducer;
@@ -46,11 +46,11 @@ public class UCReductionTask extends KahinaTask
         reductionID = getNextID();
         this.uc = uc;
         this.ucID = ucID;
-        this.candidate = candidate;
+        this.candidates = candidates;
         this.result = result;
     }
 
-    public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat,  MUCStep uc, int ucID, int candidate, MiniSATFiles files)
+    public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat,  MUCStep uc, int ucID, List<Integer> candidates, MiniSATFiles files)
     {
         super(progressBar, manager);
         //this.reducer = reducer;
@@ -58,7 +58,7 @@ public class UCReductionTask extends KahinaTask
         reductionID = getNextID();
         this.uc = uc;
         this.ucID = ucID;
-        this.candidate = candidate;
+        this.candidates = candidates;
         this.files = files.copyWithoutTmpFiles();
     }
     
@@ -79,9 +79,12 @@ public class UCReductionTask extends KahinaTask
             for (int i : uc.getUc())
             {
                 muc_cands.add(i);
+            }  
+            for (int candidate : candidates)
+            {
+              //wrap in Integer object in order to remove the element candidate, not at the index candidate
+                muc_cands.remove(new Integer(candidate));
             }
-            //wrap in Integer object in order to remove the element candidate, not at the index candidate
-            muc_cands.remove(new Integer(candidate));
             boolean[] freezeVariables = new boolean[stat.numClausesOrGroups];
             Arrays.fill(freezeVariables, Boolean.FALSE);
             for (Integer a : muc_cands)
@@ -110,7 +113,10 @@ public class UCReductionTask extends KahinaTask
             if (reducedCore.size() == 0)
             {
                 result = uc;
-                uc.setRemovalLink(candidate, -1);
+                if (candidates.size() == 1)
+                {
+                    uc.setRemovalLink(candidates.get(0), -1);
+                }
             }
             //reduction attempt was successful
             else

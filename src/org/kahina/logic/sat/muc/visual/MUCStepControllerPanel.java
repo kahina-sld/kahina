@@ -192,9 +192,11 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
             {
                 if (view.icStatus[i] == 0)
                 {
+                    List<Integer> cands = new LinkedList<Integer>();
+                    cands.add(view.ics[i]);
                     UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                             ucStep, state.getSelectedStepID(), 
-                            view.ics[i], state.getFiles()
+                            cands, state.getFiles()
                           );
                     kahina.getReductionManager().addTask(redTask); 
                 }
@@ -229,9 +231,11 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
                     {
                         if (view.icStatus[i] == 0)
                         {
+                            List<Integer> cands = new LinkedList<Integer>();
+                            cands.add(view.ics[i]);
                             UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                     ucStep, nextID, 
-                                    view.ics[i], state.getFiles()
+                                    cands, state.getFiles()
                                   );
                             kahina.getReductionManager().addTask(redTask); 
                         }
@@ -270,9 +274,11 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
             {
                 MUCState state = kahina.getState();
                 MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
+                List<Integer> cands = new LinkedList<Integer>();
+                cands.add(label);
                 UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                                                 ucStep, state.getSelectedStepID(), 
-                                                                label, state.getFiles()
+                                                                cands, state.getFiles()
                                                               );
                 kahina.getReductionManager().addTask(redTask);
                 //kahina.dispatchEvent(new KahinaControlEvent(label + ""));
