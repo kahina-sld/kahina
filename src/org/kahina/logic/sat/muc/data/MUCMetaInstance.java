@@ -14,7 +14,7 @@ public class MUCMetaInstance extends CnfSatInstance
     //  - expensive maintenance!
     
     //
-    static final boolean VERBOSE = true;
+    static final boolean VERBOSE = false;
     
     //main parameter, defines minimum block size
     static final int MIN_BLOCK_SIZE = 3;
@@ -148,7 +148,7 @@ public class MUCMetaInstance extends CnfSatInstance
     
     private void blockReplacement(int blockID, List<Integer> newRepresentation)
     {
-        if (VERBOSE) System.err.println("blockReplacement(" + blockID + "," + newRepresentation + ")");
+        if (VERBOSE) System.err.println("  blockReplacement(" + blockID + "," + newRepresentation + ")");
         //determine the block IDs in the new block
         List<Integer> newBlockIDs = new LinkedList<Integer>();
         for (int literal : newRepresentation)
@@ -161,8 +161,10 @@ public class MUCMetaInstance extends CnfSatInstance
         int blockVar = blockDefVar.get(blockID);
         for (List<Integer> clause : blockClauses.get(blockID))
         {
+            if (VERBOSE) System.err.println("    Replacement in clause: " + clause);
             clause.remove(new Integer(blockVar));
             clause.addAll(newRepresentation);
+            if (VERBOSE) System.err.println("    Replacement completed: " + clause);
             for (int newBlockID : newBlockIDs)
             {
                 addBlockClausesEntry(newBlockID, clause);

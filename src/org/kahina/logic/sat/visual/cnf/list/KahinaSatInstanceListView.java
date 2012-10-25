@@ -79,6 +79,23 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
     public void recalculate()
     {
         List<List<Integer>> clauses = model.getClauses();
+        listModel.clear();
+        for (int i = 0; i < clauses.size(); i++)
+        {
+            StringBuilder s = new StringBuilder();
+            s.append(i + 1);
+            s.append(": {");
+            for (Integer literal : clauses.get(i))
+            {
+                s.append(literal);
+                s.append(',');
+            }
+            s.deleteCharAt(s.length() - 1);
+            s.append('}');
+            listModel.addElement(s.toString());
+        }
+        //this was the efficient way, before clauses could be modified!
+        /*List<List<Integer>> clauses = model.getClauses();
         if (clauses.size() > listModel.getSize())
         {
             for (int i = listModel.getSize(); i < clauses.size(); i++)
@@ -95,6 +112,6 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
                 s.append('}');
                 listModel.addElement(s.toString());
             }
-        }
+        }*/
     }
 }
