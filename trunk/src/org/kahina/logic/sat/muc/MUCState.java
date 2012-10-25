@@ -252,16 +252,7 @@ public class MUCState extends KahinaState
     
     public synchronized void learnMetaClause(List<Integer> metaClause)
     {
-        //System.err.println("Leaning meta clause: " + metaClause);
-        int overlapIndex = metaInstance.findHighestOverlapBlock(metaClause);
-        if (overlapIndex == -1)
-        {
-            metaInstance.defineNewBlock(metaClause);
-        }
-        else
-        {
-            System.err.println("Highest overlap index: " + overlapIndex);
-        }
+        metaInstance.learnNewClause(metaClause);
     }
     
     public synchronized void learnMetaUnits(MUCStep uc)
