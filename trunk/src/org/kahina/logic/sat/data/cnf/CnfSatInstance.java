@@ -168,7 +168,7 @@ public class CnfSatInstance extends KahinaSatInstance
     private List<Integer> getOccurrences(int literal)
     {
         if (literal > 0) return  occurrenceMap[literal-1];
-        else return occurrenceMap[getNumVars() + literal -1];
+        else return occurrenceMap[getNumVars() + -literal -1];
     }
     
     public KahinaGraph generateClaByVarGraph()
