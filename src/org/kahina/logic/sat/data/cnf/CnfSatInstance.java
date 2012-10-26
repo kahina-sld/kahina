@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import org.kahina.core.data.graph.AdjacListsGraph;
@@ -23,7 +24,7 @@ public class CnfSatInstance extends KahinaSatInstance
     protected int numVars;
     protected List<List<Integer>> clauses;
     
-    //literals -> clauses; important for efficient computation of views
+    //literals -> clauses; important for efficient computations
     //  entries [0,...,numVars-1] for positive literals
     //  entries [numVars,...,2*numVars-1] for negative literals 
     protected List<Integer>[] occurrenceMap = null;
@@ -101,6 +102,73 @@ public class CnfSatInstance extends KahinaSatInstance
         subInstance.setNumClauses(subInstance.getClauses().size());
         subInstance.setNumVars(subInstance.searchHighestVariable());
         return subInstance;
+    }
+    
+    public List<Integer> deriveUnitsByPropagation(List<Integer> toPropagate)
+    {
+        Set<Integer> partialModel = new TreeSet<Integer>();
+        for (int literal : toPropagate)
+        {
+            partialModel.add(literal);
+        }
+        List<Integer> derivedUnits = new LinkedList<Integer>();
+        //we need the occurrence map; TODO: update this map dynamically
+        makeSureOccurrenceMapExists();
+        //propagation: initialize counters for remaining clause size
+        int[] clauseSize = new int[clauses.size()];
+        for (int i = 0; i < clauses.size(); i++)
+        {
+            List<Integer> clause = clauses.get(i);
+            clauseSize[i] = clause.size();
+            if (clause.size() == 1)
+            {
+                toPropagate.add(clause.get(0));
+                partialModel.add(clause.get(0));
+                derivedUnits.add(clause.get(0));
+            }
+        }
+        //propagation: initialize list of fulfilled clauses
+        Set<Integer> fulfilledClauses = new TreeSet<Integer>();
+        while (toPropagate.size() > 0)
+        {
+            int propLit = toPropagate.remove(0);
+            //any clause with the propagated literal is fulfilled, can be ignored
+            for (int clauseID : getOccurrences(propLit))
+            {
+                fulfilledClauses.add(clauseID);
+            }
+            //clauses with complementary literals are reduced
+            for (int clauseID : getOccurrences(-propLit))
+            {
+                clauseSize[clauseID]--;
+                //the clause was reduced to a unit clause!
+                if (clauseSize[clauseID] == 1)
+                {
+                    //determine which unit is left
+                    int newUnit = 0;
+                    for (int literal : clauses.get(clauseID))
+                    {
+                        if (!partialModel.contains(literal))
+                        {
+                            newUnit = literal;
+                            break;
+                        }
+                    }
+                    //learn and propagate the new unit
+                    toPropagate.add(newUnit);
+                    partialModel.add(newUnit);
+                    derivedUnits.add(newUnit);
+                }
+            }
+            //TODO: detect free units!
+        }
+        return derivedUnits;
+    }
+    
+    private List<Integer> getOccurrences(int literal)
+    {
+        if (literal > 0) return  occurrenceMap[literal-1];
+        else return occurrenceMap[getNumVars() + literal -1];
     }
     
     public KahinaGraph generateClaByVarGraph()
