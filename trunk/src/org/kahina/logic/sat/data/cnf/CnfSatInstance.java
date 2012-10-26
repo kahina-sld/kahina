@@ -113,7 +113,7 @@ public class CnfSatInstance extends KahinaSatInstance
         }
         List<Integer> derivedUnits = new LinkedList<Integer>();
         //we need the occurrence map; TODO: update this map dynamically
-        makeSureOccurrenceMapExists();
+        computeOccurrenceMap();
         //propagation: initialize counters for remaining clause size
         int[] clauseSize = new int[clauses.size()];
         for (int i = 0; i < clauses.size(); i++)
