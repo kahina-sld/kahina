@@ -106,6 +106,7 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public List<Integer> deriveUnitsByPropagation(List<Integer> toPropagate)
     {
+        System.err.println("metaInstance.deriveUnitsByPropation:\n  Input: " + toPropagate);
         Set<Integer> partialModel = new TreeSet<Integer>();
         for (int literal : toPropagate)
         {
@@ -135,7 +136,13 @@ public class CnfSatInstance extends KahinaSatInstance
             //any clause with the propagated literal is fulfilled, can be ignored
             for (int clauseID : getOccurrences(propLit))
             {
-                fulfilledClauses.add(clauseID);
+                if (!fulfilledClauses.contains(propLit))
+                {
+                    fulfilledClauses.add(clauseID);
+                    //TODO: detect and process free units
+                    //for each literal in the clause, was this the last instance?
+                    //if so, any clause with is fulfilled (->RECURSION)
+                }
             }
             //clauses with complementary literals are reduced
             for (int clauseID : getOccurrences(-propLit))
@@ -160,8 +167,8 @@ public class CnfSatInstance extends KahinaSatInstance
                     derivedUnits.add(newUnit);
                 }
             }
-            //TODO: detect free units!
         }
+        System.err.println("  Output: " + derivedUnits);
         return derivedUnits;
     }
     
