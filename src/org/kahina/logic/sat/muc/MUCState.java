@@ -273,7 +273,8 @@ public class MUCState extends KahinaState
                 posSelVars.add(i);
             }
         }
-        List<Integer> learnedUnits = MiniSAT.getImpliedUnits(getMetaInstance(), posSelVars);
+        //List<Integer> learnedUnits = MiniSAT.getImpliedUnits(getMetaInstance(), posSelVars);
+        List<Integer> learnedUnits = getMetaInstance().deriveUnitsByPropagation(posSelVars);
         //System.err.println("Learned Units: " + learnedUnits);
         for (int learnedUnit : learnedUnits)
         {
