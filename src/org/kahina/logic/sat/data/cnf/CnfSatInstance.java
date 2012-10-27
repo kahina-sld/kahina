@@ -111,7 +111,8 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public List<Integer> deriveUnitsByPropagation(List<Integer> toPropagate)
     {
-        System.err.println("metaInstance.deriveUnitsByPropation:\n  Input: " + toPropagate);
+        boolean VERBOSE = false;
+        if (VERBOSE) System.err.println("metaInstance.deriveUnitsByPropation:\n  Input: " + toPropagate);
         Set<Integer> partialModel = new TreeSet<Integer>();
         for (int literal : toPropagate)
         {
@@ -138,14 +139,16 @@ public class CnfSatInstance extends KahinaSatInstance
         while (toPropagate.size() > 0)
         {
             int propLit = toPropagate.remove(0);
+            if (VERBOSE) System.err.println("  Propagating literal: " + propLit);
             //any clause with the propagated literal is fulfilled, can be ignored
+            if (VERBOSE) System.err.println("    literal occurring in: " + getOccurrences(propLit));
             for (int clauseID : getOccurrences(propLit))
             {
                 if (!fulfilledClauses.contains(propLit))
                 {
                     fulfilledClauses.add(clauseID);
-                    //POSSIBLE EXTENSION: detect and process free units 
-                    //BUT: not clean propagation any more!
+                    //OPTIONAL EXTENSION: detect and process free units 
+                    //  DISADVANTAGE: no clean propagation any more!
                     //for each literal in the clause, was this the last instance?
                     for (int literal : clauses.get(clauseID))
                     {
@@ -171,6 +174,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 }
             }
             //clauses with complementary literals are reduced
+            if (VERBOSE) System.err.println("    complement occurring in: " + getOccurrences(-propLit));
             for (int clauseID : getOccurrences(-propLit))
             {
                 clauseSize[clauseID]--;
@@ -181,7 +185,7 @@ public class CnfSatInstance extends KahinaSatInstance
                     int newUnit = 0;
                     for (int literal : clauses.get(clauseID))
                     {
-                        if (!partialModel.contains(literal))
+                        if (!partialModel.contains(-literal))
                         {
                             newUnit = literal;
                             break;
@@ -191,10 +195,12 @@ public class CnfSatInstance extends KahinaSatInstance
                     toPropagate.add(newUnit);
                     partialModel.add(newUnit);
                     derivedUnits.add(newUnit);
+                    if (VERBOSE) System.err.println("    added unit: " + newUnit);
                 }
             }
+            if (VERBOSE) System.err.println("    clause sizes: " + clauseSize);
         }
-        System.err.println("  Output: " + derivedUnits);
+        if (VERBOSE) System.err.println("  Output: " + derivedUnits);
         return derivedUnits;
     }
     
