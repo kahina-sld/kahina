@@ -1,6 +1,7 @@
 package org.kahina.logic.sat.data.model;
 
 import java.util.BitSet;
+import java.util.List;
 
 //for handling complete assignments, BitSets are used
 
@@ -21,6 +22,32 @@ public class CompleteAssignment
     public void setFalse(int var)
     {
         table.clear(var);
+    }
+    
+    public void flipVar(int var)
+    {
+        table.flip(var);
+    }
+    
+    public boolean getValue(int var)
+    {
+        return table.get(var);
+    }
+    
+    public boolean satisfies(List<Integer> clause)
+    {
+        for (int lit : clause)
+        {
+            if (lit < 0)
+            {
+                if (!table.get(-lit)) return true;
+            }
+            if (lit > 0)
+            {
+                if (table.get(lit)) return true;
+            }
+        }
+        return false;
     }
     
     public String toString()

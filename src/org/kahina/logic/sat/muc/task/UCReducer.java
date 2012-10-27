@@ -100,10 +100,10 @@ public class UCReducer extends KahinaTaskManager
                     }
                     state.learnMetaClause(metaClause);
                 }
-                //model rotation
-                if (ucTask.usesModelRotation())
+                //model rotation if only one candidate was reduced, and the task was configured to apply MR
+                if (ucTask.usesModelRotation() && ucTask.candidates.size() == 1)
                 {
-                    //TODO: get SAT model, flip relevant assignments and test
+                    state.modelRotation(ucTask.getModel(), ucID, ucTask.candidates.get(0));
                 }
                 //System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clause " + ucTask.candidate + " at step " + ucID + " led to satisfiable instance! No change!");
             }

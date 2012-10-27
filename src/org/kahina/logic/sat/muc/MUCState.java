@@ -9,6 +9,7 @@ import org.kahina.core.KahinaState;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.dag.ColoredPathDAG;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
+import org.kahina.logic.sat.data.model.CompleteAssignment;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.bridge.MUCInstruction;
@@ -18,7 +19,7 @@ import org.kahina.logic.sat.muc.data.UCReducerList;
 
 public class MUCState extends KahinaState
 {
-    public static boolean VERBOSE = false;
+    public static boolean VERBOSE = true;
     
     //an option: use meta-learning or not?
     boolean useMetaLearning = true;
@@ -253,6 +254,66 @@ public class MUCState extends KahinaState
         if (usesMetaLearning() && getSelectedStep() != null)
         {
             learnMetaUnits(getSelectedStep());
+        }
+    }
+    
+    public synchronized void modelRotation(CompleteAssignment model, int ucID, int transClID)
+    {
+        if (VERBOSE) System.err.println("modelRotation(model," + ucID + "," + transClID + ")");
+        for (int literal : satInstance.getClause(transClID))
+        {
+            int var = Math.abs(literal);
+            model.flipVar(var);
+            if (VERBOSE) System.err.println("  modifying model by " + var + " := " + model.getValue(var));
+            int singleTransClForFlippedModel = -1;
+            MUCStep uc = retrieve(MUCStep.class, ucID);
+            for (int ic : uc.getUc())
+            {
+                if (uc.getIcStatus(ic) == 0 && !model.satisfies(satInstance.getClause(ic)))
+                {
+                    if (VERBOSE) System.err.println("  model does not satisfy clause " + ic);
+                    if (singleTransClForFlippedModel == -1)
+                    {
+                        singleTransClForFlippedModel = ic;
+                    }
+                    else
+                    {
+                        singleTransClForFlippedModel = -1;
+                        if (VERBOSE) System.err.println("  no unique transition clause, aborted!");
+                        break;
+                    }
+                }
+            }
+            if (singleTransClForFlippedModel != -1)
+            {
+               if (VERBOSE) System.err.println("Meta learning in node " + ucID + ": " + singleTransClForFlippedModel + " is part of MUC!");
+               //the transition clause associated with the new model must be part of the MUS
+               uc.setRemovalLink(singleTransClForFlippedModel, -1);
+               if (!usesMetaLearning())
+               {
+                   addAndDistributeUnreducibilityInfo(ucID, singleTransClForFlippedModel);
+               }
+               else
+               {
+                   //we learn that the current selector variables cannot be 1 together
+                   List<Integer> metaClause = new LinkedList<Integer>();
+                   int numClauses = getStatistics().numClausesOrGroups;
+                   for (int i = 1; i <= numClauses; i++)
+                   {
+                       if (!uc.getUc().contains(i) || i == singleTransClForFlippedModel)
+                       {
+                           metaClause.add(-i);
+                       }
+                   }
+                   
+               }
+               //recursive case: continue with the modified model
+               modelRotation(model,ucID,singleTransClForFlippedModel);
+            }
+            else
+            {
+                model.flipVar(var);
+            }
         }
     }
     
