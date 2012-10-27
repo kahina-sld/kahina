@@ -19,7 +19,7 @@ import org.kahina.logic.sat.muc.data.UCReducerList;
 
 public class MUCState extends KahinaState
 {
-    public static boolean VERBOSE = true;
+    public static boolean VERBOSE = false;
     
     //an option: use meta-learning or not?
     boolean useMetaLearning = true;
@@ -305,7 +305,7 @@ public class MUCState extends KahinaState
                            metaClause.add(-i);
                        }
                    }
-                   
+                   learnMetaClause(metaClause);
                }
                //recursive case: continue with the modified model
                modelRotation(model,ucID,singleTransClForFlippedModel);
