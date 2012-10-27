@@ -53,6 +53,11 @@ public class MUCReductionManager extends KahinaTaskManager
                     }
                     state.learnMetaClause(metaClause);
                 }
+                //model rotation if only one candidate was reduced, and the task was configured to apply MR
+                if (ucTask.usesModelRotation() && ucTask.candidates.size() == 1)
+                {
+                    state.modelRotation(ucTask.getModel(), ucTask.ucID, ucTask.candidates.get(0));
+                }
             }
             //attempt was successful, we might have arrived at a new UC
             else

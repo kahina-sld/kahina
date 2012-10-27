@@ -90,6 +90,11 @@ public class CnfSatInstance extends KahinaSatInstance
         return clauses;
     }
     
+    public List<Integer> getClause(int clauseID)
+    {
+        return clauses.get(clauseID);
+    }
+    
     public CnfSatInstance selectClauses(Collection<Integer> clauseIDs)
     {
         CnfSatInstance subInstance = new CnfSatInstance();

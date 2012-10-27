@@ -100,7 +100,7 @@ public class UCReductionTask extends KahinaTask
             }  
             for (int candidate : candidates)
             {
-              //wrap in Integer object in order to remove the element candidate, not at the index candidate
+                //wrap in Integer object in order to remove the element candidate, not at the index candidate
                 muc_cands.remove(new Integer(candidate));
             }
             boolean[] freezeVariables = new boolean[stat.numClausesOrGroups];
@@ -117,7 +117,6 @@ public class UCReductionTask extends KahinaTask
                 if (modelRotation)
                 {
                     model = MiniSAT.getModel(files.tmpResultFile);
-                    //System.err.println(model);
                 }
             }
             catch (InterruptedException e)
