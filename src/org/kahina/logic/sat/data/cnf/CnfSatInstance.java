@@ -139,9 +139,30 @@ public class CnfSatInstance extends KahinaSatInstance
                 if (!fulfilledClauses.contains(propLit))
                 {
                     fulfilledClauses.add(clauseID);
-                    //TODO: detect and process free units
+                    //POSSIBLE EXTENSION: detect and process free units 
+                    //BUT: not clean propagation any more!
                     //for each literal in the clause, was this the last instance?
-                    //if so, any clause with is fulfilled (->RECURSION)
+                    for (int literal : clauses.get(clauseID))
+                    {
+                        boolean clauseForLitRemains = false;
+                        for (int litClauseID : getOccurrences(literal))
+                        {
+                            if (!fulfilledClauses.contains(litClauseID))
+                            {
+                                clauseForLitRemains = true;
+                                break;
+                            }
+                        }
+                        //if so, any clause with the complementary literal can be ignored
+                        //TODO: this should be done recursively, up to fixpoint!
+                        if (!clauseForLitRemains)
+                        {
+                            for (int cplLitClauseID : getOccurrences(-literal))
+                            {
+                                fulfilledClauses.add(cplLitClauseID);
+                            }
+                        }
+                    }
                 }
             }
             //clauses with complementary literals are reduced
