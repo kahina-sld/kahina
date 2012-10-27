@@ -2,12 +2,14 @@ package org.kahina.logic.sat.muc.task;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.core.gui.KahinaProgressBar;
 import org.kahina.core.task.KahinaTask;
 import org.kahina.core.task.KahinaTaskManager;
+import org.kahina.logic.sat.data.model.CompleteAssignment;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.MUCStep;
@@ -18,13 +20,17 @@ public class UCReductionTask extends KahinaTask
     //every UCReductionTask receives a unique numerical ID upon creation; used for file names
     public static int idCounter = 0;
     
+    //determines if model rotation is applied after an unsuccessful reduction
+    private boolean modelRotation = false;
+    
     public final int reductionID;
     
     public final MUCStep uc;
     public final int ucID;
     public final List<Integer> candidates;
     
-    MUCStep result;
+    private MUCStep result;
+    private CompleteAssignment model;
     
     MUCStatistics stat;
     
@@ -48,6 +54,7 @@ public class UCReductionTask extends KahinaTask
         this.ucID = ucID;
         this.candidates = candidates;
         this.result = result;
+        this.model = null;
     }
 
     public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat,  MUCStep uc, int ucID, List<Integer> candidates, MiniSATFiles files)
@@ -60,11 +67,22 @@ public class UCReductionTask extends KahinaTask
         this.ucID = ucID;
         this.candidates = candidates;
         this.files = files.copyWithoutTmpFiles();
+        this.model = null;
     }
     
     public static synchronized int getNextID()
     {
         return idCounter++;
+    }
+
+    public boolean usesModelRotation()
+    {
+        return modelRotation;
+    }
+
+    public void setModelRotation(boolean modelRotation)
+    {
+        this.modelRotation = modelRotation;
     }
 
     @Override
@@ -96,6 +114,11 @@ public class UCReductionTask extends KahinaTask
             try
             {
                 reducedCore = MiniSAT.findUnsatisfiableCore(stat, files);
+                if (modelRotation)
+                {
+                    model = MiniSAT.getModel(files.tmpResultFile);
+                    //System.err.println(model);
+                }
             }
             catch (InterruptedException e)
             {
@@ -148,6 +171,15 @@ public class UCReductionTask extends KahinaTask
             //no IC status needs to be set because we knew the result before
         }
         this.setFinished();
+    }
+    
+    /**
+     * 
+     * @return the model in case of a SAT result, if modelRotation is set; null otherwise
+     */
+    public CompleteAssignment getModel()
+    {
+        return model;
     }
     
     /**

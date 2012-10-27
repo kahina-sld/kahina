@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -17,6 +18,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
+import org.kahina.logic.sat.data.model.CompleteAssignment;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 
@@ -299,7 +301,7 @@ public class MiniSAT
         }
     }
 
-    // checks result file to see whether the last SAT problem was unsatisfiable
+    //checks result file to see whether the last SAT problem was unsatisfiable
     public static boolean wasUnsatisfiable()
     {
         BufferedReader input;
@@ -330,6 +332,96 @@ public class MiniSAT
         }
         System.err.println("ERROR: Result file says neither SAT nor UNSAT! Assuming SAT!");
         return false;
+    }
+    
+    //gets the model from a result file in case of SAT, null if UNSAT
+    public static CompleteAssignment getModel()
+    {
+        CompleteAssignment model = null;
+        BufferedReader input;
+        try
+        {
+            input = new BufferedReader(new FileReader(lastResultFile));
+            String line;
+            while ((line = input.readLine()) != null)
+            {
+                if (line.equals("UNSAT"))
+                {
+                    break;
+                }
+                else if (line.equals("SAT"))
+                {
+                    model = new CompleteAssignment();
+                    continue;
+                }
+                else
+                {
+                    for (String litString : line.split(" "))
+                    {
+                        int lit = Integer.parseInt(litString);
+                        if (lit < 0)
+                        {
+                            model.setFalse(-lit);
+                        }
+                        else if (lit > 0)
+                        {
+                            model.setTrue(lit);
+                        }
+                    }
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            System.err.println("ERROR: failed to read the MiniSAT result file! Null model returned!");
+            e.printStackTrace();      
+        }
+        return model;
+    }
+    
+  //gets the model from a result file in case of SAT, null if UNSAT
+    public static CompleteAssignment getModel(File resultFile)
+    {
+        CompleteAssignment model = null;
+        BufferedReader input;
+        try
+        {
+            input = new BufferedReader(new FileReader(resultFile));
+            String line;
+            while ((line = input.readLine()) != null)
+            {
+                if (line.equals("UNSAT"))
+                {
+                    break;
+                }
+                else if (line.equals("SAT"))
+                {
+                    model = new CompleteAssignment();
+                    continue;
+                }
+                else
+                {
+                    for (String litString : line.split(" "))
+                    {
+                        int lit = Integer.parseInt(litString);
+                        if (lit < 0)
+                        {
+                            model.setFalse(-lit);
+                        }
+                        else if (lit > 0)
+                        {
+                            model.setTrue(lit);
+                        }
+                    }
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            System.err.println("ERROR: failed to read the MiniSAT result file! Null model returned!");
+            e.printStackTrace();      
+        }
+        return model;
     }
     
     // checks result file to see whether a SAT problem was unsatisfiable
