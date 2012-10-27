@@ -51,14 +51,14 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 }
                 else
                 {
-                    reduce(ic);
+                    reduce(ic, false);
                     lastClick = 0;
                 }
             }
         }
     }
     
-    private void reduce(int ic)
+    private void reduce(int ic, boolean modelRotation)
     {
         MUCState state = kahina.getState();
         MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
@@ -68,6 +68,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                                                         ucStep, state.getSelectedStepID(), 
                                                         cands, state.getFiles()
                                                       );
+        redTask.setModelRotation(modelRotation);
         kahina.getReductionManager().addTask(redTask);
     }
     
@@ -113,6 +114,16 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         {
             //TODO
         }
+        else if (s.startsWith("reduceMR"))
+        {
+            int listIndex = Integer.parseInt(s.substring(8));
+            MUCStep uc = kahina.getState().getSelectedStep();
+            if (uc != null)
+            {
+                int ic = uc.getUc().get(listIndex);
+                reduce(ic, true);
+            }
+        }
         else if (s.startsWith("reduce"))
         {
             int listIndex = Integer.parseInt(s.substring(6));
@@ -120,13 +131,8 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             if (uc != null)
             {
                 int ic = uc.getUc().get(listIndex);
-                reduce(ic);
+                reduce(ic, false);
             }
-        }
-        else if (s.startsWith("reduceMR"))
-        {
-            int listIndex = Integer.parseInt(s.substring(8));
-            //TODO
         }
         else if (s.equals("redSelOnce"))
         {
@@ -152,7 +158,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 for (int listIndex : redList)
                 {
                     int ic = uc.getUc().get(listIndex);
-                    reduce(ic);
+                    reduce(ic, false);
                 }
             }
         }

@@ -100,6 +100,11 @@ public class UCReducer extends KahinaTaskManager
                     }
                     state.learnMetaClause(metaClause);
                 }
+                //model rotation
+                if (ucTask.usesModelRotation())
+                {
+                    //TODO: get SAT model, flip relevant assignments and test
+                }
                 //System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clause " + ucTask.candidate + " at step " + ucID + " led to satisfiable instance! No change!");
             }
             //attempt was successful, we might have arrived at a new UC
