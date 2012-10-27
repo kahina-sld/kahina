@@ -39,10 +39,10 @@ public class GroupCnfSatInstance extends CnfSatInstance
     public void computeGroupOccurrenceMap()
     {
         System.err.print("Generating group occurrence map for " + (getNumVars() * 2) + " literals ... ");
-        occurrenceMap = (List<Integer>[]) new List[getNumVars() * 2];
+        groupOccurrenceMap = (List<Integer>[]) new List[getNumVars() * 2];
         for (int i = 0; i < getNumVars() * 2; i++)
         {
-            occurrenceMap[i] = new LinkedList<Integer>();
+            groupOccurrenceMap[i] = new LinkedList<Integer>();
         }
         for (int g = 1; g <= numGroups; g++)
         {
@@ -54,7 +54,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                 {
                     int pos = literal;
                     if (literal < 0) pos = getNumVars() + Math.abs(literal);
-                    occurrenceMap[pos-1].add(g);
+                    groupOccurrenceMap[pos-1].add(g);
                 }
             }
         }
@@ -122,7 +122,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                 {
                     int var = Math.abs(literal);
                     //positive occurrences of var
-                    for (int j : occurrenceMap[var-1])
+                    for (int j : occurrenceMap.get(var))
                     {
                         //do not add undirected nodes twice!
                         if (j > i)
@@ -132,7 +132,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                         }
                     }
                     //negative occurrences of var
-                    for (int j : occurrenceMap[getNumVars() + var-1])
+                    for (int j : occurrenceMap.get(-var))
                     {
                         //do not add undirected nodes twice!
                         if (j > i)
@@ -172,9 +172,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                 List<Integer> clause = clauses.get(c-1);
                 for (int literal : clause)
                 {
-                    int pos = literal;
-                    if (literal < 0) pos = getNumVars() + Math.abs(literal);
-                    for (int j : occurrenceMap[pos-1])
+                    for (int j : occurrenceMap.get(literal))
                     {
                         //do not add undirected nodes twice!
                         if (j > i)
@@ -214,14 +212,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                 List<Integer> clause = clauses.get(c-1);
                 for (int literal : clause)
                 {
-                    //switch around the literal to look up
-                    int pos = literal;
-                    if (literal < 0) pos = Math.abs(literal);
-                    else
-                    {
-                        pos += getNumVars();
-                    }
-                    for (int j : occurrenceMap[pos-1])
+                    for (int j : occurrenceMap.get(literal))
                     {
                         //do not add undirected nodes twice!
                         if (j > i)

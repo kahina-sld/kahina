@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
@@ -27,7 +28,7 @@ public class CnfSatInstance extends KahinaSatInstance
     //literals -> clauses; important for efficient computations
     //  entries [0,...,numVars-1] for positive literals
     //  entries [numVars,...,2*numVars-1] for negative literals 
-    protected List<Integer>[] occurrenceMap = null;
+    protected Map<Integer,List<Integer>> occurrenceMap = null;
     
     public CnfSatInstance()
     {
@@ -43,19 +44,18 @@ public class CnfSatInstance extends KahinaSatInstance
     public void computeOccurrenceMap()
     {
         System.err.print("Generating occurrence map for " + (getNumVars() * 2) + " literals ... ");
-        occurrenceMap = (List<Integer>[]) new List[getNumVars() * 2];
-        for (int i = 0; i < getNumVars() * 2; i++)
+        occurrenceMap = new TreeMap<Integer,List<Integer>>();
+        for (int i = 1; i <= getNumVars(); i++)
         {
-            occurrenceMap[i] = new LinkedList<Integer>();
+            occurrenceMap.put(i, new LinkedList<Integer>());
+            occurrenceMap.put(-i, new LinkedList<Integer>());
         }
-        for (int i = 1; i <= clauses.size(); i++)
+        for (int i = 0; i < clauses.size(); i++)
         {
-            List<Integer> clause = clauses.get(i-1);
+            List<Integer> clause = clauses.get(i);
             for (int literal : clause)
             {
-                int pos = literal;
-                if (literal < 0) pos = getNumVars() + Math.abs(literal);
-                occurrenceMap[pos-1].add(i);
+                occurrenceMap.get(literal).add(i);
             }
         }
         System.err.println("Ready!");
@@ -195,8 +195,7 @@ public class CnfSatInstance extends KahinaSatInstance
     
     private List<Integer> getOccurrences(int literal)
     {
-        if (literal > 0) return  occurrenceMap[literal-1];
-        else return occurrenceMap[getNumVars() + -literal -1];
+        return occurrenceMap.get(literal);
     }
     
     public KahinaGraph generateClaByVarGraph()
@@ -218,7 +217,7 @@ public class CnfSatInstance extends KahinaSatInstance
             {
                 int var = Math.abs(literal);
                 //positive occurrences of var
-                for (int j : occurrenceMap[var-1])
+                for (int j : occurrenceMap.get(var))
                 {
                     //do not add undirected nodes twice!
                     if (j > i)
@@ -228,7 +227,7 @@ public class CnfSatInstance extends KahinaSatInstance
                     }
                 }
                 //negative occurrences of var
-                for (int j : occurrenceMap[getNumVars() + var-1])
+                for (int j : occurrenceMap.get(-var))
                 {
                     //do not add undirected nodes twice!
                     if (j > i)
@@ -264,9 +263,7 @@ public class CnfSatInstance extends KahinaSatInstance
             List<Integer> clause = clauses.get(i-1);
             for (int literal : clause)
             {
-                int pos = literal;
-                if (literal < 0) pos = getNumVars() + Math.abs(literal);
-                for (int j : occurrenceMap[pos-1])
+                for (int j : occurrenceMap.get(literal))
                 {
                     //do not add undirected nodes twice!
                     if (j > i)
@@ -302,14 +299,7 @@ public class CnfSatInstance extends KahinaSatInstance
             List<Integer> clause = clauses.get(i-1);
             for (int literal : clause)
             {
-                //switch around the literal to look up
-                int pos = literal;
-                if (literal < 0) pos = Math.abs(literal);
-                else
-                {
-                    pos += getNumVars();
-                }
-                for (int j : occurrenceMap[pos-1])
+                for (int j : occurrenceMap.get(literal))
                 {
                     //do not add undirected nodes twice!
                     if (j > i)
@@ -343,12 +333,12 @@ public class CnfSatInstance extends KahinaSatInstance
         for (int var1 = 1; var1 <= getNumVars(); var1++)
         {
             Set<Integer> clausesWithVar1 = new HashSet<Integer>();
-            clausesWithVar1.addAll(occurrenceMap[var1 - 1]);
-            clausesWithVar1.addAll(occurrenceMap[getNumVars() + var1 - 1]);
+            clausesWithVar1.addAll(occurrenceMap.get(var1));
+            clausesWithVar1.addAll(occurrenceMap.get(-var1));
             for (int var2 = var1 + 1; var2 <= getNumVars(); var2++)
             {
                 int found = 0;
-                for (int clause : occurrenceMap[var2 - 1])
+                for (int clause : occurrenceMap.get(var2))
                 {
                     if (clausesWithVar1.contains(clause))
                     {
@@ -358,7 +348,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 }
                 if (found == 0)
                 {
-                    for (int clause : occurrenceMap[getNumVars() + var2 - 1])
+                    for (int clause : occurrenceMap.get(-var2))
                     {
                         if (clausesWithVar1.contains(clause))
                         {
@@ -398,14 +388,16 @@ public class CnfSatInstance extends KahinaSatInstance
         }
         //link literal vertices via clause edges
         int numEdges = 0;
-        for (int lit1 = 1; lit1 <= getNumVars() * 2; lit1++)
+        for (int lit1 = -getNumVars(); lit1 <= getNumVars(); lit1++)
         {
+            if (lit1 == 0) continue;
             Set<Integer> clausesWithLit1 = new HashSet<Integer>();
-            clausesWithLit1.addAll(occurrenceMap[lit1 - 1]);
-            for (int lit2 = lit1 + 1; lit2 <= getNumVars() * 2; lit2++)
+            clausesWithLit1.addAll(occurrenceMap.get(lit1));
+            for (int lit2 = lit1 + 1; lit2 <= getNumVars(); lit2++)
             {
+                if (lit2 == 0) continue;
                 int found = 0;
-                for (int clause : occurrenceMap[lit2 - 1])
+                for (int clause : occurrenceMap.get(lit2))
                 {
                     if (clausesWithLit1.contains(clause))
                     {
