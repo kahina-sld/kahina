@@ -1,5 +1,7 @@
 package org.kahina.logic.sat.muc.data;
 
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -311,5 +313,10 @@ public class MUCMetaInstance extends CnfSatInstance
                 }
             }
         }
+    }
+
+    public Collection<List<Integer>> getBlocks()
+    {
+        return blockList.values();
     }
 }
