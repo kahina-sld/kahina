@@ -207,7 +207,7 @@ public class MUCState extends KahinaState
                     decisionGraph.setNodeStatus(stepID, MUCStepType.MINIMAL);
                 }
                 retrieve(MUCStep.class, parentID).setRemovalLink(lastInstruction.selCandidate, stepID);
-                propagateReducibilityInfo(parentID, stepID);
+                if (!useMetaLearning) propagateReducibilityInfo(parentID, stepID);
             }
         }
         else
@@ -219,7 +219,7 @@ public class MUCState extends KahinaState
                 decisionGraph.setNodeStatus(stepID, MUCStepType.MINIMAL);
             }
             retrieve(MUCStep.class, parentID).setRemovalLink(lastInstruction.selCandidate, stepID);
-            propagateReducibilityInfo(parentID, stepID);
+            if (!useMetaLearning) propagateReducibilityInfo(parentID, stepID);
         }
         if (VERBOSE)
         {
@@ -324,7 +324,7 @@ public class MUCState extends KahinaState
     
     public synchronized void learnMetaUnits(MUCStep uc)
     {
-        System.err.print("Learning meta units: ");
+        if (VERBOSE) System.err.print("Learning meta units: ");
         List<Integer> posSelVars = new LinkedList<Integer>();
         int numClauses = getStatistics().numClausesOrGroups;
         for (int i = 1; i <= numClauses; i++)
@@ -342,11 +342,11 @@ public class MUCState extends KahinaState
             //TODO: extend this to positive units as soon as we can learn them!
             if (learnedUnit < 0)
             {
-                System.err.print(learnedUnit + " ");
+                if (VERBOSE) System.err.print(learnedUnit + " ");
                 uc.setRemovalLink(-learnedUnit, -1);
             }
         }
-        System.err.println();
+        if (VERBOSE) System.err.println();
     }
     
     public synchronized void addAndDistributeUnreducibilityInfo(int parentID, int failedReductionID)
