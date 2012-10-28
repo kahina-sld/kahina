@@ -93,7 +93,7 @@ public class MUCState extends KahinaState
         return satInstance;
     }
     
-    public CnfSatInstance getMetaInstance()
+    public MUCMetaInstance getMetaInstance()
     {
         return metaInstance;
     }
@@ -116,6 +116,31 @@ public class MUCState extends KahinaState
     public UCReducerList getReducers()
     {
         return reducers;
+    }
+    
+    public List<List<Integer>> getBlocksForUC(int ucID)
+    {
+        List<List<Integer>> blocks = new LinkedList<List<Integer>>();
+        MUCStep ucStep = retrieve(MUCStep.class, ucID);
+        //go through blocks and see whether they are contained in the UC
+        for (List<Integer> block : metaInstance.getBlocks())
+        {
+            boolean blockContained = true;
+            //in the block definitions, literals are negative
+            for (int negLit : block)
+            {
+                if (!ucStep.getUc().contains(-negLit))
+                {
+                    blockContained = false;
+                    break;
+                }
+            }
+            if (blockContained)
+            {
+                blocks.add(block);
+            }
+        }
+        return blocks;
     }
     
     public synchronized int registerMUC(MUCStep newStep, int parentID, List<Integer> selCandidates)
@@ -254,6 +279,11 @@ public class MUCState extends KahinaState
         if (usesMetaLearning() && getSelectedStep() != null)
         {
             learnMetaUnits(getSelectedStep());
+            System.err.println("blocks for UC " + getSelectedStepID() + ":");
+            for (List<Integer> block : getBlocksForUC(getSelectedStepID()))
+            {
+                System.err.println("  " + block);
+            }
         }
     }
     

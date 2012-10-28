@@ -149,7 +149,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 if (!fulfilledClauses.contains(propLit))
                 {
                     fulfilledClauses.add(clauseID);
-                    //OPTIONAL EXTENSION: detect and process free units 
+                    //OPTIONAL EXTENSION: detect and process pure literals 
                     //  DISADVANTAGE: no clean propagation any more!
                     //for each literal in the clause, was this the last instance?
                     for (int literal : clauses.get(clauseID))
