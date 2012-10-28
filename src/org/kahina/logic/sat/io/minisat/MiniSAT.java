@@ -479,7 +479,7 @@ public class MiniSAT
                 {
                     if (!line.equals("0"))
                     {
-                        System.err.println(line + "-> freezeVariables[" + (((-1) * Integer.parseInt(line)) - offsetID) + "] = true");
+                        //System.err.println(line + "-> freezeVariables[" + (((-1) * Integer.parseInt(line)) - offsetID) + "] = true");
                         freezeVariables[((-1) * Integer.parseInt(line)) - offsetID] = true;
                         relevantAssumptions.add(((-1) * Integer.parseInt(line)) - offsetID);
                     }

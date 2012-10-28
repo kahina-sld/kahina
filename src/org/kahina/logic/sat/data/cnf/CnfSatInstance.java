@@ -43,7 +43,8 @@ public class CnfSatInstance extends KahinaSatInstance
     @SuppressWarnings("unchecked")
     public void computeOccurrenceMap()
     {
-        System.err.print("Generating occurrence map for " + (getNumVars() * 2) + " literals ... ");
+        //System.err.print("Generating occurrence map for " + (getNumVars() * 2) + " literals ... ");
+        long startTime = System.currentTimeMillis();
         occurrenceMap = new TreeMap<Integer,List<Integer>>();
         for (int i = 1; i <= getNumVars(); i++)
         {
@@ -58,7 +59,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 occurrenceMap.get(literal).add(i);
             }
         }
-        System.err.println("Ready!");
+        System.err.println("  occurrence map rebuilt in " + (System.currentTimeMillis() - startTime) + " ms");
     }
     
     //to free up memory; next visualization computation will take a lot longer
@@ -121,6 +122,7 @@ public class CnfSatInstance extends KahinaSatInstance
         List<Integer> derivedUnits = new LinkedList<Integer>();
         //we need the occurrence map; TODO: update this map dynamically
         computeOccurrenceMap();
+        long startTime = System.currentTimeMillis();
         //propagation: initialize counters for remaining clause size
         int[] clauseSize = new int[clauses.size()];
         for (int i = 0; i < clauses.size(); i++)
@@ -201,6 +203,7 @@ public class CnfSatInstance extends KahinaSatInstance
             if (VERBOSE) System.err.println("    clause sizes: " + clauseSize);
         }
         if (VERBOSE) System.err.println("  Output: " + derivedUnits);
+        System.err.println("  propagation took " + (System.currentTimeMillis() - startTime) + " ms");
         return derivedUnits;
     }
     
