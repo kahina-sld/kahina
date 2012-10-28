@@ -11,9 +11,6 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
 public class MUCMetaInstance extends CnfSatInstance
 {
-    //TODO: consider recursive block hierarchies instead of partitions 
-    //  + hierarchy of blocks allows for even shorter descriptions
-    //  - expensive maintenance!
     
     //
     static final boolean VERBOSE = false;

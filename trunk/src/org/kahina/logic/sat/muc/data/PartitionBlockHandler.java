@@ -27,7 +27,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     //map from block-defining variables into block IDs (used for splitting)
     Map<Integer,Integer> blockVarBlockID;
     
-    //reverse index of literals into blocks (defines a partition for now)
+    //reverse index of literals into blocks (defines a partition here)
     Map<Integer,Integer> blockIndex;
     
     //TODO: lookup structure to find duplicate blocks
