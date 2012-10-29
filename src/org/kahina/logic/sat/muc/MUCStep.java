@@ -127,17 +127,17 @@ public class MUCStep extends KahinaStep
                 }
             }
         }
-        if (numRed == uc.size())
-        {
-            return 1;
-        }
-        if (numGreen == uc.size())
+        if (numGreen == block.size())
         {
             return 2;
         }
-        if (numOut == uc.size())
+        if (numOut == block.size())
         {
             return 3;
+        }
+        if (numRed > 0)
+        {
+            return 1;
         }
         return 0;
     }

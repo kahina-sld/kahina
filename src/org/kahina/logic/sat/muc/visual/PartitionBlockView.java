@@ -81,6 +81,7 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
     {
         int status = getLineStatus(lineID);
         Color col = statusColorEncoding.get(status);
+        //System.err.println("line: " + lineID + " status: " + status + " color: " + col);
         if (col == null)
         {
             return Color.BLACK;

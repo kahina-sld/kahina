@@ -127,8 +127,8 @@ public class MUCGUI extends KahinaGUI
         varNameToView.put("currentUCBlocks", blockView);
         
         blockView.setStatusColorEncoding(0, Color.BLACK);
-        blockView.setStatusColorEncoding(1, NICE_GREEN);
-        blockView.setStatusColorEncoding(2, NICE_RED);
+        blockView.setStatusColorEncoding(1, NICE_RED);
+        blockView.setStatusColorEncoding(2, NICE_GREEN);
         blockView.setStatusColorEncoding(3, Color.GRAY);
         
         mucView = new MUCStepView(kahina);
