@@ -72,7 +72,10 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
     {
         if (currentStep != null)
         {
-            return lineStatus.get(lineID);
+            if (model.getBlocks().size() > 0)
+            {
+                return lineStatus.get(lineID);
+            }
         }
         return 0;
     }
@@ -129,7 +132,7 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
         else
         {
             currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
-            for (List<Integer> block : model.getBlocks())
+            for (List<Integer> block : model.retrieveBlocks())
             {
                 StringBuilder s = new StringBuilder();
                 s.append("[");

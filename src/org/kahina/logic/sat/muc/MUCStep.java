@@ -119,11 +119,6 @@ public class MUCStep extends KahinaStep
                 {
                     numGreen++;
                 }
-                //else: none of the interesting cases can be reached
-                else
-                {
-                    return 0;
-                }
             }
         }
         if (numGreen == block.size())

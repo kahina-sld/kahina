@@ -302,9 +302,21 @@ public class PartitionBlockHandler extends LiteralBlockHandler
             }
         }
     }
-
+    
     public Collection<List<Integer>> getBlocks()
     {
         return blockList.values();
+    }
+
+    //TODO: develop a more efficient way of maintaining and retrieving this list
+    public List<List<Integer>> retrieveBlocks()
+    {
+        List<List<Integer>> blocks = new LinkedList<List<Integer>>();
+        //the keys are enumerated in ascending order -> canonical order!
+        for (int blockID : blockList.keySet())
+        {
+            blocks.add(blockList.get(blockID));
+        }
+        return blocks;
     }
 }
