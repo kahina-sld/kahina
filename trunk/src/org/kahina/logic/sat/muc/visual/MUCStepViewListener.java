@@ -47,7 +47,9 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 if (time - lastClick > DBL_CLICK_INTERVAL)
                 {
                     lastClick = time;
-                    kahina.dispatchEvent(new ClauseSelectionEvent(ic));
+                    List<Integer> clauseIDs = new LinkedList<Integer>();
+                    clauseIDs.add(ic);
+                    kahina.dispatchEvent(new ClauseSelectionEvent(clauseIDs));
                 }
                 else
                 {
