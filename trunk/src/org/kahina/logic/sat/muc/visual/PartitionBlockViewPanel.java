@@ -9,13 +9,14 @@ import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.KahinaViewPanel;
+import org.kahina.logic.sat.muc.MUCInstance;
 
 public class PartitionBlockViewPanel extends KahinaViewPanel<PartitionBlockView>
 {
     private JList list;
     JScrollPane listScrollPane;
     
-    public PartitionBlockViewPanel(KahinaInstance<?,?,?,?> kahina)
+    public PartitionBlockViewPanel(MUCInstance kahina)
     {
         this.setLayout(new GridLayout());
         view = null;
@@ -24,6 +25,7 @@ public class PartitionBlockViewPanel extends KahinaViewPanel<PartitionBlockView>
         list.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         list.setFixedCellHeight(16);
         list.setCellRenderer(new PartitionBlockListCellRenderer(this));
+        list.addMouseListener(new PartitionBlockViewListener(kahina, this));
         
         listScrollPane = new JScrollPane(getList());
         this.add(listScrollPane);  
