@@ -1,23 +1,21 @@
-package org.kahina.logic.sat.visual.cnf.list;
+package org.kahina.logic.sat.muc.visual;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.MouseListener;
 
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.core.visual.text.KahinaTextViewListener;
 
-public class KahinaSatInstanceListViewPanel extends KahinaViewPanel<KahinaSatInstanceListView>
+public class PartitionBlockViewPanel extends KahinaViewPanel<PartitionBlockView>
 {
     private JList list;
     JScrollPane listScrollPane;
     
-    public KahinaSatInstanceListViewPanel()
+    public PartitionBlockViewPanel(KahinaInstance<?,?,?,?> kahina)
     {
         this.setLayout(new GridLayout());
         view = null;
@@ -25,13 +23,13 @@ public class KahinaSatInstanceListViewPanel extends KahinaViewPanel<KahinaSatIns
         list.setSelectionBackground(Color.YELLOW);
         list.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 12));
         list.setFixedCellHeight(16);
-        list.setCellRenderer(new KahinaSatInstanceListCellRenderer(this));
+        list.setCellRenderer(new PartitionBlockListCellRenderer(this));
         
         listScrollPane = new JScrollPane(getList());
-        this.add(listScrollPane);          
+        this.add(listScrollPane);  
     }
     
-    public void setView(KahinaSatInstanceListView view)
+    public void setView(PartitionBlockView view)
     {
         this.view = view;
         getList().setModel(view.getListModel());
