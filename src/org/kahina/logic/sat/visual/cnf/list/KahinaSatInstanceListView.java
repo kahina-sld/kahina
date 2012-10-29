@@ -72,12 +72,17 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
 
     public void displayText(String string)
     {
-        listModel = new DefaultListModel();
+        listModel.clear();
         listModel.addElement(string);
     }
     
     public void recalculate()
     {
+        if (model == null)
+        {
+            displayText("No model assigned yet.");
+            return;
+        }
         List<List<Integer>> clauses = model.getClauses();
         listModel.clear();
         for (int i = 0; i < clauses.size(); i++)

@@ -33,12 +33,6 @@ public class PartitionBlockViewPanel extends KahinaViewPanel<PartitionBlockView>
     {
         this.view = view;
         getList().setModel(view.getListModel());
-        //list.setSelectionModel(view.getSelectionModel());
-        /*for (MouseListener mouseListener : list.getMouseListeners())
-        {
-            list.removeMouseListener(mouseListener);
-        }
-        list.addMouseListener(new KahinaTextViewListener(this, kahina));*/
         this.updateDisplayAndRepaintFromEventDispatchThread();
     }
     

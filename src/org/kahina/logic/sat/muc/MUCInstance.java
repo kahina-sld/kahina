@@ -171,6 +171,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     {
         if (satInstance == null)
         {
+            System.err.println("MUCState.createState(" + this + ",null)");
             return new MUCState(this);
         }
         System.err.println("MUCState.createState(" + this + "," + satInstance + ")");

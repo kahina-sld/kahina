@@ -10,6 +10,9 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.ListModel;
 
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCStep;
@@ -41,6 +44,23 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
     public void doDisplay()
     {
         recalculate();
+    }
+    
+    public void processEvent(KahinaEvent e)
+    {
+        if (e instanceof KahinaSelectionEvent)
+        {
+            processEvent((KahinaSelectionEvent) e);
+        }
+    }
+    
+    public void processEvent(KahinaSelectionEvent e)
+    {
+        if (model != null) 
+        {
+            recalculate();
+            kahina.dispatchEvent(new KahinaRedrawEvent());
+        }
     }
     
     public void setStatusColorEncoding(int status, Color color)
@@ -87,7 +107,7 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
     
     public void displayText(String string)
     {
-        listModel = new DefaultListModel();
+        listModel.clear();
         listModel.addElement(string);
     }
     
@@ -99,6 +119,11 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
         if (stepID == -1)
         {
             displayText("No reduction state selected!");
+        }
+        else if (model.getBlocks().size() == 0)
+        {
+            displayText("No reduction blocks found so far!");
+            lineStatus.add(0);
         }
         else
         {

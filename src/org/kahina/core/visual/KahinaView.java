@@ -42,7 +42,8 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 		if (e instanceof KahinaUpdateEvent)
 		{
 			processEvent((KahinaUpdateEvent) e);
-		} else if (e instanceof KahinaSelectionEvent)
+		} 
+		else if (e instanceof KahinaSelectionEvent)
 		{
 			processEvent((KahinaSelectionEvent) e);
 		}

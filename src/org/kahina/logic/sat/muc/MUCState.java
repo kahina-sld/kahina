@@ -15,6 +15,8 @@ import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.bridge.MUCInstruction;
 import org.kahina.logic.sat.muc.data.MUCMetaInstance;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
+import org.kahina.logic.sat.muc.data.PartitionBlockHandler;
+import org.kahina.logic.sat.muc.data.RecursiveBlockHandler;
 import org.kahina.logic.sat.muc.data.UCReducerList;
 
 public class MUCState extends KahinaState
@@ -25,9 +27,12 @@ public class MUCState extends KahinaState
     boolean useMetaLearning = true;
     
     CnfSatInstance satInstance;
-    MUCMetaInstance metaInstance;
     MUCStatistics stat;
     MiniSATFiles files;
+    
+    MUCMetaInstance metaInstance;
+    PartitionBlockHandler partitionBlocks;
+    RecursiveBlockHandler recursiveBlocks;
     
     ColoredPathDAG decisionGraph;
     UCReducerList reducers;
@@ -39,6 +44,8 @@ public class MUCState extends KahinaState
         super(kahina);
         this.satInstance = null;
         this.metaInstance = null;
+        this.partitionBlocks = null;
+        this.recursiveBlocks = null;
         this.stat = null;
         this.files = null;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
@@ -49,6 +56,8 @@ public class MUCState extends KahinaState
         super(kahina);
         this.satInstance = satInstance;
         this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
+        this.partitionBlocks = new PartitionBlockHandler(metaInstance);
+        this.metaInstance.setBlockHandler(partitionBlocks);
         this.stat = stat;
         this.files = files;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
@@ -65,6 +74,8 @@ public class MUCState extends KahinaState
     {
         this.satInstance = null;
         this.metaInstance = null;
+        this.partitionBlocks = null;
+        this.recursiveBlocks = null;
         this.stat = null;
         this.files = null;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
@@ -116,6 +127,16 @@ public class MUCState extends KahinaState
     public UCReducerList getReducers()
     {
         return reducers;
+    }
+    
+    public PartitionBlockHandler getPartitionBlocks()
+    {
+        return partitionBlocks;
+    }
+    
+    public RecursiveBlockHandler getRecursiveBlocks()
+    {
+        return recursiveBlocks;
     }
     
     public List<List<Integer>> getBlocksForUC(int ucID)
@@ -262,6 +283,8 @@ public class MUCState extends KahinaState
     {
         this.satInstance = satInstance;
         this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
+        this.partitionBlocks = new PartitionBlockHandler(metaInstance);
+        this.metaInstance.setBlockHandler(partitionBlocks);
     }
     
     public void setStatistics(MUCStatistics stat)
@@ -279,11 +302,11 @@ public class MUCState extends KahinaState
         if (usesMetaLearning() && getSelectedStep() != null)
         {
             learnMetaUnits(getSelectedStep());
-            System.err.println("blocks for UC " + getSelectedStepID() + ":");
+            /*System.err.println("blocks for UC " + getSelectedStepID() + ":");
             for (List<Integer> block : getBlocksForUC(getSelectedStepID()))
             {
                 System.err.println("  " + block);
-            }
+            }*/
         }
     }
     
