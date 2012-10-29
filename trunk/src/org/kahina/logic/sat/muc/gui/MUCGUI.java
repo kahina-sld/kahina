@@ -28,6 +28,7 @@ import org.kahina.logic.sat.muc.heuristics.AlwaysLastHeuristics;
 import org.kahina.logic.sat.muc.heuristics.CenterHeuristics;
 import org.kahina.logic.sat.muc.visual.MUCStepController;
 import org.kahina.logic.sat.muc.visual.MUCStepView;
+import org.kahina.logic.sat.muc.visual.PartitionBlockView;
 import org.kahina.logic.sat.muc.visual.UCReducerListView;
 import org.kahina.logic.sat.visual.cnf.graph.KahinaGroupSatInstanceGraphView;
 import org.kahina.logic.sat.visual.cnf.graph.KahinaSatInstanceGraphView;
@@ -35,10 +36,13 @@ import org.kahina.logic.sat.visual.cnf.list.KahinaSatInstanceListView;
 
 public class MUCGUI extends KahinaGUI
 {
+    private static final boolean VERBOSE = true;
+    
     protected KahinaSatInstanceListView satInstanceView;
     protected KahinaSatInstanceListView metaInstanceView;
     protected ColoredPathDAGView decisionGraphView;
     //protected MUCStepController stepController;
+    protected PartitionBlockView blockView;
     protected MUCStepView mucView;
     protected UCReducerListView reducerListView;
     
@@ -73,7 +77,7 @@ public class MUCGUI extends KahinaGUI
         varNameToView.put("satInstance", satInstanceView);
         
         metaInstanceView = new KahinaSatInstanceListView(kahina);
-        metaInstanceView.setTitle("Meta Instance over Selection Variables");
+        metaInstanceView.setTitle("Meta Instance");
         kahina.registerInstanceListener(KahinaEventTypes.UPDATE, metaInstanceView);
         views.add(metaInstanceView);
         livingViews.add(metaInstanceView);
@@ -116,6 +120,17 @@ public class MUCGUI extends KahinaGUI
         livingViews.add(stepController);
         varNameToView.put("stepController", stepController);*/
         
+        blockView = new PartitionBlockView(kahina);
+        kahina.registerInstanceListener(KahinaEventTypes.SELECTION, blockView);
+        views.add(blockView);
+        livingViews.add(blockView);
+        varNameToView.put("currentUCBlocks", blockView);
+        
+        blockView.setStatusColorEncoding(0, Color.BLACK);
+        blockView.setStatusColorEncoding(1, NICE_GREEN);
+        blockView.setStatusColorEncoding(2, NICE_RED);
+        blockView.setStatusColorEncoding(3, Color.GRAY);
+        
         mucView = new MUCStepView(kahina);
         kahina.registerInstanceListener(KahinaEventTypes.SELECTION, mucView);
         views.add(mucView);
@@ -148,10 +163,12 @@ public class MUCGUI extends KahinaGUI
     
     public void displayMainViews()
     {
+        if (VERBOSE) System.err.println("MUCGUI.displayMainViews()");
         MUCState state = (MUCState) kahina.getState();
         decisionGraphView.display(state.getDecisionGraph());
         reducerListView.display(state.getReducers());
         CnfSatInstance sat = state.getSatInstance();
+        if (VERBOSE) System.err.println("  state.getSatInstance() = " + sat);
         if (sat != null)
         {
             if (isInGroupMode())
@@ -161,17 +178,23 @@ public class MUCGUI extends KahinaGUI
             }
             else
             {
+                if (VERBOSE) System.err.println("    satInstanceView.display(" + sat + ")");
                 satInstanceView.display(sat);
             }
+            if (VERBOSE) System.err.println("    metaInstanceView.display(" + state.getMetaInstance() + ")");
             metaInstanceView.display(state.getMetaInstance());
-            //TODO: if a step is selected, display the corresponding UC
+            if (VERBOSE) System.err.println("    blockView.display(" + state.getPartitionBlocks() + ")");
+            blockView.display(state.getPartitionBlocks());
+            if (VERBOSE) System.err.println("    mucView.display(" + sat + ")");
             mucView.display(sat);
         }
         else
         {
+            if (VERBOSE) System.err.println("    displaying \"No instance loaded\" messages");
             satInstanceView.displayText("No SAT Instance loaded yet.");
             metaInstanceView.displayText("No SAT Instance loaded yet.");
             mucView.displayText("No SAT Instance loaded yet.");
+            blockView.displayText("No SAT Instance loaded yet.");
         }
     }
     

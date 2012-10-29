@@ -550,11 +550,13 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			gui.displayMainViews();
 			dispatchEvent(new KahinaSelectionEvent(state.getSelectedStepID()));
 			dispatchEvent(new KahinaSystemEvent(KahinaSystemEvent.NODE_COUNT, state.getStepCount()));
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			gui.showMessageDialog(SwingUtil.visualError("Session could not be loaded due to the following problem: ", e), "Error", JOptionPane.ERROR_MESSAGE);
 			return;
-		} finally
+		} 
+		finally
 		{
 			if (zipFile != null)
 			{

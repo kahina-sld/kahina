@@ -11,8 +11,6 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
 public class MUCMetaInstance extends CnfSatInstance
 {
-    
-    //
     static final boolean VERBOSE = false;
     
     LiteralBlockHandler blockHandler;
@@ -21,7 +19,13 @@ public class MUCMetaInstance extends CnfSatInstance
     {
         super();
         setNumVars(numOrigClauses);
+        //default: a partition block handler
         this.blockHandler = new PartitionBlockHandler(this);
+    }
+    
+    public void setBlockHandler(LiteralBlockHandler blockHandler)
+    {
+        this.blockHandler = blockHandler;
     }
     
     public void learnNewClause(List<Integer> clause)
