@@ -48,7 +48,7 @@ public class MUCBridge extends KahinaBridge
             //automatically select the new step (allows marching down to a MUS using only the control panel)
             kahina.dispatchEvent(new KahinaUpdateEvent(selectedID));
             kahina.dispatchEvent(new KahinaSelectionEvent(stepID));
-            kahina.dispatchEvent(new ClauseSelectionEvent(-1));
+            kahina.dispatchEvent(new ClauseSelectionEvent(new LinkedList<Integer>()));
             kahina.dispatchEvent(new KahinaUpdateEvent(stepID));
         }
     }
@@ -68,7 +68,7 @@ public class MUCBridge extends KahinaBridge
             //do NOT automatically select the new step (there would be no options for expansion)
             kahina.dispatchEvent(new KahinaUpdateEvent(selectedID));
             kahina.dispatchEvent(new KahinaSelectionEvent(selectedID));
-            kahina.dispatchEvent(new ClauseSelectionEvent(-1));
+            kahina.dispatchEvent(new ClauseSelectionEvent(new LinkedList<Integer>()));
             kahina.dispatchEvent(new KahinaUpdateEvent(selectedID));
         }
     }

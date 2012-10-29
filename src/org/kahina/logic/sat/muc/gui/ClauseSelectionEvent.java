@@ -1,19 +1,21 @@
 package org.kahina.logic.sat.muc.gui;
 
+import java.util.List;
+
 import org.kahina.core.control.KahinaEvent;
 
 public class ClauseSelectionEvent extends KahinaEvent
 {
-    private int clauseID;
+    private List<Integer> clauseIDs;
     
-    public ClauseSelectionEvent(int clauseID)
+    public ClauseSelectionEvent(List<Integer> clauseIDs)
     {
         super("clauseSelection");
-        this.clauseID = clauseID;
+        this.clauseIDs = clauseIDs;
     }
 
-    public int getClauseID()
+    public List<Integer> getClauseIDs()
     {
-        return clauseID;
+        return clauseIDs;
     }
 }

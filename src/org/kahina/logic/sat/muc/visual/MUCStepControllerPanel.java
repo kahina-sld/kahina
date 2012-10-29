@@ -52,7 +52,7 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
     
     private MUCInstance kahina;
     
-    int selectedClause = -1;
+    List<Integer> selectedClauses = new LinkedList<Integer>();
     
     public MUCStepControllerPanel(MUCInstance kahina)
     {
@@ -126,8 +126,8 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
             }
             else
             {
-                //set marked node to orange!
-                if (view.ics[i] == selectedClause)
+                //set marked nodes to orange!
+                if (selectedClauses.contains(view.ics[i]))
                 {
                     candLabel.setBackground(new Color(255, 163, 0));
                 }
@@ -154,7 +154,7 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
     private void setColorAccordingToStatus(JLabel label, int i)
     {
         //set marked node to orange!
-        if (view.ics[i] == selectedClause)
+        if (selectedClauses.contains(view.ics[i]))
         {
             label.setBackground(new Color(255, 163, 0));
         }
@@ -268,7 +268,9 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
             if (time - lastClick > DBL_CLICK_INTERVAL)
             {
                 lastClick = time;
-                kahina.dispatchEvent(new ClauseSelectionEvent(label));
+                List<Integer> clauseIDs = new LinkedList<Integer>();
+                clauseIDs.add(label);
+                kahina.dispatchEvent(new ClauseSelectionEvent(clauseIDs));
             }
             else
             {
@@ -321,20 +323,29 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
     
     public void processEvent(ClauseSelectionEvent e)
     {
-        int oldSelected = selectedClause;
-        selectedClause = e.getClauseID();
-        if (oldSelected != -1)
+        List<Integer> oldSelected = selectedClauses;
+        selectedClauses = e.getClauseIDs();
+        if (oldSelected.size() > 0)
         {
-            Integer labelID = icToCandLabel.get(oldSelected);
-            if (labelID != null)
+            for (int oldSelectedID : oldSelected)
             {
-                setColorAccordingToStatus(candLabels[labelID], labelID);
+                Integer labelID = icToCandLabel.get(oldSelectedID);
+                if (labelID != null)
+                {
+                    setColorAccordingToStatus(candLabels[labelID], labelID);
+                }
             }
         }
-        if (selectedClause != -1)
+        if (selectedClauses.size() > 0)
         {
-            int labelID = icToCandLabel.get(selectedClause);
-            candLabels[labelID].setBackground(new Color(255, 163, 0));
+            for (int selClauseID : selectedClauses)
+            {
+                if (selClauseID != -1)
+                {
+                    int labelID = icToCandLabel.get(selClauseID);
+                    candLabels[labelID].setBackground(new Color(255, 163, 0));
+                }
+            }
         }
         revalidate();
     }

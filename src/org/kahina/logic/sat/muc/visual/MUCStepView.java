@@ -10,6 +10,7 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCStep;
+import org.kahina.logic.sat.muc.gui.ClauseSelectionEvent;
 import org.kahina.logic.sat.visual.cnf.list.KahinaSatInstanceListView;
 
 public class MUCStepView extends KahinaSatInstanceListView
@@ -58,6 +59,7 @@ public class MUCStepView extends KahinaSatInstanceListView
             kahina.dispatchEvent(new KahinaRedrawEvent());
         }
     }
+
     
     public void recalculate()
     {
