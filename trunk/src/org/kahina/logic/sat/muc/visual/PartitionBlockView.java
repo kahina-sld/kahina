@@ -1,34 +1,45 @@
-package org.kahina.logic.sat.visual.cnf.list;
+package org.kahina.logic.sat.muc.visual;
 
 import java.awt.Color;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.ListModel;
 
-import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.logic.sat.data.cnf.CnfSatInstance;
+import org.kahina.logic.sat.muc.MUCInstance;
+import org.kahina.logic.sat.muc.MUCStep;
+import org.kahina.logic.sat.muc.data.PartitionBlockHandler;
 
-public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
+public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
 {
     protected DefaultListModel listModel;
     
     // mapping from status values to display properties
     HashMap<Integer, Color> statusColorEncoding;
     
-    public KahinaSatInstanceListView(KahinaInstance<?, ?, ?, ?> kahina)
+    MUCInstance kahina;
+    MUCStep currentStep;
+    
+    //cash state of current block here during recalculation
+    List<Integer> lineStatus;
+    
+    public PartitionBlockView(MUCInstance kahina)
     {
         super(kahina);
-        listModel = new DefaultListModel();
-        statusColorEncoding = new HashMap<Integer, Color>();
+        this.kahina = kahina;
+        this.currentStep = null;
+        this.listModel = new DefaultListModel();
+        this.statusColorEncoding = new HashMap<Integer, Color>();
+        this.lineStatus = new LinkedList<Integer>();
     }
     
     public void doDisplay()
     {
-        listModel.clear();
         recalculate();
     }
     
@@ -39,6 +50,10 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
     
     public int getLineStatus(int lineID)
     {
+        if (currentStep != null)
+        {
+            return lineStatus.get(lineID);
+        }
         return 0;
     }
     
@@ -64,12 +79,12 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
     @Override
     public JComponent makePanel()
     {
-        KahinaSatInstanceListViewPanel panel = new KahinaSatInstanceListViewPanel();
+        PartitionBlockViewPanel panel = new PartitionBlockViewPanel(kahina);
         kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return panel;
     }
-
+    
     public void displayText(String string)
     {
         listModel = new DefaultListModel();
@@ -78,40 +93,31 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
     
     public void recalculate()
     {
-        List<List<Integer>> clauses = model.getClauses();
+        int stepID = kahina.getState().getSelectedStepID();
         listModel.clear();
-        for (int i = 0; i < clauses.size(); i++)
+        lineStatus.clear();
+        if (stepID == -1)
         {
-            StringBuilder s = new StringBuilder();
-            s.append(i + 1);
-            s.append(": {");
-            for (Integer literal : clauses.get(i))
-            {
-                s.append(literal);
-                s.append(',');
-            }
-            s.deleteCharAt(s.length() - 1);
-            s.append('}');
-            listModel.addElement(s.toString());
+            displayText("No reduction state selected!");
         }
-        //this was the efficient way, before clauses could be modified!
-        /*List<List<Integer>> clauses = model.getClauses();
-        if (clauses.size() > listModel.getSize())
+        else
         {
-            for (int i = listModel.getSize(); i < clauses.size(); i++)
+            currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
+            for (List<Integer> block : model.getBlocks())
             {
                 StringBuilder s = new StringBuilder();
-                s.append(i + 1);
-                s.append(": {");
-                for (Integer literal : clauses.get(i))
+                s.append("[");
+                for (Integer literal : block)
                 {
                     s.append(literal);
                     s.append(',');
                 }
                 s.deleteCharAt(s.length() - 1);
-                s.append('}');
+                s.append(']');
                 listModel.addElement(s.toString());
+                lineStatus.add(currentStep.relationToBlock(block));
             }
-        }*/
+        }
     }
+
 }

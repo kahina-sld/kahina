@@ -10,7 +10,7 @@ public class MUCStepViewPanel extends KahinaSatInstanceListViewPanel
     
     public MUCStepViewPanel(MUCInstance kahina)
     {
-        super(kahina);
+        super();
         this.kahina = kahina;
         getList().addMouseListener(new MUCStepViewListener(kahina, this));
     }

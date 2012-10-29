@@ -1,6 +1,7 @@
 package org.kahina.logic.sat.muc;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -86,5 +87,58 @@ public class MUCStep extends KahinaStep
     public void setSatisfiable(boolean satisfiable)
     {
         this.satisfiable = satisfiable;
+    }
+    
+    /**
+     * Computes the relation of a given block of meta variables to the current UC.
+     * @param block a list of meta variables (typically negative literals)
+     * @return 1 if block is guaranteed to be in MUC (all red -> red, selectable), 
+     *         2 if block was successfully removed from UC (all green -> green, selectable), 
+     *         3 if no element of the block was contained in UC (-> grey), 
+     *         0 otherwise (-> block, selectable)
+     */
+    public int relationToBlock(List<Integer> block)
+    {
+        int numRed = 0;
+        int numGreen = 0;
+        int numOut = 0;
+        //in the block definitions, literals are negative
+        for (int negLit : block)
+        {
+            if (!uc.contains(-negLit))
+            {
+                numOut++;
+            }
+            else
+            {
+                int icStatus = getIcStatus(-negLit);
+                if (icStatus == 2)
+                {
+                    numRed++;
+                }
+                else if (icStatus == 1)
+                {
+                    numGreen++;
+                }
+                //else: none of the interesting cases can be reached
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+        if (numRed == uc.size())
+        {
+            return 1;
+        }
+        if (numGreen == uc.size())
+        {
+            return 2;
+        }
+        if (numOut == uc.size())
+        {
+            return 3;
+        }
+        return 0;
     }
 }
