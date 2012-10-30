@@ -23,12 +23,14 @@ import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.MUCStepType;
+import org.kahina.logic.sat.muc.MetaLearningMode;
 import org.kahina.logic.sat.muc.heuristics.AlwaysFirstHeuristics;
 import org.kahina.logic.sat.muc.heuristics.AlwaysLastHeuristics;
 import org.kahina.logic.sat.muc.heuristics.CenterHeuristics;
 import org.kahina.logic.sat.muc.visual.MUCStepController;
 import org.kahina.logic.sat.muc.visual.MUCStepView;
 import org.kahina.logic.sat.muc.visual.PartitionBlockView;
+import org.kahina.logic.sat.muc.visual.RecursiveBlockView;
 import org.kahina.logic.sat.muc.visual.UCReducerListView;
 import org.kahina.logic.sat.visual.cnf.graph.KahinaGroupSatInstanceGraphView;
 import org.kahina.logic.sat.visual.cnf.graph.KahinaSatInstanceGraphView;
@@ -42,7 +44,8 @@ public class MUCGUI extends KahinaGUI
     protected KahinaSatInstanceListView metaInstanceView;
     protected ColoredPathDAGView decisionGraphView;
     //protected MUCStepController stepController;
-    protected PartitionBlockView blockView;
+    protected PartitionBlockView blockListView;
+    protected RecursiveBlockView blockTreeView;
     protected MUCStepView mucView;
     protected UCReducerListView reducerListView;
     
@@ -76,12 +79,15 @@ public class MUCGUI extends KahinaGUI
         livingViews.add(satInstanceView);
         varNameToView.put("satInstance", satInstanceView);
         
-        metaInstanceView = new KahinaSatInstanceListView(kahina);
-        metaInstanceView.setTitle("Meta Instance");
-        kahina.registerInstanceListener(KahinaEventTypes.UPDATE, metaInstanceView);
-        views.add(metaInstanceView);
-        livingViews.add(metaInstanceView);
-        varNameToView.put("metaInstance", metaInstanceView);
+        if (kahina.getMetaLearningMode() != MetaLearningMode.NO_META_LEARNING)
+        {  
+            metaInstanceView = new KahinaSatInstanceListView(kahina);
+            metaInstanceView.setTitle("Meta Instance");
+            kahina.registerInstanceListener(KahinaEventTypes.UPDATE, metaInstanceView);
+            views.add(metaInstanceView);
+            livingViews.add(metaInstanceView);
+            varNameToView.put("metaInstance", metaInstanceView);
+        }
         
         Color NICE_GREEN = new Color(102, 153, 102);
         Color NICE_RED = new Color(183, 50, 50);
@@ -120,16 +126,32 @@ public class MUCGUI extends KahinaGUI
         livingViews.add(stepController);
         varNameToView.put("stepController", stepController);*/
         
-        blockView = new PartitionBlockView(kahina);
-        kahina.registerInstanceListener(KahinaEventTypes.SELECTION, blockView);
-        views.add(blockView);
-        livingViews.add(blockView);
-        varNameToView.put("currentUCBlocks", blockView);
-        
-        blockView.setStatusColorEncoding(0, Color.BLACK);
-        blockView.setStatusColorEncoding(1, NICE_RED);
-        blockView.setStatusColorEncoding(2, NICE_GREEN);
-        blockView.setStatusColorEncoding(3, Color.GRAY);
+        if (kahina.getMetaLearningMode() == MetaLearningMode.BLOCK_PARTITION)
+        {
+            blockListView = new PartitionBlockView(kahina);
+            kahina.registerInstanceListener(KahinaEventTypes.SELECTION, blockListView);
+            views.add(blockListView);
+            livingViews.add(blockListView);
+            varNameToView.put("currentUCBlocks", blockListView);
+            
+            blockListView.setStatusColorEncoding(0, Color.BLACK);
+            blockListView.setStatusColorEncoding(1, NICE_RED);
+            blockListView.setStatusColorEncoding(2, NICE_GREEN);
+            blockListView.setStatusColorEncoding(3, Color.GRAY);
+        }
+        else if (kahina.getMetaLearningMode() == MetaLearningMode.RECURSIVE_BLOCKS)
+        {
+            blockTreeView = new RecursiveBlockView(kahina);
+            kahina.registerInstanceListener(KahinaEventTypes.SELECTION, blockTreeView);
+            views.add(blockTreeView);
+            livingViews.add(blockTreeView);
+            varNameToView.put("currentUCBlocks", blockTreeView);
+            
+            blockTreeView.setStatusColorEncoding(0, Color.BLACK);
+            blockTreeView.setStatusColorEncoding(1, NICE_RED);
+            blockTreeView.setStatusColorEncoding(2, NICE_GREEN);
+            blockTreeView.setStatusColorEncoding(3, Color.GRAY);
+        }
         
         mucView = new MUCStepView(kahina);
         kahina.registerInstanceListener(KahinaEventTypes.SELECTION, mucView);
@@ -181,10 +203,22 @@ public class MUCGUI extends KahinaGUI
                 if (VERBOSE) System.err.println("    satInstanceView.display(" + sat + ")");
                 satInstanceView.display(sat);
             }
-            if (VERBOSE) System.err.println("    metaInstanceView.display(" + state.getMetaInstance() + ")");
-            metaInstanceView.display(state.getMetaInstance());
-            if (VERBOSE) System.err.println("    blockView.display(" + state.getPartitionBlocks() + ")");
-            blockView.display(state.getPartitionBlocks());
+                  
+            if (metaInstanceView != null) 
+            {
+                if (VERBOSE) System.err.println("    metaInstanceView.display(" + state.getMetaInstance() + ")");
+                metaInstanceView.display(state.getMetaInstance());
+            }
+            if (blockListView != null)
+            {
+                if (VERBOSE) System.err.println("    blockView.display(" + state.getPartitionBlocks() + ")");
+                blockListView.display(state.getPartitionBlocks());
+            }
+            if (blockTreeView != null)
+            {
+                if (VERBOSE) System.err.println("    blockView.display(" + state.getPartitionBlocks() + ")");
+                blockTreeView.display(state.getRecursiveBlocks());
+            }
             if (VERBOSE) System.err.println("    mucView.display(" + sat + ")");
             mucView.display(sat);
         }
@@ -192,9 +226,10 @@ public class MUCGUI extends KahinaGUI
         {
             if (VERBOSE) System.err.println("    displaying \"No instance loaded\" messages");
             satInstanceView.displayText("No SAT Instance loaded yet.");
-            metaInstanceView.displayText("No SAT Instance loaded yet.");
+            if (metaInstanceView != null) metaInstanceView.displayText("No SAT Instance loaded yet.");
             mucView.displayText("No SAT Instance loaded yet.");
-            blockView.displayText("No SAT Instance loaded yet.");
+            if (blockListView != null) blockListView.displayText("No SAT Instance loaded yet.");
+            //if (blockTreeView != null) blockTreeView.displayText("No SAT Instance loaded yet.");
         }
     }
     

@@ -23,9 +23,6 @@ public class MUCState extends KahinaState
 {
     public static boolean VERBOSE = false;
     
-    //an option: use meta-learning or not?
-    boolean useMetaLearning = true;
-    
     CnfSatInstance satInstance;
     MUCStatistics stat;
     MiniSATFiles files;
@@ -39,9 +36,12 @@ public class MUCState extends KahinaState
     
     Map<MUCStep,Integer> nodeForStep;
     
+    MUCInstance kahina;
+    
     public MUCState(MUCInstance kahina)
     {
         super(kahina);
+        this.kahina = kahina;
         this.satInstance = null;
         this.metaInstance = null;
         this.partitionBlocks = null;
@@ -54,10 +54,22 @@ public class MUCState extends KahinaState
     public MUCState(MUCInstance kahina, CnfSatInstance satInstance, MUCStatistics stat, MiniSATFiles files)
     {
         super(kahina);
+        this.kahina = kahina;
         this.satInstance = satInstance;
-        this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
-        this.partitionBlocks = new PartitionBlockHandler(metaInstance);
-        this.metaInstance.setBlockHandler(partitionBlocks);
+        if (usesMetaLearning())
+        {
+            this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
+        }
+        if (kahina.getMetaLearningMode() == MetaLearningMode.BLOCK_PARTITION)
+        {
+            this.partitionBlocks = new PartitionBlockHandler(metaInstance);
+            this.metaInstance.setBlockHandler(partitionBlocks);
+        }
+        if (kahina.getMetaLearningMode() == MetaLearningMode.RECURSIVE_BLOCKS)
+        {
+            this.recursiveBlocks = new RecursiveBlockHandler(metaInstance);
+            this.metaInstance.setBlockHandler(recursiveBlocks);
+        }
         this.stat = stat;
         this.files = files;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
@@ -84,12 +96,7 @@ public class MUCState extends KahinaState
     
     public boolean usesMetaLearning()
     {
-        return useMetaLearning;
-    }
-
-    public void setMetaLearningUse(boolean useMetaLearning)
-    {
-        this.useMetaLearning = useMetaLearning;
+        return kahina.getMetaLearningMode() != MetaLearningMode.NO_META_LEARNING;
     }
     
     public MUCStep getSelectedStep()
@@ -253,7 +260,7 @@ public class MUCState extends KahinaState
                     decisionGraph.setNodeStatus(stepID, MUCStepType.MINIMAL);
                 }
                 retrieve(MUCStep.class, parentID).setRemovalLink(lastInstruction.selCandidate, stepID);
-                if (!useMetaLearning) propagateReducibilityInfo(parentID, stepID);
+                if (!usesMetaLearning()) propagateReducibilityInfo(parentID, stepID);
             }
         }
         else
@@ -265,7 +272,7 @@ public class MUCState extends KahinaState
                 decisionGraph.setNodeStatus(stepID, MUCStepType.MINIMAL);
             }
             retrieve(MUCStep.class, parentID).setRemovalLink(lastInstruction.selCandidate, stepID);
-            if (!useMetaLearning) propagateReducibilityInfo(parentID, stepID);
+            if (!usesMetaLearning()) propagateReducibilityInfo(parentID, stepID);
         }
         if (VERBOSE)
         {
@@ -282,9 +289,20 @@ public class MUCState extends KahinaState
     public void setSatInstance(CnfSatInstance satInstance)
     {
         this.satInstance = satInstance;
-        this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
-        this.partitionBlocks = new PartitionBlockHandler(metaInstance);
-        this.metaInstance.setBlockHandler(partitionBlocks);
+        if (kahina.getMetaLearningMode() != MetaLearningMode.NO_META_LEARNING)
+        {
+            this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
+        }
+        if (kahina.getMetaLearningMode() == MetaLearningMode.BLOCK_PARTITION)
+        {
+            this.partitionBlocks = new PartitionBlockHandler(metaInstance);
+            this.metaInstance.setBlockHandler(partitionBlocks);
+        }
+        if (kahina.getMetaLearningMode() == MetaLearningMode.RECURSIVE_BLOCKS)
+        {
+            this.recursiveBlocks = new RecursiveBlockHandler(metaInstance);
+            this.metaInstance.setBlockHandler(recursiveBlocks);
+        }
     }
     
     public void setStatistics(MUCStatistics stat)

@@ -12,6 +12,10 @@ public class KahinaEmptyViewPanel extends KahinaViewPanel<KahinaEmptyView>
         {
             displayString = view.model.toString();
         }
+        else if (view.getDisplayString() != null)
+        {
+            displayString = view.getDisplayString();
+        }
         else
         {
             displayString = "Drag a window or frame here.";
