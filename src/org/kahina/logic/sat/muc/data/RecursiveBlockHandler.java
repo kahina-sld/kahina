@@ -89,14 +89,15 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         //IDEA: only express those elements which are inside the reference block
         //TODO: there must be treatment for non-blocks (no strict nesting enforced?)  
         //just ignore overlap.aMinusB.size() here
-
         if (overlap.bMinusA.size() > 0)
         {
             List<Integer> subblocks = getSubblocks(blockID);
             if (subblocks.size() == 0)
             {
                 //base case: leaf in block tree; split it into bMinusA and aIntersectB
-                //TODO: split
+                List<Integer> bReplacement = splitBlock(blockID, overlap.aIntersectB, overlap.bMinusA);
+                int intersectBlockVar = bReplacement.get(0);
+                representation.add(intersectBlockVar);
             }
             else
             {
@@ -120,6 +121,50 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
             }
         }
         return representation;
+    }
+    
+    //splits the block with blockID, returning the blocks' new representation
+    //the two arguments need to define a partition of the block with blockID
+    private List<Integer> splitBlock(int blockID, List<Integer> block1, List<Integer> block2)
+    {
+       List<Integer> newRepresentation = new LinkedList<Integer>();
+       if (block2.size() > 0)
+       {
+           if (block1.size() >= MIN_BLOCK_SIZE)
+           {
+               int block1ID = defineNewBlock(block1);
+               newRepresentation.add(blockDefVar.get(block1ID));
+           }
+           else
+           {
+               //these literals are without an assigned block now
+               for (int block1Lit : block1)
+               {
+                   blockIndex.remove(block1Lit);
+               }
+               newRepresentation.addAll(block1);
+           }
+           if (block2.size() >= MIN_BLOCK_SIZE)
+           {
+               int block2ID = defineNewBlock(block2);
+               newRepresentation.add(blockDefVar.get(block2ID));
+           }
+           else
+           {
+               //these literals are without an assigned block now
+               for (int block2Lit : block2)
+               {
+                   blockIndex.remove(block2Lit);
+               }
+               newRepresentation.addAll(block2);
+           }
+       }
+       else
+       {
+           //block1 is identical to the old block
+           newRepresentation.add(blockDefVar.get(blockID));
+       }
+       return newRepresentation;
     }
     
     private class Overlap
@@ -173,12 +218,12 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         List<Integer> blockDefClause = new LinkedList<Integer>();
         blockDefClause.add(-blockVar);
         //perhaps we don't even need the block index
-        /*for (int literal : block)
+        for (int literal : block)
         { 
             blockDefClause.add(literal);
             //update the reverse index (let literals point to new block)
-            blockIndex.put(literal, blockID);
-        }*/
+            //blockIndex.put(literal, blockID);
+        }
         blockDefClauses.put(blockID, blockDefClause);
         satInstance.getClauses().add(blockDefClause);
         if (VERBOSE) System.err.println("  new block clause:" + blockDefClause);
