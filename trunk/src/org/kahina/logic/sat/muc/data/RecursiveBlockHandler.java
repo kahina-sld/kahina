@@ -34,6 +34,9 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     
     //reverse index of literals into blocks where they occur
     Map<Integer,List<Integer>> blockIndex;
+    
+    //top block for searching insertion and split points
+    int topBlock;
 
     public RecursiveBlockHandler(CnfSatInstance satInstance)
     {
@@ -46,59 +49,77 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         blockIndex = new TreeMap<Integer,List<Integer>>();
     }
 
+    //TODO: decide whether this should be cashed (explicit tree structure?)
+    private List<Integer> getSubblocks(int blockID)
+    {
+        List<Integer> subblocks = new LinkedList<Integer>();
+        for (int literal : blockList.get(blockID))
+        {
+            Integer litBlockID = blockVarBlockID.get(literal);
+            if (litBlockID != null)
+            {
+                subblocks.add(litBlockID);
+            }
+        }
+        return subblocks;
+    }
+
     @Override
     public List<Integer> buildRepresentation(List<Integer> clause)
     {
-        //TODO like PartitionBlockHandler, but different implementation of splitting
-        return null;
+        List<Integer> representation = new LinkedList<Integer>();
+        //the first block is always the top block
+        if (blockList.size() == 0)
+        {
+            topBlock = defineNewBlock(clause);
+            representation.add(blockDefVar.get(topBlock));
+        }
+        else
+        {
+            //TODO: special treatment for clause elements outside topBlock
+            representation.addAll(buildRepresentation(clause, topBlock));
+        }
+        return representation;
     }
     
-    public int findHighestOverlapBlock(List<Integer> block)
+    private List<Integer> buildRepresentation(List<Integer> block, int blockID)
     {
-        //use reverse index to count overlaps
-        Map<Integer,Integer> overlapCount = new TreeMap<Integer,Integer>();
-        for (int literal : block)
+        List<Integer> representation = new LinkedList<Integer>();
+        Overlap overlap = new Overlap(block, blockList.get(blockID));
+        //IDEA: only express those elements which are inside the reference block
+        //TODO: there must be treatment for non-blocks (no strict nesting enforced?)  
+        //just ignore overlap.aMinusB.size() here
+
+        if (overlap.bMinusA.size() > 0)
         {
-            List<Integer> blocksForLit = blockIndex.get(literal);
-            if (blocksForLit != null)
+            List<Integer> subblocks = getSubblocks(blockID);
+            if (subblocks.size() == 0)
             {
-                for (int blockForLit : blocksForLit)
-                {
-                    increaseCount(overlapCount, blockForLit);
-                }
+                //base case: leaf in block tree; split it into bMinusA and aIntersectB
+                //TODO: split
             }
-            /*List<Integer> blocksForLiteral = blockIndex.get(literal);
-            if (blocksForLiteral != null)
+            else
             {
-                for (int blockForLit : blocksForLiteral)
+                //recursive case: the representation makes use of subblocks  
+                for (int subblockID : subblocks)
                 {
-                    increaseCount(overlapCount, blockForLit);
-                }
-            }*/
-        }
-        //search for maximum overlap
-        int maxIndex = -1; //-1 <=> no overlap
-        int maxOverlap = 0;
-        for (int blockIndex : overlapCount.keySet())
-        {
-            Integer overlap = overlapCount.get(blockIndex);
-            if (overlap != null)
-            {
-                if (overlap > maxOverlap)
-                {
-                    maxIndex = blockIndex;
-                    maxOverlap = overlap;
+                    representation.addAll(buildRepresentation(block,subblockID));
                 }
             }
         }
-        return maxIndex;
-    }
-    
-    private void increaseCount(Map<Integer,Integer> counters, int index)
-    {
-        Integer count = counters.get(index);
-        if (count == null) count = 1;
-        counters.put(index, count);
+        else
+        {
+            if (overlap.aIntersectB.size() == 0)
+            {
+                //no overlap between the blocks => empty representation
+            }
+            else
+            {
+                //the representation is identical to the reference block
+                representation.add(blockDefVar.get(blockID));
+            }
+        }
+        return representation;
     }
     
     private class Overlap
@@ -138,5 +159,29 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     {
         //TODO: this should actually return a tree of blocks!
         return blockList.values();
+    }
+    
+    public int defineNewBlock(List<Integer> block)
+    {
+        int blockID = satInstance.getNumClauses();
+        blockList.put(blockID, block);
+        satInstance.setNumClauses(blockID + 1);
+        int blockVar = satInstance.getNumVars() + 1;
+        satInstance.setNumVars(blockVar);
+        blockDefVar.put(blockID, blockVar);
+        blockVarBlockID.put(blockVar, blockID);
+        List<Integer> blockDefClause = new LinkedList<Integer>();
+        blockDefClause.add(-blockVar);
+        //perhaps we don't even need the block index
+        /*for (int literal : block)
+        { 
+            blockDefClause.add(literal);
+            //update the reverse index (let literals point to new block)
+            blockIndex.put(literal, blockID);
+        }*/
+        blockDefClauses.put(blockID, blockDefClause);
+        satInstance.getClauses().add(blockDefClause);
+        if (VERBOSE) System.err.println("  new block clause:" + blockDefClause);
+        return blockID;
     }
 }
