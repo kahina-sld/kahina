@@ -116,20 +116,24 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     
     private MUCReductionManager reductionManager;
     
-    public MUCInstance()
+    private MetaLearningMode metaLearningMode;
+    
+    public MUCInstance(MetaLearningMode metaLearningMode)
     {
         this.satInstance = null;
         this.stat = null;
         this.files = null;
         this.reductionManager = new MUCReductionManager(this);
+        this.metaLearningMode = metaLearningMode;
     }
     
-    public MUCInstance(CnfSatInstance satInstance,  MUCStatistics stat, MiniSATFiles files)
+    public MUCInstance(MetaLearningMode metaLearningMode, CnfSatInstance satInstance,  MUCStatistics stat, MiniSATFiles files)
     {
         this.satInstance = satInstance;
         this.stat = stat;
         this.files = files;
         this.reductionManager = new MUCReductionManager(this);
+        this.metaLearningMode = metaLearningMode;
         state.setSatInstance(satInstance);
         state.setStatistics(stat);
         state.setFiles(files);
@@ -359,10 +363,50 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             DimacsCnfOutput.writeVariableOccurrences(dataFile.getAbsolutePath(), usInstance);
         }
     }
+    
+    /**
+     * Writing a main method for a Kahina-based debugging environment is simple:
+     * just create an instance of your KahinaInstance subclass and pass its
+     * start method the arguments.
+     * 
+     * @param args
+     */
+    public void start(String[] args)
+    {
+        startNewSession();
+    }
 
     public static void main(String[] args)
     {
-        (new MUCInstance()).start(args);
+        MetaLearningMode metaLearningMode = MetaLearningMode.BLOCK_PARTITION;
+        if (args.length > 0)
+        {
+            if (args[0].equals("nometa"))
+            {
+                metaLearningMode = MetaLearningMode.NO_META_LEARNING;
+            }
+            else if  (args[0].equals("blprt"))
+            {
+                metaLearningMode = MetaLearningMode.BLOCK_PARTITION;
+            }
+            else if  (args[0].equals("blrec"))
+            {
+                metaLearningMode = MetaLearningMode.RECURSIVE_BLOCKS;
+            }
+            else
+            {
+                System.err.println("Mode \"" + args[0] + "\" not recognized, available modes:");
+                System.err.println("  nometa - no meta learning");
+                System.err.println("  blprt  - meta-learning a partition of blocks");
+                System.err.println("  blrec  - meta-learning a tree of blocks (recursive)");
+                System.exit(1);
+            }
+        }
+        else
+        {
+            System.err.println("MUCReducer: No mode specified, using default mode blprt.");
+        }
+        (new MUCInstance(metaLearningMode)).start(args);
     }
 
     @Override
@@ -391,6 +435,11 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     {
         recentPerspectives = new LinkedList<KahinaPerspective>();
         defaultPerspectives = new LinkedList<KahinaPerspective>();       
+    }
+    
+    public MetaLearningMode getMetaLearningMode()
+    {
+        return metaLearningMode;
     }
 
     public MUCReductionManager getReductionManager()

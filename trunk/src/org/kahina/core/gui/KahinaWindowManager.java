@@ -88,8 +88,9 @@ public class KahinaWindowManager implements KahinaListener
                     if (view == null)
                     {
                         System.err.println("  WARNING: No view defined for binding \"" + binding + "\"");
-                        System.err.println("  Could not apply the perspective, aborting.");
-                        return;
+                        KahinaEmptyView emptyView = new KahinaEmptyView(kahina);
+                        emptyView.setDisplayString("No view defined for binding \"" + binding + "\".");
+                        view = emptyView;
                     }
                     if (VERBOSE)
                     {
@@ -237,7 +238,8 @@ public class KahinaWindowManager implements KahinaListener
                 // implementation
                 // TODO: allow different configurations (and therefore different
                 // views) for clones
-                kahina.getGUI().varNameToView.get(binding).setConfig(psp.getConfiguration(winID));
+                KahinaView<?> view = kahina.getGUI().varNameToView.get(binding);
+                if (view != null) view.setConfig(psp.getConfiguration(winID));
             }
         }
         if (VERBOSE) System.err.println("KahinaWindowManager finished filling the content windows...");

@@ -8,11 +8,23 @@ import org.kahina.core.data.KahinaObject;
 
 public class KahinaEmptyView extends KahinaView<KahinaObject>
 {
+    public String displayString = null;
+    
     public KahinaEmptyView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
 		super(kahina);
 		setTitle("Empty View");
 	}
+    
+    public void setDisplayString(String displayString)
+    {
+        this.displayString = displayString;
+    }
+    
+    public String getDisplayString()
+    {
+        return displayString;
+    }
 
 	@Override
 	public JComponent makePanel()

@@ -6,6 +6,7 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.MUCInstance;
+import org.kahina.logic.sat.muc.MetaLearningMode;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.io.MUCExtension;
 
@@ -35,14 +36,14 @@ public class UCReducerTest
             
             MUCExtension.extendCNFBySelVars(files.sourceFile, files.tmpFile, stat);
             
-            kahinaInstance = new MUCInstance(satInstance, stat, files);
+            kahinaInstance = new MUCInstance(MetaLearningMode.BLOCK_PARTITION, satInstance, stat, files);
             kahinaInstance.startNewSessionWithoutBridge();
             
             kahinaInstance.generateFirstUC();
         }
         else
         {
-            kahinaInstance = new MUCInstance();
+            kahinaInstance = new MUCInstance(MetaLearningMode.BLOCK_PARTITION);
             kahinaInstance.startNewSessionWithoutBridge();
         }
     }
