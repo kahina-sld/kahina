@@ -20,6 +20,9 @@ public class KahinaController
     //map from types to interested listeners
     private HashMap<String,List<KahinaListener>> registry;
     
+    //used for printing out indented processing statistics
+    private int currentEventDepth = 0;
+    
     public KahinaController()
     {
         registry = new HashMap<String,List<KahinaListener>>();
@@ -63,6 +66,8 @@ public class KahinaController
         {
         	System.err.println("KahinaController@" + this.hashCode() + ".processEvent(" + event + "@" + event.hashCode() + ")");
         }
+        currentEventDepth++;
+        long time = System.currentTimeMillis();
         String type = event.getType();
         List<KahinaListener> listenersForType = registry.get(type);
         if (listenersForType != null)
@@ -76,5 +81,11 @@ public class KahinaController
                 listenersForType.get(i).processEvent(event);
             }
         }
+        currentEventDepth--;
+        for (int i = 0; i < currentEventDepth; i++)
+        {
+           System.err.print("  ");
+        }
+        System.err.println((System.currentTimeMillis() - time) + " ms for processing event\"" + event + "\" in " + "KahinaController@" + this.hashCode());
     }
 }

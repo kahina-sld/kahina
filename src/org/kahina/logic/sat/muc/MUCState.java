@@ -281,8 +281,7 @@ public class MUCState extends KahinaState
             {
                 System.err.println(step.getUc() + "->" + nodeForStep.get(step));
             }
-        }
-        
+        }  
         return stepID;
     }
 
@@ -390,11 +389,14 @@ public class MUCState extends KahinaState
     
     public synchronized void learnMetaClause(List<Integer> metaClause)
     {
+        long time = System.currentTimeMillis();
         metaInstance.learnNewClause(metaClause);
+        System.err.println("  " + (System.currentTimeMillis() - time) + " ms for learning meta clause.");
     }
     
     public synchronized void learnMetaUnits(MUCStep uc)
     {
+        long time = System.currentTimeMillis();
         if (VERBOSE) System.err.print("Learning meta units: ");
         List<Integer> posSelVars = new LinkedList<Integer>();
         int numClauses = getStatistics().numClausesOrGroups;
@@ -418,6 +420,7 @@ public class MUCState extends KahinaState
             }
         }
         if (VERBOSE) System.err.println();
+        System.err.println("  " + (System.currentTimeMillis() - time) + " ms for learning meta units");
     }
     
     public synchronized void addAndDistributeUnreducibilityInfo(int parentID, int failedReductionID)
