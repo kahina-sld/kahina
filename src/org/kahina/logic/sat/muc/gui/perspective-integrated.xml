@@ -11,7 +11,7 @@
 	          <kahina:hori-split-window kahina:height="500" kahina:id="17" kahina:title="Decision Graph and Current UC" kahina:border="false" kahina:width="1680" kahina:xpos="300" kahina:ypos="0">
 	            <kahina:default-window kahina:binding="decisionGraph" kahina:border="true" kahina:height="471" kahina:id="1" kahina:primary="true" kahina:title="Decision graph" kahina:width="600" kahina:xpos="320" kahina:ypos="25"/>
 	            <kahina:hori-split-window kahina:height="500" kahina:id="19" kahina:title="Selected UC" kahina:border="true" kahina:width="600" kahina:xpos="500" kahina:ypos="0">
-	              <kahina:default-window kahina:binding="currentUCBlocks" kahina:border="true" kahina:height="471" kahina:id="20" kahina:primary="true" kahina:title="Blocks" kahina:width="300" kahina:xpos="500" kahina:ypos="25"/>
+	              <kahina:default-window kahina:scroll="true" kahina:binding="currentUCBlocks" kahina:border="true" kahina:height="471" kahina:id="20" kahina:primary="true" kahina:title="Blocks" kahina:width="300" kahina:xpos="500" kahina:ypos="25"/>
 	              <kahina:default-window kahina:binding="currentUC" kahina:border="true" kahina:height="471" kahina:id="18" kahina:primary="true" kahina:title="Clauses" kahina:width="300" kahina:xpos="800" kahina:ypos="25"/>
 	            </kahina:hori-split-window>
 	          </kahina:hori-split-window>

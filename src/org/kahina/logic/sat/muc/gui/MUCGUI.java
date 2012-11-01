@@ -16,6 +16,7 @@ import org.kahina.core.visual.dag.ColoredPathDAGView;
 import org.kahina.core.visual.dag.LayeredLayouter;
 import org.kahina.core.visual.graph.KahinaGraphViewOptions;
 import org.kahina.core.visual.graph.SpringLayouter;
+import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.cnf.GroupCnfSatInstance;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
@@ -147,10 +148,16 @@ public class MUCGUI extends KahinaGUI
             livingViews.add(blockTreeView);
             varNameToView.put("currentUCBlocks", blockTreeView);
             
-            blockTreeView.setStatusColorEncoding(0, Color.BLACK);
+            blockTreeView.setStatusColorEncoding(0, Color.WHITE);
             blockTreeView.setStatusColorEncoding(1, NICE_RED);
             blockTreeView.setStatusColorEncoding(2, NICE_GREEN);
             blockTreeView.setStatusColorEncoding(3, Color.GRAY);
+            
+            blockTreeView.getConfig().setHorizontalDistance(2);
+            blockTreeView.getConfig().setVerticalDistance(8);
+            blockTreeView.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
+            blockTreeView.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);
+            blockTreeView.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
         }
         
         mucView = new MUCStepView(kahina);
