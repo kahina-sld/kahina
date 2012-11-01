@@ -60,7 +60,9 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     //TODO: decide whether this should be cashed (explicit tree structure?)
     private List<Integer> getSubblocks(int blockID)
     {
+        //System.err.println("getSubblocks(" + blockID + ")");
         List<Integer> subblocks = new LinkedList<Integer>();
+        //System.err.println("  block = " + blockList.get(blockID));
         for (int literal : blockList.get(blockID))
         {
             Integer litBlockID = blockVarBlockID.get(literal);
@@ -69,6 +71,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
                 subblocks.add(litBlockID);
             }
         }
+        //System.err.println("  subblocks = " + subblocks);
         return subblocks;
     }
 
@@ -84,11 +87,11 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     {
         List<Integer> representation = new LinkedList<Integer>();
         Overlap overlap = new Overlap(block, blockList.get(blockID));
-        System.err.println("Overlap(" + block + ",\n" 
+        /*System.err.println("Overlap(" + block + ",\n" 
                          + "        "+ blockList.get(blockID) + "):");
         System.err.println("  aIntersectB = " + overlap.aIntersectB);
         System.err.println("  aMinusB     = " + overlap.aMinusB);
-        System.err.println("  bMinusA     = " + overlap.bMinusA);
+        System.err.println("  bMinusA     = " + overlap.bMinusA);*/
         //IDEA: only express those elements which are inside the reference block
         //TODO: there must be treatment for non-blocks (no strict nesting enforced?)  
         //just ignore overlap.aMinusB.size() here
@@ -157,37 +160,36 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
            List<Integer> definingClause = blockDefClauses.get(blockID);
            definingClause.clear();
            definingClause.add(-blockDefVar.get(blockID));
+           //rebuild the block itself to contain references to the subblocks
+           List<Integer> block = blockList.get(blockID);
+           block.clear();
            if (block1.size() >= MIN_BLOCK_SIZE)
            {
                int block1ID = defineNewBlock(block1);
-               newRepresentation.add(blockDefVar.get(block1ID));
-               definingClause.add(blockDefVar.get(block1ID));
+               int block1Var = blockDefVar.get(block1ID);
+               newRepresentation.add(block1Var);
+               definingClause.add(block1Var);
+               block.add(block1Var);
            }
            else
            {
-               //these literals are without an assigned block now
-               for (int block1Lit : block1)
-               {
-                   blockIndex.remove(block1Lit);
-               }
                newRepresentation.addAll(block1);
                definingClause.addAll(block1);
+               block.addAll(block1);
            }
            if (block2.size() >= MIN_BLOCK_SIZE)
            {
                int block2ID = defineNewBlock(block2);
-               newRepresentation.add(blockDefVar.get(block2ID));
-               definingClause.add(blockDefVar.get(block2ID));
+               int block2Var = blockDefVar.get(block2ID);
+               newRepresentation.add(block2Var);
+               definingClause.add(block2Var);
+               block.add(block2Var);
            }
            else
            {
-               //these literals are without an assigned block now
-               for (int block2Lit : block2)
-               {
-                   blockIndex.remove(block2Lit);
-               }
                newRepresentation.addAll(block2);
                definingClause.addAll(block2);
+               block.addAll(block2);
            }
        }
        else
