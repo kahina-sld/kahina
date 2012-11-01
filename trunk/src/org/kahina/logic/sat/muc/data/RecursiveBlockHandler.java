@@ -47,6 +47,14 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         blockDefVar = new TreeMap<Integer,Integer>();
         blockVarBlockID = new TreeMap<Integer,Integer>();
         blockIndex = new TreeMap<Integer,List<Integer>>();
+        
+        List<Integer> topBlockList = new LinkedList<Integer>();
+        //the top block should include all the meta variables in the beginning
+        for (int i = 1; i <= satInstance.getNumVars(); i++)
+        {
+            topBlockList.add(-i);
+        }
+        topBlock = defineNewBlock(topBlockList);
     }
 
     //TODO: decide whether this should be cashed (explicit tree structure?)
@@ -68,17 +76,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     public List<Integer> buildRepresentation(List<Integer> clause)
     {
         List<Integer> representation = new LinkedList<Integer>();
-        //the first block is always the top block
-        if (blockList.size() == 0)
-        {
-            topBlock = defineNewBlock(clause);
-            representation.add(blockDefVar.get(topBlock));
-        }
-        else
-        {
-            //TODO: special treatment for clause elements outside topBlock
-            representation.addAll(buildRepresentation(clause, topBlock));
-        }
+        representation.addAll(buildRepresentation(clause, topBlock));
         return representation;
     }
     
@@ -86,6 +84,11 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     {
         List<Integer> representation = new LinkedList<Integer>();
         Overlap overlap = new Overlap(block, blockList.get(blockID));
+        System.err.println("Overlap(" + block + ",\n" 
+                         + "        "+ blockList.get(blockID) + "):");
+        System.err.println("  aIntersectB = " + overlap.aIntersectB);
+        System.err.println("  aMinusB     = " + overlap.aMinusB);
+        System.err.println("  bMinusA     = " + overlap.bMinusA);
         //IDEA: only express those elements which are inside the reference block
         //TODO: there must be treatment for non-blocks (no strict nesting enforced?)  
         //just ignore overlap.aMinusB.size() here
@@ -123,6 +126,26 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         return representation;
     }
     
+    /*private List<Integer> removeFromBlock(int blockID, List<Integer> removals)
+    {
+        //adapt the block definition to not include the removed elements any more
+        
+        //adapt the clauses which use the modified block
+        for (List<Integer> clause : blockClauses.get(blockID))
+        {
+            if (VERBOSE) System.err.println("    Replacement in clause: " + clause);
+            clause.remove(new Integer(blockVar));
+            clause.addAll(newRepresentation);
+            if (VERBOSE) System.err.println("    Replacement completed: " + clause);
+            for (int newBlockID : newBlockIDs)
+            {
+                addBlockClausesEntry(newBlockID, clause);
+            }
+        }
+        //recursion: we also need to remove things from the relevant subblocks
+        
+    }*/
+    
     //splits the block with blockID, returning the blocks' new representation
     //the two arguments need to define a partition of the block with blockID
     private List<Integer> splitBlock(int blockID, List<Integer> block1, List<Integer> block2)
@@ -130,10 +153,15 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
        List<Integer> newRepresentation = new LinkedList<Integer>();
        if (block2.size() > 0)
        {
+           //rebuild the defining clause for the block being split
+           List<Integer> definingClause = blockDefClauses.get(blockID);
+           definingClause.clear();
+           definingClause.add(-blockDefVar.get(blockID));
            if (block1.size() >= MIN_BLOCK_SIZE)
            {
                int block1ID = defineNewBlock(block1);
                newRepresentation.add(blockDefVar.get(block1ID));
+               definingClause.add(blockDefVar.get(block1ID));
            }
            else
            {
@@ -143,11 +171,13 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
                    blockIndex.remove(block1Lit);
                }
                newRepresentation.addAll(block1);
+               definingClause.addAll(block1);
            }
            if (block2.size() >= MIN_BLOCK_SIZE)
            {
                int block2ID = defineNewBlock(block2);
                newRepresentation.add(blockDefVar.get(block2ID));
+               definingClause.add(blockDefVar.get(block2ID));
            }
            else
            {
@@ -157,6 +187,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
                    blockIndex.remove(block2Lit);
                }
                newRepresentation.addAll(block2);
+               definingClause.addAll(block2);
            }
        }
        else
