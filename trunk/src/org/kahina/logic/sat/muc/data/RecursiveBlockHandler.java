@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.kahina.core.data.tree.KahinaMemTree;
+import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
 public class RecursiveBlockHandler extends LiteralBlockHandler
@@ -118,7 +120,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         {
             if (overlap.aIntersectB.size() == 0)
             {
-                //no overlap between the blocks => empty representation
+                //no overlap between the blocks => no additional element in representation
             }
             else
             {
@@ -154,7 +156,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     private List<Integer> splitBlock(int blockID, List<Integer> block1, List<Integer> block2)
     {
        List<Integer> newRepresentation = new LinkedList<Integer>();
-       if (block2.size() > 0)
+       if (block2.size() > 0 && block1.size() > 0)
        {
            //rebuild the defining clause for the block being split
            List<Integer> definingClause = blockDefClauses.get(blockID);
@@ -261,5 +263,27 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         satInstance.getClauses().add(blockDefClause);
         if (VERBOSE) System.err.println("  new block clause:" + blockDefClause);
         return blockID;
+    }
+    
+    //TODO: develop a more efficient way of maintaining and retrieving this list
+    public KahinaTree retrieveBlockTree()
+    {
+        KahinaTree tree = new KahinaMemTree();
+        for (int blockID : blockList.keySet())
+        {
+            tree.addNode(blockID, blockList.get(blockID).size() + "", "", 0);
+        }
+        List<Integer> agenda = new LinkedList<Integer>();
+        agenda.add(topBlock);
+        while (!agenda.isEmpty())
+        {
+            int parent = agenda.remove(0);
+            for (int child : getSubblocks(parent))
+            {
+                tree.addChild(parent, child);
+                agenda.add(child);
+            }
+        }
+        return tree;
     }
 }
