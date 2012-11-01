@@ -271,8 +271,9 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         KahinaTree tree = new KahinaMemTree();
         for (int blockID : blockList.keySet())
         {
-            tree.addNode(blockID, blockList.get(blockID).size() + "", "", 0);
+            tree.addNode(blockID, blockDefVar.get(blockID) + " (" + blockList.get(blockID).size() + ")", "", 0);
         }
+        tree.setRootID(topBlock);
         List<Integer> agenda = new LinkedList<Integer>();
         agenda.add(topBlock);
         while (!agenda.isEmpty())

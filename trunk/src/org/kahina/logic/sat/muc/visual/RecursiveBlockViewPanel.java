@@ -10,5 +10,4 @@ public class RecursiveBlockViewPanel extends KahinaTreeViewPanel
         super(kahina);
         // TODO Auto-generated constructor stub
     }
-
 }
