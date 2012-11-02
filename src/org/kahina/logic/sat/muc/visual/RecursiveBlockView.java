@@ -7,6 +7,9 @@ import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.data.RecursiveBlockHandler;
@@ -38,9 +41,27 @@ public class RecursiveBlockView extends KahinaTreeView
         recalculate();
     }
     
+    public void processEvent(KahinaEvent e)
+    {
+        if (e instanceof KahinaSelectionEvent)
+        {
+            processEvent((KahinaSelectionEvent) e);
+        }
+    }
+    
+    public void processEvent(KahinaSelectionEvent e)
+    {
+        if (model != null) 
+        {
+            recalculate();
+            kahina.dispatchEvent(new KahinaRedrawEvent());
+        }
+    }
+    
     public void recalculate()
     {
         //treeLayer = 0;
+        if (blockHandler == null) return;
         model = blockHandler.retrieveBlockTree();
         //update node status in model
         int stepID = kahina.getState().getSelectedStepID();
