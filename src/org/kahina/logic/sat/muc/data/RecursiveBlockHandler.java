@@ -60,12 +60,12 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     }
 
     //TODO: decide whether this should be cashed (explicit tree structure?)
-    private List<Integer> getSubblocks(int blockID)
+    public List<Integer> getSubblocks(int blockID)
     {
         //System.err.println("getSubblocks(" + blockID + ")");
         List<Integer> subblocks = new LinkedList<Integer>();
         //System.err.println("  block = " + blockList.get(blockID));
-        for (int literal : blockList.get(blockID))
+        for (int literal : blockDefClauses.get(blockID))
         {
             Integer litBlockID = blockVarBlockID.get(literal);
             if (litBlockID != null)
@@ -162,22 +162,17 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
            List<Integer> definingClause = blockDefClauses.get(blockID);
            definingClause.clear();
            definingClause.add(-blockDefVar.get(blockID));
-           //rebuild the block itself to contain references to the subblocks
-           List<Integer> block = blockList.get(blockID);
-           block.clear();
            if (block1.size() >= MIN_BLOCK_SIZE)
            {
                int block1ID = defineNewBlock(block1);
                int block1Var = blockDefVar.get(block1ID);
                newRepresentation.add(block1Var);
                definingClause.add(block1Var);
-               block.add(block1Var);
            }
            else
            {
                newRepresentation.addAll(block1);
                definingClause.addAll(block1);
-               block.addAll(block1);
            }
            if (block2.size() >= MIN_BLOCK_SIZE)
            {
@@ -185,13 +180,11 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
                int block2Var = blockDefVar.get(block2ID);
                newRepresentation.add(block2Var);
                definingClause.add(block2Var);
-               block.add(block2Var);
            }
            else
            {
                newRepresentation.addAll(block2);
                definingClause.addAll(block2);
-               block.addAll(block2);
            }
        }
        else
@@ -286,5 +279,11 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
             }
         }
         return tree;
+    }
+    
+    @Override
+    public List<Integer> getBlock(int blockID)
+    {
+        return blockList.get(blockID);
     }
 }

@@ -18,4 +18,6 @@ public abstract class LiteralBlockHandler extends KahinaObject
     public abstract List<Integer> buildRepresentation(List<Integer> clause);
     
     public abstract Collection<List<Integer>> getBlocks();
+    
+    public abstract List<Integer> getBlock(int blockID);
 }

@@ -1,10 +1,10 @@
 package org.kahina.logic.sat.muc.visual;
 
-import java.awt.Color;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.JScrollPane;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.visual.tree.KahinaTreeView;
@@ -27,7 +27,9 @@ public class RecursiveBlockView extends KahinaTreeView
         RecursiveBlockViewPanel panel = new RecursiveBlockViewPanel(kahina);
         kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
-        return panel;
+        JScrollPane scrollPane = new JScrollPane(panel);
+        scrollPane.getViewport().setBackground(config.getBackgroundColor());
+        return scrollPane;
     }
     
     public void display(RecursiveBlockHandler blockHandler)
@@ -40,8 +42,23 @@ public class RecursiveBlockView extends KahinaTreeView
     {
         //treeLayer = 0;
         model = blockHandler.retrieveBlockTree();
-        //nodeBorderColor = new HashMap<Integer, Color>();
-        super.recalculate();
+        //update node status in model
+        int stepID = kahina.getState().getSelectedStepID();
+        if (stepID != -1)
+        {
+            MUCStep currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
+            List<Integer> nodeAgenda = new LinkedList<Integer>();
+            nodeAgenda.add(model.getRootID());
+            while (nodeAgenda.size() > 0)
+            {
+                int blockID = nodeAgenda.remove(0);
+                List<Integer> block = blockHandler.getBlock(blockID);
+                model.setNodeStatus(blockID, currentStep.relationToBlock(block));
+                nodeAgenda.addAll(blockHandler.getSubblocks(blockID));
+            }
+            //nodeBorderColor = new HashMap<Integer, Color>();
+            super.recalculate();
+        }
         /*int stepID = kahina.getState().getSelectedStepID();
         listModel.clear();
         lineStatus.clear();

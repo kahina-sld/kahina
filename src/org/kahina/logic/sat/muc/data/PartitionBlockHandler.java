@@ -319,4 +319,10 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         }
         return blocks;
     }
+
+    @Override
+    public List<Integer> getBlock(int blockID)
+    {
+        return blockList.get(blockID);
+    }
 }
