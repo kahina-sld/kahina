@@ -2,6 +2,7 @@ package org.kahina.logic.sat.data.cnf;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,11 +14,14 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
 import org.kahina.core.data.graph.AdjacListsGraph;
 import org.kahina.core.data.graph.KahinaGraph;
 import org.kahina.logic.sat.data.KahinaSatInstance;
+import org.kahina.logic.sat.data.model.PartialAssignment;
+import org.kahina.logic.sat.io.minisat.MiniSAT;
 
 public class CnfSatInstance extends KahinaSatInstance
 {
@@ -36,6 +40,20 @@ public class CnfSatInstance extends KahinaSatInstance
         setNumVars(0);
         clauses = new ArrayList<List<Integer>>();
         occurrenceMap = null;
+    }
+    
+    public CnfSatInstance copy()
+    {
+        CnfSatInstance copy = new CnfSatInstance();
+        copy.setNumClauses(numClauses);
+        copy.setNumVars(numVars);
+        for (List<Integer> clause : clauses)
+        {
+            List<Integer> clauseCopy = new LinkedList<Integer>();
+            clauseCopy.addAll(clause);
+            copy.clauses.add(clauseCopy);
+        }
+        return copy;
     }
     
     //generate lit -> clause map for lookup
@@ -461,5 +479,137 @@ public class CnfSatInstance extends KahinaSatInstance
             }
         }
         return highestVar;
+    }
+    
+    public void deleteVariablesDestructively(Set<Integer> removedVars)
+    {
+        System.err.print("deleting " + removedVars.size() + " variables destructively ... ");
+        for (int i = 0; i < numClauses; i++)
+        {
+            List<Integer> clause = clauses.get(i);
+            for (int j = 0; j < clause.size(); j++)
+            {
+                int var = clause.get(j);
+                if (var < 0) var = -var;
+                if (removedVars.contains(var))
+                {
+                    clause.remove(j);
+                    j--;
+                }
+            }
+            if (clause.size() == 0)
+            {
+                clauses.remove(i);
+                numClauses--;
+                i--;
+            }
+        }
+        System.err.println("done, clauses left: " + numClauses);
+    }
+    
+    public void applyAssignmentDestructively(PartialAssignment assignment)
+    {
+        System.err.print("applyAssignmentDestructively() ... ");
+        for (int i = 0; i < numClauses; i++)
+        {
+            List<Integer> clause = clauses.get(i);
+            for (int j = 0; j < clause.size(); j++)
+            {
+                int var = clause.get(j);
+                if (var < 0) var = -var;
+                Boolean varValue = assignment.getValue(var);
+                if (varValue == null) continue;
+                if (varValue)
+                {
+                    if (clause.get(j) < 0)
+                    {
+                        clause.remove(j);
+                        j--;
+                    }
+                    else
+                    {
+                        clause.clear();
+                        j = 0;
+                    }
+                }
+                else
+                {
+                    if (clause.get(j) < 0)
+                    {
+                        clause.clear();
+                        j = 0;
+                    }
+                    else
+                    {
+                        clause.remove(j);
+                        j--;
+                    }
+                }
+            }
+            if (clause.size() == 0)
+            {
+                clauses.remove(i);
+                numClauses--;
+                i--;
+            }
+        }
+        System.err.println("done");
+    }
+    
+    public void reduceToLeanKernel()
+    {
+        CnfSatInstance copy = this.copy();
+        PartialAssignment maxAutarky = copy.extractMaxAutarkyDestructively();
+        applyAssignmentDestructively(maxAutarky);
+    }
+    
+    public PartialAssignment extractMaxAutarkyDestructively()
+    {   
+        try
+        {
+            boolean sat = false;
+            while (sat == false)
+            {
+                File proofFile = new File("temp.proof");
+                File resFile = new File("temp.res");
+                sat = MiniSAT.solveWithRefutationVariables(this, proofFile, resFile);
+                if (sat)
+                {
+                    PartialAssignment maxAutarky = MiniSAT.getPartialModel(resFile);
+                    System.err.println("Found maximal autarky of size " + maxAutarky.size() + ".");
+                    proofFile.delete();
+                    resFile.delete();
+                    return maxAutarky;
+                }
+                else
+                {
+                    Set<Integer> resolutionVariables = MiniSAT.getResolutionVariables(proofFile);
+                    if (resolutionVariables.size() == 0)
+                    {
+                        System.err.println("ERROR: no resolution variables in an UNSAT problem! Returning null autarky!");
+                        return null;
+                    }
+                    this.deleteVariablesDestructively(resolutionVariables);
+                }
+                proofFile.delete();
+                resFile.delete();
+            }
+        }
+        catch (TimeoutException e)
+        {
+            System.err.println("ERROR: MiniSAT timed out! Returning null autarky!");
+            e.printStackTrace();
+        }
+        catch (InterruptedException e)
+        {
+            System.err.println("ERROR: MiniSAT was interrupted! Returning null autarky!");
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            System.err.println("ERROR: some file could not be created or read! Returning null autarky!");
+            e.printStackTrace();
+        }
+        return null;
     }
 }

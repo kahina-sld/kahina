@@ -21,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.model.CompleteAssignment;
+import org.kahina.logic.sat.data.model.PartialAssignment;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 
@@ -165,61 +166,52 @@ public class MiniSAT
         return units;
     }
     
-    public static Set<Integer> findRefutationVariables(CnfSatInstance instance) throws TimeoutException, InterruptedException
+    public static synchronized boolean solveWithRefutationVariables(CnfSatInstance instance, File proofFile, File resultFile) throws TimeoutException, InterruptedException, IOException
     {
         File instanceFile = new File("instance-temp.cnf");
         DimacsCnfOutput.writeDimacsCnfFile("instance-temp.cnf", instance);
-        File proofFile = new File("instance-temp.proof");
+        Process p = Runtime.getRuntime().exec("minisat " + instanceFile.getAbsolutePath() + " -c -e -p " + proofFile.getAbsolutePath() + " -r " + resultFile.getAbsolutePath());
+        BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        Timer timer = new Timer();
+        timer.schedule((new MiniSAT()).new InterruptScheduler(Thread.currentThread()), timeout);
         try
         {
-            Process p = Runtime.getRuntime().exec("minisat " + instanceFile.getAbsolutePath() + " -c -e -p " + proofFile.getAbsolutePath());
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-            Timer timer = new Timer();
-            timer.schedule((new MiniSAT()).new InterruptScheduler(Thread.currentThread()), timeout);
-            try
-            {
-                p.waitFor();
-            }
-            catch (InterruptedException e)
-            {
-                // Stop the process from running
-                p.getInputStream().close();
-                p.getErrorStream().close();
-                p.getOutputStream().close();
-                p.destroy();
-                throw new TimeoutException("did not return after " + timeout + " milliseconds");
-            }
-            finally
-            {
-                // Stop the timer
-                timer.cancel();
-            }
-            String line;
-            while ((line = input.readLine()) != null)
-            {
-                if (VERBOSE) System.err.println(line);
-            }
-            input.close();
-            BufferedReader input2 = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            String line2;
-            while ((line2 = input2.readLine()) != null)
-            {
-                if (VERBOSE) System.err.println(line2);
-            }
-            input2.close();
+            p.waitFor();
+        }
+        catch (InterruptedException e)
+        {
+            // Stop the process from running
             p.getInputStream().close();
             p.getErrorStream().close();
             p.getOutputStream().close();
             p.destroy();
-            return getResolutionVariables(proofFile);
+            throw new TimeoutException("did not return after " + timeout + " milliseconds");
         }
-        catch (IOException e)
+        finally
         {
-            System.err.println("ERROR: IOException during SAT solving:");
-            e.printStackTrace();
+            // Stop the timer
+            timer.cancel();
         }
-        return null;
+        String line;
+        while ((line = input.readLine()) != null)
+        {
+            if (VERBOSE) System.err.println(line);
+        }
+        input.close();
+        BufferedReader input2 = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+        String line2;
+        while ((line2 = input2.readLine()) != null)
+        {
+            if (VERBOSE) System.err.println(line2);
+        }
+        input2.close();
+        p.getInputStream().close();
+        p.getErrorStream().close();
+        p.getOutputStream().close();
+        p.destroy();
+        return !wasUnsatisfiable(resultFile);
     }
+
     
     public static List<Integer> findUnsatisfiableCore(MUCStatistics stat, MiniSATFiles files) throws TimeoutException, InterruptedException
     {
@@ -393,7 +385,7 @@ public class MiniSAT
     }
     
     //gets the model from a result file in case of SAT, null if UNSAT
-    public static CompleteAssignment getModel()
+    public static CompleteAssignment getCompleteModel()
     {
         CompleteAssignment model = null;
         BufferedReader input;
@@ -438,7 +430,7 @@ public class MiniSAT
     }
     
   //gets the model from a result file in case of SAT, null if UNSAT
-    public static CompleteAssignment getModel(File resultFile)
+    public static CompleteAssignment getCompleteModel(File resultFile)
     {
         CompleteAssignment model = null;
         BufferedReader input;
@@ -482,6 +474,50 @@ public class MiniSAT
         return model;
     }
     
+    public static PartialAssignment getPartialModel(File resultFile)
+    {
+        PartialAssignment model = null;
+        BufferedReader input;
+        try
+        {
+            input = new BufferedReader(new FileReader(resultFile));
+            String line;
+            while ((line = input.readLine()) != null)
+            {
+                if (line.equals("UNSAT"))
+                {
+                    break;
+                }
+                else if (line.equals("SAT"))
+                {
+                    model = new PartialAssignment();
+                    continue;
+                }
+                else
+                {
+                    for (String litString : line.split(" "))
+                    {
+                        int lit = Integer.parseInt(litString);
+                        if (lit < 0)
+                        {
+                            model.assign(-lit, false);
+                        }
+                        else if (lit > 0)
+                        {
+                            model.assign(lit, true);
+                        }
+                    }
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            System.err.println("ERROR: failed to read the MiniSAT result file! Null model returned!");
+            e.printStackTrace();      
+        }
+        return model;
+    }
+    
     // checks result file to see whether a SAT problem was unsatisfiable
     public static boolean wasUnsatisfiable(File resultFile)
     {
@@ -494,7 +530,7 @@ public class MiniSAT
             {
                 if (line.equals("UNSAT"))
                 {
-                    // System.out.println("UNSAT");
+                    //System.out.println("UNSAT");
                     return true;
                 }
             }
@@ -506,7 +542,7 @@ public class MiniSAT
             System.err.println("IOfailed testunsatisfiable");
             System.exit(0);
         }
-        // System.out.println("SAT");
+        //System.out.println("SAT");
         return false;
     }
     
