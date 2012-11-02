@@ -12,9 +12,11 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeSet;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
@@ -86,7 +88,7 @@ public class MiniSAT
      */
     public static synchronized boolean solveAndDeriveUnits(File cnfFile, File tmpResultFile, File unitsFile) throws TimeoutException, InterruptedException, IOException
     {
-        Process p = Runtime.getRuntime().exec("minisat-units " + cnfFile.getAbsolutePath() + " -c -r " + tmpResultFile.getAbsolutePath() + " -u " + unitsFile.getAbsolutePath());
+        Process p = Runtime.getRuntime().exec("minisat " + cnfFile.getAbsolutePath() + " -c -r " + tmpResultFile.getAbsolutePath() + " -u " + unitsFile.getAbsolutePath());
         BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
         // Set a timer to interrupt the process if it does not return within
         // the timeout period
@@ -161,6 +163,62 @@ public class MiniSAT
         //tempResultsFile.delete();
         //unitsFile.delete();
         return units;
+    }
+    
+    public static Set<Integer> findRefutationVariables(CnfSatInstance instance) throws TimeoutException, InterruptedException
+    {
+        File instanceFile = new File("instance-temp.cnf");
+        DimacsCnfOutput.writeDimacsCnfFile("instance-temp.cnf", instance);
+        File proofFile = new File("instance-temp.proof");
+        try
+        {
+            Process p = Runtime.getRuntime().exec("minisat " + instanceFile.getAbsolutePath() + " -c -e -p " + proofFile.getAbsolutePath());
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            Timer timer = new Timer();
+            timer.schedule((new MiniSAT()).new InterruptScheduler(Thread.currentThread()), timeout);
+            try
+            {
+                p.waitFor();
+            }
+            catch (InterruptedException e)
+            {
+                // Stop the process from running
+                p.getInputStream().close();
+                p.getErrorStream().close();
+                p.getOutputStream().close();
+                p.destroy();
+                throw new TimeoutException("did not return after " + timeout + " milliseconds");
+            }
+            finally
+            {
+                // Stop the timer
+                timer.cancel();
+            }
+            String line;
+            while ((line = input.readLine()) != null)
+            {
+                if (VERBOSE) System.err.println(line);
+            }
+            input.close();
+            BufferedReader input2 = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            String line2;
+            while ((line2 = input2.readLine()) != null)
+            {
+                if (VERBOSE) System.err.println(line2);
+            }
+            input2.close();
+            p.getInputStream().close();
+            p.getErrorStream().close();
+            p.getOutputStream().close();
+            p.destroy();
+            return getResolutionVariables(proofFile);
+        }
+        catch (IOException e)
+        {
+            System.err.println("ERROR: IOException during SAT solving:");
+            e.printStackTrace();
+        }
+        return null;
     }
     
     public static List<Integer> findUnsatisfiableCore(MUCStatistics stat, MiniSATFiles files) throws TimeoutException, InterruptedException
@@ -450,6 +508,51 @@ public class MiniSAT
         }
         // System.out.println("SAT");
         return false;
+    }
+    
+    public static Set<Integer> getResolutionVariables(File proofFile)
+    {
+        Set<Integer> resolutionVariables = new TreeSet<Integer>();
+        BufferedReader input;
+        try
+        {
+            input = new BufferedReader(new FileReader(proofFile));
+            String line, line2;
+            while ((line2 = input.readLine()) != null)
+            {
+                line = line2;
+                StringTokenizer st = new StringTokenizer(line2);
+                int numberOfZeros = 0;
+                while (numberOfZeros < 2 && st.hasMoreTokens())
+                {
+                    line = st.nextToken();
+                    if (line.equals("0"))
+                    {
+                      numberOfZeros++;
+                    }
+                }
+                while (st.hasMoreTokens())
+                {
+                    line = st.nextToken();
+                    if (!line.equals("0"))
+                    {
+                        resolutionVariables.add(Integer.parseInt(line));
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            input.close();
+            return resolutionVariables;
+        }
+        catch (IOException e)
+        {
+            System.err.println("ERROR: failed to extract resolution variables from proof! Null set returned!");
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // extract the relevant assumptions from the last proof file
