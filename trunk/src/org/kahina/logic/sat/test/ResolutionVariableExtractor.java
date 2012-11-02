@@ -21,8 +21,20 @@ public class ResolutionVariableExtractor
         CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(args[0]);
         try
         {
-            Set<Integer> resolutionVariables = MiniSAT.findRefutationVariables(instance);
-            System.err.println(resolutionVariables);
+            //TODO: clean up these files
+            File proofFile = new File("temp.proof");
+            File resFile = new File("temp.res");
+            boolean satisfiable = MiniSAT.solveWithRefutationVariables(instance, proofFile, resFile);
+            if (satisfiable)
+            {
+                System.err.println("SAT instance is satisifable!");
+                System.exit(0);
+            }
+            else
+            {
+                Set<Integer> resolutionVariables = MiniSAT.getResolutionVariables(proofFile);
+                System.err.println(resolutionVariables);
+            }
         }
         catch (TimeoutException e)
         {
@@ -33,6 +45,12 @@ public class ResolutionVariableExtractor
         catch (InterruptedException e)
         {
             System.err.println("ERROR: MiniSAT was interrupted!");
+            e.printStackTrace();
+            System.exit(1);
+        }
+        catch (IOException e)
+        {
+            System.err.println("ERROR: some file could not be created or read!");
             e.printStackTrace();
             System.exit(1);
         }

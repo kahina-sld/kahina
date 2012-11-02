@@ -116,7 +116,7 @@ public class UCReductionTask extends KahinaTask
                 reducedCore = MiniSAT.findUnsatisfiableCore(stat, files);
                 if (modelRotation)
                 {
-                    model = MiniSAT.getModel(files.tmpResultFile);
+                    model = MiniSAT.getCompleteModel(files.tmpResultFile);
                 }
             }
             catch (InterruptedException e)
