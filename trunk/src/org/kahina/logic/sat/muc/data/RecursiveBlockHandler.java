@@ -21,7 +21,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     static final boolean VERBOSE = false;
     
     //main parameter, defines minimum block size
-    static final int MIN_BLOCK_SIZE = 3;
+    static final int MIN_BLOCK_SIZE = 2;
     
     //blocks are coded as tree sets of integers for now, indexed by IDs
     Map<Integer,TreeSet<Integer>> blockList;
