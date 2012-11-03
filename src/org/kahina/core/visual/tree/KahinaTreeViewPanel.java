@@ -24,7 +24,7 @@ public class KahinaTreeViewPanel extends KahinaViewPanel<KahinaTreeView>
 {
 	private static final long serialVersionUID = 6701252380309408342L;
 	
-	BufferedImage image;
+	protected BufferedImage image;
     
     public KahinaTreeViewPanel(KahinaInstance<?, ?, ?, ?> kahina)
     {       

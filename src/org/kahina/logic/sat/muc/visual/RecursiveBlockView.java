@@ -11,17 +11,24 @@ import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.tree.KahinaTreeView;
+import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.data.RecursiveBlockHandler;
 
 public class RecursiveBlockView extends KahinaTreeView
 {
     RecursiveBlockHandler blockHandler;
+    MUCInstance kahina;
     
-    public RecursiveBlockView(KahinaInstance<?, ?, ?, ?> kahina)
+    public RecursiveBlockView(MUCInstance kahina)
     {
         super(kahina);
-        // TODO Auto-generated constructor stub
+        this.kahina = kahina;
+    }
+    
+    public RecursiveBlockHandler getBlockHandler()
+    {
+        return blockHandler;
     }
 
     @Override
