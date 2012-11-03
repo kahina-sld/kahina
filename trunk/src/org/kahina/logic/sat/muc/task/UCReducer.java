@@ -3,6 +3,7 @@ package org.kahina.logic.sat.muc.task;
 import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.kahina.core.data.dag.ColoredPath;
 import org.kahina.core.io.color.ColorUtil;
@@ -89,7 +90,7 @@ public class UCReducer extends KahinaTaskManager
                 else
                 {
                     //we learn that the current selector variables cannot be 1 together
-                    List<Integer> metaClause = new LinkedList<Integer>();
+                    TreeSet<Integer> metaClause = new TreeSet<Integer>();
                     int numClauses = state.getStatistics().numClausesOrGroups;
                     for (int i = 1; i <= numClauses; i++)
                     {

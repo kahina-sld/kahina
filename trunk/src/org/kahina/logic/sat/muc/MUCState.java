@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeSet;
 
 import org.kahina.core.KahinaState;
 import org.kahina.core.control.KahinaController;
@@ -146,12 +147,12 @@ public class MUCState extends KahinaState
         return recursiveBlocks;
     }
     
-    public List<List<Integer>> getBlocksForUC(int ucID)
+    public List<TreeSet<Integer>> getBlocksForUC(int ucID)
     {
-        List<List<Integer>> blocks = new LinkedList<List<Integer>>();
+        List<TreeSet<Integer>> blocks = new LinkedList<TreeSet<Integer>>();
         MUCStep ucStep = retrieve(MUCStep.class, ucID);
         //go through blocks and see whether they are contained in the UC
-        for (List<Integer> block : metaInstance.getBlocks())
+        for (TreeSet<Integer> block : metaInstance.getBlocks())
         {
             boolean blockContained = true;
             //in the block definitions, literals are negative
@@ -366,7 +367,7 @@ public class MUCState extends KahinaState
                else
                {
                    //we learn that the current selector variables cannot be 1 together
-                   List<Integer> metaClause = new LinkedList<Integer>();
+                   TreeSet<Integer> metaClause = new TreeSet<Integer>();
                    int numClauses = getStatistics().numClausesOrGroups;
                    for (int i = 1; i <= numClauses; i++)
                    {
@@ -387,7 +388,7 @@ public class MUCState extends KahinaState
         }
     }
     
-    public synchronized void learnMetaClause(List<Integer> metaClause)
+    public synchronized void learnMetaClause(TreeSet<Integer> metaClause)
     {
         long time = System.currentTimeMillis();
         metaInstance.learnNewClause(metaClause);
