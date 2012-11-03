@@ -227,7 +227,12 @@ public class CnfSatInstance extends KahinaSatInstance
     
     private List<Integer> getOccurrences(int literal)
     {
-        return occurrenceMap.get(literal);
+        List<Integer> occurrences = occurrenceMap.get(literal);
+        if (occurrences == null)
+        {
+            occurrences = new LinkedList<Integer>();
+        }
+        return occurrences;
     }
     
     public KahinaGraph generateClaByVarGraph()
