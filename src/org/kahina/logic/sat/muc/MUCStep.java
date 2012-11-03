@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.kahina.core.KahinaStep;
 
@@ -96,7 +97,7 @@ public class MUCStep extends KahinaStep
      *         3 if no element of the block was contained in UC (-> grey), 
      *         0 otherwise (-> block, selectable)
      */
-    public int relationToBlock(List<Integer> block)
+    public int relationToBlock(TreeSet<Integer> block)
     {
         int numRed = 0;
         int numGreen = 0;

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
@@ -22,8 +23,8 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     //main parameter, defines minimum block size
     static final int MIN_BLOCK_SIZE = 3;
     
-    //blocks are coded as list of integers for now, indexed by IDs
-    Map<Integer,List<Integer>> blockList;
+    //blocks are coded as tree sets of integers for now, indexed by IDs
+    Map<Integer,TreeSet<Integer>> blockList;
     
     //map from block IDs into clauses which use that block
     Map<Integer,List<List<Integer>>> blockClauses;
@@ -43,20 +44,20 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     public RecursiveBlockHandler(CnfSatInstance satInstance)
     {
         super(satInstance);
-        blockList = new TreeMap<Integer,List<Integer>>();
+        blockList = new TreeMap<Integer,TreeSet<Integer>>();
         blockClauses = new TreeMap<Integer,List<List<Integer>>>();
         blockDefClauses = new TreeMap<Integer,List<Integer>>();
         blockDefVar = new TreeMap<Integer,Integer>();
         blockVarBlockID = new TreeMap<Integer,Integer>();
         blockIndex = new TreeMap<Integer,List<Integer>>();
         
-        List<Integer> topBlockList = new LinkedList<Integer>();
+        TreeSet<Integer> topBlockSet = new TreeSet<Integer>();
         //the top block should include all the meta variables in the beginning
         for (int i = 1; i <= satInstance.getNumVars(); i++)
         {
-            topBlockList.add(-i);
+            topBlockSet.add(-i);
         }
-        topBlock = defineNewBlock(topBlockList);
+        topBlock = defineNewBlock(topBlockSet);
     }
 
     //TODO: decide whether this should be cashed (explicit tree structure?)
@@ -76,16 +77,16 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         //System.err.println("  subblocks = " + subblocks);
         return subblocks;
     }
-
+    
     @Override
-    public List<Integer> buildRepresentation(List<Integer> clause)
+    public List<Integer> buildRepresentation(TreeSet<Integer> clause)
     {
         List<Integer> representation = new LinkedList<Integer>();
         representation.addAll(buildRepresentation(clause, topBlock));
         return representation;
     }
     
-    private List<Integer> buildRepresentation(List<Integer> block, int blockID)
+    private List<Integer> buildRepresentation(TreeSet<Integer> block, int blockID)
     {
         List<Integer> representation = new LinkedList<Integer>();
         Overlap overlap = new Overlap(block, blockList.get(blockID));
@@ -153,7 +154,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     
     //splits the block with blockID, returning the blocks' new representation
     //the two arguments need to define a partition of the block with blockID
-    private List<Integer> splitBlock(int blockID, List<Integer> block1, List<Integer> block2)
+    private List<Integer> splitBlock(int blockID, TreeSet<Integer> block1, TreeSet<Integer> block2)
     {
        List<Integer> newRepresentation = new LinkedList<Integer>();
        if (block2.size() > 0 && block1.size() > 0)
@@ -194,47 +195,15 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
        }
        return newRepresentation;
     }
-    
-    private class Overlap
-    {
-        public List<Integer> aIntersectB;
-        public List<Integer> aMinusB;
-        public List<Integer> bMinusA;
-        
-        public Overlap(List<Integer> a, List<Integer> b)
-        {
-            aIntersectB = new LinkedList<Integer>();
-            aMinusB = new LinkedList<Integer>();
-            bMinusA = new LinkedList<Integer>();
-            for (Integer aEl : a)
-            {
-                if (b.contains(aEl))
-                {
-                    aIntersectB.add(aEl);
-                }
-                else
-                {
-                    aMinusB.add(aEl);
-                }
-            }
-            for (Integer bEl : b)
-            {
-                if (!a.contains(bEl))
-                {
-                    bMinusA.add(bEl);
-                }
-            }
-        }
-    }
 
     @Override
-    public Collection<List<Integer>> getBlocks()
+    public Collection<TreeSet<Integer>> getBlocks()
     {
         //TODO: this should actually return a tree of blocks!
         return blockList.values();
     }
     
-    public int defineNewBlock(List<Integer> block)
+    public int defineNewBlock(TreeSet<Integer> block)
     {
         int blockID = satInstance.getNumClauses();
         blockList.put(blockID, block);
@@ -282,7 +251,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     }
     
     @Override
-    public List<Integer> getBlock(int blockID)
+    public TreeSet<Integer> getBlock(int blockID)
     {
         return blockList.get(blockID);
     }

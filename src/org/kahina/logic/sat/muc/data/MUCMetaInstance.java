@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
@@ -28,12 +29,12 @@ public class MUCMetaInstance extends CnfSatInstance
         this.blockHandler = blockHandler;
     }
     
-    public void learnNewClause(List<Integer> clause)
+    public void learnNewClause(TreeSet<Integer> clause)
     {
         clauses.add(blockHandler.buildRepresentation(clause));
     }
     
-    public Collection<List<Integer>> getBlocks()
+    public Collection<TreeSet<Integer>> getBlocks()
     {
         return blockHandler.getBlocks();
     }

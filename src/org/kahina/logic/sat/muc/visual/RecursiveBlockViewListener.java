@@ -3,6 +3,7 @@ package org.kahina.logic.sat.muc.visual;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.kahina.core.visual.tree.KahinaTreeViewListener;
 import org.kahina.logic.sat.muc.MUCInstance;
@@ -32,7 +33,7 @@ public class RecursiveBlockViewListener extends KahinaTreeViewListener
         MUCStep uc = kahina.getState().getSelectedStep();
         if (clickedNode != -1 && uc != null)
         {
-            List<Integer> block = view.view.getBlockHandler().getBlock(clickedNode);
+            TreeSet<Integer> block = view.view.getBlockHandler().getBlock(clickedNode);
             List<Integer> clauseIDs = new LinkedList<Integer>();
             for (int literal : block)
             {
@@ -40,6 +41,7 @@ public class RecursiveBlockViewListener extends KahinaTreeViewListener
             }
             if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < DBL_CLICK_INTERVAL)
             {
+                //view.view.setMarkedNode(clickedNode);
                 kahina.dispatchEvent(new ClauseSelectionEvent(clauseIDs));
             }
             else

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
@@ -16,7 +17,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     static final int MIN_BLOCK_SIZE = 3;
     
     //blocks are coded as list of integers for now, indexed by IDs
-    Map<Integer,List<Integer>> blockList;
+    Map<Integer,TreeSet<Integer>> blockList;
     
     //map from block IDs into clauses which use that block
     Map<Integer,List<List<Integer>>> blockClauses;
@@ -35,7 +36,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     public PartitionBlockHandler(CnfSatInstance satInstance)
     {
         super(satInstance);
-        blockList = new TreeMap<Integer,List<Integer>>();
+        blockList = new TreeMap<Integer,TreeSet<Integer>>();
         blockClauses = new TreeMap<Integer,List<List<Integer>>>();
         blockDefClauses = new TreeMap<Integer,List<Integer>>();
         blockDefVar = new TreeMap<Integer,Integer>();
@@ -43,7 +44,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         blockIndex = new TreeMap<Integer,Integer>();
     }
     
-    public List<Integer> buildRepresentation(List<Integer> clause)
+    public List<Integer> buildRepresentation(TreeSet<Integer> clause)
     {
         if (VERBOSE) System.err.println("buildRepresentation(" + clause + ")");
         List<Integer> blockClause = new LinkedList<Integer>();
@@ -92,7 +93,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     
     //splits the block with blockID, returning the blocks' new representation
     //the two arguments need to define a partition of the block with blockID
-    private List<Integer> splitBlock(int blockID, List<Integer> block1, List<Integer> block2)
+    private List<Integer> splitBlock(int blockID, TreeSet<Integer> block1, TreeSet<Integer> block2)
     {
        List<Integer> newRepresentation = new LinkedList<Integer>();
        if (block2.size() > 0)
@@ -171,7 +172,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         blockVarBlockID.remove(blockVar);
     }
     
-    public int defineNewBlock(List<Integer> block)
+    public int defineNewBlock(TreeSet<Integer> block)
     {
         int blockID = satInstance.getNumClauses();
         blockList.put(blockID, block);
@@ -226,7 +227,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         clausesForBlock.add(clause);
     }
     
-    public int findHighestOverlapBlock(List<Integer> block)
+    public int findHighestOverlapBlock(TreeSet<Integer> block)
     {
         //use reverse index to count overlaps
         Map<Integer,Integer> overlapCount = new TreeMap<Integer,Integer>();
@@ -271,47 +272,15 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         counters.put(index, count);
     }
     
-    private class Overlap
-    {
-        public List<Integer> aIntersectB;
-        public List<Integer> aMinusB;
-        public List<Integer> bMinusA;
-        
-        public Overlap(List<Integer> a, List<Integer> b)
-        {
-            aIntersectB = new LinkedList<Integer>();
-            aMinusB = new LinkedList<Integer>();
-            bMinusA = new LinkedList<Integer>();
-            for (Integer aEl : a)
-            {
-                if (b.contains(aEl))
-                {
-                    aIntersectB.add(aEl);
-                }
-                else
-                {
-                    aMinusB.add(aEl);
-                }
-            }
-            for (Integer bEl : b)
-            {
-                if (!a.contains(bEl))
-                {
-                    bMinusA.add(bEl);
-                }
-            }
-        }
-    }
-    
-    public Collection<List<Integer>> getBlocks()
+    public Collection<TreeSet<Integer>> getBlocks()
     {
         return blockList.values();
     }
 
     //TODO: develop a more efficient way of maintaining and retrieving this list
-    public List<List<Integer>> retrieveBlocks()
+    public List<TreeSet<Integer>> retrieveBlocks()
     {
-        List<List<Integer>> blocks = new LinkedList<List<Integer>>();
+        List<TreeSet<Integer>> blocks = new LinkedList<TreeSet<Integer>>();
         //the keys are enumerated in ascending order -> canonical order!
         for (int blockID : blockList.keySet())
         {
@@ -321,7 +290,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     }
 
     @Override
-    public List<Integer> getBlock(int blockID)
+    public TreeSet<Integer> getBlock(int blockID)
     {
         return blockList.get(blockID);
     }

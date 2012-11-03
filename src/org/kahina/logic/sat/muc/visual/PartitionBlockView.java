@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -132,7 +133,7 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
         else
         {
             currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
-            for (List<Integer> block : model.retrieveBlocks())
+            for (TreeSet<Integer> block : model.retrieveBlocks())
             {
                 StringBuilder s = new StringBuilder();
                 s.append("[");

@@ -131,6 +131,7 @@ public class MUCGUI extends KahinaGUI
         {
             blockListView = new PartitionBlockView(kahina);
             kahina.registerInstanceListener(KahinaEventTypes.SELECTION, blockListView);
+            kahina.registerInstanceListener(KahinaEventTypes.UPDATE, blockListView);
             views.add(blockListView);
             livingViews.add(blockListView);
             varNameToView.put("currentUCBlocks", blockListView);
@@ -144,6 +145,7 @@ public class MUCGUI extends KahinaGUI
         {
             blockTreeView = new RecursiveBlockView(kahina);
             kahina.registerInstanceListener(KahinaEventTypes.SELECTION, blockTreeView);
+            kahina.registerInstanceListener(KahinaEventTypes.UPDATE, blockTreeView);
             views.add(blockTreeView);
             livingViews.add(blockTreeView);
             varNameToView.put("currentUCBlocks", blockTreeView);

@@ -2,6 +2,7 @@ package org.kahina.logic.sat.muc.data;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.TreeSet;
 
 import org.kahina.core.data.KahinaObject;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
@@ -15,9 +16,9 @@ public abstract class LiteralBlockHandler extends KahinaObject
         this.satInstance = satInstance;
     }
     
-    public abstract List<Integer> buildRepresentation(List<Integer> clause);
+    public abstract List<Integer> buildRepresentation(TreeSet<Integer> clause);
     
-    public abstract Collection<List<Integer>> getBlocks();
+    public abstract Collection<TreeSet<Integer>> getBlocks();
     
-    public abstract List<Integer> getBlock(int blockID);
+    public abstract TreeSet<Integer> getBlock(int blockID);
 }

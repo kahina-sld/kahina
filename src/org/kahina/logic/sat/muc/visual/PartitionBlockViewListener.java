@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.swing.JList;
 
@@ -39,7 +40,7 @@ public class PartitionBlockViewListener extends MouseAdapter implements ActionLi
             MUCStep uc = kahina.getState().getSelectedStep();
             if (uc != null)
             {
-                List<Integer> block = view.view.getModel().retrieveBlocks().get(listIndex);
+                TreeSet<Integer> block = view.view.getModel().retrieveBlocks().get(listIndex);
                 List<Integer> clauseIDs = new LinkedList<Integer>();
                 for (int literal : block)
                 {

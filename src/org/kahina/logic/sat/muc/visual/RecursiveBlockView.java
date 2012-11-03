@@ -2,6 +2,7 @@ package org.kahina.logic.sat.muc.visual;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -80,7 +81,7 @@ public class RecursiveBlockView extends KahinaTreeView
             while (nodeAgenda.size() > 0)
             {
                 int blockID = nodeAgenda.remove(0);
-                List<Integer> block = blockHandler.getBlock(blockID);
+                TreeSet<Integer> block = blockHandler.getBlock(blockID);
                 model.setNodeStatus(blockID, currentStep.relationToBlock(block));
                 nodeAgenda.addAll(blockHandler.getSubblocks(blockID));
             }
