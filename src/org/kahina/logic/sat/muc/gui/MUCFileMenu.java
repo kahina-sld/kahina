@@ -10,7 +10,7 @@ public class MUCFileMenu extends JMenu
     public MUCFileMenu(MUCInstance kahina)
     {
         super("Instance");
-        add(new JMenuItem(kahina.LOAD_FILE_ACTION));
+        //add(new JMenuItem(kahina.LOAD_FILE_ACTION));
         add(new JMenuItem(kahina.LOAD_PATH_ACTION));
     }
 }

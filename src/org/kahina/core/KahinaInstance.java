@@ -410,9 +410,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                     project.deregister();
                 }
                 newProject(e.getFile(), e.getName());
-                project.register();
-                registerRecentProject(project);
-                gui.displayMainViews();
+                processNewProject();
                 break;
             }
             case SAVE_PROJECT:
@@ -430,19 +428,13 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                 try
                 {
                     project = loadProject(new FileInputStream(e.getFile()));
-                    project.register();
-                    registerRecentProject(project);
-                    gui.setPerspective(project.getPerspective());
-                    gui.displayMainViews();
-                    setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-                    dispatchInstanceEvent(new KahinaRedrawEvent());
+                    processNewProject();
                 }
                 catch (FileNotFoundException e1)
                 {
                     System.err.println("ERROR: Project file not found!");
                     e1.printStackTrace();
                 }
-
                 break;
             }
             case LOAD_RECENT_PROJECT:
@@ -453,12 +445,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                     project.deregister();
                 }
                 project = (P) recentProjects.get(e.getID()).copy();
-                project.register();
-                registerRecentProject(project);
-                gui.setPerspective(project.getPerspective());
-                gui.displayMainViews();
-                setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-                dispatchInstanceEvent(new KahinaRedrawEvent());
+                processNewProject();
                 break;
             }
             case LOAD_DEFAULT_PROJECT:
@@ -469,15 +456,20 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                     project.deregister();
                 }
                 project = (P) defaultProjects.get(e.getID()).copy();
-                project.register();
-                registerRecentProject(project);
-                gui.setPerspective(project.getPerspective());
-                gui.displayMainViews();
-                setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-                dispatchInstanceEvent(new KahinaRedrawEvent());
+                processNewProject();
                 break;
             }
         }
+    }
+    
+    protected void processNewProject()
+    {
+        project.register();
+        registerRecentProject(project);
+        gui.setPerspective(project.getPerspective());
+        gui.displayMainViews();
+        setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+        dispatchInstanceEvent(new KahinaRedrawEvent());
     }
     
     protected KahinaPerspective loadPerspective(InputStream stream)
@@ -495,7 +487,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     }
 
     // by default, the five most recent perspectives are kept in memory
-    private void registerRecentPerspective(KahinaPerspective psp)
+    protected void registerRecentPerspective(KahinaPerspective psp)
     {
         // move to the front, or add to the front
         recentPerspectives.remove(psp);
@@ -507,7 +499,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
     }
     
     // by default, the five most recent projects are kept in memory
-    private void registerRecentProject(P prj)
+    protected void registerRecentProject(P prj)
     {
         // move to the front, or add to the front
         recentProjects.remove(prj);

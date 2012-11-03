@@ -2,7 +2,10 @@ package org.kahina.logic.sat.muc;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -19,9 +22,11 @@ import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.data.project.KahinaProject;
+import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.core.io.util.XMLUtil;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
@@ -32,6 +37,9 @@ import org.kahina.logic.sat.muc.control.MUCControlEventCommands;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.gui.MUCGUI;
 import org.kahina.logic.sat.muc.io.MUCExtension;
+import org.kahina.lp.data.project.LogicProgrammingProject;
+import org.kahina.qtype.data.project.QTypeProject;
+import org.w3c.dom.Document;
 
 public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, KahinaProject>
 {
@@ -192,6 +200,34 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     protected MUCGUI createGUI()
     {
         return new MUCGUI(MUCStep.class, this);
+    }
+    
+    @Override
+    public String getApplicationName()
+    {
+        return "Kahina for QType";
+    }
+    
+    protected void processNewProject()
+    {
+        project.register();
+        registerRecentProject(project);
+        gui.setPerspective(project.getPerspective());
+        //gui.displayMainViews();
+        setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+        loadSATFile(project.getMainFile());
+        gui.displayMainViews();
+        generateFirstUC();
+        dispatchInstanceEvent(new KahinaRedrawEvent());
+    }
+        
+    public KahinaProject loadProject(InputStream stream)
+    {
+        Document dom;
+        KahinaProject project = createNewProject();
+        dom = XMLUtil.parseXMLStream(stream, false);
+        project = KahinaProject.importXML(dom.getDocumentElement(), project);
+        return project;
     }
 
     @Override
@@ -412,14 +448,6 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     @Override
     protected KahinaProject createNewProject()
     {
-        // TODO Auto-generated method stub
-        return new KahinaProject("default", "none");
-    }
-
-    @Override
-    public KahinaProject loadProject(InputStream stream)
-    {
-        // TODO Auto-generated method stub
         return new KahinaProject("default", "none");
     }
 
@@ -428,6 +456,22 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     {
         recentProjects = new LinkedList<KahinaProject>();
         defaultProjects = new LinkedList<KahinaProject>();
+        addDefaultProject("data/project/cnf-demo-project.xml");
+    }
+    
+    private void addDefaultProject(String resourcePath)
+    {
+        URL projectLocation = this.getClass().getResource(resourcePath);
+        try
+        {
+            InputStream projectInputStream = projectLocation.openStream();
+            defaultProjects.add(loadProject(projectInputStream));
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     @Override
