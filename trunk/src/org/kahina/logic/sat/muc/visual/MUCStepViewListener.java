@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 
 import org.kahina.core.visual.graph.KahinaGraphViewContextMenu;
+import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
@@ -164,9 +165,13 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 }
             }
         }
-        else if (s.equals("findAutarkies"))
+        else if (s.equals("leanKernel"))
         {
-            //TODO
+            MUCStep uc = kahina.getState().getSelectedStep();
+            CnfSatInstance leanKernelUC = kahina.getSatInstance().selectClauses(uc.getUc()).copy();
+            leanKernelUC.reduceToLeanKernel();
+            //TODO: do not only display this, but make it a real reduction step
+            view.view.display(leanKernelUC);
         }
     }
 }

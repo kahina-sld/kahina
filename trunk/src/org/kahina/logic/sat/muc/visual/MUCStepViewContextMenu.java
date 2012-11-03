@@ -65,9 +65,12 @@ public class MUCStepViewContextMenu extends JPopupMenu
         
         addSeparator();
         
-        JMenuItem findAutarkiesItem = new JMenuItem("Find autarkies");
-        findAutarkiesItem.setEnabled(false);
-        findAutarkiesItem.setActionCommand("findAutarkies");
+        JMenuItem findAutarkiesItem = new JMenuItem("Reduce to Lean Kernel");
+        if (view.view.currentStep == null)
+        {
+            findAutarkiesItem.setEnabled(false);
+        }
+        findAutarkiesItem.setActionCommand("leanKernel");
         findAutarkiesItem.addActionListener(l);
         add(findAutarkiesItem);
     }
