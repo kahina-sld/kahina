@@ -392,6 +392,7 @@ private static final long serialVersionUID = 6701252380309408342L;
     public void scrollToNode(int nodeID)
     {
         if (nodeID == -1) return;
+        if (this.getParent() == null) return;
         Container parent = this.getParent().getParent();
         if (parent instanceof JScrollPane)
         {
