@@ -29,6 +29,11 @@ public class MUCMetaInstance extends CnfSatInstance
         this.blockHandler = blockHandler;
     }
     
+    public void learnNewBlock(TreeSet<Integer> block)
+    {
+        blockHandler.buildRepresentation(block);
+    }
+    
     public void learnNewClause(TreeSet<Integer> clause)
     {
         clauses.add(blockHandler.buildRepresentation(clause));
