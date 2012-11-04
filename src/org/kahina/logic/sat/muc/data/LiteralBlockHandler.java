@@ -18,6 +18,8 @@ public abstract class LiteralBlockHandler extends KahinaObject
     
     public abstract List<Integer> buildRepresentation(TreeSet<Integer> clause);
     
+    public abstract void ensureRepresentability(TreeSet<Integer> block);
+    
     public abstract Collection<TreeSet<Integer>> getBlocks();
     
     public abstract TreeSet<Integer> getBlock(int blockID);

@@ -14,7 +14,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     static final boolean VERBOSE = false;
     
     //main parameter, defines minimum block size
-    static final int MIN_BLOCK_SIZE = 3;
+    static final int MIN_BLOCK_SIZE = 1;
     
     //blocks are coded as list of integers for now, indexed by IDs
     Map<Integer,TreeSet<Integer>> blockList;
@@ -67,28 +67,38 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         else
         {
             Overlap overlap = new Overlap(clause, blockList.get(overlapIndex));
-            List<Integer> bReplacement = splitBlock(overlapIndex, overlap.aIntersectB, overlap.bMinusA);
+            blockClause.addAll(buildRepresentation(overlap.aIntersectB));
+            blockClause.addAll(buildRepresentation(overlap.aMinusB));
+        }
+        if (VERBOSE) System.err.println("= " + blockClause + "");
+        return blockClause;
+    }
+    
+    public void ensureRepresentability(TreeSet<Integer> block)
+    {
+        int overlapIndex = findHighestOverlapBlock(block);
+        if (VERBOSE) System.err.println("  maxOverlapIndex: " + overlapIndex);
+        if (VERBOSE) System.err.println("  maxOverlapBlock: " + blockList.get(overlapIndex));
+        if (overlapIndex == -1)
+        {
+            if (block.size() >= MIN_BLOCK_SIZE)
+            {
+                defineNewBlock(block);
+            }
+        }
+        else
+        {
+            Overlap overlap = new Overlap(block, blockList.get(overlapIndex));     
             if (overlap.aIntersectB.size() >= MIN_BLOCK_SIZE)
             {
-                int intersectBlockVar = bReplacement.get(0);
-                blockClause.add(intersectBlockVar);
-            }
-            else
-            {
-                blockClause.addAll(overlap.aIntersectB);
+                splitBlock(overlapIndex, overlap.aIntersectB, overlap.bMinusA);
             }
             if (overlap.aMinusB.size() >= MIN_BLOCK_SIZE)
             {
                 //recursive case for the rest
-                blockClause.addAll(buildRepresentation(overlap.aMinusB));
+                ensureRepresentability(overlap.aMinusB);
             }     
-            else
-            {
-                blockClause.addAll(overlap.aMinusB);
-            }
         }
-        if (VERBOSE) System.err.println("= " + blockClause + "");
-        return blockClause;
     }
     
     //splits the block with blockID, returning the blocks' new representation

@@ -139,7 +139,7 @@ public class MUCGUI extends KahinaGUI
             blockListView.setStatusColorEncoding(0, Color.BLACK);
             blockListView.setStatusColorEncoding(1, NICE_RED);
             blockListView.setStatusColorEncoding(2, NICE_GREEN);
-            blockListView.setStatusColorEncoding(3, Color.GRAY);
+            blockListView.setStatusColorEncoding(3, Color.LIGHT_GRAY);
         }
         else if (kahina.getMetaLearningMode() == MetaLearningMode.RECURSIVE_BLOCKS)
         {
@@ -153,7 +153,7 @@ public class MUCGUI extends KahinaGUI
             blockTreeView.setStatusColorEncoding(0, Color.WHITE);
             blockTreeView.setStatusColorEncoding(1, NICE_RED);
             blockTreeView.setStatusColorEncoding(2, NICE_GREEN);
-            blockTreeView.setStatusColorEncoding(3, Color.GRAY);
+            blockTreeView.setStatusColorEncoding(3, Color.LIGHT_GRAY);
             
             blockTreeView.getConfig().setHorizontalDistance(2);
             blockTreeView.getConfig().setVerticalDistance(8);

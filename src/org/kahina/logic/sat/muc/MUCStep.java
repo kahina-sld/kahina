@@ -130,7 +130,7 @@ public class MUCStep extends KahinaStep
         {
             return 3;
         }
-        if (numRed > 0)
+        if (numRed == block.size())
         {
             return 1;
         }
