@@ -90,10 +90,10 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     {
         List<Integer> representation = new LinkedList<Integer>();
         Overlap overlap = new Overlap(block, blockList.get(blockID));
-        System.err.println("Overlap(block.size() = " + block.size() + ", blockID = " + blockID + "):" );
+        /*System.err.println("Overlap(block.size() = " + block.size() + ", blockID = " + blockID + "):" );
         System.err.println("  aIntersectB.size() = " + overlap.aIntersectB.size());
         System.err.println("  aMinusB.size()     = " + overlap.aMinusB.size());
-        System.err.println("  bMinusA.size()     = " + overlap.bMinusA.size());
+        System.err.println("  bMinusA.size()     = " + overlap.bMinusA.size());*/
         //IDEA: only express those elements which are inside the reference block
         //just ignore overlap.aMinusB.size() here, this is handled by other calls
         if (overlap.bMinusA.size() > 0)
@@ -105,20 +105,20 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
                 if (overlap.aIntersectB.size() >= MIN_BLOCK_SIZE)
                 {
                     List<Integer> bReplacement = splitBlock(blockID, overlap.aIntersectB, overlap.bMinusA);
-                    System.err.println("  No subblocks! Splitting " + blockID + " into " + bReplacement + "!");
+                    //System.err.println("  No subblocks! Splitting " + blockID + " into " + bReplacement + "!");
                     int intersectBlockVar = bReplacement.get(0);
                     representation.add(intersectBlockVar);
                 }
                 else
                 {
-                    System.err.println("  No subblocks! Adding small intersection " + overlap.aIntersectB);
+                    //System.err.println("  No subblocks! Adding small intersection " + overlap.aIntersectB);
                     representation.addAll(overlap.aIntersectB);
                 }
             }
             else
             {
                 //recursive case: the representation makes use of subblocks  
-                System.err.println("  Subblocks: " + subblocks);
+                //System.err.println("  Subblocks: " + subblocks);
                 for (int subblockID : subblocks)
                 {
                     representation.addAll(buildRepresentation(block,subblockID));
@@ -137,7 +137,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
                 representation.add(blockDefVar.get(blockID));
             }
         }
-        System.err.println("Derived Representation: " + representation);
+        //System.err.println("Derived Representation: " + representation);
         return representation;
     }
     

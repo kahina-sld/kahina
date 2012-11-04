@@ -388,6 +388,13 @@ public class MUCState extends KahinaState
         }
     }
     
+    public synchronized void learnMetaBlock(TreeSet<Integer> metaBlock)
+    {
+        long time = System.currentTimeMillis();
+        metaInstance.learnNewBlock(metaBlock);
+        System.err.println("  " + (System.currentTimeMillis() - time) + " ms for learning meta block.");
+    }
+    
     public synchronized void learnMetaClause(TreeSet<Integer> metaClause)
     {
         long time = System.currentTimeMillis();
