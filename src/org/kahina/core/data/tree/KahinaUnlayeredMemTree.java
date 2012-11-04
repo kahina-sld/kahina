@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -51,14 +53,23 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 	{
 		super(decider);
 
-		parents = new HashMap<Integer, Integer>();
-		children = new HashMap<Integer, List<Integer>>();
-		nodeCaptions = new HashMap<Integer, String>();
-		edgeLabels = new HashMap<Integer, String>();
-		status = new HashMap<Integer, Integer>();
-		collapsed = new HashSet<Integer>();
-		layers = new HashMap<Integer, Integer>();
+		parents = new TreeMap<Integer, Integer>();
+		children = new TreeMap<Integer, List<Integer>>();
+		nodeCaptions = new TreeMap<Integer, String>();
+		edgeLabels = new TreeMap<Integer, String>();
+		status = new TreeMap<Integer, Integer>();
+		collapsed = new TreeSet<Integer>();
+		layers = new TreeMap<Integer, Integer>();
 		childAddListeners = new ArrayList<KahinaTreeChildAddListener>();
+	}
+	
+	/**
+	 * Gets all the node IDs in ascending order, useful for bottom-up traversal.
+	 * @return all the node IDs in a tree set, in descending order
+	 */
+	public Set<Integer> getAllNodeIDs()
+	{
+	    return nodeCaptions.keySet();
 	}
 
 	@Override

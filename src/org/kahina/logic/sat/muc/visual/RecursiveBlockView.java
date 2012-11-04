@@ -76,14 +76,51 @@ public class RecursiveBlockView extends KahinaTreeView
         if (stepID != -1)
         {
             MUCStep currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
+            //compute the states bottom-up, relations only need to be computed for leaves
             List<Integer> nodeAgenda = new LinkedList<Integer>();
-            nodeAgenda.add(model.getRootID());
+            //this relies on the following two facts:
+            //    model.getAllNodeIDs() returns all node IDs in ascending order
+            //    during block tree construction, child blocks have higher IDs than their parents
+            nodeAgenda.addAll(model.getAllNodeIDs());
+            System.err.println("nodeAgenda: " + nodeAgenda);
             while (nodeAgenda.size() > 0)
             {
-                int blockID = nodeAgenda.remove(0);
-                TreeSet<Integer> block = blockHandler.getBlock(blockID);
-                model.setNodeStatus(blockID, currentStep.relationToBlock(block));
-                nodeAgenda.addAll(blockHandler.getSubblocks(blockID));
+                int blockID = nodeAgenda.remove(nodeAgenda.size() - 1);
+                List<Integer> children = model.getChildren(blockID);
+                if (children.size() == 0)
+                {
+                    TreeSet<Integer> block = blockHandler.getBlock(blockID);
+                    model.setNodeStatus(blockID, currentStep.relationToBlock(block));
+                }
+                else
+                {
+                    int derivedStatus = 0;
+                    int[] numStatusChildren = new int[4];
+                    for (int childBlockID : children)
+                    {
+                        numStatusChildren[model.getNodeStatus(childBlockID)]++;
+                    }
+                    if (numStatusChildren[3] > 0)
+                    {
+                        //one subblock gray -> parent block gray
+                        derivedStatus = 3;
+                    }
+                    else if (numStatusChildren[1] > 0)
+                    {
+                        //one subblock red -> parent block red
+                        derivedStatus = 1;
+                    }
+                    else if (numStatusChildren[2] == children.size())
+                    {
+                        //all subblocks green -> parent block green
+                        derivedStatus = 2;
+                    }
+                    else
+                    {
+                        //otherwise: node stays white (we don't know anything)
+                    }
+                    model.setNodeStatus(blockID, derivedStatus);
+                }
             }
             //nodeBorderColor = new HashMap<Integer, Color>();
             super.recalculate();

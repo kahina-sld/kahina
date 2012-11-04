@@ -41,13 +41,13 @@ public class RecursiveBlockViewListener extends KahinaTreeViewListener
             }
             if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < DBL_CLICK_INTERVAL)
             {
-                //view.view.setMarkedNode(clickedNode);
-                kahina.dispatchEvent(new ClauseSelectionEvent(clauseIDs));
+                reduce(clauseIDs);
+                lastMouseEvent = e;
             }
             else
             {
-                reduce(clauseIDs);
-                lastMouseEvent = e;
+                //view.view.setMarkedNode(clickedNode);
+                kahina.dispatchEvent(new ClauseSelectionEvent(clauseIDs));
             }
         }
     }

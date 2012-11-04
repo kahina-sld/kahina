@@ -9,6 +9,7 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.task.KahinaTask;
 import org.kahina.core.task.KahinaTaskManager;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
+import org.kahina.logic.sat.muc.data.Overlap;
 import org.kahina.logic.sat.muc.task.UCReductionTask;
 
 public class MUCReductionManager extends KahinaTaskManager
@@ -64,7 +65,8 @@ public class MUCReductionManager extends KahinaTaskManager
             else
             {
                 int stepID = state.registerMUC(result, ucTask.ucID, ucTask.candidates);
-                for (int candidate : ucTask.candidates)
+                Overlap overlap = new Overlap(ucTask.uc.getUc(),result.getUc());
+                for (int candidate : overlap.aMinusB)
                 {
                     ucTask.uc.setRemovalLink(candidate, stepID);
                 }
