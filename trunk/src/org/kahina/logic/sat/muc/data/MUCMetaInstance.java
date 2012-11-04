@@ -31,7 +31,7 @@ public class MUCMetaInstance extends CnfSatInstance
     
     public void learnNewBlock(TreeSet<Integer> block)
     {
-        blockHandler.buildRepresentation(block);
+        blockHandler.ensureRepresentability(block);
     }
     
     public void learnNewClause(TreeSet<Integer> clause)

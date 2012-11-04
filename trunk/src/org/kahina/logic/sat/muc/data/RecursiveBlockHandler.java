@@ -21,7 +21,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     static final boolean VERBOSE = false;
     
     //main parameter, defines minimum block size
-    static final int MIN_BLOCK_SIZE = 2;
+    static final int MIN_BLOCK_SIZE = 1;
     
     //blocks are coded as tree sets of integers for now, indexed by IDs
     Map<Integer,TreeSet<Integer>> blockList;
@@ -101,19 +101,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
             List<Integer> subblocks = getSubblocks(blockID);
             if (subblocks.size() == 0)
             {
-                //base case: leaf in block tree; split it into bMinusA and aIntersectB
-                if (overlap.aIntersectB.size() >= MIN_BLOCK_SIZE)
-                {
-                    List<Integer> bReplacement = splitBlock(blockID, overlap.aIntersectB, overlap.bMinusA);
-                    //System.err.println("  No subblocks! Splitting " + blockID + " into " + bReplacement + "!");
-                    int intersectBlockVar = bReplacement.get(0);
-                    representation.add(intersectBlockVar);
-                }
-                else
-                {
-                    //System.err.println("  No subblocks! Adding small intersection " + overlap.aIntersectB);
-                    representation.addAll(overlap.aIntersectB);
-                }
+                representation.addAll(overlap.aIntersectB);
             }
             else
             {
@@ -160,6 +148,42 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         //recursion: we also need to remove things from the relevant subblocks
         
     }*/
+    
+    public void ensureRepresentability(TreeSet<Integer> block)
+    {
+        ensureRepresentability(block, topBlock);
+    }
+    
+    private void ensureRepresentability(TreeSet<Integer> block, int blockID)
+    {
+        Overlap overlap = new Overlap(block, blockList.get(blockID));
+        /*System.err.println("Overlap(block.size() = " + block.size() + ", blockID = " + blockID + "):" );
+        System.err.println("  aIntersectB.size() = " + overlap.aIntersectB.size());
+        System.err.println("  aMinusB.size()     = " + overlap.aMinusB.size());
+        System.err.println("  bMinusA.size()     = " + overlap.bMinusA.size());*/
+        //IDEA: only express those elements which are inside the reference block
+        //just ignore overlap.aMinusB.size() here, this is handled by other calls
+        if (overlap.bMinusA.size() > 0)
+        {
+            List<Integer> subblocks = getSubblocks(blockID);
+            if (subblocks.size() == 0)
+            {
+                if (overlap.aIntersectB.size() >= MIN_BLOCK_SIZE)
+                {
+                    splitBlock(blockID, overlap.aIntersectB, overlap.bMinusA);
+                }
+            }
+            else
+            {
+                //recursive case: the representation makes use of subblocks  
+                //System.err.println("  Subblocks: " + subblocks);
+                for (int subblockID : subblocks)
+                {
+                    ensureRepresentability(block,subblockID);
+                }
+            }
+        }
+    }
     
     //splits the block with blockID, returning the blocks' new representation
     //the two arguments need to define a partition of the block with blockID

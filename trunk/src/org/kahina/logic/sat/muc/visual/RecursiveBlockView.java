@@ -100,14 +100,14 @@ public class RecursiveBlockView extends KahinaTreeView
                     {
                         numStatusChildren[model.getNodeStatus(childBlockID)]++;
                     }
-                    if (numStatusChildren[3] > 0)
+                    if (numStatusChildren[3] == children.size())
                     {
-                        //one subblock gray -> parent block gray
+                        //all subblocks gray -> parent block gray
                         derivedStatus = 3;
                     }
-                    else if (numStatusChildren[1] > 0)
+                    else if (numStatusChildren[1] == children.size())
                     {
-                        //one subblock red -> parent block red
+                        //all subblocks red -> parent block red
                         derivedStatus = 1;
                     }
                     else if (numStatusChildren[2] == children.size())
