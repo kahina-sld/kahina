@@ -13,6 +13,7 @@ import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
+import org.kahina.logic.sat.muc.data.Overlap;
 import org.kahina.logic.sat.muc.heuristics.UCReductionHeuristics;
 import org.kahina.logic.sat.muc.visual.UCReducerPanel;
 
@@ -115,7 +116,8 @@ public class UCReducer extends KahinaTaskManager
                 System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clauses " + ucTask.candidates + " at step " + ucID + " was successful!");
                 int stepID = state.registerMUC(result, ucID, ucTask.candidates);
                 getPath().append(stepID);
-                for (int candidate : ucTask.candidates)
+                Overlap overlap = new Overlap(uc.getUc(),result.getUc());
+                for (int candidate : overlap.aMinusB)
                 {
                     uc.setRemovalLink(candidate, stepID);
                 }

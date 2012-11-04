@@ -2,6 +2,7 @@ package org.kahina.core.data.tree;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.kahina.core.data.KahinaObject;
 
@@ -112,6 +113,8 @@ public abstract class KahinaTree extends KahinaObject
     public abstract int getRootID(int layer);
 
 	public abstract int getRootID(int layerID, int referenceNode);
+	
+	public abstract Set<Integer> getAllNodeIDs();
 
     public abstract int getSize();
 
