@@ -256,6 +256,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         }
         blockDefClauses.put(blockID, blockDefClause);
         satInstance.getClauses().add(blockDefClause);
+        satInstance.announceChange();
         if (VERBOSE) System.err.println("  new block clause:" + blockDefClause);
         return blockID;
     }

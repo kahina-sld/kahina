@@ -51,7 +51,10 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 
 	protected void processEvent(KahinaUpdateEvent e)
 	{
-		recalculate();
+	    if (model != null && model.needsUpdate())
+	    {
+	        recalculate();
+	    }
 	}
 
 	// only listens to this in absence of KahinaGUI; do not register as listener in KahinaGUI case!!!
@@ -136,5 +139,14 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
     public void setVisible(boolean visible)
     {
         this.visible = visible;     
+    }
+    
+    /**
+     * States whether this view has changed in a way that causes it to be in need of redraw.
+     * @return whether the contents or the state of this view have changed since the last call to needsRedraw()
+     */
+    public boolean needsRedraw()
+    {
+        return true;
     }
 }

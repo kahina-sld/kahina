@@ -37,6 +37,7 @@ public class MUCMetaInstance extends CnfSatInstance
     public void learnNewClause(TreeSet<Integer> clause)
     {
         clauses.add(blockHandler.buildRepresentation(clause));
+        needsUpdate = true;
     }
     
     public Collection<TreeSet<Integer>> getBlocks()

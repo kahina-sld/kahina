@@ -19,6 +19,8 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
     // mapping from status values to display properties
     HashMap<Integer, Color> statusColorEncoding;
     
+    boolean needsRedraw;
+    
     public KahinaSatInstanceListView(KahinaInstance<?, ?, ?, ?> kahina)
     {
         super(kahina);
@@ -30,6 +32,7 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
     {
         listModel.clear();
         recalculate();
+        needsRedraw = true;
     }
     
     public void setStatusColorEncoding(int status, Color color)
@@ -74,6 +77,7 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
     {
         listModel.clear();
         listModel.addElement(string);
+        needsRedraw = true;
     }
     
     public void recalculate()
@@ -99,6 +103,7 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
             s.append('}');
             listModel.addElement(s.toString());
         }
+        needsRedraw = true;
         //this was the efficient way, before clauses could be modified!
         /*List<List<Integer>> clauses = model.getClauses();
         if (clauses.size() > listModel.getSize())
@@ -118,5 +123,18 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
                 listModel.addElement(s.toString());
             }
         }*/
+    }
+    
+    public boolean needsRedraw()
+    {
+        if (needsRedraw || model.needsUpdate())
+        {
+            needsRedraw = false;
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
     }
 }

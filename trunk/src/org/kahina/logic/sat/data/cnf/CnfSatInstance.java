@@ -34,6 +34,8 @@ public class CnfSatInstance extends KahinaSatInstance
     //  entries [numVars,...,2*numVars-1] for negative literals 
     protected Map<Integer,List<Integer>> occurrenceMap = null;
     
+    protected boolean needsUpdate = true;
+    
     public CnfSatInstance()
     {
         setNumClauses(0);
@@ -53,6 +55,7 @@ public class CnfSatInstance extends KahinaSatInstance
             clauseCopy.addAll(clause);
             copy.clauses.add(clauseCopy);
         }
+        copy.needsUpdate = needsUpdate;
         return copy;
     }
     
@@ -104,6 +107,10 @@ public class CnfSatInstance extends KahinaSatInstance
         return getNumVars();
     }
     
+    /**
+     * If you modify the clause set call .announceChange() afterwards!
+     * @return
+     */
     public List<List<Integer>> getClauses()
     {
         return clauses;
@@ -510,6 +517,7 @@ public class CnfSatInstance extends KahinaSatInstance
             }
         }
         System.err.println("done, clauses left: " + numClauses);
+        needsUpdate = true;
     }
     
     public void applyAssignmentDestructively(PartialAssignment assignment)
@@ -559,6 +567,7 @@ public class CnfSatInstance extends KahinaSatInstance
             }
         }
         System.err.println("done");
+        needsUpdate = true;
     }
     
     public void reduceToLeanKernel()
@@ -566,6 +575,7 @@ public class CnfSatInstance extends KahinaSatInstance
         CnfSatInstance copy = this.copy();
         PartialAssignment maxAutarky = copy.extractMaxAutarkyDestructively();
         applyAssignmentDestructively(maxAutarky);
+        needsUpdate = true;
     }
     
     public PartialAssignment extractMaxAutarkyDestructively()
@@ -616,5 +626,23 @@ public class CnfSatInstance extends KahinaSatInstance
             e.printStackTrace();
         }
         return null;
+    }
+    
+    public void announceChange()
+    {
+        needsUpdate = true;
+    }
+    
+    public boolean needsUpdate()
+    {
+        if (needsUpdate)
+        {
+            needsUpdate = false;
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
     }
 }
