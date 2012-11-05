@@ -14,7 +14,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     static final boolean VERBOSE = false;
     
     //main parameter, defines minimum block size
-    static final int MIN_BLOCK_SIZE = 1;
+    static final int MIN_BLOCK_SIZE = 2;
     
     //blocks are coded as list of integers for now, indexed by IDs
     Map<Integer,TreeSet<Integer>> blockList;
@@ -46,11 +46,10 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     
     public List<Integer> buildRepresentation(TreeSet<Integer> clause)
     {
-        if (VERBOSE) System.err.println("buildRepresentation(" + clause + ")");
+        if (VERBOSE) System.err.println("buildRepresentation(size = " + clause.size() + ")");
         List<Integer> blockClause = new LinkedList<Integer>();
         int overlapIndex = findHighestOverlapBlock(clause);
         if (VERBOSE) System.err.println("  maxOverlapIndex: " + overlapIndex);
-        if (VERBOSE) System.err.println("  maxOverlapBlock: " + blockList.get(overlapIndex));
         if (overlapIndex == -1)
         {
             if (clause.size() >= MIN_BLOCK_SIZE)
@@ -66,9 +65,19 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         }
         else
         {
+            if (VERBOSE) System.err.println("  maxOverlapBlock: size = " + blockList.get(overlapIndex).size());
             Overlap overlap = new Overlap(clause, blockList.get(overlapIndex));
-            blockClause.addAll(buildRepresentation(overlap.aIntersectB));
-            blockClause.addAll(buildRepresentation(overlap.aMinusB));
+            if (VERBOSE) System.err.println("  Overlap: (" + overlap.aMinusB.size() + "," + overlap.aIntersectB.size() + "," + overlap.bMinusA.size() + ")");
+            if (overlap.aIntersectB.size() == clause.size())
+            {
+                blockClause.add(blockDefVar.get(overlapIndex));
+            }
+            else
+            {
+                //separate representations for the two parts
+                blockClause.addAll(buildRepresentation(overlap.aIntersectB));
+                blockClause.addAll(buildRepresentation(overlap.aMinusB));
+            }
         }
         if (VERBOSE) System.err.println("= " + blockClause + "");
         return blockClause;
@@ -76,12 +85,13 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     
     public void ensureRepresentability(TreeSet<Integer> block)
     {
+        if (VERBOSE) System.err.println("ensureRepresentability(" + block + ")");
         int overlapIndex = findHighestOverlapBlock(block);
         if (VERBOSE) System.err.println("  maxOverlapIndex: " + overlapIndex);
         if (VERBOSE) System.err.println("  maxOverlapBlock: " + blockList.get(overlapIndex));
         if (overlapIndex == -1)
         {
-            if (block.size() >= MIN_BLOCK_SIZE)
+            if (block.size() >= 1)
             {
                 defineNewBlock(block);
             }
@@ -89,11 +99,11 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         else
         {
             Overlap overlap = new Overlap(block, blockList.get(overlapIndex));     
-            if (overlap.aIntersectB.size() >= MIN_BLOCK_SIZE)
+            if (overlap.aIntersectB.size() >= 1)
             {
                 splitBlock(overlapIndex, overlap.aIntersectB, overlap.bMinusA);
             }
-            if (overlap.aMinusB.size() >= MIN_BLOCK_SIZE)
+            if (overlap.aMinusB.size() >= 1)
             {
                 //recursive case for the rest
                 ensureRepresentability(overlap.aMinusB);
@@ -106,41 +116,17 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     private List<Integer> splitBlock(int blockID, TreeSet<Integer> block1, TreeSet<Integer> block2)
     {
        List<Integer> newRepresentation = new LinkedList<Integer>();
-       if (block2.size() > 0)
+       if (block1.size() > 0 && block2.size() > 0)
        {
-           if (block1.size() >= MIN_BLOCK_SIZE)
-           {
-               int block1ID = defineNewBlock(block1);
-               newRepresentation.add(blockDefVar.get(block1ID));
-           }
-           else
-           {
-               //these literals are without an assigned block now
-               for (int block1Lit : block1)
-               {
-                   blockIndex.remove(block1Lit);
-               }
-               newRepresentation.addAll(block1);
-           }
-           if (block2.size() >= MIN_BLOCK_SIZE)
-           {
-               int block2ID = defineNewBlock(block2);
-               newRepresentation.add(blockDefVar.get(block2ID));
-           }
-           else
-           {
-               //these literals are without an assigned block now
-               for (int block2Lit : block2)
-               {
-                   blockIndex.remove(block2Lit);
-               }
-               newRepresentation.addAll(block2);
-           }
+           int block1ID = defineNewBlock(block1);
+           newRepresentation.add(blockDefVar.get(block1ID));
+           int block2ID = defineNewBlock(block2);
+           newRepresentation.add(blockDefVar.get(block2ID));
            blockReplacement(blockID, newRepresentation);
        }
        else
        {
-           //block1 is identical to the old block
+           //one of the blocks is identical to the old block
            newRepresentation.add(blockDefVar.get(blockID));
        }
        return newRepresentation;
@@ -159,7 +145,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         
         //replace all occurrences of the old block, update blockClauses to reflect new usage
         int blockVar = blockDefVar.get(blockID);
-        for (List<Integer> clause : blockClauses.get(blockID))
+        for (List<Integer> clause : getBlockClauses(blockID))
         {
             if (VERBOSE) System.err.println("    Replacement in clause: " + clause);
             clause.remove(new Integer(blockVar));
@@ -225,6 +211,17 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         }
         blocksForLiteral.add(blockID);
     }*/
+    
+    private List<List<Integer>> getBlockClauses(int blockID)
+    {
+        List<List<Integer>> clausesForBlock = blockClauses.get(blockID);
+        if (clausesForBlock == null)
+        {
+            clausesForBlock = new LinkedList<List<Integer>>();
+            blockClauses.put(blockID, clausesForBlock);
+        }
+        return clausesForBlock;
+    }
     
     private void addBlockClausesEntry(int blockID, List<Integer> clause)
     {
