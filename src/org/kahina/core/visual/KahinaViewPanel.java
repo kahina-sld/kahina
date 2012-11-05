@@ -31,7 +31,10 @@ public abstract class KahinaViewPanel<T extends KahinaView<?>> extends JPanel im
 		}
 		if (event instanceof KahinaRedrawEvent)
 		{
-			updateDisplayAndRepaintFromEventDispatchThread();
+		    if (view != null && view.needsRedraw())
+		    {
+		        updateDisplayAndRepaintFromEventDispatchThread();
+		    }
 		}
 	}
 
