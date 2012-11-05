@@ -53,6 +53,10 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
         {
             processEvent((KahinaSelectionEvent) e);
         }
+        else
+        {
+            super.processEvent(e);
+        }
     }
     
     public void processEvent(KahinaSelectionEvent e)

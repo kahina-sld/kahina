@@ -54,6 +54,10 @@ public class MUCStepView extends KahinaSatInstanceListView
         {
             processEvent((KahinaSelectionEvent) e);
         }
+        else
+        {
+            super.processEvent(e);
+        }
     }
     
     public void processEvent(KahinaSelectionEvent e)

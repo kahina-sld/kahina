@@ -70,6 +70,8 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	private HashMap<Integer, WidthVector> subtreeWidths;
 	private ArrayList<Integer> terminalLayer;
 	private int maxNodeWidth;
+	
+	protected boolean needsRedraw = true;
 
 	public KahinaTreeView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
@@ -142,6 +144,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	public void setConfig(KahinaTreeViewConfiguration config)
 	{
 		this.config = config;
+		needsRedraw = true;
 	}
 	
 	public boolean isSecondDimensionDisplayed()
@@ -203,10 +206,12 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 		if (color == null)
 		{
 			nodeBorderColor.remove(nodeID);
-		} else
+		} 
+		else
 		{
 			nodeBorderColor.put(nodeID, color);
 		}
+		needsRedraw = true;
 	}
 
 	public Color getNodeBorderColor(int nodeID)
@@ -256,6 +261,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	public void setTreeLayer(int treeLayer)
 	{
 		this.treeLayer = treeLayer;
+		needsRedraw = true;
 	}
 
 	@Override
@@ -266,11 +272,13 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			System.err.println("status " + status + " -> color " + color);
 		}
 		statusNodeColorEncoding.put(status, color);
+		needsRedraw = true;
 	}
 
 	public void setStatusFontEncoding(int status, Font font)
 	{
 		statusFontEncoding.put(status, font);
+		needsRedraw = true;
 	}
 
 	public int getMarkedNode()
@@ -296,6 +304,8 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 		subtreeWidths = new HashMap<Integer, WidthVector>();
 		
 		maxNodeWidth = 0;
+		
+		needsRedraw = true;
 	}
 
 	public void calculateCoordinates()
@@ -701,6 +711,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			KahinaTree firstModel = model;
 			model = secondaryTreeModel;
 			secondaryTreeModel = firstModel;
+			needsRedraw = true;
 		}
 	}
 
@@ -843,7 +854,8 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 		if (dimensionsSwapped)
 		{
 			return secondaryTreeModel;
-		} else
+		} 
+		else
 		{
 			return model;
 		}
@@ -865,6 +877,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	{
 		resetAllStructures();
 		calculateCoordinates();
+		needsRedraw = true;
 		//System.err.println("Levels:\n" + showLevels());
 	}
 
@@ -891,4 +904,17 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	    markedNode = e.getSelectedStep();
 	    super.processEvent(e);
 	}
+	
+    public boolean needsRedraw()
+    {
+        if (needsRedraw || model.needsUpdate())
+        {
+            needsRedraw = false;
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+    }
 }
