@@ -95,6 +95,11 @@ public class MUCState extends KahinaState
         initialize();
     }
     
+    public MUCInstance getKahina()
+    {
+        return kahina;
+    }
+    
     public boolean usesMetaLearning()
     {
         return kahina.getMetaLearningMode() != MetaLearningMode.NO_META_LEARNING;

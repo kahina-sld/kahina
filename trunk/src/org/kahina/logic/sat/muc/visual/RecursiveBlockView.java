@@ -11,6 +11,7 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCStep;
@@ -54,6 +55,10 @@ public class RecursiveBlockView extends KahinaTreeView
         if (e instanceof KahinaSelectionEvent)
         {
             processEvent((KahinaSelectionEvent) e);
+        }
+        else
+        {
+            super.processEvent(e);
         }
     }
     
@@ -156,5 +161,13 @@ public class RecursiveBlockView extends KahinaTreeView
             }
         }*/
     }
-
+    
+    //revert the hack in KahinaTreeView, we do not want marking here!
+    protected void processEvent(KahinaUpdateEvent e)
+    {
+        if (blockHandler != null && blockHandler.needsUpdate())
+        {
+            recalculate();
+        }
+    }
 }

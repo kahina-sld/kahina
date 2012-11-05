@@ -24,6 +24,8 @@ public abstract class KahinaTree extends KahinaObject
     private int referenceNode;
 
     private int rootID;
+    
+    protected boolean needsUpdate = true;
 
     public KahinaTree(LayerDecider decider)
     {
@@ -45,6 +47,7 @@ public abstract class KahinaTree extends KahinaObject
     {
         primaryModel = this;
         rootID = -1;
+        needsUpdate = true;
     }
 
     public LayerDecider getLayerDecider()
@@ -208,6 +211,25 @@ public abstract class KahinaTree extends KahinaObject
         } else
         {
             decollapse(nodeID);
+        }
+        needsUpdate = true;
+    }
+    
+    public void announceChange()
+    {
+        needsUpdate = true;
+    }
+    
+    public boolean needsUpdate()
+    {
+        if (needsUpdate)
+        {
+            needsUpdate = false;
+            return true;
+        }
+        else 
+        {
+            return false;
         }
     }
 }

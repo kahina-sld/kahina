@@ -40,6 +40,8 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     
     //top block for searching insertion and split points
     int topBlock;
+    
+    private boolean needsUpdate = true;
 
     public RecursiveBlockHandler(CnfSatInstance satInstance)
     {
@@ -152,6 +154,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     public void ensureRepresentability(TreeSet<Integer> block)
     {
         ensureRepresentability(block, topBlock);
+        needsUpdate = true;
     }
     
     private void ensureRepresentability(TreeSet<Integer> block, int blockID)
@@ -257,6 +260,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         blockDefClauses.put(blockID, blockDefClause);
         satInstance.getClauses().add(blockDefClause);
         satInstance.announceChange();
+        needsUpdate = true;
         if (VERBOSE) System.err.println("  new block clause:" + blockDefClause);
         return blockID;
     }
@@ -288,5 +292,23 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     public TreeSet<Integer> getBlock(int blockID)
     {
         return blockList.get(blockID);
+    }
+    
+    public void announceChange()
+    {
+        needsUpdate = true;
+    }
+    
+    public boolean needsUpdate()
+    {
+        if (needsUpdate)
+        {
+            needsUpdate = false;
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
     }
 }

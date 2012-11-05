@@ -101,6 +101,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 		}
 		parents.put(child, parent);
 		notifyChildAddListeners(child);
+		needsUpdate = true;
 	}
 
 	private void notifyChildAddListeners(int child)
@@ -154,6 +155,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 	public void setLayer(int nodeID, int layer)
 	{
 		layers.put(nodeID, layer);
+		needsUpdate = true;
 	}
 
 	@Override
@@ -182,6 +184,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 	public void setNodeCaption(int nodeID, String caption)
 	{
 		nodeCaptions.put(nodeID, caption);
+		needsUpdate = true;
 	}
 
 	@Override
@@ -201,6 +204,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 	public void setEdgeLabel(int nodeID, String label)
 	{
 		edgeLabels.put(nodeID, label);
+		needsUpdate = true;
 	}
 
 	@Override
@@ -232,7 +236,8 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 		{
 			// System.err.println("[]");
 			return Collections.emptyList();
-		} else
+		} 
+		else
 		{
 			// System.err.println(ids);
 			return Collections.unmodifiableList(ids);
@@ -249,7 +254,8 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 		{
 			// System.err.println("[]");
 			return Collections.emptyList();
-		} else
+		} 
+		else
 		{
 			// System.err.println(ids);
 			return Collections.unmodifiableList(ids);
@@ -295,6 +301,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 		if (nodeID != -1)
 		{
 			collapsed.add(nodeID);
+			needsUpdate = true;
 		}
 	}
 
@@ -302,12 +309,14 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 	public void decollapse(int nodeID)
 	{
 		collapsed.remove(nodeID);
+        needsUpdate = true;
 	}
 
 	@Override
 	public void decollapseAll()
 	{
 		collapsed = new HashSet<Integer>();
+        needsUpdate = true;
 	}
 
 	@Override
@@ -317,6 +326,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 		nodeCaptions.put(nodeID, caption);
 		edgeLabels.put(nodeID, label);
 		status.put(nodeID, nodeStatus);
+        needsUpdate = true;
 		return nodeID;
 	}
 
@@ -344,6 +354,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 		collapsed = new HashSet<Integer>();
 
 		nextID = 0;
+        needsUpdate = true;
 	}
 
 	@Override
@@ -408,6 +419,7 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 		setEdgeLabel(id, label);
 		setNodeStatus(id, nodeStatus);
 		nextID = Math.max(id + 1, nextID);
+        needsUpdate = true;
 	}
 
 	@Override
@@ -429,8 +441,12 @@ public class KahinaUnlayeredMemTree extends KahinaTree
 			status.remove(id);
 			collapsed.remove(id);
 			layers.remove(id);
+	        needsUpdate = true;
 			return true;
-		} else
+		} 
+		else
+		{
 			return false;
+		}
 	}
 }

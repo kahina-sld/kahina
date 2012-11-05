@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.TreeSet;
 
 import org.kahina.core.data.dag.ColoredPath;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.color.ColorUtil;
 import org.kahina.core.task.KahinaTask;
 import org.kahina.core.task.KahinaTaskManager;
@@ -141,6 +143,9 @@ public class UCReducer extends KahinaTaskManager
                 }
                 if (getPanel() != null) getPanel().requestViewUpdate();
             }
+            //TODO: optionally select the new step in case of a succesful reduction
+            state.getKahina().dispatchInstanceEvent(new KahinaUpdateEvent(state.getSelectedStepID()));
+            state.getKahina().dispatchInstanceEvent(new KahinaRedrawEvent());
             startNextReduction();
         }
         else
