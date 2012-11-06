@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.kahina.core.KahinaDefaultInstance;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.data.dag.KahinaDAG;
@@ -20,6 +21,7 @@ import org.kahina.core.data.dag.KahinaMemDAG;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.LayerDecider;
+import org.kahina.core.io.tree.KahinaTreeInput;
 import org.kahina.core.visual.dag.KahinaDAGView;
 import org.kahina.core.visual.dag.LayeredLayouter;
 import org.kahina.core.visual.tree.KahinaTreeView;
@@ -39,20 +41,21 @@ public class KahinaTreeTest
         {
             if (args.length == 0)
             {
-                System.err.println("Usage: java KahinaTreeTest [treeFile]")
+                System.err.println("Usage: java KahinaTreeTest [treeFile]");
                 System.exit(1);
             }
-            File file = new File(args[0]);
-            //TestLayeredTree m1 = TestLayeredTree.importXML(dom);
-            KahinaTree dag = KahinaTreeInput.import(dom);  
+            KahinaTree tree = KahinaTreeInput.fromIndentedText(args[0]);
             
-            TulipaInstance kahina = new TulipaInstance();
+            KahinaDefaultInstance kahina = new KahinaDefaultInstance();
             
-            final KahinaDAGView v = new KahinaDAGView(kahina, new LayeredLayouter());
-            v.setTitle("Kahina DAGView Demo");
-            v.getConfig().setVerticalDistance(5);
-            v.getConfig().setHorizontalDistance(3);
-            v.display(dag);
+            final KahinaTreeView v = new KahinaTreeView(kahina);
+            v.setTitle("Kahina TreeView Demo");
+            v.getConfig().setHorizontalDistance(2);
+            v.getConfig().setVerticalDistance(8);
+            v.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
+            v.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);
+            v.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
+            v.display(tree);
             v.setStatusColorEncoding(0,new Color(255,255,255));
             v.setStatusColorEncoding(1,new Color(255,0,0));
             v.setStatusColorEncoding(2,new Color(0,255,255));
@@ -66,7 +69,7 @@ public class KahinaTreeTest
             {
                 public void run() 
                 {
-                    JFrame w = new JFrame("KahinaTAGView Demo");
+                    JFrame w = new JFrame("KahinaTreeView Demo");
                     w.setSize(510, 720);
                     w.setLayout(new BoxLayout(w.getContentPane(), BoxLayout.LINE_AXIS));
                     w.add(v.makePanel());
@@ -75,22 +78,13 @@ public class KahinaTreeTest
                 }
             });
         }
-        catch (ParserConfigurationException e)
-        {
-            System.err.println(e.getMessage());
-        }
-        catch (SAXException e)
-        {
-            System.err.println(e.getMessage());
-        }
         catch (IOException e)
         {
             System.err.println(e.getMessage());
         }
     }
-        }
-    }
-    public static void main(String[] args)
+
+    /*public static void main(String[] args)
     {
         try
         {
@@ -220,5 +214,5 @@ public class KahinaTreeTest
         {
             System.err.println(e.getMessage());
         }
-    }
+    }*/
 }
