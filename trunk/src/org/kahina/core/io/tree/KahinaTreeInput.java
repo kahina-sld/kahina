@@ -20,12 +20,13 @@ public class KahinaTreeInput
             int currentDepth = 0;
             int currentID = -1;
             int newDepth = 0;
-            char next;
+            int next;
             boolean countingSpaces = true;
             StringBuilder labelBuilder = new StringBuilder();
-            while ((next = (char) in.read()) != -1)
+            while ((next = in.read()) != -1)
             {
-                switch (next)
+                char nextChar = (char) next;
+                switch (nextChar)
                 {
                     case '\n':
                     {
@@ -71,7 +72,7 @@ public class KahinaTreeInput
                         }
                         else
                         {
-                            labelBuilder.append(next);
+                            labelBuilder.append(nextChar);
                         }
                         break;
                     }
@@ -82,7 +83,7 @@ public class KahinaTreeInput
                             labelBuilder = new StringBuilder();
                             countingSpaces = false;
                         }
-                        labelBuilder.append(next);
+                        labelBuilder.append(nextChar);
                     }
                 }
             }
