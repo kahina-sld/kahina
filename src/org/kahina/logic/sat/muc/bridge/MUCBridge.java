@@ -39,7 +39,7 @@ public class MUCBridge extends KahinaBridge
     }
     
     //receive muc_cand and muc lists for a step where UC reduction was successful
-    public void registerMUC(Integer[] mucCandidates, Integer[] muc)
+    public int registerMUC(Integer[] mucCandidates, Integer[] muc)
     {
         System.err.println("registerMUC(" + mucCandidates.length + "," + muc.length + ")");
         int stepID = state.registerMUC(mucCandidates, muc, lastInstruction, selectedID);
@@ -51,6 +51,7 @@ public class MUCBridge extends KahinaBridge
             kahina.dispatchEvent(new ClauseSelectionEvent(new LinkedList<Integer>()));
             kahina.dispatchEvent(new KahinaUpdateEvent(stepID));
         }
+        return stepID;
     }
     
     //receive information that IC removal led to satisfiability

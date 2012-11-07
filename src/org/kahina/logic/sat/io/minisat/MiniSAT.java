@@ -31,7 +31,7 @@ public class MiniSAT
     private static File lastResultFile;
     private static File lastProofFile;
     
-    private static boolean VERBOSE = true;
+    private static boolean VERBOSE = false;
     
     public static boolean isSatisfiable(File cnfFile, File tmpResultFile) throws TimeoutException, InterruptedException, IOException
     {

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -302,7 +303,20 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
                 muc_cands.add(a);
             }
             relevantAssumptions.clear();
-            bridge.registerMUC(muc_cands.toArray(new Integer[0]), muc.toArray(new Integer[0]));
+            int ucID = bridge.registerMUC(muc_cands.toArray(new Integer[0]), muc.toArray(new Integer[0]));
+            MUCStep firstUC = state.retrieve(MUCStep.class, ucID);
+            
+            //we ensure that the meta instance can compactly represent the first UC
+            TreeSet<Integer> metaBlock = new TreeSet<Integer>();
+            int numClauses = state.getStatistics().numClausesOrGroups;
+            for (int i = 1; i <= numClauses; i++)
+            {
+                if (!firstUC.getUc().contains(i))
+                {
+                    metaBlock.add(-i);
+                }
+            }
+            state.learnMetaBlock(metaBlock);
         
             /*UCReducer reducer1 = new UCReducer(kahinaInstance.getState(), 1, files);
             reducer1.setHeuristics(new AlwaysFirstHeuristics());
