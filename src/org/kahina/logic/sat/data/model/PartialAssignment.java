@@ -27,6 +27,14 @@ public class PartialAssignment
        return assignments.keySet();
    }
    
+   public void unassignVars(Collection<Integer> vars)
+   {
+       for (int var : vars)
+       {
+           assignments.remove(var);
+       }
+   }
+   
    public int size()
    {
        return assignments.size();

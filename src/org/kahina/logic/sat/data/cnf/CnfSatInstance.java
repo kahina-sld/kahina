@@ -583,6 +583,7 @@ public class CnfSatInstance extends KahinaSatInstance
         try
         {
             boolean sat = false;
+            Set<Integer> removedVars = new HashSet<Integer>();
             while (sat == false)
             {
                 File proofFile = new File("temp.proof");
@@ -591,7 +592,9 @@ public class CnfSatInstance extends KahinaSatInstance
                 if (sat)
                 {
                     PartialAssignment maxAutarky = MiniSAT.getPartialModel(resFile);
-                    System.err.println("Found maximal autarky of size " + maxAutarky.size() + ".");
+                    System.err.println("Found partial model:       size " + maxAutarky.size() + ".");
+                    maxAutarky.unassignVars(removedVars);
+                    System.err.println("Resulting maximal autarky: size " + maxAutarky.size() + ".");  
                     proofFile.delete();
                     resFile.delete();
                     return maxAutarky;
@@ -605,6 +608,12 @@ public class CnfSatInstance extends KahinaSatInstance
                         return null;
                     }
                     this.deleteVariablesDestructively(resolutionVariables);
+                    if (this.clauses.size() == 0)
+                    {
+                        System.err.println("Found the trivial autarky, so the input clause set was lean!");
+                        return new PartialAssignment();
+                    }
+                    removedVars.addAll(resolutionVariables);
                 }
                 proofFile.delete();
                 resFile.delete();
