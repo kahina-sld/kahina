@@ -737,11 +737,11 @@ public class MiniSAT
             {
                 if (i < (freezeVariables.length - 1))
                 {
-                    freezeBuffer.append("" + (offsetID + i) + ",");
+                    freezeBuffer.append("" + (offsetID + i) + " ");
                 }
                 else
                 {
-                    freezeBuffer.append("" + (offsetID + i));
+                    freezeBuffer.append("" + (offsetID + i) + " 0");
                 }
             }
         }
