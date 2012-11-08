@@ -50,7 +50,7 @@ public class KahinaTreeTest
             
             final KahinaTreeView v = new KahinaTreeView(kahina);
             v.setTitle("Kahina TreeView Demo");
-            v.getConfig().setHorizontalDistance(2);
+            v.getConfig().setHorizontalDistance(5);
             v.getConfig().setVerticalDistance(8);
             v.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
             v.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);
