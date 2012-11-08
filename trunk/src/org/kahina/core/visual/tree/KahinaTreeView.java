@@ -27,7 +27,7 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 
 public class KahinaTreeView extends KahinaAbstractTreeView
 {
-	public static final boolean VERBOSE = false;
+	public static boolean VERBOSE = false;
 	
 	protected KahinaTreeViewConfiguration config;
 
@@ -310,7 +310,6 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 
 	public void calculateCoordinates()
 	{
-	    //boolean VERBOSE = true;
 		int fontSize = config.getNodeSize();
 		int verticalDistance = config.getVerticalDistance();
 		int horizontalDistance = config.getHorizontalDistance();
@@ -337,6 +336,8 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 				for (int node : terminalLayer)
 				{
 					subtreeWidths.put(node, constructTerminalWidthVector(node, fm, horizontalDistance));
+	                //if (VERBOSE)
+                        System.err.println("  Terminal Node: " + node + " WidthVector:" + subtreeWidths.get(node));
 				}
 			}
 			for (int i = nodeLevels.size() - 1; i >= 0; i--)
@@ -353,7 +354,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					ArrayList<Integer> children = getVisibleVirtualChildren(model, node);
 					WidthVector subtreeWidth = constructWidthVector(children, node, fm, horizontalDistance);
 					subtreeWidths.put(node, subtreeWidth);
-					if (VERBOSE)
+					//if (VERBOSE)
 						System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
 				}
 			}
@@ -374,13 +375,26 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			if (VERBOSE) System.err.println("-----------------------");
 			for (int i = 0; i < nodeLevels.size(); i++)
 			{
-				if (VERBOSE)
+				//if (VERBOSE)
 					System.err.println("Node level: " + i);
 				List<Integer> nodes = nodeLevels.get(i);
 				int xOffset = (1 + rootLeftDistance - rootWidthVector.getStart(i));// * horizontalDistance * 3;
-				if (VERBOSE) 
+				//TODO: solve this more intelligently and robustly
+				switch (config.getNodePositionPolicy())
+				{
+				    case KahinaTreeViewOptions.RIGHT_ALIGNED_NODES:
+				    {
+				        xOffset += subtreeWidths.get(nodes.get(0)).getStart(0);
+				    }
+                    case KahinaTreeViewOptions.CENTERED_NODES:
+                    {
+                        xOffset += subtreeWidths.get(nodes.get(0)).getStart(0)  + 5;
+                        break;
+                    }
+				}
+				//if (VERBOSE) 
 			    {
-			        System.err.println("xOffset(level" + i + ") = (1 + " + rootLeftDistance + " - " + rootWidthVector.getStart(i) + ") = " + xOffset);
+			        System.err.println("xOffset(level" + i + ") = (1 + " + rootLeftDistance + " - " + rootWidthVector.getStart(i) + " + nodePosMargin) = " + xOffset);
 			    }
 				// TODO: find out why this does not seem to have any effect
 				/*if (config.getNodePositionPolicy() == KahinaTreeViewOptions.CENTERED_NODES)
