@@ -378,8 +378,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 				//if (VERBOSE)
 					System.err.println("Node level: " + i);
 				List<Integer> nodes = nodeLevels.get(i);
-				int xOffset = (1 + rootLeftDistance - rootWidthVector.getStart(i));// * horizontalDistance * 3;
-				//TODO: solve this more intelligently and robustly
+				int xOffset = (5 + rootLeftDistance - rootWidthVector.getStart(i));// * horizontalDistance * 3;
 				switch (config.getNodePositionPolicy())
 				{
 				    case KahinaTreeViewOptions.RIGHT_ALIGNED_NODES:
@@ -388,7 +387,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 				    }
                     case KahinaTreeViewOptions.CENTERED_NODES:
                     {
-                        xOffset += subtreeWidths.get(nodes.get(0)).getStart(0)  + 5;
+                        xOffset += subtreeWidths.get(nodes.get(0)).getStart(0);
                         break;
                     }
 				}
@@ -414,8 +413,8 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					subtreeWidth = subtreeWidths.get(node);
 					if (lastSubtreeWidth != null)
 					{
-					    int distance = WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth);
-    					xOffset += distance + subtreeWidth.getStart(0); // * horizontalDistance * 3;
+					    int distance = WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth) + config.getHorizontalDistance();
+    					xOffset += distance; // + subtreeWidth.getStart(0); // * horizontalDistance * 3;
     					// switch to children of next parent node --> jump in x offset
     					int newParent = getVisibleParent(node);
     					if (VERBOSE)
