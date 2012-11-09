@@ -80,7 +80,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 occurrenceMap.get(literal).add(i);
             }
         }
-        System.err.println("  occurrence map rebuilt in " + (System.currentTimeMillis() - startTime) + " ms");
+        System.err.println("  " + (System.currentTimeMillis() - startTime) + " ms for rebuilding the occurrence map");
     }
     
     //to free up memory; next visualization computation will take a lot longer
@@ -162,7 +162,7 @@ public class CnfSatInstance extends KahinaSatInstance
             }
         }
         //propagation: initialize list of fulfilled clauses
-        Set<Integer> fulfilledClauses = new TreeSet<Integer>();
+        Set<Integer> fulfilledClauses = new HashSet<Integer>();
         while (toPropagate.size() > 0)
         {
             int propLit = toPropagate.remove(0);
@@ -171,8 +171,9 @@ public class CnfSatInstance extends KahinaSatInstance
             if (VERBOSE) System.err.println("    literal occurring in: " + getOccurrences(propLit));
             for (int clauseID : getOccurrences(propLit))
             {
-                if (!fulfilledClauses.contains(propLit))
+                if (!fulfilledClauses.contains(clauseID))
                 {
+                    if (VERBOSE) System.err.println("      fulfilled clause: " + clauseID);
                     fulfilledClauses.add(clauseID);
                     //OPTIONAL EXTENSION: detect and process pure literals 
                     //  DISADVANTAGE: no clean propagation any more!
@@ -222,13 +223,15 @@ public class CnfSatInstance extends KahinaSatInstance
                     toPropagate.add(newUnit);
                     partialModel.add(newUnit);
                     derivedUnits.add(newUnit);
-                    if (VERBOSE) System.err.println("    added unit: " + newUnit);
+                    if (VERBOSE) System.err.println("      added unit: " + newUnit);
                 }
             }
             if (VERBOSE) System.err.println("    clause sizes: " + clauseSize);
+            if (VERBOSE) System.err.println("    #toPropagate: " + toPropagate.size());
+            if (VERBOSE) System.err.println("    #fulfilled:   " + fulfilledClauses.size());
         }
         if (VERBOSE) System.err.println("  Output: " + derivedUnits);
-        System.err.println("  propagation took " + (System.currentTimeMillis() - startTime) + " ms");
+        System.err.println("  " + (System.currentTimeMillis() - startTime) + " ms" + " for propagation");
         return derivedUnits;
     }
     
