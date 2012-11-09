@@ -155,7 +155,7 @@ public class MUCGUI extends KahinaGUI
             blockTreeView.setStatusColorEncoding(2, NICE_GREEN);
             blockTreeView.setStatusColorEncoding(3, Color.LIGHT_GRAY);
             
-            blockTreeView.getConfig().setHorizontalDistance(2);
+            blockTreeView.getConfig().setHorizontalDistance(6);
             blockTreeView.getConfig().setVerticalDistance(8);
             blockTreeView.getConfig().setNodePositionPolicy(KahinaTreeViewOptions.CENTERED_NODES);
             blockTreeView.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);

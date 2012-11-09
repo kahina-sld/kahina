@@ -25,7 +25,7 @@ public class WidthVector
         this.end.add(end);
     }
     
-    public static WidthVector adjoin(WidthVector w1, WidthVector w2)
+    public static WidthVector adjoin(WidthVector w1, WidthVector w2, int horiDistance)
     {
         if (VERBOSE) System.err.println("Adjoining: " + w1 + " and " + w2);
         WidthVector w3 = new WidthVector();
@@ -48,6 +48,7 @@ public class WidthVector
         }
         int leftAxisOffset = w1.start.get(maxReqDistanceLevel);
         int totalWidth = leftAxisOffset;
+        totalWidth += horiDistance;
         totalWidth += w1.end.get(maxReqDistanceLevel);
         totalWidth += w2.start.get(maxReqDistanceLevel);
         totalWidth += w2.end.get(maxReqDistanceLevel);
@@ -59,8 +60,8 @@ public class WidthVector
         if (VERBOSE) System.err.println("  rightAxisMovement: " + rightAxisMovement);
         for (int i = 0; i < minSize; i++)
         {
-            w3.start.add(w1.start.get(i) + leftAxisMovement);
-            w3.end.add(w2.end.get(i) + rightAxisMovement);
+            w3.start.add(w1.start.get(i) + horiDistance + leftAxisMovement);
+            w3.end.add(w2.end.get(i) + horiDistance + rightAxisMovement);
             if (VERBOSE) System.err.println("  Adding: [" + (w1.start.get(i) + leftAxisMovement) + "," + (w2.end.get(i) + rightAxisMovement) + "]");
         }
         for (int i = minSize; i < w1size; i++)

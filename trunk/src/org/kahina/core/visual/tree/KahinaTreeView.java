@@ -336,7 +336,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 				for (int node : terminalLayer)
 				{
 					subtreeWidths.put(node, constructTerminalWidthVector(node, fm, horizontalDistance));
-	                //if (VERBOSE)
+	                if (VERBOSE)
                         System.err.println("  Terminal Node: " + node + " WidthVector:" + subtreeWidths.get(node));
 				}
 			}
@@ -354,7 +354,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					ArrayList<Integer> children = getVisibleVirtualChildren(model, node);
 					WidthVector subtreeWidth = constructWidthVector(children, node, fm, horizontalDistance);
 					subtreeWidths.put(node, subtreeWidth);
-					//if (VERBOSE)
+					if (VERBOSE)
 						System.err.println("  Node:" + node + " VisChildren:" + children + " WidthVector:" + subtreeWidths.get(node));
 				}
 			}
@@ -364,8 +364,8 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 				System.err.println("maxNodeWidth = " + maxNodeWidth);
 			WidthVector rootWidthVector = subtreeWidths.get(model.getRootID(treeLayer));
 			//System.err.println("rootWidthVector = " + rootWidthVector.toString());
-			int rootLeftDistance = rootWidthVector.maximumLeftDistance();
-            int rootRightDistance = rootWidthVector.maximumRightDistance();
+			int rootLeftDistance = rootWidthVector.maximumLeftDistance() + horizontalDistance;
+            int rootRightDistance = rootWidthVector.maximumRightDistance() + horizontalDistance;
             // adapt total tree width to maximum level width (i.e. maximum x position of a node in any level)
             totalTreeWidth = (rootLeftDistance + rootRightDistance); // * horizontalDistance * 3;
 			//nodeX.put(model.getRootID(treeLayer), rootLeftDistance * horizontalDistance * 10);
@@ -375,9 +375,11 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			if (VERBOSE) System.err.println("-----------------------");
 			for (int i = 0; i < nodeLevels.size(); i++)
 			{
-				//if (VERBOSE)
-					System.err.println("Node level: " + i);
 				List<Integer> nodes = nodeLevels.get(i);
+				if (VERBOSE)
+				{
+				    System.err.println("Node level " + i + ": " + nodes);
+				}
 				int xOffset = (5 + rootLeftDistance - rootWidthVector.getStart(i));// * horizontalDistance * 3;
 				switch (config.getNodePositionPolicy())
 				{
@@ -391,7 +393,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
                         break;
                     }
 				}
-				//if (VERBOSE) 
+				if (VERBOSE) 
 			    {
 			        System.err.println("xOffset(level" + i + ") = (1 + " + rootLeftDistance + " - " + rootWidthVector.getStart(i) + " + nodePosMargin) = " + xOffset);
 			    }
@@ -414,7 +416,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 					if (lastSubtreeWidth != null)
 					{
 					    int distance = WidthVector.computeNecessaryDistance(lastSubtreeWidth, subtreeWidth) + config.getHorizontalDistance();
-    					xOffset += distance; // + subtreeWidth.getStart(0); // * horizontalDistance * 3;
+    					xOffset += distance;
     					// switch to children of next parent node --> jump in x offset
     					int newParent = getVisibleParent(node);
     					if (VERBOSE)
@@ -521,6 +523,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 
 	private void createNodeLayers()
 	{
+	    //boolean VERBOSE = true;
 		if (VERBOSE)
 			System.err.println("BEGIN: Create node layers for layer " + treeLayer);
 		terminalLayer = new ArrayList<Integer>();
@@ -532,7 +535,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			nodeLevels.add(rootLevel);
 			allNodes.addAll(rootLevel);
 			List<Integer> children = getVisibleVirtualChildren(model, model.getRootID(treeLayer));
-			while (true)
+			while (children.size() > 0)
 			{
 				if (VERBOSE) System.err.println("children:" + children);
 				ArrayList<Integer> grandchildren = new ArrayList<Integer>();
@@ -552,10 +555,10 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 				nodeLevels.add(children);
 				allNodes.addAll(children);
 				children = grandchildren;
-				if (grandchildren.size() == 0)
-				{
-					break;
-				}
+                if (grandchildren.size() == 0)
+                {
+                    break;
+                }
 			}
 		}
 		if (VERBOSE) System.err.println("COMPLETE: Create node layers for layer " + treeLayer);
@@ -663,7 +666,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 			WidthVector sum = subtreeWidths.get(children.get(0)).copy();
 			for (int i = 1; i < children.size(); i++)
 			{
-				sum = WidthVector.adjoin(sum, subtreeWidths.get(children.get(i)));
+				sum = WidthVector.adjoin(sum, subtreeWidths.get(children.get(i)), horizontalDistance);
 			}
 	        int width = (int) fm.getStringBounds(model.getNodeCaption(nodeID), g).getWidth() + 1;
 			sum.start.add(0, (width + horizontalDistance) / 2);
