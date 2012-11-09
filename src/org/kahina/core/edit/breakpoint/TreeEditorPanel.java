@@ -158,7 +158,7 @@ public class TreeEditorPanel extends JPanel
             WidthVector sum = subtreeWidths.get(children.get(0)).copy();
             for (int i = 1; i < children.size(); i++)
             {
-                sum = WidthVector.adjoin(sum, subtreeWidths.get(children.get(i)));
+                sum = WidthVector.adjoin(sum, subtreeWidths.get(children.get(i)), 5);
             }
             sum.start.add(0,width);
             sum.end.add(0,width);
