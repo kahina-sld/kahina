@@ -426,7 +426,7 @@ public class KahinaTreeView extends KahinaAbstractTreeView
     							System.err.print(" SubtreeWidths:" + subtreeWidths.get(parent));
     						// old variant of xOffset computation
     						// xOffset = (int)((nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) * 0.5 - 0.5) * horizontalDistance * fontSize));
-    						xOffset = nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) - 1);//- subtreeWidth.getStart(0);
+    						xOffset = nodeX.get(parent) - (subtreeWidths.get(parent).getStart(1) - subtreeWidth.getStart(0));//- subtreeWidth.getStart(0);
     						lastSubtreeWidth = subtreeWidth.copy();
     					}
     					else
