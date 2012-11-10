@@ -85,7 +85,7 @@ public class MUCStepView extends KahinaSatInstanceListView
                 s.append(": {");
                 for (Integer literal : clauses.get(i-1))
                 {
-                    s.append(literal);
+                    s.append(kahina.getSatInstance().getSymbolForLiteral(literal));
                     s.append(',');
                 }
                 s.deleteCharAt(s.length() - 1);
@@ -103,7 +103,7 @@ public class MUCStepView extends KahinaSatInstanceListView
                 s.append(": {");
                 for (Integer literal : clauses.get(ic))
                 {
-                    s.append(literal);
+                    s.append(kahina.getSatInstance().getSymbolForLiteral(literal));
                     s.append(',');
                 }
                 s.deleteCharAt(s.length() - 1);

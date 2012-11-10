@@ -97,7 +97,7 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
             s.append(": {");
             for (Integer literal : clauses.get(i))
             {
-                s.append(literal);
+                s.append(model.getSymbolForLiteral(literal));
                 s.append(',');
             }
             s.deleteCharAt(s.length() - 1);
