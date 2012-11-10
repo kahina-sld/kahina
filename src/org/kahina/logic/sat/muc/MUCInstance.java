@@ -134,6 +134,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         this.files = null;
         this.reductionManager = new MUCReductionManager(this);
         this.metaLearningMode = metaLearningMode;
+        logger.enableLogging();
     }
     
     public MUCInstance(MetaLearningMode metaLearningMode, CnfSatInstance satInstance,  MUCStatistics stat, MiniSATFiles files)
@@ -146,6 +147,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         state.setSatInstance(satInstance);
         state.setStatistics(stat);
         state.setFiles(files);
+        logger.enableLogging();
     }
     
     public void startNewSessionWithoutBridge()

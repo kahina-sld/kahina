@@ -48,6 +48,7 @@ import org.kahina.core.io.magazine.ObjectMagazine;
 import org.kahina.core.io.util.FileUtil;
 import org.kahina.core.io.util.ResourceList;
 import org.kahina.core.io.util.XMLUtil;
+import org.kahina.core.profiler.KahinaLogger;
 import org.kahina.core.profiler.KahinaWarner;
 import org.kahina.core.util.ProgressMonitorWrapper;
 import org.kahina.core.util.SwingUtil;
@@ -96,10 +97,13 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	protected KahinaController sessionControl;
 
 	private boolean guiStarted = false;
+	
+	protected KahinaLogger logger;
 
 	public KahinaInstance()
 	{
-		instanceControl = new KahinaController();
+        logger = new KahinaLogger("logs");
+        instanceControl = new KahinaController(logger);
         instanceControl.registerListener(KahinaEventTypes.PERSPECTIVE, this);
         instanceControl.registerListener(KahinaEventTypes.SYSTEM, this);
 		try
@@ -194,7 +198,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	{
         if (sessionControl == null)
         {
-    		sessionControl = new KahinaController();
+    		sessionControl = new KahinaController(logger);
     		sessionControl.registerListener(KahinaEventTypes.UPDATE, this);
     		sessionControl.registerListener(KahinaEventTypes.SESSION, this);
             sessionControl.registerListener(KahinaEventTypes.PROJECT, this);
@@ -677,6 +681,11 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	public P getProject()
 	{
 	    return project;
+	}
+	
+	public KahinaLogger getLogger()
+	{
+	    return logger;
 	}
     
     public void newProject(File grammarFile, String name)

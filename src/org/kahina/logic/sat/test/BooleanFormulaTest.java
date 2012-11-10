@@ -30,8 +30,8 @@ public class BooleanFormulaTest
     {
         try
         {
-            final KahinaController control = new KahinaController();
             final KahinaInstance<?, ?, ?, ?> kahina = new KahinaDefaultInstance();
+            final KahinaController control = new KahinaController(kahina.getLogger());
             
             if (false) { BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/timout_01.abc");} ;
             //BooleanFormula f = BooleanFormulaParser.parseFile("/stud/dellert/formula_test.abc");
