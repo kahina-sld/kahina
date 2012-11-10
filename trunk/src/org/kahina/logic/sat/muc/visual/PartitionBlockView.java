@@ -122,6 +122,7 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
     
     public void recalculate()
     {
+        kahina.getLogger().startMeasuring();
         int stepID = kahina.getState().getSelectedStepID();
         listModel.clear();
         lineStatus.clear();
@@ -152,6 +153,7 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
                 lineStatus.add(currentStep.relationToBlock(block));
             }
         }
+        kahina.getLogger().endMeasuring("for recalculating the PartitionBlockView");
     }
 
 }

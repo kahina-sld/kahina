@@ -189,4 +189,9 @@ public class UCReductionTask extends KahinaTask
     {
         return result;
     }
+    
+    public String toString()
+    {
+        return "\"reduction #" + reductionID + ": reduce in uc " + ucID + " by " + candidates + "\""; 
+    }
 }

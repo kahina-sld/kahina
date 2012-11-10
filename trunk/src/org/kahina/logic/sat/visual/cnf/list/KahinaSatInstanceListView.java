@@ -82,6 +82,7 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
     
     public void recalculate()
     {
+        kahina.getLogger().startMeasuring();
         if (model == null)
         {
             displayText("No model assigned yet.");
@@ -123,6 +124,7 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
                 listModel.addElement(s.toString());
             }
         }*/
+        kahina.getLogger().endMeasuring("for recalculating " + this);
     }
     
     public boolean needsRedraw()

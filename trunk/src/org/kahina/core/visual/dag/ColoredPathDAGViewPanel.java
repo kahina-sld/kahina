@@ -33,6 +33,7 @@ public class ColoredPathDAGViewPanel extends KahinaDAGViewPanel
     //TODO: refactor to avoid the code duplication (make printDAGEdges abstract?)
     public void updateDisplay()
     {      
+        kahina.getLogger().startMeasuring();
         BufferedImage newImage = new BufferedImage(view.getDisplayWidth() + 1, view.getDisplayHeight() + 1, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics cnv = newImage.getGraphics();
         Graphics2D canvas = (Graphics2D) cnv;
@@ -66,6 +67,7 @@ public class ColoredPathDAGViewPanel extends KahinaDAGViewPanel
         {
             ext.paintOnTreePanel(this, canvas);
         }*/
+        kahina.getLogger().endMeasuring("for updating " + this);
     }
 
     public void printDAGEdges(Graphics canvas)
