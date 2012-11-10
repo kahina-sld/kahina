@@ -29,6 +29,8 @@ public class CnfSatInstance extends KahinaSatInstance
     protected int numVars;
     protected List<List<Integer>> clauses;
     
+    private HashSet<Integer> dontCareClauses;
+    
     //literals -> clauses; important for efficient computations
     //  entries [0,...,numVars-1] for positive literals
     //  entries [numVars,...,2*numVars-1] for negative literals 
@@ -42,6 +44,7 @@ public class CnfSatInstance extends KahinaSatInstance
         setNumVars(0);
         clauses = new ArrayList<List<Integer>>();
         occurrenceMap = null;
+        dontCareClauses = new HashSet<Integer>();
     }
     
     public CnfSatInstance copy()
@@ -56,6 +59,7 @@ public class CnfSatInstance extends KahinaSatInstance
             copy.clauses.add(clauseCopy);
         }
         copy.needsUpdate = needsUpdate;
+        copy.dontCareClauses.addAll(dontCareClauses);
         return copy;
     }
     
@@ -103,6 +107,23 @@ public class CnfSatInstance extends KahinaSatInstance
     public int getNumVariables()
     {
         return getNumVars();
+    }
+    
+    public boolean isDontCareClause(int clauseID)
+    {
+        return dontCareClauses.contains(clauseID);
+    }
+    
+    public void applyDontCareFilter(ClauseFilter filter)
+    {
+        dontCareClauses.clear();
+        for (int clauseID = 0; clauseID < clauses.size(); clauseID++)
+        {
+            if (filter.acceptsClause(clauseID))
+            {
+                dontCareClauses.add(clauseID);
+            }
+        }
     }
     
     /**
