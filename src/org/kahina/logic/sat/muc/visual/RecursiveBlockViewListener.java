@@ -17,7 +17,7 @@ public class RecursiveBlockViewListener extends KahinaTreeViewListener
     MUCInstance kahina;
     RecursiveBlockViewPanel view;
     
-    public final static long DBL_CLICK_INTERVAL = 200;
+    public final static long DBL_CLICK_INTERVAL = 500;
     
     public RecursiveBlockViewListener(RecursiveBlockViewPanel view, MUCInstance kahina)
     {
@@ -41,13 +41,20 @@ public class RecursiveBlockViewListener extends KahinaTreeViewListener
             }
             if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < DBL_CLICK_INTERVAL)
             {
-                reduce(clauseIDs);
-                lastMouseEvent = e;
+                System.err.println("Reducing by clause IDs: " + clauseIDs);
+                for (int clauseID : clauseIDs)
+                {
+                    List<Integer> clauseList = new LinkedList<Integer>();
+                    clauseList.add(clauseID);
+                    reduce(clauseList);
+                }
+                lastMouseEvent = null;
             }
             else
             {
                 //view.view.setMarkedNode(clickedNode);
                 kahina.dispatchEvent(new ClauseSelectionEvent(clauseIDs));
+                lastMouseEvent = e;
             }
         }
     }

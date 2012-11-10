@@ -20,6 +20,7 @@ public class AspCcgDontCareFilter extends ClauseFilter
             String symbol = instance.getSymbolForLiteral(literal);
             if (symbol.contains("position_category")) return false;
             if (symbol.contains("occurs")) return false;
+            if (symbol.contains("precCat")) return false;
         }
         return true;
     }
