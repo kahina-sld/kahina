@@ -73,8 +73,8 @@ public class MinUnsatCore
         Integer howmuchsmaller = 0, alreadyused = -10, rel_asm_last = 0;
         List<Integer> muc_cands = new ArrayList<Integer>();
         List<Integer> muc = new ArrayList<Integer>();
-        boolean[] freezeVariables = new boolean[stat.numVarsExtended - stat.highestID];
-        Arrays.fill(freezeVariables, Boolean.TRUE);
+        int[] freezeVariables = new int[stat.numVarsExtended - stat.highestID];
+        Arrays.fill(freezeVariables, -1);
         try
         {
             MiniSAT.createFreezeFile(freezeVariables, files.tmpFreezeFile, stat.highestID + 1);
@@ -210,16 +210,16 @@ public class MinUnsatCore
         }
     }
 
-    private static void changeFreezeVariables(boolean[] freezeVariables, List<Integer> muc_cands, List<Integer> muc)
+    private static void changeFreezeVariables(int[] freezeVariables, List<Integer> muc_cands, List<Integer> muc)
     {
-        Arrays.fill(freezeVariables, Boolean.FALSE);
+        Arrays.fill(freezeVariables, 1);
         for (Integer a : muc_cands)
         {
-            freezeVariables[a] = true;
+            freezeVariables[a] = -1;
         }
         for (Integer a : muc)
         {
-            freezeVariables[a] = true;
+            freezeVariables[a] = -1;
         }
 
     }

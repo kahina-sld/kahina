@@ -201,16 +201,16 @@ public class UCReducer extends KahinaTaskManager
             Integer removalLink = uc.getRemovalLink(candidate);
             if (removalLink == null)
             {
-                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files));
+                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files, state.getSatInstance()));
             }
             else if (removalLink == -1)
             {
-                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, uc));
+                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, uc, state.getSatInstance()));
             }
             else
             {
                 MUCStep newUC = state.retrieve(MUCStep.class, removalLink);
-                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, newUC));
+                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, newUC, state.getSatInstance()));
             }
         }    
     }

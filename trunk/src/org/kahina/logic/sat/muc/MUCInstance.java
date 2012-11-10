@@ -38,6 +38,7 @@ import org.kahina.logic.sat.muc.control.MUCControlEventCommands;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.gui.MUCGUI;
 import org.kahina.logic.sat.muc.io.MUCExtension;
+import org.kahina.logic.sat.muc.test.AspCcgDontCareFilter;
 import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.qtype.data.project.QTypeProject;
 import org.w3c.dom.Document;
@@ -260,6 +261,9 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         System.err.println("Loading SAT instance at " + satFile.getAbsolutePath());
         System.err.println("  Instance Size: (" + satInstance.getNumClauses() + "," + satInstance.getNumVariables() + ")");
         
+        //TODO: allow the user to configure this filter
+        satInstance.applyDontCareFilter(new AspCcgDontCareFilter(satInstance));
+        
         stat = new MUCStatistics();
         stat.instanceName = satFile.getAbsolutePath();
         
@@ -280,8 +284,19 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     {
         List<Integer> muc_cands = new ArrayList<Integer>();
         List<Integer> muc = new ArrayList<Integer>();
-        boolean[] freezeVariables = new boolean[stat.numVarsExtended - stat.highestID];
-        Arrays.fill(freezeVariables, Boolean.TRUE);
+        int[] freezeVariables = new int[stat.numVarsExtended - stat.highestID];
+        Arrays.fill(freezeVariables, -1);
+        /*for (int i = 0; i < stat.numClausesOrGroups; i++)
+        {
+            if (satInstance.isDontCareClause(i))
+            {
+                freezeVariables[i] = -1;
+            }
+            else
+            {
+                freezeVariables[i] = 1;
+            }
+        }*/
         try
         {
             MiniSAT.createFreezeFile(freezeVariables, files.tmpFreezeFile, stat.highestID + 1);

@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.TreeSet;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.core.gui.KahinaProgressBar;
 import org.kahina.core.task.KahinaTask;
 import org.kahina.core.task.KahinaTaskManager;
+import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.model.CompleteAssignment;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
@@ -36,6 +38,8 @@ public class UCReductionTask extends KahinaTask
     
     MiniSATFiles files;
     
+    CnfSatInstance instance;
+    
     /**
      * Construct a pseudo-reduction task for a known outcome which simply retrieves a result step.
      * @param progressBar
@@ -44,7 +48,7 @@ public class UCReductionTask extends KahinaTask
      * @param ucID
      * @param candidate
      */
-    public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat, MUCStep uc, int ucID, List<Integer> candidates, MUCStep result)
+    public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat, MUCStep uc, int ucID, List<Integer> candidates, MUCStep result, CnfSatInstance instance)
     {
         super(progressBar, manager);
         //this.reducer = reducer;
@@ -55,9 +59,10 @@ public class UCReductionTask extends KahinaTask
         this.candidates = candidates;
         this.result = result;
         this.model = null;
+        this.instance = instance;
     }
 
-    public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat,  MUCStep uc, int ucID, List<Integer> candidates, MiniSATFiles files)
+    public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat,  MUCStep uc, int ucID, List<Integer> candidates, MiniSATFiles files, CnfSatInstance instance)
     {
         super(progressBar, manager);
         //this.reducer = reducer;
@@ -68,6 +73,7 @@ public class UCReductionTask extends KahinaTask
         this.candidates = candidates;
         this.files = files.copyWithoutTmpFiles();
         this.model = null;
+        this.instance = instance;
     }
     
     public static synchronized int getNextID()
@@ -92,7 +98,7 @@ public class UCReductionTask extends KahinaTask
         {
             files.createTempFiles(files.sourceFile.getName() + reductionID);
             //set the freeze variables (TODO: avoid generating the different lists first)
-            List<Integer> muc_cands = new ArrayList<Integer>();
+            TreeSet<Integer> muc_cands = new TreeSet<Integer>();
             //List<Integer> muc = new ArrayList<Integer>();
             for (int i : uc.getUc())
             {
@@ -103,11 +109,14 @@ public class UCReductionTask extends KahinaTask
                 //wrap in Integer object in order to remove the element candidate, not at the index candidate
                 muc_cands.remove(new Integer(candidate));
             }
-            boolean[] freezeVariables = new boolean[stat.numClausesOrGroups];
-            Arrays.fill(freezeVariables, Boolean.FALSE);
-            for (Integer a : muc_cands)
+            int[] freezeVariables = new int[stat.numClausesOrGroups];
+            Arrays.fill(freezeVariables, 1);
+            for (int i = 0; i < stat.numClausesOrGroups; i++)
             {
-                freezeVariables[a] = true;
+                if (instance.isDontCareClause(i) || muc_cands.contains(i))
+                {
+                    freezeVariables[i] = -1;
+                }
             }
             MiniSAT.createFreezeFile(freezeVariables, files.tmpFreezeFile, stat.highestID + 1);
             List<Integer> reducedCore = null;
@@ -147,9 +156,8 @@ public class UCReductionTask extends KahinaTask
                 List<Integer> uc = newStep.getUc();
                 for (Integer a : reducedCore)
                 {
-                    //if (!muc.contains(a))
+                    if (!instance.isDontCareClause(a))
                     {
-                        //icStatus = 0 (default)
                         uc.add(a);
                     }
                 }

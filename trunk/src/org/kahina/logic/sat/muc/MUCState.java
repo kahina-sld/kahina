@@ -232,13 +232,19 @@ public class MUCState extends KahinaState
         List<Integer> uc = newStep.getUc();
         for (int i = 0; i < mucCandidates.length; i++)
         {
-            uc.add(mucCandidates[i]);
-            //icStatus = 0 (default)
+            if (!satInstance.isDontCareClause(mucCandidates[i]))
+            {
+                uc.add(mucCandidates[i]);
+                //icStatus = 0 (default)
+            }
         }
         for (int i = 0; i < muc.length; i++)
         {
-            uc.add(muc[i]);
-            newStep.setRemovalLink(muc[i], -1);
+            if (!satInstance.isDontCareClause(muc[i]))
+            {
+                uc.add(muc[i]);
+                newStep.setRemovalLink(muc[i], -1);
+            }
         }
         uc.remove((Object) 0);
         

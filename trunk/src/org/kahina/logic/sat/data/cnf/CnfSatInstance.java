@@ -124,6 +124,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 dontCareClauses.add(clauseID);
             }
         }
+        System.err.println("don't-care filter selects " + dontCareClauses.size() + "/" + clauses.size() + " clauses");
     }
     
     /**

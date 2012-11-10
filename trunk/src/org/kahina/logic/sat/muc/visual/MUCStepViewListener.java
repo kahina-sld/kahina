@@ -69,7 +69,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         cands.add(ic);
         UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                                         ucStep, state.getSelectedStepID(), 
-                                                        cands, state.getFiles()
+                                                        cands, state.getFiles(), state.getSatInstance()
                                                       );
         redTask.setModelRotation(modelRotation);
         kahina.getReductionManager().addTask(redTask);
@@ -81,7 +81,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
         UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                                         ucStep, state.getSelectedStepID(), 
-                                                        ics, state.getFiles()
+                                                        ics, state.getFiles(), state.getSatInstance()
                                                       );
         kahina.getReductionManager().addTask(redTask);
     }

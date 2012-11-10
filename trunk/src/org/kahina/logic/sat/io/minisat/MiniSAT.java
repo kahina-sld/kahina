@@ -592,7 +592,7 @@ public class MiniSAT
     }
 
     // extract the relevant assumptions from the last proof file
-    public static List<Integer> getRelevantAssumptions(boolean[] freezeVariables, int offsetID)
+    public static List<Integer> getRelevantAssumptions(int[] freezeVariables, int offsetID)
     {
         List<Integer> relevantAssumptions = new ArrayList<Integer>();
         BufferedReader input;
@@ -604,7 +604,7 @@ public class MiniSAT
             {
                 line2 = line;
             }
-            Arrays.fill(freezeVariables, Boolean.FALSE);
+            Arrays.fill(freezeVariables, 1);
             StringTokenizer st = new StringTokenizer(line2);
             int i = 0;
             while (st.hasMoreTokens())
@@ -619,7 +619,7 @@ public class MiniSAT
                     if (!line.equals("0"))
                     {
                         //System.err.println(line + "-> freezeVariables[" + (((-1) * Integer.parseInt(line)) - offsetID) + "] = true");
-                        freezeVariables[((-1) * Integer.parseInt(line)) - offsetID] = true;
+                        freezeVariables[((-1) * Integer.parseInt(line)) - offsetID] = -1;
                         relevantAssumptions.add(((-1) * Integer.parseInt(line)) - offsetID);
                     }
                     else
@@ -728,12 +728,23 @@ public class MiniSAT
         return null;
     }
     
-    public static void createFreezeFile(boolean[] freezeVariables, File freezeFile, int offsetID)
+    public static void createFreezeFile(int[] freezeVariables, File freezeFile, int offsetID)
     {
         StringBuffer freezeBuffer = new StringBuffer("");
         for (int i = 0; i < freezeVariables.length; i++)
         {
-            if (freezeVariables[i])
+            if (freezeVariables[i] == 1)
+            {
+                if (i < (freezeVariables.length - 1))
+                {
+                    freezeBuffer.append("-" + (offsetID + i) + " ");
+                }
+                else
+                {
+                    freezeBuffer.append("-" + (offsetID + i));
+                }
+            }
+            else if (freezeVariables[i] == -1)
             {
                 if (i < (freezeVariables.length - 1))
                 {
