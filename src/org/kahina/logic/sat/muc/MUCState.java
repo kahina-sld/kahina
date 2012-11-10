@@ -395,22 +395,21 @@ public class MUCState extends KahinaState
     
     public synchronized void learnMetaBlock(TreeSet<Integer> metaBlock)
     {
-        long time = System.currentTimeMillis();
+        kahina.getLogger().startMeasuring();
         metaInstance.learnNewBlock(metaBlock);
-        System.err.println("  " + (System.currentTimeMillis() - time) + " ms for learning meta block.");
+        kahina.getLogger().endMeasuring("for learning meta block.");
     }
     
     public synchronized void learnMetaClause(TreeSet<Integer> metaClause)
     {
-        long time = System.currentTimeMillis();
+        kahina.getLogger().startMeasuring();
         metaInstance.learnNewClause(metaClause);
-        System.err.println("  " + (System.currentTimeMillis() - time) + " ms for learning meta clause.");
+        kahina.getLogger().endMeasuring("for learning meta clause.");
     }
     
     public synchronized void learnMetaUnits(MUCStep uc)
     {
-        long time = System.currentTimeMillis();
-        if (VERBOSE) System.err.print("Learning meta units: ");
+        kahina.getLogger().startMeasuring();
         List<Integer> posSelVars = new LinkedList<Integer>();
         int numClauses = getStatistics().numClausesOrGroups;
         for (int i = 1; i <= numClauses; i++)
@@ -433,7 +432,7 @@ public class MUCState extends KahinaState
             }
         }
         if (VERBOSE) System.err.println();
-        System.err.println("  " + (System.currentTimeMillis() - time) + " ms for learning meta units");
+        kahina.getLogger().endMeasuring("for learning meta units");
     }
     
     public synchronized void addAndDistributeUnreducibilityInfo(int parentID, int failedReductionID)

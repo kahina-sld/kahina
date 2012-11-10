@@ -73,6 +73,7 @@ public class RecursiveBlockView extends KahinaTreeView
     
     public void recalculate()
     {
+        kahina.getLogger().startMeasuring();
         //treeLayer = 0;
         if (blockHandler == null) return;
         model = blockHandler.retrieveBlockTree();
@@ -130,36 +131,7 @@ public class RecursiveBlockView extends KahinaTreeView
             //nodeBorderColor = new HashMap<Integer, Color>();
             super.recalculate();
         }
-        /*int stepID = kahina.getState().getSelectedStepID();
-        listModel.clear();
-        lineStatus.clear();
-        if (stepID == -1)
-        {
-            displayText("No reduction state selected!");
-        }
-        else if (model.getBlocks().size() == 0)
-        {
-            displayText("No reduction blocks found so far!");
-            lineStatus.add(0);
-        }
-        else
-        {
-            currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
-            for (List<Integer> block : model.retrieveBlocks())
-            {
-                StringBuilder s = new StringBuilder();
-                s.append("[");
-                for (Integer literal : block)
-                {
-                    s.append(literal);
-                    s.append(',');
-                }
-                s.deleteCharAt(s.length() - 1);
-                s.append(']');
-                listModel.addElement(s.toString());
-                lineStatus.add(currentStep.relationToBlock(block));
-            }
-        }*/
+        kahina.getLogger().endMeasuring("for recalculating the RecursiveBlockView");
     }
     
     //revert the hack in KahinaTreeView, we do not want marking here!

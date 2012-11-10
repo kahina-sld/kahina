@@ -124,7 +124,8 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
     @Override
     public void updateDisplay()
     {
-        System.err.println("UCReducerListViewPanel.updateDisplay()");
+        //System.err.println("UCReducerListViewPanel.updateDisplay()");
+        kahina.getLogger().startMeasuring();
         runningReducersPanel.removeAll();
         //System.err.println(view.getModel());
         int size = view.getModel().size();
@@ -142,6 +143,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
             }
         }
         runningReducersPanel.revalidate();
+        kahina.getLogger().endMeasuring("for updating UCReducerListViewPanel");
     }
 
     @Override

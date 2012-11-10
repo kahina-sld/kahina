@@ -152,10 +152,12 @@ public class UCReducer extends KahinaTaskManager
         {
             System.err.println("ERROR: UCReducer has completed a task that is not an UCReductionTask???");
         }
+        state.getKahina().getLogger().endMeasuring("for finishing task " + task);
     }
     
     private void startNextReduction()
     {
+        state.getKahina().getLogger().startMeasuring();
         if (stopped)
         {
             if (getPanel() != null)

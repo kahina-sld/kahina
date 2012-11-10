@@ -66,6 +66,7 @@ public class ColoredPathDAGView extends KahinaDAGView
     
     public void recalculate()
     {
+        kahina.getLogger().startMeasuring();
         super.recalculate();
         edgeColors.clear();
         for (ColoredPath colorPath : model.getColorPaths())
@@ -77,6 +78,7 @@ public class ColoredPathDAGView extends KahinaDAGView
                 addEdgeColor(edgeID,colorPath.getColor());
             }
         }
+        kahina.getLogger().endMeasuring("for recalculating " + this);
     }
     
     @Override
