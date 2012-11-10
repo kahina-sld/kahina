@@ -23,7 +23,7 @@ public class PartitionBlockViewListener extends MouseAdapter implements ActionLi
     private final PartitionBlockViewPanel view;
     
     long lastClick = 0;
-    public final static long DBL_CLICK_INTERVAL = 200;
+    public final static long DBL_CLICK_INTERVAL = 400;
     
     public PartitionBlockViewListener(MUCInstance kahina, PartitionBlockViewPanel view)
     {
@@ -55,8 +55,9 @@ public class PartitionBlockViewListener extends MouseAdapter implements ActionLi
                 }
                 else
                 {
+                    System.err.println("Reducing by clause IDs: " + clauseIDs);
+                    lastClick = time;
                     reduce(clauseIDs);
-                    lastClick = 0;
                 }
             }
         }

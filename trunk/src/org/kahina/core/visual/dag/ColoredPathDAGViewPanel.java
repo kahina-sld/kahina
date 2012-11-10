@@ -73,7 +73,7 @@ public class ColoredPathDAGViewPanel extends KahinaDAGViewPanel
     public void printDAGEdges(Graphics canvas)
     {
         // create lines and their tags
-        System.err.println("KahinaColoredDAGViewPanel.printDAGEdges");
+        //System.err.println("KahinaColoredDAGViewPanel.printDAGEdges");
         for (int nodeID : view.getModel().getNodeIDIterator())
         {       
             List<Integer> incomingEdges = view.getModel().getIncomingEdges(nodeID);
