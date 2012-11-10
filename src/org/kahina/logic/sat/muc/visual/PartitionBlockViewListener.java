@@ -68,7 +68,7 @@ public class PartitionBlockViewListener extends MouseAdapter implements ActionLi
         MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
         UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                                         ucStep, state.getSelectedStepID(), 
-                                                        ics, state.getFiles()
+                                                        ics, state.getFiles(), state.getSatInstance()
                                                       );
         kahina.getReductionManager().addTask(redTask);
     }

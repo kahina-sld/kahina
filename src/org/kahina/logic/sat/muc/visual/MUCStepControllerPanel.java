@@ -196,7 +196,7 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
                     cands.add(view.ics[i]);
                     UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                             ucStep, state.getSelectedStepID(), 
-                            cands, state.getFiles()
+                            cands, state.getFiles(), state.getSatInstance()
                           );
                     kahina.getReductionManager().addTask(redTask); 
                 }
@@ -235,7 +235,7 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
                             cands.add(view.ics[i]);
                             UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                     ucStep, nextID, 
-                                    cands, state.getFiles()
+                                    cands, state.getFiles(), state.getSatInstance()
                                   );
                             kahina.getReductionManager().addTask(redTask); 
                         }
@@ -280,7 +280,7 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
                 cands.add(label);
                 UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                                                 ucStep, state.getSelectedStepID(), 
-                                                                cands, state.getFiles()
+                                                                cands, state.getFiles(), state.getSatInstance()
                                                               );
                 kahina.getReductionManager().addTask(redTask);
                 //kahina.dispatchEvent(new KahinaControlEvent(label + ""));
