@@ -22,7 +22,18 @@ public class KahinaLogger
     public KahinaLogger(String logDir)
     {
         timeStacks = new HashMap<String,List<Long>>();
+        fileStreams = new HashMap<String,FileWriter>();
         this.logDir = logDir;
+        File dir = new File(logDir);
+        if (!dir.exists())
+        {
+            if (!dir.mkdirs())
+            {
+                System.err.println("WARNING: KahinaLogger failed to create directory " + logDir);
+                System.err.println("         Logging had to be disabled!");
+                disableLogging();
+            }
+        }
     }
     
     public void startMeasuring()
@@ -50,7 +61,8 @@ public class KahinaLogger
                     out.append(' ');
                     out.append(' ');
                 }
-                out.append((time-startTime) + " ms " + message);
+                out.append((time-startTime) + " ms " + message + "\n");
+                out.flush();
             }
             catch (IOException e)
             {
@@ -87,6 +99,8 @@ public class KahinaLogger
             catch (IOException e)
             {
                 System.err.println("WARNING: IOException in KahinaLogger while creating " + logFileName);
+                System.err.println("         Logging had to be disabled!");
+                disableLogging();
             }
         }
         timeStack.add(0,startTime);

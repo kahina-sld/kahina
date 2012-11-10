@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.kahina.core.profiler.KahinaLogger;
+
 /**
  * The central broker for event handling and passing of messages.
  * <p>
@@ -23,9 +25,12 @@ public class KahinaController
     //used for printing out indented processing statistics
     private int currentEventDepth = 0;
     
-    public KahinaController()
+    KahinaLogger logger;
+    
+    public KahinaController(KahinaLogger logger)
     {
         registry = new HashMap<String,List<KahinaListener>>();
+        this.logger = logger;
     }
     
     public void registerListener(String type, KahinaListener listener)
@@ -66,8 +71,7 @@ public class KahinaController
         {
         	System.err.println("KahinaController@" + this.hashCode() + ".processEvent(" + event + "@" + event.hashCode() + ")");
         }
-        currentEventDepth++;
-        long time = System.currentTimeMillis();
+        logger.startMeasuring();
         String type = event.getType();
         List<KahinaListener> listenersForType = registry.get(type);
         if (listenersForType != null)
@@ -81,11 +85,6 @@ public class KahinaController
                 listenersForType.get(i).processEvent(event);
             }
         }
-        currentEventDepth--;
-        for (int i = 0; i < currentEventDepth; i++)
-        {
-           System.err.print("  ");
-        }
-        System.err.println((System.currentTimeMillis() - time) + " ms for processing event\"" + event + "\" in " + "KahinaController@" + this.hashCode());
+        logger.endMeasuring("for processing event\"" + event + "\" in " + "KahinaController@" + this.hashCode());
     }
 }
