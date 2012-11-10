@@ -92,6 +92,8 @@ public class MUCGUI extends KahinaGUI
         
         Color NICE_GREEN = new Color(102, 153, 102);
         Color NICE_RED = new Color(183, 50, 50);
+        Color LIGHT_RED = new Color(255, 200, 200);
+        Color LIGHT_GREEN = new Color(202, 253, 202);
         
         /*satInstanceView.setVertexStatusVertexColorEncoding(0, Color.WHITE);
         satInstanceView.setVertexStatusVertexColorEncoding(1, NICE_GREEN);
@@ -140,6 +142,8 @@ public class MUCGUI extends KahinaGUI
             blockListView.setStatusColorEncoding(1, NICE_RED);
             blockListView.setStatusColorEncoding(2, NICE_GREEN);
             blockListView.setStatusColorEncoding(3, Color.LIGHT_GRAY);
+            blockListView.setStatusColorEncoding(4, LIGHT_RED);
+            blockListView.setStatusColorEncoding(5, LIGHT_GREEN);
         }
         else if (kahina.getMetaLearningMode() == MetaLearningMode.RECURSIVE_BLOCKS)
         {
@@ -154,6 +158,8 @@ public class MUCGUI extends KahinaGUI
             blockTreeView.setStatusColorEncoding(1, NICE_RED);
             blockTreeView.setStatusColorEncoding(2, NICE_GREEN);
             blockTreeView.setStatusColorEncoding(3, Color.LIGHT_GRAY);
+            blockTreeView.setStatusColorEncoding(4, LIGHT_RED);
+            blockTreeView.setStatusColorEncoding(4, LIGHT_GREEN);
             
             blockTreeView.getConfig().setHorizontalDistance(6);
             blockTreeView.getConfig().setVerticalDistance(8);
