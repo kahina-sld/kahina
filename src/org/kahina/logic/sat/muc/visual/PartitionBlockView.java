@@ -77,7 +77,7 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
     {
         if (currentStep != null)
         {
-            if (model.getBlocks().size() > 0)
+            if (model.getBlocks().size() > 0 && lineStatus.size() > lineID)
             {
                 return lineStatus.get(lineID);
             }
