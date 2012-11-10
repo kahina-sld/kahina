@@ -101,7 +101,7 @@ public class RecursiveBlockView extends KahinaTreeView
                 else
                 {
                     int derivedStatus = 0;
-                    int[] numStatusChildren = new int[4];
+                    int[] numStatusChildren = new int[6];
                     for (int childBlockID : children)
                     {
                         numStatusChildren[model.getNodeStatus(childBlockID)]++;
