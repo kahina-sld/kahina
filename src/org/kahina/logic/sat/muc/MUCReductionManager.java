@@ -87,9 +87,10 @@ public class MUCReductionManager extends KahinaTaskManager
                     state.learnMetaBlock(metaBlock);
                 }
             }
-            //TODO: panel.updateLabelColors(ucTask.uc);
-            kahina.dispatchEvent(new KahinaUpdateEvent(kahina.getState().getSelectedStepID()));
-            kahina.dispatchEvent(new KahinaRedrawEvent());
+            kahina.getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
+            kahina.getGUI().getViewByID("currentUC").requireRedraw();
+            kahina.dispatchInstanceEvent(new KahinaUpdateEvent(kahina.getState().getSelectedStepID()));
+            kahina.dispatchInstanceEvent(new KahinaRedrawEvent());
         }
     }
 }

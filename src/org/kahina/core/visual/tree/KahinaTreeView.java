@@ -70,8 +70,6 @@ public class KahinaTreeView extends KahinaAbstractTreeView
 	private HashMap<Integer, WidthVector> subtreeWidths;
 	private ArrayList<Integer> terminalLayer;
 	private int maxNodeWidth;
-	
-	protected boolean needsRedraw = true;
 
 	public KahinaTreeView(KahinaInstance<?, ?, ?, ?> kahina)
 	{

@@ -24,8 +24,6 @@ public abstract class KahinaTree extends KahinaObject
     private int referenceNode;
 
     private int rootID;
-    
-    protected boolean needsUpdate = true;
 
     public KahinaTree(LayerDecider decider)
     {

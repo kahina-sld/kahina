@@ -405,5 +405,10 @@ public class KahinaGUI implements KahinaListener
 	{
 	    return "New Project - Select Program File";
 	}
+	
+	public KahinaView<? extends KahinaObject> getViewByID(String viewID)
+	{
+	    return varNameToView.get(viewID);
+	}
 
 }

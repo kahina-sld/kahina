@@ -26,6 +26,7 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
 	protected T model;
 	protected final KahinaInstance<?, ?, ?, ?> kahina;
 	
+	protected boolean needsRedraw = false;
 
 	public KahinaView(KahinaInstance<?, ?, ?, ?> kahina)
 	{
@@ -148,5 +149,10 @@ public abstract class KahinaView<T extends KahinaObject> implements KahinaListen
     public boolean needsRedraw()
     {
         return true;
+    }
+    
+    public void requireRedraw()
+    {
+        needsRedraw = true;
     }
 }

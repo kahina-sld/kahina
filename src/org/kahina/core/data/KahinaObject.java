@@ -7,6 +7,8 @@ public class KahinaObject implements Serializable
 
 	private static final long serialVersionUID = -262730875988653793L;
 	
+	protected boolean needsUpdate = true;
+	
 	/**
 	 * States whether a view of this object needs to be updated.
 	 * @return whether the object was changed since the last call to needsUpdate()
@@ -15,4 +17,9 @@ public class KahinaObject implements Serializable
 	{
 	    return true;
 	}
+	
+    public void requireUpdate()
+    {
+        needsUpdate = true;
+    }
 }
