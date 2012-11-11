@@ -159,7 +159,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         
         //remove the defining clause for the block
         satInstance.getClauses().remove(blockDefClauses.get(blockID)); 
-        satInstance.announceChange();
+        satInstance.announceChangedClauses();
         
         //remove entries for the replaced block from all the tables
         blockList.remove(blockID);
@@ -198,7 +198,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         }
         blockDefClauses.put(blockID, blockDefClause);
         satInstance.getClauses().add(blockDefClause);
-        satInstance.announceChange();
+        satInstance.announceAddedClauses();
         if (VERBOSE) System.err.println("  new block clause:" + blockDefClause);
         return blockID;
     }

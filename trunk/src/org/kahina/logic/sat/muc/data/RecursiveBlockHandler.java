@@ -223,6 +223,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
                newRepresentation.addAll(block2);
                definingClause.addAll(block2);
            }
+           satInstance.announceChangedClauses();
        }
        else
        {
@@ -259,7 +260,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         }
         blockDefClauses.put(blockID, blockDefClause);
         satInstance.getClauses().add(blockDefClause);
-        satInstance.announceChange();
+        satInstance.announceAddedClauses();
         needsUpdate = true;
         if (VERBOSE) System.err.println("  new block clause:" + blockDefClause);
         return blockID;
