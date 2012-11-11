@@ -111,6 +111,7 @@ public class MUCStepView extends KahinaSatInstanceListView
                 listModel.addElement(s.toString());
             }
         }
+        needsRedraw = true;
         kahina.getLogger().endMeasuring("for recalculating the MUCStepView");
     }
 }

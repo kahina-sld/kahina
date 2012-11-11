@@ -47,7 +47,8 @@ public class KahinaSatInstanceListViewPanel extends KahinaViewPanel<KahinaSatIns
     @Override
     public void updateDisplay()
     {
-        repaint();    
+        System.err.println(this + ".updateDisplay()");
+        getList().repaint();
     }
 
     public JList getList()

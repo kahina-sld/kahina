@@ -40,8 +40,6 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     
     //top block for searching insertion and split points
     int topBlock;
-    
-    private boolean needsUpdate = true;
 
     public RecursiveBlockHandler(CnfSatInstance satInstance)
     {

@@ -36,7 +36,6 @@ public class CnfSatInstance extends KahinaSatInstance
     //  entries [numVars,...,2*numVars-1] for negative literals 
     protected Map<Integer,List<Integer>> occurrenceMap = null;
     
-    protected boolean needsUpdate = true;
     //this tells KahinaSatInstanceListView whether it suffices to just append new clauses
     protected boolean needsRebuild = false;
     

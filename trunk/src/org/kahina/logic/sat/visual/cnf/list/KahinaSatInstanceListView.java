@@ -19,8 +19,6 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
     // mapping from status values to display properties
     HashMap<Integer, Color> statusColorEncoding;
     
-    boolean needsRedraw;
-    
     public KahinaSatInstanceListView(KahinaInstance<?, ?, ?, ?> kahina)
     {
         super(kahina);
@@ -143,5 +141,10 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
         {
             return false;
         }
+    }
+    
+    public void requireRedraw()
+    {
+        needsRedraw = true;
     }
 }
