@@ -37,6 +37,8 @@ public class CnfSatInstance extends KahinaSatInstance
     protected Map<Integer,List<Integer>> occurrenceMap = null;
     
     protected boolean needsUpdate = true;
+    //this tells KahinaSatInstanceListView whether it suffices to just append new clauses
+    protected boolean needsRebuild = false;
     
     public CnfSatInstance()
     {
@@ -658,7 +660,13 @@ public class CnfSatInstance extends KahinaSatInstance
         return null;
     }
     
-    public void announceChange()
+    public void announceChangedClauses()
+    {
+        needsUpdate = true;
+        needsRebuild = true;
+    }
+    
+    public void announceAddedClauses()
     {
         needsUpdate = true;
     }
@@ -668,6 +676,19 @@ public class CnfSatInstance extends KahinaSatInstance
         if (needsUpdate)
         {
             needsUpdate = false;
+            return true;
+        }
+        else 
+        {
+            return false;
+        }
+    }
+    
+    public boolean needsRebuild()
+    {
+        if (needsRebuild)
+        {
+            needsRebuild = false;
             return true;
         }
         else 

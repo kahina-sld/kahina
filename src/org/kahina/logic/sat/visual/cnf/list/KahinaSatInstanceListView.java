@@ -89,41 +89,46 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
             return;
         }
         List<List<Integer>> clauses = model.getClauses();
-        listModel.clear();
-        for (int i = 0; i < clauses.size(); i++)
+        if (model.needsRebuild())
         {
-            StringBuilder s = new StringBuilder();
-            s.append(i + 1);
-            s.append(": {");
-            for (Integer literal : clauses.get(i))
-            {
-                s.append(model.getSymbolForLiteral(literal));
-                s.append(',');
-            }
-            s.deleteCharAt(s.length() - 1);
-            s.append('}');
-            listModel.addElement(s.toString());
-        }
-        needsRedraw = true;
-        //this was the efficient way, before clauses could be modified!
-        /*List<List<Integer>> clauses = model.getClauses();
-        if (clauses.size() > listModel.getSize())
-        {
-            for (int i = listModel.getSize(); i < clauses.size(); i++)
+            listModel.clear();
+            for (int i = 0; i < clauses.size(); i++)
             {
                 StringBuilder s = new StringBuilder();
                 s.append(i + 1);
                 s.append(": {");
                 for (Integer literal : clauses.get(i))
                 {
-                    s.append(literal);
+                    s.append(model.getSymbolForLiteral(literal));
                     s.append(',');
                 }
                 s.deleteCharAt(s.length() - 1);
                 s.append('}');
                 listModel.addElement(s.toString());
             }
-        }*/
+        }
+        else
+        {
+            //much easier case: no need to rebuild the entore list model
+            if (clauses.size() > listModel.getSize())
+            {
+                for (int i = listModel.getSize(); i < clauses.size(); i++)
+                {
+                    StringBuilder s = new StringBuilder();
+                    s.append(i + 1);
+                    s.append(": {");
+                    for (Integer literal : clauses.get(i))
+                    {
+                        s.append(model.getSymbolForLiteral(literal));
+                        s.append(',');
+                    }
+                    s.deleteCharAt(s.length() - 1);
+                    s.append('}');
+                    listModel.addElement(s.toString());
+                }
+            }
+        }
+        needsRedraw = true;
         kahina.getLogger().endMeasuring("for recalculating " + this);
     }
     

@@ -88,7 +88,6 @@ public class RecursiveBlockView extends KahinaTreeView
             //    model.getAllNodeIDs() returns all node IDs in ascending order
             //    during block tree construction, child blocks have higher IDs than their parents
             nodeAgenda.addAll(model.getAllNodeIDs());
-            System.err.println("nodeAgenda: " + nodeAgenda);
             while (nodeAgenda.size() > 0)
             {
                 int blockID = nodeAgenda.remove(nodeAgenda.size() - 1);
