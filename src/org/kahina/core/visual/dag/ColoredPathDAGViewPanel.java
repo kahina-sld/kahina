@@ -60,7 +60,7 @@ public class ColoredPathDAGViewPanel extends KahinaDAGViewPanel
         repaint();
         
         //TODO: improve behavior when View is smaller than viewport (e.g. add dummy material)
-        scrollToNode(view.getMarkedNode());
+        //scrollToNode(view.getMarkedNode());
         revalidate();
         
         /*for (TreeViewExtension ext : viewExtensionsAfterMainRendering)
