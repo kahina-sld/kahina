@@ -45,6 +45,7 @@ import org.w3c.dom.Document;
 
 public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, KahinaProject>
 {
+    public static final boolean ASP_CCG_FILTER = false;
 
     public final Action LOAD_FILE_ACTION = new AbstractAction("Load SAT File")
     {
@@ -262,7 +263,10 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         System.err.println("  Instance Size: (" + satInstance.getNumClauses() + "," + satInstance.getNumVariables() + ")");
         
         //TODO: allow the user to configure this filter
-        satInstance.applyDontCareFilter(new AspCcgDontCareFilter(satInstance));
+        if (ASP_CCG_FILTER)
+        {
+            satInstance.applyDontCareFilter(new AspCcgDontCareFilter(satInstance));
+        }
         
         stat = new MUCStatistics();
         stat.instanceName = satFile.getAbsolutePath();

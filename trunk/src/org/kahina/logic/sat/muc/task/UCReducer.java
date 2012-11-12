@@ -1,9 +1,12 @@
 package org.kahina.logic.sat.muc.task;
 
 import java.awt.Color;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
+
+import javax.swing.SwingUtilities;
 
 import org.kahina.core.data.dag.ColoredPath;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
@@ -73,86 +76,111 @@ public class UCReducer extends KahinaTaskManager
     
     public void taskFinished(KahinaTask task)
     {
-        super.taskFinished(task);
-        if (task instanceof UCReductionTask)
+        try
         {
-            UCReductionTask ucTask = (UCReductionTask) task;
-            MUCStep result = ucTask.getResult();
-            //attempt was unsuccessful
-            if (uc == result)
+            super.taskFinished(task);
+            if (task instanceof UCReductionTask)
             {
-                //uc and ucID just stay the same
-                numSATReductions++;
-                if (!state.usesMetaLearning())
+                UCReductionTask ucTask = (UCReductionTask) task;
+                MUCStep result = ucTask.getResult();
+                //attempt was unsuccessful
+                if (uc == result)
                 {
-                    if (ucTask.candidates.size() == 1)
+                    //uc and ucID just stay the same
+                    numSATReductions++;
+                    if (!state.usesMetaLearning())
                     {
-                        state.addAndDistributeUnreducibilityInfo(ucTask.ucID, ucTask.candidates.get(0));
+                        if (ucTask.candidates.size() == 1)
+                        {
+                            state.addAndDistributeUnreducibilityInfo(ucTask.ucID, ucTask.candidates.get(0));
+                        }
                     }
+                    else
+                    {
+                        //we learn that the current selector variables cannot be 1 together
+                        TreeSet<Integer> metaClause = new TreeSet<Integer>();
+                        int numClauses = state.getStatistics().numClausesOrGroups;
+                        for (int i = 1; i <= numClauses; i++)
+                        {
+                            if (!result.getUc().contains(i) || ucTask.candidates.contains(i))
+                            {
+                                metaClause.add(-i);
+                            }
+                        }
+                        state.learnMetaClause(metaClause);
+                    }
+                    //model rotation if only one candidate was reduced, and the task was configured to apply MR
+                    if (ucTask.usesModelRotation() && ucTask.candidates.size() == 1)
+                    {
+                        state.modelRotation(ucTask.getModel(), ucID, ucTask.candidates.get(0));
+                    }
+                    //System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clause " + ucTask.candidate + " at step " + ucID + " led to satisfiable instance! No change!");
                 }
+                //attempt was successful, we might have arrived at a new UC
                 else
                 {
-                    //we learn that the current selector variables cannot be 1 together
-                    TreeSet<Integer> metaClause = new TreeSet<Integer>();
-                    int numClauses = state.getStatistics().numClausesOrGroups;
-                    for (int i = 1; i <= numClauses; i++)
+                    numUNSATReductions++;
+                    System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clauses " + ucTask.candidates + " at step " + ucID + " was successful!");
+                    int stepID = state.registerMUC(result, ucID, ucTask.candidates);
+                    getPath().append(stepID);
+                    Overlap overlap = new Overlap(uc.getUc(),result.getUc());
+                    for (int candidate : overlap.aMinusB)
                     {
-                        if (!result.getUc().contains(i) || ucTask.candidates.contains(i))
-                        {
-                            metaClause.add(-i);
-                        }
+                        uc.setRemovalLink(candidate, stepID);
                     }
-                    state.learnMetaClause(metaClause);
+                    uc = state.retrieve(MUCStep.class, stepID);
+                    ucID = stepID;
+                    heuristics.setNewUC(uc);
+                    if (state.usesMetaLearning())
+                    {
+                        state.learnMetaUnits(uc);
+                        //we ensure that the meta instance can compactly represent the new UC
+                        TreeSet<Integer> metaBlock = new TreeSet<Integer>();
+                        int numClauses = state.getStatistics().numClausesOrGroups;
+                        for (int i = 1; i <= numClauses; i++)
+                        {
+                            if (!result.getUc().contains(i))
+                            {
+                                metaBlock.add(-i);
+                            }
+                        }
+                        state.learnMetaBlock(metaBlock);
+                    }
+                    if (getPanel() != null) getPanel().requestViewUpdate();
                 }
-                //model rotation if only one candidate was reduced, and the task was configured to apply MR
-                if (ucTask.usesModelRotation() && ucTask.candidates.size() == 1)
+                //TODO: optionally select the new step in case of a succesful reduction
+                state.getKahina().getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
+                state.getKahina().getGUI().getViewByID("currentUC").requireRedraw();
+                SwingUtilities.invokeAndWait(new Runnable() 
                 {
-                    state.modelRotation(ucTask.getModel(), ucID, ucTask.candidates.get(0));
-                }
-                //System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clause " + ucTask.candidate + " at step " + ucID + " led to satisfiable instance! No change!");
+                    @Override
+                    public void run() 
+                    {
+                        state.getKahina().dispatchInstanceEvent(new KahinaUpdateEvent(state.getSelectedStepID()));
+                    }
+                });
+                state.getKahina().dispatchInstanceEvent(new KahinaRedrawEvent());
+                startNextReduction();
             }
-            //attempt was successful, we might have arrived at a new UC
             else
             {
-                numUNSATReductions++;
-                System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clauses " + ucTask.candidates + " at step " + ucID + " was successful!");
-                int stepID = state.registerMUC(result, ucID, ucTask.candidates);
-                getPath().append(stepID);
-                Overlap overlap = new Overlap(uc.getUc(),result.getUc());
-                for (int candidate : overlap.aMinusB)
-                {
-                    uc.setRemovalLink(candidate, stepID);
-                }
-                uc = state.retrieve(MUCStep.class, stepID);
-                ucID = stepID;
-                heuristics.setNewUC(uc);
-                if (state.usesMetaLearning())
-                {
-                    state.learnMetaUnits(uc);
-                    //we ensure that the meta instance can compactly represent the new UC
-                    TreeSet<Integer> metaBlock = new TreeSet<Integer>();
-                    int numClauses = state.getStatistics().numClausesOrGroups;
-                    for (int i = 1; i <= numClauses; i++)
-                    {
-                        if (!result.getUc().contains(i))
-                        {
-                            metaBlock.add(-i);
-                        }
-                    }
-                    state.learnMetaBlock(metaBlock);
-                }
-                if (getPanel() != null) getPanel().requestViewUpdate();
+                System.err.println("ERROR: UCReducer has completed a task that is not an UCReductionTask???");
             }
-            //TODO: optionally select the new step in case of a succesful reduction
-            state.getKahina().getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
-            state.getKahina().getGUI().getViewByID("currentUC").requireRedraw();
-            state.getKahina().dispatchInstanceEvent(new KahinaUpdateEvent(state.getSelectedStepID()));
-            state.getKahina().dispatchInstanceEvent(new KahinaRedrawEvent());
-            startNextReduction();
         }
-        else
+        catch (NullPointerException e)
         {
-            System.err.println("ERROR: UCReducer has completed a task that is not an UCReductionTask???");
+            System.err.println("WARNING: caught NullPointerException in UCReducer.taskFinished():");
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e)
+        {
+            System.err.println("WARNING: InvocationTargetException in UCReducer.taskFinished():");
+            e.printStackTrace();
+        }
+        catch (InterruptedException e)
+        {
+            System.err.println("WARNING: InterruptedException in UCReducer.taskFinished():");
+            e.printStackTrace();
         }
         state.getKahina().getLogger().endMeasuring("for finishing task " + task);
     }

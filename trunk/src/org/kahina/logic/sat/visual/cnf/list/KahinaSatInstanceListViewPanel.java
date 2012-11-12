@@ -48,7 +48,8 @@ public class KahinaSatInstanceListViewPanel extends KahinaViewPanel<KahinaSatIns
     public void updateDisplay()
     {
         System.err.println(this + ".updateDisplay()");
-        getList().repaint();
+        revalidate();
+        repaint();
     }
 
     public JList getList()
