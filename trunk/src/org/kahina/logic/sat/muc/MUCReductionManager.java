@@ -1,6 +1,7 @@
 package org.kahina.logic.sat.muc;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
@@ -109,6 +110,11 @@ public class MUCReductionManager extends KahinaTaskManager
         catch (IndexOutOfBoundsException e)
         {
             System.err.println("WARNING: caught IndexOutOfBoundsException in MUCReductionManager.taskFinished():");
+            e.printStackTrace();
+        }
+        catch (ConcurrentModificationException e)
+        {
+            System.err.println("WARNING: caught ConcurrentModificationException in MUCReductionManager.taskFinished():");
             e.printStackTrace();
         }
     }
