@@ -111,13 +111,14 @@ public class UCReductionTask extends KahinaTask
             }
             int[] freezeVariables = new int[stat.numClausesOrGroups];
             Arrays.fill(freezeVariables, 1);
-            for (int i = 0; i < stat.numClausesOrGroups; i++)
+            for (int i = 1; i <= stat.numClausesOrGroups; i++)
             {
                 if (instance.isDontCareClause(i) || muc_cands.contains(i))
                 {
-                    freezeVariables[i] = -1;
+                    freezeVariables[i-1] = -1;
                 }
             }
+            //System.err.println("freezeVars: " + Arrays.toString(freezeVariables));
             MiniSAT.createFreezeFile(freezeVariables, files.tmpFreezeFile, stat.highestID + 1);
             List<Integer> reducedCore = null;
             try
@@ -170,7 +171,7 @@ public class UCReductionTask extends KahinaTask
                 result = newStep;
             }  
             //delete temporary files
-            files.deleteTempFiles();
+            //files.deleteTempFiles();
         }
         //for dummy reduction tasks where the result was known before
         else

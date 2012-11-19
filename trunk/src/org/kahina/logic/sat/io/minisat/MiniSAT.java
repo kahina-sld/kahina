@@ -530,8 +530,13 @@ public class MiniSAT
             {
                 if (line.equals("UNSAT"))
                 {
-                    //System.out.println("UNSAT");
+                    System.err.println("MiniSat says: UNSAT");
                     return true;
+                }
+                else if (line.equals("SAT"))
+                {
+                    System.err.println("MiniSat says: SAT");
+                    return false;
                 }
             }
         }
@@ -543,6 +548,7 @@ public class MiniSAT
             System.exit(0);
         }
         //System.out.println("SAT");
+        System.err.println("ERROR: MiniSat result file says neither SAT nor UNSAT! Assuming SAT!");
         return false;
     }
     

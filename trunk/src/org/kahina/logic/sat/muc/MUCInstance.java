@@ -289,7 +289,8 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     {
         List<Integer> muc_cands = new ArrayList<Integer>();
         List<Integer> muc = new ArrayList<Integer>();
-        for (int i = 0; i < stat.numVarsExtended - stat.highestID; i++)
+        int numClauses = state.getStatistics().numClausesOrGroups;
+        for (int i = 1; i <= numClauses; i++)
         {
             muc_cands.add(i);
         }
@@ -298,7 +299,6 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         
         //we ensure that the meta instance can compactly represent the first UC
         TreeSet<Integer> metaBlock = new TreeSet<Integer>();
-        int numClauses = state.getStatistics().numClausesOrGroups;
         for (int i = 1; i <= numClauses; i++)
         {
             if (!firstUC.getUc().contains(i))
