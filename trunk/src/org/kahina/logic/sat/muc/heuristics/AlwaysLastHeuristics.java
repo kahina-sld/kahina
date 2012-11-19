@@ -17,7 +17,7 @@ public class AlwaysLastHeuristics extends UCReductionHeuristics
     public int getNextCandidate()
     {
         List<Integer> list = uc.getUc();
-        for (int i = list.size() - 1; i > 0; i--)
+        for (int i = list.size() - 1; i >= 0; i--)
         {
             int ic = list.get(i);
             if (!alreadyProcessed.contains(ic))
