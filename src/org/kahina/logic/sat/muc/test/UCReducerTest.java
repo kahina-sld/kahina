@@ -39,7 +39,8 @@ public class UCReducerTest
             kahinaInstance = new MUCInstance(MetaLearningMode.BLOCK_PARTITION, satInstance, stat, files);
             kahinaInstance.startNewSessionWithoutBridge();
             
-            kahinaInstance.generateFirstUC();
+            kahinaInstance.addFirstUC();
+            //kahinaInstance.generateFirstUC();
         }
         else
         {
