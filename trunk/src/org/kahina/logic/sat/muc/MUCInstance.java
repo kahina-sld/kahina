@@ -222,7 +222,8 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
         loadSATFile(project.getMainFile());
         gui.displayMainViews();
-        generateFirstUC();
+        addFirstUC();
+        //generateFirstUC();
         dispatchInstanceEvent(new KahinaRedrawEvent());
     }
         
@@ -282,6 +283,33 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         state.setSatInstance(satInstance);
         state.setStatistics(stat);
         state.setFiles(files);
+    }
+    
+    public void addFirstUC()
+    {
+        List<Integer> muc_cands = new ArrayList<Integer>();
+        List<Integer> muc = new ArrayList<Integer>();
+        for (int i = 0; i < stat.numVarsExtended - stat.highestID; i++)
+        {
+            muc_cands.add(i);
+        }
+        int ucID = bridge.registerMUC(muc_cands.toArray(new Integer[0]), muc.toArray(new Integer[0]));
+        MUCStep firstUC = state.retrieve(MUCStep.class, ucID);
+        
+        //we ensure that the meta instance can compactly represent the first UC
+        TreeSet<Integer> metaBlock = new TreeSet<Integer>();
+        int numClauses = state.getStatistics().numClausesOrGroups;
+        for (int i = 1; i <= numClauses; i++)
+        {
+            if (!firstUC.getUc().contains(i))
+            {
+                metaBlock.add(-i);
+            }
+        }
+        state.learnMetaBlock(metaBlock);
+        
+        dispatchInstanceEvent(new KahinaUpdateEvent(1));
+        dispatchInstanceEvent(new KahinaRedrawEvent());
     }
     
     public void generateFirstUC()
@@ -397,7 +425,8 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             
             loadSATFile(dataFile);
             gui.displayMainViews();
-            generateFirstUC();
+            addFirstUC();
+            //generateFirstUC();
         }
         else if (MUCControlEventCommands.LOAD_PATH.equals(command))
         {
