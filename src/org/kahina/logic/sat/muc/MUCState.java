@@ -351,7 +351,7 @@ public class MUCState extends KahinaState
             MUCStep uc = retrieve(MUCStep.class, ucID);
             for (int ic : uc.getUc())
             {
-                if (uc.getIcStatus(ic) == 0 && !model.satisfies(satInstance.getClause(ic)))
+                if (uc.getIcStatus(ic) == 0 && !model.satisfies(satInstance.getClause(ic - 1)))
                 {
                     if (VERBOSE) System.err.println("  model does not satisfy clause " + ic);
                     if (singleTransClForFlippedModel == -1)
