@@ -124,6 +124,7 @@ public class UCReductionTask extends KahinaTask
             try
             {
                 reducedCore = MiniSAT.findUnsatisfiableCore(stat, files);
+                //System.err.println("reducedCore: " + reducedCore);
                 if (modelRotation)
                 {
                     model = MiniSAT.getCompleteModel(files.tmpResultFile);
@@ -159,7 +160,7 @@ public class UCReductionTask extends KahinaTask
                 {
                     if (!instance.isDontCareClause(a))
                     {
-                        uc.add(a);
+                        uc.add(a+1);
                     }
                 }
                 /*for (int i = 0; i < muc.size(); i++)
@@ -171,7 +172,7 @@ public class UCReductionTask extends KahinaTask
                 result = newStep;
             }  
             //delete temporary files
-            //files.deleteTempFiles();
+            files.deleteTempFiles();
         }
         //for dummy reduction tasks where the result was known before
         else
