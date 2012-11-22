@@ -21,7 +21,7 @@ public class ResolutionProofTreeViewer
     {
         if (args.length == 0)
         {
-            System.err.println("Usage: java ResolutionProofTreeViewer [proof file]");
+            System.err.println("Usage: java ResolutionProofTreeViewer [proof file] ([CNF file])");
             System.exit(1);
         }
         KahinaSatInstance satInstance = new KahinaSatInstance();

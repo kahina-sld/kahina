@@ -15,6 +15,11 @@ public class DimacsCnfOutput
         {
             FileWriter out = new FileWriter(new File(fileName));
             out.write("p cnf " + cnf.getNumVars() + " " + cnf.getNumClauses() + "\n");
+            for (int var = 1; var <= cnf.getNumVars(); var++)
+            {
+                String symbol = cnf.getSymbolForLiteral(var);
+                if (symbol != null) out.write("c " + var + " " + symbol + "\n");
+            }
             for (List<Integer> clause : cnf.getClauses())
             {
                 for (Integer lit : clause)
