@@ -13,11 +13,13 @@ public class ContextFreeGrammar extends KahinaObject
 {
     Map<String,Set<List<String>>> rules;
     Set<String> symbols;
+    Map<String,Set<String>> unaryLinks;
     
     public ContextFreeGrammar()
     {
         rules = new TreeMap<String,Set<List<String>>>();
         symbols = new TreeSet<String>();
+        unaryLinks = new TreeMap<String,Set<String>>();
     }
     
     public Set<String> getSymbols()
@@ -44,6 +46,55 @@ public class ContextFreeGrammar extends KahinaObject
         {
             symbols.add(symbol);
         }
+        //process unary rules (effectively generating equivalence classes)
+        if (body.size() == 1)
+        {
+            processUnaryLink(head,body.get(0));
+        }
+    }
+    
+    private void processUnaryLink(String symbol1, String symbol2)
+    {
+        if (!hasUnaryLink(symbol1, symbol2))
+        {
+            //a new link between two classes
+            Set<String> links1 = unaryLinks.get(symbol1);
+            if (links1 == null)
+            {
+                links1 = new HashSet<String>();
+                unaryLinks.put(symbol1, links1);
+            }
+            links1.add(symbol1);
+            Set<String> links2 = unaryLinks.get(symbol2);
+            if (links2 == null)
+            {
+                links2 = new HashSet<String>();
+                unaryLinks.put(symbol2, links2);
+            }
+            links2.add(symbol2);
+            Set<String> links1copy = new HashSet<String>();
+            links1copy.addAll(links1);
+            Set<String> links2copy = new HashSet<String>();
+            links2copy.addAll(links2);
+            for (String l1 : links1copy)
+            {
+                for (String l2 : links2copy)
+                {
+                    //System.err.println("Adding link " + symbol1 + " -> " + symbol2);
+                    unaryLinks.get(l1).add(l2);
+                    unaryLinks.get(l2).add(l1);
+                }
+            }
+            links1.remove(symbol1);
+            links2.remove(symbol2);
+        }
+    }
+    
+    public boolean hasUnaryLink(String symbol1, String symbol2)
+    {
+        Set<String> links = unaryLinks.get(symbol1);
+        if (links == null) return false;
+        return links.contains(symbol2);
     }
     
     public String toString()
