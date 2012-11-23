@@ -31,12 +31,20 @@ public class CfgToSatConverter
                     int posSymbolWithRange = varIndex.get(posSymbol + "[" + i + "," + j + "]");
                     for (String otherSymbol : cfg.getSymbols())
                     {
-                        if (!otherSymbol.equals(posSymbol))
+                        //symbols linked by unary rules may not exclude each other!
+                        if (!cfg.hasUnaryLink(otherSymbol,posSymbol))
                         {
-                            List<Integer> exclConstraint = new LinkedList<Integer>();
-                            exclConstraint.add(- posSymbolWithRange);
-                            exclConstraint.add(- varIndex.get(otherSymbol + "[" + i + "," + j + "]"));
-                            sat.getClauses().add(exclConstraint);
+                            if (!otherSymbol.equals(posSymbol))
+                            {
+                                List<Integer> exclConstraint = new LinkedList<Integer>();
+                                exclConstraint.add(- posSymbolWithRange);
+                                exclConstraint.add(- varIndex.get(otherSymbol + "[" + i + "," + j + "]"));
+                                sat.getClauses().add(exclConstraint);
+                            }
+                        }
+                        else
+                        {
+                            //System.err.println("Unary link: " + posSymbol + " -> " + otherSymbol);
                         }
                     }
                 }
