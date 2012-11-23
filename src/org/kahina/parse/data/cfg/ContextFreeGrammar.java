@@ -32,6 +32,19 @@ public class ContextFreeGrammar extends KahinaObject
         return rules;
     }
     
+    public Set<String> getTerminals()
+    {
+        HashSet<String> terminals = new HashSet<String>();
+        for (String symbol : symbols)
+        {
+            if (rules.get(symbol) == null)
+            {
+                terminals.add(symbol);
+            }
+        }
+        return terminals;
+    }
+    
     public void addRule(String head, List<String> body)
     {
         symbols.add(head);

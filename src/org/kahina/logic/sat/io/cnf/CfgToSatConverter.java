@@ -114,6 +114,20 @@ public class CfgToSatConverter
                 }
             }
         }
+        //add clauses forbidding large ranges for terminals
+        for (String terminal : cfg.getTerminals())
+        {
+            for (int i = 0; i < lengthLimit; i++)
+            {
+                for (int j = i+2; j <= lengthLimit; j++)
+                {
+                    int posSymbolWithRange = varIndex.get(terminal + "[" + i + "," + j + "]");
+                    List<Integer> terminalConstraint = new LinkedList<Integer>();
+                    terminalConstraint.add(- posSymbolWithRange);   
+                    sat.getClauses().add(terminalConstraint);
+                }
+            }
+        }
         sat.setNumVars(varCounter - 1);
         sat.setNumClauses(sat.getClauses().size());
         return sat;
