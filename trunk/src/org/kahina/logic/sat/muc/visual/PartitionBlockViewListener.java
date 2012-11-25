@@ -15,7 +15,7 @@ import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.gui.ClauseSelectionEvent;
-import org.kahina.logic.sat.muc.task.UCReductionTask;
+import org.kahina.logic.sat.muc.task.ReductionTask;
 
 public class PartitionBlockViewListener extends MouseAdapter implements ActionListener
 {
@@ -67,7 +67,7 @@ public class PartitionBlockViewListener extends MouseAdapter implements ActionLi
     {
         MUCState state = kahina.getState();
         MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
-        UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
+        ReductionTask redTask = new ReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                                         ucStep, state.getSelectedStepID(), 
                                                         ics, state.getFiles(), state.getSatInstance()
                                                       );

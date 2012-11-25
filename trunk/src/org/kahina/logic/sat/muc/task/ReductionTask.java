@@ -17,7 +17,7 @@ import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 
-public class UCReductionTask extends KahinaTask
+public class ReductionTask extends KahinaTask
 {
     //every UCReductionTask receives a unique numerical ID upon creation; used for file names
     public static int idCounter = 0;
@@ -48,7 +48,7 @@ public class UCReductionTask extends KahinaTask
      * @param ucID
      * @param candidate
      */
-    public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat, MUCStep uc, int ucID, List<Integer> candidates, MUCStep result, CnfSatInstance instance)
+    public ReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat, MUCStep uc, int ucID, List<Integer> candidates, MUCStep result, CnfSatInstance instance)
     {
         super(progressBar, manager);
         //this.reducer = reducer;
@@ -62,7 +62,7 @@ public class UCReductionTask extends KahinaTask
         this.instance = instance;
     }
 
-    public UCReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat,  MUCStep uc, int ucID, List<Integer> candidates, MiniSATFiles files, CnfSatInstance instance)
+    public ReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat,  MUCStep uc, int ucID, List<Integer> candidates, MiniSATFiles files, CnfSatInstance instance)
     {
         super(progressBar, manager);
         //this.reducer = reducer;
