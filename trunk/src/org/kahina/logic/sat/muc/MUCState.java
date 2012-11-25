@@ -287,6 +287,7 @@ public class MUCState extends KahinaState
                 decisionGraph.setNodeStatus(stepID, MUCStepType.MINIMAL);
             }
             retrieve(MUCStep.class, parentID).setRemovalLink(lastInstruction.selCandidate, stepID);
+            propagateReducibilityInfo(stepID, parentID);
             propagateIrreducibilityInfo(parentID, stepID);
             updateDecisionNode(stepID);
         }
@@ -377,7 +378,7 @@ public class MUCState extends KahinaState
                uc.setRemovalLink(singleTransClForFlippedModel, -1);
                if (!usesMetaLearning())
                {
-                   addAndDistributeUnreducibilityInfo(ucID, singleTransClForFlippedModel);
+                   addAndDistributeIrreducibilityInfo(ucID, singleTransClForFlippedModel);
                }
                else
                {
@@ -445,7 +446,7 @@ public class MUCState extends KahinaState
         kahina.getLogger().endMeasuring("for learning meta units");
     }
     
-    public synchronized void addAndDistributeUnreducibilityInfo(int parentID, int failedReductionID)
+    public synchronized void addAndDistributeIrreducibilityInfo(int parentID, int failedReductionID)
     {
         MUCStep parentStep = retrieve(MUCStep.class, parentID);
         parentStep.setRemovalLink(failedReductionID, -1);
@@ -455,8 +456,19 @@ public class MUCState extends KahinaState
             Integer link = parentStep.getRemovalLink(cand);
             if (link != null && link != -1 && link != -2)
             {
-                addAndDistributeUnreducibilityInfo(link, failedReductionID);
+                addAndDistributeIrreducibilityInfo(link, failedReductionID);
             }
+        }
+    }
+    
+    public synchronized void addAndDistributeReducibilityInfo(int childID, int reductionID, int link)
+    {
+        MUCStep childStep = retrieve(MUCStep.class, childID);
+        childStep.setRemovalLink(reductionID, link);
+        updateDecisionNode(childID);
+        for (int edge : decisionGraph.getIncomingEdges(childID))
+        {
+            addAndDistributeReducibilityInfo(decisionGraph.getStartNode(edge), reductionID, -2);
         }
     }
     
@@ -480,6 +492,28 @@ public class MUCState extends KahinaState
             {
                 propagateIrreducibilityInfo(childID, link);
             }
+        }
+    }
+    
+    public synchronized void propagateReducibilityInfo(int childID, int parentID)
+    {
+        MUCStep childStep = retrieve(MUCStep.class, childID);
+        MUCStep parentStep = retrieve(MUCStep.class, parentID);
+        for (int cand : childStep.getUc())
+        {
+            Integer link = childStep.getRemovalLink(cand);
+            if (link != null && link != -1 && link != 0)
+            {
+                if (parentStep.getRemovalLink(cand) == null)
+                {
+                    parentStep.setRemovalLink(cand, -2);
+                }
+            }
+        }
+        updateDecisionNode(parentID);
+        for (int edge : decisionGraph.getIncomingEdges(parentID))
+        {
+            propagateReducibilityInfo(parentID, decisionGraph.getStartNode(edge));
         }
     }
     

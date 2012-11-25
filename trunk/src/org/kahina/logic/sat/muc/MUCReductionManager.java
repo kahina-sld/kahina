@@ -45,7 +45,7 @@ public class MUCReductionManager extends KahinaTaskManager
                     {
                         if (ucTask.candidates.size() == 1)
                         {
-                            state.addAndDistributeUnreducibilityInfo(ucTask.ucID, ucTask.candidates.get(0));
+                            state.addAndDistributeIrreducibilityInfo(ucTask.ucID, ucTask.candidates.get(0));
                         }
                     }
                     else
@@ -78,7 +78,7 @@ public class MUCReductionManager extends KahinaTaskManager
                     {
                         if (ucTask.uc.getRemovalLink(candidate) == null)
                         {
-                            ucTask.uc.setRemovalLink(candidate, -2);
+                            state.addAndDistributeReducibilityInfo(ucTask.ucID, candidate, -2);
                         }
                     }
                     if (ucTask.candidates.size() == 1)
