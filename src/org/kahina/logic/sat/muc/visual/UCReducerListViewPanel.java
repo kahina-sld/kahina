@@ -26,8 +26,8 @@ import org.kahina.core.io.color.ColorUtil;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.gui.WrapLayout;
-import org.kahina.logic.sat.muc.heuristics.UCReductionHeuristics;
-import org.kahina.logic.sat.muc.task.UCReducer;
+import org.kahina.logic.sat.muc.heuristics.ReductionHeuristics;
+import org.kahina.logic.sat.muc.task.ReductionAgent;
 
 public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> implements ActionListener
 {
@@ -40,7 +40,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
     
     MUCInstance kahina;
     
-    public UCReducerListViewPanel(MUCInstance kahina, Map<String,Class<? extends UCReductionHeuristics>> heuristics)
+    public UCReducerListViewPanel(MUCInstance kahina, Map<String,Class<? extends ReductionHeuristics>> heuristics)
     {
         this.kahina = kahina;
         
@@ -135,7 +135,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
         }
         else
         {
-            for (UCReducer reducer : view.getModel())
+            for (ReductionAgent reducer : view.getModel())
             {
                 UCReducerPanel panel = new UCReducerPanel(this.view.kahina);
                 reducer.setPanel(panel);
@@ -159,7 +159,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
         else if (s.equals("startReducer"))
         {
             System.err.println("UCReducerListViewPanel.startReducer");
-            UCReducer newReducer = new UCReducer(kahina.getState(), kahina.getState().getSelectedStepID(), kahina.getState().getFiles());
+            ReductionAgent newReducer = new ReductionAgent(kahina.getState(), kahina.getState().getSelectedStepID(), kahina.getState().getFiles());
             try
             {
                 newReducer.setHeuristics(view.heuristics.get(heuristicsChooser.getSelectedItem()).newInstance());
@@ -192,7 +192,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
            List<Integer> shortestPath = dag.findShortestPathFromRoot(kahina.getState().getSelectedStepID());
            System.err.println("Shortest path: " + shortestPath);
            
-           UCReducer newReducer = new UCReducer(kahina.getState(), shortestPath.get(0), kahina.getState().getFiles());
+           ReductionAgent newReducer = new ReductionAgent(kahina.getState(), shortestPath.get(0), kahina.getState().getFiles());
            newReducer.setSignalColor(signalColor.getBackground());
            signalColor.setBackground(ColorUtil.randomColor());
            view.getModel().add(newReducer);

@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CenterHeuristics extends UCReductionHeuristics
+public class CenterHeuristics extends ReductionHeuristics
 {
     Set<Integer> alreadyProcessed;
     

@@ -35,7 +35,7 @@ import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.bridge.MUCBridge;
 import org.kahina.logic.sat.muc.gui.ClauseSelectionEvent;
 import org.kahina.logic.sat.muc.gui.WrapLayout;
-import org.kahina.logic.sat.muc.task.UCReductionTask;
+import org.kahina.logic.sat.muc.task.ReductionTask;
 
 public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> implements ActionListener, MouseListener
 {
@@ -194,7 +194,7 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
                 {
                     List<Integer> cands = new LinkedList<Integer>();
                     cands.add(view.ics[i]);
-                    UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
+                    ReductionTask redTask = new ReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                             ucStep, state.getSelectedStepID(), 
                             cands, state.getFiles(), state.getSatInstance()
                           );
@@ -233,7 +233,7 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
                         {
                             List<Integer> cands = new LinkedList<Integer>();
                             cands.add(view.ics[i]);
-                            UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
+                            ReductionTask redTask = new ReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                     ucStep, nextID, 
                                     cands, state.getFiles(), state.getSatInstance()
                                   );
@@ -278,7 +278,7 @@ public class MUCStepControllerPanel extends KahinaViewPanel<MUCStepController> i
                 MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
                 List<Integer> cands = new LinkedList<Integer>();
                 cands.add(label);
-                UCReductionTask redTask = new UCReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
+                ReductionTask redTask = new ReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
                                                                 ucStep, state.getSelectedStepID(), 
                                                                 cands, state.getFiles(), state.getSatInstance()
                                                               );

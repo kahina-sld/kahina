@@ -18,7 +18,7 @@ import javax.swing.border.Border;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.logic.sat.muc.MUCInstance;
-import org.kahina.logic.sat.muc.task.UCReducer;
+import org.kahina.logic.sat.muc.task.ReductionAgent;
 
 public class UCReducerPanel extends JPanel implements ActionListener
 {
@@ -27,7 +27,7 @@ public class UCReducerPanel extends JPanel implements ActionListener
     private JButton signalColor;
     private JButton commandButton;
     
-    UCReducer reducer;
+    ReductionAgent reducer;
     
     MUCInstance kahina;
     
@@ -61,7 +61,7 @@ public class UCReducerPanel extends JPanel implements ActionListener
         this.kahina = kahina;
     }
     
-    public void setReducer(UCReducer reducer)
+    public void setReducer(ReductionAgent reducer)
     {
         this.reducer = reducer;
         displayColor(reducer.getSignalColor());     

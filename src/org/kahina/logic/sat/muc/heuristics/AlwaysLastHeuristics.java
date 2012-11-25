@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AlwaysLastHeuristics extends UCReductionHeuristics
+public class AlwaysLastHeuristics extends ReductionHeuristics
 {
     Set<Integer> alreadyProcessed;
     

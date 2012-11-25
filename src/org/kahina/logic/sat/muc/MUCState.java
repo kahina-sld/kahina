@@ -202,7 +202,7 @@ public class MUCState extends KahinaState
                 {
                     retrieve(MUCStep.class, parentID).setRemovalLink(selCandidate, stepID);
                 }
-                propagateReducibilityInfo(parentID, stepID);
+                propagateIrreducibilityInfo(parentID, stepID);
                 updateDecisionNode(stepID);
             }
         }
@@ -214,7 +214,7 @@ public class MUCState extends KahinaState
             {
                 retrieve(MUCStep.class, parentID).setRemovalLink(selCandidate, stepID);
             }
-            propagateReducibilityInfo(parentID, stepID);
+            propagateIrreducibilityInfo(parentID, stepID);
             updateDecisionNode(stepID);
         }
         if (VERBOSE)
@@ -274,7 +274,7 @@ public class MUCState extends KahinaState
                     decisionGraph.setNodeStatus(stepID, MUCStepType.MINIMAL);
                 }
                 retrieve(MUCStep.class, parentID).setRemovalLink(lastInstruction.selCandidate, stepID);
-                propagateReducibilityInfo(parentID, stepID);
+                propagateIrreducibilityInfo(parentID, stepID);
                 updateDecisionNode(stepID);
             }
         }
@@ -287,7 +287,7 @@ public class MUCState extends KahinaState
                 decisionGraph.setNodeStatus(stepID, MUCStepType.MINIMAL);
             }
             retrieve(MUCStep.class, parentID).setRemovalLink(lastInstruction.selCandidate, stepID);
-            propagateReducibilityInfo(parentID, stepID);
+            propagateIrreducibilityInfo(parentID, stepID);
             updateDecisionNode(stepID);
         }
         if (VERBOSE)
@@ -435,7 +435,7 @@ public class MUCState extends KahinaState
         for (int learnedUnit : learnedUnits)
         {
             //TODO: extend this to positive units as soon as we can learn them!
-            if (learnedUnit < 0)
+            if (learnedUnit < 0  && uc.getUc().contains(-learnedUnit))
             {
                 if (VERBOSE) System.err.print(learnedUnit + " ");
                 uc.setRemovalLink(-learnedUnit, -1);
@@ -460,7 +460,7 @@ public class MUCState extends KahinaState
         }
     }
     
-    public synchronized void propagateReducibilityInfo(int parentID, int childID)
+    public synchronized void propagateIrreducibilityInfo(int parentID, int childID)
     {
         MUCStep parentStep = retrieve(MUCStep.class, parentID);
         MUCStep childStep = retrieve(MUCStep.class, childID);
@@ -478,7 +478,7 @@ public class MUCState extends KahinaState
             Integer link = childStep.getRemovalLink(cand);
             if (link != null && link != -1 && link != -2)
             {
-                propagateReducibilityInfo(childID, link);
+                propagateIrreducibilityInfo(childID, link);
             }
         }
     }

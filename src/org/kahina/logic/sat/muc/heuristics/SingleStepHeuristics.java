@@ -1,6 +1,6 @@
 package org.kahina.logic.sat.muc.heuristics;
 
-public class SingleStepHeuristics extends UCReductionHeuristics
+public class SingleStepHeuristics extends ReductionHeuristics
 {
     int toReduce;
     boolean done;

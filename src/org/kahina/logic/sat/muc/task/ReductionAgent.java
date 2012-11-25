@@ -19,10 +19,10 @@ import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.data.Overlap;
-import org.kahina.logic.sat.muc.heuristics.UCReductionHeuristics;
+import org.kahina.logic.sat.muc.heuristics.ReductionHeuristics;
 import org.kahina.logic.sat.muc.visual.UCReducerPanel;
 
-public class UCReducer extends KahinaTaskManager
+public class ReductionAgent extends KahinaTaskManager
 {
     //provides access to the decision DAG that is constructed by multiple UCReducers
     MUCState state;
@@ -41,14 +41,14 @@ public class UCReducer extends KahinaTaskManager
     
     MiniSATFiles files;
     
-    UCReductionHeuristics heuristics;
+    ReductionHeuristics heuristics;
     private Color signalColor;
     
     private UCReducerPanel panel;
     
     private ColoredPath path;
     
-    public UCReducer(MUCState state, int startID, MiniSATFiles files)
+    public ReductionAgent(MUCState state, int startID, MiniSATFiles files)
     {
         this.state = state;
         
@@ -79,9 +79,9 @@ public class UCReducer extends KahinaTaskManager
         try
         {
             super.taskFinished(task);
-            if (task instanceof UCReductionTask)
+            if (task instanceof ReductionTask)
             {
-                UCReductionTask ucTask = (UCReductionTask) task;
+                ReductionTask ucTask = (ReductionTask) task;
                 MUCStep result = ucTask.getResult();
                 //attempt was unsuccessful
                 if (uc == result)
@@ -239,16 +239,16 @@ public class UCReducer extends KahinaTaskManager
             Integer removalLink = uc.getRemovalLink(candidate);
             if (removalLink == null || removalLink == -2)
             {
-                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files, state.getSatInstance()));
+                this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files, state.getSatInstance()));
             }
             else if (removalLink == -1)
             {
-                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, uc, state.getSatInstance()));
+                this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, uc, state.getSatInstance()));
             }
             else
             {
                 MUCStep newUC = state.retrieve(MUCStep.class, removalLink);
-                this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, newUC, state.getSatInstance()));
+                this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, newUC, state.getSatInstance()));
             }
         }    
     }
@@ -258,7 +258,7 @@ public class UCReducer extends KahinaTaskManager
         return files;
     }
     
-    public UCReductionHeuristics getHeuristics()
+    public ReductionHeuristics getHeuristics()
     {
         return heuristics;
     }
@@ -283,7 +283,7 @@ public class UCReducer extends KahinaTaskManager
         }
     }
     
-    public void setHeuristics(UCReductionHeuristics heuristics)
+    public void setHeuristics(ReductionHeuristics heuristics)
     {
         this.heuristics = heuristics;
         heuristics.setNewUC(uc);

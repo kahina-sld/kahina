@@ -3,7 +3,7 @@ package org.kahina.logic.sat.muc.heuristics;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AlwaysFirstHeuristics extends UCReductionHeuristics
+public class AlwaysFirstHeuristics extends ReductionHeuristics
 {
     Set<Integer> alreadyProcessed;
     

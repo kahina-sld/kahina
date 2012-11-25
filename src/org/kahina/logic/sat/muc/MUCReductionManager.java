@@ -13,7 +13,7 @@ import org.kahina.core.task.KahinaTask;
 import org.kahina.core.task.KahinaTaskManager;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.muc.data.Overlap;
-import org.kahina.logic.sat.muc.task.UCReductionTask;
+import org.kahina.logic.sat.muc.task.ReductionTask;
 
 public class MUCReductionManager extends KahinaTaskManager
 {
@@ -30,10 +30,10 @@ public class MUCReductionManager extends KahinaTaskManager
         try
         {
             super.taskFinished(task);
-            if (task instanceof UCReductionTask)
+            if (task instanceof ReductionTask)
             {
                 MUCState state = kahina.getState();
-                UCReductionTask ucTask = (UCReductionTask) task;
+                ReductionTask ucTask = (ReductionTask) task;
                 MUCStep result = ucTask.getResult();
                 int resultID = -1;
                 //attempt was unsuccessful
