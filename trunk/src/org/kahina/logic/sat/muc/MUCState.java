@@ -449,10 +449,11 @@ public class MUCState extends KahinaState
     {
         MUCStep parentStep = retrieve(MUCStep.class, parentID);
         parentStep.setRemovalLink(failedReductionID, -1);
+        updateDecisionNode(parentID);
         for (int cand : parentStep.getUc())
         {
             Integer link = parentStep.getRemovalLink(cand);
-            if (link != null && link != -1)
+            if (link != null && link != -1 && link != -2)
             {
                 addAndDistributeUnreducibilityInfo(link, failedReductionID);
             }
@@ -471,10 +472,11 @@ public class MUCState extends KahinaState
                 childStep.setRemovalLink(cand, -1);
             }
         }
+        updateDecisionNode(childID);
         for (int cand : childStep.getUc())
         {
             Integer link = childStep.getRemovalLink(cand);
-            if (link != null && link != -1)
+            if (link != null && link != -1 && link != -2)
             {
                 propagateReducibilityInfo(childID, link);
             }

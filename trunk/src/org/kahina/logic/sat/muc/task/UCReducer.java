@@ -237,7 +237,7 @@ public class UCReducer extends KahinaTaskManager
                 getPanel().repaint();
             }
             Integer removalLink = uc.getRemovalLink(candidate);
-            if (removalLink == null)
+            if (removalLink == null || removalLink == -2)
             {
                 this.addTask(new UCReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files, state.getSatInstance()));
             }
