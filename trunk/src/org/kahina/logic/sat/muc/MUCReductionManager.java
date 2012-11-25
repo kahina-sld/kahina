@@ -76,7 +76,14 @@ public class MUCReductionManager extends KahinaTaskManager
                     Overlap overlap = new Overlap(ucTask.uc.getUc(),result.getUc());
                     for (int candidate : overlap.aMinusB)
                     {
-                        ucTask.uc.setRemovalLink(candidate, stepID);
+                        if (ucTask.uc.getRemovalLink(candidate) == null)
+                        {
+                            ucTask.uc.setRemovalLink(candidate, -2);
+                        }
+                    }
+                    if (ucTask.candidates.size() == 1)
+                    {
+                        ucTask.uc.setRemovalLink(ucTask.candidates.get(0), stepID);
                     }
                     MUCStep uc = state.retrieve(MUCStep.class, stepID);
                     if (kahina.getState().usesMetaLearning())
@@ -95,6 +102,7 @@ public class MUCReductionManager extends KahinaTaskManager
                         state.learnMetaBlock(metaBlock);
                     }
                 }
+                state.updateDecisionNode(ucTask.ucID);
                 kahina.getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
                 kahina.getGUI().getViewByID("currentUC").requireRedraw();
                 kahina.dispatchInstanceEvent(new KahinaSelectionEvent(resultID));

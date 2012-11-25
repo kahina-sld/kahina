@@ -19,7 +19,7 @@ public class MUCStep extends KahinaStep
     //null = unchecked (the links has not yet been established
     //-1 = we already know that removing the IC leads to a satisfiable clause set
     //otherwise: result is the ID of the step we end up in after removing the IC
-    private Map<Integer,Integer> icRemovalLink; 
+    private Map<Integer,Integer> reductionTable; 
     
     //makes it possible to annotate UCs with satisfiability information
     boolean satisfiable;
@@ -27,7 +27,7 @@ public class MUCStep extends KahinaStep
     public MUCStep()
     {
         uc =  new ArrayList<Integer>();
-        icRemovalLink = new TreeMap<Integer,Integer>();
+        reductionTable = new TreeMap<Integer,Integer>();
         satisfiable = false;
     }
 
@@ -35,24 +35,48 @@ public class MUCStep extends KahinaStep
     {
         return uc;
     }
+    
+    public int getStepType()
+    {
+        int numberRed = 0;
+        boolean hasLightGreen = false;
+        for (int clauseID : uc)
+        {
+            Integer status = reductionTable.get(clauseID);
+            if (status == null) return MUCStepType.UNKNOWN;
+            if (status == -1) numberRed++;
+            if (status == -2) hasLightGreen = true;
+        }
+        if (numberRed == uc.size())
+        {
+            //the status for a MUC
+            return 2;
+        }
+        if (hasLightGreen)
+        {
+            return 3;
+        }
+        return 1;
+    }
 
     public Integer getIcStatus(int index)
     {
-        Integer status = icRemovalLink.get(index);
+        Integer status = reductionTable.get(index);
         if (status == null) return 0;
         else if (status == -1) return 2;
+        else if (status == -2) return 3;
         return 1;
     }
     
     //returns null if we have no information yet!
     public Integer getRemovalLink(int index)
     {
-        return this.icRemovalLink.get(index);
+        return this.reductionTable.get(index);
     }
     
     public void setRemovalLink(int index, int link)
     {
-        this.icRemovalLink.put(index,link);
+        this.reductionTable.put(index,link);
     }
     
     //bit of a suboptimal hash function, but very easy to "compute"
@@ -68,7 +92,6 @@ public class MUCStep extends KahinaStep
             List<Integer> otherUC = ((MUCStep) o).getUc();
             if (otherUC.size() == uc.size())
             {
-                //insanely expensive due to not very helpful data structure (TODO: hashing or similar)
                 for (int ic : otherUC)
                 {
                     if (!uc.contains(ic)) return false;
@@ -77,6 +100,11 @@ public class MUCStep extends KahinaStep
             }
         }
         return false;
+    }
+    
+    public int numUnknownClauses()
+    {
+        return uc.size() - reductionTable.size();
     }
     
     public boolean isSatisfiable()
