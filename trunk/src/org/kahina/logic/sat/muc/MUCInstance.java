@@ -520,7 +520,8 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     {
         recentProjects = new LinkedList<KahinaProject>();
         defaultProjects = new LinkedList<KahinaProject>();
-        addDefaultProject("data/project/cnf-demo-project.xml");
+        addDefaultProject("data/project/cfg-demo-project.xml");
+        addDefaultProject("data/project/asp-demo-project.xml");
     }
     
     private void addDefaultProject(String resourcePath)
