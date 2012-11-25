@@ -28,6 +28,11 @@ public class ContextFreeGrammarParser
                 tokens = currentLine.split(" ");
                 if (tokens.length < 2)
                 {
+                    //a 0 line separates rules from the lexicon
+                    if (tokens[0].equals("0"))
+                    {
+                        break;
+                    }
                     System.err.println("ERROR: invalid CFG rule \"" + currentLine + "\", ignoring it.");
                     continue;
                 }
@@ -39,6 +44,19 @@ public class ContextFreeGrammarParser
                 }
                 cfg.addRule(currentHead, currentBody);
             }
+            //read in lexicon entries
+            while (in.hasNext())
+            {
+                currentLine = in.nextLine();
+                tokens = currentLine.split(" ");
+                if (tokens.length != 2)
+                {
+                    System.err.println("ERROR: invalid lexicon entry \"" + currentLine + "\", ignoring it.");
+                    continue;
+                }
+                cfg.addLexEntry(tokens[0], tokens[1]);
+            }
+            in.close();
         }
         catch (FileNotFoundException e)
         {

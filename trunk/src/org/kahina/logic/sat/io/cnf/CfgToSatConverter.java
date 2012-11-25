@@ -10,11 +10,36 @@ import org.kahina.parse.io.cfg.ContextFreeGrammarParser;
 
 public class CfgToSatConverter
 {
-    public static CnfSatInstance convertToSat(ContextFreeGrammar cfg, int lengthLimit)
+    public static CnfSatInstance parsingToSat(ContextFreeGrammar cfg, String[] sentence)
+    {
+        HashMap<String,Integer> varIndex = new HashMap<String,Integer>();
+        //compile the grammar into SAT up to the necessary length
+        CnfSatInstance sat = grammarToSat(cfg, varIndex, sentence.length);
+        //add constraint that the sentence must be covered
+        List<Integer> sentenceConstraint = new LinkedList<Integer>();
+        sentenceConstraint.add(varIndex.get("s[" + 0 + "," + sentence.length + "]"));
+        sat.getClauses().add(sentenceConstraint);
+        //add the units describing the input
+        for (int i = 0; i < sentence.length; i++)
+        {
+            String category = cfg.getCategory(sentence[i]);
+            if (category == null)
+            {
+                System.err.println("WARNING: no lexicon entry found for \"" + sentence[i] + "\", assuming proper name (pn).");
+                category = "pn";
+            }
+            List<Integer> wordConstraint = new LinkedList<Integer>();
+            wordConstraint.add(varIndex.get(category + "[" + i + "," + (i+1) + "]"));
+            sat.getClauses().add(wordConstraint);
+        }
+        sat.setNumClauses(sat.getClauses().size());
+        return sat;
+    }
+    
+    public static CnfSatInstance grammarToSat(ContextFreeGrammar cfg, HashMap<String,Integer> varIndex, int lengthLimit)
     {
         CnfSatInstance sat = new CnfSatInstance();
         int varCounter = 1;
-        HashMap<String,Integer> varIndex = new HashMap<String,Integer>();
         //generate symbol exclusivity constraints for each interval 
         for (int i = 0; i < lengthLimit; i++)
         {
@@ -141,7 +166,7 @@ public class CfgToSatConverter
             System.exit(0);
         }
         ContextFreeGrammar cfg = ContextFreeGrammarParser.parseCFGFile(args[0]);
-        CnfSatInstance instance = CfgToSatConverter.convertToSat(cfg,5);
+        CnfSatInstance instance = CfgToSatConverter.grammarToSat(cfg, new HashMap<String,Integer>(), 5);
         DimacsCnfOutput.writeDimacsCnfFile(args[1], instance);
     }
 }
