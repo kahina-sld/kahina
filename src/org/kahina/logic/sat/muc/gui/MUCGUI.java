@@ -118,9 +118,10 @@ public class MUCGUI extends KahinaGUI
         livingViews.add(decisionGraphView);
         varNameToView.put("decisionGraph", decisionGraphView);
         
-        decisionGraphView.setStatusColorEncoding(MUCStepType.ACTIVE, Color.WHITE);
-        decisionGraphView.setStatusColorEncoding(MUCStepType.MINIMAL, NICE_GREEN);
-        decisionGraphView.setStatusColorEncoding(MUCStepType.SAT, NICE_RED);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.UNKNOWN, Color.WHITE);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.COMPLETE, NICE_GREEN);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.MINIMAL, NICE_RED);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.REDUCIBLE, LIGHT_GREEN);
         
         //this one is not needed any longer, it became obsolete with the mucView
         /*stepController = new MUCStepController(kahina);
@@ -177,6 +178,7 @@ public class MUCGUI extends KahinaGUI
         mucView.setStatusColorEncoding(0, Color.BLACK);
         mucView.setStatusColorEncoding(1, NICE_GREEN);
         mucView.setStatusColorEncoding(2, NICE_RED);
+        mucView.setStatusColorEncoding(3, LIGHT_GREEN);
         
         //TODO: hand over a useful files object
         reducerListView = new UCReducerListView(kahina, new MiniSATFiles());
@@ -187,9 +189,6 @@ public class MUCGUI extends KahinaGUI
         livingViews.add(reducerListView);
         varNameToView.put("reducers", reducerListView);
         
-        decisionGraphView.setStatusColorEncoding(MUCStepType.ACTIVE, Color.WHITE);
-        decisionGraphView.setStatusColorEncoding(MUCStepType.MINIMAL, new Color(102, 153, 102));
-        decisionGraphView.setStatusColorEncoding(MUCStepType.SAT, new Color(183, 50, 50));
         //decisionGraphView.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
         //decisionGraphView.getConfig().setAutoscrollPolicy(KahinaTreeViewOptions.NO_AUTOSCROLL);
         //decisionGraphView.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);

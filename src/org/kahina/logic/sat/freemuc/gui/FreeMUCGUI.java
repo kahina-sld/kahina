@@ -75,9 +75,9 @@ public class FreeMUCGUI extends KahinaGUI
         Color NICE_GREEN = new Color(102, 153, 102);
         Color NICE_RED = new Color(183, 50, 50);
         
-        decisionGraphView.setStatusColorEncoding(MUCStepType.ACTIVE, Color.WHITE);
-        decisionGraphView.setStatusColorEncoding(MUCStepType.MINIMAL, NICE_GREEN);
-        decisionGraphView.setStatusColorEncoding(MUCStepType.SAT, NICE_RED);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.UNKNOWN, Color.WHITE);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.REDUCIBLE, NICE_GREEN);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.MINIMAL, NICE_RED);
     }
     
     public void displayMainViews()

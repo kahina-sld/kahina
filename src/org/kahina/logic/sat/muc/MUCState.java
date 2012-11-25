@@ -191,11 +191,11 @@ public class MUCState extends KahinaState
             //initialize: add the root node
             if (parentID == -1)
             {
-                decisionGraph.addNode(stepID, "Init: " + newStep.getUc().size() + "", MUCStepType.ACTIVE);
+                decisionGraph.addNode(stepID, "Init: " + newStep.getUc().size() + "", MUCStepType.UNKNOWN);
             }
             else
             {
-                decisionGraph.addNode(stepID, newStep.getUc().size() + "", MUCStepType.ACTIVE);
+                decisionGraph.addNode(stepID, newStep.getUc().size() + "", MUCStepType.UNKNOWN);
                 if (VERBOSE) System.err.println("Adding decision graph edge (" + parentID + "," + stepID + ")");
                 decisionGraph.addEdgeNoDuplicates(parentID, stepID, selCandidates + "");
                 for (int selCandidate : selCandidates)
@@ -203,6 +203,7 @@ public class MUCState extends KahinaState
                     retrieve(MUCStep.class, parentID).setRemovalLink(selCandidate, stepID);
                 }
                 propagateReducibilityInfo(parentID, stepID);
+                updateDecisionNode(stepID);
             }
         }
         else
@@ -214,6 +215,7 @@ public class MUCState extends KahinaState
                 retrieve(MUCStep.class, parentID).setRemovalLink(selCandidate, stepID);
             }
             propagateReducibilityInfo(parentID, stepID);
+            updateDecisionNode(stepID);
         }
         if (VERBOSE)
         {
@@ -260,11 +262,11 @@ public class MUCState extends KahinaState
             //initialize: add the root node
             if (lastInstruction == null)
             {
-                decisionGraph.addNode(stepID, "Init: " + uc.size() + "", MUCStepType.ACTIVE);
+                decisionGraph.addNode(stepID, "Init: " + uc.size() + "", MUCStepType.UNKNOWN);
             }
             else
             {
-                decisionGraph.addNode(stepID, uc.size() + "", MUCStepType.ACTIVE);
+                decisionGraph.addNode(stepID, uc.size() + "", MUCStepType.UNKNOWN);
                 if (VERBOSE) System.err.println("Adding decision graph edge (" + parentID + "," + stepID + ")");
                 decisionGraph.addEdgeNoDuplicates(parentID, stepID, lastInstruction.selCandidate + "");
                 if (mucCandidates.length == 0)
@@ -272,7 +274,8 @@ public class MUCState extends KahinaState
                     decisionGraph.setNodeStatus(stepID, MUCStepType.MINIMAL);
                 }
                 retrieve(MUCStep.class, parentID).setRemovalLink(lastInstruction.selCandidate, stepID);
-                if (!usesMetaLearning()) propagateReducibilityInfo(parentID, stepID);
+                propagateReducibilityInfo(parentID, stepID);
+                updateDecisionNode(stepID);
             }
         }
         else
@@ -284,7 +287,8 @@ public class MUCState extends KahinaState
                 decisionGraph.setNodeStatus(stepID, MUCStepType.MINIMAL);
             }
             retrieve(MUCStep.class, parentID).setRemovalLink(lastInstruction.selCandidate, stepID);
-            if (!usesMetaLearning()) propagateReducibilityInfo(parentID, stepID);
+            propagateReducibilityInfo(parentID, stepID);
+            updateDecisionNode(stepID);
         }
         if (VERBOSE)
         {
@@ -475,5 +479,18 @@ public class MUCState extends KahinaState
                 propagateReducibilityInfo(childID, link);
             }
         }
+    }
+    
+    public void updateDecisionNode(int stepID)
+    {
+        MUCStep step = retrieve(MUCStep.class, stepID);
+        int stepType = step.getStepType();
+        String updatedCaption = step.getUc().size() + "";
+        if (stepType == MUCStepType.UNKNOWN)
+        {
+            updatedCaption += " (" + step.numUnknownClauses() + ")";
+        }
+        decisionGraph.setNodeStatus(stepID, stepType);
+        decisionGraph.setNodeCaption(stepID, updatedCaption);
     }
 }

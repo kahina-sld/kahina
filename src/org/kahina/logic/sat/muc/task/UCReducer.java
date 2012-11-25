@@ -126,7 +126,14 @@ public class UCReducer extends KahinaTaskManager
                     Overlap overlap = new Overlap(uc.getUc(),result.getUc());
                     for (int candidate : overlap.aMinusB)
                     {
-                        uc.setRemovalLink(candidate, stepID);
+                        if (ucTask.uc.getRemovalLink(candidate) == null)
+                        {
+                           uc.setRemovalLink(candidate, -2);
+                        }
+                    }
+                    if (ucTask.candidates.size() == 1)
+                    {
+                        ucTask.uc.setRemovalLink(ucTask.candidates.get(0), stepID);
                     }
                     uc = state.retrieve(MUCStep.class, stepID);
                     ucID = stepID;
@@ -148,6 +155,7 @@ public class UCReducer extends KahinaTaskManager
                     }
                     if (getPanel() != null) getPanel().requestViewUpdate();
                 }
+                state.updateDecisionNode(ucTask.ucID);
                 //TODO: optionally select the new step in case of a succesful reduction
                 state.getKahina().getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
                 state.getKahina().getGUI().getViewByID("currentUC").requireRedraw();
