@@ -2,6 +2,7 @@ package org.kahina.parse.data.cfg;
 
 import org.kahina.core.data.KahinaObject;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,15 @@ public class ContextFreeGrammar extends KahinaObject
     Set<String> symbols;
     Map<String,Set<String>> unaryLinks;
     
+    //lexicon: a map from strings to terminals
+    Map<String, String> lexicon;
+    
     public ContextFreeGrammar()
     {
         rules = new TreeMap<String,Set<List<String>>>();
         symbols = new TreeSet<String>();
         unaryLinks = new TreeMap<String,Set<String>>();
+        lexicon = new HashMap<String, String>();
     }
     
     public Set<String> getSymbols()
@@ -30,6 +35,11 @@ public class ContextFreeGrammar extends KahinaObject
     public Map<String,Set<List<String>>> getRules()
     {
         return rules;
+    }
+    
+    public String getCategory(String word)
+    {
+        return lexicon.get(word);
     }
     
     public Set<String> getTerminals()
@@ -43,6 +53,11 @@ public class ContextFreeGrammar extends KahinaObject
             }
         }
         return terminals;
+    }
+    
+    public void addLexEntry(String word, String category)
+    {
+        lexicon.put(word, category);
     }
     
     public void addRule(String head, List<String> body)
