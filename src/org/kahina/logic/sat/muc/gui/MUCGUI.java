@@ -194,7 +194,7 @@ public class MUCGUI extends KahinaGUI
         //decisionGraphView.getConfig().setEdgeTagPolicy(KahinaTreeViewOptions.NO_EDGE_TAGS);
         //decisionGraphView.getConfig().setCollapsePolicy(KahinaTreeViewOptions.NO_COLLAPSING);
         decisionGraphView.getConfig().setVerticalDistance(5);
-        decisionGraphView.getConfig().setHorizontalDistance(3);
+        decisionGraphView.getConfig().setHorizontalDistance(8);
     }
     
     public void displayMainViews()
