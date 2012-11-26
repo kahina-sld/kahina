@@ -4,6 +4,7 @@ import org.kahina.core.data.KahinaObject;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,19 +13,22 @@ import java.util.TreeSet;
 
 public class ContextFreeGrammar extends KahinaObject
 {
-    Map<String,Set<List<String>>> rules;
+    Map<String,List<List<String>>> rules;
     Set<String> symbols;
     Map<String,Set<String>> unaryLinks;
     
     //lexicon: a map from strings to terminals
     Map<String, String> lexicon;
+    //inverse lexicon: map from terminals to realizations
+    Map<String, List<String>> realizations;
     
     public ContextFreeGrammar()
     {
-        rules = new TreeMap<String,Set<List<String>>>();
+        rules = new TreeMap<String,List<List<String>>>();
         symbols = new TreeSet<String>();
         unaryLinks = new TreeMap<String,Set<String>>();
-        lexicon = new HashMap<String, String>();
+        lexicon = new TreeMap<String, String>();
+        realizations = new TreeMap<String, List<String>>();
     }
     
     public Set<String> getSymbols()
@@ -32,9 +36,19 @@ public class ContextFreeGrammar extends KahinaObject
         return symbols;
     }
     
-    public Map<String,Set<List<String>>> getRules()
+    public Set<String> getWords()
+    {
+        return lexicon.keySet();
+    }
+    
+    public Map<String,List<List<String>>> getRules()
     {
         return rules;
+    }
+    
+    public List<String> getRealizations(String terminal)
+    {
+        return realizations.get(terminal);
     }
     
     public String getCategory(String word)
@@ -58,15 +72,22 @@ public class ContextFreeGrammar extends KahinaObject
     public void addLexEntry(String word, String category)
     {
         lexicon.put(word, category);
+        List<String> wordList = realizations.get(category);
+        if (wordList == null)
+        {
+            wordList = new LinkedList<String>();
+            realizations.put(category, wordList);
+        }
+        wordList.add(word);
     }
     
     public void addRule(String head, List<String> body)
     {
         symbols.add(head);
-        Set<List<String>> bodiesForHead = rules.get(head);
+        List<List<String>> bodiesForHead = rules.get(head);
         if (bodiesForHead == null)
         {
-            bodiesForHead = new HashSet<List<String>>();
+            bodiesForHead = new LinkedList<List<String>>();
             rules.put(head, bodiesForHead);
         }
         bodiesForHead.add(body);
@@ -147,6 +168,18 @@ public class ContextFreeGrammar extends KahinaObject
                     s.append(" ");
                 }
                 s.append("| ");
+            }
+            s.delete(s.length() - 3, s.length());
+            s.append("\n");
+        }
+        s.append("Lexicon :\n");
+        for (String terminal : realizations.keySet())
+        {
+            s.append(terminal);
+            s.append(" -> ");
+            for (String word : realizations.get(terminal))
+            {
+                s.append(word + " | ");
             }
             s.delete(s.length() - 3, s.length());
             s.append("\n");
