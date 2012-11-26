@@ -306,7 +306,10 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
                 metaBlock.add(-i);
             }
         }
-        state.learnMetaBlock(metaBlock);
+        if (state.usesMetaLearning())
+        {
+            state.learnMetaBlock(metaBlock);
+        }
         
         dispatchInstanceEvent(new KahinaUpdateEvent(1));
         dispatchInstanceEvent(new KahinaRedrawEvent());

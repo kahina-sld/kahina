@@ -274,8 +274,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
                         }
                     }
                 }
-            }
-            
+            }     
             
             //move upward, rearrange nodes according to positions of already determined descendants
             for (int layerID = maxLayer - 1; layerID >= 0; layerID--)
@@ -415,7 +414,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
         return averageX;
     }
 
-    //  TODO: make this work also with bottom-up display orientation
+    //TODO: make this work also with bottom-up display orientation
     public int getNodeAtCoordinates(int x, int y)
     {
         // binary search over node levels to determine row
@@ -440,8 +439,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
                 middleIndex = (lowerIndex + upperIndex) / 2;
                 middleBound = yCoord.get(nodeLevels.get(middleIndex).get(0)) + view.getConfig().getZoomLevel();
             }
-            if (y < middleBound)
-                upperIndex--;
+            if (y < middleBound) upperIndex--;
         }
         // System.err.println("Node Level: " + upperIndex);
 
@@ -478,8 +476,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
                 // System.err.println("lower: " + lowerIndex + " upper: " +
                 // upperIndex + " middle bound: " + middleBound + " x: " + x);
             }
-            if (x < middleBound)
-                upperIndex--;
+            if (x < middleBound) upperIndex--;
             candidateNode = selectedLevel.get(upperIndex);
         }
         // System.err.println("Potentially clicked node: " + candidateNode);
