@@ -103,7 +103,10 @@ public class MUCReductionManager extends KahinaTaskManager
                     }
                 }
                 state.updateDecisionNode(ucTask.ucID);
-                kahina.getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
+                if (kahina.getState().usesMetaLearning())
+                {
+                    kahina.getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
+                }
                 kahina.getGUI().getViewByID("currentUC").requireRedraw();
                 kahina.dispatchInstanceEvent(new KahinaSelectionEvent(resultID));
                 //kahina.dispatchInstanceEvent(new KahinaUpdateEvent(kahina.getState().getSelectedStepID()));

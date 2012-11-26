@@ -157,7 +157,10 @@ public class ReductionAgent extends KahinaTaskManager
                 }
                 state.updateDecisionNode(ucTask.ucID);
                 //TODO: optionally select the new step in case of a succesful reduction
-                state.getKahina().getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
+                if (state.usesMetaLearning())
+                {
+                    state.getKahina().getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
+                }
                 state.getKahina().getGUI().getViewByID("currentUC").requireRedraw();
                 SwingUtilities.invokeAndWait(new Runnable() 
                 {
