@@ -140,7 +140,7 @@ private static final long serialVersionUID = 6701252380309408342L;
     
     public void printBoxAroundNodeTag(Graphics2D canvas, int nodeID)
     {
-        int x = view.getNodeX(nodeID);
+        int x = view.getNodeX(nodeID) - view.getNodeWidth(nodeID) / 2;
         int y = view.getNodeY(nodeID);
         int width = view.getNodeWidth(nodeID);
         int height = view.getConfig().getNodeSize();
@@ -168,7 +168,7 @@ private static final long serialVersionUID = 6701252380309408342L;
     
     public void printOvalAroundNodeTag(Graphics2D canvas, int nodeID)
     {
-        int x = view.getNodeX(nodeID);
+        int x = view.getNodeX(nodeID)- view.getNodeWidth(nodeID) / 2;
         int y = view.getNodeY(nodeID);
         int width = view.getNodeWidth(nodeID);
         int height = view.getConfig().getNodeSize();
@@ -232,7 +232,7 @@ private static final long serialVersionUID = 6701252380309408342L;
         //tag += nodeID;
         String[] stringParts = tag.split("\\\\n");   
         canvas.setColor(Color.BLACK);
-        int x = view.getNodeX(nodeID);
+        int x = view.getNodeX(nodeID) - view.getNodeWidth(nodeID) / 2;
         int y = view.getNodeY(nodeID) + view.getConfig().getNodeSize(); 
         
         for (String part : stringParts)
@@ -261,9 +261,9 @@ private static final long serialVersionUID = 6701252380309408342L;
                     }
                     else
                     {
-                        int x1 = view.getNodeX(ancestor) + view.getNodeWidth(ancestor) / 2;
+                        int x1 = view.getNodeX(ancestor);
                         int y1 = view.getNodeY(ancestor) + view.getConfig().getNodeSize();
-                        int x2 = view.getNodeX(nodeID) + view.getNodeWidth(nodeID) / 2;
+                        int x2 = view.getNodeX(nodeID);
                         int y2 = view.getNodeY(nodeID);
                         canvas.drawLine(x1, y1, x2, y2);
                                 
@@ -286,7 +286,7 @@ private static final long serialVersionUID = 6701252380309408342L;
             int height = fm.getHeight();
             canvas.setColor(Color.BLACK);
             //print edge tag
-            int x = center.x - width / 2;
+            int x = center.x;
             int y = center.y;
             if (view.getConfig().getEdgeLabelPolicy() == KahinaDAGViewOptions.OVAL_EDGE_LABELS)
             {

@@ -88,9 +88,9 @@ public class ColoredPathDAGViewPanel extends KahinaDAGViewPanel
                     }
                     else
                     {
-                        int x1 = view.getNodeX(ancestor) + view.getNodeWidth(ancestor) / 2;
+                        int x1 = view.getNodeX(ancestor);
                         int y1 = view.getNodeY(ancestor) + view.getConfig().getNodeSize();
-                        int x2 = view.getNodeX(nodeID) + view.getNodeWidth(nodeID) / 2;
+                        int x2 = view.getNodeX(nodeID);
                         int y2 = view.getNodeY(nodeID);
                         List<Color> edgeColors = view.getEdgeColors(incomingEdges.get(j));
                         int xOffset = edgeColors.size();
