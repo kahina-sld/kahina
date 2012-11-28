@@ -172,7 +172,7 @@ public class ReductionTask extends KahinaTask
                 result = newStep;
             }  
             //delete temporary files
-            files.deleteTempFiles();
+            //files.deleteTempFiles();
         }
         //for dummy reduction tasks where the result was known before
         else

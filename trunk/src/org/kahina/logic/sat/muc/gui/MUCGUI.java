@@ -25,9 +25,10 @@ import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.MUCStepType;
 import org.kahina.logic.sat.muc.MetaLearningMode;
-import org.kahina.logic.sat.muc.heuristics.AlwaysFirstHeuristics;
-import org.kahina.logic.sat.muc.heuristics.AlwaysLastHeuristics;
-import org.kahina.logic.sat.muc.heuristics.CenterHeuristics;
+import org.kahina.logic.sat.muc.heuristics.AscendingIndexHeuristic;
+import org.kahina.logic.sat.muc.heuristics.DescendingIndexHeuristic;
+import org.kahina.logic.sat.muc.heuristics.CenteredIndexHeuristic;
+import org.kahina.logic.sat.muc.heuristics.DescendingRelevanceHeuristic;
 import org.kahina.logic.sat.muc.visual.MUCStepController;
 import org.kahina.logic.sat.muc.visual.MUCStepView;
 import org.kahina.logic.sat.muc.visual.PartitionBlockView;
@@ -182,9 +183,10 @@ public class MUCGUI extends KahinaGUI
         
         //TODO: hand over a useful files object
         reducerListView = new UCReducerListView(kahina, new MiniSATFiles());
-        reducerListView.addHeuristic(AlwaysFirstHeuristics.class);
-        reducerListView.addHeuristic(CenterHeuristics.class);
-        reducerListView.addHeuristic(AlwaysLastHeuristics.class);
+        reducerListView.addHeuristic(AscendingIndexHeuristic.class);
+        reducerListView.addHeuristic(CenteredIndexHeuristic.class);
+        reducerListView.addHeuristic(DescendingIndexHeuristic.class);
+        reducerListView.addHeuristic(DescendingRelevanceHeuristic.class);
         views.add(reducerListView);
         livingViews.add(reducerListView);
         varNameToView.put("reducers", reducerListView);

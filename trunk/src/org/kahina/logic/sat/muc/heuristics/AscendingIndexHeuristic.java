@@ -3,11 +3,11 @@ package org.kahina.logic.sat.muc.heuristics;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AlwaysFirstHeuristics extends ReductionHeuristics
+public class AscendingIndexHeuristic extends ReductionHeuristic
 {
     Set<Integer> alreadyProcessed;
     
-    public AlwaysFirstHeuristics()
+    public AscendingIndexHeuristic()
     {
         alreadyProcessed = new HashSet<Integer>();
     }
@@ -28,6 +28,6 @@ public class AlwaysFirstHeuristics extends ReductionHeuristics
     
     public String getName()
     {
-        return "always-first heuristic";
+        return "ascending index heuristic";
     }
 }

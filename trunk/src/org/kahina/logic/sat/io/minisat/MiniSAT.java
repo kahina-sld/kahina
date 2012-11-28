@@ -10,8 +10,12 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Timer;
@@ -596,6 +600,50 @@ public class MiniSAT
         }
         return null;
     }
+    
+    public static List<Integer> getVarRelevanceOrdering(File proofFile)
+    {
+        List<Integer> ordering = new ArrayList<Integer>();
+        Map<Integer,Integer> varCounts = new HashMap<Integer,Integer>();
+        BufferedReader input;
+        try
+        {
+            input = new BufferedReader(new FileReader(proofFile));
+            String line, line2;
+            while ((line2 = input.readLine()) != null)
+            {
+                line = line2;
+                String[] tokens = line.split(" ");
+                for (int i = 1; i < tokens.length; i++)
+                {
+                    int var = Integer.parseInt(tokens[i]);
+                    if (var != 0)
+                    {
+                        if (var < 0) var = -var;
+                        Integer previousCount = varCounts.get(var);
+                        if (previousCount == null)
+                        {
+                            varCounts.put(var, 1);
+                            ordering.add(var);
+                        }
+                        else
+                        {
+                            varCounts.put(var, previousCount + 1);
+                        }
+                    }
+                }
+            }
+            input.close();
+            Collections.sort(ordering, new VarRelevanceComparator(varCounts));
+            return ordering;
+        }
+        catch (IOException e)
+        {
+            System.err.println("ERROR: failed to read proof file \"" + proofFile + "\"! Null set returned!");
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     // extract the relevant assumptions from the last proof file
     public static List<Integer> getRelevantAssumptions(int[] freezeVariables, int offsetID)
@@ -774,5 +822,24 @@ public class MiniSAT
             System.err.println("IO error: failed to create temporary freeze file");
             System.exit(0);
         }
+    }
+    
+    private static class VarRelevanceComparator implements Comparator<Integer>
+    {
+        Map<Integer,Integer> varCounts;
+        
+        public VarRelevanceComparator(Map<Integer,Integer> varCounts)
+        {
+            this.varCounts = varCounts;
+        }
+        
+        @Override
+        public int compare(Integer arg0, Integer arg1)
+        {
+            if (varCounts.get(arg0) == varCounts.get(arg1)) return 0;
+            else if (varCounts.get(arg0) < varCounts.get(arg1)) return 1;
+            else if (varCounts.get(arg0) > varCounts.get(arg1)) return -1;
+            return 0;
+        }    
     }
 }

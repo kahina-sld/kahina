@@ -26,7 +26,7 @@ import org.kahina.core.io.color.ColorUtil;
 import org.kahina.core.visual.KahinaViewPanel;
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.gui.WrapLayout;
-import org.kahina.logic.sat.muc.heuristics.ReductionHeuristics;
+import org.kahina.logic.sat.muc.heuristics.ReductionHeuristic;
 import org.kahina.logic.sat.muc.task.ReductionAgent;
 
 public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> implements ActionListener
@@ -40,7 +40,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
     
     MUCInstance kahina;
     
-    public UCReducerListViewPanel(MUCInstance kahina, Map<String,Class<? extends ReductionHeuristics>> heuristics)
+    public UCReducerListViewPanel(MUCInstance kahina, Map<String,Class<? extends ReductionHeuristic>> heuristics)
     {
         this.kahina = kahina;
         
@@ -163,6 +163,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
             try
             {
                 newReducer.setHeuristics(view.heuristics.get(heuristicsChooser.getSelectedItem()).newInstance());
+                newReducer.getHeuristics().setSelVarOffset(kahina.getState().getSatInstance().getNumVariables());
                 newReducer.setSignalColor(signalColor.getBackground());
                 signalColor.setBackground(ColorUtil.randomColor());
                 view.getModel().add(newReducer);

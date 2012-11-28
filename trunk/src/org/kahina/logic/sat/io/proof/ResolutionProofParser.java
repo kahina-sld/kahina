@@ -9,13 +9,14 @@ import java.util.Scanner;
 import org.kahina.core.data.dag.DAGtoTreeConversion;
 import org.kahina.core.data.tree.KahinaMemTree;
 import org.kahina.logic.sat.data.KahinaSatInstance;
+import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.proof.ResolutionProofDAG;
 import org.kahina.logic.sat.data.proof.ResolutionProofDAGtoTreeConversion;
 import org.kahina.logic.sat.data.proof.ResolutionProofTree;
 
 public class ResolutionProofParser
 {
-    public static ResolutionProofDAG createResolutionProofDAG(String fileName, KahinaSatInstance sat)
+    public static ResolutionProofDAG createResolutionProofDAG(String fileName, CnfSatInstance sat)
     {
         ResolutionProofDAG proof = new ResolutionProofDAG(sat);
         try
@@ -59,7 +60,7 @@ public class ResolutionProofParser
         return proof;
     }
     
-    public static ResolutionProofTree createResolutionProofTree(String fileName, KahinaSatInstance sat)
+    public static ResolutionProofTree createResolutionProofTree(String fileName, CnfSatInstance sat)
     {
         ResolutionProofDAG proof = createResolutionProofDAG(fileName, sat);
         //this method does not work because the proof output includes irrelevant learned clauses!
