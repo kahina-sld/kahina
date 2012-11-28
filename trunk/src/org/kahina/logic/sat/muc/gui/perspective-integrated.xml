@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="" kahina:name="MinUnsatCore Default">
   <kahina:arrangement>
-    <kahina:main-window kahina:border="false" kahina:height="1000" kahina:id="0" kahina:primary="false" kahina:title="Kahina" kahina:width="1680" kahina:xpos="0" kahina:ypos="25">
-      <kahina:hori-split-window kahina:height="1000" kahina:id="14" kahina:primary="false" kahina:title="TopSplit" kahina:width="1680" kahina:xpos="0" kahina:ypos="25">
-      	  <kahina:vert-split-window kahina:height="1000" kahina:id="15" kahina:title="Original and Meta Instance" kahina:width="500" kahina:xpos="0" kahina:ypos="0">
-              <kahina:default-window kahina:binding="satInstance" kahina:border="true" kahina:height="500" kahina:id="3" kahina:primary="true" kahina:title="SAT Instance" kahina:width="500" kahina:xpos="0" kahina:ypos="100"/>
-              <kahina:default-window kahina:binding="metaInstance" kahina:border="true" kahina:height="400" kahina:id="16" kahina:primary="true" kahina:title="Meta Instance" kahina:width="500" kahina:xpos="0" kahina:ypos="600"/>
+      <kahina:main-window kahina:border="false" kahina:height="974" kahina:id="0" kahina:primary="false" kahina:scroll="false" kahina:title="Interactive MUS Extractor" kahina:width="1280" kahina:xpos="0" kahina:ypos="25">
+        <kahina:hori-split-window kahina:height="1000" kahina:id="14" kahina:title="TopSplit" kahina:width="1680" kahina:xpos="0" kahina:ypos="25">
+          <kahina:vert-split-window kahina:height="1000" kahina:id="15" kahina:title="Original and Meta Instance" kahina:width="301" kahina:xpos="0" kahina:ypos="0">
+            <kahina:default-window kahina:binding="metaInstance" kahina:border="true" kahina:height="512" kahina:id="16" kahina:primary="true" kahina:scroll="false" kahina:title="Meta Instance" kahina:width="500" kahina:xpos="0" kahina:ypos="600"/>
+            <kahina:default-window kahina:binding="satInstance" kahina:border="true" kahina:height="488" kahina:id="3" kahina:primary="true" kahina:scroll="false" kahina:title="SAT Instance" kahina:width="500" kahina:xpos="0" kahina:ypos="100"/>
           </kahina:vert-split-window>
-	      <kahina:vert-split-window kahina:height="1000" kahina:id="9" kahina:title="MinUnsatCore Visualization" kahina:width="1680" kahina:xpos="300" kahina:ypos="0">
-	          <kahina:hori-split-window kahina:height="500" kahina:id="17" kahina:title="Decision Graph and Current UC" kahina:border="false" kahina:width="1680" kahina:xpos="300" kahina:ypos="0">
-	            <kahina:default-window kahina:binding="decisionGraph" kahina:border="true" kahina:height="471" kahina:id="1" kahina:primary="true" kahina:title="Decision graph" kahina:width="600" kahina:xpos="320" kahina:ypos="25"/>
-	            <kahina:hori-split-window kahina:height="500" kahina:id="19" kahina:title="Selected UC" kahina:border="true" kahina:width="600" kahina:xpos="500" kahina:ypos="0">
-	              <kahina:default-window kahina:scroll="true" kahina:binding="currentUCBlocks" kahina:border="true" kahina:height="471" kahina:id="20" kahina:primary="true" kahina:title="Blocks" kahina:width="300" kahina:xpos="500" kahina:ypos="25"/>
-	              <kahina:default-window kahina:binding="currentUC" kahina:border="true" kahina:height="471" kahina:id="18" kahina:primary="true" kahina:title="Clauses" kahina:width="300" kahina:xpos="800" kahina:ypos="25"/>
-	            </kahina:hori-split-window>
-	          </kahina:hori-split-window>
-	          <kahina:default-window kahina:binding="reducers" kahina:border="true" kahina:height="-471" kahina:id="13" kahina:primary="true" kahina:title="Automated UC Reduction" kahina:width="800" kahina:xpos="800" kahina:ypos="200"/>
-	      </kahina:vert-split-window>
-      </kahina:hori-split-window>
-    </kahina:main-window>
+          <kahina:vert-split-window kahina:height="1000" kahina:id="9" kahina:title="MinUnsatCore Visualization" kahina:width="1379" kahina:xpos="300" kahina:ypos="0">
+            <kahina:hori-split-window kahina:height="488" kahina:id="17" kahina:title="Reduction Graph and Current US" kahina:width="1680" kahina:xpos="300" kahina:ypos="0">
+              <kahina:default-window kahina:binding="decisionGraph" kahina:border="true" kahina:height="500" kahina:id="1" kahina:primary="true" kahina:scroll="false" kahina:title="Reduction graph" kahina:width="501" kahina:xpos="320" kahina:ypos="25"/>
+              <kahina:hori-split-window kahina:height="500" kahina:id="19" kahina:title="Selected US" kahina:width="1179" kahina:xpos="500" kahina:ypos="0">
+                <kahina:default-window kahina:binding="currentUC" kahina:border="true" kahina:height="500" kahina:id="18" kahina:primary="true" kahina:scroll="false" kahina:title="Current US" kahina:width="350" kahina:xpos="800" kahina:ypos="25"/>
+                <kahina:default-window kahina:binding="currentUCBlocks" kahina:border="true" kahina:height="500" kahina:id="20" kahina:primary="true" kahina:scroll="true" kahina:title="Blocks" kahina:width="250" kahina:xpos="500" kahina:ypos="25"/>
+              </kahina:hori-split-window>
+            </kahina:hori-split-window>
+            <kahina:default-window kahina:binding="reducers" kahina:border="true" kahina:height="512" kahina:id="13" kahina:primary="true" kahina:scroll="false" kahina:title="Automated Reduction" kahina:width="1680" kahina:xpos="800" kahina:ypos="200"/>
+          </kahina:vert-split-window>
+        </kahina:hori-split-window>
+      </kahina:main-window>
   </kahina:arrangement>
   <kahina:configurations>
     <kahina:configuration kahina:type="org.kahina.core.visual.tree.KahinaTreeViewConfiguration" kahina:viewid="1">

@@ -49,7 +49,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
         JPanel leftPanel = new JPanel();
         
         newReducerPanel = new JPanel();
-        newReducerPanel.setBorder(BorderFactory.createTitledBorder("Start a new reducer at the selected node"));
+        newReducerPanel.setBorder(BorderFactory.createTitledBorder("Start a new reducer at the selected US"));
         
         JLabel heuristicsLabel = new JLabel("Basic heuristics: ");
         newReducerPanel.add(heuristicsLabel);
