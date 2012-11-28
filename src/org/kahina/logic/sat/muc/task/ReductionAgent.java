@@ -16,10 +16,11 @@ import org.kahina.core.task.KahinaTask;
 import org.kahina.core.task.KahinaTaskManager;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
+import org.kahina.logic.sat.io.proof.ResolutionProofParser;
 import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.data.Overlap;
-import org.kahina.logic.sat.muc.heuristics.ReductionHeuristics;
+import org.kahina.logic.sat.muc.heuristics.ReductionHeuristic;
 import org.kahina.logic.sat.muc.visual.UCReducerPanel;
 
 public class ReductionAgent extends KahinaTaskManager
@@ -41,7 +42,7 @@ public class ReductionAgent extends KahinaTaskManager
     
     MiniSATFiles files;
     
-    ReductionHeuristics heuristics;
+    ReductionHeuristic heuristics;
     private Color signalColor;
     
     private UCReducerPanel panel;
@@ -138,6 +139,12 @@ public class ReductionAgent extends KahinaTaskManager
                     uc = state.retrieve(MUCStep.class, stepID);
                     ucID = stepID;
                     heuristics.setNewUC(uc);
+                    if (heuristics.needsProof())
+                    {
+                        //heuristics.deliverProof(MiniSAT.getVarRelevanceOrdering(files.tmpProofFile));
+                        heuristics.deliverProof(ResolutionProofParser.createResolutionProofTree(files.tmpProofFile.toString(), state.getSatInstance()));
+                    }
+                    //files.deleteTempFiles();
                     if (state.usesMetaLearning())
                     {
                         state.learnMetaUnits(uc);
@@ -261,7 +268,7 @@ public class ReductionAgent extends KahinaTaskManager
         return files;
     }
     
-    public ReductionHeuristics getHeuristics()
+    public ReductionHeuristic getHeuristics()
     {
         return heuristics;
     }
@@ -286,7 +293,7 @@ public class ReductionAgent extends KahinaTaskManager
         }
     }
     
-    public void setHeuristics(ReductionHeuristics heuristics)
+    public void setHeuristics(ReductionHeuristic heuristics)
     {
         this.heuristics = heuristics;
         heuristics.setNewUC(uc);

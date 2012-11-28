@@ -5,15 +5,15 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.kahina.core.data.dag.KahinaMemDAG;
-import org.kahina.logic.sat.data.KahinaSatInstance;
+import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
 public class ResolutionProofDAG extends KahinaMemDAG
 {
-    KahinaSatInstance satInstance;
+    CnfSatInstance satInstance;
     Map<Integer,List<Integer>> clauses;
     int refutationNode;
     
-    public ResolutionProofDAG(KahinaSatInstance satInstance)
+    public ResolutionProofDAG(CnfSatInstance satInstance)
     {
         this.satInstance = satInstance;
         this.clauses = new TreeMap<Integer,List<Integer>>();

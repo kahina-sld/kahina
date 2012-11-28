@@ -9,7 +9,7 @@ import org.kahina.core.visual.KahinaView;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.data.UCReducerList;
-import org.kahina.logic.sat.muc.heuristics.ReductionHeuristics;
+import org.kahina.logic.sat.muc.heuristics.ReductionHeuristic;
 import org.kahina.logic.sat.muc.task.ReductionAgent;
 
 public class UCReducerListView extends KahinaView<UCReducerList>
@@ -19,7 +19,7 @@ public class UCReducerListView extends KahinaView<UCReducerList>
     MUCInstance kahina;
     MiniSATFiles files;
     
-    Map<String,Class<? extends ReductionHeuristics>> heuristics;
+    Map<String,Class<? extends ReductionHeuristic>> heuristics;
     
     public UCReducerListView(MUCInstance kahina, MiniSATFiles files)
     {
@@ -28,10 +28,10 @@ public class UCReducerListView extends KahinaView<UCReducerList>
         this.model = new UCReducerList();
         
         newReducer = new ReductionAgent(kahina.getState(),1,files);
-        heuristics = new HashMap<String,Class<? extends ReductionHeuristics>>();
+        heuristics = new HashMap<String,Class<? extends ReductionHeuristic>>();
     }
     
-    public void addHeuristic(Class<? extends ReductionHeuristics> heuristic)
+    public void addHeuristic(Class<? extends ReductionHeuristic> heuristic)
     {
         //TODO: this is really ugly, but seems to be the only feasible way to read out the desired name string
         try

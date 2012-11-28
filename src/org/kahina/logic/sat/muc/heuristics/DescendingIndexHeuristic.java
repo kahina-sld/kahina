@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AlwaysLastHeuristics extends ReductionHeuristics
+public class DescendingIndexHeuristic extends ReductionHeuristic
 {
     Set<Integer> alreadyProcessed;
     
-    public AlwaysLastHeuristics()
+    public DescendingIndexHeuristic()
     {
         alreadyProcessed = new HashSet<Integer>();
     }
@@ -31,6 +31,6 @@ public class AlwaysLastHeuristics extends ReductionHeuristics
     
     public String getName()
     {
-        return "always-last heuristic";
+        return "descending index heuristic";
     }
 }

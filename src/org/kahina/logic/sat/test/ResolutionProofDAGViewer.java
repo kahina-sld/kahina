@@ -11,6 +11,7 @@ import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.visual.dag.KahinaDAGView;
 import org.kahina.core.visual.dag.LayeredLayouter;
 import org.kahina.logic.sat.data.KahinaSatInstance;
+import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.proof.ResolutionProofDAG;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.proof.ResolutionProofParser;
@@ -24,7 +25,7 @@ public class ResolutionProofDAGViewer
             System.err.println("Usage: java ResolutionProofDAGViewer [proof file]");
             System.exit(1);
         }
-        KahinaSatInstance satInstance = new KahinaSatInstance();
+        CnfSatInstance satInstance = new CnfSatInstance();
         if (args.length >= 2)
         {
             satInstance = DimacsCnfParser.parseDimacsCnfFile(args[1]);

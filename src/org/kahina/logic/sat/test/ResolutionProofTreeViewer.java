@@ -11,6 +11,7 @@ import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 import org.kahina.logic.sat.data.KahinaSatInstance;
+import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.proof.ResolutionProofTree;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.proof.ResolutionProofParser;
@@ -24,7 +25,7 @@ public class ResolutionProofTreeViewer
             System.err.println("Usage: java ResolutionProofTreeViewer [proof file] ([CNF file])");
             System.exit(1);
         }
-        KahinaSatInstance satInstance = new KahinaSatInstance();
+        CnfSatInstance satInstance = new CnfSatInstance();
         if (args.length >= 2)
         {
             satInstance = DimacsCnfParser.parseDimacsCnfFile(args[1]);

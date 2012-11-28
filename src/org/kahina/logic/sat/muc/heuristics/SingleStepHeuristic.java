@@ -1,11 +1,11 @@
 package org.kahina.logic.sat.muc.heuristics;
 
-public class SingleStepHeuristics extends ReductionHeuristics
+public class SingleStepHeuristic extends ReductionHeuristic
 {
     int toReduce;
     boolean done;
     
-    public SingleStepHeuristics(int toReduce)
+    public SingleStepHeuristic(int toReduce)
     {
         this.toReduce = toReduce;
         this.done = false;

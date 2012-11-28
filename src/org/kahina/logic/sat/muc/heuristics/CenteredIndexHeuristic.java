@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CenterHeuristics extends ReductionHeuristics
+public class CenteredIndexHeuristic extends ReductionHeuristic
 {
     Set<Integer> alreadyProcessed;
     
-    public CenterHeuristics()
+    public CenteredIndexHeuristic()
     {
         alreadyProcessed = new HashSet<Integer>();
     }
@@ -56,6 +56,6 @@ public class CenterHeuristics extends ReductionHeuristics
     
     public String getName()
     {
-        return "center heuristic";
+        return "centered index heuristic";
     }
 }
