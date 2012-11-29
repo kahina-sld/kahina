@@ -22,7 +22,14 @@ public class ResolutionProofDAG extends KahinaMemDAG
     
     public int getRefutationNode()
     {
-        return refutationNode;
+        //if an empty clause was detected, return its ID
+        if (refutationNode != -1)
+        {
+            return refutationNode;
+        }
+        //otherwise, just return the highest ID 
+        //(= the clause last mentioned in the proof)
+        return nextNodeID - 1;
     }
     
     public void setNodeClause(int id, List<Integer> clause)

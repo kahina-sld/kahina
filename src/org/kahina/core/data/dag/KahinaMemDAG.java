@@ -35,8 +35,8 @@ public class KahinaMemDAG extends KahinaDAG
     protected Map<Integer, Integer> endNodes;
     
     //store the ID of the next node and the next edge that is going to be added
-    private int nextNodeID = 0;
-    private int nextEdgeID = 0;
+    protected int nextNodeID = 0;
+    protected int nextEdgeID = 0;
     
     public KahinaMemDAG()
     {        

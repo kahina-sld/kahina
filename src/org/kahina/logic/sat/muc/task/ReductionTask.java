@@ -71,7 +71,9 @@ public class ReductionTask extends KahinaTask
         this.uc = uc;
         this.ucID = ucID;
         this.candidates = candidates;
-        this.files = files.copyWithoutTmpFiles();
+        //this.files = files.copyWithoutTmpFiles();
+        //the file object is needed for the ReductionAgent to find the proof file
+        this.files = files;
         this.model = null;
         this.instance = instance;
     }

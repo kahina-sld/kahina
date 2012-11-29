@@ -18,6 +18,7 @@ public class ResolutionProofParser
 {
     public static ResolutionProofDAG createResolutionProofDAG(String fileName, CnfSatInstance sat)
     {
+        System.err.println("Reading resolution proof from file " + fileName + "...");
         ResolutionProofDAG proof = new ResolutionProofDAG(sat);
         try
         {
@@ -29,11 +30,12 @@ public class ResolutionProofParser
             {
                 currentLine = in.nextLine();
                 tokens = currentLine.split(" ");
-                
+                //the clause ID is the first token
                 int clauseID = Integer.parseInt(tokens[0]);
                 int i = 1;
                 List<Integer> clause = new LinkedList<Integer>();
                 String clauseString = "";
+                //all following tokens up to the first 0 are the literals of the new clause
                 while (i < tokens.length)
                 {
                     int literal = Integer.parseInt(tokens[i]);
@@ -43,7 +45,9 @@ public class ResolutionProofParser
                     clauseString += literal + " ";
                 }
                 proof.addNode(clauseID, clauseString, 0);
+                System.err.println("proof.setNodeClause(" + clauseID + "," + clause + ")");
                 proof.setNodeClause(clauseID, clause);
+                //the other tokens up to the terminating 0 are the parent clause IDs
                 while (i < tokens.length)
                 {
                     int parentID = Integer.parseInt(tokens[i]);
