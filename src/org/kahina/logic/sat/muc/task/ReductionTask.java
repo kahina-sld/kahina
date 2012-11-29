@@ -74,6 +74,7 @@ public class ReductionTask extends KahinaTask
         //this.files = files.copyWithoutTmpFiles();
         //the file object is needed for the ReductionAgent to find the proof file
         this.files = files;
+        this.result = null;
         this.model = null;
         this.instance = instance;
     }
@@ -176,7 +177,7 @@ public class ReductionTask extends KahinaTask
             //delete temporary files
             //files.deleteTempFiles();
         }
-        //for dummy reduction tasks where the result was known before
+        //for simulated reduction tasks where the result was known before
         else
         {
             //no IC status needs to be set because we knew the result before

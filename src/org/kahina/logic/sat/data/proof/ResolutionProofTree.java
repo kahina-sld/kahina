@@ -28,7 +28,7 @@ public class ResolutionProofTree extends KahinaUnlayeredMemTree
         Map<Integer,Integer> varCounts = new HashMap<Integer,Integer>();
         for (int clauseID : clauses.keySet())
         {
-            System.err.println("clause " + clauseID + ": " + clauses.get(clauseID));
+            //System.err.println("clause " + clauseID + ": " + clauses.get(clauseID));
             for (int var : clauses.get(clauseID))
             {
                 if (var < 0) var = -var;
