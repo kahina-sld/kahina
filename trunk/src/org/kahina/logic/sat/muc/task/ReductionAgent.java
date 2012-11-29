@@ -247,14 +247,18 @@ public class ReductionAgent extends KahinaTaskManager
                 getPanel().repaint();
             }
             Integer removalLink = uc.getRemovalLink(candidate);
+            //real reduction attempt involving a SAT call
             if (removalLink == null || removalLink == -2)
             {
                 this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files, state.getSatInstance()));
             }
+            //simulated reduction attempt informing heuristics about the clause's criticality
             else if (removalLink == -1)
             {
                 this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, uc, state.getSatInstance()));
             }
+            //simulated reduction attempt informing heuristics about the new clause
+            //TODO: if the heuristic needs a proof, the SAT solver call must be repeated!
             else
             {
                 MUCStep newUC = state.retrieve(MUCStep.class, removalLink);
