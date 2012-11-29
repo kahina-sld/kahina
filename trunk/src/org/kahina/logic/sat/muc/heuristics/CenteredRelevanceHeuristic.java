@@ -1,21 +1,20 @@
 package org.kahina.logic.sat.muc.heuristics;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.kahina.logic.sat.data.proof.ResolutionProofTree;
 import org.kahina.logic.sat.muc.MUCStep;
 
-public class DescendingRelevanceHeuristic extends ReductionHeuristic
+public class CenteredRelevanceHeuristic extends ReductionHeuristic
 {
     Set<Integer> alreadyProcessed;
     boolean needsProof;
     List<Integer> relevanceList;
     int selVarOffset;
     
-    public DescendingRelevanceHeuristic()
+    public CenteredRelevanceHeuristic()
     {
         alreadyProcessed = new HashSet<Integer>();
         needsProof = true;
@@ -74,18 +73,39 @@ public class DescendingRelevanceHeuristic extends ReductionHeuristic
         }
         else
         {
-            while (relevanceList.size() > 0)
+            int idx =  relevanceList.size() / 2;
+            int cand = relevanceList.get(idx) - selVarOffset;
+            if (cand > 0 && !alreadyProcessed.contains(cand))
             {
-                int cand = relevanceList.remove(0) - selVarOffset;
-                //System.err.print("cand "  + cand);
-                //check if cand is an unused selection variable
+                alreadyProcessed.add(cand);
+                return cand;
+            }
+            for (int i = 1; i < idx; i++)
+            {
+                cand = relevanceList.get(idx + i) - selVarOffset;
                 if (cand > 0 && !alreadyProcessed.contains(cand))
                 {
-                    //System.err.println(" - accepted");
                     alreadyProcessed.add(cand);
                     return cand;
                 }
-                //System.err.println(" - dismissed");
+                cand = relevanceList.get(idx - i) - selVarOffset;
+                if (cand > 0 && !alreadyProcessed.contains(cand))
+                {
+                    alreadyProcessed.add(cand);
+                    return cand;
+                }
+            }
+            cand = relevanceList.get(0) - selVarOffset;
+            if (cand > 0 && !alreadyProcessed.contains(cand))
+            {
+                alreadyProcessed.add(cand);
+                return cand;
+            }
+            cand = relevanceList.get(relevanceList.size() - 1) - selVarOffset;
+            if (!alreadyProcessed.contains(cand))
+            {
+                alreadyProcessed.add(cand);
+                return cand;
             }
         }
         return -1;
@@ -93,6 +113,6 @@ public class DescendingRelevanceHeuristic extends ReductionHeuristic
     
     public String getName()
     {
-        return "descending relevance heuristic";
+        return "centered relevance heuristic";
     }
 }

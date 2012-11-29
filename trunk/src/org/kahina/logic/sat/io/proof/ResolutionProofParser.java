@@ -45,7 +45,7 @@ public class ResolutionProofParser
                     clauseString += literal + " ";
                 }
                 proof.addNode(clauseID, clauseString, 0);
-                System.err.println("proof.setNodeClause(" + clauseID + "," + clause + ")");
+                //System.err.println("proof.setNodeClause(" + clauseID + "," + clause + ")");
                 proof.setNodeClause(clauseID, clause);
                 //the other tokens up to the terminating 0 are the parent clause IDs
                 while (i < tokens.length)

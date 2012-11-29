@@ -1,21 +1,20 @@
 package org.kahina.logic.sat.muc.heuristics;
 
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.kahina.logic.sat.data.proof.ResolutionProofTree;
 import org.kahina.logic.sat.muc.MUCStep;
 
-public class DescendingRelevanceHeuristic extends ReductionHeuristic
+public class AscendingRelevanceHeuristic extends ReductionHeuristic
 {
     Set<Integer> alreadyProcessed;
     boolean needsProof;
     List<Integer> relevanceList;
     int selVarOffset;
     
-    public DescendingRelevanceHeuristic()
+    public AscendingRelevanceHeuristic()
     {
         alreadyProcessed = new HashSet<Integer>();
         needsProof = true;
@@ -76,7 +75,7 @@ public class DescendingRelevanceHeuristic extends ReductionHeuristic
         {
             while (relevanceList.size() > 0)
             {
-                int cand = relevanceList.remove(0) - selVarOffset;
+                int cand = relevanceList.remove(relevanceList.size() - 1) - selVarOffset;
                 //System.err.print("cand "  + cand);
                 //check if cand is an unused selection variable
                 if (cand > 0 && !alreadyProcessed.contains(cand))
@@ -93,6 +92,6 @@ public class DescendingRelevanceHeuristic extends ReductionHeuristic
     
     public String getName()
     {
-        return "descending relevance heuristic";
+        return "ascending relevance heuristic";
     }
 }

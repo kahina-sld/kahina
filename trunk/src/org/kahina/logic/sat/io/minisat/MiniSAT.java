@@ -548,7 +548,7 @@ public class MiniSAT
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            System.err.println("IOfailed testunsatisfiable");
+            System.err.println("ERROR: Could not read result file! Assuming SAT!");
             System.exit(0);
         }
         //System.out.println("SAT");

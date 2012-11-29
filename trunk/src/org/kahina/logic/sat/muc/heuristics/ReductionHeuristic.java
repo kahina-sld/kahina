@@ -24,6 +24,11 @@ public abstract class ReductionHeuristic
         return false;
     }
     
+    public boolean usesProofs()
+    {
+        return false;
+    }
+    
     public void deliverProof(ResolutionProofTree proof)
     {
         

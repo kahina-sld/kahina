@@ -144,7 +144,7 @@ public class ReductionAgent extends KahinaTaskManager
                         //heuristics.deliverProof(MiniSAT.getVarRelevanceOrdering(files.tmpProofFile));
                         heuristics.deliverProof(ResolutionProofParser.createResolutionProofTree(files.tmpProofFile.toString(), state.getSatInstance()));
                     }
-                    //files.deleteTempFiles();
+                    files.deleteTempFiles();
                     if (state.usesMetaLearning())
                     {
                         state.learnMetaUnits(uc);
@@ -210,7 +210,7 @@ public class ReductionAgent extends KahinaTaskManager
         {
             if (getPanel() != null)
             {
-                getPanel().displayStatus1("UC reduction using " + heuristics.getName() + " stopped at size " + uc.getUc().size());
+                getPanel().displayStatus1("US reduction using " + heuristics.getName() + " stopped at size " + uc.getUc().size());
                 getPanel().displayStatus2("after " + (numUNSATReductions + numSATReductions) 
                                    + " reductions (" + numSATReductions + " SAT, " 
                                    + numUNSATReductions + " UNSAT)" + " from size " + startSize + ". ");
@@ -224,7 +224,7 @@ public class ReductionAgent extends KahinaTaskManager
             //we are done reducing, no further reductions are possible; this UCReducer has done its duty
             if (getPanel() != null)
             {
-                getPanel().displayStatus1("MUC of size " + uc.getUc().size() + " found using " + heuristics.getName());
+                getPanel().displayStatus1("MUS of size " + uc.getUc().size() + " found using " + heuristics.getName());
                 getPanel().displayStatus2("after " + (numUNSATReductions + numSATReductions) 
                                    + " reductions (" + numSATReductions + " SAT, " 
                                    + numUNSATReductions + " UNSAT)" + " from size " + startSize + ". ");
@@ -240,7 +240,7 @@ public class ReductionAgent extends KahinaTaskManager
             //System.err.println(this + ": Reducing " + candidate + " at step " + ucID);
             if (getPanel() != null)
             {
-                getPanel().displayStatus1("UC of size " + uc.getUc().size() + ", " + heuristics.getName() + " attempting to reduce clause " + candidate + ".");
+                getPanel().displayStatus1("US of size " + uc.getUc().size() + ", " + heuristics.getName() + " attempting to reduce clause " + candidate + ".");
                 getPanel().displayStatus2((numUNSATReductions + numSATReductions) 
                         + " reductions (" + numUNSATReductions + " UNSAT, " 
                         + numSATReductions + " SAT)" + " so far. ");
@@ -248,7 +248,8 @@ public class ReductionAgent extends KahinaTaskManager
             }
             Integer removalLink = uc.getRemovalLink(candidate);
             //real reduction attempt involving a SAT call
-            if (removalLink == null || removalLink == -2)
+            //if the heuristic needs a proof, the SAT solver call must be repeated!
+            if (removalLink == null || removalLink == -2 || heuristics.usesProofs())
             {
                 this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files, state.getSatInstance()));
             }
@@ -258,7 +259,6 @@ public class ReductionAgent extends KahinaTaskManager
                 this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, uc, state.getSatInstance()));
             }
             //simulated reduction attempt informing heuristics about the new clause
-            //TODO: if the heuristic needs a proof, the SAT solver call must be repeated!
             else
             {
                 MUCStep newUC = state.retrieve(MUCStep.class, removalLink);

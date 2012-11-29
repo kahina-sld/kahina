@@ -26,6 +26,8 @@ import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.MUCStepType;
 import org.kahina.logic.sat.muc.MetaLearningMode;
 import org.kahina.logic.sat.muc.heuristics.AscendingIndexHeuristic;
+import org.kahina.logic.sat.muc.heuristics.AscendingRelevanceHeuristic;
+import org.kahina.logic.sat.muc.heuristics.CenteredRelevanceHeuristic;
 import org.kahina.logic.sat.muc.heuristics.DescendingIndexHeuristic;
 import org.kahina.logic.sat.muc.heuristics.CenteredIndexHeuristic;
 import org.kahina.logic.sat.muc.heuristics.DescendingRelevanceHeuristic;
@@ -186,6 +188,8 @@ public class MUCGUI extends KahinaGUI
         reducerListView.addHeuristic(AscendingIndexHeuristic.class);
         reducerListView.addHeuristic(CenteredIndexHeuristic.class);
         reducerListView.addHeuristic(DescendingIndexHeuristic.class);
+        reducerListView.addHeuristic(AscendingRelevanceHeuristic.class);
+        reducerListView.addHeuristic(CenteredRelevanceHeuristic.class);
         reducerListView.addHeuristic(DescendingRelevanceHeuristic.class);
         views.add(reducerListView);
         livingViews.add(reducerListView);
