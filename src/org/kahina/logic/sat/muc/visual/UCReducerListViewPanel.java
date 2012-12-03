@@ -13,6 +13,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -35,6 +36,8 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
     private JComboBox heuristicsChooser;
     private JLabel colorLabel;
     private JButton signalColor;
+    private JCheckBox modelRotationCheck;
+    private JCheckBox autarkyReductionCheck;
     
     JPanel runningReducersPanel;
     
@@ -49,7 +52,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
         JPanel leftPanel = new JPanel();
         
         newReducerPanel = new JPanel();
-        newReducerPanel.setBorder(BorderFactory.createTitledBorder("Start a new reducer at the selected US"));
+        newReducerPanel.setBorder(BorderFactory.createTitledBorder("Start a new reduction agent at the selected US"));
         
         JLabel heuristicsLabel = new JLabel("Basic heuristics: ");
         newReducerPanel.add(heuristicsLabel);
@@ -75,6 +78,20 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
         newReducerPanel.add(signalColor);
         newReducerPanel.add(Box.createRigidArea(new Dimension(5,0)));
         
+        modelRotationCheck = new JCheckBox();
+        newReducerPanel.add(modelRotationCheck);
+        
+        JLabel modelRotationLabel = new JLabel("Model rotation: ");
+        newReducerPanel.add(modelRotationLabel);
+        newReducerPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        
+        autarkyReductionCheck = new JCheckBox();
+        newReducerPanel.add(autarkyReductionCheck);
+        
+        JLabel autarkyReductionLabel = new JLabel("Autarky reduction: ");
+        newReducerPanel.add(autarkyReductionLabel);
+        newReducerPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        
         JButton startReducerButton = new JButton("Start");
         startReducerButton.setActionCommand("startReducer");
         startReducerButton.addActionListener(this);
@@ -88,10 +105,14 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(heuristicsLabel)
                     .addComponent(colorLabel)
-                    .addComponent(startReducerButton))
+                    .addComponent(startReducerButton)
+                    .addComponent(modelRotationLabel)
+                    .addComponent(autarkyReductionLabel))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(heuristicsChooser)
-                    .addComponent(signalColor)));
+                    .addComponent(signalColor)
+                    .addComponent(modelRotationCheck)
+                    .addComponent(autarkyReductionCheck)));
         
         layout.setVerticalGroup(
             layout.createSequentialGroup()
@@ -101,6 +122,12 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                    .addComponent(colorLabel)
                    .addComponent(signalColor))
+               .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                   .addComponent(modelRotationLabel)
+                   .addComponent(modelRotationCheck))
+               .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                   .addComponent(autarkyReductionLabel)
+                   .addComponent(autarkyReductionCheck))
                .addComponent(startReducerButton));     
         
         leftPanel.add(newReducerPanel);

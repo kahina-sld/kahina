@@ -148,7 +148,7 @@ public class CnfSatInstance extends KahinaSatInstance
         for (int clauseID: clauseIDs)
         {
             //TODO: think about risks of structure reuse!
-            subInstance.getClauses().add(clauses.get(clauseID));
+            subInstance.getClauses().add(clauses.get(clauseID-1));
             subInstance.symbolTable = symbolTable;
         }
         subInstance.setNumClauses(subInstance.getClauses().size());

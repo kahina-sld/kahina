@@ -170,7 +170,9 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             MUCStep uc = kahina.getState().getSelectedStep();
             CnfSatInstance leanKernelUC = kahina.getSatInstance().selectClauses(uc.getUc()).copy();
             leanKernelUC.reduceToLeanKernel();
-            //TODO: do not only display this, but make it a real reduction step
+            //TODO: generate a new US representing the lean kernel 
+            //TODO: add a node with the lean kernel US to the reduction graph
+            
             view.view.display(leanKernelUC);
         }
     }
