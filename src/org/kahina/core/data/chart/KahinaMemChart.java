@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class KahinaMemChart extends KahinaChart
 {
@@ -37,6 +38,8 @@ public class KahinaMemChart extends KahinaChart
     HashMap<Integer, Set<Integer>> motherEdges;
     HashMap<Integer, Set<Integer>> daughterEdges;   
     
+    TreeSet<Integer> dependencyRoots;
+    
     public KahinaMemChart()
     {
         super();
@@ -47,6 +50,22 @@ public class KahinaMemChart extends KahinaChart
         status = new HashMap<Integer, Integer>();
         motherEdges = new HashMap<Integer, Set<Integer>>();
         daughterEdges = new HashMap<Integer, Set<Integer>>();
+        dependencyRoots = new TreeSet<Integer>();
+    }
+    
+    public int addEdge(int left, int right, String caption, int status)
+    {
+        int id = getNextEdgeID();
+        dependencyRoots.add(id);
+        setLeftBoundForEdge(id, left);
+        setRightBoundForEdge(id, right);
+        setEdgeStatus(id, status);
+        setEdgeCaption(id, caption);
+        if (verbose)
+        {
+            System.err.println("KahinaChart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
+        }
+        return id;
     }
     
     @Override
@@ -104,6 +123,7 @@ public class KahinaMemChart extends KahinaChart
         rightBounds.remove(edgeID);
         edgeCaptions.remove(edgeID);
         status.remove(edgeID);
+        dependencyRoots.remove(edgeID);
     }
     
     @Override
@@ -258,6 +278,11 @@ public class KahinaMemChart extends KahinaChart
             motherEdges.put(daughterID, mothers);
         }
         mothers.add(motherID);
+        
+        if (dependencyRoots.contains(daughterID))
+        {
+            dependencyRoots.remove(daughterID);
+        }
     }
     
     @Override
@@ -290,5 +315,10 @@ public class KahinaMemChart extends KahinaChart
         	System.err.println(daughters);
         }
         return daughters;
+    }
+    
+    public Set<Integer> getDependencyRoots()
+    {
+        return dependencyRoots;
     }
 }

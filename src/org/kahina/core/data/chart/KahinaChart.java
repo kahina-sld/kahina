@@ -1,11 +1,18 @@
 package org.kahina.core.data.chart;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.core.data.KahinaObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public abstract class KahinaChart extends KahinaObject
 {
@@ -99,6 +106,8 @@ public abstract class KahinaChart extends KahinaObject
 	}
 
 	public abstract void addEdgeDependency(int motherID, int daughterID);
+    
+    public abstract Set<Integer> getDependencyRoots();
 
 	public abstract Set<Integer> getMotherEdgesForEdge(int id);
 
@@ -127,37 +136,80 @@ public abstract class KahinaChart extends KahinaObject
 			b.append("caption=\"" + getEdgeCaption(id) + "\" ");
 			b.append("/>\n");
 		}
+        for (Integer motherID : getEdgeIDs())
+        {
+            for (Integer daughterID : getDaughterEdgesForEdge(motherID))
+            {
+                b.append(" <dependency ");
+                b.append("motherID=\"" + motherID + "\" ");
+                b.append("daughterID=\"" + daughterID + "\" ");
+                b.append("/>\n");
+            }
+        }
 		b.append("</chart>");
 		return b.toString();
 	}
 
-	public static KahinaChart importXML(Document dom)
+	public static KahinaChart importXML(String fileName)
 	{
-		KahinaChart m = new KahinaMemChart();
-		NodeList segments = dom.getElementsByTagName("segment");
-		for (int i = 0; i < segments.getLength(); i++)
-		{
-			Element segment = (Element) segments.item(i);
-			int id = Integer.parseInt(segment.getAttribute("id"));
-			m.setSegmentCaption(id, segment.getAttribute("caption"));
-		}
-		NodeList edges = dom.getElementsByTagName("edge");
-		for (int i = 0; i < edges.getLength(); i++)
-		{
-			Element edge = (Element) edges.item(i);
-			int id = Integer.parseInt(edge.getAttribute("id"));
-			int left = Integer.parseInt(edge.getAttribute("left"));
-			int right = Integer.parseInt(edge.getAttribute("right"));
-			int status = Integer.parseInt(edge.getAttribute("status"));
-			if (left < m.getLeftmostCovered())
-				m.setLeftmostCovered(left);
-			if (right > m.getRightmostCovered())
-				m.setRightmostCovered(right);
-			m.setLeftBoundForEdge(id, left);
-			m.setRightBoundForEdge(id, right);
-			m.setEdgeStatus(id, status);
-			m.setEdgeCaption(id, edge.getAttribute("caption"));
-		}
+        KahinaChart m = new KahinaMemChart();
+        File file = new File(fileName);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();    
+        try
+        {
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document dom = db.parse(file);
+    		NodeList segments = dom.getElementsByTagName("segment");
+    		for (int i = 0; i < segments.getLength(); i++)
+    		{
+    			Element segment = (Element) segments.item(i);
+    			int id = Integer.parseInt(segment.getAttribute("id"));
+    			m.setSegmentCaption(id, segment.getAttribute("caption"));
+    		}
+    		NodeList edges = dom.getElementsByTagName("edge");
+    		for (int i = 0; i < edges.getLength(); i++)
+    		{
+    			Element edge = (Element) edges.item(i);
+    			int id = Integer.parseInt(edge.getAttribute("id"));
+    			int left = Integer.parseInt(edge.getAttribute("left"));
+    			int right = Integer.parseInt(edge.getAttribute("right"));
+    			int status = Integer.parseInt(edge.getAttribute("status"));
+    			if (left < m.getLeftmostCovered())
+    				m.setLeftmostCovered(left);
+    			if (right > m.getRightmostCovered())
+    				m.setRightmostCovered(right);
+    			m.setLeftBoundForEdge(id, left);
+    			m.setRightBoundForEdge(id, right);
+    			m.setEdgeStatus(id, status);
+    			m.setEdgeCaption(id, edge.getAttribute("caption"));
+    		}
+            NodeList dependencies = dom.getElementsByTagName("dependency");
+            for (int i = 0; i < dependencies.getLength(); i++)
+            {
+                Element dependency = (Element) dependencies.item(i);
+                int motherID = Integer.parseInt(dependency.getAttribute("motherID"));
+                int daughterID = Integer.parseInt(dependency.getAttribute("daughterID"));
+                m.addEdgeDependency(motherID, daughterID);
+            }
+        }
+        catch (ParserConfigurationException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.err.println("ERROR while parsing chart file \"" + fileName + "\". Returning the empty chart!");
+        }
+        catch (SAXException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.err.println("ERROR while parsing chart file \"" + fileName + "\". Returning the empty chart!");
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.err.println("ERROR while parsing chart file \"" + fileName + "\". Returning the empty chart!");
+        }
 		return m;
 	}
 }

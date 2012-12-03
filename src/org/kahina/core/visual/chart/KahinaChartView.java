@@ -431,9 +431,15 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         List<Integer> visibleEdges = new LinkedList<Integer>();
         for (int edge : model.getEdgeIDs())
         {
+            //System.err.print("Deciding whether to display edge " + edge + " ... ");
             if (config.decideEdgeDisplay(edge))
             {
                 visibleEdges.add(edge);
+                //System.err.println("yes");
+            }
+            else
+            {
+                //System.err.println("no");
             }
         }
         return visibleEdges;
@@ -778,7 +784,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     }
     
     //not interested in selection events or update events
-    //because they always contain step information, not edge IDs
+    //because they always contain step information, without a direct map to edge IDs
     @Override
     public void processEvent(KahinaEvent e)
     {
