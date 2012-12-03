@@ -245,6 +245,10 @@ public class LayeredLayouter extends KahinaDAGLayouter
                             {
                                 xCoord.put(node, neighborX + horiDistance * zoomLevel);
                             }
+                            else
+                            {
+                                xCoord.put(node, optimalX);
+                            }
                         }
                     }
                 }
@@ -270,6 +274,10 @@ public class LayeredLayouter extends KahinaDAGLayouter
                             if (neighborX < optimalX + horiDistance * zoomLevel)
                             {
                                 xCoord.put(node, neighborX - horiDistance * zoomLevel);
+                            }
+                            else
+                            {
+                                xCoord.put(node, optimalX);
                             }
                         }
                     }
@@ -303,6 +311,10 @@ public class LayeredLayouter extends KahinaDAGLayouter
                             {
                                 xCoord.put(node, neighborX + horiDistance * zoomLevel);
                             }
+                            else
+                            {
+                                xCoord.put(node, optimalX);
+                            }
                         }
                     }
                 }
@@ -328,6 +340,10 @@ public class LayeredLayouter extends KahinaDAGLayouter
                             if (neighborX < optimalX + horiDistance * zoomLevel)
                             {
                                 xCoord.put(node, neighborX - horiDistance * zoomLevel);
+                            }
+                            else
+                            {
+                                xCoord.put(node, optimalX);
                             }
                         }
                     }
@@ -384,7 +400,8 @@ public class LayeredLayouter extends KahinaDAGLayouter
         }
         else
         {
-            averageX = totalTreeWidth / 2;
+            //averageX = totalTreeWidth / 2;
+            averageX = xCoord.get(nodeID);
         }
         return averageX;
     }
@@ -409,7 +426,8 @@ public class LayeredLayouter extends KahinaDAGLayouter
         }
         else
         {
-            averageX = totalTreeWidth / 2;
+            //averageX = totalTreeWidth / 2;
+            averageX = xCoord.get(nodeID);
         }
         return averageX;
     }
