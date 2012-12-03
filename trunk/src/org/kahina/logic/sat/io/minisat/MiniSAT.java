@@ -472,7 +472,7 @@ public class MiniSAT
         }
         catch (IOException e)
         {
-            System.err.println("ERROR: failed to read the MiniSAT result file! Null model returned!");
+            System.err.println("ERROR: failed to read the MiniSAT result file " + resultFile.getName() + "! Null model returned!");
             e.printStackTrace();      
         }
         return model;
@@ -516,7 +516,7 @@ public class MiniSAT
         }
         catch (IOException e)
         {
-            System.err.println("ERROR: failed to read the MiniSAT result file! Null model returned!");
+            System.err.println("ERROR: failed to read MiniSAT result file " + resultFile.getName() + "! Null model returned!");
             e.printStackTrace();      
         }
         return model;
@@ -534,12 +534,12 @@ public class MiniSAT
             {
                 if (line.equals("UNSAT"))
                 {
-                    System.err.println("MiniSat says: UNSAT");
+                    System.err.println("MiniSat says: " + resultFile.getName() + " is UNSAT");
                     return true;
                 }
                 else if (line.equals("SAT"))
                 {
-                    System.err.println("MiniSat says: SAT");
+                    System.err.println("MiniSat says: " + resultFile.getName() + " is SAT");
                     return false;
                 }
             }
@@ -548,11 +548,10 @@ public class MiniSAT
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            System.err.println("ERROR: Could not read result file! Assuming SAT!");
-            System.exit(0);
+            System.err.println("ERROR: Could not read result file " + resultFile.getName() + "! Assuming SAT!");
         }
         //System.out.println("SAT");
-        System.err.println("ERROR: MiniSat result file says neither SAT nor UNSAT! Assuming SAT!");
+        System.err.println("ERROR: MiniSat result file " + resultFile.getName() + " says neither SAT nor UNSAT! Assuming SAT!");
         return false;
     }
     
@@ -689,7 +688,6 @@ public class MiniSAT
         {
             e.printStackTrace();
             System.err.println("IOfailed rel_asmberechnen");
-            System.exit(0);
         }
         return null;
     }
@@ -777,7 +775,6 @@ public class MiniSAT
         {
             e.printStackTrace();
             System.err.println("IOfailed rel_asmberechnen");
-            System.exit(0);
         }
         return null;
     }
@@ -820,7 +817,6 @@ public class MiniSAT
         {
             e.printStackTrace();
             System.err.println("IO error: failed to create temporary freeze file");
-            System.exit(0);
         }
     }
     

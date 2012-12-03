@@ -71,7 +71,6 @@ public class ReductionTask extends KahinaTask
         this.uc = uc;
         this.ucID = ucID;
         this.candidates = candidates;
-        //this.files = files.copyWithoutTmpFiles();
         //the file object is needed for the ReductionAgent to find the proof file
         this.files = files;
         this.result = null;
@@ -99,6 +98,7 @@ public class ReductionTask extends KahinaTask
     {    
         if (result == null)
         {
+            //System.err.println("files.createTempFiles(" + files.sourceFile.getName() + reductionID + ");");
             files.createTempFiles(files.sourceFile.getName() + reductionID);
             //set the freeze variables (TODO: avoid generating the different lists first)
             TreeSet<Integer> muc_cands = new TreeSet<Integer>();

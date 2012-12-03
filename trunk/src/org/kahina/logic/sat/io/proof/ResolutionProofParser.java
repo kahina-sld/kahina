@@ -18,12 +18,11 @@ public class ResolutionProofParser
 {
     public static ResolutionProofDAG createResolutionProofDAG(String fileName, CnfSatInstance sat)
     {
-        System.err.println("Reading resolution proof from file " + fileName + "...");
+        System.err.print("Reading resolution proof from file " + fileName + " ... ");
         ResolutionProofDAG proof = new ResolutionProofDAG(sat);
         try
         {
-            Scanner in = new Scanner(new File(fileName));
-            
+            Scanner in = new Scanner(new File(fileName));    
             String currentLine;
             String[] tokens;
             while (in.hasNext())
@@ -55,12 +54,16 @@ public class ResolutionProofParser
                     if (parentID != 0) proof.addEdge(parentID, clauseID, "");              
                 }
             }
+            if (proof.getSize() == 0)
+            {
+                System.err.print("\nWARNING: empty resolution proof file: "  + fileName + "\n    ");
+            }
         }
         catch (FileNotFoundException e)
         {
-            System.err.println("ERROR: Resolution proof file not found: " + fileName);
-            System.err.println("       Returning empty resolution proof!");
+            System.err.print("\nERROR: Resolution proof file not found: " + fileName + "\n     ");
         }
+        System.err.println("Proof dag of size " + proof.getSize());
         return proof;
     }
     
@@ -83,6 +86,7 @@ public class ResolutionProofParser
         }*/
         ResolutionProofTree tree = new ResolutionProofTree(sat);
         ResolutionProofDAGtoTreeConversion.fillTreeWithBackwardExpansionFromNode(proof, proof.getRefutationNode(), tree);
+        System.err.println("Proof dag from file " + fileName + " converted into proof tree of size " + tree.getSize());
         return tree;
     }
 }
