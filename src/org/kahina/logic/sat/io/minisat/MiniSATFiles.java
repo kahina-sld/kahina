@@ -71,9 +71,18 @@ public class MiniSATFiles
     public MiniSATFiles copyWithoutTmpFiles()
     {
         MiniSATFiles copy = new MiniSATFiles();
-        copy.sourceFile = new File(sourceFile.getAbsolutePath());
-        copy.targetFile = new File(targetFile.getAbsolutePath());
-        copy.tmpFile = new File(tmpFile.getAbsolutePath());
+        if (sourceFile != null)
+        {
+            copy.sourceFile = new File(sourceFile.getAbsolutePath());
+        }
+        if (targetFile != null)
+        {
+            copy.targetFile = new File(targetFile.getAbsolutePath());
+        }
+        if (tmpFile != null)
+        {
+            copy.tmpFile = new File(tmpFile.getAbsolutePath());
+        }
         return copy;
     }
 }

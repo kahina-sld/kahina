@@ -62,7 +62,7 @@ public class ReductionAgent extends KahinaTaskManager
         getPath().append(startID);
         state.getDecisionGraph().addColorPath(getPath());
         
-        this.files = files;  
+        this.files = files.copyWithoutTmpFiles();
         this.setSignalColor(ColorUtil.randomColor());
         this.setPanel(null);
     }
@@ -79,7 +79,6 @@ public class ReductionAgent extends KahinaTaskManager
     {
         try
         {
-            super.taskFinished(task);
             if (task instanceof ReductionTask)
             {
                 ReductionTask ucTask = (ReductionTask) task;
@@ -163,7 +162,7 @@ public class ReductionAgent extends KahinaTaskManager
                     if (getPanel() != null) getPanel().requestViewUpdate();
                 }
                 state.updateDecisionNode(ucTask.ucID);
-                //TODO: optionally select the new step in case of a succesful reduction
+                //TODO: optionally select the new step in case of a successful reduction
                 if (state.usesMetaLearning())
                 {
                     state.getKahina().getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
@@ -201,6 +200,7 @@ public class ReductionAgent extends KahinaTaskManager
             e.printStackTrace();
         }
         state.getKahina().getLogger().endMeasuring("for finishing task " + task);
+        super.taskFinished(task);
     }
     
     private void startNextReduction()
@@ -249,7 +249,7 @@ public class ReductionAgent extends KahinaTaskManager
             Integer removalLink = uc.getRemovalLink(candidate);
             //real reduction attempt involving a SAT call
             //if the heuristic needs a proof, the SAT solver call must be repeated!
-            if (removalLink == null || removalLink == -2 || heuristics.usesProofs())
+            if (removalLink == null || removalLink == -2 || (removalLink != -1 && heuristics.usesProofs()))
             {
                 this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files, state.getSatInstance()));
             }

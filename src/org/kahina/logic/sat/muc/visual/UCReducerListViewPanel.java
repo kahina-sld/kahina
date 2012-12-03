@@ -114,7 +114,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
         
         runningReducersPanel = new JPanel();
         runningReducersPanel.setLayout(new WrapLayout());
-        runningReducersPanel.setBorder(BorderFactory.createTitledBorder("Reducer info"));
+        runningReducersPanel.setBorder(BorderFactory.createTitledBorder("Reduction agents"));
         JScrollPane scrollPane = new JScrollPane(runningReducersPanel);
         scrollPane.setLayout(new ScrollPaneLayout());
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
