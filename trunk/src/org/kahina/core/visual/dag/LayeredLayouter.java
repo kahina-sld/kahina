@@ -214,8 +214,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
                     xCoord.put(node, offset);
                     yCoord.put(node, layerID * vertDistance * zoomLevel + 10);
                     offset += horiDistance * zoomLevel;
-                }
-                
+                }      
             }
             
             //move downward, rearrange nodes according to positions of already determined ancestors

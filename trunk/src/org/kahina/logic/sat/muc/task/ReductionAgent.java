@@ -81,11 +81,14 @@ public class ReductionAgent extends KahinaTaskManager
         {
             if (task instanceof ReductionTask)
             {
+
                 ReductionTask ucTask = (ReductionTask) task;
+                System.err.print("ReductionAgent " + this.hashCode() + ": Reduction #" + ucTask.reductionID + " of clauses " + ucTask.candidates + " at step " + ucID );
                 MUCStep result = ucTask.getResult();
                 //attempt was unsuccessful
                 if (uc == result)
                 {
+                    System.err.println(" without success!");
                     //uc and ucID just stay the same
                     numSATReductions++;
                     if (!state.usesMetaLearning())
@@ -119,8 +122,8 @@ public class ReductionAgent extends KahinaTaskManager
                 //attempt was successful, we might have arrived at a new UC
                 else
                 {
+                    System.err.println(" successful!");
                     numUNSATReductions++;
-                    System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clauses " + ucTask.candidates + " at step " + ucID + " was successful!");
                     int stepID = state.registerMUC(result, ucID, ucTask.candidates);
                     getPath().append(stepID);
                     Overlap overlap = new Overlap(uc.getUc(),result.getUc());
