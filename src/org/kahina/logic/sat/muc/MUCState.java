@@ -206,7 +206,7 @@ public class MUCState extends KahinaState
                 updateDecisionNode(stepID);
             }
         }
-        else
+        else if (stepID != parentID)
         {
             if (VERBOSE) System.err.println("Adding decision graph edge (" + parentID + "," + stepID + ")");
             decisionGraph.addEdgeNoDuplicates(parentID, stepID, selCandidates + "");
@@ -278,7 +278,7 @@ public class MUCState extends KahinaState
                 updateDecisionNode(stepID);
             }
         }
-        else
+        else if (stepID != parentID)
         {
             if (VERBOSE) System.err.println("Adding decision graph edge (" + parentID + "," + stepID + ")");
             decisionGraph.addEdgeNoDuplicates(parentID, stepID, lastInstruction.selCandidate + "");
