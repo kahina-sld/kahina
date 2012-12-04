@@ -517,7 +517,6 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public void deleteVariablesDestructively(Set<Integer> removedVars)
     {
-        System.err.print("deleting " + removedVars.size() + " variables destructively ... ");
         for (int i = 0; i < numClauses; i++)
         {
             List<Integer> clause = clauses.get(i);
@@ -538,7 +537,6 @@ public class CnfSatInstance extends KahinaSatInstance
                 i--;
             }
         }
-        System.err.println("done, clauses left: " + numClauses);
         needsUpdate = true;
     }
     
@@ -629,13 +627,24 @@ public class CnfSatInstance extends KahinaSatInstance
                         System.err.println("ERROR: no resolution variables in an UNSAT problem! Returning null autarky!");
                         return null;
                     }
+                    System.err.print("deleting " + removedVars.size() + " resolution variables destructively ... ");
                     this.deleteVariablesDestructively(resolutionVariables);
+                    System.err.println("done, clauses left: " + numClauses);
                     if (this.clauses.size() == 0)
                     {
                         System.err.println("Found the trivial autarky, so the input clause set was lean!");
                         return new PartialAssignment();
                     }
                     removedVars.addAll(resolutionVariables);
+                    Set<Integer> unitClashVars = determineUnitClashVars();
+                    while (unitClashVars.size() > 0)
+                    {
+                        System.err.print("deleting " + unitClashVars.size() + " clashing units destructively ... ");
+                        this.deleteVariablesDestructively(unitClashVars);
+                        System.err.println("done, clauses left: " + numClauses);
+                        removedVars.addAll(unitClashVars);
+                        unitClashVars = determineUnitClashVars();
+                    }
                 }
                 proofFile.delete();
                 resFile.delete();
@@ -657,6 +666,51 @@ public class CnfSatInstance extends KahinaSatInstance
             e.printStackTrace();
         }
         return null;
+    }
+    
+    private Set<Integer> determineUnitClashVars()
+    {
+        Set<Integer> units = new HashSet<Integer>();
+        Set<Integer> clashVars = new HashSet<Integer>();
+        for (List<Integer> clause : clauses)
+        {
+            if (clause.size() == 1)
+            {
+                int unit = clause.get(0);
+                if (units.contains(-unit))
+                {
+                    if (unit < 0)
+                    {
+                        clashVars.add(-unit);
+                    }
+                    else
+                    {
+                        clashVars.add(unit);
+                    }
+                }
+                else
+                {
+                    units.add(unit);
+                }
+            }
+        }
+        return clashVars;
+    }
+    
+    public Map<String,Integer> generateClauseToIDMap()
+    {
+        Map<String,Integer> clauseToIDMap = new HashMap<String,Integer>();
+        StringBuilder clauseRepresentation;
+        for (int i = 0; i < clauses.size(); i++)
+        {
+            clauseRepresentation = new StringBuilder();
+            for (int lit : clauses.get(i))
+            {
+                clauseRepresentation.append(lit + ".");
+            }
+            clauseToIDMap.put(clauseRepresentation.toString(), i);
+        }
+        return clauseToIDMap;
     }
     
     public void announceChangedClauses()
