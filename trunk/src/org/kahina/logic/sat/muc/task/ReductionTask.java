@@ -31,6 +31,9 @@ public class ReductionTask extends KahinaTask
     public final int ucID;
     public final List<Integer> candidates;
     
+    //remember whether this reduction task was just simulated
+    private final boolean dummyTask;
+    
     private MUCStep result;
     private CompleteAssignment model;
     
@@ -60,6 +63,7 @@ public class ReductionTask extends KahinaTask
         this.result = result;
         this.model = null;
         this.instance = instance;
+        this.dummyTask = true;
     }
 
     public ReductionTask(KahinaProgressBar progressBar, KahinaTaskManager manager, MUCStatistics stat,  MUCStep uc, int ucID, List<Integer> candidates, MiniSATFiles files, CnfSatInstance instance)
@@ -76,6 +80,7 @@ public class ReductionTask extends KahinaTask
         this.result = null;
         this.model = null;
         this.instance = instance;
+        this.dummyTask = false;
     }
     
     public static synchronized int getNextID()
@@ -91,6 +96,11 @@ public class ReductionTask extends KahinaTask
     public void setModelRotation(boolean modelRotation)
     {
         this.modelRotation = modelRotation;
+    }
+    
+    public boolean isDummyTask()
+    {
+        return dummyTask;
     }
 
     @Override

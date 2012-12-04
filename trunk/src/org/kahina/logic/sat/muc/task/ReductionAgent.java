@@ -81,7 +81,6 @@ public class ReductionAgent extends KahinaTaskManager
         {
             if (task instanceof ReductionTask)
             {
-
                 ReductionTask ucTask = (ReductionTask) task;
                 System.err.print("ReductionAgent " + this.hashCode() + ": Reduction #" + ucTask.reductionID + " of clauses " + ucTask.candidates + " at step " + ucID );
                 MUCStep result = ucTask.getResult();
@@ -171,15 +170,18 @@ public class ReductionAgent extends KahinaTaskManager
                     state.getKahina().getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
                 }
                 state.getKahina().getGUI().getViewByID("currentUC").requireRedraw();
-                SwingUtilities.invokeAndWait(new Runnable() 
+                if (!ucTask.isDummyTask())
                 {
-                    @Override
-                    public void run() 
+                    SwingUtilities.invokeAndWait(new Runnable() 
                     {
-                        state.getKahina().dispatchInstanceEvent(new KahinaUpdateEvent(state.getSelectedStepID()));
-                    }
-                });
-                state.getKahina().dispatchInstanceEvent(new KahinaRedrawEvent());
+                        @Override
+                        public void run() 
+                        {
+                            state.getKahina().dispatchInstanceEvent(new KahinaUpdateEvent(state.getSelectedStepID()));
+                        }
+                    });
+                    state.getKahina().dispatchInstanceEvent(new KahinaRedrawEvent());
+                }
                 startNextReduction();
             }
             else
