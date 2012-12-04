@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 import org.kahina.core.KahinaStep;
 
@@ -13,7 +14,7 @@ public class MUCStep extends KahinaStep
     //IC = interesting constraint
     
     //state data (should be kept as a sorted structure to allow quick identity check!)
-    private List<Integer> uc; //current unsatisfiable core (not necessarily minimal)
+    private final List<Integer> uc; //current unsatisfiable core (not necessarily minimal)
     
     //for each IC, store the state that we arrive in after removing it
     //null = unchecked (the links has not yet been established
@@ -27,7 +28,7 @@ public class MUCStep extends KahinaStep
     public MUCStep()
     {
         uc =  new ArrayList<Integer>();
-        reductionTable = new TreeMap<Integer,Integer>();
+        reductionTable = new ConcurrentSkipListMap<Integer,Integer>();
         satisfiable = false;
     }
 
@@ -82,7 +83,7 @@ public class MUCStep extends KahinaStep
     //bit of a suboptimal hash function, but very easy to "compute"
     public int hashCode()
     {
-        return uc.size();
+        return uc.size() * uc.get(0);
     }
     
     public boolean equals(Object o)
