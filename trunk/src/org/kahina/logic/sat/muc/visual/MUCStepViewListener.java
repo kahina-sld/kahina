@@ -197,18 +197,22 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                     leanUS.add(a+1);
                 }
             }
+            
             //add a node with the lean kernel US to the reduction graph
             int resultID = state.registerMUC(leanUc, ucID, new LinkedList<Integer>());
-            Overlap overlap = new Overlap(uc.getUc(),leanUc.getUc());
-            for (int candidate : overlap.aMinusB)
+            if (resultID != ucID)
             {
-                if (uc.getRemovalLink(candidate) == null)
+                Overlap overlap = new Overlap(uc.getUc(),leanUc.getUc());
+                for (int candidate : overlap.aMinusB)
                 {
-                    state.addAndDistributeReducibilityInfo(ucID, candidate, -2);
+                    if (uc.getRemovalLink(candidate) == null)
+                    {
+                        state.addAndDistributeReducibilityInfo(ucID, candidate, -2);
+                    }
                 }
+                state.updateDecisionNode(ucID);
+                kahina.dispatchInstanceEvent(new KahinaSelectionEvent(resultID));
             }
-            state.updateDecisionNode(ucID);
-            kahina.dispatchInstanceEvent(new KahinaSelectionEvent(resultID));
         }
     }
 }
