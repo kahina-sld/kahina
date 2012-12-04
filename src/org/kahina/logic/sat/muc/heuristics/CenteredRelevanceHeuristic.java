@@ -102,7 +102,7 @@ public class CenteredRelevanceHeuristic extends ReductionHeuristic
                 return cand;
             }
             cand = relevanceList.get(relevanceList.size() - 1) - selVarOffset;
-            if (!alreadyProcessed.contains(cand))
+            if (cand > 0 && !alreadyProcessed.contains(cand))
             {
                 alreadyProcessed.add(cand);
                 return cand;
