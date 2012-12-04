@@ -7,15 +7,19 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.graph.KahinaGraphViewContextMenu;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
+import org.kahina.logic.sat.muc.data.Overlap;
 import org.kahina.logic.sat.muc.gui.ClauseSelectionEvent;
 import org.kahina.logic.sat.muc.task.ReductionTask;
 
@@ -167,13 +171,44 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         }
         else if (s.equals("leanKernel"))
         {
-            MUCStep uc = kahina.getState().getSelectedStep();
+            MUCState state = kahina.getState();
+            
+            //extract the lean kernel from the currently selected US
+            MUCStep uc = state.getSelectedStep();
+            int ucID = state.getSelectedStepID();
             CnfSatInstance leanKernelUC = kahina.getSatInstance().selectClauses(uc.getUc()).copy();
             leanKernelUC.reduceToLeanKernel();
-            //TODO: generate a new US representing the lean kernel 
-            //TODO: add a node with the lean kernel US to the reduction graph
             
-            view.view.display(leanKernelUC);
+            //generate a new US representing the lean kernel 
+            MUCStep leanUc = new MUCStep();
+            List<Integer> leanUS = leanUc.getUc();
+            Map<String,Integer> idMap = kahina.getSatInstance().generateClauseToIDMap();
+            StringBuilder clauseRepresentation;
+            for (List<Integer> clause : leanKernelUC.getClauses())
+            {
+                clauseRepresentation = new StringBuilder();
+                for (int lit : clause)
+                {
+                    clauseRepresentation.append(lit + ".");
+                }
+                int a = idMap.get(clauseRepresentation.toString());
+                if (!kahina.getSatInstance().isDontCareClause(a))
+                {
+                    leanUS.add(a+1);
+                }
+            }
+            //add a node with the lean kernel US to the reduction graph
+            int resultID = state.registerMUC(leanUc, ucID, new LinkedList<Integer>());
+            Overlap overlap = new Overlap(uc.getUc(),leanUc.getUc());
+            for (int candidate : overlap.aMinusB)
+            {
+                if (uc.getRemovalLink(candidate) == null)
+                {
+                    state.addAndDistributeReducibilityInfo(ucID, candidate, -2);
+                }
+            }
+            state.updateDecisionNode(ucID);
+            kahina.dispatchInstanceEvent(new KahinaSelectionEvent(resultID));
         }
     }
 }
