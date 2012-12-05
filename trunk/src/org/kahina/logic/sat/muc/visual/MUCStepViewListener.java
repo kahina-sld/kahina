@@ -5,15 +5,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.graph.KahinaGraphViewContextMenu;
@@ -21,6 +24,7 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
+import org.kahina.logic.sat.muc.MUCStepType;
 import org.kahina.logic.sat.muc.data.Overlap;
 import org.kahina.logic.sat.muc.gui.ClauseSelectionEvent;
 import org.kahina.logic.sat.muc.task.ReductionTask;
@@ -233,6 +237,26 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         {
             newSelection = processStatusSubselection(subselectionCommand.substring(6), selection);
         }
+        else if (subselectionCommand.startsWith("Size"))
+        {
+            newSelection = processSizeSubselection(subselectionCommand.substring(4), selection);
+        }
+        else if (subselectionCommand.startsWith("First"))
+        {
+            newSelection = processFirstSubselection(subselectionCommand.substring(5), selection);
+        }
+        else if (subselectionCommand.startsWith("Last"))
+        {
+            newSelection = processLastSubselection(subselectionCommand.substring(4), selection);
+        }
+        else if (subselectionCommand.startsWith("Random"))
+        {
+            newSelection = processRandomSubselection(subselectionCommand.substring(6), selection);
+        }
+        else if (subselectionCommand.equals("Literal"))
+        {
+            newSelection = getLiteralSubselection(selection);
+        }
         else
         {
             System.err.println("WARNING: unkown subselection command \"" + subselectionCommand + "\"!");
@@ -244,25 +268,137 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
     private int[] processStatusSubselection(String status, int[] selection)
     {
         List<Integer> selectionList = new LinkedList<Integer>();
+        int desiredStatus = -1;
         if (status.equals("Unknown"))
         {
-            
+            desiredStatus = 0;
         }
         else if (status.equals("FallAway"))
         {
-            
+            desiredStatus = 3;
         }
         else if (status.equals("Reduced"))
         {
-            
+            desiredStatus = 1;
         }
         else if (status.equals("Critical"))
         {
-            
+            desiredStatus = 2;
         }
         else
         {
             System.err.println("WARNING: unkown status \"" + status + "\" in subselection command!");
+            return selection;
+        }
+        MUCStep uc = kahina.getState().getSelectedStep();
+        if (uc != null)
+        {
+            for (int index : selection)
+            {
+                if (uc.getIcStatus(index + 1) == desiredStatus)
+                {
+                    selectionList.add(index);
+                }
+            }
+        }
+        return toIntArray(selectionList);
+    }
+    
+    private int[] processSizeSubselection(String size, int[] selection)
+    {
+        List<Integer> selectionList = new LinkedList<Integer>();
+        MUCStep uc = kahina.getState().getSelectedStep();
+        CnfSatInstance instance =  kahina.getState().getSatInstance();
+        if (uc != null)
+        {
+            if (size.equals("Large"))
+            {
+                for (int index : selection)
+                {
+                    int clauseID = uc.getUc().get(index + 1);
+                    if (instance.getClause(clauseID-1).size() > 5)
+                    {
+                        selectionList.add(index);
+                    }
+                }
+            }
+            else
+            {         
+                int desiredSize = Integer.parseInt(size);
+                for (int index : selection)
+                {
+                    int clauseID = uc.getUc().get(index);
+                    if (instance.getClause(clauseID-1).size() == desiredSize)
+                    {
+                        selectionList.add(index);
+                    }
+                }
+            }
+        }
+        return toIntArray(selectionList);
+    }
+    
+    private int[] processFirstSubselection(String number, int[] selection)
+    {
+        List<Integer> selectionList = new LinkedList<Integer>();   
+        int desiredNumber = Integer.parseInt(number);
+        for (int i = 0; i < desiredNumber; i++)
+        {
+            selectionList.add(selection[i]);
+        }
+        return toIntArray(selectionList);
+    }
+    
+    private int[] processLastSubselection(String number, int[] selection)
+    {
+        List<Integer> selectionList = new LinkedList<Integer>();
+        int desiredNumber = Integer.parseInt(number);
+        for (int i = selection.length - 1; i >= selection.length - desiredNumber; i--)
+        {
+            selectionList.add(selection[i]);
+        }
+        return toIntArray(selectionList);
+    }
+    
+    private int[] processRandomSubselection(String number, int[] selection)
+    {
+        int desiredNumber = Integer.parseInt(number);
+        if (desiredNumber > selection.length) desiredNumber = selection.length;
+        //generate a permutation
+        ArrayList<Integer> permutation = new ArrayList<Integer>(selection.length);
+        permutation.add(selection[0]);
+        Random rnd = new Random();
+        for (int i = 1; i < selection.length; i++)
+        {
+            permutation.add(rnd.nextInt(permutation.size()), selection[i]);
+        }
+        //then take the the desired number from the beginning
+        return toIntArray(permutation.subList(0, desiredNumber));
+    }
+    
+    public int[] getLiteralSubselection(int[] selection)
+    {
+        List<Integer> selectionList = new LinkedList<Integer>();
+        String litString = JOptionPane.showInputDialog("Enter a literal to subselect all clauses containing it.");
+        try
+        {
+            Integer lit = Integer.parseInt(litString);
+            MUCStep uc = kahina.getState().getSelectedStep();
+            CnfSatInstance instance =  kahina.getState().getSatInstance();
+            if (uc != null)
+            {
+                for (int index : selection)
+                {
+                    int clauseID = uc.getUc().get(index);
+                    if (instance.getClause(clauseID-1).contains(lit))
+                    {
+                        selectionList.add(index);
+                    }
+                }
+            }
+        }
+        catch (NumberFormatException e)
+        {
             return selection;
         }
         return toIntArray(selectionList);
