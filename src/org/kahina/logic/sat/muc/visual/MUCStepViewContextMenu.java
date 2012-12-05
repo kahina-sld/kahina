@@ -2,6 +2,7 @@ package org.kahina.logic.sat.muc.visual;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -26,11 +27,52 @@ public class MUCStepViewContextMenu extends JPopupMenu
         selectAllItem.addActionListener(l);
         add(selectAllItem);
         
-        JMenuItem selectDialogItem = new JMenuItem("Select ...");
-        selectDialogItem.setEnabled(false);
-        selectDialogItem.setActionCommand("selectDialog");
-        selectDialogItem.addActionListener(l);
-        add(selectDialogItem);
+        JMenu subselectionMenu = new JMenu("Subselection");
+        if (view.getList().getSelectedIndices().length == 0)
+        {
+            subselectionMenu.setEnabled(false);
+        }
+        
+        JMenu byStatusMenu = new JMenu("by status");
+        
+        JMenuItem unknownStatusItem = new JMenuItem("clauses of unkown status");
+        unknownStatusItem.setActionCommand("unknownStatusSubselection");
+        unknownStatusItem.addActionListener(l);
+        byStatusMenu.add(unknownStatusItem);
+        
+        JMenuItem fallAwayStatusItem = new JMenuItem("fall-away clauses");
+        fallAwayStatusItem.setActionCommand("fallAwayStatusSubselection");
+        fallAwayStatusItem.addActionListener(l);
+        byStatusMenu.add(fallAwayStatusItem);
+        
+        JMenuItem reducedStatusItem = new JMenuItem("explicitly reduced clauses");
+        reducedStatusItem.setActionCommand("reducedStatusSubselection");
+        reducedStatusItem.addActionListener(l);
+        byStatusMenu.add(reducedStatusItem);
+        
+        JMenuItem criticalStatusItem = new JMenuItem("critical clauses");
+        criticalStatusItem.setActionCommand("criticalStatusSubselection");
+        criticalStatusItem.addActionListener(l);
+        byStatusMenu.add(criticalStatusItem);
+        
+        subselectionMenu.add(byStatusMenu);
+        
+        JMenu bySizeMenu = new JMenu("by size");
+        subselectionMenu.add(bySizeMenu);
+        
+        JMenu firstMenu = new JMenu("first");
+        subselectionMenu.add(firstMenu);
+        
+        JMenu lastMenu = new JMenu("last");
+        subselectionMenu.add(lastMenu);
+        
+        JMenu randomMenu = new JMenu("random");
+        subselectionMenu.add(randomMenu);
+        
+        JMenuItem literalSelectionItem = new JMenu("containing literal ...");
+        subselectionMenu.add(literalSelectionItem);
+        
+        add(subselectionMenu);
         
         addSeparator();
         
@@ -40,7 +82,6 @@ public class MUCStepViewContextMenu extends JPopupMenu
         add(reduceItem);
         
         JMenuItem reduceMRItem = new JMenuItem("Reduce by this clause + model rotation");
-        selectDialogItem.setEnabled(false);
         reduceMRItem.setActionCommand("reduceMR" + listIndex);
         reduceMRItem.addActionListener(l);
         add(reduceMRItem);
