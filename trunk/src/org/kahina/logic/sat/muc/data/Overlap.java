@@ -63,4 +63,31 @@ public class Overlap
             }
         }
     }
+    
+    public String toString()
+    {
+        StringBuilder s = new StringBuilder();
+        s.append("aIntersectB " + aIntersectB.size() + ": {");
+        for (int el : aIntersectB)
+        {
+            s.append(el + ",");
+        }
+        if (aIntersectB.size() > 0) s.deleteCharAt(s.length() - 1);
+        s.append("}\n");
+        s.append("aMinusB " + aMinusB.size() + ": {");
+        for (int el : aMinusB)
+        {
+            s.append(el + ",");
+        }
+        if (aMinusB.size() > 0) s.deleteCharAt(s.length() - 1);
+        s.append("}\n");
+        s.append("bMinusA " + bMinusA.size() + ": {");
+        for (int el : bMinusA)
+        {
+            s.append(el + ",");
+        }
+        if (bMinusA.size() > 0) s.deleteCharAt(s.length() - 1);
+        s.append("}\n");
+        return s.toString();
+    }
 }

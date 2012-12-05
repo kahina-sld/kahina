@@ -5,9 +5,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.JLabel;
@@ -179,9 +181,10 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             CnfSatInstance leanKernelUC = kahina.getSatInstance().selectClauses(uc.getUc()).copy();
             leanKernelUC.reduceToLeanKernel();
             
-            //generate a new US representing the lean kernel 
+            //generate a new US representing the lean kernel, also detecting duplicates 
             MUCStep leanUc = new MUCStep();
             List<Integer> leanUS = leanUc.getUc();
+            Set<Integer> leanUSSet = new HashSet<Integer>();
             Map<String,Integer> idMap = kahina.getSatInstance().generateClauseToIDMap();
             StringBuilder clauseRepresentation;
             for (List<Integer> clause : leanKernelUC.getClauses())
@@ -192,9 +195,10 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                     clauseRepresentation.append(lit + ".");
                 }
                 int a = idMap.get(clauseRepresentation.toString());
-                if (!kahina.getSatInstance().isDontCareClause(a))
+                if (!leanUSSet.contains(a+1) && !kahina.getSatInstance().isDontCareClause(a))
                 {
                     leanUS.add(a+1);
+                    leanUSSet.add(a+1);
                 }
             }
             
@@ -203,6 +207,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             if (resultID != ucID)
             {
                 Overlap overlap = new Overlap(uc.getUc(),leanUc.getUc());
+                //System.err.println(overlap);
                 for (int candidate : overlap.aMinusB)
                 {
                     if (uc.getRemovalLink(candidate) == null)
