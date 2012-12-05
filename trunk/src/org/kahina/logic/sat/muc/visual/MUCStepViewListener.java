@@ -115,7 +115,11 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
     public void actionPerformed(ActionEvent e)
     {
         String s = e.getActionCommand();
-        if (s.equals("selectAll"))
+        if (s.startsWith("subselect"))
+        {
+            processSubselection(s.substring(9));
+        }
+        else if (s.equals("selectAll"))
         {
             view.selectAll();
         }
@@ -219,5 +223,60 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 kahina.dispatchInstanceEvent(new KahinaSelectionEvent(resultID));
             }
         }
+    }
+    
+    private void processSubselection(String subselectionCommand)
+    {
+        int[] selection = view.getList().getSelectedIndices();
+        int[] newSelection;
+        if (subselectionCommand.startsWith("Status"))
+        {
+            newSelection = processStatusSubselection(subselectionCommand.substring(6), selection);
+        }
+        else
+        {
+            System.err.println("WARNING: unkown subselection command \"" + subselectionCommand + "\"!");
+            return;
+        }
+        view.getList().setSelectedIndices(newSelection);
+    }
+    
+    private int[] processStatusSubselection(String status, int[] selection)
+    {
+        List<Integer> selectionList = new LinkedList<Integer>();
+        if (status.equals("Unknown"))
+        {
+            
+        }
+        else if (status.equals("FallAway"))
+        {
+            
+        }
+        else if (status.equals("Reduced"))
+        {
+            
+        }
+        else if (status.equals("Critical"))
+        {
+            
+        }
+        else
+        {
+            System.err.println("WARNING: unkown status \"" + status + "\" in subselection command!");
+            return selection;
+        }
+        return toIntArray(selectionList);
+    }
+    
+    private int[] toIntArray(List<Integer> list)
+    {
+        int[] array = new int[list.size()];
+        int i = 0;
+        for (int listItem : list)
+        {
+            array[i] = listItem;
+            i++;
+        }
+        return array;
     }
 }
