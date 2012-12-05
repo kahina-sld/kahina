@@ -163,18 +163,25 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                     int ic = uc.getUc().get(listIndex);
                     ics.add(ic);
                 }
+                System.err.println("Received user command to simultaneously reduce by the following clause IDs US #" 
+                        + kahina.getState().getSelectedStepID() + ":");
+                System.err.println(ics.toString());
                 reduce(ics);
             }
         }
         else if (s.equals("redSelIndiv"))
         {
             int[] redList = view.getList().getSelectedIndices();
+            System.err.println("Received user command to individually reduce at the following selection indices in US #" 
+                               + kahina.getState().getSelectedStepID() + ":");
+            System.err.println(redList.toString());
             MUCStep uc = kahina.getState().getSelectedStep();
             if (uc != null)
             {
                 for (int listIndex : redList)
                 {
                     int ic = uc.getUc().get(listIndex);
+                    System.err.println("   semi-automatic reduction of selection ID " + listIndex + " i.e. clause " + ic);
                     reduce(ic, false);
                 }
             }
@@ -291,11 +298,12 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             return selection;
         }
         MUCStep uc = kahina.getState().getSelectedStep();
+        System.err.println("size of selected US: " + uc.getUc().size());
         if (uc != null)
         {
             for (int index : selection)
             {
-                if (uc.getIcStatus(index + 1) == desiredStatus)
+                if (uc.getIcStatus(uc.getUc().get(index)) == desiredStatus)
                 {
                     selectionList.add(index);
                 }
@@ -315,7 +323,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             {
                 for (int index : selection)
                 {
-                    int clauseID = uc.getUc().get(index + 1);
+                    int clauseID = uc.getUc().get(index);
                     if (instance.getClause(clauseID-1).size() > 5)
                     {
                         selectionList.add(index);
