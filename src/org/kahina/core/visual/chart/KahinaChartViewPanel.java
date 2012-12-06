@@ -77,35 +77,7 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         //draw all the edges
         for (Integer id : view.getVisibleEdgeIDs())
         {
-            //store edge information that is used multiple times
-            int x = view.getEdgeX(id);
-            int y = view.getEdgeY(id);
-            int width = view.getEdgeWidth(id);
-            int height = view.getEdgeHeight(id);    
-            
-            //System.err.println("Edge " + id + ": x=" + x + " y=" + y + " width=" + width + " height=" + height);
-
-            //paint edge background in appropriate colour
-            cnv.setColor(view.getEdgeColor(id));
-            cnv.fillRect(x + 5, y + 5, width, height);
-            
-            //paint edge rim and caption as desired
-            if (view.getMarkedEdge() == id)
-            {
-                cnv.setColor(Color.YELLOW);
-                cnv.setStroke(new BasicStroke(2));
-            }
-            else
-            {
-                cnv.setColor(Color.BLACK);
-                cnv.setStroke(view.getEdgeStroke(id));
-            }
-            cnv.setFont(view.getEdgeFont(id)); 
-            cnv.drawRect(x + 5, y + 5, width, height);
-            cnv.setColor(Color.BLACK);
-            cnv.drawString(view.getEdgeCaption(id), x + 7, y + view.config.getZoomLevel() + 6);
-            //debugging version
-            //cnv.drawString(view.getEdgeCaption(id) + "(" + view.getModel().getLeftBoundForEdge(id) + "," + view.getModel().getRightBoundForEdge(id) + ")", x + 7, y + view.fontSize + 6);
+            drawEdge(id, cnv);
         }
         
         //draw segment captions
@@ -122,6 +94,39 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         }  
         
         revalidate();     
+    }
+    
+    protected void drawEdge(int id, Graphics2D cnv)
+    {
+      //store edge information that is used multiple times
+        int x = view.getEdgeX(id);
+        int y = view.getEdgeY(id);
+        int width = view.getEdgeWidth(id);
+        int height = view.getEdgeHeight(id);    
+        
+        //System.err.println("Edge " + id + ": x=" + x + " y=" + y + " width=" + width + " height=" + height);
+
+        //paint edge background in appropriate colour
+        cnv.setColor(view.getEdgeColor(id));
+        cnv.fillRect(x + 5, y + 5, width, height);
+        
+        //paint edge rim and caption as desired
+        if (view.getMarkedEdge() == id)
+        {
+            cnv.setColor(Color.YELLOW);
+            cnv.setStroke(new BasicStroke(2));
+        }
+        else
+        {
+            cnv.setColor(Color.BLACK);
+            cnv.setStroke(view.getEdgeStroke(id));
+        }
+        cnv.setFont(view.getEdgeFont(id)); 
+        cnv.drawRect(x + 5, y + 5, width, height);
+        cnv.setColor(Color.BLACK);
+        cnv.drawString(view.getEdgeCaption(id), x + 7, y + view.config.getZoomLevel() + 6);
+        //debugging version
+        //cnv.drawString(view.getEdgeCaption(id) + "(" + view.getModel().getLeftBoundForEdge(id) + "," + view.getModel().getRightBoundForEdge(id) + ")", x + 7, y + view.fontSize + 6);
     }
     
     public void clearCanvas(Graphics canvas)
