@@ -18,7 +18,7 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.visual.KahinaView;
 
-public class KahinaRecursiveChartView  extends KahinaView<KahinaChart>
+public class KahinaRecursiveChartView  extends KahinaChartView
 {
     private static final boolean verbose = false;
     
