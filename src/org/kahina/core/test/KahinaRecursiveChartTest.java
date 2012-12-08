@@ -2,39 +2,32 @@ package org.kahina.core.test;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.File;
-import java.io.IOException;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JScrollPane;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.kahina.core.KahinaDefaultInstance;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.visual.chart.DisplayAllChartEdgesDecider;
-import org.kahina.core.visual.chart.KahinaChartView;
-import org.kahina.core.visual.chart.KahinaChartViewPanel;
-import org.kahina.tralesld.TraleSLDInstance;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import org.kahina.core.visual.chart.KahinaRecursiveChartView;
+import org.kahina.core.visual.chart.KahinaRecursiveChartViewPanel;
 
-public class KahinaChartTest
+public class KahinaRecursiveChartTest
 {
     public static void main(String[] args)
     {
-        String fileName = "src/org/kahina/core/test/test-chart.xml";
+        String fileName = "src/org/kahina/qtype/test/qtype-test-chart.xml";
         if (args.length > 0)
         {
             fileName = args[0];
         }
-    	KahinaInstance<?, ?, ?, ?> kahina = new KahinaDefaultInstance();
+        KahinaInstance<?, ?, ?, ?> kahina = new KahinaDefaultInstance();
         //DatabaseHandler data = new DatabaseHandler(new File("otoka.dat"));
         //KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.DATABASE, data);
         KahinaChart m = KahinaChart.importXML(fileName);
-        KahinaChartView v = new KahinaChartView(kahina);
+        KahinaRecursiveChartView v = new KahinaRecursiveChartView(kahina);
         v.setDisplayDecider(new DisplayAllChartEdgesDecider());
         v.display(m);       
 
@@ -47,12 +40,12 @@ public class KahinaChartTest
         v.setStatusFontEncoding(2, new Font(Font.SANS_SERIF,Font.BOLD, 10));
         v.setStatusFontEncoding(3, new Font(Font.SANS_SERIF,Font.BOLD, 10));
 
-        KahinaChartViewPanel vp = new KahinaChartViewPanel(kahina);
+        KahinaRecursiveChartViewPanel vp = new KahinaRecursiveChartViewPanel(kahina);
         JScrollPane vpp = new JScrollPane(vp);
-        vpp.setBounds(0, 0, 500, 300);
-        JFrame w = new JFrame("Kahina ChartView Demo");
+        //vpp.setBounds(0, 0, 500, 300);
+        JFrame w = new JFrame("Kahina RecursiveChartView Demo");
         w.setSize(510, 330);
-        w.setLayout(null);
+        w.setLayout(new BoxLayout(w.getContentPane(), BoxLayout.LINE_AXIS));
         w.add(vpp);
         w.setVisible(true);
         w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
