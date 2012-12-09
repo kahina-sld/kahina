@@ -53,19 +53,9 @@ public abstract class KahinaChart extends KahinaObject
 
 	public abstract void setRightmostCovered(int rightBound);
 
-	public int addEdge(int left, int right, String caption, int status)
-	{
-		int id = getNextEdgeID();
-		setLeftBoundForEdge(id, left);
-		setRightBoundForEdge(id, right);
-		setEdgeStatus(id, status);
-		setEdgeCaption(id, caption);
-		if (verbose)
-		{
-			System.err.println("KahinaChart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
-		}
-		return id;
-	}
+	public abstract int addEdge(int left, int right, String caption, int status);
+	
+	public abstract void addEdge(int id, int left, int right, String caption, int status);
 
 	public abstract void removeEdge(int edgeID);
 
@@ -178,10 +168,7 @@ public abstract class KahinaChart extends KahinaObject
     				m.setLeftmostCovered(left);
     			if (right > m.getRightmostCovered())
     				m.setRightmostCovered(right);
-    			m.setLeftBoundForEdge(id, left);
-    			m.setRightBoundForEdge(id, right);
-    			m.setEdgeStatus(id, status);
-    			m.setEdgeCaption(id, edge.getAttribute("caption"));
+    			m.addEdge(id, left, right, edge.getAttribute("caption"), status);
     		}
             NodeList dependencies = dom.getElementsByTagName("dependency");
             for (int i = 0; i < dependencies.getLength(); i++)

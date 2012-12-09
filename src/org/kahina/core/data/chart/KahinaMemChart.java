@@ -68,6 +68,19 @@ public class KahinaMemChart extends KahinaChart
         return id;
     }
     
+    public void addEdge(int id, int left, int right, String caption, int status)
+    {
+        dependencyRoots.add(id);
+        setLeftBoundForEdge(id, left);
+        setRightBoundForEdge(id, right);
+        setEdgeStatus(id, status);
+        setEdgeCaption(id, caption);
+        if (verbose)
+        {
+            System.err.println("KahinaChart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
+        }
+    }
+    
     @Override
 	public int getLeftBound()
     {

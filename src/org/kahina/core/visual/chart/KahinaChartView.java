@@ -299,34 +299,6 @@ public class KahinaChartView extends KahinaView<KahinaChart>
         return true;
     }
     
-    private boolean isVacantRange(int rowID, int leftBound, int rightBound)
-    {
-        if (rowID < 0) return false;
-        if (rowID >= usedSpace.size()) return true;
-        else
-        {
-            HashMap<Integer,Integer> usedInRow = usedSpace.get(rowID);
-            for (int i = leftBound; i < rightBound; i++)
-            {
-                if (usedInRow.get(i) != null) return false;
-            }
-            return true;
-        }
-    }
-    
-    private void reserveRange(int rowID, int leftBound, int rightBound, int edgeID)
-    {
-        while (rowID >= usedSpace.size())
-        {
-            usedSpace.add(new HashMap<Integer,Integer>());
-        }
-        HashMap<Integer,Integer> usedInRow = usedSpace.get(rowID);
-        for (int i = leftBound; i < rightBound; i++)
-        {
-            usedInRow.put(i,edgeID);
-        }
-    }
-    
     public int getNumberOfSegments()
     {
         return model.getRightmostCovered() - model.getLeftmostCovered();
@@ -719,6 +691,34 @@ public class KahinaChartView extends KahinaView<KahinaChart>
                     agenda.addAll(model.getDaughterEdgesForEdge(nextAncestor));
                 }
             }
+        }
+    }
+    
+    private boolean isVacantRange(int rowID, int leftBound, int rightBound)
+    {
+        if (rowID < 0) return false;
+        if (rowID >= usedSpace.size()) return true;
+        else
+        {
+            HashMap<Integer,Integer> usedInRow = usedSpace.get(rowID);
+            for (int i = leftBound; i < rightBound; i++)
+            {
+                if (usedInRow.get(i) != null) return false;
+            }
+            return true;
+        }
+    }
+    
+    private void reserveRange(int rowID, int leftBound, int rightBound, int edgeID)
+    {
+        while (rowID >= usedSpace.size())
+        {
+            usedSpace.add(new HashMap<Integer,Integer>());
+        }
+        HashMap<Integer,Integer> usedInRow = usedSpace.get(rowID);
+        for (int i = leftBound; i < rightBound; i++)
+        {
+            usedInRow.put(i,edgeID);
         }
     }
     
