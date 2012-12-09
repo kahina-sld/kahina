@@ -77,7 +77,7 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         //draw all the edges
         for (Integer id : view.getVisibleEdgeIDs())
         {
-            drawEdge(id, cnv);
+            drawEdge(0 , 0, id, cnv);
         }
         
         //draw segment captions
@@ -96,11 +96,11 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         revalidate();     
     }
     
-    protected void drawEdge(int id, Graphics2D cnv)
+    protected void drawEdge(int relX, int relY, int id, Graphics2D cnv)
     {
-      //store edge information that is used multiple times
-        int x = view.getEdgeX(id);
-        int y = view.getEdgeY(id);
+        //store edge information that is used multiple times
+        int x = view.getEdgeX(id) + relX;
+        int y = view.getEdgeY(id) + relY;
         int width = view.getEdgeWidth(id);
         int height = view.getEdgeHeight(id);    
         

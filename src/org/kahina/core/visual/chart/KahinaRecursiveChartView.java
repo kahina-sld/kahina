@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.kahina.core.KahinaInstance;
@@ -30,6 +31,8 @@ public class KahinaRecursiveChartView  extends KahinaChartView
     
     //hack to allow precalculations from outside any drawing method
     private Graphics2D g;
+    
+    private int chartHeight;
 
     public KahinaRecursiveChartView(KahinaInstance<?, ?, ?, ?> kahina)
     {
@@ -45,6 +48,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
         statusFontEncoding = new HashMap<Integer, Font>();
         
         chartWidth = 0;
+        chartHeight = 0;
         cellHeight = 14;
 
         //setDisplayDecider(new KahinaChartEdgeDisplayDecider());
@@ -165,7 +169,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                     fm = getFontMetrics(edgeFont, edgeStroke, config.getZoomLevel());
                     int cellWidth = fm.stringWidth(edgeCaption) + 4;
                     cellWidth += recursionOffsetLeft.get(curEdge) * config.getZoomLevel();
-                    cellWidth += recursionOffsetRight.get(curEdge) * config.getZoomLevel();
+                    //cellWidth += recursionOffsetRight.get(curEdge) * config.getZoomLevel();
                     width.put(curEdge, cellWidth);
                     
                     //process required cell dimension according to cell width policy:
@@ -192,7 +196,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
         for (int curEdge : model.getDependencyRoots())
         {
             System.err.println("root : stacking root edge " + curEdge);
-            calculateCoordinates(curEdge);
+            calculateCoordinates(curEdge, cellHeight, recursionOffsetLeft);
             int edgeHeight = height.get(curEdge);
             
             int daughterLeftBound = model.getLeftBoundForEdge(curEdge);
@@ -259,7 +263,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
             {
                 drawIntoRow = usedSpace.size() - drawIntoRow - 1;
             }   
-            int rowHeightSumAbove = config.getZoomLevel();
+            int rowHeightSumAbove = 0;
             if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
             {
                 for (int i = 0; i <= rowForEdge.get(daughter); i++)
@@ -277,16 +281,16 @@ public class KahinaRecursiveChartView  extends KahinaChartView
             edgeY.put(daughter, rowHeightSumAbove);
         }
         
-        //TODO: sum up root row heights to determine height of the entire chart
+        //sum up root row heights to determine height of the entire chart
         int rowHeightSum = 0;
         for (int i = 0; i < usedSpace.size(); i++)
         {
             rowHeightSum += rowHeights.get(i);
         }
-        //height.put(edgeID, config.getZoomLevel() + rowHeightSum);
+        chartHeight = rowHeightSum;
     }
     
-    private void calculateCoordinates(int edgeID)
+    private void calculateCoordinates(int edgeID, int cellHeight, Map<Integer,Integer> recursionOffsetLeft)
     {
         System.err.println("calculateCoordinates(edgeID = " + edgeID + ")");
         if (config.decideEdgeDisplay(edgeID))
@@ -297,7 +301,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
             //base case: no recursion, just calculate and store the space needed for the edge
             if (daughters.size() == 0)
             {     
-                height.put(edgeID, config.getZoomLevel());
+                height.put(edgeID, cellHeight);
             }
             //recursive case: space subsumes the space needed for the children
             else
@@ -312,7 +316,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                 for (int curEdge : daughters)
                 {
                     System.err.println("edge " + edgeID + ": stacking daughter edge " + curEdge);
-                    calculateCoordinates(curEdge);
+                    calculateCoordinates(curEdge, cellHeight, recursionOffsetLeft);
                     int edgeHeight = height.get(curEdge);
                     int daughterLeftBound = model.getLeftBoundForEdge(curEdge);
                     int daughterRightBound = model.getRightBoundForEdge(curEdge);
@@ -378,7 +382,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                     }
                     else
                     {
-                        edgeX.put(daughter, getSegmentOffset(daughterLeftBound));
+                        edgeX.put(daughter, getSegmentOffset(daughterLeftBound) - getSegmentOffset(leftBound));
                     }
                     //straightforward use of segmentOffsets to determine all the coordinates
                     int drawIntoRow = rowForEdge.get(daughter);               
@@ -386,7 +390,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                     {
                         drawIntoRow = usedSpace.size() - drawIntoRow - 1;
                     }   
-                    int rowHeightSumAbove = config.getZoomLevel();
+                    int rowHeightSumAbove = cellHeight;
                     if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
                     {
                         for (int i = 0; i <= rowForEdge.get(daughter); i++)
@@ -405,13 +409,17 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                 }
                 
                 //sum up daughter row heights to determine height of the constituent
-                int rowHeightSum = 0;
+                int rowHeightSum = cellHeight;
                 for (int i = 0; i < usedSpace.size(); i++)
                 {
                     rowHeightSum += rowHeights.get(i);
                 }
-                height.put(edgeID, config.getZoomLevel() + rowHeightSum);
+                height.put(edgeID, rowHeightSum);
             }
+            //width depends on the segment offsets as well as the recursion offsets to the left
+            int edgeWidth = getSegmentOffset(rightBound) - getSegmentOffset(leftBound);
+            edgeWidth -= recursionOffsetLeft.get(edgeID) * config.getZoomLevel();
+            width.put(edgeID, edgeWidth);
         }
         else
         {
@@ -537,5 +545,10 @@ public class KahinaRecursiveChartView  extends KahinaChartView
             widthSum += getNecessarySegmentWidth(i);
         }
         return widthSum;
+    }
+    
+    public int getDisplayHeight()
+    {
+        return chartHeight;
     }
 }

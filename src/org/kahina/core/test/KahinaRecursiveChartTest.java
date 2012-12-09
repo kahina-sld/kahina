@@ -31,14 +31,15 @@ public class KahinaRecursiveChartTest
         v.setDisplayDecider(new DisplayAllChartEdgesDecider());
         v.display(m);       
 
-        v.setStatusColorEncoding(0,new Color(100,255,100)); //successful edge
-        v.setStatusColorEncoding(1,new Color(255,100,100)); //unsuccessful edge
-        v.setStatusColorEncoding(2,new Color(0,255,0)); //highlighted successful edge
-        v.setStatusColorEncoding(3,new Color(255,0,0)); //highlighted unsuccessful edge
+        v.setStatusColorEncoding(0,new Color(100,180,100)); //successful edge
+        v.setStatusColorEncoding(1,new Color(180,100,100)); //unsuccessful edge
+        v.setStatusColorEncoding(2,new Color(250,250,150)); //active edge
+        v.setStatusColorEncoding(3,new Color(0,255,0)); //highlighted successful edge
+        v.setStatusColorEncoding(4,new Color(255,0,0)); //highlighted unsuccessful edge
         
         //highlighted edges also have captions in bold font
-        v.setStatusFontEncoding(2, new Font(Font.SANS_SERIF,Font.BOLD, 10));
         v.setStatusFontEncoding(3, new Font(Font.SANS_SERIF,Font.BOLD, 10));
+        v.setStatusFontEncoding(4, new Font(Font.SANS_SERIF,Font.BOLD, 10));
 
         KahinaRecursiveChartViewPanel vp = new KahinaRecursiveChartViewPanel(kahina);
         JScrollPane vpp = new JScrollPane(vp);
