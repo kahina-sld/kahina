@@ -212,37 +212,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
             }
         }
         
-        int currentOffset = 0;
-        if (config.getDisplayRangePolicy() == KahinaChartViewOptions.RANGE_COMPLETE)
-        {
-            for (int segmentID = 0; segmentID <= model.getRightmostCovered(); segmentID++)
-            {
-                segmentOffsets.put(segmentID, currentOffset);
-                currentOffset += getSegmentWidth(segmentID);
-            }
-        }
-        else
-        {       
-            HashSet<Integer> segmentIDs = new HashSet<Integer>();
-            segmentIDs.addAll(segmentWidths.keySet());
-            if (config.getDisplayRangePolicy() == KahinaChartViewOptions.RANGE_USED_OR_CAPTION_DEFINED)
-            {
-                segmentIDs.addAll(model.getSegmentsWithCaption());
-            }
-            ArrayList<Integer> sortedSegmentIDs = new ArrayList<Integer>();
-            sortedSegmentIDs.addAll(segmentIDs);
-            Collections.sort(sortedSegmentIDs);
-            if (!sortedSegmentIDs.isEmpty())
-            {
-            	sortedSegmentIDs.add(sortedSegmentIDs.get(sortedSegmentIDs.size() - 1) + 1);
-            }
-            for (int segmentID : sortedSegmentIDs)
-            {
-                segmentOffsets.put(segmentID, currentOffset);
-                currentOffset += getSegmentWidth(segmentID);
-            }
-        }
-        chartWidth = currentOffset;
+        computeSegmentOffsets();
         
         if (verbose)
         {
@@ -284,6 +254,41 @@ public class KahinaChartView extends KahinaView<KahinaChart>
                 width.put(curEdge, rightOffset - leftOffset);
             }
         }
+    }
+    
+    protected void computeSegmentOffsets()
+    {
+        int currentOffset = 0;
+        if (config.getDisplayRangePolicy() == KahinaChartViewOptions.RANGE_COMPLETE)
+        {
+            for (int segmentID = 0; segmentID <= model.getRightmostCovered(); segmentID++)
+            {
+                segmentOffsets.put(segmentID, currentOffset);
+                currentOffset += getSegmentWidth(segmentID);
+            }
+        }
+        else
+        {       
+            HashSet<Integer> segmentIDs = new HashSet<Integer>();
+            segmentIDs.addAll(segmentWidths.keySet());
+            if (config.getDisplayRangePolicy() == KahinaChartViewOptions.RANGE_USED_OR_CAPTION_DEFINED)
+            {
+                segmentIDs.addAll(model.getSegmentsWithCaption());
+            }
+            ArrayList<Integer> sortedSegmentIDs = new ArrayList<Integer>();
+            sortedSegmentIDs.addAll(segmentIDs);
+            Collections.sort(sortedSegmentIDs);
+            if (!sortedSegmentIDs.isEmpty())
+            {
+                sortedSegmentIDs.add(sortedSegmentIDs.get(sortedSegmentIDs.size() - 1) + 1);
+            }
+            for (int segmentID : sortedSegmentIDs)
+            {
+                segmentOffsets.put(segmentID, currentOffset);
+                currentOffset += getSegmentWidth(segmentID);
+            }
+        }
+        chartWidth = currentOffset;
     }
     
     public boolean segmentDisplayed(int id)

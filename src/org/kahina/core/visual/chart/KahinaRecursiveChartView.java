@@ -22,21 +22,6 @@ public class KahinaRecursiveChartView  extends KahinaChartView
 {
     private static final boolean verbose = false;
     
-    KahinaChartViewConfiguration config;
-    
-    //display coordinates for edges (DO NOT generate these each time, or drawing will be slow)
-    //unlike in the case of KahinaChartView, x and y coordinates are relative with respect to parent
-    HashMap<Integer, Integer> edgeX;
-    HashMap<Integer, Integer> edgeY;
-    HashMap<Integer, Integer> height;
-    HashMap<Integer, Integer> width;
-    
-    //mapping from status values to display properties
-    HashMap<Integer, Color> statusColorEncoding;
-    HashMap<Integer, Color> statusHighlightColorEncoding;
-    HashMap<Integer, Stroke> statusStrokeEncoding;
-    HashMap<Integer, Font> statusFontEncoding;
-    
     //allow marking of a single edge in the chart
     private int markedEdge;
     
@@ -45,12 +30,6 @@ public class KahinaRecursiveChartView  extends KahinaChartView
     
     //hack to allow precalculations from outside any drawing method
     private Graphics2D g;
-    
-    //private variables for internal calculations across functions
-    int totalCellWidthMaximum;
-    HashMap<Integer,Integer> segmentWidths;
-    int cellHeight; //do not implement a setter for this, but change it with font size
-    int chartWidth;
 
     public KahinaRecursiveChartView(KahinaInstance<?, ?, ?, ?> kahina)
     {
@@ -172,7 +151,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
         {
             if (config.decideEdgeDisplay(curEdge))
             {
-                System.err.println("Now processing edge " + curEdge);
+                //System.err.println("Now processing edge " + curEdge);
                 int leftBound = model.getLeftBoundForEdge(curEdge);
                 int rightBound = model.getRightBoundForEdge(curEdge);
                 String edgeCaption = model.getEdgeCaption(curEdge);
@@ -199,23 +178,117 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                 }
             }
         }
+        computeSegmentOffsets();
         
         //stack the root components
         
-        for (Integer rootEdge : model.getDependencyRoots())
+        ArrayList<HashMap<Integer,Integer>> usedSpace = new ArrayList<HashMap<Integer,Integer>>();
+        //temporary data structure aligning edges with rows to be drawn in
+        HashMap<Integer,Integer> rowForEdge = new HashMap<Integer, Integer>();
+        //store the heights of each row, there can be very large components
+        HashMap<Integer,Integer> rowHeights = new HashMap<Integer,Integer>();
+
+        //stacking the roots locally according to stacking policy
+        for (int curEdge : model.getDependencyRoots())
         {
+            System.err.println("root : stacking root edge " + curEdge);
+            calculateCoordinates(curEdge);
+            int edgeHeight = height.get(curEdge);
             
-            calculateCoordinates(rootEdge);
+            int daughterLeftBound = model.getLeftBoundForEdge(curEdge);
+            int daughterRightBound = model.getRightBoundForEdge(curEdge);
             
+            //determine vertical slot according to stacking policy
+            if (config.getEdgeStackingPolicy() == KahinaChartViewOptions.STACK_EDGES_FILL_SPACE)
+            {
+                //fit in as early as possible (start searching from the top)
+                for (int i = 0; true; i++)
+                {
+                    if (isVacantRange(usedSpace, i, daughterLeftBound, daughterRightBound))
+                    {
+                        reserveRange(usedSpace, i, daughterLeftBound, daughterRightBound, curEdge);
+                        rowForEdge.put(curEdge, i);
+                        Integer rowHeight = rowHeights.get(i);
+                        if (rowHeight == null || rowHeight < edgeHeight)
+                        {
+                            rowHeights.put(i, edgeHeight);
+                        }
+                        break;
+                    }
+                }
+            }
+            else //edgeStackingPolicy == STACK_EDGES_BY_ID
+            {   
+                //fit in as late as necessary (start searching from the bottom)
+                for (int j = usedSpace.size() - 1; j >= -1; j--)
+                {
+                    if (!isVacantRange(usedSpace, j, daughterLeftBound, daughterRightBound))
+                    {
+                        reserveRange(usedSpace, j + 1, daughterLeftBound, daughterRightBound, curEdge);
+                        rowForEdge.put(curEdge, j + 1);
+                        Integer rowHeight = rowHeights.get(j+1);
+                        if (rowHeight == null || rowHeight < edgeHeight)
+                        {
+                            rowHeights.put(j+1, edgeHeight);
+                        }
+                        break;
+                    }
+                }
+            }   
+        }      
+        System.err.print("root : row heights ");
+        for (int row : rowHeights.keySet())
+        {
+            System.err.print(row + "->" + rowHeights.get(row) + " ");
+        }
+        System.err.println();
+        System.err.print("root : roots to row ");
+        for (int edge : rowForEdge.keySet())
+        {
+            System.err.print(edge + "->" + rowForEdge.get(edge) + " ");
+        }
+        System.err.println();
+        //determine daughter positions relative to the current position
+        for (int daughter : model.getDependencyRoots())
+        {
+            System.err.println("root : determining position of root " + daughter);
+            edgeX.put(daughter, 0);
+            //straightforward use of segmentOffsets to determine all the coordinates
+            int drawIntoRow = rowForEdge.get(daughter);               
+            if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
+            {
+                drawIntoRow = usedSpace.size() - drawIntoRow - 1;
+            }   
+            int rowHeightSumAbove = config.getZoomLevel();
+            if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
+            {
+                for (int i = 0; i <= rowForEdge.get(daughter); i++)
+                {
+                    rowHeightSumAbove += rowHeights.get(i);
+                }
+            }  
+            else
+            {
+                for (int i = usedSpace.size() - 1; i > drawIntoRow; i--)
+                {
+                    rowHeightSumAbove += rowHeights.get(i);
+                }
+            }
+            edgeY.put(daughter, rowHeightSumAbove);
         }
         
-        //TODO: determine root component positions  
-        
-        //TODO: add up the dimensions of the root components to determine overall chart size
+        //TODO: sum up root row heights to determine height of the entire chart
+        int rowHeightSum = 0;
+        for (int i = 0; i < usedSpace.size(); i++)
+        {
+            rowHeightSum += rowHeights.get(i);
+        }
+        //height.put(edgeID, config.getZoomLevel() + rowHeightSum);
     }
     
     private void calculateCoordinates(int edgeID)
     {
+        System.err.println("calculateCoordinates(edgeID = " + edgeID + ")");
         if (config.decideEdgeDisplay(edgeID))
         {
             int leftBound = model.getLeftBoundForEdge(edgeID);
@@ -228,15 +301,21 @@ public class KahinaRecursiveChartView  extends KahinaChartView
             }
             //recursive case: space subsumes the space needed for the children
             else
-            {
+            {   
                 ArrayList<HashMap<Integer,Integer>> usedSpace = new ArrayList<HashMap<Integer,Integer>>();
                 //temporary data structure aligning edges with rows to be drawn in
                 HashMap<Integer,Integer> rowForEdge = new HashMap<Integer, Integer>();
+                //store the heights of each row, there can be very large components
+                HashMap<Integer,Integer> rowHeights = new HashMap<Integer,Integer>();
                 
                 //stacking the daughters locally according to stacking policy
                 for (int curEdge : daughters)
                 {
+                    System.err.println("edge " + edgeID + ": stacking daughter edge " + curEdge);
                     calculateCoordinates(curEdge);
+                    int edgeHeight = height.get(curEdge);
+                    int daughterLeftBound = model.getLeftBoundForEdge(curEdge);
+                    int daughterRightBound = model.getRightBoundForEdge(curEdge);
                     
                     //determine vertical slot according to stacking policy
                     if (config.getEdgeStackingPolicy() == KahinaChartViewOptions.STACK_EDGES_FILL_SPACE)
@@ -244,10 +323,15 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                         //fit in as early as possible (start searching from the top)
                         for (int i = 0; true; i++)
                         {
-                            if (isVacantRange(usedSpace, i, leftBound, rightBound))
+                            if (isVacantRange(usedSpace, i, daughterLeftBound, daughterRightBound))
                             {
-                                reserveRange(usedSpace, i, leftBound, rightBound, curEdge);
+                                reserveRange(usedSpace, i, daughterLeftBound, daughterRightBound, curEdge);
                                 rowForEdge.put(curEdge, i);
+                                Integer rowHeight = rowHeights.get(i);
+                                if (rowHeight == null || rowHeight < edgeHeight)
+                                {
+                                    rowHeights.put(i, edgeHeight);
+                                }
                                 break;
                             }
                         }
@@ -257,20 +341,76 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                         //fit in as late as necessary (start searching from the bottom)
                         for (int j = usedSpace.size() - 1; j >= -1; j--)
                         {
-                            if (!isVacantRange(usedSpace, j, leftBound, rightBound))
+                            if (!isVacantRange(usedSpace, j, daughterLeftBound, daughterRightBound))
                             {
-                                reserveRange(usedSpace, j + 1, leftBound, rightBound, curEdge);
+                                reserveRange(usedSpace, j + 1, daughterLeftBound, daughterRightBound, curEdge);
                                 rowForEdge.put(curEdge, j + 1);
+                                Integer rowHeight = rowHeights.get(j+1);
+                                if (rowHeight == null || rowHeight < edgeHeight)
+                                {
+                                    rowHeights.put(j+1, edgeHeight);
+                                }
                                 break;
                             }
                         }
                     }
+                }      
+                System.err.print("edge " + edgeID + ": row heights ");
+                for (int row : rowHeights.keySet())
+                {
+                    System.err.print(row + "->" + rowHeights.get(row) + " ");
+                }
+                System.err.println();
+                System.err.print("edge " + edgeID + ": daughter to row ");
+                for (int edge : rowForEdge.keySet())
+                {
+                    System.err.print(edge + "->" + rowForEdge.get(edge) + " ");
+                }
+                System.err.println();
+                //determine daughter positions relative to the current position
+                for (int daughter : daughters)
+                {
+                    System.err.println("edge " + edgeID + ": determining position of daughter " + daughter);
+                    int daughterLeftBound = model.getLeftBoundForEdge(daughter);
+                    if (daughterLeftBound == leftBound)
+                    {
+                        edgeX.put(daughter, config.getZoomLevel());
+                    }
+                    else
+                    {
+                        edgeX.put(daughter, getSegmentOffset(daughterLeftBound));
+                    }
+                    //straightforward use of segmentOffsets to determine all the coordinates
+                    int drawIntoRow = rowForEdge.get(daughter);               
+                    if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
+                    {
+                        drawIntoRow = usedSpace.size() - drawIntoRow - 1;
+                    }   
+                    int rowHeightSumAbove = config.getZoomLevel();
+                    if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
+                    {
+                        for (int i = 0; i <= rowForEdge.get(daughter); i++)
+                        {
+                            rowHeightSumAbove += rowHeights.get(i);
+                        }
+                    }  
+                    else
+                    {
+                        for (int i = usedSpace.size() - 1; i > drawIntoRow; i--)
+                        {
+                            rowHeightSumAbove += rowHeights.get(i);
+                        }
+                    }
+                    edgeY.put(daughter, rowHeightSumAbove);
                 }
                 
-                //TODO: determine daughter positions
-                
-                //TODO: add up daughter heights to determine height of the constituent
-                
+                //sum up daughter row heights to determine height of the constituent
+                int rowHeightSum = 0;
+                for (int i = 0; i < usedSpace.size(); i++)
+                {
+                    rowHeightSum += rowHeights.get(i);
+                }
+                height.put(edgeID, config.getZoomLevel() + rowHeightSum);
             }
         }
         else
