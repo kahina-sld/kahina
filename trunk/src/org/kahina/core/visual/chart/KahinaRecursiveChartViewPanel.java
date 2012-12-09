@@ -59,7 +59,7 @@ public class KahinaRecursiveChartViewPanel extends KahinaChartViewPanel
         //draw the recursively nested edges from large to small
         for (int rootEdge : view.getModel().getDependencyRoots())
         {
-            recursivelyDrawEdge(rootEdge, cnv);        
+            recursivelyDrawEdge(rootEdge, 0, 0, cnv);        
         }
         
         //draw segment captions
@@ -78,12 +78,15 @@ public class KahinaRecursiveChartViewPanel extends KahinaChartViewPanel
         revalidate();  
     }
     
-    public void recursivelyDrawEdge(int rootEdge, Graphics2D cnv)
+    public void recursivelyDrawEdge(int parentEdge, int relX, int relY, Graphics2D cnv)
     {
-        drawEdge(rootEdge, cnv);
-        for (int daughterEdge : view.getModel().getDaughterEdgesForEdge(rootEdge))
+        System.err.println("recursivelyDrawEdge(" + parentEdge + "," + relX + "," + relY + ")");
+        drawEdge(relX, relY, parentEdge, cnv);
+        for (int daughterEdge : view.getModel().getDaughterEdgesForEdge(parentEdge))
         {
-            recursivelyDrawEdge(daughterEdge, cnv);
+            int daughterRelX = relX +  view.getEdgeX(parentEdge); 
+            int daughterRelY = relY +  view.getEdgeY(parentEdge); 
+            recursivelyDrawEdge(daughterEdge, daughterRelX, daughterRelY, cnv);
         }
     }
 }

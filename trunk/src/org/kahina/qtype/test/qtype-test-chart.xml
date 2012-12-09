@@ -6,22 +6,22 @@
 	<segment id="3" caption="to"/>
 	<segment id="4" caption="sleep"/>
 	<edge id="0" left="0" right="1" status="0" caption="name:uther"/>
-	<edge id="1" left="0" right="5" status="3" caption="s -> np vpc"/>
+	<edge id="1" left="0" right="5" status="2" caption="s -> np vpc"/>
 	<edge id="2" left="0" right="1" status="0" caption="np:name"/>
 	<edge id="3" left="1" right="2" status="0" caption="rv:persuades"/>
-	<edge id="4" left="1" right="2" status="1" caption="vpc:rv"/>
+	<edge id="4" left="1" right="5" status="1" caption="vpc:rv"/>
 	<edge id="5" left="1" right="5" status="1" caption="s -> np vpc"/>
 	<edge id="6" left="1" right="2" status="1" caption="np:rv"/>
 	<edge id="7" left="1" right="2" status="0" caption="vp -> v"/>
 	<edge id="8" left="1" right="2" status="0" caption="v:rv"/>
-	<edge id="9" left="1" right="2" status="1" caption="vpc:vp"/>
+	<edge id="9" left="1" right="5" status="2" caption="vpc:vp"/>
 	<edge id="10" left="1" right="5" status="1" caption="s -> np vpc"/>
 	<edge id="11" left="1" right="2" status="1" caption="np:vp"/>
 	<edge id="12" left="1" right="5" status="1" caption="vp -> v"/>
 	<edge id="13" left="1" right="2" status="1" caption="v:vp"/>
-	<edge id="14" left="1" right="5" status="3" caption="vp -> vp category"/>
+	<edge id="14" left="1" right="5" status="2" caption="vp -> vp category"/>
 	<edge id="15" left="1" right="2" status="0" caption="vp:vp"/>
-	<edge id="16" left="2" right="5" status="3" caption="np"/>
+	<edge id="16" left="2" right="5" status="2" caption="np"/>
 	<edge id="17" left="2" right="3" status="0" caption="np3pl:men"/>
     <dependency motherID="1" daughterID="2"/>
     <dependency motherID="2" daughterID="0"/>
