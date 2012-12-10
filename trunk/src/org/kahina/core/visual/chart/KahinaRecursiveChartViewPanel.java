@@ -80,7 +80,7 @@ public class KahinaRecursiveChartViewPanel extends KahinaChartViewPanel
     
     public void recursivelyDrawEdge(int parentEdge, int relX, int relY, Graphics2D cnv)
     {
-        System.err.println("recursivelyDrawEdge(" + parentEdge + "," + relX + "," + relY + ")");
+        //System.err.println("recursivelyDrawEdge(" + parentEdge + "," + relX + "," + relY + ")");
         drawEdge(relX, relY, parentEdge, cnv);
         for (int daughterEdge : view.getModel().getDaughterEdgesForEdge(parentEdge))
         {
