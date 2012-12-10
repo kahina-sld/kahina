@@ -655,6 +655,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     
     public void setMarkedEdge(int markedEdge)
     {
+        //if (verbose) 
+            System.err.println("KahinaChartView.setMarkedEdge(" + markedEdge + ")");
         this.markedEdge = markedEdge;
         updateHighlightings();
     }
@@ -663,6 +665,8 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     {
         highlights.clear();
         highlights.add(markedEdge);
+        //if (verbose) 
+            System.err.println("updateHighlightings() -> highlights = " + highlights);
         if (    config.getDependencyDisplayPolicy() == KahinaChartViewOptions.BOTH_ANCESTORS_AND_DESCENDANTS || 
         		config.getDependencyDisplayPolicy() == KahinaChartViewOptions.ANCESTORS_ONLY   )
         {

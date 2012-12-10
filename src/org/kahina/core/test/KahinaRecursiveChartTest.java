@@ -37,7 +37,7 @@ public class KahinaRecursiveChartTest
         
         v.setStatusHighlightColorEncoding(0,new Color(0,255,0)); //highlighted successful edge
         v.setStatusHighlightColorEncoding(1,new Color(255,0,0)); //highlighted unsuccessful edge
-        v.setStatusHighlightColorEncoding(2,new Color(255,255,0)); //highlighted unsuccessful edge
+        v.setStatusHighlightColorEncoding(2,new Color(255,255,0)); //highlighted active edge
         
         //highlighted edges also have captions in bold font
         v.setStatusFontEncoding(3, new Font(Font.SANS_SERIF,Font.BOLD, 10));
