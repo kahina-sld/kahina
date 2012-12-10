@@ -23,12 +23,6 @@ public class KahinaRecursiveChartView  extends KahinaChartView
 {
     private static final boolean verbose = false;
     
-    //allow marking of a single edge in the chart
-    private int markedEdge;
-    
-    //allow highlighting of a set of edges (depends on ancestors and descendants of current node)
-    private Set<Integer> highlights = new HashSet<Integer>();
-    
     //hack to allow precalculations from outside any drawing method
     private Graphics2D g;
     
@@ -550,5 +544,40 @@ public class KahinaRecursiveChartView  extends KahinaChartView
     public int getDisplayHeight()
     {
         return chartHeight;
+    }
+    
+    public int edgeAtCoordinates(int x, int y)
+    {
+        int edgeID = -1;
+        for (int curEdge : model.getDependencyRoots())
+        {
+            int curEdgeX = edgeX.get(curEdge);
+            int curEdgeY = edgeY.get(curEdge);
+            if (x >= curEdgeX && x <=  width.get(curEdge) + curEdgeX
+             && y >= curEdgeY && y <= height.get(curEdge) + curEdgeY)
+            {
+                edgeID = edgeAtCoordinates(curEdge, x - curEdgeX, y - curEdgeY);
+                break;
+            }
+        }
+        //System.err.println("recursiveChart.edgeAtCoordinates(" + x + "," + y + ") = " + edgeID);
+        return edgeID;
+    }
+    
+    private int edgeAtCoordinates(int parentID, int subX, int subY)
+    {
+        int edgeID = parentID;
+        for (int daughterID : model.getDaughterEdgesForEdge(parentID))
+        {
+            int daughterEdgeX = edgeX.get(daughterID);
+            int daughterEdgeY = edgeY.get(daughterID);
+            if (subX >= daughterEdgeX && subX <=  width.get(daughterID) + daughterEdgeX
+             && subY >= daughterEdgeY && subY <= height.get(daughterID) + daughterEdgeY)
+            {
+                edgeID = edgeAtCoordinates(daughterID, subX - daughterEdgeX, subY - daughterEdgeY);
+                break;
+            }
+        }
+        return edgeID;
     }
 }
