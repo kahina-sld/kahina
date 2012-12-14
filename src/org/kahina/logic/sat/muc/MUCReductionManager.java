@@ -89,21 +89,24 @@ public class MUCReductionManager extends KahinaTaskManager
                     if (kahina.getState().usesMetaLearning())
                     {
                         state.learnMetaUnits(uc);
-                        //we ensure that the meta instance can compactly represent the new UC
-                        TreeSet<Integer> metaBlock = new TreeSet<Integer>();
-                        int numClauses = state.getStatistics().numClausesOrGroups;
-                        for (int i = 1; i <= numClauses; i++)
+                        if (kahina.getState().usesBlocks())
                         {
-                            if (!result.getUc().contains(i))
+                            //we ensure that the meta instance can compactly represent the new UC
+                            TreeSet<Integer> metaBlock = new TreeSet<Integer>();
+                            int numClauses = state.getStatistics().numClausesOrGroups;
+                            for (int i = 1; i <= numClauses; i++)
                             {
-                                metaBlock.add(-i);
+                                if (!result.getUc().contains(i))
+                                {
+                                    metaBlock.add(-i);
+                                }
                             }
+                            state.learnMetaBlock(metaBlock);
                         }
-                        state.learnMetaBlock(metaBlock);
                     }
                 }
                 state.updateDecisionNode(ucTask.ucID);
-                if (kahina.getState().usesMetaLearning())
+                if (kahina.getState().usesBlocks())
                 {
                     kahina.getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
                 }

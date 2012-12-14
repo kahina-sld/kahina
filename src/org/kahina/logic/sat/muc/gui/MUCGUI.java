@@ -33,6 +33,7 @@ import org.kahina.logic.sat.muc.heuristics.CenteredIndexHeuristic;
 import org.kahina.logic.sat.muc.heuristics.DescendingRelevanceHeuristic;
 import org.kahina.logic.sat.muc.visual.MUCStepController;
 import org.kahina.logic.sat.muc.visual.MUCStepView;
+import org.kahina.logic.sat.muc.visual.MetaInstanceView;
 import org.kahina.logic.sat.muc.visual.PartitionBlockView;
 import org.kahina.logic.sat.muc.visual.RecursiveBlockView;
 import org.kahina.logic.sat.muc.visual.UCReducerListView;
@@ -85,7 +86,7 @@ public class MUCGUI extends KahinaGUI
         
         if (kahina.getMetaLearningMode() != MetaLearningMode.NO_META_LEARNING)
         {  
-            metaInstanceView = new KahinaSatInstanceListView(kahina);
+            metaInstanceView = new MetaInstanceView(kahina);
             metaInstanceView.setTitle("Meta Instance");
             kahina.registerInstanceListener(KahinaEventTypes.UPDATE, metaInstanceView);
             views.add(metaInstanceView);
@@ -133,7 +134,11 @@ public class MUCGUI extends KahinaGUI
         livingViews.add(stepController);
         varNameToView.put("stepController", stepController);*/
         
-        if (kahina.getMetaLearningMode() == MetaLearningMode.BLOCK_PARTITION)
+        if (kahina.getMetaLearningMode() == MetaLearningMode.NO_BLOCKS)
+        {
+            //no block view without blocks, but an alternative view component might get added some time
+        }
+        else if (kahina.getMetaLearningMode() == MetaLearningMode.BLOCK_PARTITION)
         {
             blockListView = new PartitionBlockView(kahina);
             kahina.registerInstanceListener(KahinaEventTypes.SELECTION, blockListView);
