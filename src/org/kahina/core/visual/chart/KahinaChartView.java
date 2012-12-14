@@ -655,7 +655,7 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     
     public void setMarkedEdge(int markedEdge)
     {
-        //if (verbose) 
+        if (verbose) 
             System.err.println("KahinaChartView.setMarkedEdge(" + markedEdge + ")");
         this.markedEdge = markedEdge;
         updateHighlightings();

@@ -11,6 +11,7 @@ import org.kahina.core.KahinaDefaultInstance;
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.visual.chart.DisplayAllChartEdgesDecider;
+import org.kahina.core.visual.chart.KahinaChartViewOptions;
 import org.kahina.core.visual.chart.KahinaRecursiveChartView;
 import org.kahina.core.visual.chart.KahinaRecursiveChartViewPanel;
 
@@ -28,6 +29,7 @@ public class KahinaRecursiveChartTest
         //KahinaChart m = KahinaChart.importXML(dom, KahinaDataHandlingMethod.DATABASE, data);
         KahinaChart m = KahinaChart.importXML(fileName);
         KahinaRecursiveChartView v = new KahinaRecursiveChartView(kahina);
+        kahina.registerInstanceListener("edge select", v);
         v.setDisplayDecider(new DisplayAllChartEdgesDecider());
         v.display(m);       
 
@@ -42,6 +44,8 @@ public class KahinaRecursiveChartTest
         //highlighted edges also have captions in bold font
         v.setStatusFontEncoding(3, new Font(Font.SANS_SERIF,Font.BOLD, 10));
         v.setStatusFontEncoding(4, new Font(Font.SANS_SERIF,Font.BOLD, 10));
+        
+        v.getConfig().setDependencyDisplayPolicy(KahinaChartViewOptions.NO_DEPENDENCIES);
 
         KahinaRecursiveChartViewPanel vp = new KahinaRecursiveChartViewPanel(kahina);
         JScrollPane vpp = new JScrollPane(vp);

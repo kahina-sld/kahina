@@ -16,7 +16,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.kahina.core.KahinaInstance;
+import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.gui.event.KahinaChartUpdateEvent;
+import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.visual.KahinaView;
 
 public class KahinaRecursiveChartView  extends KahinaChartView
@@ -580,5 +584,25 @@ public class KahinaRecursiveChartView  extends KahinaChartView
             }
         }
         return edgeID;
+    }
+    
+    public void processEvent(KahinaEvent e)
+    {
+        if (e instanceof KahinaEdgeSelectionEvent)
+        {
+            processEvent((KahinaEdgeSelectionEvent) e);
+        }
+        else
+        {
+            super.processEvent(e);
+        }
+    }
+    
+    public void processEvent(KahinaEdgeSelectionEvent e)
+    {
+        int edgeID = e.getSelectedEdge();
+        setMarkedEdge(edgeID);
+        recalculate();
+        kahina.dispatchEvent(new KahinaRedrawEvent());
     }
 }
