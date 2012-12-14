@@ -376,7 +376,8 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                     }
                     else
                     {
-                        edgeX.put(daughter, getSegmentOffset(daughterLeftBound) - getSegmentOffset(leftBound));
+                        int x = getSegmentOffset(daughterLeftBound) - getSegmentOffset(leftBound);
+                        edgeX.put(daughter, x - recursionOffsetLeft.get(edgeID) * config.getZoomLevel());
                     }
                     //straightforward use of segmentOffsets to determine all the coordinates
                     int drawIntoRow = rowForEdge.get(daughter);               
