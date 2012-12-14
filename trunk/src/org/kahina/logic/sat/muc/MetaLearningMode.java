@@ -2,6 +2,6 @@ package org.kahina.logic.sat.muc;
 
 public enum MetaLearningMode
 {
-    //three main modes: no meta learning, block partition, recursive blocks
-    NO_META_LEARNING, BLOCK_PARTITION, RECURSIVE_BLOCKS
+    //four main modes: no meta learning, meta learning without blocks, block partition, recursive blocks
+    NO_META_LEARNING, NO_BLOCKS, BLOCK_PARTITION, RECURSIVE_BLOCKS
 }

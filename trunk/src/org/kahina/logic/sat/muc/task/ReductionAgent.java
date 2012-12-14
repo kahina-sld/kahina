@@ -149,23 +149,26 @@ public class ReductionAgent extends KahinaTaskManager
                     if (state.usesMetaLearning())
                     {
                         state.learnMetaUnits(uc);
-                        //we ensure that the meta instance can compactly represent the new UC
-                        TreeSet<Integer> metaBlock = new TreeSet<Integer>();
-                        int numClauses = state.getStatistics().numClausesOrGroups;
-                        for (int i = 1; i <= numClauses; i++)
+                        if (state.usesBlocks())
                         {
-                            if (!result.getUc().contains(i))
+                            //we ensure that the meta instance can compactly represent the new UC
+                            TreeSet<Integer> metaBlock = new TreeSet<Integer>();
+                            int numClauses = state.getStatistics().numClausesOrGroups;
+                            for (int i = 1; i <= numClauses; i++)
                             {
-                                metaBlock.add(-i);
+                                if (!result.getUc().contains(i))
+                                {
+                                    metaBlock.add(-i);
+                                }
                             }
+                            state.learnMetaBlock(metaBlock);
                         }
-                        state.learnMetaBlock(metaBlock);
                     }
                     if (getPanel() != null) getPanel().requestViewUpdate();
                 }
                 state.updateDecisionNode(ucTask.ucID);
                 //TODO: optionally select the new step in case of a successful reduction
-                if (state.usesMetaLearning())
+                if (state.usesBlocks())
                 {
                     state.getKahina().getGUI().getViewByID("currentUCBlocks").getModel().requireUpdate();
                 }

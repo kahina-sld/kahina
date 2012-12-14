@@ -297,17 +297,17 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         int ucID = bridge.registerMUC(muc_cands.toArray(new Integer[0]), muc.toArray(new Integer[0]));
         MUCStep firstUC = state.retrieve(MUCStep.class, ucID);
         
-        //we ensure that the meta instance can compactly represent the first UC
-        TreeSet<Integer> metaBlock = new TreeSet<Integer>();
-        for (int i = 1; i <= numClauses; i++)
+        if (state.usesBlocks())
         {
-            if (!firstUC.getUc().contains(i))
+            //we ensure that the meta instance can compactly represent the first UC
+            TreeSet<Integer> metaBlock = new TreeSet<Integer>();
+            for (int i = 1; i <= numClauses; i++)
             {
-                metaBlock.add(-i);
+                if (!firstUC.getUc().contains(i))
+                {
+                    metaBlock.add(-i);
+                }
             }
-        }
-        if (state.usesMetaLearning())
-        {
             state.learnMetaBlock(metaBlock);
         }
         
@@ -358,17 +358,20 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             int ucID = bridge.registerMUC(muc_cands.toArray(new Integer[0]), muc.toArray(new Integer[0]));
             MUCStep firstUC = state.retrieve(MUCStep.class, ucID);
             
-            //we ensure that the meta instance can compactly represent the first UC
-            TreeSet<Integer> metaBlock = new TreeSet<Integer>();
-            int numClauses = state.getStatistics().numClausesOrGroups;
-            for (int i = 1; i <= numClauses; i++)
+            if (state.usesBlocks())
             {
-                if (!firstUC.getUc().contains(i))
+                //we ensure that the meta instance can compactly represent the first UC
+                TreeSet<Integer> metaBlock = new TreeSet<Integer>();
+                int numClauses = state.getStatistics().numClausesOrGroups;
+                for (int i = 1; i <= numClauses; i++)
                 {
-                    metaBlock.add(-i);
+                    if (!firstUC.getUc().contains(i))
+                    {
+                        metaBlock.add(-i);
+                    }
                 }
+                state.learnMetaBlock(metaBlock);
             }
-            state.learnMetaBlock(metaBlock);
         
             /*UCReducer reducer1 = new UCReducer(kahinaInstance.getState(), 1, files);
             reducer1.setHeuristics(new AlwaysFirstHeuristics());
@@ -488,6 +491,10 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             {
                 metaLearningMode = MetaLearningMode.NO_META_LEARNING;
             }
+            else if  (args[0].equals("nobl"))
+            {
+                metaLearningMode = MetaLearningMode.NO_BLOCKS;
+            }
             else if  (args[0].equals("blprt"))
             {
                 metaLearningMode = MetaLearningMode.BLOCK_PARTITION;
@@ -500,6 +507,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             {
                 System.err.println("Mode \"" + args[0] + "\" not recognized, available modes:");
                 System.err.println("  nometa - no meta learning");
+                System.err.println("  nobl   - meta-learning without blocks");
                 System.err.println("  blprt  - meta-learning a partition of blocks");
                 System.err.println("  blrec  - meta-learning a tree of blocks (recursive)");
                 System.exit(1);

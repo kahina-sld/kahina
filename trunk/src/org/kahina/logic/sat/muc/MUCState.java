@@ -14,6 +14,7 @@ import org.kahina.logic.sat.data.model.CompleteAssignment;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.bridge.MUCInstruction;
+import org.kahina.logic.sat.muc.data.BlocklessBlockHandler;
 import org.kahina.logic.sat.muc.data.MUCMetaInstance;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.data.PartitionBlockHandler;
@@ -29,6 +30,7 @@ public class MUCState extends KahinaState
     MiniSATFiles files;
     
     MUCMetaInstance metaInstance;
+    BlocklessBlockHandler blocklessBlocks;
     PartitionBlockHandler partitionBlocks;
     RecursiveBlockHandler recursiveBlocks;
     
@@ -45,6 +47,7 @@ public class MUCState extends KahinaState
         this.kahina = kahina;
         this.satInstance = null;
         this.metaInstance = null;
+        this.blocklessBlocks = null;
         this.partitionBlocks = null;
         this.recursiveBlocks = null;
         this.stat = null;
@@ -60,6 +63,11 @@ public class MUCState extends KahinaState
         if (usesMetaLearning())
         {
             this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
+        }
+        if (kahina.getMetaLearningMode() == MetaLearningMode.NO_BLOCKS)
+        {
+            this.blocklessBlocks = new BlocklessBlockHandler(metaInstance);
+            this.metaInstance.setBlockHandler(blocklessBlocks);
         }
         if (kahina.getMetaLearningMode() == MetaLearningMode.BLOCK_PARTITION)
         {
@@ -87,6 +95,7 @@ public class MUCState extends KahinaState
     {
         this.satInstance = null;
         this.metaInstance = null;
+        this.blocklessBlocks = null;  
         this.partitionBlocks = null;
         this.recursiveBlocks = null;
         this.stat = null;
@@ -98,6 +107,11 @@ public class MUCState extends KahinaState
     public MUCInstance getKahina()
     {
         return kahina;
+    }
+    
+    public boolean usesBlocks()
+    {
+        return usesMetaLearning() && kahina.getMetaLearningMode() != MetaLearningMode.NO_BLOCKS;
     }
     
     public boolean usesMetaLearning()
@@ -140,6 +154,11 @@ public class MUCState extends KahinaState
     public UCReducerList getReducers()
     {
         return reducers;
+    }
+    
+    public BlocklessBlockHandler getBlocklessBlocks()
+    {
+        return blocklessBlocks;
     }
     
     public PartitionBlockHandler getPartitionBlocks()
@@ -308,6 +327,11 @@ public class MUCState extends KahinaState
         if (kahina.getMetaLearningMode() != MetaLearningMode.NO_META_LEARNING)
         {
             this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
+        }
+        if (kahina.getMetaLearningMode() == MetaLearningMode.NO_BLOCKS)
+        {
+            this.blocklessBlocks = new BlocklessBlockHandler(metaInstance);
+            this.metaInstance.setBlockHandler(blocklessBlocks);
         }
         if (kahina.getMetaLearningMode() == MetaLearningMode.BLOCK_PARTITION)
         {
