@@ -12,20 +12,28 @@ import java.util.LinkedList;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.io.util.XMLUtil;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.lp.data.project.LogicProgrammingProject;
+import org.kahina.lp.profiler.LogicProgrammingProfiler;
+import org.kahina.prolog.profiler.PrologProfiler;
 import org.kahina.qtype.bridge.QTypeBridge;
 import org.kahina.qtype.data.bindings.QTypeGoal;
 import org.kahina.qtype.data.project.QTypeProject;
 import org.kahina.qtype.gui.QTypeGUI;
 import org.kahina.qtype.visual.bindings.QTypeGoalView;
 import org.kahina.sicstus.SICStusPrologDebuggerInstance;
+import org.kahina.tralesld.TraleSLDState;
+import org.kahina.tralesld.bridge.TraleSLDBridge;
+import org.kahina.tralesld.data.project.TraleProject;
+import org.kahina.tralesld.gui.TraleSLDGUI;
 import org.w3c.dom.Document;
 
-public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
-{	
-	
+public class QTypeDebuggerInstance extends LogicProgrammingInstance<QTypeState, QTypeGUI, QTypeBridge, QTypeProject>
+{		
 	private QTypeCommander commander;
+	
+	PrologProfiler profiler;
 	
 	public QTypeDebuggerInstance()
 	{
@@ -37,9 +45,19 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
 	@Override
 	public QTypeBridge startNewSession()
 	{
-		QTypeBridge bridge = (QTypeBridge) super.startNewSession();
-		commander.initializeForNewSession();
-		return bridge;
+	    try
+        {
+            bridge = (QTypeBridge) super.startNewSession();
+            profiler = new PrologProfiler(this, state.getFullProfile());
+            commander.initializeForNewSession();
+            return bridge;
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+        return null;
 	}
 
 	@Override
@@ -95,7 +113,7 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
         return new QTypeProject("no name", state.getStepTree(), this);
     }
         
-    public QTypeProject loadProject(FileInputStream stream)
+    public QTypeProject loadProject(InputStream stream)
     {
         Document dom;
         QTypeProject project = createNewProject();
@@ -107,8 +125,8 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
     @Override
     protected void prepareProjectLists()
     {
-        recentProjects = new LinkedList<LogicProgrammingProject>();
-        defaultProjects = new LinkedList<LogicProgrammingProject>();
+        recentProjects = new LinkedList<QTypeProject>();
+        defaultProjects = new LinkedList<QTypeProject>();
         addDefaultProject("data/project/qtype-tutorial1-project.xml");
         addDefaultProject("data/project/qtype-tutorial2-project.xml");
         addDefaultProject("data/project/qtype-demo-project.xml");
@@ -156,5 +174,17 @@ public class QTypeDebuggerInstance extends SICStusPrologDebuggerInstance
     public QTypeGUI getGUI()
     {
         return (QTypeGUI) gui;
+    }
+
+    @Override
+    public LogicProgrammingProfiler getProfiler()
+    {
+        return profiler;
+    }
+
+    @Override
+    protected QTypeState createState()
+    {
+        return new QTypeState(this);
     }
 }
