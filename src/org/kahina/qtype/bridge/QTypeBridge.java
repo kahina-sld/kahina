@@ -1,11 +1,15 @@
 package org.kahina.qtype.bridge;
 
+import gralej.om.IEntity;
+
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.control.KahinaStepUpdateEvent;
 import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.prolog.util.PrologUtil;
 import org.kahina.qtype.QTypeDebuggerInstance;
 import org.kahina.qtype.QTypeState;
@@ -13,7 +17,9 @@ import org.kahina.qtype.QTypeStep;
 import org.kahina.qtype.control.QTypeControlEventCommands;
 import org.kahina.qtype.data.bindings.QTypeGoal;
 import org.kahina.sicstus.bridge.SICStusPrologBridge;
+import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
+import org.kahina.tralesld.visual.fs.GraleJUtility;
 
 public class QTypeBridge extends SICStusPrologBridge
 {
@@ -47,7 +53,9 @@ public class QTypeBridge extends SICStusPrologBridge
 
 	@Override
 	public void step(int extID, String type, String description, String consoleMessage)
-	{	
+	{
+	    super.step(extID, type, description, consoleMessage);
+	       
 		// For compile_grammar steps, unregister any previously registered grammar:
 		if (description.startsWith("compile_grammar(") && description.endsWith(")"))
 		{
@@ -72,16 +80,19 @@ public class QTypeBridge extends SICStusPrologBridge
 	    {
 	        //create chart edge with label "lex:word" from the current position to the next
 	        String word = description.substring(8,description.indexOf(','));
-	        state.getChart().addEdge(currentPosition, currentPosition + 1, "lex:" + word, 2);
+	        int edgeID = state.getChart().addEdge(currentPosition, currentPosition + 1, "lex:" + word, 2);
+	        state.linkEdgeToNode(edgeID, currentID);
 	    }
 	    
-	    super.step(extID, type, description, consoleMessage);
+        maybeUpdateStepCount(true);
+        kahina.dispatchEvent(new KahinaRedrawEvent());
 	}
 	
 	@Override
 	public void exit(int extID, boolean deterministic, String newDescription)
 	{		
 		super.exit(extID, deterministic, newDescription);
+		int stepID = convertStepID(extID);
 		
 		// At exit of compile_grammar steps, register the grammar:
 		if (newDescription.startsWith("compile_grammar(") && newDescription.endsWith(")"))
@@ -89,7 +100,31 @@ public class QTypeBridge extends SICStusPrologBridge
 			String path = PrologUtil.atomLiteralToString(newDescription.substring(16, newDescription.length() - 1));
 			kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { path }));
 		}
+		
+		//if we have an associated edge, set it to successful
+		int associatedEdge = state.getEdgeForNode(stepID);
+		if (associatedEdge != -1)
+		{
+		    state.getChart().setEdgeStatus(associatedEdge, 0);
+		}
+		
+        kahina.dispatchEvent(new KahinaRedrawEvent());
 	}
+	
+    public void fail(int extID)
+    {
+        super.fail(extID);
+        int stepID = convertStepID(extID);
+        
+        //if we have an associated edge, set it to successful
+        int associatedEdge = state.getEdgeForNode(stepID);
+        if (associatedEdge != -1)
+        {
+            state.getChart().setEdgeStatus(associatedEdge, 1);
+        }
+        
+        kahina.dispatchEvent(new KahinaRedrawEvent());
+    }
 
 	public void registerExample(int number, String expectation, String sentence)
 	{
@@ -116,9 +151,10 @@ public class QTypeBridge extends SICStusPrologBridge
 
 	public void registerGoal(int extID, String key, String grisu)
 	{
+	    int stepID = stepIDConv.get(extID);
 		try
 		{
-			QTypeGoal goal = state.retrieve(QTypeStep.class, stepIDConv.get(extID)).getGoal();
+			QTypeGoal goal = state.retrieve(QTypeStep.class, stepID).getGoal();
 
 			if ("fs".equals(key))
 			{
@@ -133,8 +169,23 @@ public class QTypeBridge extends SICStusPrologBridge
 				goal.setIn(packer.pack(grisu));
 			} 
 			else if ("out".equals(key))
-			{
+			{	    
 				goal.setOut(packer.pack(grisu));
+				
+				IEntity graleFS = GraleJUtility.grisuToGralej(grisu);
+				//read out useful info for edge labels from feature structures
+				//if we have an associated edge...
+		        int associatedEdge = state.getEdgeForNode(stepID);
+		        if (associatedEdge != -1)
+		        {
+		            //...analyse the preliminary label to decide what to extract
+		            String oldCaption = state.getChart().getEdgeCaption(associatedEdge);
+		            if (oldCaption.startsWith("lex:"))
+		            {
+		                String type = GraleJUtility.getType(graleFS);
+		                state.getChart().setEdgeCaption(associatedEdge, type + oldCaption.substring(3));
+		            }
+		        }
 			}
 		} 
 		catch (Exception e)
