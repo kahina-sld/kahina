@@ -37,7 +37,8 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
 			super.startNewSession();
 			profiler = new PrologProfiler(this, state.getFullProfile());
 			return bridge;
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(-1);

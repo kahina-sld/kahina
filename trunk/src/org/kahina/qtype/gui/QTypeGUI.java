@@ -1,5 +1,6 @@
 package org.kahina.qtype.gui;
 
+import java.awt.Color;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -13,19 +14,41 @@ import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.io.util.XMLUtil;
+import org.kahina.core.visual.chart.DisplayAllChartEdgesDecider;
+import org.kahina.core.visual.chart.KahinaChartView;
 import org.kahina.core.visual.tree.KahinaListTreeView;
+import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.qtype.QTypeDebuggerInstance;
 import org.kahina.qtype.QTypeStep;
 import org.kahina.qtype.control.QTypeControlEventCommands;
 import org.kahina.qtype.data.tree.QTypeLayerDecider;
-import org.kahina.sicstus.gui.SICStusPrologGUI;
 
-public class QTypeGUI extends SICStusPrologGUI
+public class QTypeGUI extends LogicProgrammingGUI
 {
+    private final QTypeDebuggerInstance instance;
+    
+    protected KahinaChartView mainChartView;
 
 	public QTypeGUI(Class<? extends QTypeStep> stepType, QTypeDebuggerInstance instance)
 	{
 		super(stepType, instance);
+	    this.instance = instance;
+	      
+        mainChartView = new KahinaChartView(kahina);
+        mainChartView.setTitle("Left-Corner Chart");
+        views.add(mainChartView);
+        livingViews.add(mainChartView);
+        varNameToView.put("leftCornerChart", mainChartView);
+        
+        mainChartView.setStatusColorEncoding(0,new Color(100,180,100)); //successful edge
+        mainChartView.setStatusColorEncoding(1,new Color(180,100,100)); //unsuccessful edge
+        mainChartView.setStatusColorEncoding(2,new Color(250,250,150)); //active edge
+        
+        mainChartView.setStatusHighlightColorEncoding(0,new Color(0,255,0)); //highlighted successful edge
+        mainChartView.setStatusHighlightColorEncoding(1,new Color(255,0,0)); //highlighted unsuccessful edge
+        mainChartView.setStatusHighlightColorEncoding(2,new Color(255,255,0)); //highlighted active edge
+        
+        mainChartView.setDisplayDecider(new DisplayAllChartEdgesDecider());
 	}
 	
     public KahinaPerspective generateInitialPerspective()
@@ -47,6 +70,7 @@ public class QTypeGUI extends SICStusPrologGUI
 		super.displayMainViews();
 		mainTreeView.getModel().setLayerDecider(new QTypeLayerDecider());
 		mainTreeView.getSecondaryModel().setLayerDecider(new QTypeLayerDecider());
+	    mainChartView.display(instance.getState().getChart());
 	}
 
 	@Override
