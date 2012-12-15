@@ -24,6 +24,9 @@ public class QTypeBridge extends SICStusPrologBridge
 	QTypeState state;
 
 	private final TraleSLDFSPacker packer;
+	
+	//temporary variables for tracking the state of the chart
+	int currentPosition;
 
 	public QTypeBridge(final QTypeDebuggerInstance kahina)
 	{
@@ -39,13 +42,12 @@ public class QTypeBridge extends SICStusPrologBridge
         {
             chart.setSegmentCaption(i, wordList.get(i));
         }
+        currentPosition = 0;
     }
 
 	@Override
 	public void step(int extID, String type, String description, String consoleMessage)
-	{
-		super.step(extID, type, description, consoleMessage);
-		
+	{	
 		// For compile_grammar steps, unregister any previously registered grammar:
 		if (description.startsWith("compile_grammar(") && description.endsWith(")"))
 		{
@@ -66,7 +68,14 @@ public class QTypeBridge extends SICStusPrologBridge
 			//TODO: otherwise, detect the prediction (???)
 		}
 		
-		
+	    if (description.startsWith("db_word("))
+	    {
+	        //create chart edge with label "lex:word" from the current position to the next
+	        String word = description.substring(8,description.indexOf(','));
+	        state.getChart().addEdge(currentPosition, currentPosition + 1, "lex:" + word, 2);
+	    }
+	    
+	    super.step(extID, type, description, consoleMessage);
 	}
 	
 	@Override
