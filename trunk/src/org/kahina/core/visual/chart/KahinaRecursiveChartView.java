@@ -15,6 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JComponent;
+import javax.swing.JScrollPane;
+
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.data.chart.KahinaChart;
@@ -254,6 +257,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
         for (int daughter : model.getDependencyRoots())
         {
             System.err.println("root : determining position of root " + daughter);
+            System.err.println("  edgeX(" + daughter + ") = 0");
             edgeX.put(daughter, 0);
             //straightforward use of segmentOffsets to determine all the coordinates
             int drawIntoRow = rowForEdge.get(daughter);               
@@ -276,6 +280,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                     rowHeightSumAbove += rowHeights.get(i);
                 }
             }
+            System.err.println("  edgeY(" + daughter + ") = " + rowHeightSumAbove);
             edgeY.put(daughter, rowHeightSumAbove);
         }
         
@@ -299,6 +304,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
             //base case: no recursion, just calculate and store the space needed for the edge
             if (daughters.size() == 0)
             {     
+                System.err.println("  height(" + edgeID + ") = " + cellHeight + " (base case)");
                 height.put(edgeID, cellHeight);
             }
             //recursive case: space subsumes the space needed for the children
@@ -586,6 +592,15 @@ public class KahinaRecursiveChartView  extends KahinaChartView
         return edgeID;
     }
     
+    @Override
+    public JComponent makePanel()
+    {
+        KahinaRecursiveChartViewPanel panel = new KahinaRecursiveChartViewPanel(kahina);
+        kahina.registerInstanceListener("redraw", panel);
+        panel.setView(this);
+        return new JScrollPane(panel);
+    }
+    
     public void processEvent(KahinaEvent e)
     {
         if (e instanceof KahinaEdgeSelectionEvent)
@@ -603,6 +618,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
         int edgeID = e.getSelectedEdge();
         setMarkedEdge(edgeID);
         recalculate();
-        kahina.dispatchEvent(new KahinaRedrawEvent());
+        needsRedraw = true;
+        kahina.dispatchInstanceEvent(new KahinaRedrawEvent());
     }
 }
