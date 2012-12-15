@@ -30,4 +30,11 @@ public class QTypeProject extends LogicProgrammingProject
         LogicProgrammingProject.importXML(topEl, project, kahina, stepTree);
         return project;
     }
+    
+    public QTypeProject copy()
+    {
+        QTypeProject copy = new QTypeProject(new String(name), stepTree, (QTypeDebuggerInstance) kahina);
+        copyDataInto(copy);
+        return copy;
+    }
 }

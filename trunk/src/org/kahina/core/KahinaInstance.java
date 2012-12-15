@@ -459,7 +459,9 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                     dispatchEvent(new KahinaControlEvent("abort"));
                     project.deregister();
                 }
+                //System.err.println("loading default project #" + e.getID());
                 project = (P) defaultProjects.get(e.getID()).copy();
+                //System.err.println("loaded default project: " + project);
                 processNewProject();
                 break;
             }

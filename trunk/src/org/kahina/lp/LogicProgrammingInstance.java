@@ -3,6 +3,7 @@ package org.kahina.lp;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
@@ -121,20 +122,13 @@ public abstract class LogicProgrammingInstance<S extends LogicProgrammingState, 
         gui.displayMainViews();
     }
     
-    public P loadProject(File projectFile)
+    public P loadProject(InputStream stream)
     {
+        System.err.println("LogicProgrammingInstance.loadProject");
         Document dom;
         P project = createNewProject();
-        try
-        {
-            dom = XMLUtil.parseXMLStream(new FileInputStream(projectFile), false);
-            LogicProgrammingProject.importXML(dom.getDocumentElement(), project);
-        }
-        catch (FileNotFoundException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        dom = XMLUtil.parseXMLStream(stream, false);
+        LogicProgrammingProject.importXML(dom.getDocumentElement(), project);
         return project;
     }
 }

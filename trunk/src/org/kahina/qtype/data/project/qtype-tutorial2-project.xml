@@ -8,7 +8,10 @@
         <kahina:vert-split-window kahina:height="926" kahina:id="19" kahina:title="Content" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
           <kahina:hori-split-window kahina:height="169" kahina:id="53" kahina:title="Lower Half" kahina:width="264" kahina:xpos="596" kahina:ypos="622">
             <kahina:default-window kahina:binding="goal" kahina:border="true" kahina:height="169" kahina:id="1" kahina:primary="true" kahina:scroll="true" kahina:title="Goal Display" kahina:width="-89" kahina:xpos="860" kahina:ypos="622"/>
-            <kahina:default-window kahina:binding="codeLocation" kahina:border="true" kahina:height="169" kahina:id="4" kahina:primary="true" kahina:scroll="true" kahina:title="Source Code" kahina:width="353" kahina:xpos="358" kahina:ypos="77"/>
+            <kahina:hori-split-window kahina:id="54" kahina:height="540" kahina:title="Code and Chart" kahina:width="700" kahina:xpos="0" kahina:ypos="172">        
+          	  <kahina:default-window kahina:binding="codeLocation" kahina:border="true" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:scroll="true" kahina:title="Source Code" kahina:width="350" kahina:xpos="0" kahina:ypos="24"/>
+          	  <kahina:default-window kahina:binding="leftCornerChart" kahina:border="true" kahina:height="288" kahina:id="55" kahina:primary="true" kahina:scroll="true" kahina:title="Left-Corner Chart" kahina:width="350" kahina:xpos="0" kahina:ypos="24"/>
+            </kahina:hori-split-window>
           </kahina:hori-split-window>
           <kahina:hori-split-window kahina:height="411" kahina:id="33" kahina:title="Upper Half" kahina:width="553" kahina:xpos="0" kahina:ypos="25">
             <kahina:vert-split-window kahina:height="411" kahina:id="29" kahina:title="Control Structure" kahina:width="698" kahina:xpos="0" kahina:ypos="25">

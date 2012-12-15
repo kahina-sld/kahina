@@ -26,7 +26,7 @@
         <kahina:hori-split-window kahina:height="540" kahina:id="8" kahina:title="Lower half" kahina:width="700" kahina:xpos="0" kahina:ypos="172">   
           <kahina:hori-split-window kahina:id="30" kahina:height="540" kahina:title="Code and Chart" kahina:width="700" kahina:xpos="0" kahina:ypos="172">        
           	<kahina:default-window kahina:binding="codeLocation" kahina:border="true" kahina:height="288" kahina:id="4" kahina:primary="true" kahina:scroll="true" kahina:title="Source Code" kahina:width="350" kahina:xpos="0" kahina:ypos="24"/>
-          	<kahina:default-window kahina:binding="leftCornerChart" kahina:border="true" kahina:height="288" kahina:id="314" kahina:primary="true" kahina:scroll="true" kahina:title="Left-Corner Chart" kahina:width="350" kahina:xpos="0" kahina:ypos="24"/>
+          	<kahina:default-window kahina:binding="leftCornerChart" kahina:border="true" kahina:height="288" kahina:id="31" kahina:primary="true" kahina:scroll="true" kahina:title="Left-Corner Chart" kahina:width="350" kahina:xpos="0" kahina:ypos="24"/>
           </kahina:hori-split-window>
           <kahina:default-window kahina:binding="messageConsole" kahina:border="true" kahina:height="360" kahina:id="3" kahina:primary="true" kahina:scroll="false" kahina:title="Message Console" kahina:width="300" kahina:xpos="700" kahina:ypos="24"/>
         </kahina:hori-split-window>
