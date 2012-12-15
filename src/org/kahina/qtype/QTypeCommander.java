@@ -208,6 +208,7 @@ public class QTypeCommander implements KahinaListener
                 //abort in case another parse is being executed
                 kahina.dispatchEvent(new KahinaControlEvent("abort"));
             }
+            System.err.println("project: " + kahina.getProject());
             compile(kahina.getProject().getMainFile().getAbsolutePath());
         }
         else if (QTypeControlEventCommands.PARSE.equals(command))

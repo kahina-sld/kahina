@@ -1,9 +1,5 @@
 package org.kahina.qtype;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -14,7 +10,6 @@ import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
-import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.prolog.profiler.PrologProfiler;
 import org.kahina.qtype.bridge.QTypeBridge;
@@ -22,14 +17,10 @@ import org.kahina.qtype.data.bindings.QTypeGoal;
 import org.kahina.qtype.data.project.QTypeProject;
 import org.kahina.qtype.gui.QTypeGUI;
 import org.kahina.qtype.visual.bindings.QTypeGoalView;
-import org.kahina.sicstus.SICStusPrologDebuggerInstance;
-import org.kahina.tralesld.TraleSLDState;
-import org.kahina.tralesld.bridge.TraleSLDBridge;
-import org.kahina.tralesld.data.project.TraleProject;
-import org.kahina.tralesld.gui.TraleSLDGUI;
+import org.kahina.sicstus.bridge.SICStusPrologBridge;
 import org.w3c.dom.Document;
 
-public class QTypeDebuggerInstance extends LogicProgrammingInstance<QTypeState, QTypeGUI, QTypeBridge, QTypeProject>
+public class QTypeDebuggerInstance extends LogicProgrammingInstance<QTypeState, QTypeGUI, SICStusPrologBridge, QTypeProject>
 {		
 	private QTypeCommander commander;
 	
@@ -43,7 +34,7 @@ public class QTypeDebuggerInstance extends LogicProgrammingInstance<QTypeState, 
 	}
 	
 	@Override
-	public QTypeBridge startNewSession()
+	public SICStusPrologBridge startNewSession()
 	{
 	    try
         {
@@ -115,6 +106,7 @@ public class QTypeDebuggerInstance extends LogicProgrammingInstance<QTypeState, 
         
     public QTypeProject loadProject(InputStream stream)
     {
+        //System.err.println("QTypeProject.loadProject");
         Document dom;
         QTypeProject project = createNewProject();
         dom = XMLUtil.parseXMLStream(stream, false);
@@ -138,7 +130,9 @@ public class QTypeDebuggerInstance extends LogicProgrammingInstance<QTypeState, 
         try
         {
             InputStream projectInputStream = projectLocation.openStream();
+            //System.err.println("Loading default project: " + resourcePath);
             defaultProjects.add(loadProject(projectInputStream));
+            //System.err.println("Loaded default project: " + defaultProjects.get(defaultProjects.size() - 1));
         }
         catch (IOException e)
         {

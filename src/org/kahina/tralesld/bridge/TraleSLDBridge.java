@@ -45,7 +45,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 
 	int lastRegisteredChartEdge = -1;
 
-	private TraleSLDFSPacker packer;
+	private final TraleSLDFSPacker packer;
 
 	private Sharer<TraleSLDVariableBinding> bindingSharer;
 

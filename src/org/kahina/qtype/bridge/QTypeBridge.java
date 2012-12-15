@@ -1,11 +1,14 @@
 package org.kahina.qtype.bridge;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.prolog.util.PrologUtil;
 import org.kahina.qtype.QTypeDebuggerInstance;
+import org.kahina.qtype.QTypeState;
 import org.kahina.qtype.QTypeStep;
 import org.kahina.qtype.control.QTypeControlEventCommands;
 import org.kahina.qtype.data.bindings.QTypeGoal;
@@ -14,18 +17,29 @@ import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 
 public class QTypeBridge extends SICStusPrologBridge
 {
-	
 	private static final boolean VERBOSE = false;
 
 	private static final Pattern SENTENCE_PATTERN = Pattern.compile("\\[([^\\]]+)\\]");
+	
+	QTypeState state;
 
 	private final TraleSLDFSPacker packer;
 
-	public QTypeBridge(QTypeDebuggerInstance kahina)
+	public QTypeBridge(final QTypeDebuggerInstance kahina)
 	{
 		super(kahina);
+	    this.state = kahina.getState();
 		packer = new TraleSLDFSPacker();
 	}
+	
+    private void initializeChart(List<String> wordList)
+    {
+        KahinaChart chart = state.getChart();
+        for (int i = 0; i < wordList.size(); i++)
+        {
+            chart.setSegmentCaption(i, wordList.get(i));
+        }
+    }
 
 	@Override
 	public void step(int extID, String type, String description, String consoleMessage)
@@ -38,16 +52,21 @@ public class QTypeBridge extends SICStusPrologBridge
 			kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { null }));
 		}
 		
-		// For lc steps, register the sentence:
+		
 		if (description.startsWith("lc(") && description.endsWith(")"))
 		{
+		    //for lc/1 steps, register the sentence
 			Matcher matcher = SENTENCE_PATTERN.matcher(description.substring(3, description.length() - 1));
-
 			if (matcher.matches())
 			{
-				kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { PrologUtil.parsePrologStringList(matcher.group(0)) }));
+			    List<String> wordList = PrologUtil.parsePrologStringList(matcher.group(0));
+			    initializeChart(wordList);
+				kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { wordList }));
 			}
+			//TODO: otherwise, detect the prediction (???)
 		}
+		
+		
 	}
 	
 	@Override
@@ -95,17 +114,21 @@ public class QTypeBridge extends SICStusPrologBridge
 			if ("fs".equals(key))
 			{
 				goal.setFS(packer.pack(grisu));
-			} else if ("tree".equals(key))
+			} 
+			else if ("tree".equals(key))
 			{
 				goal.setTree(packer.pack(grisu));
-			} else if ("in".equals(key))
+			} 
+			else if ("in".equals(key))
 			{
 				goal.setIn(packer.pack(grisu));
-			} else if ("out".equals(key))
+			} 
+			else if ("out".equals(key))
 			{
 				goal.setOut(packer.pack(grisu));
 			}
-		} catch (Exception e)
+		} 
+		catch (Exception e)
 		{
 			e.printStackTrace();
 			System.exit(-1);
