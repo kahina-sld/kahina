@@ -47,15 +47,11 @@ public class KahinaRecursiveChartTest
         
         v.getConfig().setDependencyDisplayPolicy(KahinaChartViewOptions.NO_DEPENDENCIES);
 
-        KahinaRecursiveChartViewPanel vp = new KahinaRecursiveChartViewPanel(kahina);
-        JScrollPane vpp = new JScrollPane(vp);
-        //vpp.setBounds(0, 0, 500, 300);
         JFrame w = new JFrame("Kahina RecursiveChartView Demo");
         w.setSize(510, 330);
         w.setLayout(new BoxLayout(w.getContentPane(), BoxLayout.LINE_AXIS));
-        w.add(vpp);
+        w.add(v.makePanel());
         w.setVisible(true);
-        w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        vp.setView(v);        
+        w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);      
     }
 }
