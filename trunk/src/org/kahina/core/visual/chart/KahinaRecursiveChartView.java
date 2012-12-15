@@ -28,7 +28,7 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaRecursiveChartView  extends KahinaChartView
 {
-    private static final boolean verbose = false;
+    private static final boolean VERBOSE = false;
     
     //hack to allow precalculations from outside any drawing method
     private Graphics2D g;
@@ -118,7 +118,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
         HashMap<Integer,Integer> recursionOffsetRight = new HashMap<Integer,Integer>();
         List<Integer> agenda = new LinkedList<Integer>();
         agenda.addAll(model.getDependencyRoots());
-        System.err.println("Dependency roots: " + model.getDependencyRoots());
+        if (VERBOSE) System.err.println("Dependency roots: " + model.getDependencyRoots());
         while (agenda.size() > 0)
         {
             int childID = agenda.remove(0);
@@ -196,7 +196,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
         //stacking the roots locally according to stacking policy
         for (int curEdge : model.getDependencyRoots())
         {
-            System.err.println("root : stacking root edge " + curEdge);
+            if (VERBOSE) System.err.println("root : stacking root edge " + curEdge);
             calculateCoordinates(curEdge, cellHeight, recursionOffsetLeft);
             int edgeHeight = height.get(curEdge);
             
@@ -241,46 +241,42 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                 }
             }   
         }      
-        System.err.print("root : row heights ");
+        if (VERBOSE) System.err.print("root : row heights ");
         for (int row : rowHeights.keySet())
         {
-            System.err.print(row + "->" + rowHeights.get(row) + " ");
+            if (VERBOSE) System.err.print(row + "->" + rowHeights.get(row) + " ");
         }
-        System.err.println();
-        System.err.print("root : roots to row ");
+        if (VERBOSE) System.err.println();
+        if (VERBOSE) System.err.print("root : roots to row ");
         for (int edge : rowForEdge.keySet())
         {
-            System.err.print(edge + "->" + rowForEdge.get(edge) + " ");
+            if (VERBOSE) System.err.print(edge + "->" + rowForEdge.get(edge) + " ");
         }
-        System.err.println();
+        if (VERBOSE) System.err.println();
         //determine daughter positions relative to the current position
         for (int daughter : model.getDependencyRoots())
         {
-            System.err.println("root : determining position of root " + daughter);
-            System.err.println("  edgeX(" + daughter + ") = 0");
+            if (VERBOSE) System.err.println("root : determining position of root " + daughter);
+            if (VERBOSE) System.err.println("  edgeX(" + daughter + ") = 0");
             edgeX.put(daughter, 0);
             //straightforward use of segmentOffsets to determine all the coordinates
             int drawIntoRow = rowForEdge.get(daughter);               
-            if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
-            {
-                drawIntoRow = usedSpace.size() - drawIntoRow - 1;
-            }   
             int rowHeightSumAbove = 0;
             if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
-            {
-                for (int i = 0; i <= rowForEdge.get(daughter); i++)
+            {  
+                for (int i = usedSpace.size() - 1; i > drawIntoRow; i--)
                 {
                     rowHeightSumAbove += rowHeights.get(i);
                 }
             }  
             else
             {
-                for (int i = usedSpace.size() - 1; i > drawIntoRow; i--)
+                for (int i = 0; i < drawIntoRow; i++)
                 {
                     rowHeightSumAbove += rowHeights.get(i);
                 }
             }
-            System.err.println("  edgeY(" + daughter + ") = " + rowHeightSumAbove);
+            if (VERBOSE) System.err.println("  edgeY(" + daughter + ") = " + rowHeightSumAbove);
             edgeY.put(daughter, rowHeightSumAbove);
         }
         
@@ -295,7 +291,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
     
     private void calculateCoordinates(int edgeID, int cellHeight, Map<Integer,Integer> recursionOffsetLeft)
     {
-        System.err.println("calculateCoordinates(edgeID = " + edgeID + ")");
+        if (VERBOSE) System.err.println("calculateCoordinates(edgeID = " + edgeID + ")");
         if (config.decideEdgeDisplay(edgeID))
         {
             int leftBound = model.getLeftBoundForEdge(edgeID);
@@ -304,7 +300,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
             //base case: no recursion, just calculate and store the space needed for the edge
             if (daughters.size() == 0)
             {     
-                System.err.println("  height(" + edgeID + ") = " + cellHeight + " (base case)");
+                if (VERBOSE) System.err.println("  height(" + edgeID + ") = " + cellHeight + " (base case)");
                 height.put(edgeID, cellHeight);
             }
             //recursive case: space subsumes the space needed for the children
@@ -319,7 +315,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                 //stacking the daughters locally according to stacking policy
                 for (int curEdge : daughters)
                 {
-                    System.err.println("edge " + edgeID + ": stacking daughter edge " + curEdge);
+                    if (VERBOSE) System.err.println("edge " + edgeID + ": stacking daughter edge " + curEdge);
                     calculateCoordinates(curEdge, cellHeight, recursionOffsetLeft);
                     int edgeHeight = height.get(curEdge);
                     int daughterLeftBound = model.getLeftBoundForEdge(curEdge);
@@ -363,22 +359,28 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                         }
                     }
                 }      
-                System.err.print("edge " + edgeID + ": row heights ");
-                for (int row : rowHeights.keySet())
+                if (VERBOSE) 
                 {
-                    System.err.print(row + "->" + rowHeights.get(row) + " ");
+                    System.err.print("edge " + edgeID + ": row heights ");
+                    for (int row : rowHeights.keySet())
+                    {
+                        System.err.print(row + "->" + rowHeights.get(row) + " ");
+                    }
+                    System.err.println();
                 }
-                System.err.println();
-                System.err.print("edge " + edgeID + ": daughter to row ");
-                for (int edge : rowForEdge.keySet())
+                if (VERBOSE)
                 {
-                    System.err.print(edge + "->" + rowForEdge.get(edge) + " ");
+                    System.err.print("edge " + edgeID + ": daughter to row ");
+                    for (int edge : rowForEdge.keySet())
+                    {
+                        System.err.print(edge + "->" + rowForEdge.get(edge) + " ");
+                    }
+                    System.err.println();
                 }
-                System.err.println();
                 //determine daughter positions relative to the current position
                 for (int daughter : daughters)
                 {
-                    System.err.println("edge " + edgeID + ": determining position of daughter " + daughter);
+                    if (VERBOSE) System.err.println("edge " + edgeID + ": determining position of daughter " + daughter);
                     int daughterLeftBound = model.getLeftBoundForEdge(daughter);
                     if (daughterLeftBound == leftBound)
                     {
@@ -391,21 +393,18 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                     }
                     //straightforward use of segmentOffsets to determine all the coordinates
                     int drawIntoRow = rowForEdge.get(daughter);               
-                    if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
-                    {
-                        drawIntoRow = usedSpace.size() - drawIntoRow - 1;
-                    }   
                     int rowHeightSumAbove = cellHeight;
                     if (config.getDisplayOrientation() == KahinaChartViewOptions.BOTTOM_UP_DISPLAY)
                     {
-                        for (int i = 0; i <= rowForEdge.get(daughter); i++)
+                        for (int i = usedSpace.size() - 1; i > drawIntoRow; i--)
                         {
                             rowHeightSumAbove += rowHeights.get(i);
                         }
                     }  
                     else
                     {
-                        for (int i = usedSpace.size() - 1; i > drawIntoRow; i--)
+
+                        for (int i = 0; i < drawIntoRow; i++)
                         {
                             rowHeightSumAbove += rowHeights.get(i);
                         }
