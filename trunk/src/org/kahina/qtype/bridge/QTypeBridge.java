@@ -1,6 +1,8 @@
 package org.kahina.qtype.bridge;
 
 import gralej.om.IEntity;
+import gralej.om.IList;
+import gralej.om.IRelation;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.regex.Pattern;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaStepUpdateEvent;
 import org.kahina.core.data.chart.KahinaChart;
+import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.prolog.util.PrologUtil;
 import org.kahina.qtype.QTypeDebuggerInstance;
@@ -73,6 +76,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	        state.linkEdgeToNode(edgeID, currentID);
 	        state.getChart().setSegmentCaption(currentPosition, word);
 	        if (lexEntryExistenceMode) currentPosition++;
+	        kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
 	    }
 		else if (description.startsWith("lexentry_existence"))
 		{
@@ -169,6 +173,25 @@ public class QTypeBridge extends SICStusPrologBridge
 			else if ("in".equals(key))
 			{
 				goal.setIn(packer.pack(grisu));
+				
+                IEntity graleFS = GraleJUtility.grisuToGralej(grisu);
+                //update current position in the case of lc_complete (using length of unconsumed token list)
+                System.err.println("adding in FS of type " + GraleJUtility.getType(graleFS));
+                if (GraleJUtility.getType(graleFS).startsWith("lc_complete"))
+                {
+                    List<String> path = new LinkedList<String>();
+                    path.add("arg5");
+                    IEntity argFS = GraleJUtility.delta(graleFS, path);
+                    if (argFS == null || !(argFS instanceof IList))
+                    {
+                        System.err.println("WARNING: could not read current position from lc_complete argument!");
+                    }
+                    else
+                    {
+                        int listLength = GraleJUtility.listLength((IList) argFS);
+                        currentPosition = state.getChart().getRightBound() - listLength;
+                    }
+                }
 			} 
 			else if ("out".equals(key))
 			{	    
