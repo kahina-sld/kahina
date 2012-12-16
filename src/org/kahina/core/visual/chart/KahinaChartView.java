@@ -428,12 +428,24 @@ public class KahinaChartView extends KahinaView<KahinaChart>
     	{
     		System.err.println("Edge ID: " + edgeID);
     	}
-        return edgeX.get(edgeID);
+    	Integer x = edgeX.get(edgeID);
+    	if (x == null)
+    	{
+    	    System.err.println("WARNING: edge #" + edgeID + " with null xCoord!");
+    	    x = 0;
+    	}
+        return x;
     }
     
     public int getEdgeY(int edgeID)
     {
-        return edgeY.get(edgeID);
+        Integer y = edgeY.get(edgeID);
+        if (y == null)
+        {
+            System.err.println("WARNING: edge #" + edgeID + " with null yCoord!");
+            y = 0;
+        }
+        return y;
     }
     
     public int getEdgeHeight(int edgeID)

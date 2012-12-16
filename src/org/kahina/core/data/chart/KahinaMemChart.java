@@ -20,8 +20,8 @@ public class KahinaMemChart extends KahinaChart
     //leftmost: leftBound, rightmost: rightBound
     
     //minimum and maximum values for chart ranges
-    int leftBound;
-    int rightBound;
+    int leftBound = 0;
+    int rightBound = 0;
     
     //contains information on highest and lowest ranges; important for centered display
     int leftmostCovered;
@@ -57,6 +57,7 @@ public class KahinaMemChart extends KahinaChart
     {
         int id = getNextEdgeID();
         dependencyRoots.add(id);
+        if (right > rightBound) rightBound = right;
         setLeftBoundForEdge(id, left);
         setRightBoundForEdge(id, right);
         setEdgeStatus(id, status);
@@ -71,6 +72,7 @@ public class KahinaMemChart extends KahinaChart
     public void addEdge(int id, int left, int right, String caption, int status)
     {
         dependencyRoots.add(id);
+        if (right > rightBound) rightBound = right;
         setLeftBoundForEdge(id, left);
         setRightBoundForEdge(id, right);
         setEdgeStatus(id, status);
