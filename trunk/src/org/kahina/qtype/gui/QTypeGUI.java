@@ -16,6 +16,7 @@ import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.chart.DisplayAllChartEdgesDecider;
 import org.kahina.core.visual.chart.KahinaChartView;
+import org.kahina.core.visual.chart.KahinaRecursiveChartView;
 import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.qtype.QTypeDebuggerInstance;
@@ -34,7 +35,7 @@ public class QTypeGUI extends LogicProgrammingGUI
 		super(stepType, instance);
 	    this.instance = instance;
 	      
-        mainChartView = new KahinaChartView(kahina);
+        mainChartView = new KahinaRecursiveChartView(kahina);
         mainChartView.setTitle("Left-Corner Chart");
         views.add(mainChartView);
         livingViews.add(mainChartView);

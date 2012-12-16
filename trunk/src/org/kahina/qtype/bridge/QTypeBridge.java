@@ -70,10 +70,19 @@ public class QTypeBridge extends SICStusPrologBridge
 			}
 			//TODO: otherwise, detect the prediction (???)
 		}	
-		else if (description.startsWith("db_rule"))
+		else if (description.startsWith("db_rule("))
 		{
 		    int edgeID = state.getChart().addEdge(currentPosition, state.getChart().getRightBound(), "rule", 2);
 		    state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+		    if (edgeStack.size() > 0)
+            {
+                state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+            }
+            else
+            {
+                //a freely dangling rule edge, this should not happen
+                System.err.println("WARNING: found a rule edge outside of any expected context");
+            }
             state.linkEdgeToNode(edgeID, currentID);
 		}
 		else if (description.startsWith("db_word("))
@@ -85,8 +94,17 @@ public class QTypeBridge extends SICStusPrologBridge
 	        if (lexEntryExistenceMode)
             {
 	            state.getChart().setSegmentCaption(currentPosition, word);
-                currentPosition++;
             }
+	        else if (edgeStack.size() > 0)
+	        {
+	            state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+	        }
+	        else
+	        {
+	            //a freely dangling lexical edge, this should not happen
+	            System.err.println("WARNING: found a lexical edge outside of any expected context");
+	        }
+            currentPosition++;
 	        kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
 	    }
 		else if (description.startsWith("lexentry_existence"))
@@ -122,9 +140,16 @@ public class QTypeBridge extends SICStusPrologBridge
 		    }
 		}
 		//lc_complete is ready, we move up in the edge stack again
-		else if (newDescription.startsWith("lc_complete"))
+		else if (newDescription.startsWith("lc("))
 		{
-		    edgeStack.remove(0);
+		    if (edgeStack.size() > 0)
+		    {
+		        edgeStack.remove(0);
+		    }
+		    else
+		    {
+		        System.err.println("WARNING: lc exited on an empty edge stack!");
+		    }
 		}
 		
 		//if we have an associated edge, set it to successful
@@ -139,6 +164,19 @@ public class QTypeBridge extends SICStusPrologBridge
     {
         super.fail(extID);
         int stepID = convertStepID(extID);
+        
+        //lc_complete is done, we move up in the edge stack again
+        if (state.get(stepID).getGoalDesc().startsWith("lc("))
+        {
+            if (edgeStack.size() > 0)
+            {
+                edgeStack.remove(0);
+            }
+            else
+            {
+                System.err.println("WARNING: lc failed on an empty edge stack!");
+            }
+        }
         
         //if we have an associated edge, set it to successful
         int associatedEdge = state.getEdgeForNode(stepID);
@@ -193,12 +231,12 @@ public class QTypeBridge extends SICStusPrologBridge
                 IEntity graleFS = GraleJUtility.grisuToGralej(grisu);
                 
                 //System.err.println("adding in FS of type " + GraleJUtility.getType(graleFS));
-                if (GraleJUtility.getType(graleFS).startsWith("lc_complete"))
-                //lc_complete: update current position using the length of the unconsumed token list
-                //             add an edge representing the completion attempt
+                if (GraleJUtility.getType(graleFS).equals("lc"))
+                //lc: (update current position using the length of the unconsumed token list)
+                //    add an edge representing the current subparse attempt
                 {
                     List<String> path = new LinkedList<String>();
-                    path.add("arg5");
+                    /*path.add("arg3");
                     IEntity argFS = GraleJUtility.delta(graleFS, path);
                     if (argFS == null || !(argFS instanceof IList))
                     {
@@ -209,9 +247,9 @@ public class QTypeBridge extends SICStusPrologBridge
                         int listLength = GraleJUtility.listLength((IList) argFS);
                         currentPosition = state.getChart().getRightBound() - listLength;
                     }
-                    path.clear();
-                    path.add("arg3");
-                    argFS = GraleJUtility.delta(graleFS, path);
+                    path.clear();*/
+                    path.add("arg2");
+                    IEntity argFS = GraleJUtility.delta(graleFS, path);
                     if (argFS == null)
                     {
                         System.err.println("WARNING: could not read category from lc_complete argument!");
@@ -219,9 +257,17 @@ public class QTypeBridge extends SICStusPrologBridge
                     else
                     {
                         String category = GraleJUtility.getType(argFS);
-                        int edgeID = state.getChart().addEdge(currentPosition, state.getChart().getRightBound(), "complete " + category, 2);
+                        int edgeID = state.getChart().addEdge(currentPosition, state.getChart().getRightBound(), "parse " + category, 2);
                         state.linkEdgeToNode(edgeID, stepID);
-                        edgeStack.add(edgeID);
+                        if (edgeStack.size() > 0)
+                        {
+                            state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+                        }
+                        else
+                        {
+                            //a freely dangling parse edge, this only happens at the top
+                        }
+                        edgeStack.add(0, edgeID);
                         kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
                     }
                 }

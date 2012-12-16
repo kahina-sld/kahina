@@ -1175,6 +1175,7 @@ public class GraleJUtility
 			    if (argument.startsWith("arg"))
 			    {
 			        Integer arg = Integer.parseInt(argument.substring(3));
+			        if (arg >= ((IRelation) e).arity()) return null;
 			        IEntity selectedItem = ((IRelation) e).arg(arg);
 		            return goSubpath(selectedItem,path,start+1,end);
 			    }
