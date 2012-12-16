@@ -4,8 +4,10 @@ import gralej.om.IEntity;
 import gralej.om.IList;
 import gralej.om.IRelation;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,6 +42,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	boolean lexEntryExistenceMode = false;
 	int topLexEntryExistenceStep = -1;
 	List<Integer> edgeStack;
+	Map<Integer,Integer> edgeToCurrentPosition;
 
 	public QTypeBridge(final QTypeDebuggerInstance kahina)
 	{
@@ -47,6 +50,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	    this.state = kahina.getState();
 		packer = new TraleSLDFSPacker();
 		edgeStack = new LinkedList<Integer>();
+		edgeToCurrentPosition = new HashMap<Integer,Integer>();
 	}
 
 	@Override
@@ -72,18 +76,21 @@ public class QTypeBridge extends SICStusPrologBridge
 		}	
 		else if (description.startsWith("db_rule("))
 		{
-		    int edgeID = state.getChart().addEdge(currentPosition, state.getChart().getRightBound(), "rule", 2);
-		    state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
 		    if (edgeStack.size() > 0)
             {
+		        int motherEdge = edgeStack.get(0);
+		        int startPos = edgeToCurrentPosition.get(motherEdge);
+		        int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), "rule", 2);
+                edgeToCurrentPosition.put(edgeID, startPos);
                 state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+                state.linkEdgeToNode(edgeID, currentID);
+                edgeStack.add(0, edgeID);
             }
             else
             {
                 //a freely dangling rule edge, this should not happen
                 System.err.println("WARNING: found a rule edge outside of any expected context");
             }
-            state.linkEdgeToNode(edgeID, currentID);
 		}
 		else if (description.startsWith("db_word("))
 	    {
@@ -94,17 +101,19 @@ public class QTypeBridge extends SICStusPrologBridge
 	        if (lexEntryExistenceMode)
             {
 	            state.getChart().setSegmentCaption(currentPosition, word);
+	            currentPosition++;
             }
 	        else if (edgeStack.size() > 0)
 	        {
-	            state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+	            int motherEdge = edgeStack.get(0);
+	            state.getChart().addEdgeDependency(motherEdge, edgeID);
+	            edgeToCurrentPosition.put(edgeID, currentPosition++);
 	        }
 	        else
 	        {
 	            //a freely dangling lexical edge, this should not happen
 	            System.err.println("WARNING: found a lexical edge outside of any expected context");
 	        }
-            currentPosition++;
 	        kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
 	    }
 		else if (description.startsWith("lexentry_existence"))
@@ -115,6 +124,18 @@ public class QTypeBridge extends SICStusPrologBridge
 		        topLexEntryExistenceStep = currentID;
 		    }
 		}    
+	}
+	
+	public void redo(int extID)
+	{
+	    super.redo(extID);
+	    int stepID = convertStepID(extID);
+	    String description = state.get(stepID).getGoalDesc();
+	    if (description.startsWith("db_rule"))
+	    {
+	        int ruleEdge = edgeStack.get(0);
+	        System.err.println("db_rule step is being redone at ruleEdge #" + ruleEdge);
+	    }
 	}
 	
 	@Override
@@ -139,12 +160,15 @@ public class QTypeBridge extends SICStusPrologBridge
 		        currentPosition = 0;
 		    }
 		}
-		//lc_complete is ready, we move up in the edge stack again
+		//lc_complete was successful, we move up in the edge stack again
 		else if (newDescription.startsWith("lc("))
 		{
 		    if (edgeStack.size() > 0)
 		    {
-		        edgeStack.remove(0);
+		        int childEdge = edgeStack.remove(0);
+		        int motherEdge = edgeStack.get(0);
+		        //the next item in lc_list will be tried, we can move the pos accordingly
+		        edgeToCurrentPosition.put(motherEdge, edgeToCurrentPosition.get(childEdge));
 		    }
 		    else
 		    {
@@ -257,18 +281,23 @@ public class QTypeBridge extends SICStusPrologBridge
                     else
                     {
                         String category = GraleJUtility.getType(argFS);
-                        int edgeID = state.getChart().addEdge(currentPosition, state.getChart().getRightBound(), "parse " + category, 2);
-                        state.linkEdgeToNode(edgeID, stepID);
                         if (edgeStack.size() > 0)
                         {
+                            int motherEdge = edgeStack.get(0);
+                            int edgeID = state.getChart().addEdge(edgeToCurrentPosition.get(motherEdge), state.getChart().getRightBound(), "parse " + category, 2);
+                            edgeToCurrentPosition.put(edgeID, edgeToCurrentPosition.get(motherEdge));
+                            state.linkEdgeToNode(edgeID, stepID);
                             state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
                         }
                         else
                         {
                             //a freely dangling parse edge, this only happens at the top
+                            int edgeID = state.getChart().addEdge(0, state.getChart().getRightBound(), "parse " + category, 2);
+                            edgeToCurrentPosition.put(edgeID, 0);
+                            edgeStack.add(0, edgeID);
+                            kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
                         }
-                        edgeStack.add(0, edgeID);
-                        kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
+
                     }
                 }
 			} 
