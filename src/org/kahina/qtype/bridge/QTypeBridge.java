@@ -110,7 +110,25 @@ public class QTypeBridge extends SICStusPrologBridge
 		        lexEntryExistenceMode = true;
 		        topLexEntryExistenceStep = currentID;
 		    }
-		}    
+		} 
+        else if (description.startsWith("unify"))
+        {
+            int edgeID = state.getChart().addEdge(currentPosition, currentPosition + 1, "unify", 2);
+            state.linkEdgeToNode(edgeID, currentID);
+            if (edgeStack.size() > 0)
+            {
+                int motherEdge = edgeStack.get(0);
+                state.getChart().addEdgeDependency(motherEdge, edgeID);
+                edgeToCurrentPosition.put(edgeID, currentPosition);
+                edgeStack.add(0,edgeID);
+            }
+            else
+            {
+                //a freely dangling unify edge, this should not happen
+                System.err.println("WARNING: found a unify edge outside of any expected context!");
+            }
+            kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
+        }  
 	}
 	
 	public void call(int extID)
@@ -148,6 +166,8 @@ public class QTypeBridge extends SICStusPrologBridge
 	    {
 	        if (edgeStack.size() > 0)
             {
+	            //throw away the last rule edge, it is not relevant any longer
+	            edgeStack.remove(0);
                 int motherEdge = edgeStack.get(0);
                 int startPos = edgeToCurrentPosition.get(motherEdge);
                 int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), "rule", 2);
@@ -217,6 +237,18 @@ public class QTypeBridge extends SICStusPrologBridge
                 System.err.println("WARNING: lc exited on an empty edge stack!");
             }
         }
+		//lc_complete was successful, we move up in the edge stack again
+        else if (newDescription.startsWith("unify("))
+        {
+            if (edgeStack.size() > 0)
+            {
+                edgeStack.remove(0);                   
+            }
+            else
+            {
+                System.err.println("WARNING: unify exited on an empty edge stack!");
+            }
+        }
 		//successful unification in a rule context determines the success of the rule
         /*else if (newDescription.startsWith("unify("))
         {
@@ -240,7 +272,7 @@ public class QTypeBridge extends SICStusPrologBridge
         int stepID = convertStepID(extID);
         
         //lc_complete is done, we move up in the edge stack again
-        if (state.get(stepID).getGoalDesc().startsWith("lc("))
+        if (state.get(stepID).getGoalDesc().equals("parser:lc/5"))
         {
             if (edgeStack.size() > 0)
             {
@@ -252,19 +284,27 @@ public class QTypeBridge extends SICStusPrologBridge
             }
         }
         //failed unification in a rule context determines the failure of the rule
-        else if (state.get(stepID).getGoalDesc().equals("unify("))
+        else if (state.get(stepID).getGoalDesc().equals("parser:unify/2"))
         {
             int ruleEdge = state.getEdgeForNode(lastRuleNode);
             System.err.println("Rule edge #" + ruleEdge + " failed.");
             state.getChart().setEdgeStatus(ruleEdge, 1);
-            kahina.dispatchEvent(new KahinaChartUpdateEvent(ruleEdge));
+            if (edgeStack.size() > 0)
+            {
+                edgeStack.remove(0);
+            }
+            else
+            {
+                System.err.println("WARNING: unify failed on an empty edge stack!");
+            }
         }
         
-        //if we have an associated edge, set it to successful
+        //if we have an associated edge, set it to failure
         int associatedEdge = state.getEdgeForNode(stepID);
         if (associatedEdge != -1)
         {
             state.getChart().setEdgeStatus(associatedEdge, 1);
+            kahina.dispatchEvent(new KahinaChartUpdateEvent(associatedEdge));
         }
     }
 
@@ -358,6 +398,51 @@ public class QTypeBridge extends SICStusPrologBridge
 
                     }
                 }
+                if (GraleJUtility.getType(graleFS).equals("unify"))
+                //lc: (update current position using the length of the unconsumed token list)
+                //    add an edge representing the current subparse attempt
+                {
+                    int associatedEdge = state.getEdgeForNode(stepID);
+                    String newUnifyLabel = "~";
+                    List<String> path = new LinkedList<String>();
+                    /*path.add("arg3");
+                    IEntity argFS = GraleJUtility.delta(graleFS, path);
+                    if (argFS == null || !(argFS instanceof IList))
+                    {
+                        System.err.println("WARNING: could not read current position from lc_complete argument!");
+                    }
+                    else
+                    {
+                        int listLength = GraleJUtility.listLength((IList) argFS);
+                        currentPosition = state.getChart().getRightBound() - listLength;
+                    }
+                    path.clear();*/
+                    path.add("arg0");
+                    IEntity arg0FS = GraleJUtility.delta(graleFS, path);
+                    if (arg0FS == null)
+                    {
+                        System.err.println("WARNING: could not read category from first unify argument!");
+                    }
+                    else
+                    {
+                        String category = GraleJUtility.getType(arg0FS);
+                        newUnifyLabel = newUnifyLabel + category;
+                    }
+                    path.clear();
+                    path.add("arg1");
+                    IEntity arg1FS = GraleJUtility.delta(graleFS, path);
+                    if (arg1FS == null)
+                    {
+                        System.err.println("WARNING: could not read category from second unify argument!");
+                    }
+                    else
+                    {
+                        String category = GraleJUtility.getType(arg1FS);
+                        newUnifyLabel = category + newUnifyLabel;
+                    }
+                    state.getChart().setEdgeCaption(associatedEdge, newUnifyLabel);
+                    kahina.dispatchEvent(new KahinaChartUpdateEvent(associatedEdge));
+                }        
 			} 
 			else if ("out".equals(key))
 			{	    
