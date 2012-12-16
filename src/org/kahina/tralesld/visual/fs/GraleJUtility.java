@@ -5,6 +5,7 @@ import gralej.om.IAny;
 import gralej.om.IEntity;
 import gralej.om.IFeatureValuePair;
 import gralej.om.IList;
+import gralej.om.IRelation;
 import gralej.om.ITag;
 import gralej.om.IType;
 import gralej.om.ITypedFeatureStructure;
@@ -1168,6 +1169,16 @@ public class GraleJUtility
 			{
 				return goSubpath(((ITag) e).target(),path,start,end);
 			}
+			else if (e instanceof IRelation)
+			{
+			    String argument = path.get(start);
+			    if (argument.startsWith("arg"))
+			    {
+			        Integer arg = Integer.parseInt(argument.substring(3));
+			        IEntity selectedItem = ((IRelation) e).arg(arg);
+		            return goSubpath(selectedItem,path,start+1,end);
+			    }
+			}
 		}
 		return null;
 	}
@@ -1367,6 +1378,10 @@ public class GraleJUtility
 		else if (e instanceof IList)
 		{
 			type = "list";
+		}
+		else if (e instanceof IRelation)
+		{
+		    type = ((IRelation) e).name();
 		}
 		//the way to deal with mgsat(Type) for the moment
 		if (type.startsWith("mgsat("))
