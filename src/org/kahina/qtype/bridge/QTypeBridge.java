@@ -33,7 +33,9 @@ public class QTypeBridge extends SICStusPrologBridge
 	private final TraleSLDFSPacker packer;
 	
 	//temporary variables for tracking the state of the chart
-	int currentPosition;
+	int currentPosition = 0;
+	boolean lexEntryExistenceMode = false;
+	int topLexEntryExistenceStep = -1;
 
 	public QTypeBridge(final QTypeDebuggerInstance kahina)
 	{
@@ -41,16 +43,6 @@ public class QTypeBridge extends SICStusPrologBridge
 	    this.state = kahina.getState();
 		packer = new TraleSLDFSPacker();
 	}
-	
-    private void initializeChart(List<String> wordList)
-    {
-        KahinaChart chart = state.getChart();
-        for (int i = 0; i < wordList.size(); i++)
-        {
-            chart.setSegmentCaption(i, wordList.get(i));
-        }
-        currentPosition = 0;
-    }
 
 	@Override
 	public void step(int extID, String type, String description, String consoleMessage)
@@ -62,31 +54,34 @@ public class QTypeBridge extends SICStusPrologBridge
 		{
 			kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { null }));
 		}
-		
-		
-		if (description.startsWith("lc(") && description.endsWith(")"))
+		else if (description.startsWith("lc(") && description.endsWith(")"))
 		{
 		    //for lc/1 steps, register the sentence
 			Matcher matcher = SENTENCE_PATTERN.matcher(description.substring(3, description.length() - 1));
 			if (matcher.matches())
 			{
 			    List<String> wordList = PrologUtil.parsePrologStringList(matcher.group(0));
-			    initializeChart(wordList);
 				kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { wordList }));
 			}
 			//TODO: otherwise, detect the prediction (???)
-		}
-		
-	    if (description.startsWith("db_word("))
+		}	
+		else if (description.startsWith("db_word("))
 	    {
 	        //create chart edge with label "lex:word" from the current position to the next
 	        String word = description.substring(8,description.indexOf(','));
 	        int edgeID = state.getChart().addEdge(currentPosition, currentPosition + 1, "lex:" + word, 2);
 	        state.linkEdgeToNode(edgeID, currentID);
+	        state.getChart().setSegmentCaption(currentPosition, word);
+	        if (lexEntryExistenceMode) currentPosition++;
 	    }
-	    
-        maybeUpdateStepCount(true);
-        kahina.dispatchEvent(new KahinaRedrawEvent());
+		else if (description.startsWith("lexentry_existence"))
+		{
+		    if (!lexEntryExistenceMode)
+		    {
+		        lexEntryExistenceMode = true;
+		        topLexEntryExistenceStep = currentID;
+		    }
+		}    
 	}
 	
 	@Override
@@ -100,6 +95,16 @@ public class QTypeBridge extends SICStusPrologBridge
 		{
 			String path = PrologUtil.atomLiteralToString(newDescription.substring(16, newDescription.length() - 1));
 			kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_GRAMMAR, new Object[] { path }));
+		}
+		//exit lex entry existence mode if we have come back to the topmost such node
+		else if (newDescription.startsWith("lexentry_existence"))
+		{
+		    if (topLexEntryExistenceStep == stepID)
+		    {
+		        lexEntryExistenceMode = false;
+		        topLexEntryExistenceStep = -1;
+		        currentPosition = 0;
+		    }
 		}
 		
 		//if we have an associated edge, set it to successful
