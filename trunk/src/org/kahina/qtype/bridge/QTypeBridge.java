@@ -2,6 +2,7 @@ package org.kahina.qtype.bridge;
 
 import gralej.om.IEntity;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -107,8 +108,6 @@ public class QTypeBridge extends SICStusPrologBridge
 		{
 		    state.getChart().setEdgeStatus(associatedEdge, 0);
 		}
-		
-        kahina.dispatchEvent(new KahinaRedrawEvent());
 	}
 	
     public void fail(int extID)
@@ -122,8 +121,6 @@ public class QTypeBridge extends SICStusPrologBridge
         {
             state.getChart().setEdgeStatus(associatedEdge, 1);
         }
-        
-        kahina.dispatchEvent(new KahinaRedrawEvent());
     }
 
 	public void registerExample(int number, String expectation, String sentence)
@@ -182,8 +179,19 @@ public class QTypeBridge extends SICStusPrologBridge
 		            String oldCaption = state.getChart().getEdgeCaption(associatedEdge);
 		            if (oldCaption.startsWith("lex:"))
 		            {
-		                String type = GraleJUtility.getType(graleFS);
-		                state.getChart().setEdgeCaption(associatedEdge, type + oldCaption.substring(3));
+		                List<String> path = new LinkedList<String>();
+		                path.add("arg1");
+		                IEntity argFS = GraleJUtility.delta(graleFS, path);
+		                if (argFS == null)
+		                {
+		                    System.err.println("WARNING: could not read determine category for lexical edge " + associatedEdge);
+		                    state.getChart().setEdgeCaption(associatedEdge, "?" + oldCaption.substring(3));
+		                }
+		                else
+		                {
+		                    String type = GraleJUtility.getType(argFS);
+		                    state.getChart().setEdgeCaption(associatedEdge, type + oldCaption.substring(3));
+		                }
 		            }
 		        }
 			}
