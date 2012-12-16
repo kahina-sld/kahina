@@ -3,6 +3,7 @@ package org.kahina.qtype.bridge;
 import gralej.om.IEntity;
 import gralej.om.IList;
 import gralej.om.IRelation;
+import gralej.om.ITag;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -43,6 +44,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	int topLexEntryExistenceStep = -1;
 	List<Integer> edgeStack;
 	Map<Integer,Integer> edgeToCurrentPosition;
+	int lastRuleNode = -1;
 
 	public QTypeBridge(final QTypeDebuggerInstance kahina)
 	{
@@ -72,25 +74,10 @@ public class QTypeBridge extends SICStusPrologBridge
 			    List<String> wordList = PrologUtil.parsePrologStringList(matcher.group(0));
 				kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { wordList }));
 			}
+			
+			//each lc nodes open a new context for rule nodes
+	        lastRuleNode = -1;
 			//TODO: otherwise, detect the prediction (???)
-		}	
-		else if (description.startsWith("db_rule("))
-		{
-		    if (edgeStack.size() > 0)
-            {
-		        int motherEdge = edgeStack.get(0);
-		        int startPos = edgeToCurrentPosition.get(motherEdge);
-		        int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), "rule", 2);
-                edgeToCurrentPosition.put(edgeID, startPos);
-                state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
-                state.linkEdgeToNode(edgeID, currentID);
-                edgeStack.add(0, edgeID);
-            }
-            else
-            {
-                //a freely dangling rule edge, this should not happen
-                System.err.println("WARNING: found a rule edge outside of any expected context");
-            }
 		}
 		else if (description.startsWith("db_word("))
 	    {
@@ -126,15 +113,55 @@ public class QTypeBridge extends SICStusPrologBridge
 		}    
 	}
 	
+	public void call(int extID)
+	{
+	    super.call(extID);
+	    int stepID = convertStepID(extID);
+        String description = state.get(stepID).getGoalDesc();
+        if (description.equals("grammar:db_rule/4"))
+        {
+            if (edgeStack.size() > 0)
+            {
+                int motherEdge = edgeStack.get(0);
+                int startPos = edgeToCurrentPosition.get(motherEdge);
+                int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), "rule", 2);
+                edgeToCurrentPosition.put(edgeID, startPos);
+                state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+                state.linkEdgeToNode(edgeID, currentID);
+                edgeStack.add(0, edgeID);
+                lastRuleNode = currentID;
+            }
+            else
+            {
+                //a freely dangling rule edge, this should not happen
+                System.err.println("WARNING: found a rule edge outside of any expected context");
+            }
+        }
+	}
+	
 	public void redo(int extID)
 	{
 	    super.redo(extID);
 	    int stepID = convertStepID(extID);
 	    String description = state.get(stepID).getGoalDesc();
-	    if (description.startsWith("db_rule"))
+	    if (description.equals("grammar:db_rule/4"))
 	    {
-	        int ruleEdge = edgeStack.get(0);
-	        System.err.println("db_rule step is being redone at ruleEdge #" + ruleEdge);
+	        if (edgeStack.size() > 0)
+            {
+                int motherEdge = edgeStack.get(0);
+                int startPos = edgeToCurrentPosition.get(motherEdge);
+                int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), "rule", 2);
+                edgeToCurrentPosition.put(edgeID, startPos);
+                state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+                state.linkEdgeToNode(edgeID, currentID);
+                edgeStack.add(0, edgeID);
+                lastRuleNode = currentID;
+            }
+            else
+            {
+                //a freely dangling rule edge, this should not happen
+                System.err.println("WARNING: found a rule edge outside of any expected context");
+            }
 	    }
 	}
 	
@@ -175,10 +202,33 @@ public class QTypeBridge extends SICStusPrologBridge
 		        System.err.println("WARNING: lc exited on an empty edge stack!");
 		    }
 		}
+		//move the position of the mother after a successful lex_edge
+        else if (newDescription.startsWith("db_word("))
+        {
+            if (edgeStack.size() > 0)
+            {
+                int childEdge = state.getEdgeForNode(stepID);
+                int motherEdge = edgeStack.get(0);
+                //we will now continue scanning in the mother edge, so we can move the pos accordingly
+                edgeToCurrentPosition.put(motherEdge, edgeToCurrentPosition.get(childEdge));
+            }
+            else
+            {
+                System.err.println("WARNING: lc exited on an empty edge stack!");
+            }
+        }
+		//successful unification in a rule context determines the success of the rule
+        /*else if (newDescription.startsWith("unify("))
+        {
+            int ruleEdge = state.getEdgeForNode(lastRuleNode);
+            state.getChart().setEdgeStatus(ruleEdge, 0);
+            kahina.dispatchEvent(new KahinaChartUpdateEvent(ruleEdge));
+        }*/
+        
 		
-		//if we have an associated edge, set it to successful
+		//if we have an associated edge, set it to successful (except rule edges)
 		int associatedEdge = state.getEdgeForNode(stepID);
-		if (associatedEdge != -1)
+		if (associatedEdge != -1 && !newDescription.startsWith("db_rule"))
 		{
 		    state.getChart().setEdgeStatus(associatedEdge, 0);
 		}
@@ -200,6 +250,14 @@ public class QTypeBridge extends SICStusPrologBridge
             {
                 System.err.println("WARNING: lc failed on an empty edge stack!");
             }
+        }
+        //failed unification in a rule context determines the failure of the rule
+        else if (state.get(stepID).getGoalDesc().equals("unify("))
+        {
+            int ruleEdge = state.getEdgeForNode(lastRuleNode);
+            System.err.println("Rule edge #" + ruleEdge + " failed.");
+            state.getChart().setEdgeStatus(ruleEdge, 1);
+            kahina.dispatchEvent(new KahinaChartUpdateEvent(ruleEdge));
         }
         
         //if we have an associated edge, set it to successful
@@ -358,6 +416,10 @@ public class QTypeBridge extends SICStusPrologBridge
                         {
                             for (IEntity catFS : ((IList) argFS).elements())
                             {
+                                while (catFS instanceof ITag)
+                                {
+                                    catFS = ((ITag) catFS).target();
+                                }
                                 newLabel += GraleJUtility.getType(catFS) + " ";
                             }
                         }
