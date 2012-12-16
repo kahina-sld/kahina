@@ -39,12 +39,14 @@ public class QTypeBridge extends SICStusPrologBridge
 	int currentPosition = 0;
 	boolean lexEntryExistenceMode = false;
 	int topLexEntryExistenceStep = -1;
+	List<Integer> edgeStack;
 
 	public QTypeBridge(final QTypeDebuggerInstance kahina)
 	{
 		super(kahina);
 	    this.state = kahina.getState();
 		packer = new TraleSLDFSPacker();
+		edgeStack = new LinkedList<Integer>();
 	}
 
 	@Override
@@ -68,14 +70,23 @@ public class QTypeBridge extends SICStusPrologBridge
 			}
 			//TODO: otherwise, detect the prediction (???)
 		}	
+		else if (description.startsWith("db_rule"))
+		{
+		    int edgeID = state.getChart().addEdge(currentPosition, state.getChart().getRightBound(), "rule", 2);
+		    state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+            state.linkEdgeToNode(edgeID, currentID);
+		}
 		else if (description.startsWith("db_word("))
 	    {
 	        //create chart edge with label "lex:word" from the current position to the next
 	        String word = description.substring(8,description.indexOf(','));
 	        int edgeID = state.getChart().addEdge(currentPosition, currentPosition + 1, "lex:" + word, 2);
 	        state.linkEdgeToNode(edgeID, currentID);
-	        state.getChart().setSegmentCaption(currentPosition, word);
-	        if (lexEntryExistenceMode) currentPosition++;
+	        if (lexEntryExistenceMode)
+            {
+	            state.getChart().setSegmentCaption(currentPosition, word);
+                currentPosition++;
+            }
 	        kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
 	    }
 		else if (description.startsWith("lexentry_existence"))
@@ -109,6 +120,11 @@ public class QTypeBridge extends SICStusPrologBridge
 		        topLexEntryExistenceStep = -1;
 		        currentPosition = 0;
 		    }
+		}
+		//lc_complete is ready, we move up in the edge stack again
+		else if (newDescription.startsWith("lc_complete"))
+		{
+		    edgeStack.remove(0);
 		}
 		
 		//if we have an associated edge, set it to successful
@@ -175,9 +191,11 @@ public class QTypeBridge extends SICStusPrologBridge
 				goal.setIn(packer.pack(grisu));
 				
                 IEntity graleFS = GraleJUtility.grisuToGralej(grisu);
-                //update current position in the case of lc_complete (using length of unconsumed token list)
-                System.err.println("adding in FS of type " + GraleJUtility.getType(graleFS));
+                
+                //System.err.println("adding in FS of type " + GraleJUtility.getType(graleFS));
                 if (GraleJUtility.getType(graleFS).startsWith("lc_complete"))
+                //lc_complete: update current position using the length of the unconsumed token list
+                //             add an edge representing the completion attempt
                 {
                     List<String> path = new LinkedList<String>();
                     path.add("arg5");
@@ -191,6 +209,21 @@ public class QTypeBridge extends SICStusPrologBridge
                         int listLength = GraleJUtility.listLength((IList) argFS);
                         currentPosition = state.getChart().getRightBound() - listLength;
                     }
+                    path.clear();
+                    path.add("arg3");
+                    argFS = GraleJUtility.delta(graleFS, path);
+                    if (argFS == null)
+                    {
+                        System.err.println("WARNING: could not read category from lc_complete argument!");
+                    }
+                    else
+                    {
+                        String category = GraleJUtility.getType(argFS);
+                        int edgeID = state.getChart().addEdge(currentPosition, state.getChart().getRightBound(), "complete " + category, 2);
+                        state.linkEdgeToNode(edgeID, stepID);
+                        edgeStack.add(edgeID);
+                        kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
+                    }
                 }
 			} 
 			else if ("out".equals(key))
@@ -203,7 +236,7 @@ public class QTypeBridge extends SICStusPrologBridge
 		        int associatedEdge = state.getEdgeForNode(stepID);
 		        if (associatedEdge != -1)
 		        {
-		            //...analyse the preliminary label to decide what to extract
+                    //...analyse the preliminary label to decide what to extract
 		            String oldCaption = state.getChart().getEdgeCaption(associatedEdge);
 		            if (oldCaption.startsWith("lex:"))
 		            {
@@ -220,6 +253,41 @@ public class QTypeBridge extends SICStusPrologBridge
 		                    String type = GraleJUtility.getType(argFS);
 		                    state.getChart().setEdgeCaption(associatedEdge, type + oldCaption.substring(3));
 		                }
+		            }
+		            else if (oldCaption.equals("rule"))
+		            {
+		                //TODO: assign the edge to the lc_complete step above it!
+		                List<String> path = new LinkedList<String>();
+                        path.add("arg0");
+                        IEntity argFS = GraleJUtility.delta(graleFS, path);
+                        String newLabel = "";
+                        if (argFS == null)
+                        {
+                            System.err.println("WARNING: could not read head category for rule edge " + associatedEdge);
+                            newLabel = "? -> ";
+                        }
+                        else
+                        {
+                            String type = GraleJUtility.getType(argFS);
+                            newLabel = type + " -> ";
+                        }
+                        path.clear();
+                        path.add("arg1");
+                        argFS = GraleJUtility.delta(graleFS, path);
+                        if (argFS == null || !(argFS instanceof IList))
+                        {
+                            System.err.println("WARNING: could not read body categories for rule edge " + associatedEdge);
+                            newLabel += "?";
+                        }
+                        else
+                        {
+                            for (IEntity catFS : ((IList) argFS).elements())
+                            {
+                                newLabel += GraleJUtility.getType(catFS) + " ";
+                            }
+                        }
+                        state.getChart().setEdgeCaption(associatedEdge, newLabel);
+		                kahina.dispatchEvent(new KahinaChartUpdateEvent(associatedEdge));
 		            }
 		        }
 			}
