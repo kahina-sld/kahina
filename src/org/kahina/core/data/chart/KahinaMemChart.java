@@ -14,7 +14,7 @@ public class KahinaMemChart extends KahinaChart
 	 */
 	private static final long serialVersionUID = 8981755950162448512L;
 
-	private static final boolean verbose = false;
+	private static final boolean verbose = true;
 	
     //the chart is divided up into cells (vertical segments) that the edges can range over
     //leftmost: leftBound, rightmost: rightBound
@@ -64,7 +64,7 @@ public class KahinaMemChart extends KahinaChart
         setEdgeCaption(id, caption);
         if (verbose)
         {
-            System.err.println("KahinaChart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
+            System.err.println(id + " = KahinaChart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
         }
         return id;
     }
@@ -79,7 +79,7 @@ public class KahinaMemChart extends KahinaChart
         setEdgeCaption(id, caption);
         if (verbose)
         {
-            System.err.println("KahinaChart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
+            System.err.println(id + " = KahinaChart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
         }
     }
     
@@ -274,7 +274,6 @@ public class KahinaMemChart extends KahinaChart
     @Override
 	public void addEdgeDependency(int motherID, int daughterID)
     {
-        System.err.println("chart.addEdgeDependency(" + motherID + "," + daughterID + ")");
     	if (verbose)
     	{
     		System.err.println(this + ".addEdgeDependency(" + motherID + ", " + daughterID + ")");
@@ -306,13 +305,13 @@ public class KahinaMemChart extends KahinaChart
     {
     	if (verbose)
     	{
-    		System.err.print(this + ".getMotherEdgesForEdge(" + daughterID + ")=");
+    		//System.err.print(this + ".getMotherEdgesForEdge(" + daughterID + ")=");
     	}
         Set<Integer> mothers = motherEdges.get(daughterID);
         if (mothers == null) mothers = new HashSet<Integer>();
         if (verbose)
         {
-        	System.err.println(mothers);
+        	//System.err.println(mothers);
         }
         return mothers;
     }
@@ -322,13 +321,13 @@ public class KahinaMemChart extends KahinaChart
     {
     	if (verbose)
     	{
-    		System.err.print(this + ".getDaughterEdgesForEdge(" + motherID + ")=");
+    		//System.err.print(this + ".getDaughterEdgesForEdge(" + motherID + ")=");
     	}
         Set<Integer> daughters = daughterEdges.get(motherID);
         if (daughters == null) daughters = new HashSet<Integer>();
         if (verbose)
         {
-        	System.err.println(daughters);
+        	//System.err.println(daughters);
         }
         return daughters;
     }
