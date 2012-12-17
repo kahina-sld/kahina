@@ -98,7 +98,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	        {
 	            int motherEdge = edgeStack.get(0);
 	            state.getChart().addEdgeDependency(motherEdge, edgeID);
-	            setPos(edgeID, currentPosition);
+	            setPos(edgeID, getPos(motherEdge));
 	        }
 	        else
 	        {
@@ -243,7 +243,7 @@ public class QTypeBridge extends SICStusPrologBridge
                 System.err.println("WARNING: db_word exited on an empty edge stack!");
             }
         }*/
-		//lc_complete was successful, we move up in the edge stack again
+		//unify was successful, we move up in the edge stack again
         else if (newDescription.startsWith("unify("))
         {
             if (edgeStack.size() > 0)
@@ -251,6 +251,22 @@ public class QTypeBridge extends SICStusPrologBridge
                 int unifyEdge = popEdge();
                 int motherEdge = edgeStack.get(0);
                 setPos(motherEdge, state.getChart().getRightBoundForEdge(unifyEdge));
+            }
+            else
+            {
+                System.err.println("WARNING: unify exited on an empty edge stack!");
+            }
+        }
+	      //unify was successful, we move up in the edge stack again
+        else if (newDescription.startsWith("lc_list([],[],"))
+        {
+            if (edgeStack.size() > 0)
+            {
+                int ruleEdge = state.getEdgeForNode(lastRuleNode);
+                state.getChart().setEdgeStatus(ruleEdge, 0);
+                //TODO: safety check, this could shorten the rule edge to 0-range!
+                state.getChart().setRightBoundForEdge(ruleEdge, getPos(ruleEdge));
+                popEdge();
             }
             else
             {
@@ -382,7 +398,7 @@ public class QTypeBridge extends SICStusPrologBridge
                     IEntity argFS = GraleJUtility.delta(graleFS, path);
                     if (argFS == null)
                     {
-                        System.err.println("WARNING: could not read category from lc_complete argument!");
+                        System.err.println("WARNING: could not read category from lc argument!");
                     }
                     else
                     {
@@ -434,6 +450,10 @@ public class QTypeBridge extends SICStusPrologBridge
                     }
                     else
                     {
+                        while (arg0FS instanceof ITag)
+                        {
+                            arg0FS = ((ITag) arg0FS).target();
+                        }
                         String category = GraleJUtility.getType(arg0FS);
                         newUnifyLabel = newUnifyLabel + category;
                     }
@@ -446,6 +466,10 @@ public class QTypeBridge extends SICStusPrologBridge
                     }
                     else
                     {
+                        while (arg1FS instanceof ITag)
+                        {
+                            arg1FS = ((ITag) arg1FS).target();
+                        }
                         String category = GraleJUtility.getType(arg1FS);
                         newUnifyLabel = category + newUnifyLabel;
                     }
