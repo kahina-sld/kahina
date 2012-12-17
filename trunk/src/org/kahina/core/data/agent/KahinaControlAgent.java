@@ -251,7 +251,7 @@ public class KahinaControlAgent extends KahinaObject implements KahinaListener
             //check step data against sensor, let the actuator fire if successful
             if (sensor.detectPattern(stepID))
             {
-                System.err.println(this + " detected pattern, starting actuator " + actuator);
+                //System.err.println(this + " detected pattern, starting actuator " + actuator);
                 actuator.act(this);
             }
         }     
