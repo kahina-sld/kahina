@@ -98,7 +98,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	        {
 	            int motherEdge = edgeStack.get(0);
 	            state.getChart().addEdgeDependency(motherEdge, edgeID);
-	            setPos(edgeID, currentPosition++);
+	            setPos(edgeID, currentPosition);
 	        }
 	        else
 	        {
