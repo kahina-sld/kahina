@@ -20,9 +20,9 @@ public class DimacsCnfOutput
                 String symbol = cnf.getSymbolForLiteral(var);
                 if (symbol != null) out.write("c " + var + " " + symbol + "\n");
             }
-            for (List<Integer> clause : cnf.getClauses())
+            for (int i = 0; i < cnf.getSize(); i++)
             {
-                for (Integer lit : clause)
+                for (Integer lit : cnf.getClause(i))
                 {
                     out.write(lit + " ");
                 }
@@ -43,9 +43,9 @@ public class DimacsCnfOutput
         {
             FileWriter out = new FileWriter(new File(fileName));
             out.write("p cnf " + cnf.getNumVars() + " " + cnf.getNumClauses() + "\n");
-            for (List<Integer> clause : cnf.getClauses())
+            for (int i = 0; i < cnf.getSize(); i++)
             {
-                for (Integer lit : clause)
+                for (Integer lit : cnf.getClause(i))
                 {
                     out.write(lit + " ");
                 }
@@ -70,9 +70,9 @@ public class DimacsCnfOutput
         {
             FileWriter out = new FileWriter(new File(fileName));
             out.write("p cnf " + cnf.getNumVars() + " " + cnf.getNumClauses() + "\n");
-            for (List<Integer> clause : cnf.getClauses())
+            for (int i = 0; i < cnf.getSize(); i++)
             {
-                for (Integer lit : clause)
+                for (Integer lit : cnf.getClause(i))
                 {
                     out.write(cnf.getSymbolForLiteral(lit) + " ");
                 }
@@ -93,9 +93,9 @@ public class DimacsCnfOutput
         {
             FileWriter out = new FileWriter(new File(fileName));
             int[] occurrences = new int[cnf.getNumVars() + 1];
-            for (List<Integer> clause : cnf.getClauses())
+            for (int i = 0; i < cnf.getSize(); i++)
             {
-                for (int var : clause)
+                for (Integer var : cnf.getClause(i))
                 {
                     if (var < 0) var = -var;
                     occurrences[var]++;

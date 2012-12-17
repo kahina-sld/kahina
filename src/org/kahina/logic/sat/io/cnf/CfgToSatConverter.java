@@ -18,7 +18,7 @@ public class CfgToSatConverter
         //add constraint that the sentence must be covered
         List<Integer> sentenceConstraint = new LinkedList<Integer>();
         sentenceConstraint.add(varIndex.get("s[" + 0 + "," + sentence.length + "]"));
-        sat.getClauses().add(sentenceConstraint);
+        sat.addClause(sentenceConstraint);
         //add the units describing the input
         for (int i = 0; i < sentence.length; i++)
         {
@@ -30,9 +30,9 @@ public class CfgToSatConverter
             }
             List<Integer> wordConstraint = new LinkedList<Integer>();
             wordConstraint.add(varIndex.get(category + "[" + i + "," + (i+1) + "]"));
-            sat.getClauses().add(wordConstraint);
+            sat.addClause(wordConstraint);
         }
-        sat.setNumClauses(sat.getClauses().size());
+        sat.setNumClauses(sat.getSize());
         return sat;
     }
     
@@ -64,7 +64,7 @@ public class CfgToSatConverter
                                 List<Integer> exclConstraint = new LinkedList<Integer>();
                                 exclConstraint.add(- posSymbolWithRange);
                                 exclConstraint.add(- varIndex.get(otherSymbol + "[" + i + "," + j + "]"));
-                                sat.getClauses().add(exclConstraint);
+                                sat.addClause(exclConstraint);
                             }
                         }
                         else
@@ -104,7 +104,7 @@ public class CfgToSatConverter
                             List<Integer> rhsEnforcementClause = new LinkedList<Integer>();
                             rhsEnforcementClause.add(- varCounter++);
                             rhsEnforcementClause.add(varIndex.get(rhs.get(0) + "[" + i + "," + j + "]"));
-                            sat.getClauses().add(rhsEnforcementClause);
+                            sat.addClause(rhsEnforcementClause);
                         }
                         else if (rhs.size() == 2)
                         {
@@ -119,23 +119,23 @@ public class CfgToSatConverter
                                 List<Integer> leftEnforcementClause = new LinkedList<Integer>();
                                 leftEnforcementClause.add(- varCounter);
                                 leftEnforcementClause.add(varIndex.get(rhs.get(0) + "[" + i + "," + k + "]"));
-                                sat.getClauses().add(leftEnforcementClause);
+                                sat.addClause(leftEnforcementClause);
                                 List<Integer> rightEnforcementClause = new LinkedList<Integer>();
                                 rightEnforcementClause.add(- varCounter);
                                 rightEnforcementClause.add(varIndex.get(rhs.get(1) + "[" + k + "," + j + "]"));
-                                sat.getClauses().add(rightEnforcementClause);
+                                sat.addClause(rightEnforcementClause);
                                 
                                 partitionSplitClause.add(varCounter);
                                 varCounter++;
                             }
-                            sat.getClauses().add(partitionSplitClause);
+                            sat.addClause(partitionSplitClause);
                         }
                         else
                         {
                             System.err.println("RHS SKIPPED: only unary and binary rules are supported for now!");
                         }
                     }
-                    sat.getClauses().add(branchingClause);
+                    sat.addClause(branchingClause);
                 }
             }
         }
@@ -149,12 +149,12 @@ public class CfgToSatConverter
                     int posSymbolWithRange = varIndex.get(terminal + "[" + i + "," + j + "]");
                     List<Integer> terminalConstraint = new LinkedList<Integer>();
                     terminalConstraint.add(- posSymbolWithRange);   
-                    sat.getClauses().add(terminalConstraint);
+                    sat.addClause(terminalConstraint);
                 }
             }
         }
         sat.setNumVars(varCounter - 1);
-        sat.setNumClauses(sat.getClauses().size());
+        sat.setNumClauses(sat.getSize());
         return sat;
     }
     

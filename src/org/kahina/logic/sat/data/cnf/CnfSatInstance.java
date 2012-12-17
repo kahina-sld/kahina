@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +33,6 @@ public class CnfSatInstance extends KahinaSatInstance
     private HashSet<Integer> dontCareClauses;
     
     //literals -> clauses; important for efficient computations
-    //  entries [0,...,numVars-1] for positive literals
-    //  entries [numVars,...,2*numVars-1] for negative literals 
     protected Map<Integer,List<Integer>> occurrenceMap = null;
     
     //this tells KahinaSatInstanceListView whether it suffices to just append new clauses
@@ -44,7 +43,7 @@ public class CnfSatInstance extends KahinaSatInstance
         setNumClauses(0);
         setNumVars(0);
         clauses = new ArrayList<List<Integer>>();
-        occurrenceMap = null;
+        occurrenceMap = new TreeMap<Integer,List<Integer>>();
         dontCareClauses = new HashSet<Integer>();
     }
     
@@ -64,9 +63,75 @@ public class CnfSatInstance extends KahinaSatInstance
         return copy;
     }
     
+    public void addClause(List<Integer> clause)
+    {
+        clauses.add(clause);
+        if (occurrenceMap != null)
+        {
+            List<Integer> subsumedClauses = getSubsumedClauses(clause);
+            if (subsumedClauses != null)
+            {
+                for (int subsumedClause : subsumedClauses)
+                {
+                    //TODO: remove subsumed clauses; this requires a removal option!
+                }
+                for (int literal : clause)
+                {
+                    List<Integer> occurrences = occurrenceMap.get(clause);
+                    if (occurrences == null)
+                    {
+                        occurrences = new LinkedList<Integer>();
+                        occurrenceMap.put(literal, occurrences);
+                    }
+                    occurrences.add(clause.size() - 1);
+                }
+            }
+        }
+    }
+    
+    public void removeClause(int clauseID)
+    {
+        //TODO: implement this, updating the occurrence map
+    }
+    
+    /**
+     * Finds the clauses subsumed by some clause.
+     * @param clause
+     * @return null if the new clause is subsumed, a list of subsumed clauses otherwise
+     */
+    public List<Integer> getSubsumedClauses(List<Integer> clause)
+    {
+        int[] overlapSize = new int[clauses.size()];
+        for (int literal : clause)
+        {
+            List<Integer> occurrences = occurrenceMap.get(literal);
+            if (occurrences != null)
+            {
+                for (int clauseID : occurrences)
+                {
+                    overlapSize[clauseID]++;
+                }
+            }
+        }
+        List<Integer> subsumedClauses = new LinkedList<Integer>();
+        for (int i = 0; i < clauses.size(); i++)
+        {
+            if (overlapSize[i] == clause.size()) return null;
+            else if (overlapSize[i] == clauses.get(i).size())
+            {
+                subsumedClauses.add(i);
+            }
+        }
+        return subsumedClauses;
+    }
+    
+    public int getSize()
+    {
+        return clauses.size();
+    }
+    
     //generate lit -> clause map for lookup
     //caching this makes the computation of different views a lot faster
-    @SuppressWarnings("unchecked")
     public void computeOccurrenceMap()
     {
         //System.err.print("Generating occurrence map for " + (getNumVars() * 2) + " literals ... ");
@@ -128,15 +193,6 @@ public class CnfSatInstance extends KahinaSatInstance
         System.err.println("don't-care filter selects " + dontCareClauses.size() + "/" + clauses.size() + " clauses");
     }
     
-    /**
-     * If you modify the clause set call .announceChange() afterwards!
-     * @return
-     */
-    public List<List<Integer>> getClauses()
-    {
-        return clauses;
-    }
-    
     public List<Integer> getClause(int clauseID)
     {
         return clauses.get(clauseID);
@@ -148,10 +204,10 @@ public class CnfSatInstance extends KahinaSatInstance
         for (int clauseID: clauseIDs)
         {
             //TODO: think about risks of structure reuse!
-            subInstance.getClauses().add(clauses.get(clauseID-1));
+            subInstance.addClause(clauses.get(clauseID-1));
             subInstance.symbolTable = symbolTable;
         }
-        subInstance.setNumClauses(subInstance.getClauses().size());
+        subInstance.setNumClauses(subInstance.getSize());
         subInstance.setNumVars(subInstance.searchHighestVariable());
         return subInstance;
     }

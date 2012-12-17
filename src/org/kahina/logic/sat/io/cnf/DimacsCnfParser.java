@@ -67,7 +67,7 @@ public class DimacsCnfParser
                         Integer literal = Integer.parseInt(tokens[i]);
                         if (literal == 0)
                         {
-                            sat.getClauses().add(currentClause);
+                            sat.addClause(currentClause);
                             currentClause = new LinkedList<Integer>();
                             break;
                         }
