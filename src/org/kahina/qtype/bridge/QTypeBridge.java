@@ -42,7 +42,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	int currentPosition = 0;
 	boolean lexEntryExistenceMode = false;
 	int topLexEntryExistenceStep = -1;
-	List<Integer> edgeStack;
+	private List<Integer> edgeStack;
 	Map<Integer,Integer> edgeToCurrentPosition;
 	int lastRuleNode = -1;
 
@@ -94,7 +94,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	        {
 	            int motherEdge = edgeStack.get(0);
 	            state.getChart().addEdgeDependency(motherEdge, edgeID);
-	            edgeToCurrentPosition.put(edgeID, currentPosition++);
+	            setPos(edgeID, currentPosition++);
 	        }
 	        else
 	        {
@@ -113,21 +113,23 @@ public class QTypeBridge extends SICStusPrologBridge
 		} 
         else if (description.startsWith("unify"))
         {
-            int edgeID = state.getChart().addEdge(currentPosition, currentPosition + 1, "unify", 2);
-            state.linkEdgeToNode(edgeID, currentID);
             if (edgeStack.size() > 0)
             {
                 int motherEdge = edgeStack.get(0);
+                int motherPos = getPos(motherEdge);
+                int edgeID = state.getChart().addEdge(motherPos, motherPos + 1, "unify", 2);
+                state.linkEdgeToNode(edgeID, currentID);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
-                edgeToCurrentPosition.put(edgeID, currentPosition);
-                edgeStack.add(0,edgeID);
+                setPos(edgeID, motherPos);
+                pushEdge(edgeID);
+                kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
             }
             else
             {
                 //a freely dangling unify edge, this should not happen
                 System.err.println("WARNING: found a unify edge outside of any expected context!");
             }
-            kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
+
         }  
 	}
 	
@@ -141,12 +143,12 @@ public class QTypeBridge extends SICStusPrologBridge
             if (edgeStack.size() > 0)
             {
                 int motherEdge = edgeStack.get(0);
-                int startPos = edgeToCurrentPosition.get(motherEdge);
+                int startPos = getPos(motherEdge);
                 int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), "rule", 2);
-                edgeToCurrentPosition.put(edgeID, startPos);
-                state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+                setPos(edgeID, startPos);
+                state.getChart().addEdgeDependency(motherEdge, edgeID);
                 state.linkEdgeToNode(edgeID, currentID);
-                edgeStack.add(0, edgeID);
+                pushEdge(edgeID);
                 lastRuleNode = currentID;
             }
             else
@@ -167,14 +169,14 @@ public class QTypeBridge extends SICStusPrologBridge
 	        if (edgeStack.size() > 0)
             {
 	            //throw away the last rule edge, it is not relevant any longer
-	            edgeStack.remove(0);
+	            popEdge();
                 int motherEdge = edgeStack.get(0);
-                int startPos = edgeToCurrentPosition.get(motherEdge);
+                int startPos = getPos(motherEdge);
                 int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), "rule", 2);
-                edgeToCurrentPosition.put(edgeID, startPos);
-                state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+                setPos(edgeID, startPos);
+                state.getChart().addEdgeDependency(motherEdge, edgeID);
                 state.linkEdgeToNode(edgeID, currentID);
-                edgeStack.add(0, edgeID);
+                pushEdge(edgeID);
                 lastRuleNode = currentID;
             }
             else
@@ -212,37 +214,39 @@ public class QTypeBridge extends SICStusPrologBridge
 		{
 		    if (edgeStack.size() > 0)
 		    {
-		        int childEdge = edgeStack.remove(0);
+		        int childEdge = popEdge();
 		        int motherEdge = edgeStack.get(0);
 		        //the next item in lc_list will be tried, we can move the pos accordingly
-		        edgeToCurrentPosition.put(motherEdge, edgeToCurrentPosition.get(childEdge));
+		        setPos(motherEdge, getPos(childEdge));
 		    }
 		    else
 		    {
 		        System.err.println("WARNING: lc exited on an empty edge stack!");
 		    }
 		}
-		//move the position of the mother after a successful lex_edge
-        else if (newDescription.startsWith("db_word("))
+		//move the position of the mother after a successful lex edge
+        /*else if (newDescription.startsWith("db_word("))
         {
             if (edgeStack.size() > 0)
             {
                 int childEdge = state.getEdgeForNode(stepID);
                 int motherEdge = edgeStack.get(0);
                 //we will now continue scanning in the mother edge, so we can move the pos accordingly
-                edgeToCurrentPosition.put(motherEdge, edgeToCurrentPosition.get(childEdge));
+                setPos(motherEdge, getPos(childEdge));
             }
             else
             {
-                System.err.println("WARNING: lc exited on an empty edge stack!");
+                System.err.println("WARNING: db_word exited on an empty edge stack!");
             }
-        }
+        }*/
 		//lc_complete was successful, we move up in the edge stack again
         else if (newDescription.startsWith("unify("))
         {
             if (edgeStack.size() > 0)
             {
-                edgeStack.remove(0);                   
+                int unifyEdge = popEdge();
+                int motherEdge = edgeStack.get(0);
+                setPos(motherEdge, state.getChart().getRightBoundForEdge(unifyEdge));
             }
             else
             {
@@ -276,7 +280,7 @@ public class QTypeBridge extends SICStusPrologBridge
         {
             if (edgeStack.size() > 0)
             {
-                edgeStack.remove(0);
+                popEdge();
             }
             else
             {
@@ -291,7 +295,7 @@ public class QTypeBridge extends SICStusPrologBridge
             state.getChart().setEdgeStatus(ruleEdge, 1);
             if (edgeStack.size() > 0)
             {
-                edgeStack.remove(0);
+                popEdge();
             }
             else
             {
@@ -382,17 +386,18 @@ public class QTypeBridge extends SICStusPrologBridge
                         if (edgeStack.size() > 0)
                         {
                             int motherEdge = edgeStack.get(0);
-                            int edgeID = state.getChart().addEdge(edgeToCurrentPosition.get(motherEdge), state.getChart().getRightBound(), "parse " + category, 2);
-                            edgeToCurrentPosition.put(edgeID, edgeToCurrentPosition.get(motherEdge));
+                            int edgeID = state.getChart().addEdge(getPos(motherEdge), state.getChart().getRightBound(), "parse " + category, 2);
+                            setPos(edgeID, getPos(motherEdge));
                             state.linkEdgeToNode(edgeID, stepID);
                             state.getChart().addEdgeDependency(edgeStack.get(0), edgeID);
+                            pushEdge(edgeID);
                         }
                         else
                         {
                             //a freely dangling parse edge, this only happens at the top
                             int edgeID = state.getChart().addEdge(0, state.getChart().getRightBound(), "parse " + category, 2);
-                            edgeToCurrentPosition.put(edgeID, 0);
-                            edgeStack.add(0, edgeID);
+                            setPos(edgeID, 0);
+                            pushEdge(edgeID);
                             kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
                         }
 
@@ -520,5 +525,28 @@ public class QTypeBridge extends SICStusPrologBridge
 			System.exit(-1);
 		}
 	}
-
+	
+	private void pushEdge(int edgeID)
+	{
+	    System.err.println("  pushing " + edgeID + " on edge stack");
+	    edgeStack.add(0,edgeID);
+	}
+	
+    private int popEdge()
+    {
+        int edgeID = edgeStack.remove(0);
+        System.err.println("  popping " + edgeID + " from edge stack");
+        return edgeID;
+    }
+    
+    private int getPos(int edgeID)
+    {
+        return edgeToCurrentPosition.get(edgeID);
+    }
+    
+    private void setPos(int edgeID, int pos)
+    {
+        System.err.println("  setting pos of edge #" + edgeID + " to " + pos);
+        edgeToCurrentPosition.put(edgeID, pos);
+    }
 }

@@ -274,6 +274,7 @@ public class KahinaMemChart extends KahinaChart
     @Override
 	public void addEdgeDependency(int motherID, int daughterID)
     {
+        System.err.println("chart.addEdgeDependency(" + motherID + "," + daughterID + ")");
     	if (verbose)
     	{
     		System.err.println(this + ".addEdgeDependency(" + motherID + ", " + daughterID + ")");
