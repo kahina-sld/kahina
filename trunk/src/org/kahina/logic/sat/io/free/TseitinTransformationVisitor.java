@@ -59,8 +59,8 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
             List<Integer> clause2 = new LinkedList<Integer>();
             clause2.add(-x);
             clause2.add(-xarg);
-            cnf.getClauses().add(clause1);
-            cnf.getClauses().add(clause2);     
+            cnf.addClause(clause1);
+            cnf.addClause(clause2);     
             
             return x;
         }
@@ -102,14 +102,14 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
                 List<Integer> clause = new LinkedList<Integer>();
                 clause.add(-x);
                 clause.addAll(xs);
-                cnf.getClauses().add(clause);
+                cnf.addClause(clause);
         
                 for (Integer y : xs) 
                 {
                     clause = new LinkedList<Integer>();
                     clause.add(x);
                     clause.add(-y);
-                    cnf.getClauses().add(clause);
+                    cnf.addClause(clause);
                 }
         
                 return x;
@@ -156,14 +156,14 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
                 {
                   clause.add(-y);
                 }
-                cnf.getClauses().add(clause);
+                cnf.addClause(clause);
     
                 for (Integer y : xs) 
                 {
                   clause = new LinkedList<Integer>();
                   clause.add(-x);
                   clause.add(y);
-                  cnf.getClauses().add(clause);
+                  cnf.addClause(clause);
                 }
     
                 return x;
@@ -190,8 +190,8 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
     {
         List<Integer> assertionClause = new LinkedList<Integer>();
         assertionClause.add(topVar);
-        cnf.getClauses().add(assertionClause);
-        cnf.setNumClauses(cnf.getClauses().size());
+        cnf.addClause(assertionClause);
+        cnf.setNumClauses(cnf.getSize());
         cnf.setNumVars(VarName.freshName() - 1);
         cnf.announceChangedClauses();
         return cnf;

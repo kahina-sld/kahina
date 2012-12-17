@@ -202,10 +202,10 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             Set<Integer> leanUSSet = new HashSet<Integer>();
             Map<String,Integer> idMap = kahina.getSatInstance().generateClauseToIDMap();
             StringBuilder clauseRepresentation;
-            for (List<Integer> clause : leanKernelUC.getClauses())
+            for (int i = 0; i < kahina.getSatInstance().getSize(); i++)
             {
                 clauseRepresentation = new StringBuilder();
-                for (int lit : clause)
+                for (Integer lit : kahina.getSatInstance().getClause(i))
                 {
                     clauseRepresentation.append(lit + ".");
                 }

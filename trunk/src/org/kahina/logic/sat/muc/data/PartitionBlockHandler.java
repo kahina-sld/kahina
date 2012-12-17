@@ -22,7 +22,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     //map from block IDs into clauses which use that block
     Map<Integer,List<List<Integer>>> blockClauses;
     //map from block IDs into the defining clauses (used for splitting)
-    Map<Integer,List<Integer>> blockDefClauses;
+    Map<Integer,Integer> blockDefClauses;
     //map from block IDs into the defining variables (used for splitting)
     Map<Integer,Integer> blockDefVar;
     //map from block-defining variables into block IDs (used for splitting)
@@ -38,7 +38,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         super(satInstance);
         blockList = new TreeMap<Integer,TreeSet<Integer>>();
         blockClauses = new TreeMap<Integer,List<List<Integer>>>();
-        blockDefClauses = new TreeMap<Integer,List<Integer>>();
+        blockDefClauses = new TreeMap<Integer,Integer>();
         blockDefVar = new TreeMap<Integer,Integer>();
         blockVarBlockID = new TreeMap<Integer,Integer>();
         blockIndex = new TreeMap<Integer,Integer>();
@@ -158,7 +158,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         }
         
         //remove the defining clause for the block
-        satInstance.getClauses().remove(blockDefClauses.get(blockID)); 
+        satInstance.removeClause(blockDefClauses.get(blockID)); 
         satInstance.announceChangedClauses();
         
         //remove entries for the replaced block from all the tables
@@ -196,8 +196,8 @@ public class PartitionBlockHandler extends LiteralBlockHandler
             //update the reverse index (let literals point to new block)
             blockIndex.put(literal, blockID);
         }
-        blockDefClauses.put(blockID, blockDefClause);
-        satInstance.getClauses().add(blockDefClause);
+        blockDefClauses.put(blockID, satInstance.getSize());
+        satInstance.addClause(blockDefClause);
         satInstance.announceAddedClauses();
         if (VERBOSE) System.err.println("  new block clause:" + blockDefClause);
         return blockID;

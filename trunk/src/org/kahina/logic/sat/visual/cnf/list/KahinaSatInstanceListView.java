@@ -86,16 +86,15 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
             displayText("No model assigned yet.");
             return;
         }
-        List<List<Integer>> clauses = model.getClauses();
         if (model.needsRebuild())
         {
             listModel.clear();
-            for (int i = 0; i < clauses.size(); i++)
+            for (int i = 0; i < model.getSize(); i++)
             {
                 StringBuilder s = new StringBuilder();
                 s.append(i + 1);
                 s.append(": {");
-                for (Integer literal : clauses.get(i))
+                for (Integer literal : model.getClause(i))
                 {
                     s.append(model.getSymbolForLiteral(literal));
                     s.append(',');
@@ -107,15 +106,15 @@ public class KahinaSatInstanceListView extends KahinaView<CnfSatInstance>
         }
         else
         {
-            //much easier case: no need to rebuild the entore list model
-            if (clauses.size() > listModel.getSize())
+            //much easier case: no need to rebuild the entire list model
+            if (model.getSize() > listModel.getSize())
             {
-                for (int i = listModel.getSize(); i < clauses.size(); i++)
+                for (int i = listModel.getSize(); i < model.getSize(); i++)
                 {
                     StringBuilder s = new StringBuilder();
                     s.append(i + 1);
                     s.append(": {");
-                    for (Integer literal : clauses.get(i))
+                    for (Integer literal : model.getClause(i))
                     {
                         s.append(model.getSymbolForLiteral(literal));
                         s.append(',');

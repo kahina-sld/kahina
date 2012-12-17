@@ -14,7 +14,7 @@ public class AspCcgDontCareFilter extends ClauseFilter
 
     public boolean acceptsClause(int clauseID)
     {
-        List<Integer> clause = instance.getClauses().get(clauseID);
+        List<Integer> clause = instance.getClause(clauseID);
         for (int literal : clause)
         {
             String symbol = instance.getSymbolForLiteral(literal);

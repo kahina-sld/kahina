@@ -74,16 +74,15 @@ public class MUCStepView extends KahinaSatInstanceListView
     {
         kahina.getLogger().startMeasuring();
         int stepID = kahina.getState().getSelectedStepID();
-        List<List<Integer>> clauses = model.getClauses();
         listModel.clear();
         if (stepID == -1)
         {
-            for (int i = 1; i <= clauses.size(); i++)
+            for (int i = 1; i <= model.getSize(); i++)
             {
                 StringBuilder s = new StringBuilder();
                 s.append(i);
                 s.append(": {");
-                for (Integer literal : clauses.get(i-1))
+                for (Integer literal : model.getClause(i-1))
                 {
                     s.append(kahina.getSatInstance().getSymbolForLiteral(literal));
                     s.append(',');
@@ -101,7 +100,7 @@ public class MUCStepView extends KahinaSatInstanceListView
                 StringBuilder s = new StringBuilder();
                 s.append(ic);
                 s.append(": {");
-                for (Integer literal : clauses.get(ic-1))
+                for (Integer literal : model.getClause(ic-1))
                 {
                     s.append(kahina.getSatInstance().getSymbolForLiteral(literal));
                     s.append(',');
