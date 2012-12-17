@@ -5,8 +5,15 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.LinkedList;
 
+import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
+import org.kahina.core.gui.event.KahinaChartUpdateEvent;
+import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
@@ -40,6 +47,8 @@ public class QTypeDebuggerInstance extends LogicProgrammingInstance<QTypeState, 
         {
             bridge = (QTypeBridge) super.startNewSession();
             profiler = new PrologProfiler(this, state.getFullProfile());
+            sessionControl.registerListener("edge select", this);
+            sessionControl.registerListener("update", this);
             commander.initializeForNewSession();
             return bridge;
         } 
@@ -180,5 +189,36 @@ public class QTypeDebuggerInstance extends LogicProgrammingInstance<QTypeState, 
     protected QTypeState createState()
     {
         return new QTypeState(this);
+    }
+    
+    public void processEvent(KahinaEvent e)
+    {
+        super.processEvent(e);
+        if (e instanceof KahinaEdgeSelectionEvent)
+        {
+            processEdgeSelectionEvent((KahinaEdgeSelectionEvent) e);
+        } 
+        else if (e instanceof KahinaUpdateEvent)
+        {
+            processUpdateEvent((KahinaUpdateEvent) e);
+        }
+    }
+    
+    private void processEdgeSelectionEvent(KahinaEdgeSelectionEvent e)
+    {
+        int nodeID = state.getNodeForEdge(e.getSelectedEdge());
+        if (nodeID != -1)
+        {
+            dispatchEvent(new KahinaSelectionEvent(nodeID));
+        }
+    }
+
+    private void processUpdateEvent(KahinaUpdateEvent e)
+    {
+        int edgeID = state.getEdgeForNode(e.getSelectedStep());
+        if (edgeID != -1)
+        {
+            dispatchEvent(new KahinaChartUpdateEvent(edgeID));
+        }
     }
 }

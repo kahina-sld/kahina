@@ -74,11 +74,15 @@ public class QTypeBridge extends SICStusPrologBridge
 			    List<String> wordList = PrologUtil.parsePrologStringList(matcher.group(0));
 				kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { wordList }));
 			}
-			
-			//each lc nodes open a new context for rule nodes
+			//each lc node opens a new context for rule nodes
 	        lastRuleNode = -1;
 			//TODO: otherwise, detect the prediction (???)
 		}
+		else if (description.startsWith("lc_complete(") && description.endsWith(")"))
+        {   
+            //each lc_complete node opens a new context for rule nodes
+            lastRuleNode = -1;
+        }
 		else if (description.startsWith("db_word("))
 	    {
 	        //create chart edge with label "lex:word" from the current position to the next

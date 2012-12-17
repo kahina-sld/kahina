@@ -335,7 +335,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		int nodeID = state.getNodeForEdge(e.getSelectedEdge());
 		if (nodeID != -1)
 		{
-			processEvent(new KahinaSelectionEvent(nodeID));
+			dispatchEvent(new KahinaSelectionEvent(nodeID));
 		}
 	}
 
@@ -344,7 +344,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		int edgeID = state.getEdgeForNode(e.getSelectedStep());
 		if (edgeID != -1)
 		{
-			processEvent(new KahinaChartUpdateEvent(edgeID));
+			dispatchEvent(new KahinaChartUpdateEvent(edgeID));
 		}
 	}
 
