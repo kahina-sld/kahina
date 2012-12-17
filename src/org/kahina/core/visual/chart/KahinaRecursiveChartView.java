@@ -28,7 +28,7 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaRecursiveChartView  extends KahinaChartView
 {
-    private static final boolean VERBOSE = false;
+    private static final boolean VERBOSE = true;
     
     //hack to allow precalculations from outside any drawing method
     private Graphics2D g;
@@ -258,7 +258,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
         {
             if (VERBOSE) System.err.println("root : determining position of root " + daughter);
             if (VERBOSE) System.err.println("  edgeX(" + daughter + ") = 0");
-            edgeX.put(daughter, 0);
+            edgeX.put(daughter, segmentOffsets.get(model.getLeftBoundForEdge(daughter)));
             //straightforward use of segmentOffsets to determine all the coordinates
             int drawIntoRow = rowForEdge.get(daughter);               
             int rowHeightSumAbove = 0;
@@ -504,6 +504,11 @@ public class KahinaRecursiveChartView  extends KahinaChartView
     
     private void distributeWidthOverSegments(int leftBound, int rightBound, int addedWidth)
     {
+        if (leftBound == rightBound)
+        {
+            System.err.println("WARNING: caught distribution of width over 0 segments!");
+            return;
+        }
         int addedWidthPerSegment = addedWidth/(rightBound - leftBound);
         for (int i = leftBound; i < rightBound; i++)
         {

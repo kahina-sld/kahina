@@ -35,8 +35,8 @@ public class KahinaMemChart extends KahinaChart
     HashMap<Integer, Integer> rightBounds;
     HashMap<Integer, String> edgeCaptions; //captions are displayed on the edges
     HashMap<Integer, Integer> status; //can be used to encode different types
-    HashMap<Integer, Set<Integer>> motherEdges;
-    HashMap<Integer, Set<Integer>> daughterEdges;   
+    HashMap<Integer, TreeSet<Integer>> motherEdges;
+    HashMap<Integer, TreeSet<Integer>> daughterEdges;   
     
     TreeSet<Integer> dependencyRoots;
     
@@ -48,8 +48,8 @@ public class KahinaMemChart extends KahinaChart
         rightBounds = new HashMap<Integer, Integer>();
         edgeCaptions = new HashMap<Integer, String>();
         status = new HashMap<Integer, Integer>();
-        motherEdges = new HashMap<Integer, Set<Integer>>();
-        daughterEdges = new HashMap<Integer, Set<Integer>>();
+        motherEdges = new HashMap<Integer, TreeSet<Integer>>();
+        daughterEdges = new HashMap<Integer, TreeSet<Integer>>();
         dependencyRoots = new TreeSet<Integer>();
     }
     
@@ -183,10 +183,6 @@ public class KahinaMemChart extends KahinaChart
     		System.err.println(this + ".setRightBoundForEdge(" + edgeID + ", " + rightBound + ")");
     	}
         rightBounds.put(edgeID, rightBound);
-    	if (verbose)
-    	{
-    		System.err.println("//" + this + ".setRightBoundForEdge(" + edgeID + ", " + rightBound + ")");
-    	}
     }
     
     @Override
@@ -278,18 +274,18 @@ public class KahinaMemChart extends KahinaChart
     	{
     		System.err.println(this + ".addEdgeDependency(" + motherID + ", " + daughterID + ")");
     	}
-        Set<Integer> daughters = daughterEdges.get(motherID);
+        TreeSet<Integer> daughters = daughterEdges.get(motherID);
         if (daughters == null)
         {
-            daughters = new HashSet<Integer>();
+            daughters = new TreeSet<Integer>();
             daughterEdges.put(motherID, daughters);
         }
         daughters.add(daughterID);
         
-        Set<Integer> mothers = motherEdges.get(daughterID);
+        TreeSet<Integer> mothers = motherEdges.get(daughterID);
         if (mothers == null)
         {
-            mothers = new HashSet<Integer>();
+            mothers = new TreeSet<Integer>();
             motherEdges.put(daughterID, mothers);
         }
         mothers.add(motherID);
