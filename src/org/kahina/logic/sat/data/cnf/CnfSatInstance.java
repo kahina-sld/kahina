@@ -25,10 +25,15 @@ import org.kahina.logic.sat.data.model.PartialAssignment;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 
 public class CnfSatInstance extends KahinaSatInstance
-{
-    protected int numClauses;
-    protected int numVars;
-    protected List<List<Integer>> clauses;
+{   
+    int maxClauseID;
+    int maxVarID;
+    
+    //ID conversion table for purposes of indirection; determines the size
+    protected List<Integer> clauseIDs;
+    
+    //makes the clause contents accessible by their converted IDs
+    protected Map<Integer, List<Integer>> clauseStore;
     
     private HashSet<Integer> dontCareClauses;
     
@@ -40,9 +45,10 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public CnfSatInstance()
     {
-        setNumClauses(0);
-        setNumVars(0);
-        clauses = new ArrayList<List<Integer>>();
+        maxClauseID = 0;
+        maxVarID = 0;
+        clauseIDs = new LinkedList<Integer>();
+        clauseStore = new TreeMap<Integer, List<Integer>>();
         occurrenceMap = new TreeMap<Integer,List<Integer>>();
         dontCareClauses = new HashSet<Integer>();
     }
@@ -60,6 +66,7 @@ public class CnfSatInstance extends KahinaSatInstance
         }
         copy.needsUpdate = needsUpdate;
         copy.dontCareClauses.addAll(dontCareClauses);
+        copy.computeOccurrenceMap();
         return copy;
     }
     
@@ -91,7 +98,7 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public void removeClause(int clauseID)
     {
-        //TODO: implement this, updating the occurrence map
+        //TODO: implementing this directly would require updating all numbers in the occurrence map
     }
     
     /**
@@ -542,19 +549,9 @@ public class CnfSatInstance extends KahinaSatInstance
         return graph;
     }
 
-    public void setNumVars(int numVars)
-    {
-        this.numVars = numVars;
-    }
-
     public int getNumVars()
     {
-        return numVars;
-    }
-
-    public void setNumClauses(int numClauses)
-    {
-        this.numClauses = numClauses;
+        return maxVarID;
     }
     
     public int searchHighestVariable()
