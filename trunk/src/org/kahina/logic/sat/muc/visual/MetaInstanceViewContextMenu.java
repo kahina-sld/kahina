@@ -18,7 +18,7 @@ public class MetaInstanceViewContextMenu extends JPopupMenu
         this.kahina = kahina;
         
         JMenuItem strengthenWedgeItem = new JMenuItem("Strengthen this wedge");
-        strengthenWedgeItem.setActionCommand("strengthenWedge");
+        strengthenWedgeItem.setActionCommand("strengthenWedge" + listIndex);
         strengthenWedgeItem.addActionListener(l);
         add(strengthenWedgeItem);
         
