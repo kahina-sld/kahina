@@ -158,7 +158,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         }
         
         //remove the defining clause for the block
-        satInstance.removeClause(blockDefClauses.get(blockID)); 
+        satInstance.removeClauseIndex(blockDefClauses.get(blockID)); 
         satInstance.announceChangedClauses();
         
         //remove entries for the replaced block from all the tables
@@ -171,7 +171,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     
     public int defineNewBlock(TreeSet<Integer> block)
     {
-        int blockID = satInstance.getNumClauses();
+        int blockID = satInstance.getSize();
         blockList.put(blockID, block);
         //this side of the implication is not needed
         /*numClauses += block.size();
@@ -183,9 +183,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
             addReverseIndexItem(literal, blockID);
             clauses.add(blockDefClause);
         }*/
-        satInstance.setNumClauses(blockID + 1);
-        int blockVar = satInstance.getNumVars() + 1;
-        satInstance.setNumVars(blockVar);
+        int blockVar = satInstance.getHighestVar() + 1;
         blockDefVar.put(blockID, blockVar);
         blockVarBlockID.put(blockVar, blockID);
         List<Integer> blockDefClause = new LinkedList<Integer>();

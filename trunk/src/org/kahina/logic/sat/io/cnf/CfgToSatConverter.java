@@ -32,7 +32,6 @@ public class CfgToSatConverter
             wordConstraint.add(varIndex.get(category + "[" + i + "," + (i+1) + "]"));
             sat.addClause(wordConstraint);
         }
-        sat.setNumClauses(sat.getSize());
         return sat;
     }
     
@@ -153,8 +152,6 @@ public class CfgToSatConverter
                 }
             }
         }
-        sat.setNumVars(varCounter - 1);
-        sat.setNumClauses(sat.getSize());
         return sat;
     }
     

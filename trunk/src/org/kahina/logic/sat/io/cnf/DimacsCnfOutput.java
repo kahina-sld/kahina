@@ -14,8 +14,8 @@ public class DimacsCnfOutput
         try
         {
             FileWriter out = new FileWriter(new File(fileName));
-            out.write("p cnf " + cnf.getNumVars() + " " + cnf.getNumClauses() + "\n");
-            for (int var = 1; var <= cnf.getNumVars(); var++)
+            out.write("p cnf " + cnf.getHighestVar() + " " + cnf.getSize() + "\n");
+            for (int var = 1; var <= cnf.getHighestVar(); var++)
             {
                 String symbol = cnf.getSymbolForLiteral(var);
                 if (symbol != null) out.write("c " + var + " " + symbol + "\n");
@@ -42,7 +42,7 @@ public class DimacsCnfOutput
         try
         {
             FileWriter out = new FileWriter(new File(fileName));
-            out.write("p cnf " + cnf.getNumVars() + " " + cnf.getNumClauses() + "\n");
+            out.write("p cnf " + cnf.getHighestVar() + " " + cnf.getSize() + "\n");
             for (int i = 0; i < cnf.getSize(); i++)
             {
                 for (Integer lit : cnf.getClause(i))
@@ -69,7 +69,7 @@ public class DimacsCnfOutput
         try
         {
             FileWriter out = new FileWriter(new File(fileName));
-            out.write("p cnf " + cnf.getNumVars() + " " + cnf.getNumClauses() + "\n");
+            out.write("p cnf " + cnf.getHighestVar() + " " + cnf.getSize() + "\n");
             for (int i = 0; i < cnf.getSize(); i++)
             {
                 for (Integer lit : cnf.getClause(i))
@@ -92,7 +92,7 @@ public class DimacsCnfOutput
         try
         {
             FileWriter out = new FileWriter(new File(fileName));
-            int[] occurrences = new int[cnf.getNumVars() + 1];
+            int[] occurrences = new int[cnf.getHighestVar() + 1];
             for (int i = 0; i < cnf.getSize(); i++)
             {
                 for (Integer var : cnf.getClause(i))

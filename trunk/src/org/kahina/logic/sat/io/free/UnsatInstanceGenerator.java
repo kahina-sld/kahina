@@ -24,14 +24,14 @@ public class UnsatInstanceGenerator
         File cnfFile = new File("tseitin.cnf");
         while (!provablyUnsatisfiable(cnfFile))
         {
-            System.err.println("FAILURE: generated instance of size (" + f.getSize() + "," + visitor.getCNF(topVar).getNumClauses() + ") is satisfiable!");
+            System.err.println("FAILURE: generated instance of size (" + f.getSize() + "," + visitor.getCNF(topVar).getSize() + ") is satisfiable!");
             VarName.resetNames();
             f = RandomFormulaGenerator.randomFormula(numVars, maxHeight, maxFan, complete);
             visitor = new TseitinTransformationVisitor();
             topVar = f.accept(visitor);
             DimacsCnfOutput.writeDimacsCnfFile("tseitin.cnf", visitor.getCNF(topVar));
         }
-        System.err.println("SUCCESS: generated instance of size (" + f.getSize() + "," + visitor.getCNF(topVar).getNumClauses() + ") is unsatisfiable!");
+        System.err.println("SUCCESS: generated instance of size (" + f.getSize() + "," + visitor.getCNF(topVar).getSize() + ") is unsatisfiable!");
         cnfFile.delete();
         return f;
     }

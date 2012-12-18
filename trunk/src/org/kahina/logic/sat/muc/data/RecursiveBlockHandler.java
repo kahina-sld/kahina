@@ -53,7 +53,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         
         TreeSet<Integer> topBlockSet = new TreeSet<Integer>();
         //the top block should include all the meta variables in the beginning
-        for (int i = 1; i <= satInstance.getNumVars(); i++)
+        for (int i = 1; i <= satInstance.getSize(); i++)
         {
             topBlockSet.add(-i);
         }
@@ -240,11 +240,9 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     
     public int defineNewBlock(TreeSet<Integer> block)
     {
-        int blockID = satInstance.getNumClauses();
+        int blockID = satInstance.getSize();
         blockList.put(blockID, block);
-        satInstance.setNumClauses(blockID + 1);
-        int blockVar = satInstance.getNumVars() + 1;
-        satInstance.setNumVars(blockVar);
+        int blockVar = satInstance.getHighestVar() + 1;
         blockDefVar.put(blockID, blockVar);
         blockVarBlockID.put(blockVar, blockID);
         List<Integer> blockDefClause = new LinkedList<Integer>();

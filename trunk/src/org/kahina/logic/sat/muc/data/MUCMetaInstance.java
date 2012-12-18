@@ -19,7 +19,7 @@ public class MUCMetaInstance extends CnfSatInstance
     public MUCMetaInstance(int numOrigClauses)
     {
         super();
-        setNumVars(numOrigClauses);
+        maxVarID = numOrigClauses;
         //default: a partition block handler
         this.blockHandler = new PartitionBlockHandler(this);
     }

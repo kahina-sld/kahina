@@ -57,7 +57,7 @@ public class MinUnsatCore
             {
                 GroupCnfSatInstance satInstance = GroupCnfSatInstance.parseDimacsGroupCnfFile(files.sourceFile.getAbsolutePath());
                 System.err.println("Starting Kahina for MinUnsatCore on group SAT instance at " + files.sourceFile.getAbsolutePath());
-                System.err.println("  Instance Size: (" + satInstance.getNumClauses() + "," + satInstance.getNumVariables() + "," + satInstance.getNumGroups() + ")");
+                System.err.println("  Instance Size: (" + satInstance.getSize() + "," + satInstance.getHighestVar() + "," + satInstance.getNumGroups() + ")");
                 MUCInstance kahinaInstance = new MUCInstance(MetaLearningMode.BLOCK_PARTITION, satInstance, stat, files);
                 bridge = kahinaInstance.startNewSession();
             }
@@ -65,7 +65,7 @@ public class MinUnsatCore
             {
                 CnfSatInstance satInstance = DimacsCnfParser.parseDimacsCnfFile(files.sourceFile.getAbsolutePath());
                 System.err.println("Starting Kahina for MinUnsatCore on SAT instance at " + files.sourceFile.getAbsolutePath());
-                System.err.println("  Instance Size: (" + satInstance.getNumClauses() + "," + satInstance.getNumVariables() + ")");
+                System.err.println("  Instance Size: (" + satInstance.getSize() + "," + satInstance.getHighestVar() + ")");
                 MUCInstance kahinaInstance = new MUCInstance(MetaLearningMode.BLOCK_PARTITION, satInstance, stat, files);
                 bridge = kahinaInstance.startNewSession();
             }

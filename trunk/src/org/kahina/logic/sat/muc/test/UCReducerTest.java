@@ -23,7 +23,7 @@ public class UCReducerTest
         {
             satInstance = DimacsCnfParser.parseDimacsCnfFile(args[0]);
             System.err.println("Starting Kahina for MinUnsatCore on SAT instance at " + args[0]);
-            System.err.println("  Instance Size: (" + satInstance.getNumClauses() + "," + satInstance.getNumVariables() + ")");
+            System.err.println("  Instance Size: (" + satInstance.getSize() + "," + satInstance.getHighestVar() + ")");
             
             stat = new MUCStatistics();
             stat.instanceName = args[0];
