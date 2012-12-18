@@ -210,7 +210,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     @Override
     public String getApplicationName()
     {
-        return "Kahina for QType";
+        return "Interactive MUS Extractor";
     }
     
     protected void processNewProject()

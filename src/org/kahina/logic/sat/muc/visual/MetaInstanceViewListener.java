@@ -70,5 +70,12 @@ public class MetaInstanceViewListener  extends MouseAdapter implements ActionLis
     public void actionPerformed(ActionEvent e)
     {
         String s = e.getActionCommand();
+        if (s.startsWith("strengthenWedge"))
+        {
+            int clauseIndex = Integer.parseInt(s.substring(15));
+            List<Integer> clause = new LinkedList<Integer>();
+            clause.addAll(kahina.getState().getMetaInstance().getClause(clauseIndex));
+            //TODO: start an expansion agent (needs to be implemented)
+        }
     }
 }
