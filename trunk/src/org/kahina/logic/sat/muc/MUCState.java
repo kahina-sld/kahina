@@ -63,6 +63,7 @@ public class MUCState extends KahinaState
         if (usesMetaLearning())
         {
             this.metaInstance = new MUCMetaInstance(satInstance.getSize());
+            this.metaInstance.setSubsumptionCheck(true);
         }
         if (kahina.getMetaLearningMode() == MetaLearningMode.NO_BLOCKS)
         {

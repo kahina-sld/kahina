@@ -42,6 +42,8 @@ public class CnfSatInstance extends KahinaSatInstance
     //literals -> clauses; important for efficient computations
     protected Map<Integer,List<Integer>> occurrenceMap = null;
     
+    private boolean subsumptionCheck = false;
+    
     //this tells KahinaSatInstanceListView whether it suffices to just append new clauses
     protected boolean needsRebuild = false;
     
@@ -74,26 +76,65 @@ public class CnfSatInstance extends KahinaSatInstance
         return copy;
     }
     
+    public void setSubsumptionCheck(boolean check)
+    {
+        if (check)
+        {
+            subsumptionCheck = true;
+            //TODO: removeSubsumedClauses();
+        }
+        else
+        {
+            subsumptionCheck = false;
+        }
+    }
+    
     public void addClause(List<Integer> clause)
     {
-        clauseStore.put(maxClauseID + 1, clause); 
-        maxClauseID++;
-        clauseIDs.add(maxClauseID);
-        reverseConversionTable.put(maxClauseID, clauseIDs.size() - 1);
         if (occurrenceMap != null)
         {
-            List<Integer> subsumedClausesIdcs = getSubsumedClauseIndices(clause);
-            if (subsumedClausesIdcs != null)
+            if (subsumptionCheck)
             {
-                int offset = 0;
-                for (int subsumedClauseIdx : subsumedClausesIdcs)
+                List<Integer> subsumedClausesIdcs = getSubsumedClauseIndices(clause);
+                if (subsumedClausesIdcs != null)
                 {
-                    removeClauseIndex(subsumedClauseIdx - offset);
-                    offset++;
+                    clauseStore.put(maxClauseID + 1, clause); 
+                    maxClauseID++;
+                    clauseIDs.add(maxClauseID);
+                    reverseConversionTable.put(maxClauseID, clauseIDs.size() - 1);
+                    int offset = 0;
+                    for (int subsumedClauseIdx : subsumedClausesIdcs)
+                    {
+                        removeClauseIndex(subsumedClauseIdx - offset);
+                        offset++;
+                    }
+                    for (int literal : clause)
+                    {
+                        List<Integer> occurrences = occurrenceMap.get(clause);
+                        if (occurrences == null)
+                        {
+                            occurrences = new LinkedList<Integer>();
+                            occurrenceMap.put(literal, occurrences);
+                        }
+                        occurrences.add(maxClauseID);
+                        if (literal < 0) literal = -literal;
+                        if (literal > maxVarID) maxVarID = literal;
+                    }
                 }
+                else
+                {
+                    //clause is subsumed by an existing clause, we do not add it
+                }
+            }
+            else
+            {
+                clauseStore.put(maxClauseID + 1, clause); 
+                maxClauseID++;
+                clauseIDs.add(maxClauseID);
+                reverseConversionTable.put(maxClauseID, clauseIDs.size() - 1);
                 for (int literal : clause)
                 {
-                    List<Integer> occurrences = occurrenceMap.get(clause);
+                    List<Integer> occurrences = occurrenceMap.get(literal);
                     if (occurrences == null)
                     {
                         occurrences = new LinkedList<Integer>();
@@ -102,14 +143,6 @@ public class CnfSatInstance extends KahinaSatInstance
                     occurrences.add(maxClauseID);
                     if (literal < 0) literal = -literal;
                     if (literal > maxVarID) maxVarID = literal;
-                }
-            }
-            else
-            {
-                for (int var : clause)
-                {
-                    if (var < 0) var = - var;
-                    if (var > maxVarID) maxVarID = var;
                 }
             }
         }
@@ -129,9 +162,25 @@ public class CnfSatInstance extends KahinaSatInstance
      * Removes the clause at the given index (not an internal ID!).
      * @param clauseID the index of the clause to be removed.
      */
-    public void removeClauseIndex(int clauseID)
+    public void removeClauseIndex(int clauseIndex)
     {
-        //TODO: implement this, updating all tables in a consistent way
+        //delete the information and table entries about the removed clause
+        int removedClauseID = clauseIDs.remove(clauseIndex);
+        List<Integer> removedClause = clauseStore.remove(removedClauseID);
+        reverseConversionTable.remove(removedClauseID);
+        if (occurrenceMap != null)
+        {
+            for (int lit : removedClause)
+            {
+                occurrenceMap.get(lit).remove(new Integer(removedClauseID));
+            }
+        }
+        //adapt the other entries in the index <-> ID table
+        for (int i = clauseIndex + 1; i <= clauseIDs.size(); i++)
+        {
+            reverseConversionTable.put(idxToId(i), i-1);
+        }
+        reverseConversionTable.remove(clauseIDs.size());
     }
     
     /**
