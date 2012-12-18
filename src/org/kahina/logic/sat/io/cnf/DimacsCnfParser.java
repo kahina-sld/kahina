@@ -47,7 +47,7 @@ public class DimacsCnfParser
             {
                 currentLine = in.nextLine();
                 lineID++;
-                System.err.println("line #" + lineID);
+                //System.err.println("line #" + lineID);
                 tokens = currentLine.split(" ");
                 if (tokens[0].equals("c"))
                 {
@@ -65,7 +65,7 @@ public class DimacsCnfParser
                 {
                     for (int i = 0; i < tokens.length; i++)
                     {
-                        System.err.println("  token #" + i + ": " + tokens[i]);
+                        //System.err.println("  token #" + i + ": " + tokens[i]);
                         Integer literal = Integer.parseInt(tokens[i]);
                         if (literal == 0)
                         {
