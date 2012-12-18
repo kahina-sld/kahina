@@ -62,7 +62,7 @@ public class MUCState extends KahinaState
         this.satInstance = satInstance;
         if (usesMetaLearning())
         {
-            this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
+            this.metaInstance = new MUCMetaInstance(satInstance.getSize());
         }
         if (kahina.getMetaLearningMode() == MetaLearningMode.NO_BLOCKS)
         {
@@ -326,7 +326,7 @@ public class MUCState extends KahinaState
         this.satInstance = satInstance;
         if (kahina.getMetaLearningMode() != MetaLearningMode.NO_META_LEARNING)
         {
-            this.metaInstance = new MUCMetaInstance(satInstance.getNumClauses());
+            this.metaInstance = new MUCMetaInstance(satInstance.getSize());
         }
         if (kahina.getMetaLearningMode() == MetaLearningMode.NO_BLOCKS)
         {

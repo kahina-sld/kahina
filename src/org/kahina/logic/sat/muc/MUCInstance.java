@@ -261,7 +261,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         
         satInstance = DimacsCnfParser.parseDimacsCnfFile(satFile.getAbsolutePath());
         System.err.println("Loading SAT instance at " + satFile.getAbsolutePath());
-        System.err.println("  Instance Size: (" + satInstance.getNumClauses() + "," + satInstance.getNumVariables() + ")");
+        System.err.println("  Instance Size: (" + satInstance.getSize() + "," + satInstance.getHighestVar() + ")");
         
         //TODO: allow the user to configure this filter
         if (ASP_CCG_FILTER)

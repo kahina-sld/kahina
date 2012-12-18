@@ -15,7 +15,7 @@ public class LeanKernelExtractor
         }
         System.err.print("Loading CNF file ... ");
         CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(args[0]);
-        System.err.println("done, instance has " + instance.getNumClauses() + " clauses and " + instance.getNumVariables() + " variables");
+        System.err.println("done, instance has " + instance.getSize() + " clauses and " + instance.getHighestVar() + " variables");
         instance.reduceToLeanKernel();
         DimacsCnfOutput.writeDimacsCnfFile(args[1], instance);
     }

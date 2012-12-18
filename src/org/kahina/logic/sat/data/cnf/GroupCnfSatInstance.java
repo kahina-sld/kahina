@@ -38,22 +38,22 @@ public class GroupCnfSatInstance extends CnfSatInstance
     @SuppressWarnings("unchecked")
     public void computeGroupOccurrenceMap()
     {
-        System.err.print("Generating group occurrence map for " + (getNumVars() * 2) + " literals ... ");
-        groupOccurrenceMap = (List<Integer>[]) new List[getNumVars() * 2];
-        for (int i = 0; i < getNumVars() * 2; i++)
+        System.err.print("Generating group occurrence map for " + (getHighestVar() * 2) + " literals ... ");
+        groupOccurrenceMap = (List<Integer>[]) new List[getHighestVar() * 2];
+        for (int i = 0; i < getHighestVar() * 2; i++)
         {
             groupOccurrenceMap[i] = new LinkedList<Integer>();
         }
         for (int g = 1; g <= numGroups; g++)
         {
-            List<Integer> clauseIds = groupToClauses[g-1];
-            for (int i : clauseIds)
+            List<Integer> clauseIdcs = groupToClauses[g-1];
+            for (int i : clauseIdcs)
             {
-                List<Integer> clause = clauses.get(i-1);
+                List<Integer> clause = clauseStore.get(idxToId(i-1));
                 for (int literal : clause)
                 {
                     int pos = literal;
-                    if (literal < 0) pos = getNumVars() + Math.abs(literal);
+                    if (literal < 0) pos = getHighestVar() + Math.abs(literal);
                     groupOccurrenceMap[pos-1].add(g);
                 }
             }
@@ -114,10 +114,10 @@ public class GroupCnfSatInstance extends CnfSatInstance
         int numEdges = 0;
         for (int i = 1; i <= numGroups; i++)
         {
-            List<Integer> clauseIDs = groupToClauses[i-1];
-            for (int c : clauseIDs)
+            List<Integer> clauseIdcs = groupToClauses[i-1];
+            for (int c : clauseIdcs)
             {
-                List<Integer> clause = clauses.get(c-1);
+                List<Integer> clause = clauseStore.get(idxToId(c-1));
                 for (int literal : clause)
                 {
                     int var = Math.abs(literal);
@@ -166,10 +166,10 @@ public class GroupCnfSatInstance extends CnfSatInstance
         int numEdges = 0;
         for (int i = 1; i <= numGroups; i++)
         {
-            List<Integer> clauseIDs = groupToClauses[i-1];
-            for (int c : clauseIDs)
+            List<Integer> clauseIdcs = groupToClauses[i-1];
+            for (int c : clauseIdcs)
             {
-                List<Integer> clause = clauses.get(c-1);
+                List<Integer> clause = clauseStore.get(idxToId(c-1));
                 for (int literal : clause)
                 {
                     for (int j : occurrenceMap.get(literal))
@@ -206,10 +206,10 @@ public class GroupCnfSatInstance extends CnfSatInstance
         int numEdges = 0;
         for (int i = 1; i <= numGroups; i++)
         {
-            List<Integer> clauseIDs = groupToClauses[i-1];
-            for (int c : clauseIDs)
+            List<Integer> clauseIdcs = groupToClauses[i-1];
+            for (int c : clauseIdcs)
             {
-                List<Integer> clause = clauses.get(c-1);
+                List<Integer> clause = clauseStore.get(idxToId(c-1));
                 for (int literal : clause)
                 {
                     for (int j : occurrenceMap.get(literal))
@@ -236,20 +236,20 @@ public class GroupCnfSatInstance extends CnfSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureGroupOccurrenceMapExists();
-        System.err.println("Generating varByClaGroup graph of " + getNumVars() + " variables:");
+        System.err.println("Generating varByClaGroup graph of " + getHighestVar() + " variables:");
         //generate variable vertices
-        for (int i = 1; i <= getNumVars(); i++)
+        for (int i = 1; i <= getHighestVar(); i++)
         {
             graph.addVertex(i, i + "");
         }
         //link variable vertices via clause edges
         int numEdges = 0;
-        for (int var1 = 1; var1 <= getNumVars(); var1++)
+        for (int var1 = 1; var1 <= getHighestVar(); var1++)
         {
             Set<Integer> groupsWithVar1 = new HashSet<Integer>();
             groupsWithVar1.addAll(groupOccurrenceMap[var1 - 1]);
-            groupsWithVar1.addAll(groupOccurrenceMap[getNumVars() + var1 - 1]);
-            for (int var2 = var1 + 1; var2 <= getNumVars(); var2++)
+            groupsWithVar1.addAll(groupOccurrenceMap[getHighestVar() + var1 - 1]);
+            for (int var2 = var1 + 1; var2 <= getHighestVar(); var2++)
             {
                 int found = 0;
                 for (int group : groupOccurrenceMap[var2 - 1])
@@ -262,7 +262,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                 }
                 if (found == 0)
                 {
-                    for (int group : groupOccurrenceMap[getNumVars() + var2 - 1])
+                    for (int group : groupOccurrenceMap[getHighestVar() + var2 - 1])
                     {
                         if (groupsWithVar1.contains(group))
                         {
@@ -290,23 +290,23 @@ public class GroupCnfSatInstance extends CnfSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureGroupOccurrenceMapExists();
-        System.err.println("Generating litByClaGroup graph of " + getNumVars() * 2 + " literals:");
+        System.err.println("Generating litByClaGroup graph of " + getHighestVar() * 2 + " literals:");
         //generate literal vertices
-        for (int i = 1; i <= getNumVars(); i++)
+        for (int i = 1; i <= getHighestVar(); i++)
         {
             graph.addVertex(i, i + "");
         }
-        for (int i = 1; i <= getNumVars(); i++)
+        for (int i = 1; i <= getHighestVar(); i++)
         {
-            graph.addVertex(getNumVars() + i, "-" + i);
+            graph.addVertex(getHighestVar() + i, "-" + i);
         }
         //link literal vertices via clause group edges
         int numEdges = 0;
-        for (int lit1 = 1; lit1 <= getNumVars() * 2; lit1++)
+        for (int lit1 = 1; lit1 <= getHighestVar() * 2; lit1++)
         {
             Set<Integer> groupsWithLit1 = new HashSet<Integer>();
             groupsWithLit1.addAll(groupOccurrenceMap[lit1 - 1]);
-            for (int lit2 = lit1 + 1; lit2 <= getNumVars() * 2; lit2++)
+            for (int lit2 = lit1 + 1; lit2 <= getHighestVar() * 2; lit2++)
             {
                 int found = 0;
                 for (int group : groupOccurrenceMap[lit2 - 1])
@@ -358,10 +358,8 @@ public class GroupCnfSatInstance extends CnfSatInstance
                 System.err.println("ERROR: Parsing a non-group CNF Dimacs file with the Dimacs group CNF parser!");
                 System.err.println("       Returning empty group SAT instance!");
             }
-            sat.setNumVars(Integer.parseInt(params[2]));
-            sat.setNumClauses(Integer.parseInt(params[3]));
             sat.numGroups = Integer.parseInt(params[4]);
-            sat.clauseToGroup = new int[sat.getNumClauses()];
+            sat.clauseToGroup = new int[(Integer.parseInt(params[3]))];
             sat.groupToClauses = (List<Integer>[]) new List[sat.numGroups];
             //read in clauses
             List<Integer> currentClause = new LinkedList<Integer>();
@@ -381,7 +379,7 @@ public class GroupCnfSatInstance extends CnfSatInstance
                     Integer literal = Integer.parseInt(in.next());
                     if (literal == 0)
                     {
-                        sat.clauses.add(currentClause);
+                        sat.addClause(currentClause);
                         sat.clauseToGroup[clauseID-1] = 0;
                         if (groupID != 0)
                         {

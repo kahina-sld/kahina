@@ -191,8 +191,6 @@ public class TseitinTransformationVisitor implements BooleanFormulaVisitor<Integ
         List<Integer> assertionClause = new LinkedList<Integer>();
         assertionClause.add(topVar);
         cnf.addClause(assertionClause);
-        cnf.setNumClauses(cnf.getSize());
-        cnf.setNumVars(VarName.freshName() - 1);
         cnf.announceChangedClauses();
         return cnf;
     }

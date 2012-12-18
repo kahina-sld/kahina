@@ -27,10 +27,12 @@ import org.kahina.logic.sat.io.minisat.MiniSAT;
 public class CnfSatInstance extends KahinaSatInstance
 {   
     int maxClauseID;
-    int maxVarID;
+    protected int maxVarID;
     
     //ID conversion table for purposes of indirection; determines the size
     protected List<Integer> clauseIDs;
+    //reverse ID conversion table
+    protected Map<Integer,Integer> reverseConversionTable;
     
     //makes the clause contents accessible by their converted IDs
     protected Map<Integer, List<Integer>> clauseStore;
@@ -45,24 +47,26 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public CnfSatInstance()
     {
-        maxClauseID = 0;
+        maxClauseID = -1;
         maxVarID = 0;
         clauseIDs = new LinkedList<Integer>();
+        reverseConversionTable = new HashMap<Integer,Integer>();
         clauseStore = new TreeMap<Integer, List<Integer>>();
-        occurrenceMap = new TreeMap<Integer,List<Integer>>();
+        occurrenceMap = new HashMap<Integer,List<Integer>>();
         dontCareClauses = new HashSet<Integer>();
     }
     
     public CnfSatInstance copy()
     {
         CnfSatInstance copy = new CnfSatInstance();
-        copy.setNumClauses(numClauses);
-        copy.setNumVars(numVars);
-        for (List<Integer> clause : clauses)
+        copy.maxClauseID = maxClauseID;
+        copy.maxVarID = maxVarID;
+        copy.clauseIDs.addAll(clauseIDs);
+        for (int clauseID : clauseStore.keySet())
         {
             List<Integer> clauseCopy = new LinkedList<Integer>();
-            clauseCopy.addAll(clause);
-            copy.clauses.add(clauseCopy);
+            clauseCopy.addAll(clauseStore.get(clauseID));
+            copy.clauseStore.put(clauseID,clauseCopy);
         }
         copy.needsUpdate = needsUpdate;
         copy.dontCareClauses.addAll(dontCareClauses);
@@ -72,15 +76,20 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public void addClause(List<Integer> clause)
     {
-        clauses.add(clause);
+        clauseStore.put(maxClauseID + 1, clause); 
+        maxClauseID++;
+        clauseIDs.add(maxClauseID);
+        reverseConversionTable.put(maxClauseID, clauseIDs.size() - 1);
         if (occurrenceMap != null)
         {
-            List<Integer> subsumedClauses = getSubsumedClauses(clause);
-            if (subsumedClauses != null)
+            List<Integer> subsumedClausesIdcs = getSubsumedClauseIndices(clause);
+            if (subsumedClausesIdcs != null)
             {
-                for (int subsumedClause : subsumedClauses)
+                int offset = 0;
+                for (int subsumedClauseIdx : subsumedClausesIdcs)
                 {
-                    //TODO: remove subsumed clauses; this requires a removal option!
+                    removeClauseIndex(subsumedClauseIdx - offset);
+                    offset++;
                 }
                 for (int literal : clause)
                 {
@@ -90,25 +99,49 @@ public class CnfSatInstance extends KahinaSatInstance
                         occurrences = new LinkedList<Integer>();
                         occurrenceMap.put(literal, occurrences);
                     }
-                    occurrences.add(clause.size() - 1);
+                    occurrences.add(maxClauseID);
+                    if (literal < 0) literal = -literal;
+                    if (literal > maxVarID) maxVarID = literal;
+                }
+            }
+            else
+            {
+                for (int var : clause)
+                {
+                    if (var < 0) var = - var;
+                    if (var > maxVarID) maxVarID = var;
                 }
             }
         }
     }
     
-    public void removeClause(int clauseID)
+    private int idToIdx(int clauseID)
     {
-        //TODO: implementing this directly would require updating all numbers in the occurrence map
+        return reverseConversionTable.get(clauseID);
+    }
+    
+    protected int idxToId(int clauseIndex)
+    {
+        return clauseIDs.get(clauseIndex);
+    }
+    
+    /**
+     * Removes the clause at the given index (not an internal ID!).
+     * @param clauseID the index of the clause to be removed.
+     */
+    public void removeClauseIndex(int clauseID)
+    {
+        //TODO: implement this, updating all tables in a consistent way
     }
     
     /**
      * Finds the clauses subsumed by some clause.
-     * @param clause
-     * @return null if the new clause is subsumed, a list of subsumed clauses otherwise
+     * @param clause the clause to check for subsumption against the clauses in this CNF
+     * @return null if the new clause is subsumed, a list of indices of subsumed clauses otherwise
      */
-    public List<Integer> getSubsumedClauses(List<Integer> clause)
+    public List<Integer> getSubsumedClauseIndices(List<Integer> clause)
     {
-        int[] overlapSize = new int[clauses.size()];
+        int[] overlapSize = new int[clauseIDs.size()];
         for (int literal : clause)
         {
             List<Integer> occurrences = occurrenceMap.get(literal);
@@ -116,15 +149,15 @@ public class CnfSatInstance extends KahinaSatInstance
             {
                 for (int clauseID : occurrences)
                 {
-                    overlapSize[clauseID]++;
+                    overlapSize[idToIdx(clauseID)]++;
                 }
             }
         }
         List<Integer> subsumedClauses = new LinkedList<Integer>();
-        for (int i = 0; i < clauses.size(); i++)
+        for (int i = 0; i < clauseIDs.size(); i++)
         {
             if (overlapSize[i] == clause.size()) return null;
-            else if (overlapSize[i] == clauses.get(i).size())
+            else if (overlapSize[i] == clauseStore.get(idxToId(i)).size())
             {
                 subsumedClauses.add(i);
             }
@@ -134,7 +167,7 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public int getSize()
     {
-        return clauses.size();
+        return clauseIDs.size();
     }
     
     //generate lit -> clause map for lookup
@@ -143,17 +176,18 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         //System.err.print("Generating occurrence map for " + (getNumVars() * 2) + " literals ... ");
         occurrenceMap = new TreeMap<Integer,List<Integer>>();
-        for (int i = 1; i <= getNumVars(); i++)
+        for (int i = 1; i <= maxVarID; i++)
         {
             occurrenceMap.put(i, new LinkedList<Integer>());
             occurrenceMap.put(-i, new LinkedList<Integer>());
         }
-        for (int i = 0; i < clauses.size(); i++)
+        for (int i = 0; i < getSize(); i++)
         {
-            List<Integer> clause = clauses.get(i);
+            int clauseID = idxToId(i);
+            List<Integer> clause = clauseStore.get(clauseID);
             for (int literal : clause)
             {
-                occurrenceMap.get(literal).add(i);
+                occurrenceMap.get(literal).add(clauseID);
             }
         }
     }
@@ -172,50 +206,46 @@ public class CnfSatInstance extends KahinaSatInstance
         }
     }
     
-    public int getNumClauses()
+    public boolean isDontCareClause(int clauseIndex)
     {
-        return numClauses;
-    }
-    
-    public int getNumVariables()
-    {
-        return getNumVars();
-    }
-    
-    public boolean isDontCareClause(int clauseID)
-    {
-        return dontCareClauses.contains(clauseID);
+        return dontCareClauses.contains(clauseIndex);
     }
     
     public void applyDontCareFilter(ClauseFilter filter)
     {
         dontCareClauses.clear();
-        for (int clauseID = 0; clauseID < clauses.size(); clauseID++)
+        for (int clauseIdx = 0; clauseIdx < getSize(); clauseIdx++)
         {
-            if (filter.acceptsClause(clauseID))
+            if (filter.acceptsClause(clauseIdx))
             {
-                dontCareClauses.add(clauseID);
+                dontCareClauses.add(clauseIdx);
             }
         }
-        System.err.println("don't-care filter selects " + dontCareClauses.size() + "/" + clauses.size() + " clauses");
+        System.err.println("don't-care filter selects " + dontCareClauses.size() + "/" + getSize() + " clauses");
     }
     
-    public List<Integer> getClause(int clauseID)
+    public List<Integer> getClause(int clauseIndex)
     {
-        return clauses.get(clauseID);
+        return clauseStore.get(idxToId(clauseIndex));
     }
     
-    public CnfSatInstance selectClauses(Collection<Integer> clauseIDs)
+    /**
+     * Extracts a subinstance of the this instance defined by clause indices.
+     * The clauses are not copied, but pointers to clauses are shared, 
+     * i.e. modifying clauses in the subinstance will corrupt this instance!
+     * For a safely modifiable version, use copy() on the result.
+     * @param clauseIndices a list of 1-based clause indices in this instance
+     * @return a new sat instance containing the clauses at the selected indices
+     */
+    public CnfSatInstance selectClauses(Collection<Integer> clauseIndices)
     {
         CnfSatInstance subInstance = new CnfSatInstance();
-        for (int clauseID: clauseIDs)
+        for (int clauseIdx: clauseIndices)
         {
             //TODO: think about risks of structure reuse!
-            subInstance.addClause(clauses.get(clauseID-1));
+            subInstance.addClause(clauseStore.get(idxToId(clauseIdx)));
             subInstance.symbolTable = symbolTable;
         }
-        subInstance.setNumClauses(subInstance.getSize());
-        subInstance.setNumVars(subInstance.searchHighestVariable());
         return subInstance;
     }
     
@@ -229,13 +259,11 @@ public class CnfSatInstance extends KahinaSatInstance
             partialModel.add(literal);
         }
         List<Integer> derivedUnits = new LinkedList<Integer>();
-        //we need the occurrence map; TODO: update this map dynamically
-        computeOccurrenceMap();
         //propagation: initialize counters for remaining clause size
-        int[] clauseSize = new int[clauses.size()];
-        for (int i = 0; i < clauses.size(); i++)
+        int[] clauseSize = new int[getSize()];
+        for (int i = 0; i < clauseSize.length; i++)
         {
-            List<Integer> clause = clauses.get(i);
+            List<Integer> clause = clauseStore.get(idxToId(i));
             clauseSize[i] = clause.size();
             if (clause.size() == 1)
             {
@@ -244,57 +272,57 @@ public class CnfSatInstance extends KahinaSatInstance
                 derivedUnits.add(clause.get(0));
             }
         }
-        //propagation: initialize list of fulfilled clauses
-        Set<Integer> fulfilledClauses = new HashSet<Integer>();
+        //propagation: initialize set of fulfilledClauses
+        Set<Integer> fulfilledClauseIDs = new HashSet<Integer>();
         while (toPropagate.size() > 0)
         {
             int propLit = toPropagate.remove(0);
             if (VERBOSE) System.err.println("  Propagating literal: " + propLit);
             //any clause with the propagated literal is fulfilled, can be ignored
-            if (VERBOSE) System.err.println("    literal occurring in: " + getOccurrences(propLit));
-            for (int clauseID : getOccurrences(propLit))
+            if (VERBOSE) System.err.println("    literal occurring in: " + getOccurrenceIDs(propLit));
+            for (int clauseID : getOccurrenceIDs(propLit))
             {
-                if (!fulfilledClauses.contains(clauseID))
+                if (!fulfilledClauseIDs.contains(clauseID))
                 {
                     if (VERBOSE) System.err.println("      fulfilled clause: " + clauseID);
-                    fulfilledClauses.add(clauseID);
+                    fulfilledClauseIDs.add(clauseID);
                     //OPTIONAL EXTENSION: detect and process pure literals 
                     //  DISADVANTAGE: no clean propagation any more!
                     //for each literal in the clause, was this the last instance?
-                    for (int literal : clauses.get(clauseID))
+                    for (int literal : clauseStore.get(clauseID))
                     {
                         boolean clauseForLitRemains = false;
-                        for (int litClauseID : getOccurrences(literal))
+                        for (int litClauseID : getOccurrenceIDs(literal))
                         {
-                            if (!fulfilledClauses.contains(litClauseID))
+                            if (!fulfilledClauseIDs.contains(litClauseID))
                             {
                                 clauseForLitRemains = true;
                                 break;
                             }
                         }
                         //if so, any clause with the complementary literal can be ignored
-                        //TODO: this should be done recursively, up to fixpoint!
+                        //TODO: this would need to be done recursively up to fixpoint!
                         if (!clauseForLitRemains)
                         {
-                            for (int cplLitClauseID : getOccurrences(-literal))
+                            for (int cplLitClauseID : getOccurrenceIDs(-literal))
                             {
-                                fulfilledClauses.add(cplLitClauseID);
+                                fulfilledClauseIDs.add(cplLitClauseID);
                             }
                         }
                     }
                 }
             }
             //clauses with complementary literals are reduced
-            if (VERBOSE) System.err.println("    complement occurring in: " + getOccurrences(-propLit));
-            for (int clauseID : getOccurrences(-propLit))
+            if (VERBOSE) System.err.println("    complement occurring in: " + getOccurrenceIDs(-propLit));
+            for (int clauseID : getOccurrenceIDs(-propLit))
             {
-                clauseSize[clauseID]--;
+                clauseSize[idToIdx(clauseID)]--;
                 //the clause was reduced to a unit clause!
-                if (clauseSize[clauseID] == 1)
+                if (clauseSize[idToIdx(clauseID)] == 1)
                 {
                     //determine which unit is left
                     int newUnit = 0;
-                    for (int literal : clauses.get(clauseID))
+                    for (int literal : clauseStore.get(clauseID))
                     {
                         if (!partialModel.contains(-literal))
                         {
@@ -311,13 +339,13 @@ public class CnfSatInstance extends KahinaSatInstance
             }
             if (VERBOSE) System.err.println("    clause sizes: " + clauseSize);
             if (VERBOSE) System.err.println("    #toPropagate: " + toPropagate.size());
-            if (VERBOSE) System.err.println("    #fulfilled:   " + fulfilledClauses.size());
+            if (VERBOSE) System.err.println("    #fulfilled:   " + fulfilledClauseIDs.size());
         }
         if (VERBOSE) System.err.println("  Output: " + derivedUnits);
         return derivedUnits;
     }
     
-    private List<Integer> getOccurrences(int literal)
+    private List<Integer> getOccurrenceIDs(int literal)
     {
         List<Integer> occurrences = occurrenceMap.get(literal);
         if (occurrences == null)
@@ -331,17 +359,17 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating claByVar graph of " + getNumClauses() + " clauses:");
+        System.err.println("Generating claByVar graph of " + getSize() + " clauses:");
         //generate clause vertices
-        for (int i = 1; i <= clauses.size(); i++)
+        for (int i = 1; i <= getSize(); i++)
         {
             graph.addVertex(i, i + "");
         }
         //link clause vertices via variable edges
         int numEdges = 0;
-        for (int i = 1; i <= clauses.size(); i++)
+        for (int i = 1; i <= getSize(); i++)
         {
-            List<Integer> clause = clauses.get(i-1);
+            List<Integer> clause = clauseStore.get(idxToId(i-1));
             for (int literal : clause)
             {
                 int var = Math.abs(literal);
@@ -379,17 +407,17 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating claByLit graph of " + getNumClauses() + " clauses:");
+        System.err.println("Generating claByLit graph of " + getSize() + " clauses:");
         //generate clause vertices
-        for (int i = 1; i <= clauses.size(); i++)
+        for (int i = 1; i <= getSize(); i++)
         {
             graph.addVertex(i, i + "");
         }
         //link clause vertices via variable edges
         int numEdges = 0;
-        for (int i = 1; i <= clauses.size(); i++)
+        for (int i = 1; i <= getSize(); i++)
         {
-            List<Integer> clause = clauses.get(i-1);
+            List<Integer> clause = clauseStore.get(idxToId(i-1));
             for (int literal : clause)
             {
                 for (int j : occurrenceMap.get(literal))
@@ -415,17 +443,17 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating claByCompLit graph of " + getNumClauses() + " clauses:");
+        System.err.println("Generating claByCompLit graph of " + getSize() + " clauses:");
         //generate clause vertices
-        for (int i = 1; i <= clauses.size(); i++)
+        for (int i = 1; i <= getSize(); i++)
         {
             graph.addVertex(i, i + "");
         }
         //link clause vertices via variable edges
         int numEdges = 0;
-        for (int i = 1; i <= clauses.size(); i++)
+        for (int i = 1; i <= getSize(); i++)
         {
-            List<Integer> clause = clauses.get(i-1);
+            List<Integer> clause = clauseStore.get(idxToId(i-1));
             for (int literal : clause)
             {
                 for (int j : occurrenceMap.get(literal))
@@ -451,20 +479,20 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating varByCla graph of " + getNumVars() + " variables:");
+        System.err.println("Generating varByCla graph of " + maxVarID + " variables:");
         //generate variable vertices
-        for (int i = 1; i <= getNumVars(); i++)
+        for (int i = 1; i <= maxVarID; i++)
         {
             graph.addVertex(i, i + "");
         }
         //link variable vertices via clause edges
         int numEdges = 0;
-        for (int var1 = 1; var1 <= getNumVars(); var1++)
+        for (int var1 = 1; var1 <= maxVarID; var1++)
         {
             Set<Integer> clausesWithVar1 = new HashSet<Integer>();
             clausesWithVar1.addAll(occurrenceMap.get(var1));
             clausesWithVar1.addAll(occurrenceMap.get(-var1));
-            for (int var2 = var1 + 1; var2 <= getNumVars(); var2++)
+            for (int var2 = var1 + 1; var2 <= maxVarID; var2++)
             {
                 int found = 0;
                 for (int clause : occurrenceMap.get(var2))
@@ -505,24 +533,24 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating litByCla graph of " + getNumVars() * 2 + " literals:");
+        System.err.println("Generating litByCla graph of " + maxVarID * 2 + " literals:");
         //generate literal vertices
-        for (int i = 1; i <= getNumVars(); i++)
+        for (int i = 1; i <= maxVarID; i++)
         {
             graph.addVertex(i, i + "");
         }
-        for (int i = 1; i <= getNumVars(); i++)
+        for (int i = 1; i <= maxVarID; i++)
         {
-            graph.addVertex(getNumVars() + i, "-" + i);
+            graph.addVertex(maxVarID + i, "-" + i);
         }
         //link literal vertices via clause edges
         int numEdges = 0;
-        for (int lit1 = -getNumVars(); lit1 <= getNumVars(); lit1++)
+        for (int lit1 = -maxVarID; lit1 <= maxVarID; lit1++)
         {
             if (lit1 == 0) continue;
             Set<Integer> clausesWithLit1 = new HashSet<Integer>();
             clausesWithLit1.addAll(occurrenceMap.get(lit1));
-            for (int lit2 = lit1 + 1; lit2 <= getNumVars(); lit2++)
+            for (int lit2 = lit1 + 1; lit2 <= maxVarID; lit2++)
             {
                 if (lit2 == 0) continue;
                 int found = 0;
@@ -549,30 +577,16 @@ public class CnfSatInstance extends KahinaSatInstance
         return graph;
     }
 
-    public int getNumVars()
+    public int getHighestVar()
     {
         return maxVarID;
     }
     
-    public int searchHighestVariable()
-    {
-        int highestVar = 0;
-        for (List<Integer> clause : clauses)
-        {
-            for (int var : clause)
-            {
-                if (var < 0) var = - var;
-                if (var > highestVar) highestVar = var;
-            }
-        }
-        return highestVar;
-    }
-    
     public void deleteVariablesDestructively(Set<Integer> removedVars)
     {
-        for (int i = 0; i < numClauses; i++)
+        for (int i = 0; i < getSize(); i++)
         {
-            List<Integer> clause = clauses.get(i);
+            List<Integer> clause = clauseStore.get(idxToId(i));
             for (int j = 0; j < clause.size(); j++)
             {
                 int var = clause.get(j);
@@ -585,8 +599,7 @@ public class CnfSatInstance extends KahinaSatInstance
             }
             if (clause.size() == 0)
             {
-                clauses.remove(i);
-                numClauses--;
+                removeClauseIndex(i);
                 i--;
             }
         }
@@ -596,9 +609,9 @@ public class CnfSatInstance extends KahinaSatInstance
     public void applyAssignmentDestructively(PartialAssignment assignment)
     {
         System.err.print("applyAssignmentDestructively() ... ");
-        for (int i = 0; i < numClauses; i++)
+        for (int i = 0; i < getSize(); i++)
         {
-            List<Integer> clause = clauses.get(i);
+            List<Integer> clause = clauseStore.get(idxToId(i));
             for (int j = 0; j < clause.size(); j++)
             {
                 int var = clause.get(j);
@@ -634,8 +647,7 @@ public class CnfSatInstance extends KahinaSatInstance
             }
             if (clause.size() == 0)
             {
-                clauses.remove(i);
-                numClauses--;
+                removeClauseIndex(i);
                 i--;
             }
         }
@@ -682,8 +694,8 @@ public class CnfSatInstance extends KahinaSatInstance
                     }
                     System.err.print("deleting " + removedVars.size() + " resolution variables destructively ... ");
                     this.deleteVariablesDestructively(resolutionVariables);
-                    System.err.println("done, clauses left: " + numClauses);
-                    if (this.clauses.size() == 0)
+                    System.err.println("done, clauses left: " + getSize());
+                    if (getSize() == 0)
                     {
                         System.err.println("Found the trivial autarky, so the input clause set was lean!");
                         return new PartialAssignment();
@@ -694,7 +706,7 @@ public class CnfSatInstance extends KahinaSatInstance
                     {
                         System.err.print("deleting " + unitClashVars.size() + " clashing units destructively ... ");
                         this.deleteVariablesDestructively(unitClashVars);
-                        System.err.println("done, clauses left: " + numClauses);
+                        System.err.println("done, clauses left: " + getSize());
                         removedVars.addAll(unitClashVars);
                         unitClashVars = determineUnitClashVars();
                     }
@@ -725,7 +737,7 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         Set<Integer> units = new HashSet<Integer>();
         Set<Integer> clashVars = new HashSet<Integer>();
-        for (List<Integer> clause : clauses)
+        for (List<Integer> clause : clauseStore.values())
         {
             if (clause.size() == 1)
             {
@@ -750,14 +762,14 @@ public class CnfSatInstance extends KahinaSatInstance
         return clashVars;
     }
     
-    public Map<String,Integer> generateClauseToIDMap()
+    public Map<String,Integer> generateClauseToIndexMap()
     {
         Map<String,Integer> clauseToIDMap = new HashMap<String,Integer>();
         StringBuilder clauseRepresentation;
-        for (int i = 0; i < clauses.size(); i++)
+        for (int i = 0; i < getSize(); i++)
         {
             clauseRepresentation = new StringBuilder();
-            for (int lit : clauses.get(i))
+            for (int lit : clauseStore.get(idxToId(i)))
             {
                 clauseRepresentation.append(lit + ".");
             }

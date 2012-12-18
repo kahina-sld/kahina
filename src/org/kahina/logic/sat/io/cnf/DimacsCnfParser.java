@@ -37,16 +37,17 @@ public class DimacsCnfParser
                 System.err.println("ERROR: Parsing a non-CNF Dimacs file with the Dimacs CNF parser!");
                 System.err.println("       Returning empty SAT instance!");
             }
-            sat.setNumVars(Integer.parseInt(params[2]));
-            sat.setNumClauses(Integer.parseInt(params[3]));
             
             String currentLine;
             String[] tokens;
             List<Integer> currentClause = new LinkedList<Integer>();
             //read in clauses and comment lines which encode symbol definitions
+            int lineID = 0;
             while (in.hasNext())
             {
                 currentLine = in.nextLine();
+                lineID++;
+                System.err.println("line #" + lineID);
                 tokens = currentLine.split(" ");
                 if (tokens[0].equals("c"))
                 {
@@ -64,6 +65,7 @@ public class DimacsCnfParser
                 {
                     for (int i = 0; i < tokens.length; i++)
                     {
+                        System.err.println("  token #" + i + ": " + tokens[i]);
                         Integer literal = Integer.parseInt(tokens[i]);
                         if (literal == 0)
                         {
