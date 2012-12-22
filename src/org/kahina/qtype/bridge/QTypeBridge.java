@@ -80,6 +80,12 @@ public class QTypeBridge extends SICStusPrologBridge
 		}
 		else if (description.startsWith("lc_complete(") && description.endsWith(")"))
         {   
+	        //move up in the edge stack
+            int ruleEdge = popEdge();
+		    //the topmost rule edge is complete, we can cut its length to the current position
+            state.getChart().setEdgeStatus(ruleEdge, 0);
+		    state.getChart().setRightBoundForEdge(ruleEdge, edgeToCurrentPosition.get(ruleEdge));
+
             //each lc_complete node opens a new context for rule nodes
             lastRuleNode = -1;
         }
@@ -98,7 +104,10 @@ public class QTypeBridge extends SICStusPrologBridge
 	        {
 	            int motherEdge = edgeStack.get(0);
 	            state.getChart().addEdgeDependency(motherEdge, edgeID);
-	            setPos(edgeID, getPos(motherEdge));
+	            state.getChart().setLeftBoundForEdge(edgeID, getPos(motherEdge));
+	            state.getChart().setRightBoundForEdge(edgeID, getPos(motherEdge) + 1);
+	            setPos(edgeID, getPos(motherEdge) + 1);
+	            pushEdge(edgeID);
 	        }
 	        else
 	        {
@@ -213,12 +222,13 @@ public class QTypeBridge extends SICStusPrologBridge
 		        currentPosition = 0;
 		    }
 		}
-		//lc_complete was successful, we move up in the edge stack again
+		//lc was successful, we move up in the edge stack again
 		else if (newDescription.startsWith("lc("))
 		{
 		    if (edgeStack.size() > 0)
 		    {
 		        int childEdge = popEdge();
+		        state.getChart().setRightBoundForEdge(childEdge, getPos(childEdge));
 		        int motherEdge = edgeStack.get(0);
 		        //the next item in lc_list will be tried, we can move the pos accordingly
 		        setPos(motherEdge, getPos(childEdge));
@@ -257,8 +267,8 @@ public class QTypeBridge extends SICStusPrologBridge
                 System.err.println("WARNING: unify exited on an empty edge stack!");
             }
         }
-	      //unify was successful, we move up in the edge stack again
-        else if (newDescription.startsWith("lc_list([],[],"))
+	    //unify was successful, we move up in the edge stack again
+        /*else if (newDescription.startsWith("lc_list([],[],"))
         {
             if (edgeStack.size() > 0)
             {
@@ -272,7 +282,7 @@ public class QTypeBridge extends SICStusPrologBridge
             {
                 System.err.println("WARNING: unify exited on an empty edge stack!");
             }
-        }
+        }*/
 		//successful unification in a rule context determines the success of the rule
         /*else if (newDescription.startsWith("unify("))
         {
