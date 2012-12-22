@@ -28,7 +28,7 @@ import org.kahina.core.visual.KahinaView;
 
 public class KahinaRecursiveChartView  extends KahinaChartView
 {
-    private static final boolean VERBOSE = true;
+    private static final boolean VERBOSE = false;
     
     //hack to allow precalculations from outside any drawing method
     private Graphics2D g;
@@ -384,11 +384,14 @@ public class KahinaRecursiveChartView  extends KahinaChartView
                     int daughterLeftBound = model.getLeftBoundForEdge(daughter);
                     if (daughterLeftBound == leftBound)
                     {
+                        if (VERBOSE) System.err.println("  edgeX(" + daughter + ") = " + config.getZoomLevel() + " (equal lBounds)");
                         edgeX.put(daughter, config.getZoomLevel());
                     }
                     else
                     {
                         int x = getSegmentOffset(daughterLeftBound) - getSegmentOffset(leftBound);
+                        if (VERBOSE) System.err.println("  edgeX(" + daughter + ") = " + getSegmentOffset(daughterLeftBound) 
+                                + " - " + getSegmentOffset(leftBound) + " - " + recursionOffsetLeft.get(edgeID) + " * " + config.getZoomLevel());
                         edgeX.put(daughter, x - recursionOffsetLeft.get(edgeID) * config.getZoomLevel());
                     }
                     //straightforward use of segmentOffsets to determine all the coordinates
