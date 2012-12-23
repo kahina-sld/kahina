@@ -45,6 +45,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	private List<Integer> edgeStack;
 	Map<Integer,Integer> edgeToCurrentPosition;
 	int lastRuleNode = -1;
+	private int lastSpanEdge = -1;
 
 	public QTypeBridge(final QTypeDebuggerInstance kahina)
 	{
@@ -82,10 +83,10 @@ public class QTypeBridge extends SICStusPrologBridge
         {   
 	        //move up in the edge stack
             int ruleEdge = popEdge();
+            setLastSpanEdge(ruleEdge);
 		    //the topmost rule edge is complete, we can cut its length to the current position
             state.getChart().setEdgeStatus(ruleEdge, 0);
 		    state.getChart().setRightBoundForEdge(ruleEdge, edgeToCurrentPosition.get(ruleEdge));
-
             //each lc_complete node opens a new context for rule nodes
             lastRuleNode = -1;
         }
@@ -130,8 +131,10 @@ public class QTypeBridge extends SICStusPrologBridge
             {
                 int motherEdge = edgeStack.get(0);
                 int motherPos = getPos(motherEdge);
-                //TODO: correctly derive the edge of this length
-                int edgeID = state.getChart().addEdge(motherPos, motherPos + 1, "unify", 2);
+                //the category we unify with is the one associated with the last span edge
+                int leftBound = state.getChart().getLeftBoundForEdge(getLastSpanEdge());
+                int rightBound = state.getChart().getRightBoundForEdge(getLastSpanEdge());
+                int edgeID = state.getChart().addEdge(leftBound, rightBound, "unify", 2);
                 state.linkEdgeToNode(edgeID, currentID);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
                 setPos(edgeID, motherPos);
@@ -591,5 +594,16 @@ public class QTypeBridge extends SICStusPrologBridge
     {
         System.err.println("  setting pos of edge #" + edgeID + " to " + pos);
         edgeToCurrentPosition.put(edgeID, pos);
+    }
+
+    private void setLastSpanEdge(int lastSpanEdge)
+    {
+        System.err.println("  setting lastSpanEdge to " + lastSpanEdge);
+        this.lastSpanEdge = lastSpanEdge;
+    }
+
+    private int getLastSpanEdge()
+    {
+        return lastSpanEdge;
     }
 }
