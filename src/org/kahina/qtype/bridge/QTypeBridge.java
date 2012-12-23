@@ -130,6 +130,7 @@ public class QTypeBridge extends SICStusPrologBridge
             {
                 int motherEdge = edgeStack.get(0);
                 int motherPos = getPos(motherEdge);
+                //TODO: correctly derive the edge of this length
                 int edgeID = state.getChart().addEdge(motherPos, motherPos + 1, "unify", 2);
                 state.linkEdgeToNode(edgeID, currentID);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
@@ -238,8 +239,8 @@ public class QTypeBridge extends SICStusPrologBridge
 		        System.err.println("WARNING: lc exited on an empty edge stack!");
 		    }
 		}
-		//move the position of the mother after a successful lex edge
-        /*else if (newDescription.startsWith("db_word("))
+		//the right border position of a successful rule edge is transferred to the calling edge
+        else if (newDescription.startsWith("db_rule("))
         {
             if (edgeStack.size() > 0)
             {
@@ -252,7 +253,7 @@ public class QTypeBridge extends SICStusPrologBridge
             {
                 System.err.println("WARNING: db_word exited on an empty edge stack!");
             }
-        }*/
+        }
 		//unify was successful, we move up in the edge stack again
         else if (newDescription.startsWith("unify("))
         {
@@ -325,7 +326,11 @@ public class QTypeBridge extends SICStusPrologBridge
             state.getChart().setEdgeStatus(ruleEdge, 1);
             if (edgeStack.size() > 0)
             {
-                popEdge();
+                int unifyEdge = popEdge();
+                //TODO: this should be equal to the rule edge, systematization needed
+                int motherEdge = edgeStack.get(0);
+                setPos(unifyEdge, state.getChart().getRightBoundForEdge(unifyEdge));
+                state.getChart().setRightBoundForEdge(motherEdge,getPos(unifyEdge));
             }
             else
             {
