@@ -198,8 +198,22 @@ public class QTypeBridge extends SICStusPrologBridge
             }
             else
             {
-                //a freely dangling rule edge, this should not happen
-                System.err.println("WARNING: found a rule edge outside of any expected context");
+                //a freely dangling rule edge, this happens only during final backtracking
+                //we determine the mother edge and move it up to the stack
+                int motherEdgeStep = stepID;
+                while (state.getEdgeForNode(motherEdgeStep) == -1)
+                {
+                    motherEdgeStep = state.getStepTree().getParent(motherEdgeStep);
+                }
+                System.err.println("  motherEdgeStep = " + motherEdgeStep);
+                int motherEdge = state.getEdgeForNode(motherEdgeStep);
+                int startPos = getPos(motherEdge);
+                int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), "rule", 2);
+                setPos(edgeID, startPos);
+                state.getChart().addEdgeDependency(motherEdge, edgeID);
+                state.linkEdgeToNode(edgeID, currentID);
+                pushEdge(edgeID);
+                lastRuleNode = currentID;
             }
 	    }
 	}
