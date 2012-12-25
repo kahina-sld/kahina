@@ -14,7 +14,7 @@ public class KahinaMemChart extends KahinaChart
 	 */
 	private static final long serialVersionUID = 8981755950162448512L;
 
-	private static final boolean verbose = true;
+	private static final boolean VERBOSE = true;
 	
     //the chart is divided up into cells (vertical segments) that the edges can range over
     //leftmost: leftBound, rightmost: rightBound
@@ -62,9 +62,9 @@ public class KahinaMemChart extends KahinaChart
         setRightBoundForEdge(id, right);
         setEdgeStatus(id, status);
         setEdgeCaption(id, caption);
-        if (verbose)
+        if (VERBOSE)
         {
-            System.err.println(id + " = KahinaChart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
+            System.err.println("  " + id + " = chart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
         }
         return id;
     }
@@ -77,9 +77,9 @@ public class KahinaMemChart extends KahinaChart
         setRightBoundForEdge(id, right);
         setEdgeStatus(id, status);
         setEdgeCaption(id, caption);
-        if (verbose)
+        if (VERBOSE)
         {
-            System.err.println(id + " = KahinaChart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
+            System.err.println("  " + id + " = KahinaChart.addEdge(" + left + "," + right + "," + caption + "," + status + ")");
         }
     }
     
@@ -178,9 +178,9 @@ public class KahinaMemChart extends KahinaChart
     @Override
 	public void setRightBoundForEdge(int edgeID, int rightBound)
     {
-    	if (verbose)
+    	if (VERBOSE)
     	{
-    		System.err.println(this + ".setRightBoundForEdge(" + edgeID + ", " + rightBound + ")");
+    		System.err.println("  chart.setRightBoundForEdge(" + edgeID + ", " + rightBound + ")");
     	}
         rightBounds.put(edgeID, rightBound);
     }
@@ -270,9 +270,9 @@ public class KahinaMemChart extends KahinaChart
     @Override
 	public void addEdgeDependency(int motherID, int daughterID)
     {
-    	if (verbose)
+    	if (VERBOSE)
     	{
-    		System.err.println(this + ".addEdgeDependency(" + motherID + ", " + daughterID + ")");
+    		System.err.println("  chart.addEdgeDependency(" + motherID + ", " + daughterID + ")");
     	}
         TreeSet<Integer> daughters = daughterEdges.get(motherID);
         if (daughters == null)
@@ -299,13 +299,13 @@ public class KahinaMemChart extends KahinaChart
     @Override
 	public Set<Integer> getMotherEdgesForEdge(int daughterID)
     {
-    	if (verbose)
+    	if (VERBOSE)
     	{
     		//System.err.print(this + ".getMotherEdgesForEdge(" + daughterID + ")=");
     	}
         Set<Integer> mothers = motherEdges.get(daughterID);
         if (mothers == null) mothers = new HashSet<Integer>();
-        if (verbose)
+        if (VERBOSE)
         {
         	//System.err.println(mothers);
         }
@@ -315,13 +315,13 @@ public class KahinaMemChart extends KahinaChart
     @Override
 	public Set<Integer> getDaughterEdgesForEdge(int motherID)
     {
-    	if (verbose)
+    	if (VERBOSE)
     	{
     		//System.err.print(this + ".getDaughterEdgesForEdge(" + motherID + ")=");
     	}
         Set<Integer> daughters = daughterEdges.get(motherID);
         if (daughters == null) daughters = new HashSet<Integer>();
-        if (verbose)
+        if (VERBOSE)
         {
         	//System.err.println(daughters);
         }
