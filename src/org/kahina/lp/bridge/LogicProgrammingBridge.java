@@ -67,8 +67,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	// encountered most recently
 	protected int currentID = -1;
 
-	// always contains the internal ID of the step which, if a call occurs, will
-	// be the parent of the new step
+	// always contains the internal ID of the step which, if a call occurs, will be the parent of the new step
 	// TODO we can move this to the tree behavior so bridge doesn't have to access the tree
 	protected int parentCandidateID = -1;
 
