@@ -247,15 +247,17 @@ public class QTypeBridge extends SICStusPrologBridge
             //each lc_complete node opens a new context for rule nodes
             lastRuleNode = -1;
             
+            setLastSpanEdge(oldEdgeID);
+            
             //two steps above the last call in the search tree, we find the step with the lastSpanEdge to restore
-            int lastSpanEdgeStepID = state.getStepTree().getParent(oldStepID);
+            /*int lastSpanEdgeStepID = state.getStepTree().getParent(oldStepID);
             int lastSpanEdge = state.getEdgeForNode(lastSpanEdgeStepID);
             while (lastSpanEdge == -1)
             {
                 lastSpanEdgeStepID = state.getStepTree().getParent(lastSpanEdgeStepID);
                 lastSpanEdge = state.getEdgeForNode(lastSpanEdgeStepID);
             }
-            setLastSpanEdge(lastSpanEdge);
+            setLastSpanEdge(lastSpanEdge);*/
 	    }
 	}
 	
