@@ -16,6 +16,7 @@ import org.kahina.core.gui.KahinaWindowManager;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.chart.DisplayAllChartEdgesDecider;
 import org.kahina.core.visual.chart.KahinaChartView;
+import org.kahina.core.visual.chart.KahinaChartViewOptions;
 import org.kahina.core.visual.chart.KahinaRecursiveChartView;
 import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
@@ -48,6 +49,8 @@ public class QTypeGUI extends LogicProgrammingGUI
         mainChartView.setStatusHighlightColorEncoding(0,new Color(0,255,0)); //highlighted successful edge
         mainChartView.setStatusHighlightColorEncoding(1,new Color(255,0,0)); //highlighted unsuccessful edge
         mainChartView.setStatusHighlightColorEncoding(2,new Color(255,255,0)); //highlighted active edge
+        
+        mainChartView.getConfig().setDependencyDisplayPolicy(KahinaChartViewOptions.NO_DEPENDENCIES);
         
         mainChartView.setDisplayDecider(new DisplayAllChartEdgesDecider());
 	}

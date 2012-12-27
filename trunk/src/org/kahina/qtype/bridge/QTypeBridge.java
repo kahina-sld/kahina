@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -231,16 +232,30 @@ public class QTypeBridge extends SICStusPrologBridge
                 System.err.println("WARNING: found a rule edge outside of any expected context");
             }
 	    }
-	    else if (description.equals("parser:lc_complete/6"))
+	    else if (description.equals("parser:lc_complete/8"))
 	    {
-	        //move up in the edge stack
-            int ruleEdge = popEdge();
-            setLastSpanEdge(ruleEdge);
-            //the topmost rule edge is complete, we can cut its length to the current position
-            state.getChart().setEdgeStatus(ruleEdge, 0);
-            state.getChart().setRightBoundForEdge(ruleEdge, edgeToCurrentPosition.get(ruleEdge));
+	        //TODO: make navigation in the tree much more robust (less assumptions, more search!)
+	        
+	        //retrieve the first child edge of the last call
+	        //this edge is associated with a unify or db_rule step directly under the lc_complete step
+	        int childEdgeStepID = state.getStepTree().getChildren(oldStepID).get(0);
+	        int childEdge = state.getEdgeForNode(childEdgeStepID);
+	        
+            //reset the current position of the mother edge to the start of the rule edge
+            int motherEdge = getTopEdge();
+            setPos(motherEdge, state.getChart().getLeftBoundForEdge(childEdge));
             //each lc_complete node opens a new context for rule nodes
             lastRuleNode = -1;
+            
+            //two steps above the last call in the search tree, we find the step with the lastSpanEdge to restore
+            int lastSpanEdgeStepID = state.getStepTree().getParent(oldStepID);
+            int lastSpanEdge = state.getEdgeForNode(lastSpanEdgeStepID);
+            while (lastSpanEdge == -1)
+            {
+                lastSpanEdgeStepID = state.getStepTree().getParent(lastSpanEdgeStepID);
+                lastSpanEdge = state.getEdgeForNode(lastSpanEdgeStepID);
+            }
+            setLastSpanEdge(lastSpanEdge);
 	    }
 	}
 	
@@ -623,8 +638,17 @@ public class QTypeBridge extends SICStusPrologBridge
     private int popEdge()
     {
         int poppedEdge = currentEdge;
-        currentEdge = state.getChart().getMotherEdgesForEdge(currentEdge).iterator().next();
         if (VERBOSE) System.err.println("  popping " + poppedEdge + " from edge stack");
+        Set<Integer> motherEdges = state.getChart().getMotherEdgesForEdge(currentEdge);
+        if (motherEdges.size() > 0)
+        {
+            //in the QType case, there is only one mother for each edge!
+            currentEdge = motherEdges.iterator().next();
+        }
+        else
+        {
+            currentEdge = -1;
+        }
         return poppedEdge;
     }
     
