@@ -259,6 +259,31 @@ public class QTypeBridge extends SICStusPrologBridge
             }
             setLastSpanEdge(lastSpanEdge);*/
 	    }
+	    else if (description.equals("parser:lc/5"))
+        {
+	        String caption = state.getChart().getEdgeCaption(oldEdgeID);
+	        if (edgeExists())
+            {
+                int motherEdge = getTopEdge();
+                int edgeID = state.getChart().addEdge(getPos(motherEdge), state.getChart().getRightBound(), caption, 2);
+                setPos(edgeID, getPos(motherEdge));
+                state.linkEdgeToNode(edgeID, newStepID);
+                state.getChart().addEdgeDependency(getTopEdge(), edgeID);
+                pushEdge(edgeID);
+            }
+            else
+            {
+                //a freely dangling parse edge, this only happens at the top
+                int edgeID = state.getChart().addEdge(0, state.getChart().getRightBound(), caption, 2);
+                setPos(edgeID, 0);
+                state.linkEdgeToNode(edgeID, newStepID);
+                pushEdge(edgeID);
+                kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
+            }
+	        
+	        //each lc node opens a new context for rule nodes
+            lastRuleNode = -1;
+        }
 	}
 	
 	@Override
@@ -291,7 +316,7 @@ public class QTypeBridge extends SICStusPrologBridge
 		    if (edgeExists())
 		    {
 		        int childEdge = popEdge();
-		        state.getChart().setRightBoundForEdge(childEdge, getPos(childEdge));
+		        trimEdgeToChildrenLength(childEdge);
 		        int motherEdge = getTopEdge();
 		        //the next item in lc_list will be tried, we can move the pos accordingly
 		        setPos(motherEdge, getPos(childEdge));
@@ -330,30 +355,6 @@ public class QTypeBridge extends SICStusPrologBridge
                 System.err.println("WARNING: unify exited on an empty edge stack!");
             }
         }
-	    //unify was successful, we move up in the edge stack again
-        /*else if (newDescription.startsWith("lc_list([],[],"))
-        {
-            if (edgeExists())
-            {
-                int ruleEdge = state.getEdgeForNode(lastRuleNode);
-                state.getChart().setEdgeStatus(ruleEdge, 0);
-                //TODO: safety check, this could shorten the rule edge to 0-range!
-                state.getChart().setRightBoundForEdge(ruleEdge, getPos(ruleEdge));
-                popEdge();
-            }
-            else
-            {
-                System.err.println("WARNING: unify exited on an empty edge stack!");
-            }
-        }*/
-		//successful unification in a rule context determines the success of the rule
-        /*else if (newDescription.startsWith("unify("))
-        {
-            int ruleEdge = state.getEdgeForNode(lastRuleNode);
-            state.getChart().setEdgeStatus(ruleEdge, 0);
-            kahina.dispatchEvent(new KahinaChartUpdateEvent(ruleEdge));
-        }*/
-        
 		
 		//if we have an associated edge, set it to successful (except rule edges)
 		int associatedEdge = state.getEdgeForNode(stepID);
@@ -373,7 +374,9 @@ public class QTypeBridge extends SICStusPrologBridge
         {
             if (edgeExists())
             {
-                popEdge();
+                int childEdge = popEdge();
+                trimEdgeToChildrenLength(childEdge);
+                //in this case, we do NOT move the mother edge pos
             }
             else
             {
@@ -389,14 +392,23 @@ public class QTypeBridge extends SICStusPrologBridge
             if (edgeExists())
             {
                 int unifyEdge = popEdge();
-                //TODO: this should be equal to the rule edge, systematization needed
-                int motherEdge = getTopEdge();
                 setPos(unifyEdge, state.getChart().getRightBoundForEdge(unifyEdge));
-                state.getChart().setRightBoundForEdge(motherEdge,getPos(unifyEdge));
             }
             else
             {
                 System.err.println("WARNING: unify failed on an empty edge stack!");
+            }
+        }
+        else if (state.get(stepID).getGoalDesc().equals("grammar:db_rule/4"))
+        {
+            if (edgeExists())
+            {
+                int childEdge = state.getEdgeForNode(stepID);
+                trimEdgeToChildrenLength(childEdge);
+            }
+            else
+            {
+                System.err.println("WARNING: db_word failed on an empty edge stack!");
             }
         }
         
@@ -690,5 +702,21 @@ public class QTypeBridge extends SICStusPrologBridge
     private int getLastSpanEdge()
     {
         return lastSpanEdge;
+    }
+    
+    private void trimEdgeToChildrenLength(int edgeID)
+    {
+        //shorten the edge length to the maximum length of any grandchild
+        int maxChildRightBound = 0;
+        for (int childEdge : state.getChart().getDaughterEdgesForEdge(edgeID))
+        {
+            int childRightBound = state.getChart().getRightBoundForEdge(childEdge);
+            if (childRightBound > maxChildRightBound)
+            {
+                maxChildRightBound = childRightBound;
+            }
+        }
+        if (maxChildRightBound == 0) maxChildRightBound = 1;
+        state.getChart().setRightBoundForEdge(edgeID, maxChildRightBound);
     }
 }
