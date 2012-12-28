@@ -268,7 +268,7 @@ public class QTypeBridge extends SICStusPrologBridge
                 int edgeID = state.getChart().addEdge(getPos(motherEdge), state.getChart().getRightBound(), caption, 2);
                 setPos(edgeID, getPos(motherEdge));
                 state.linkEdgeToNode(edgeID, newStepID);
-                state.getChart().addEdgeDependency(getTopEdge(), edgeID);
+                state.getChart().addEdgeDependency(motherEdge, edgeID);
                 pushEdge(edgeID);
             }
             else
@@ -320,6 +320,7 @@ public class QTypeBridge extends SICStusPrologBridge
 		        int motherEdge = getTopEdge();
 		        //the next item in lc_list will be tried, we can move the pos accordingly
 		        setPos(motherEdge, getPos(childEdge));
+                kahina.dispatchEvent(new KahinaChartUpdateEvent(motherEdge));
 		    }
 		    else
 		    {
@@ -349,6 +350,7 @@ public class QTypeBridge extends SICStusPrologBridge
                 int unifyEdge = popEdge();
                 int motherEdge = getTopEdge();
                 setPos(motherEdge, state.getChart().getRightBoundForEdge(unifyEdge));
+                kahina.dispatchEvent(new KahinaChartUpdateEvent(unifyEdge));
             }
             else
             {
@@ -387,7 +389,8 @@ public class QTypeBridge extends SICStusPrologBridge
         else if (state.get(stepID).getGoalDesc().equals("parser:unify/2"))
         {
             int ruleEdge = state.getEdgeForNode(lastRuleNode);
-            System.err.println("Rule edge #" + ruleEdge + " failed.");
+            trimEdgeToChildrenLength(ruleEdge);
+            if (VERBOSE) System.err.println("Rule edge #" + ruleEdge + " failed.");
             state.getChart().setEdgeStatus(ruleEdge, 1);
             if (edgeExists())
             {
@@ -399,17 +402,9 @@ public class QTypeBridge extends SICStusPrologBridge
                 System.err.println("WARNING: unify failed on an empty edge stack!");
             }
         }
-        else if (state.get(stepID).getGoalDesc().equals("grammar:db_rule/4"))
+        else
         {
-            if (edgeExists())
-            {
-                int childEdge = state.getEdgeForNode(stepID);
-                trimEdgeToChildrenLength(childEdge);
-            }
-            else
-            {
-                System.err.println("WARNING: db_word failed on an empty edge stack!");
-            }
+            if (VERBOSE) System.err.println("  untreated failed goal with description " + state.get(stepID).getGoalDesc() + "!");
         }
         
         //if we have an associated edge, set it to failure
