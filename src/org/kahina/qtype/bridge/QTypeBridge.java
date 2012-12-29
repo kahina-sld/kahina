@@ -2,7 +2,6 @@ package org.kahina.qtype.bridge;
 
 import gralej.om.IEntity;
 import gralej.om.IList;
-import gralej.om.IRelation;
 import gralej.om.ITag;
 
 import java.util.HashMap;
@@ -14,10 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.kahina.core.control.KahinaControlEvent;
-import org.kahina.core.control.KahinaStepUpdateEvent;
-import org.kahina.core.data.chart.KahinaChart;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
-import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.prolog.util.PrologUtil;
 import org.kahina.qtype.QTypeDebuggerInstance;
 import org.kahina.qtype.QTypeState;
@@ -25,7 +21,6 @@ import org.kahina.qtype.QTypeStep;
 import org.kahina.qtype.control.QTypeControlEventCommands;
 import org.kahina.qtype.data.bindings.QTypeGoal;
 import org.kahina.sicstus.bridge.SICStusPrologBridge;
-import org.kahina.tralesld.data.fs.TraleSLDFS;
 import org.kahina.tralesld.data.fs.TraleSLDFSPacker;
 import org.kahina.tralesld.visual.fs.GraleJUtility;
 
@@ -132,6 +127,7 @@ public class QTypeBridge extends SICStusPrologBridge
                 int motherEdge = getTopEdge();
                 int motherPos = getPos(motherEdge);
                 //the category we unify with is the one associated with the last span edge
+                if (VERBOSE) System.err.println("  last span edge: " + getLastSpanEdge());
                 int leftBound = state.getChart().getLeftBoundForEdge(getLastSpanEdge());
                 int rightBound = state.getChart().getRightBoundForEdge(getLastSpanEdge());
                 int edgeID = state.getChart().addEdge(leftBound, rightBound, "unify", 2);
@@ -225,6 +221,8 @@ public class QTypeBridge extends SICStusPrologBridge
                 state.linkEdgeToNode(edgeID, currentID);
                 pushEdge(edgeID);
                 lastRuleNode = currentID;
+                
+                setLastSpanEdge(oldEdgeID);
             }
             else
             {
@@ -371,7 +369,7 @@ public class QTypeBridge extends SICStusPrologBridge
         super.fail(extID);
         int stepID = convertStepID(extID);
         
-        //lc_complete is done, we move up in the edge stack again
+        //lc is done, we move up in the edge stack again
         if (state.get(stepID).getGoalDesc().equals("parser:lc/5"))
         {
             if (edgeExists())
