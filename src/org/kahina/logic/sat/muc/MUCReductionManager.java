@@ -57,7 +57,7 @@ public class MUCReductionManager extends KahinaTaskManager
                         {
                             if (!result.getUc().contains(i) || ucTask.candidates.contains(i))
                             {
-                                metaClause.add(-i);
+                                metaClause.add(i);
                             }
                         }
                         state.learnMetaClause(metaClause);
@@ -98,7 +98,7 @@ public class MUCReductionManager extends KahinaTaskManager
                             {
                                 if (!result.getUc().contains(i))
                                 {
-                                    metaBlock.add(-i);
+                                    metaBlock.add(i);
                                 }
                             }
                             state.learnMetaBlock(metaBlock);

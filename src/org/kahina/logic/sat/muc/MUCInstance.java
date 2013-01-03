@@ -305,7 +305,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             {
                 if (!firstUC.getUc().contains(i))
                 {
-                    metaBlock.add(-i);
+                    metaBlock.add(i);
                 }
             }
             state.learnMetaBlock(metaBlock);
@@ -320,7 +320,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         List<Integer> muc_cands = new ArrayList<Integer>();
         List<Integer> muc = new ArrayList<Integer>();
         int[] freezeVariables = new int[stat.numVarsExtended - stat.highestID];
-        Arrays.fill(freezeVariables, -1);
+        Arrays.fill(freezeVariables, 1);
         /*for (int i = 0; i < stat.numClausesOrGroups; i++)
         {
             if (satInstance.isDontCareClause(i))
@@ -367,7 +367,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
                 {
                     if (!firstUC.getUc().contains(i))
                     {
-                        metaBlock.add(-i);
+                        metaBlock.add(i);
                     }
                 }
                 state.learnMetaBlock(metaBlock);

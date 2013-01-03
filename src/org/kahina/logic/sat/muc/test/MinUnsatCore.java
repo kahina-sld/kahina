@@ -74,7 +74,7 @@ public class MinUnsatCore
         List<Integer> muc_cands = new ArrayList<Integer>();
         List<Integer> muc = new ArrayList<Integer>();
         int[] freezeVariables = new int[stat.numVarsExtended - stat.highestID];
-        Arrays.fill(freezeVariables, -1);
+        Arrays.fill(freezeVariables, 1);
         try
         {
             MiniSAT.createFreezeFile(freezeVariables, files.tmpFreezeFile, stat.highestID + 1);

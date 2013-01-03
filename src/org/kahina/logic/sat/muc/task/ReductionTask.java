@@ -123,12 +123,12 @@ public class ReductionTask extends KahinaTask
                 muc_cands.remove(new Integer(candidate));
             }
             int[] freezeVariables = new int[stat.numClausesOrGroups];
-            Arrays.fill(freezeVariables, 1);
+            Arrays.fill(freezeVariables, -1);
             for (int i = 1; i <= stat.numClausesOrGroups; i++)
             {
                 if (instance.isDontCareClause(i) || muc_cands.contains(i))
                 {
-                    freezeVariables[i-1] = -1;
+                    freezeVariables[i-1] = 1;
                 }
             }
             //System.err.println("freezeVars: " + Arrays.toString(freezeVariables));

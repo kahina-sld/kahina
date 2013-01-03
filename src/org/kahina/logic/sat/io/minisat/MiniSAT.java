@@ -35,7 +35,7 @@ public class MiniSAT
     private static File lastResultFile;
     private static File lastProofFile;
     
-    private static boolean VERBOSE = false;
+    private static boolean VERBOSE = true;
     
     public static boolean isSatisfiable(File cnfFile, File tmpResultFile) throws TimeoutException, InterruptedException, IOException
     {
@@ -784,7 +784,7 @@ public class MiniSAT
         StringBuffer freezeBuffer = new StringBuffer("");
         for (int i = 0; i < freezeVariables.length; i++)
         {
-            if (freezeVariables[i] == 1)
+            if (freezeVariables[i] == -1)
             {
                 if (i < (freezeVariables.length - 1))
                 {
@@ -795,7 +795,7 @@ public class MiniSAT
                     freezeBuffer.append("-" + (offsetID + i));
                 }
             }
-            else if (freezeVariables[i] == -1)
+            else if (freezeVariables[i] == 1)
             {
                 if (i < (freezeVariables.length - 1))
                 {
