@@ -414,7 +414,7 @@ public class MUCState extends KahinaState
                    {
                        if (!uc.getUc().contains(i) || i == singleTransClForFlippedModel)
                        {
-                           metaClause.add(-i);
+                           metaClause.add(i);
                        }
                    }
                    learnMetaClause(metaClause);
