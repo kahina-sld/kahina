@@ -17,7 +17,24 @@ public class MetaInstanceViewContextMenu extends JPopupMenu
         this.view = view;
         this.kahina = kahina;
         
-        JMenuItem strengthenWedgeItem = new JMenuItem("Strengthen this wedge");
+        JMenuItem solveAndTestItem = new JMenuItem("Generate new US candidate");
+        solveAndTestItem.setActionCommand("generateUSCandidate");
+        solveAndTestItem.addActionListener(l);
+        add(solveAndTestItem);
+        
+        addSeparator();
+        
+        JMenuItem importMetaConstraintsItem = new JMenuItem("Import additional meta constraints");
+        importMetaConstraintsItem.setActionCommand("importMetaConstraints");
+        importMetaConstraintsItem.addActionListener(l);
+        add(importMetaConstraintsItem);
+        
+        JMenuItem exportMetaConstraintsItem = new JMenuItem("Export current meta constraints");
+        exportMetaConstraintsItem.setActionCommand("exportMetaConstraints");
+        exportMetaConstraintsItem.addActionListener(l);
+        add(exportMetaConstraintsItem);
+        
+        /*JMenuItem strengthenWedgeItem = new JMenuItem("Strengthen this wedge");
         strengthenWedgeItem.setActionCommand("strengthenWedge" + listIndex);
         strengthenWedgeItem.addActionListener(l);
         add(strengthenWedgeItem);
@@ -30,7 +47,7 @@ public class MetaInstanceViewContextMenu extends JPopupMenu
         JMenuItem expandWedgesItem = new JMenuItem("Globally expand unsat wedges (slow!)");
         expandWedgesItem.setActionCommand("expandWedges");
         expandWedgesItem.addActionListener(l);
-        add(expandWedgesItem);
+        add(expandWedgesItem);*/
     }
     
     public static JPopupMenu getMenu(ActionListener l, MetaInstanceViewPanel view, MUCInstance kahina, int listIndex)
