@@ -263,8 +263,10 @@ public class QTypeBridge extends SICStusPrologBridge
 	        if (edgeExists())
             {
                 int motherEdge = getTopEdge();
-                int edgeID = state.getChart().addEdge(getPos(motherEdge), state.getChart().getRightBound(), caption, 2);
-                setPos(edgeID, getPos(motherEdge));
+                //int startPos = state.getChart().getLeftBoundForEdge(motherEdge); 
+                int startPos = getPos(motherEdge);
+                int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), caption, 2);
+                setPos(edgeID, startPos);
                 state.linkEdgeToNode(edgeID, newStepID);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
                 pushEdge(edgeID);
@@ -281,6 +283,10 @@ public class QTypeBridge extends SICStusPrologBridge
 	        
 	        //each lc node opens a new context for rule nodes
             lastRuleNode = -1;
+        }
+        else if (description.equals("parser:check_link/2"))
+        {
+            System.err.println("check_link/2 is being redone!");
         }
 	}
 	

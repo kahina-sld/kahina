@@ -133,16 +133,15 @@ public class MUCStep extends KahinaStep
         int numRed = 0;
         int numGreen = 0;
         int numOut = 0;
-        //in the block definitions, literals are negative
-        for (int negLit : block)
+        for (int lit : block)
         {
-            if (!uc.contains(-negLit))
+            if (!uc.contains(lit))
             {
                 numOut++;
             }
             else
             {
-                int icStatus = getIcStatus(-negLit);
+                int icStatus = getIcStatus(lit);
                 if (icStatus == 2)
                 {
                     numRed++;
