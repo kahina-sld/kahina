@@ -176,7 +176,7 @@ public class CnfSatInstance extends KahinaSatInstance
             }
         }
         //adapt the other entries in the index <-> ID table
-        for (int i = clauseIndex + 1; i <= clauseIDs.size(); i++)
+        for (int i = clauseIndex; i < clauseIDs.size(); i++)
         {
             reverseConversionTable.put(idxToId(i), i-1);
         }
