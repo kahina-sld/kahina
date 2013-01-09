@@ -125,7 +125,7 @@ public class MUCStep extends KahinaStep
      *         2 if block was successfully removed from UC (all green -> green, selectable), 
      *         3 if no element of the block was contained in UC (-> grey), 
      *         4 if a part of the block is guaranteed to be in MUC (some red -> light red, selectable),
-     *         5 if a part of the block is guaranteed to be in MUC (some green -> lght green, selectable),
+     *         5 if a part of the block is guaranteed fall away (some green -> lght green, selectable),
      *         0 otherwise (-> block, selectable)
      */
     public int relationToBlock(TreeSet<Integer> block)

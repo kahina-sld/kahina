@@ -89,7 +89,7 @@ public class CnfSatInstance extends KahinaSatInstance
         }
     }
     
-    public void addClause(List<Integer> clause)
+    public int addClause(List<Integer> clause)
     {
         if (occurrenceMap != null)
         {
@@ -120,10 +120,12 @@ public class CnfSatInstance extends KahinaSatInstance
                         if (literal < 0) literal = -literal;
                         if (literal > maxVarID) maxVarID = literal;
                     }
+                    return maxClauseID;
                 }
                 else
                 {
                     //clause is subsumed by an existing clause, we do not add it
+                    return -1;
                 }
             }
             else
@@ -144,8 +146,11 @@ public class CnfSatInstance extends KahinaSatInstance
                     if (literal < 0) literal = -literal;
                     if (literal > maxVarID) maxVarID = literal;
                 }
+                return maxClauseID;
             }
         }
+        //TODO: implement this for the case without an occurrence map
+        return -1;
     }
     
     private int idToIdx(int clauseID)
@@ -159,11 +164,22 @@ public class CnfSatInstance extends KahinaSatInstance
     }
     
     /**
+     * Removes the clause with the given internal ID.
+     * @param clauseID the ID of the clause to be removed.
+     */
+    public void removeClauseID(int clauseID)
+    {
+        int clauseIndex = idToIdx(clauseID);
+        removeClauseIndex(clauseIndex);
+    }
+    
+    /**
      * Removes the clause at the given index (not an internal ID!).
-     * @param clauseID the index of the clause to be removed.
+     * @param clauseIndex the index of the clause to be removed.
      */
     public void removeClauseIndex(int clauseIndex)
     {
+        System.err.println("removeClauseIndex(" + clauseIndex + ")");
         //delete the information and table entries about the removed clause
         int removedClauseID = clauseIDs.remove(clauseIndex);
         List<Integer> removedClause = clauseStore.remove(removedClauseID);
@@ -176,11 +192,17 @@ public class CnfSatInstance extends KahinaSatInstance
             }
         }
         //adapt the other entries in the index <-> ID table
-        for (int i = clauseIndex; i < clauseIDs.size(); i++)
+        for (int i = clauseIndex + 1; i < clauseIDs.size(); i++)
         {
             reverseConversionTable.put(idxToId(i), i-1);
         }
-        reverseConversionTable.remove(clauseIDs.size());
+        reverseConversionTable.remove(idxToId(clauseIDs.size() - 1));
+        System.err.println("  clauseIDs: " + clauseIDs);
+        System.err.println("  reverseConversionTable: ");
+        for (int id : reverseConversionTable.keySet())
+        {
+            System.err.println("    " + id + " -> " + reverseConversionTable.get(id));
+        }
     }
     
     /**

@@ -109,6 +109,7 @@ public class ReductionAgent extends KahinaTaskManager
                                 metaClause.add(i);
                             }
                         }
+                        state.learnMetaBlock(metaClause);
                         state.learnMetaClause(metaClause);
                     }
                     //model rotation if only one candidate was reduced, and the task was configured to apply MR

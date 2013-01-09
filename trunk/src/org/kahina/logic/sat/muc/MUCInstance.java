@@ -303,12 +303,13 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             TreeSet<Integer> metaBlock = new TreeSet<Integer>();
             for (int i = 1; i <= numClauses; i++)
             {
-                if (!firstUC.getUc().contains(i))
+                if (firstUC.getUc().contains(i))
                 {
                     metaBlock.add(i);
                 }
             }
             state.learnMetaBlock(metaBlock);
+            state.learnMetaClause(metaBlock);
         }
         
         dispatchInstanceEvent(new KahinaUpdateEvent(1));
@@ -365,12 +366,13 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
                 int numClauses = state.getStatistics().numClausesOrGroups;
                 for (int i = 1; i <= numClauses; i++)
                 {
-                    if (!firstUC.getUc().contains(i))
+                    if (firstUC.getUc().contains(i))
                     {
                         metaBlock.add(i);
                     }
                 }
                 state.learnMetaBlock(metaBlock);
+                state.learnMetaClause(metaBlock);
             }
         
             /*UCReducer reducer1 = new UCReducer(kahinaInstance.getState(), 1, files);
@@ -533,6 +535,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         defaultProjects = new LinkedList<KahinaProject>();
         addDefaultProject("data/project/cfg-demo-project.xml");
         addDefaultProject("data/project/asp-demo-project.xml");
+        addDefaultProject("data/project/simple-demo-project.xml");
     }
     
     private void addDefaultProject(String resourcePath)

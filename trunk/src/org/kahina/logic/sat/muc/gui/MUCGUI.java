@@ -96,7 +96,7 @@ public class MUCGUI extends KahinaGUI
         
         Color NICE_GREEN = new Color(102, 153, 102);
         Color NICE_RED = new Color(183, 50, 50);
-        Color LIGHT_RED = new Color(255, 200, 200);
+        Color LIGHT_RED = new Color(203, 153, 153);
         Color LIGHT_GREEN = new Color(152, 203, 102);
         
         /*satInstanceView.setVertexStatusVertexColorEncoding(0, Color.WHITE);
