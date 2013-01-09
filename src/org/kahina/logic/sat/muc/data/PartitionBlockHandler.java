@@ -11,10 +11,12 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
 public class PartitionBlockHandler extends LiteralBlockHandler
 {
-    static final boolean VERBOSE = false;
+    static final boolean VERBOSE = true;
     
     //main parameter, defines minimum block size
     static final int MIN_BLOCK_SIZE = 2;
+    
+    private int nextBlockID;
     
     //blocks are coded as list of integers for now, indexed by IDs
     Map<Integer,TreeSet<Integer>> blockList;
@@ -42,6 +44,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         blockDefVar = new TreeMap<Integer,Integer>();
         blockVarBlockID = new TreeMap<Integer,Integer>();
         blockIndex = new TreeMap<Integer,Integer>();
+        nextBlockID = 1;
     }
     
     public List<Integer> buildRepresentation(TreeSet<Integer> clause)
@@ -71,6 +74,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
             if (overlap.aIntersectB.size() == clause.size())
             {
                 blockClause.add(blockDefVar.get(overlapIndex));
+                addBlockClausesEntry(overlapIndex,blockClause);
             }
             else
             {
@@ -98,7 +102,8 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         }
         else
         {
-            Overlap overlap = new Overlap(block, blockList.get(overlapIndex));     
+            Overlap overlap = new Overlap(block, blockList.get(overlapIndex));  
+            if (VERBOSE) System.err.println("  Overlap: (" + overlap.aMinusB.size() + "," + overlap.aIntersectB.size() + "," + overlap.bMinusA.size() + ")");
             if (overlap.aIntersectB.size() >= 1)
             {
                 splitBlock(overlapIndex, overlap.aIntersectB, overlap.bMinusA);
@@ -115,6 +120,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     //the two arguments need to define a partition of the block with blockID
     private List<Integer> splitBlock(int blockID, TreeSet<Integer> block1, TreeSet<Integer> block2)
     {
+       if (VERBOSE) System.err.println("splitBlock(" + blockID + "," + block1 + "," + block2 + ")");
        List<Integer> newRepresentation = new LinkedList<Integer>();
        if (block1.size() > 0 && block2.size() > 0)
        {
@@ -145,6 +151,7 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         
         //replace all occurrences of the old block, update blockClauses to reflect new usage
         int blockVar = blockDefVar.get(blockID);
+        if (VERBOSE) System.err.println("    obsolete blockVar: " + blockVar);
         for (List<Integer> clause : getBlockClauses(blockID))
         {
             if (VERBOSE) System.err.println("    Replacement in clause: " + clause);
@@ -158,7 +165,8 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         }
         
         //remove the defining clause for the block
-        satInstance.removeClauseIndex(blockDefClauses.get(blockID)); 
+        if (VERBOSE) System.err.println("    Removing clauseID: " + blockDefClauses.get(blockID));
+        satInstance.removeClauseID(blockDefClauses.get(blockID)); 
         satInstance.announceChangedClauses();
         
         //remove entries for the replaced block from all the tables
@@ -171,7 +179,8 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     
     public int defineNewBlock(TreeSet<Integer> block)
     {
-        int blockID = satInstance.getSize();
+        int blockID = nextBlockID++;
+        if (VERBOSE) System.err.println("  new block " + blockID + ": " + block);
         blockList.put(blockID, block);
         //this side of the implication is not needed
         /*numClauses += block.size();
@@ -194,10 +203,10 @@ public class PartitionBlockHandler extends LiteralBlockHandler
             //update the reverse index (let literals point to new block)
             blockIndex.put(literal, blockID);
         }
-        blockDefClauses.put(blockID, satInstance.getSize());
-        satInstance.addClause(blockDefClause);
+        int clauseID = satInstance.addClause(blockDefClause);
         satInstance.announceAddedClauses();
-        if (VERBOSE) System.err.println("  new block clause:" + blockDefClause);
+        blockDefClauses.put(blockID, clauseID);
+        if (VERBOSE) System.err.println("  new block clause " + clauseID + ": " + blockDefClause);
         return blockID;
     }
     
