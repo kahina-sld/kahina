@@ -192,11 +192,13 @@ public class CnfSatInstance extends KahinaSatInstance
             }
         }
         //adapt the other entries in the index <-> ID table
-        for (int i = clauseIndex + 1; i < clauseIDs.size(); i++)
+        for (int i = clauseIndex; i < clauseIDs.size(); i++)
         {
-            reverseConversionTable.put(idxToId(i), i-1);
+            System.err.println("reverseConversionTable.put(idxToId(" + i + "), " + (i-1) + ")");
+            reverseConversionTable.put(idxToId(i), i);
         }
-        reverseConversionTable.remove(idxToId(clauseIDs.size() - 1));
+        System.err.println("reverseConversionTable.remove(idxToId(" + (clauseIDs.size() - 1) + "))");
+        //reverseConversionTable.remove(idxToId(clauseIDs.size() - 1));
         System.err.println("  clauseIDs: " + clauseIDs);
         System.err.println("  reverseConversionTable: ");
         for (int id : reverseConversionTable.keySet())

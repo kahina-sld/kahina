@@ -55,7 +55,8 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         if (VERBOSE) System.err.println("  maxOverlapIndex: " + overlapIndex);
         if (overlapIndex == -1)
         {
-            if (clause.size() >= MIN_BLOCK_SIZE)
+            //this case never occurs if we start out with the trivial partition!
+            /*if (clause.size() >= MIN_BLOCK_SIZE)
             {
                 int blockID = defineNewBlock(clause);
                 blockClause.add(blockDefVar.get(blockID));
@@ -64,14 +65,30 @@ public class PartitionBlockHandler extends LiteralBlockHandler
             else
             {
                 blockClause.addAll(clause);
-            }
+            }*/
         }
         else
         {
             if (VERBOSE) System.err.println("  maxOverlapBlock: size = " + blockList.get(overlapIndex).size());
             Overlap overlap = new Overlap(clause, blockList.get(overlapIndex));
             if (VERBOSE) System.err.println("  Overlap: (" + overlap.aMinusB.size() + "," + overlap.aIntersectB.size() + "," + overlap.bMinusA.size() + ")");
-            if (overlap.aIntersectB.size() == clause.size())
+
+            if (overlap.bMinusA.size() > 0)
+            {
+                //in this case, we have arrived at an unrepresentability...      
+                if (overlap.aIntersectB.size() < MIN_BLOCK_SIZE)
+                {
+                    //...which we allow if it is below the tolerance threshold
+                    blockClause.addAll(overlap.aIntersectB);
+                }
+                else
+                {
+                    //and complain about if above (we would need to split!)
+                    System.err.println(  "WARNING: aIntersectB is too large! Clause not representable!");
+                }
+                blockClause.addAll(buildRepresentation(overlap.aMinusB));
+            }
+            else if (overlap.aIntersectB.size() == clause.size())
             {
                 blockClause.add(blockDefVar.get(overlapIndex));
                 addBlockClausesEntry(overlapIndex,blockClause);
