@@ -3,10 +3,13 @@ a dog walks on the street
 a tall man sleeps under a tree
 a young man likes mary
 an old man sleeps on the street
+an old woman sees mary on the street
 every man likes a cat
 every old man thinks that a small dog sees every cat under every small tree in the street
 every old woman likes a cat in the house
+everybody thinks that the old woman likes every small dog in the house
 he believes that every man likes mary
+he likes everybody
 he sleeps
 john believes that every small cat thinks that a very tall dog sleeps in the house
 john likes mary
@@ -18,3 +21,5 @@ mary thinks that john sleeps
 she sleeps in the house
 she believes that he believes that a small cat sleeps in every house in the street
 the cat sleeps under a very tall tree
+the cat thinks that a dog sleeps in the small house under the tall tree
+the man sleeps
