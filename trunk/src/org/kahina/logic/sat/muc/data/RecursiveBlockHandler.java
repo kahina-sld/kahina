@@ -18,10 +18,12 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     //  + possibly very interesting structure for interactive MUS extraction
     //  - expensive maintenance!
     
-    static final boolean VERBOSE = false;
+    static final boolean VERBOSE = true;
     
     //main parameter, defines minimum block size
     static final int MIN_BLOCK_SIZE = 1;
+    
+    private int nextBlockID;
     
     //blocks are coded as tree sets of integers for now, indexed by IDs
     Map<Integer,TreeSet<Integer>> blockList;
@@ -51,11 +53,15 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         blockVarBlockID = new TreeMap<Integer,Integer>();
         blockIndex = new TreeMap<Integer,List<Integer>>();
         
+        nextBlockID = 1;
+        
+        //TODO: solve the problem that this top block is empty in the beginning
+        
         TreeSet<Integer> topBlockSet = new TreeSet<Integer>();
         //the top block should include all the meta variables in the beginning
         for (int i = 1; i <= satInstance.getSize(); i++)
         {
-            topBlockSet.add(-i);
+            topBlockSet.add(i);
         }
         topBlock = defineNewBlock(topBlockSet);
     }
@@ -158,10 +164,10 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     private void ensureRepresentability(TreeSet<Integer> block, int blockID)
     {
         Overlap overlap = new Overlap(block, blockList.get(blockID));
-        /*System.err.println("Overlap(block.size() = " + block.size() + ", blockID = " + blockID + "):" );
+        System.err.println("Overlap(block.size() = " + block.size() + ", blockID = " + blockID + "):" );
         System.err.println("  aIntersectB.size() = " + overlap.aIntersectB.size());
         System.err.println("  aMinusB.size()     = " + overlap.aMinusB.size());
-        System.err.println("  bMinusA.size()     = " + overlap.bMinusA.size());*/
+        System.err.println("  bMinusA.size()     = " + overlap.bMinusA.size());
         //IDEA: only express those elements which are inside the reference block
         //just ignore overlap.aMinusB.size() here, this is handled by other calls
         if (overlap.bMinusA.size() > 0)
@@ -240,7 +246,8 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     
     public int defineNewBlock(TreeSet<Integer> block)
     {
-        int blockID = satInstance.getSize();
+        int blockID = nextBlockID++;
+        if (VERBOSE) System.err.println("  new block " + blockID + ": " + block);
         blockList.put(blockID, block);
         int blockVar = satInstance.getHighestVar() + 1;
         blockDefVar.put(blockID, blockVar);
@@ -254,11 +261,13 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
             //update the reverse index (let literals point to new block)
             //blockIndex.put(literal, blockID);
         }
-        blockDefClauses.put(blockID, blockDefClause);
-        satInstance.addClause(blockDefClause);
+        int clauseID = satInstance.addClause(blockDefClause);
+        List<Integer> clauseIDs = new LinkedList<Integer>();
+        clauseIDs.add(clauseID);
+        blockDefClauses.put(blockID, clauseIDs);
         satInstance.announceAddedClauses();
         needsUpdate = true;
-        if (VERBOSE) System.err.println("  new block clause:" + blockDefClause);
+        if (VERBOSE) System.err.println("  new block clause " + clauseID + ": " + blockDefClause);
         return blockID;
     }
     

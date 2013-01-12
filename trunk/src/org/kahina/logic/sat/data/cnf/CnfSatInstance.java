@@ -179,7 +179,7 @@ public class CnfSatInstance extends KahinaSatInstance
      */
     public void removeClauseIndex(int clauseIndex)
     {
-        System.err.println("removeClauseIndex(" + clauseIndex + ")");
+        //System.err.println("removeClauseIndex(" + clauseIndex + ")");
         //delete the information and table entries about the removed clause
         int removedClauseID = clauseIDs.remove(clauseIndex);
         List<Integer> removedClause = clauseStore.remove(removedClauseID);
@@ -194,17 +194,16 @@ public class CnfSatInstance extends KahinaSatInstance
         //adapt the other entries in the index <-> ID table
         for (int i = clauseIndex; i < clauseIDs.size(); i++)
         {
-            System.err.println("reverseConversionTable.put(idxToId(" + i + "), " + (i-1) + ")");
+            //System.err.println("reverseConversionTable.put(idxToId(" + i + "), " + (i-1) + ")");
             reverseConversionTable.put(idxToId(i), i);
         }
-        System.err.println("reverseConversionTable.remove(idxToId(" + (clauseIDs.size() - 1) + "))");
-        //reverseConversionTable.remove(idxToId(clauseIDs.size() - 1));
+        /*System.err.println("reverseConversionTable.remove(idxToId(" + (clauseIDs.size() - 1) + "))");
         System.err.println("  clauseIDs: " + clauseIDs);
         System.err.println("  reverseConversionTable: ");
         for (int id : reverseConversionTable.keySet())
         {
             System.err.println("    " + id + " -> " + reverseConversionTable.get(id));
-        }
+        }*/
     }
     
     /**
@@ -316,7 +315,7 @@ public class CnfSatInstance extends KahinaSatInstance
         for (int clauseIdx: clauseIndices)
         {
             //TODO: think about risks of structure reuse!
-            subInstance.addClause(clauseStore.get(idxToId(clauseIdx)));
+            subInstance.addClause(clauseStore.get(idxToId(clauseIdx - 1)));
             subInstance.symbolTable = symbolTable;
         }
         return subInstance;
