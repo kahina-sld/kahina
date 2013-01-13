@@ -671,7 +671,8 @@ public class CnfSatInstance extends KahinaSatInstance
             }
             if (clause.size() == 0)
             {
-                removeClauseIndex(i);
+                //no need to update the index table
+                clauseIDs.remove(i);
                 i--;
             }
         }
@@ -680,7 +681,8 @@ public class CnfSatInstance extends KahinaSatInstance
     
     public void applyAssignmentDestructively(PartialAssignment assignment)
     {
-        System.err.print("applyAssignmentDestructively() ... ");
+        //System.err.print("applyAssignmentDestructively() ... ");
+        discardOccurrenceMap();
         for (int i = 0; i < getSize(); i++)
         {
             List<Integer> clause = clauseStore.get(idxToId(i));
@@ -719,11 +721,13 @@ public class CnfSatInstance extends KahinaSatInstance
             }
             if (clause.size() == 0)
             {
-                removeClauseIndex(i);
+                //no need to update the index table
+                //System.err.println("removing clauseIDs.get(" + i + ") = " + clauseIDs.get(i));
+                clauseIDs.remove(i);
                 i--;
             }
         }
-        System.err.println("done");
+        //System.err.println("done, reduced to size " + clauseIDs.size());
         needsUpdate = true;
     }
     
@@ -749,9 +753,9 @@ public class CnfSatInstance extends KahinaSatInstance
                 if (sat)
                 {
                     PartialAssignment maxAutarky = MiniSAT.getPartialModel(resFile);
-                    System.err.println("Found partial model:       size " + maxAutarky.size() + ".");
+                    //System.err.println("Found partial model:       size " + maxAutarky.size() + ".");
                     maxAutarky.unassignVars(removedVars);
-                    System.err.println("Resulting maximal autarky: size " + maxAutarky.size() + ".");  
+                    //System.err.println("Resulting maximal autarky: size " + maxAutarky.size() + ".");  
                     proofFile.delete();
                     resFile.delete();
                     return maxAutarky;
@@ -764,21 +768,21 @@ public class CnfSatInstance extends KahinaSatInstance
                         System.err.println("ERROR: no resolution variables in an UNSAT problem! Returning null autarky!");
                         return null;
                     }
-                    System.err.print("deleting " + removedVars.size() + " resolution variables destructively ... ");
+                    //System.err.print("deleting " + resolutionVariables.size() + " resolution variables destructively ... ");
                     this.deleteVariablesDestructively(resolutionVariables);
-                    System.err.println("done, clauses left: " + getSize());
+                    //System.err.println("done, clauses left: " + getSize());
                     if (getSize() == 0)
                     {
-                        System.err.println("Found the trivial autarky, so the input clause set was lean!");
+                        //System.err.println("Found the trivial autarky, so the input clause set was lean!");
                         return new PartialAssignment();
                     }
                     removedVars.addAll(resolutionVariables);
                     Set<Integer> unitClashVars = determineUnitClashVars();
                     while (unitClashVars.size() > 0)
                     {
-                        System.err.print("deleting " + unitClashVars.size() + " clashing units destructively ... ");
+                        //System.err.print("deleting " + unitClashVars.size() + " clashing units destructively ... ");
                         this.deleteVariablesDestructively(unitClashVars);
-                        System.err.println("done, clauses left: " + getSize());
+                        //System.err.println("done, clauses left: " + getSize());
                         removedVars.addAll(unitClashVars);
                         unitClashVars = determineUnitClashVars();
                     }
