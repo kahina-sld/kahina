@@ -43,7 +43,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     //top block for searching insertion and split points
     int topBlock;
 
-    public RecursiveBlockHandler(CnfSatInstance satInstance)
+    public RecursiveBlockHandler(CnfSatInstance satInstance, int instanceSize)
     {
         super(satInstance);
         blockList = new TreeMap<Integer,TreeSet<Integer>>();
@@ -53,13 +53,11 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
         blockVarBlockID = new TreeMap<Integer,Integer>();
         blockIndex = new TreeMap<Integer,List<Integer>>();
         
-        nextBlockID = 1;
-        
-        //TODO: solve the problem that this top block is empty in the beginning
+        nextBlockID = 1;     
         
         TreeSet<Integer> topBlockSet = new TreeSet<Integer>();
         //the top block should include all the meta variables in the beginning
-        for (int i = 1; i <= satInstance.getSize(); i++)
+        for (int i = 1; i <= instanceSize; i++)
         {
             topBlockSet.add(i);
         }
