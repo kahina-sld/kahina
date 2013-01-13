@@ -77,7 +77,7 @@ public class MUCState extends KahinaState
         }
         if (kahina.getMetaLearningMode() == MetaLearningMode.RECURSIVE_BLOCKS)
         {
-            this.recursiveBlocks = new RecursiveBlockHandler(metaInstance);
+            this.recursiveBlocks = new RecursiveBlockHandler(metaInstance, satInstance.getSize());
             this.metaInstance.setBlockHandler(recursiveBlocks);
         }
         this.stat = stat;
@@ -341,7 +341,7 @@ public class MUCState extends KahinaState
         }
         if (kahina.getMetaLearningMode() == MetaLearningMode.RECURSIVE_BLOCKS)
         {
-            this.recursiveBlocks = new RecursiveBlockHandler(metaInstance);
+            this.recursiveBlocks = new RecursiveBlockHandler(metaInstance,satInstance.getSize());
             this.metaInstance.setBlockHandler(recursiveBlocks);
         }
     }
