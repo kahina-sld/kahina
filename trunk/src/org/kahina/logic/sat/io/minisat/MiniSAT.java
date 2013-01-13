@@ -534,12 +534,12 @@ public class MiniSAT
             {
                 if (line.equals("UNSAT"))
                 {
-                    System.err.println("MiniSat says: " + resultFile.getName() + " is UNSAT");
+                    //System.err.println("MiniSat says: " + resultFile.getName() + " is UNSAT");
                     return true;
                 }
                 else if (line.equals("SAT"))
                 {
-                    System.err.println("MiniSat says: " + resultFile.getName() + " is SAT");
+                    //System.err.println("MiniSat says: " + resultFile.getName() + " is SAT");
                     return false;
                 }
             }
