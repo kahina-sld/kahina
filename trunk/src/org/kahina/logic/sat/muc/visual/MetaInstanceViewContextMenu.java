@@ -34,6 +34,11 @@ public class MetaInstanceViewContextMenu extends JPopupMenu
         exportMetaConstraintsItem.addActionListener(l);
         add(exportMetaConstraintsItem);
         
+        JMenuItem printStatisticsItem = new JMenuItem("Print size statistics to the console");
+        printStatisticsItem.setActionCommand("printStatistics");
+        printStatisticsItem.addActionListener(l);
+        add(printStatisticsItem);
+        
         /*JMenuItem strengthenWedgeItem = new JMenuItem("Strengthen this wedge");
         strengthenWedgeItem.setActionCommand("strengthenWedge" + listIndex);
         strengthenWedgeItem.addActionListener(l);

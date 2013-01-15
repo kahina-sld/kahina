@@ -327,4 +327,9 @@ public class PartitionBlockHandler extends LiteralBlockHandler
     {
         return blockList.get(blockID);
     }
+    
+    public TreeSet<Integer> getBlockByVar(int blockVar)
+    {
+        return blockList.get(blockVarBlockID.get(blockVar));
+    }
 }
