@@ -7,11 +7,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TreeSet;
 
 import javax.swing.JList;
 
 import org.kahina.logic.sat.muc.MUCInstance;
 import org.kahina.logic.sat.muc.MUCStep;
+import org.kahina.logic.sat.muc.data.MUCMetaInstance;
+import org.kahina.logic.sat.muc.data.PartitionBlockHandler;
 import org.kahina.logic.sat.muc.gui.ClauseSelectionEvent;
 
 public class MetaInstanceViewListener  extends MouseAdapter implements ActionListener
@@ -76,6 +79,43 @@ public class MetaInstanceViewListener  extends MouseAdapter implements ActionLis
             List<Integer> clause = new LinkedList<Integer>();
             clause.addAll(kahina.getState().getMetaInstance().getClause(clauseIndex));
             //TODO: start an expansion agent (needs to be implemented)
+        }
+        else if (s.equals("printStatistics"))
+        {
+            int numOrigClauses = kahina.getSatInstance().getSize();
+            PartitionBlockHandler blocks = kahina.getState().getPartitionBlocks();
+            MUCMetaInstance metaInstance = kahina.getState().getMetaInstance();
+            int uncompressedNumClauses = 0;
+            int uncompressedSumClauseLength = 0;
+            int compressedNumClauses = metaInstance.getSize();
+            int compressedSumClauseLength = 0;
+            for (int idx = 0; idx < compressedNumClauses; idx++)
+            {
+                compressedSumClauseLength += metaInstance.getClause(idx).size();
+                boolean isBlockDefinition = false;
+                int uncompressedClauseLength = 0;
+                for (int lit : metaInstance.getClause(idx))
+                {
+                    if (lit < -numOrigClauses) isBlockDefinition = true;
+                    if (lit > numOrigClauses)
+                    {
+                        uncompressedClauseLength += blocks.getBlock(lit - numOrigClauses).size();
+                    }
+                    else
+                    {
+                        uncompressedClauseLength++;
+                    }
+                }
+                if (!isBlockDefinition)
+                {
+                    uncompressedNumClauses++;
+                    uncompressedSumClauseLength += uncompressedClauseLength;
+                }
+            }
+            System.err.println("uncompressedNumClauses:\t" + uncompressedNumClauses);
+            System.err.println("uncompressedSumClauseLength:\t" + uncompressedSumClauseLength);
+            System.err.println("compressedNumClauses:\t" + compressedNumClauses);
+            System.err.println("compressedSumClauseLength:\t" + compressedSumClauseLength);
         }
     }
 }
