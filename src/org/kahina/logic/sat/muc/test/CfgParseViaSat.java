@@ -49,6 +49,7 @@ public class CfgParseViaSat
         {
             String sentence = in.nextLine();
             System.err.println("Parsing sentence: " + sentence);
+            if (sentence.length() == 0) continue;
             String[] words = sentence.split(" ");
             String filename = sentence.replace(' ', '-');
             CnfSatInstance instance = CfgToSatConverter.parsingToSat(cfg, words);
