@@ -39,13 +39,14 @@ import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.gui.MUCGUI;
 import org.kahina.logic.sat.muc.io.MUCExtension;
 import org.kahina.logic.sat.muc.test.AspCcgDontCareFilter;
+import org.kahina.logic.sat.muc.test.CfgDontCareFilter;
 import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.qtype.data.project.QTypeProject;
 import org.w3c.dom.Document;
 
 public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, KahinaProject>
 {
-    public static final boolean ASP_CCG_FILTER = false;
+    public static final boolean CFG_FILTER = true;
 
     public final Action LOAD_FILE_ACTION = new AbstractAction("Load SAT File")
     {
@@ -264,9 +265,9 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         System.err.println("  Instance Size: (" + satInstance.getSize() + "," + satInstance.getHighestVar() + ")");
         
         //TODO: allow the user to configure this filter
-        if (ASP_CCG_FILTER)
+        if (CFG_FILTER)
         {
-            satInstance.applyDontCareFilter(new AspCcgDontCareFilter(satInstance));
+            satInstance.applyDontCareFilter(new CfgDontCareFilter(satInstance));
         }
         
         stat = new MUCStatistics();
