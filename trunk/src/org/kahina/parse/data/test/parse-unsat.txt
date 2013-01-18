@@ -23,8 +23,8 @@ a young man likes
 every every man man
 
 sleeps cat the tree under
-tall man sleeps under a tree
-a tall man sleeps a tree
+man sleeps under a tree
+a man sleeps a tree
 a cat every man likes
 a young man mary likes 
 
@@ -44,7 +44,7 @@ a very man walks on every small street
 a young very woman likes an old man
 a believes woman she that likes every cat
 john that everybody sleeps in a small house
-cat small the sleeps under tree very tall a
+cat the sleeps under tree very tall a
 
 every young woman thinks that likes a young man
 she thinks every tall man likes a small dog
@@ -52,7 +52,7 @@ she thinks every tall man likes a small dog
 the man small sleeps under a tree in the street
 everybody that a very young man likes every young man
 
-thinks he that every young man sleeps a small house in 
+thinks he that every young man sleeps a small house in
 the man that every dog sleeps in a very small house
 
 the young woman that the believes young man an old man likes
