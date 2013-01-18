@@ -48,10 +48,12 @@ public class CfgParseViaSat
         while (in.hasNextLine())
         {
             String sentence = in.nextLine();
-            System.err.println("Parsing sentence: " + sentence);
             if (sentence.length() == 0) continue;
+            System.err.println("Parsing sentence: " + sentence);
             String[] words = sentence.split(" ");
             String filename = sentence.replace(' ', '-');
+            if (words.length < 10) filename = "0" + words.length + "_" + filename;
+            else filename = words.length + "_" + filename;
             CnfSatInstance instance = CfgToSatConverter.parsingToSat(cfg, words);
             File tempCnfFile = new File(tempDir + "/" + filename + ".cnf");
             File tempResultFile = new File(tempDir + "/cfg-parsing-tmp.res");
