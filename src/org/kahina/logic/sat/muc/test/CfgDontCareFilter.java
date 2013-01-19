@@ -15,11 +15,21 @@ public class CfgDontCareFilter extends ClauseFilter
     public boolean acceptsClause(int clauseID)
     {
         List<Integer> clause = instance.getClause(clauseID);
-        for (int literal : clause)
+        for (int i = 0; i < clause.size(); i++)
         {
-            String symbol = instance.getSymbolForLiteral(literal);
-            if (!symbol.contains("]:")) return false;
+            //distribution symbol in the consequent -> filter out (just a bridge var)
+            if (i > 1)
+            {
+                String symbol = instance.getSymbolForLiteral(clause.get(i));
+                if (symbol.contains(":")) return true;
+            }
         }
-        return true;
+        //select clauses of size two where both literals are negative
+        //(this makes the exclusivity of symbols implicit)
+        if (clause.size() == 2)
+        {
+            return (clause.get(0) < 0 && clause.get(1) < 0);
+        }
+        return false;
     }
 }
