@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.cnf.GroupCnfSatInstance;
@@ -20,13 +22,14 @@ import org.kahina.logic.sat.muc.io.MUCExtension;
 
 public class MinUnsatCore
 {
-    public static boolean kahina = true;
+    public static boolean kahina = false;
     
     public static void computeMUC(String sourceFileName, String targetFileName, boolean group, long timeout)
     {
         long startTime = System.currentTimeMillis();
         MiniSATFiles files = new MiniSATFiles();
         files.sourceFile = new File(sourceFileName);
+        files.createExtendedFile(targetFileName);
         files.createTargetFile(targetFileName);
         files.createTempFiles(targetFileName);
         MUCStatistics stat = new MUCStatistics();
@@ -41,11 +44,11 @@ public class MinUnsatCore
         }
         computeMUC(files, stat, startTime, timeout, group);
         stat.runtime = System.currentTimeMillis() - startTime;
-        stat.printNicely(files.targetFile);
+        //stat.printNicely(files.targetFile);
         files.deleteTempFiles();
-        System.err.println("SAT Solver Calls: " + stat.numSATCalls);
-        System.err.println("Initial number of relevant assumptions: " + stat.initNumRelAsm);
-        System.err.println("Decrease in number of relevant assumptions: " + (stat.initNumRelAsm - stat.mucSize - stat.mucCandSize));
+        //System.err.println("SAT Solver Calls: " + stat.numSATCalls);
+        //System.err.println("Initial number of relevant assumptions: " + stat.initNumRelAsm);
+        //System.err.println("Decrease in number of relevant assumptions: " + (stat.initNumRelAsm - stat.mucSize - stat.mucCandSize));
     }
 
     private static void computeMUC(MiniSATFiles files, MUCStatistics stat, long startTime, long timeout, boolean group)
@@ -72,7 +75,7 @@ public class MinUnsatCore
         }
         Integer howmuchsmaller = 0, alreadyused = -10, rel_asm_last = 0;
         List<Integer> muc_cands = new ArrayList<Integer>();
-        List<Integer> muc = new ArrayList<Integer>();
+        TreeSet<Integer> muc = new TreeSet<Integer>();
         int[] freezeVariables = new int[stat.numVarsExtended - stat.highestID];
         Arrays.fill(freezeVariables, 1);
         try
@@ -88,7 +91,7 @@ public class MinUnsatCore
             System.err.println("Timeout: " + files.sourceFile.getAbsolutePath());
             if (!kahina) System.exit(0);
         }
-        System.out.println("Solver finished");
+        //System.out.println("Solver finished");
         // if unsatisfiable
         if (MiniSAT.wasUnsatisfiable())
         {
@@ -112,7 +115,7 @@ public class MinUnsatCore
                     //do not use any timeout when using kahina!
                     if (!kahina) return;
                 }
-                System.out.println("");
+                //System.out.println("");
 
                 Integer k = 0;
                 if (kahina)
@@ -135,13 +138,14 @@ public class MinUnsatCore
                 }
                 else
                 {
-                    k = muc_cands.get(muc_cands.size() - 1);
+                    //k = muc_cands.get(muc_cands.size() - 1);
+                    k = muc_cands.get((int) (Math.random() * muc_cands.size())); 
                 }
-                System.out.println("Tested Clause: " + k);
+                System.err.println("Tested Clause: " + k);
                 if (alreadyused == k)
                 {
-                    System.out.println("should not happen");
-                    System.out.println(howmuchsmaller);
+                    System.err.println("alreadused == k, which should not happen");
+                    System.err.println(howmuchsmaller);
                     System.exit(0);
                 }
                 alreadyused = k;
@@ -161,8 +165,8 @@ public class MinUnsatCore
                     System.err.println("Timeout: " + files.sourceFile.getAbsolutePath());
                     System.exit(0);
                 }
-                System.err.println("DauerSolver: " + (System.currentTimeMillis() - time2));
-                System.err.flush();
+                //System.err.println("DauerSolver: " + (System.currentTimeMillis() - time2));
+                //System.err.flush();
                 stat.numSATCalls++;
                 // if satisfiable
                 if (!MiniSAT.wasUnsatisfiable())
@@ -203,14 +207,15 @@ public class MinUnsatCore
         }
         stat.mucSize = muc.size();
         stat.mucCandSize = muc_cands.size();
-        System.err.println("Minimization complete! howmuchsmaller = " + howmuchsmaller);
+        System.err.println("Minimization complete! mucSize = " + muc.size());
+        System.err.println("Minimization complete! muc = " + muc.toString());
         while (kahina)
         {
             getNextMUCInstruction(bridge);
         }
     }
 
-    private static void changeFreezeVariables(int[] freezeVariables, List<Integer> muc_cands, List<Integer> muc)
+    private static void changeFreezeVariables(int[] freezeVariables, List<Integer> muc_cands, Set<Integer> muc)
     {
         Arrays.fill(freezeVariables, 1);
         for (Integer a : muc_cands)
@@ -222,63 +227,6 @@ public class MinUnsatCore
             freezeVariables[a] = -1;
         }
 
-    }
-
-
-    
-    //wrapper class for the file objects that need to be handed around
-    private static class Files
-    {
-        File sourceFile;
-        File targetFile;
-        File tmpFile;
-        File tmpResultFile;
-        File tmpProofFile;
-        File tmpFreezeFile;
-        
-        private void createTargetFile(String targetFileName)
-        {
-            targetFile = new File(targetFileName);
-            try
-            {
-                targetFile.createNewFile();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-                System.err.println("IO error: failed to create target file");
-                System.exit(0);
-            }
-        }
-        
-        public void createTempFiles(String targetFileName)
-        {
-            tmpFile = new File(targetFileName.concat("tmp"));
-            tmpResultFile = new File(targetFileName.concat("erg"));
-            tmpProofFile = new File(targetFileName.concat("bw"));
-            tmpFreezeFile = new File(targetFileName.concat("fr"));
-            try
-            {
-                tmpFile.createNewFile();
-                tmpResultFile.createNewFile();
-                tmpProofFile.createNewFile();
-                tmpFreezeFile.createNewFile();
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-                System.err.println("IO error: failed to create temporary files");
-                System.exit(0);
-            }
-        }
-        
-        public void deleteTempFiles()
-        {
-            tmpFile.delete();
-            tmpResultFile.delete();
-            tmpProofFile.delete();
-            tmpFreezeFile.delete();
-        }
     }
     
     private static MUCInstruction getNextMUCInstruction(MUCBridge bridge)
