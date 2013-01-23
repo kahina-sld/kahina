@@ -56,9 +56,9 @@ public class NecessaryClauseStatistics
             
             MiniSATFiles files = new MiniSATFiles();
             files.sourceFile = new File(fileName);
-            files.createTargetFile("test-target");
-            files.createExtendedFile("test-target");
-            files.createTempFiles("test-target-seed");
+            files.createTargetFile(files.sourceFile.getParent() + "/trg-" + files.sourceFile.getName());
+            files.createExtendedFile(files.sourceFile.getParent() + "/ext-" + files.sourceFile.getName());
+            files.createTempFiles(files.sourceFile.getParent() + "/ext-" + files.sourceFile.getName());
             
             MUCExtension.extendCNFBySelVars(files.sourceFile, files.tmpFile, stat);
             
@@ -102,26 +102,35 @@ public class NecessaryClauseStatistics
             }
         }
         //System.err.println("freezeVars: " + Arrays.toString(freezeVariables));
-        MiniSAT.createFreezeFile(freezeVariables, files.tmpFreezeFile, instance.getHighestVar() + 1);
+        File freezeFile = new File(files.sourceFile.getParent() + "/ext-" + files.sourceFile.getName() + ".red" + candidate + ".freeze");
+        MiniSAT.createFreezeFile(freezeVariables, freezeFile, instance.getHighestVar() + 1);
         try
         {
-            MiniSAT.solve(files.tmpFile, files.tmpProofFile, files.tmpResultFile, files.tmpFreezeFile);
-            boolean wasUnsatisfiable = MiniSAT.wasUnsatisfiable();
-            //delete temporary files
-            //files.deleteTempFiles();
-            if (wasUnsatisfiable)
+            MiniSAT.solve(files.tmpFile, files.tmpProofFile, files.tmpResultFile, freezeFile);
+            Boolean wasUnsatisfiable = MiniSAT.wasUnsatisfiable();
+            if (wasUnsatisfiable != null)
             {
-                return false;
+                //delete temporary files
+                files.deleteTempFiles();
+                freezeFile.delete();
+                if (wasUnsatisfiable)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+                //System.err.println("reducedCore: " + reducedCore);
+                /*if (modelRotation)
+                {
+                    model = MiniSAT.getCompleteModel(files.tmpResultFile);
+                }*/
             }
             else
             {
-                return true;
+                return false;
             }
-            //System.err.println("reducedCore: " + reducedCore);
-            /*if (modelRotation)
-            {
-                model = MiniSAT.getCompleteModel(files.tmpResultFile);
-            }*/
         }
         catch (InterruptedException e)
         {
