@@ -17,10 +17,14 @@ public class CfgDontCareFilter extends ClauseFilter
         List<Integer> clause = instance.getClause(clauseID);
         for (int i = 0; i < clause.size(); i++)
         {
-            //distribution symbol in the consequent -> filter out (just a bridge var)
-            if (i > 1)
+            String symbol = instance.getSymbolForLiteral(clause.get(i));
+            if (i == 0)
             {
-                String symbol = instance.getSymbolForLiteral(clause.get(i));
+                if (clause.size() == 2 && symbol.contains("->") && !symbol.contains(":")) return true;
+            }
+            if (i > 0)
+            {              
+                //distribution symbol in the consequent -> filter out (just a bridge var)
                 if (symbol.contains(":")) return true;
             }
         }
