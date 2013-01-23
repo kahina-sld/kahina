@@ -285,7 +285,7 @@ public class MiniSAT
     {
         try
         {
-            Process p = Runtime.getRuntime().exec("minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
+            Process p = Runtime.getRuntime().exec("/home/kahina/pro/dpl/sfw/minisat-muc/minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             // Set a timer to interrupt the process if it does not return within
             // the timeout period
@@ -356,7 +356,7 @@ public class MiniSAT
     }
 
     //checks result file to see whether the last SAT problem was unsatisfiable
-    public static boolean wasUnsatisfiable()
+    public static Boolean wasUnsatisfiable()
     {
         BufferedReader input;
         try
@@ -384,8 +384,8 @@ public class MiniSAT
             System.err.println("IOfailed testunsatisfiable");
             System.exit(0);
         }
-        System.err.println("ERROR: Result file says neither SAT nor UNSAT! Assuming SAT!");
-        return false;
+        System.err.println("ERROR: Result file says neither SAT nor UNSAT! Returning null!");
+        return null;
     }
     
     //gets the model from a result file in case of SAT, null if UNSAT
