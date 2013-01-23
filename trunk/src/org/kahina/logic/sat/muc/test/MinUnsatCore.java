@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -23,6 +25,94 @@ import org.kahina.logic.sat.muc.io.MUCExtension;
 public class MinUnsatCore
 {
     public static boolean kahina = false;
+    public static final boolean VERBOSE = false;
+    
+    public static List<Integer> computeRandomMUCs(int numMUCs, String sourceFileName, String targetFileName, boolean group, long timeout)
+    {
+        List<Integer> sizes = new LinkedList<Integer>();
+        HashSet<String> agenda = new HashSet<String>();
+        long startTime = System.currentTimeMillis();
+        MiniSATFiles files = new MiniSATFiles();
+        files.sourceFile = new File(sourceFileName);
+        files.createExtendedFile(targetFileName);
+        files.createTargetFile(targetFileName);
+        files.createTempFiles(targetFileName);
+        MUCStatistics stat = new MUCStatistics();
+        stat.instanceName = files.sourceFile.getName();
+        if (!group)
+        {
+            MUCExtension.extendCNFBySelVars(files.sourceFile, files.tmpFile, stat);
+        }
+        else
+        {
+            MUCExtension.extendGroupCNFBySelVars(files.sourceFile, files.tmpFile, stat);
+        }
+        Set<Integer> stillToTryClauses = new HashSet<Integer>();
+        for (int i = 0; i < stat.numClausesOrGroups; i++)
+        {
+            stillToTryClauses.add(i);
+        }
+        List<Integer> unknownStateClauses = new LinkedList<Integer>();
+        for (int i = 0; i < stat.numClausesOrGroups; i++)
+        {
+            unknownStateClauses.add(i);
+        }
+        HashSet<Integer> knownToBeCritical = new HashSet<Integer>();
+        for (int i = 0; i < numMUCs; i++)
+        {  
+            int reductionIndex = 0;
+            if (unknownStateClauses.size() == 0)
+            {
+                if (stillToTryClauses.size() == 0)
+                {
+                    return sizes;
+                }
+                reductionIndex = (int) (Math.random() * stat.numClausesOrGroups);
+            }
+            else
+            {
+                reductionIndex = unknownStateClauses.get((int) (Math.random() * unknownStateClauses.size()));
+            }
+            stillToTryClauses.remove(new Integer(reductionIndex));
+            //System.err.println("unkownState: " + unknownStateClauses.size() + " stillToTry: " + stillToTryClauses.size());
+            if (VERBOSE) System.err.print("Reducing index " + reductionIndex + " ... ");
+            TreeSet<Integer> mus = computeMUC(files, stat, startTime, timeout, group, reductionIndex);
+            if (mus != null)
+            {
+                if (mus.size() == 0)
+                {
+                    if (VERBOSE) System.err.println(" satisfiable! Repeat ...");
+                    knownToBeCritical.add(reductionIndex);
+                    unknownStateClauses.remove(new Integer(reductionIndex));
+                    i--;
+                }
+                else
+                {
+                    if (VERBOSE) System.err.println(" MUS size " + mus.size());
+                    if (!agenda.contains(mus.toString()))
+                    {
+                        sizes.add(mus.size());
+                        agenda.add(mus.toString());
+                    }
+                    for (int j = 0; j < unknownStateClauses.size(); j++)
+                    {
+                        if (!mus.contains(unknownStateClauses.get(j)))
+                        {     
+                            unknownStateClauses.remove(j);
+                            j--;
+                        }
+                    }
+                }
+            }
+        }
+        stat.runtime = System.currentTimeMillis() - startTime;
+        //stat.printNicely(files.targetFile);
+        files.deleteTempFiles();
+        //System.err.println("SAT Solver Calls: " + stat.numSATCalls);
+        //System.err.println("Initial number of relevant assumptions: " + stat.initNumRelAsm);
+        //System.err.println("Decrease in number of relevant assumptions: " + (stat.initNumRelAsm - stat.mucSize - stat.mucCandSize));
+        return sizes;
+    }
     
     public static void computeMUC(String sourceFileName, String targetFileName, boolean group, long timeout)
     {
@@ -42,7 +132,12 @@ public class MinUnsatCore
         {
             MUCExtension.extendGroupCNFBySelVars(files.sourceFile, files.tmpFile, stat);
         }
-        computeMUC(files, stat, startTime, timeout, group);
+        List<Integer> unknownStateClauses = new LinkedList<Integer>();
+        for (int i = 0; i < stat.numClausesOrGroups; i++)
+        {
+            unknownStateClauses.add(i);
+        }
+        computeMUC(files, stat, startTime, timeout, group, unknownStateClauses.get((int) (Math.random() * unknownStateClauses.size())));
         stat.runtime = System.currentTimeMillis() - startTime;
         //stat.printNicely(files.targetFile);
         files.deleteTempFiles();
@@ -51,7 +146,7 @@ public class MinUnsatCore
         //System.err.println("Decrease in number of relevant assumptions: " + (stat.initNumRelAsm - stat.mucSize - stat.mucCandSize));
     }
 
-    private static void computeMUC(MiniSATFiles files, MUCStatistics stat, long startTime, long timeout, boolean group)
+    private static TreeSet<Integer> computeMUC(MiniSATFiles files, MUCStatistics stat, long startTime, long timeout, boolean group, int firstReduction)
     {
         MUCBridge bridge = null;
         if (kahina)
@@ -78,6 +173,7 @@ public class MinUnsatCore
         TreeSet<Integer> muc = new TreeSet<Integer>();
         int[] freezeVariables = new int[stat.numVarsExtended - stat.highestID];
         Arrays.fill(freezeVariables, 1);
+        freezeVariables[firstReduction] = -1;
         try
         {
             MiniSAT.createFreezeFile(freezeVariables, files.tmpFreezeFile, stat.highestID + 1);
@@ -98,6 +194,7 @@ public class MinUnsatCore
             List<Integer> relevantAssumptions = MiniSAT.getRelevantAssumptions(freezeVariables, stat.highestID + 1);
             stat.initNumRelAsm = relevantAssumptions.size();
             rel_asm_last = relevantAssumptions.size();
+            if (VERBOSE) System.err.println("unsat: relAssumptions: " + relevantAssumptions);
             for (Integer a : relevantAssumptions)
             {
                 muc_cands.add(a);
@@ -113,7 +210,7 @@ public class MinUnsatCore
                 if ((System.currentTimeMillis() - startTime) > timeout)
                 {
                     //do not use any timeout when using kahina!
-                    if (!kahina) return;
+                    if (!kahina) return null;
                 }
                 //System.out.println("");
 
@@ -138,10 +235,12 @@ public class MinUnsatCore
                 }
                 else
                 {
-                    //k = muc_cands.get(muc_cands.size() - 1);
-                    k = muc_cands.get((int) (Math.random() * muc_cands.size())); 
+                    //int idx = muc_cands.get(muc_cands.size() - 1);
+                    
+                    int idx = (int) (Math.random() * muc_cands.size());
+                    k = muc_cands.get(idx); 
+                    if (VERBOSE) System.err.println("Tested Clause: " + k + " at " + (idx + 1) + "/" + muc_cands.size() + " " + muc_cands);
                 }
-                System.err.println("Tested Clause: " + k);
                 if (alreadyused == k)
                 {
                     System.err.println("alreadused == k, which should not happen");
@@ -149,7 +248,7 @@ public class MinUnsatCore
                     System.exit(0);
                 }
                 alreadyused = k;
-                muc_cands.remove(k);
+                muc_cands.remove(new Integer(k));
                 changeFreezeVariables(freezeVariables, muc_cands, muc);
                 long time2 = System.currentTimeMillis();
                 try
@@ -172,6 +271,7 @@ public class MinUnsatCore
                 if (!MiniSAT.wasUnsatisfiable())
                 {
                     muc.add(k);
+                    if (VERBOSE) System.err.println("sat!");
                     if (kahina)
                     {
                         bridge.registerSatisfiable();
@@ -185,6 +285,7 @@ public class MinUnsatCore
                     relevantAssumptions = MiniSAT.getRelevantAssumptions(freezeVariables, stat.highestID + 1);
                     stat.registerNumRemovedClauses(rel_asm_last - relevantAssumptions.size());
                     rel_asm_last = relevantAssumptions.size();
+                    if (VERBOSE) System.err.println("unsat: relAssumptions: " + relevantAssumptions);
                     muc_cands = new ArrayList<Integer>();
                     for (Integer a : relevantAssumptions)
                     {
@@ -203,30 +304,30 @@ public class MinUnsatCore
         }
         else
         {
-            System.err.println("Problem is satisfiable. No minimal unsatisfiable core available!");
+            //System.err.println("Problem is satisfiable. No minimal unsatisfiable core available!");
         }
         stat.mucSize = muc.size();
         stat.mucCandSize = muc_cands.size();
-        System.err.println("Minimization complete! mucSize = " + muc.size());
-        System.err.println("Minimization complete! muc = " + muc.toString());
+        //System.err.println("Minimization complete! mucSize = " + muc.size());
+        //System.err.println("Minimization complete! muc = " + muc.toString());
         while (kahina)
         {
             getNextMUCInstruction(bridge);
         }
+        return muc;
     }
 
     private static void changeFreezeVariables(int[] freezeVariables, List<Integer> muc_cands, Set<Integer> muc)
     {
-        Arrays.fill(freezeVariables, 1);
+        Arrays.fill(freezeVariables, -1);
         for (Integer a : muc_cands)
         {
-            freezeVariables[a] = -1;
+            freezeVariables[a] = 1;
         }
         for (Integer a : muc)
         {
-            freezeVariables[a] = -1;
+            freezeVariables[a] = 1;
         }
-
     }
     
     private static MUCInstruction getNextMUCInstruction(MUCBridge bridge)
@@ -261,7 +362,7 @@ public class MinUnsatCore
         {
             if (args[2].equals("0"))
             {
-                MinUnsatCore.computeMUC(args[0], args[1], false, 14400000);
+                MinUnsatCore.computeRandomMUCs(10, args[0], args[1], false, 14400000);
             }
             else
             {
