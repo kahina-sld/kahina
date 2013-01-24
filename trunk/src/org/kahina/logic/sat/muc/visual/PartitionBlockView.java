@@ -32,6 +32,8 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
     //cash state of current block here during recalculation
     List<Integer> lineStatus;
     
+    BlockContentSummarizer summarizer;
+    
     public PartitionBlockView(MUCInstance kahina)
     {
         super(kahina);
@@ -40,10 +42,17 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
         this.listModel = new DefaultListModel();
         this.statusColorEncoding = new HashMap<Integer, Color>();
         this.lineStatus = new LinkedList<Integer>();
+        this.summarizer = new BlockContentSummarizer(kahina.getSatInstance());
     }
     
     public void doDisplay()
     {
+        recalculate();
+    }
+    
+    public void setBlockContentSummarizer(BlockContentSummarizer summarizer)
+    {
+        this.summarizer = summarizer;
         recalculate();
     }
     
@@ -140,16 +149,7 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
             currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
             for (TreeSet<Integer> block : model.retrieveBlocks())
             {
-                StringBuilder s = new StringBuilder();
-                s.append("[");
-                for (Integer literal : block)
-                {
-                    s.append(literal);
-                    s.append(',');
-                }
-                s.deleteCharAt(s.length() - 1);
-                s.append(']');
-                listModel.addElement(s.toString());
+                listModel.addElement(summarizer.buildBlockSummary(block));
                 lineStatus.add(currentStep.relationToBlock(block));
             }
         }
