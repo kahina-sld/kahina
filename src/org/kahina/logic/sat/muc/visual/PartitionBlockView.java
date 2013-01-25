@@ -42,11 +42,11 @@ public class PartitionBlockView extends KahinaView<PartitionBlockHandler>
         this.listModel = new DefaultListModel();
         this.statusColorEncoding = new HashMap<Integer, Color>();
         this.lineStatus = new LinkedList<Integer>();
-        this.summarizer = new BlockContentSummarizer(kahina.getSatInstance());
     }
     
     public void doDisplay()
     {
+        summarizer = new CfgBlockContentSummarizer(kahina.getSatInstance());
         recalculate();
     }
     

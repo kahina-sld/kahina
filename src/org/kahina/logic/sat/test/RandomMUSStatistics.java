@@ -56,7 +56,7 @@ public class RandomMUSStatistics
                     max = size;
                 }
             }   
-            System.err.println(sizes + " (" + min + "," + max + "," + (sum / 10) + ")");
+            System.err.println(sizes + " (" + min + "," + max + "," + (sum / sizes.size()) + ")");
         }
     }
 }
