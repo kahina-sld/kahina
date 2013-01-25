@@ -17,18 +17,25 @@ public class CfgBlockContentSummarizer extends BlockContentSummarizer
         s.append("[");
         if (block.size() < 3)
         {
-            for (Integer literal : block)
+            for (Integer clauseID : block)
             {
-                s.append(instance.getSymbolForLiteral(literal));
+                s.append("{");
+                for (int literal : instance.getClause(clauseID - 1))
+                {
+                    s.append(instance.getSymbolForLiteral(literal));
+                    s.append(',');
+                }
+                s.deleteCharAt(s.length() - 1);
+                s.append("}");
                 s.append(',');
             }
             s.deleteCharAt(s.length() - 1);
         }
         else
         {
-            for (Integer literal : block)
+            for (Integer clauseID : block)
             {
-                s.append(literal);
+                s.append(clauseID);
                 s.append(',');
             }
             s.deleteCharAt(s.length() - 1);

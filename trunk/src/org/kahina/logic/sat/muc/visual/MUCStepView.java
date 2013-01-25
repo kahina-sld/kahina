@@ -100,7 +100,7 @@ public class MUCStepView extends KahinaSatInstanceListView
                 StringBuilder s = new StringBuilder();
                 s.append(ic);
                 s.append(": {");
-                for (Integer literal : model.getClause(ic-1))
+                for (Integer literal : model.getClause(ic - 1))
                 {
                     s.append(kahina.getSatInstance().getSymbolForLiteral(literal));
                     s.append(',');

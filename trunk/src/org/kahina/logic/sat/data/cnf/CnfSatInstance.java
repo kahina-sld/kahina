@@ -42,7 +42,7 @@ public class CnfSatInstance extends KahinaSatInstance
     //literals -> clauses; important for efficient computations
     protected Map<Integer,List<Integer>> occurrenceMap = null;
     
-    private boolean subsumptionCheck = false;
+    private boolean subsumptionCheck = true;
     
     //this tells KahinaSatInstanceListView whether it suffices to just append new clauses
     protected boolean needsRebuild = false;
@@ -110,7 +110,7 @@ public class CnfSatInstance extends KahinaSatInstance
                     }
                     for (int literal : clause)
                     {
-                        List<Integer> occurrences = occurrenceMap.get(clause);
+                        List<Integer> occurrences = occurrenceMap.get(literal);
                         if (occurrences == null)
                         {
                             occurrences = new LinkedList<Integer>();
@@ -213,14 +213,17 @@ public class CnfSatInstance extends KahinaSatInstance
      */
     public List<Integer> getSubsumedClauseIndices(List<Integer> clause)
     {
+        System.err.println("getSubsumedClauseIndices(" + clause + ")");
         int[] overlapSize = new int[clauseIDs.size()];
         for (int literal : clause)
         {
             List<Integer> occurrences = occurrenceMap.get(literal);
+            System.err.println("  occurrences(" + literal + ") = " + occurrences);
             if (occurrences != null)
             {
                 for (int clauseID : occurrences)
                 {
+                    System.err.println("    overlapSize[" + idToIdx(clauseID) + "]++");
                     overlapSize[idToIdx(clauseID)]++;
                 }
             }
@@ -228,10 +231,15 @@ public class CnfSatInstance extends KahinaSatInstance
         List<Integer> subsumedClauses = new LinkedList<Integer>();
         for (int i = 0; i < clauseIDs.size(); i++)
         {
-            if (overlapSize[i] == clause.size()) return null;
+            if (overlapSize[i] == clause.size())
+            {
+                System.err.println("  subsumedClauses.add(" + i + ")");
+                subsumedClauses.add(i);
+            }
             else if (overlapSize[i] == clauseStore.get(idxToId(i)).size())
             {
-                subsumedClauses.add(i);
+                System.err.println("  overlapSize[" + i + "] == clauseStore.get(" + idxToId(i) + ").size()!");
+                return null;
             }
         }
         return subsumedClauses;

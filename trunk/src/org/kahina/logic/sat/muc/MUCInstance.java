@@ -46,7 +46,7 @@ import org.w3c.dom.Document;
 
 public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, KahinaProject>
 {
-    public static final boolean CFG_FILTER = false;
+    public static final boolean CFG_FILTER = true;
 
     public final Action LOAD_FILE_ACTION = new AbstractAction("Load SAT File")
     {
