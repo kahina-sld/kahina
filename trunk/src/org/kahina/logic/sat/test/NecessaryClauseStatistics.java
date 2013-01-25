@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeoutException;
 
@@ -19,11 +20,11 @@ import org.kahina.logic.sat.muc.io.MUCExtension;
 
 public class NecessaryClauseStatistics
 {
-    public static final boolean VERBOSE = false;
+    public static final boolean VERBOSE = true;
     
     public static void main(String[] args)
     {
-        //TODO: enormous speedups are possible by exploiting reduction results and model rotation!
+        //TODO: enormous speedups would be possible by exploiting model rotation!
         
         if (args.length != 1)
         {
@@ -64,23 +65,38 @@ public class NecessaryClauseStatistics
             
             System.err.print(fileName + ": (" + origSize + "," + instance.getHighestVar() + ") -> ");
             
+            boolean[] statusKnown = new boolean[instance.getSize()];
+            
             for (int i = 1; i <= instance.getSize(); i++)
             {
-                if (isCritical(i,instance,files))
+                if (!statusKnown[i-1])
                 {
-                    if (VERBOSE) System.err.println("  clause " + i + " is critical!");
-                    numNecessaryClauses++;
-                }
-                else
-                {
-                    if (VERBOSE) System.err.println("  clause " + i + " unnecessary");
+                    List<Integer> prunedClauses = getPrunedClauses(i,instance,files);
+                    if (prunedClauses == null)
+                    {
+                        if (VERBOSE) System.err.println("  clause " + i + " is critical!");
+                        numNecessaryClauses++;
+                        statusKnown[i-1] = true;
+                    }
+                    else
+                    {
+                        if (VERBOSE) System.err.println("  clause " + i + " unnecessary");
+                        for (int j = i; j <= instance.getSize(); j++)
+                        {
+                            if (!statusKnown[j-1] && !prunedClauses.contains(j))
+                            {
+                                if (VERBOSE) System.err.println("    fall-away clause " + j);
+                                statusKnown[j-1] = true;
+                            }
+                        }
+                    }
                 }
             }        
             System.err.println(numNecessaryClauses);  
         }
     }
     
-    public static boolean isCritical(int candidate, CnfSatInstance instance, MiniSATFiles files)
+    public static List<Integer> getPrunedClauses(int candidate, CnfSatInstance instance, MiniSATFiles files)
     {
         files.createTempFiles(files.sourceFile.getName() + candidate);
         //set the freeze variables (TODO: avoid generating the different lists first)
@@ -110,16 +126,17 @@ public class NecessaryClauseStatistics
             Boolean wasUnsatisfiable = MiniSAT.wasUnsatisfiable();
             if (wasUnsatisfiable != null)
             {
+                List<Integer> assumptions = MiniSAT.getRelevantAssumptions(instance.getHighestVar() + 1, files.tmpProofFile);
                 //delete temporary files
                 files.deleteTempFiles();
                 freezeFile.delete();
                 if (wasUnsatisfiable)
                 {
-                    return false;
+                    return assumptions;
                 }
                 else
                 {
-                    return true;
+                    return null;
                 }
                 //System.err.println("reducedCore: " + reducedCore);
                 /*if (modelRotation)
@@ -129,18 +146,18 @@ public class NecessaryClauseStatistics
             }
             else
             {
-                return false;
+                return null;
             }
         }
         catch (InterruptedException e)
         {
             System.err.println("ERROR: InterruptedException while executing UC reduction task!");
-            return false;
+            return null;
         }
         catch (TimeoutException e)
         {
             System.err.println("ERROR: TimeoutException while executing UC reduction task!");
-            return false;
+            return null;
         }
     }
 }
