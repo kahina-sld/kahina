@@ -39,6 +39,11 @@ public class MetaInstanceViewContextMenu extends JPopupMenu
         printStatisticsItem.addActionListener(l);
         add(printStatisticsItem);
         
+        JMenuItem refreshItem = new JMenuItem("Refresh View");
+        refreshItem.setActionCommand("refresh");
+        refreshItem.addActionListener(l);
+        add(refreshItem);
+        
         /*JMenuItem strengthenWedgeItem = new JMenuItem("Strengthen this wedge");
         strengthenWedgeItem.setActionCommand("strengthenWedge" + listIndex);
         strengthenWedgeItem.addActionListener(l);

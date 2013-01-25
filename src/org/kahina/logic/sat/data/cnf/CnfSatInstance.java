@@ -101,6 +101,8 @@ public class CnfSatInstance extends KahinaSatInstance
                     clauseStore.put(maxClauseID + 1, clause); 
                     maxClauseID++;
                     clauseIDs.add(maxClauseID);
+                    System.err.println("added clause " + maxClauseID + ": " + clause);
+                    System.err.println("  clauseIDs = " + clauseIDs);
                     reverseConversionTable.put(maxClauseID, clauseIDs.size() - 1);
                     int offset = 0;
                     for (int subsumedClauseIdx : subsumedClausesIdcs)
@@ -125,6 +127,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 else
                 {
                     //clause is subsumed by an existing clause, we do not add it
+                    System.err.println("clause " + clause + " was subsumed, not added!");
                     return -1;
                 }
             }
@@ -179,10 +182,12 @@ public class CnfSatInstance extends KahinaSatInstance
      */
     public void removeClauseIndex(int clauseIndex)
     {
-        //System.err.println("removeClauseIndex(" + clauseIndex + ")");
+        System.err.println("removeClauseIndex(" + clauseIndex + ")");
         //delete the information and table entries about the removed clause
         int removedClauseID = clauseIDs.remove(clauseIndex);
+        System.err.println("  removedClauseID = " + removedClauseID);
         List<Integer> removedClause = clauseStore.remove(removedClauseID);
+        System.err.println("  removedClause = " + removedClause);
         reverseConversionTable.remove(removedClauseID);
         if (occurrenceMap != null)
         {
@@ -194,7 +199,7 @@ public class CnfSatInstance extends KahinaSatInstance
         //adapt the other entries in the index <-> ID table
         for (int i = clauseIndex; i < clauseIDs.size(); i++)
         {
-            //System.err.println("reverseConversionTable.put(idxToId(" + i + "), " + (i-1) + ")");
+            System.err.println("reverseConversionTable.put(" + idxToId(i) + "), " + i + ")");
             reverseConversionTable.put(idxToId(i), i);
         }
         /*System.err.println("reverseConversionTable.remove(idxToId(" + (clauseIDs.size() - 1) + "))");
@@ -885,6 +890,7 @@ public class CnfSatInstance extends KahinaSatInstance
             return false;
         }
     }
+    
     
     public boolean needsRebuild()
     {

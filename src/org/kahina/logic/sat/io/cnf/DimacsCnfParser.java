@@ -65,7 +65,7 @@ public class DimacsCnfParser
                 {
                     for (int i = 0; i < tokens.length; i++)
                     {
-                        //System.err.println("  token #" + i + ": " + tokens[i]);
+                        System.err.println("  token #" + i + ": " + tokens[i]);
                         Integer literal = Integer.parseInt(tokens[i]);
                         if (literal == 0)
                         {
@@ -77,8 +77,7 @@ public class DimacsCnfParser
                         {
                             currentClause.add(literal);
                         }
-                    }
-                   
+                    }      
                 }
             }
         }

@@ -117,5 +117,12 @@ public class MetaInstanceViewListener  extends MouseAdapter implements ActionLis
             System.err.println("compressedNumClauses:\t" + compressedNumClauses);
             System.err.println("compressedSumClauseLength:\t" + compressedSumClauseLength);
         }
+        else if (s.equals("refresh"))
+        {
+            view.view.getModel().announceChangedClauses();
+            view.view.requireRedraw();
+            view.view.recalculate();
+            view.updateDisplay();
+        }
     }
 }
