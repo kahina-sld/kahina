@@ -101,8 +101,8 @@ public class CnfSatInstance extends KahinaSatInstance
                     clauseStore.put(maxClauseID + 1, clause); 
                     maxClauseID++;
                     clauseIDs.add(maxClauseID);
-                    System.err.println("added clause " + maxClauseID + ": " + clause);
-                    System.err.println("  clauseIDs = " + clauseIDs);
+                    //System.err.println("added clause " + maxClauseID + ": " + clause);
+                    //System.err.println("  clauseIDs = " + clauseIDs);
                     reverseConversionTable.put(maxClauseID, clauseIDs.size() - 1);
                     int offset = 0;
                     for (int subsumedClauseIdx : subsumedClausesIdcs)
@@ -127,7 +127,7 @@ public class CnfSatInstance extends KahinaSatInstance
                 else
                 {
                     //clause is subsumed by an existing clause, we do not add it
-                    System.err.println("clause " + clause + " was subsumed, not added!");
+                    //System.err.println("clause " + clause + " was subsumed, not added!");
                     return -1;
                 }
             }
@@ -182,12 +182,12 @@ public class CnfSatInstance extends KahinaSatInstance
      */
     public void removeClauseIndex(int clauseIndex)
     {
-        System.err.println("removeClauseIndex(" + clauseIndex + ")");
+        //System.err.println("removeClauseIndex(" + clauseIndex + ")");
         //delete the information and table entries about the removed clause
         int removedClauseID = clauseIDs.remove(clauseIndex);
-        System.err.println("  removedClauseID = " + removedClauseID);
+        //System.err.println("  removedClauseID = " + removedClauseID);
         List<Integer> removedClause = clauseStore.remove(removedClauseID);
-        System.err.println("  removedClause = " + removedClause);
+        //System.err.println("  removedClause = " + removedClause);
         reverseConversionTable.remove(removedClauseID);
         if (occurrenceMap != null)
         {
@@ -199,7 +199,7 @@ public class CnfSatInstance extends KahinaSatInstance
         //adapt the other entries in the index <-> ID table
         for (int i = clauseIndex; i < clauseIDs.size(); i++)
         {
-            System.err.println("reverseConversionTable.put(" + idxToId(i) + "), " + i + ")");
+            //System.err.println("reverseConversionTable.put(" + idxToId(i) + "), " + i + ")");
             reverseConversionTable.put(idxToId(i), i);
         }
         /*System.err.println("reverseConversionTable.remove(idxToId(" + (clauseIDs.size() - 1) + "))");
@@ -218,17 +218,17 @@ public class CnfSatInstance extends KahinaSatInstance
      */
     public List<Integer> getSubsumedClauseIndices(List<Integer> clause)
     {
-        System.err.println("getSubsumedClauseIndices(" + clause + ")");
+        //System.err.println("getSubsumedClauseIndices(" + clause + ")");
         int[] overlapSize = new int[clauseIDs.size()];
         for (int literal : clause)
         {
             List<Integer> occurrences = occurrenceMap.get(literal);
-            System.err.println("  occurrences(" + literal + ") = " + occurrences);
+            //System.err.println("  occurrences(" + literal + ") = " + occurrences);
             if (occurrences != null)
             {
                 for (int clauseID : occurrences)
                 {
-                    System.err.println("    overlapSize[" + idToIdx(clauseID) + "]++");
+                    //System.err.println("    overlapSize[" + idToIdx(clauseID) + "]++");
                     overlapSize[idToIdx(clauseID)]++;
                 }
             }
@@ -238,12 +238,12 @@ public class CnfSatInstance extends KahinaSatInstance
         {
             if (overlapSize[i] == clause.size())
             {
-                System.err.println("  subsumedClauses.add(" + i + ")");
+                //System.err.println("  subsumedClauses.add(" + i + ")");
                 subsumedClauses.add(i);
             }
             else if (overlapSize[i] == clauseStore.get(idxToId(i)).size())
             {
-                System.err.println("  overlapSize[" + i + "] == clauseStore.get(" + idxToId(i) + ").size()!");
+                //System.err.println("  overlapSize[" + i + "] == clauseStore.get(" + idxToId(i) + ").size()!");
                 return null;
             }
         }

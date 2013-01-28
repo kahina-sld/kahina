@@ -57,7 +57,7 @@ public class KahinaLogger
         }
     }
     
-    public void startMeasuring()
+    public synchronized void startMeasuring()
     {
         if (loggingEnabled)
         {
@@ -66,7 +66,7 @@ public class KahinaLogger
         }
     }
     
-    public void endMeasuring(String message)
+    public synchronized void endMeasuring(String message)
     {
         if (loggingEnabled)
         {
