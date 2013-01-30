@@ -97,7 +97,6 @@ public class MUCStepView extends KahinaSatInstanceListView
             currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
             for (int ic : currentStep.getUc())
             {
-                System.err.println("currentStep.getUc() " + currentStep.getUc());
                 StringBuilder s = new StringBuilder();
                 s.append(ic);
                 s.append(": {");
