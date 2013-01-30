@@ -460,11 +460,11 @@ public class MUCState extends KahinaState
         //System.err.println("Learned Units: " + learnedUnits);
         for (int learnedUnit : learnedUnits)
         {
-            //TODO: extend this to positive units as soon as we can learn them!
-            if (learnedUnit < 0  && uc.getUc().contains(-learnedUnit))
+            //TODO: extend this to negative units as soon as we can learn them!
+            if (learnedUnit > 0  && uc.getUc().contains(learnedUnit))
             {
                 if (VERBOSE) System.err.print(learnedUnit + " ");
-                uc.setRemovalLink(-learnedUnit, -1);
+                uc.setRemovalLink(learnedUnit, -1);
             }
         }
         if (VERBOSE) System.err.println();

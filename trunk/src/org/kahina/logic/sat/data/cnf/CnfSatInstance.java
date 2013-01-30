@@ -42,7 +42,7 @@ public class CnfSatInstance extends KahinaSatInstance
     //literals -> clauses; important for efficient computations
     protected Map<Integer,List<Integer>> occurrenceMap = null;
     
-    private boolean subsumptionCheck = true;
+    private boolean subsumptionCheck = false;
     
     //this tells KahinaSatInstanceListView whether it suffices to just append new clauses
     protected boolean needsRebuild = false;
@@ -427,6 +427,7 @@ public class CnfSatInstance extends KahinaSatInstance
             if (VERBOSE) System.err.println("    #fulfilled:   " + fulfilledClauseIDs.size());
         }
         if (VERBOSE) System.err.println("  Output: " + derivedUnits);
+        System.err.println("Criticality Propagation Output: " + derivedUnits);
         return derivedUnits;
     }
     
