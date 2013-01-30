@@ -18,7 +18,7 @@ public class MUCMainWindow extends KahinaMainWindow
 
     protected void addMenusInFront()
     {
-        menuBar.add(new MUCFileMenu((MUCInstance) kahina));
+        //menuBar.add(new MUCFileMenu((MUCInstance) kahina));
         menuBar.add(new MUCInstanceMenu((MUCInstance) kahina));
     }
 }
