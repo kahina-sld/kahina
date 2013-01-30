@@ -211,7 +211,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     @Override
     public String getApplicationName()
     {
-        return "Interactive MUS Extractor";
+        return "MUStICCa";
     }
     
     protected void processNewProject()

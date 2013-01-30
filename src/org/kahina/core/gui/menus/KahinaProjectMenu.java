@@ -70,7 +70,7 @@ public class KahinaProjectMenu extends JMenu
 		
         this.addSeparator();
         
-        JMenuItem quitItem = new JMenuItem("Quit Kahina");
+        JMenuItem quitItem = new JMenuItem("Quit");
         quitItem.setActionCommand("quit");
         quitItem.addActionListener(defaultListener);
         this.add(quitItem);
