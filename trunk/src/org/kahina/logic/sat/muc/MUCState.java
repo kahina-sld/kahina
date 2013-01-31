@@ -369,7 +369,7 @@ public class MUCState extends KahinaState
         }
     }
     
-    public synchronized void modelRotation(CompleteAssignment model, int ucID, int transClID)
+    public synchronized void modelRotation(CompleteAssignment model, int ucID, int transClID, TreeSet<Integer> derivedCritical)
     {
         if (VERBOSE) System.err.println("modelRotation(model," + ucID + "," + transClID + ")");
         for (int literal : satInstance.getClause(transClID))
@@ -398,6 +398,7 @@ public class MUCState extends KahinaState
             }
             if (singleTransClForFlippedModel != -1)
             {
+               derivedCritical.add(singleTransClForFlippedModel);
                if (VERBOSE) System.err.println("Meta learning in node " + ucID + ": " + singleTransClForFlippedModel + " is part of MUC!");
                //the transition clause associated with the new model must be part of the MUS
                uc.setRemovalLink(singleTransClForFlippedModel, -1);
@@ -420,7 +421,7 @@ public class MUCState extends KahinaState
                    learnMetaClause(metaClause);
                }
                //recursive case: continue with the modified model
-               modelRotation(model,ucID,singleTransClForFlippedModel);
+               modelRotation(model,ucID,singleTransClForFlippedModel,derivedCritical);
             }
             else
             {
