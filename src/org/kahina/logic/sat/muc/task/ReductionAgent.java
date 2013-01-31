@@ -115,7 +115,9 @@ public class ReductionAgent extends KahinaTaskManager
                     //model rotation if only one candidate was reduced, and the task was configured to apply MR
                     if (ucTask.usesModelRotation() && ucTask.candidates.size() == 1)
                     {
-                        state.modelRotation(ucTask.getModel(), ucID, ucTask.candidates.get(0));
+                        TreeSet<Integer> derivedCritical = new TreeSet<Integer>();
+                        state.modelRotation(ucTask.getModel(), ucID, ucTask.candidates.get(0), derivedCritical);
+                        System.err.println("  model rotation yields additional critical clauses " + derivedCritical);
                     }
                     //System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clause " + ucTask.candidate + " at step " + ucID + " led to satisfiable instance! No change!");
                 }

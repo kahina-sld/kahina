@@ -38,8 +38,9 @@ public class MUCReductionManager extends KahinaTaskManager
                 int resultID = -1;
                 //attempt was unsuccessful
                 if (ucTask.uc == result)
-                {
+                {        
                     resultID = ucTask.ucID;
+                    System.err.println("failed reduction attempt: clause(s) " + ucTask.candidates + " in US " + resultID);
                     //uc and ucID just stay the same
                     if (!kahina.getState().usesMetaLearning())
                     {
@@ -66,12 +67,15 @@ public class MUCReductionManager extends KahinaTaskManager
                     //model rotation if only one candidate was reduced, and the task was configured to apply MR
                     if (ucTask.usesModelRotation() && ucTask.candidates.size() == 1)
                     {
-                        state.modelRotation(ucTask.getModel(), ucTask.ucID, ucTask.candidates.get(0));
+                        TreeSet<Integer> derivedCritical = new TreeSet<Integer>();
+                        state.modelRotation(ucTask.getModel(), ucTask.ucID, ucTask.candidates.get(0), derivedCritical);
+                        System.err.println("  model rotation yields additional critical clauses " + derivedCritical);
                     }
                 }
                 //attempt was successful, we might have arrived at a new UC
                 else
                 {
+                    System.err.println("successful reduction: clause(s) " + ucTask.candidates + " in US " + ucTask.ucID);
                     int stepID = state.registerMUC(result, ucTask.ucID, ucTask.candidates);
                     resultID = stepID;
                     Overlap overlap = new Overlap(ucTask.uc.getUc(),result.getUc());
@@ -81,6 +85,10 @@ public class MUCReductionManager extends KahinaTaskManager
                         {
                             state.addAndDistributeReducibilityInfo(ucTask.ucID, candidate, -2);
                         }
+                    }
+                    if (overlap.aMinusB.size() > 1)
+                    {
+                        System.err.println("  clause set refinement removes " + (overlap.aMinusB.size() - 1) + " additional clause(s)");
                     }
                     if (ucTask.candidates.size() == 1)
                     {
