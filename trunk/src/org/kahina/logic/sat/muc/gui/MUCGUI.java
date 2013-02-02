@@ -268,7 +268,7 @@ public class MUCGUI extends KahinaGUI
     public KahinaPerspective generateInitialPerspective()
     {
         //TODO: load last perspective instead of only default perspective from XML
-        InputStream xmlStream = new BufferedInputStream(MUCGUI.class.getResourceAsStream("perspective-integrated.xml"));
+        InputStream xmlStream = new BufferedInputStream(MUCGUI.class.getResourceAsStream("perspective-musticca-default.xml"));
         return KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement());
     }
     
