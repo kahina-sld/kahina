@@ -135,7 +135,8 @@ public class KahinaState implements Serializable, KahinaListener
     	{
     		System.err.println(this + ".processSelectionEvent(" + event + ")");
     	}
-        if (selectedStepID != event.getSelectedStep())
+    	int newSelectedStep = event.getSelectedStep();
+        if (newSelectedStep != -1 && selectedStepID != newSelectedStep)
         {
             selectedStepID = event.getSelectedStep();
             processSelection();  

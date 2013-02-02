@@ -146,7 +146,7 @@ public class MUCBridge extends KahinaBridge
         if (batchQueue.size() == 0)
         {
             //TODO: find out why the selection event does not reach the state!
-            state.processEvent(e);
+            //state.processEvent(e);
             selectedID = e.getSelectedStep();
         }
     }
