@@ -3,6 +3,7 @@ package org.kahina.logic.sat.muc.visual;
 import java.util.List;
 
 import javax.swing.JComponent;
+import javax.swing.event.ListDataListener;
 
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
@@ -74,6 +75,13 @@ public class MUCStepView extends KahinaSatInstanceListView
     {
         kahina.getLogger().startMeasuring();
         int stepID = kahina.getState().getSelectedStepID();
+        //the list model must be taken offline
+        //to prevent redraws from being triggered after each added element
+        ListDataListener[] listeners = listModel.getListDataListeners();
+        for (ListDataListener listener : listeners)
+        {
+            listModel.removeListDataListener(listener);
+        }
         listModel.clear();
         if (stepID == -1)
         {
@@ -110,6 +118,13 @@ public class MUCStepView extends KahinaSatInstanceListView
                 listModel.addElement(s.toString());
             }
         }
+        for (ListDataListener listener : listeners)
+        {
+            listModel.addListDataListener(listener);
+        }
+        //TODO: hack forces JList to update, long term solution: implement FastListModel
+        listModel.add(0, "dummy for update");
+        listModel.remove(0);
         needsRedraw = true;
         kahina.getLogger().endMeasuring("for recalculating the MUCStepView");
     }
