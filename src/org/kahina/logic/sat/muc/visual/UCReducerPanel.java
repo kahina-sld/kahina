@@ -46,9 +46,9 @@ public class UCReducerPanel extends JPanel implements ActionListener
         
         JPanel statusPanel = new JPanel();
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.PAGE_AXIS));   
-        status1Label = new JLabel("Status information 1 here.");
+        status1Label = new JLabel("Reduction agent has not started yet.");
         statusPanel.add(status1Label);
-        status2Label = new JLabel("Status information 2 here.");
+        status2Label = new JLabel("No reduction operation has occurred yet.");
         statusPanel.add(status2Label);
         this.add(statusPanel,BorderLayout.CENTER);
         
