@@ -32,7 +32,9 @@ public class ReductionAgent extends KahinaTaskManager
     int startID;
     int startSize;
     int numSATReductions;
+    int numRealSATReductions;
     int numUNSATReductions;  
+    int numRealUNSATReductions;  
     
     //store the current UC and its ID after each (attempted) reduction step
     MUCStep uc;
@@ -70,7 +72,9 @@ public class ReductionAgent extends KahinaTaskManager
     public void start()
     {
         this.numSATReductions = 0;
+        this.numRealSATReductions = 0;
         this.numUNSATReductions = 0;
+        this.numRealUNSATReductions = 0;
         this.startSize = uc.getUc().size();
         startNextReduction();
     }
@@ -90,6 +94,10 @@ public class ReductionAgent extends KahinaTaskManager
                     System.err.println(" without success!");
                     //uc and ucID just stay the same
                     numSATReductions++;
+                    if (!ucTask.isDummyTask())
+                    {
+                        numRealSATReductions++;
+                    }
                     if (!state.usesMetaLearning())
                     {
                         if (ucTask.candidates.size() == 1)
@@ -126,6 +134,10 @@ public class ReductionAgent extends KahinaTaskManager
                 {
                     System.err.println(" successful!");
                     numUNSATReductions++;
+                    if (!ucTask.isDummyTask())
+                    {
+                        numRealUNSATReductions++;
+                    }
                     int stepID = state.registerMUC(result, ucID, ucTask.candidates);
                     getPath().append(stepID);
                     Overlap overlap = new Overlap(uc.getUc(),result.getUc());
@@ -221,11 +233,10 @@ public class ReductionAgent extends KahinaTaskManager
         {
             if (getPanel() != null)
             {
-                getPanel().displayIdentificationInfo("Agent using " + heuristics.getName() + " from US of size " + startSize);
+                getPanel().displayIdentificationInfo(heuristics.getName() + " from US of size " + startSize);
                 getPanel().displayCurrentStatusInfo(" stopped at size " + uc.getUc().size());
-                getPanel().displaySummaryInfo("after " + (numUNSATReductions + numSATReductions) 
-                                   + " reductions (" + numSATReductions + " SAT, " 
-                                   + numUNSATReductions + " UNSAT)"  + ". ");
+                getPanel().displaySummaryInfo("after " + numSATReductions + " (" + numRealSATReductions + ") SAT reductions "
+                        + " and " + numUNSATReductions + " (" + numRealUNSATReductions + ") UNSAT reductions.");
             }
             return;
         }
@@ -236,11 +247,10 @@ public class ReductionAgent extends KahinaTaskManager
             //we are done reducing, no further reductions are possible; this UCReducer has done its duty
             if (getPanel() != null)
             {
-                getPanel().displayIdentificationInfo("Agent using " + heuristics.getName() + " from US of size " + startSize);
+                getPanel().displayIdentificationInfo(heuristics.getName() + " from US of size " + startSize);
                 getPanel().displayCurrentStatusInfo("terminated in a MUS of size " + uc.getUc().size());
-                getPanel().displaySummaryInfo("after " + (numUNSATReductions + numSATReductions) 
-                                   + " reductions (" + numSATReductions + " SAT, " 
-                                   + numUNSATReductions + " UNSAT).");
+                getPanel().displaySummaryInfo("after " + numSATReductions + " (" + numRealSATReductions + ") SAT reductions "
+                                   + " and " + numUNSATReductions + " (" + numRealUNSATReductions + ") UNSAT reductions.");
                 getPanel().displayCompletedState();
                 stopped = true;
                 getPanel().repaint();
@@ -253,11 +263,10 @@ public class ReductionAgent extends KahinaTaskManager
             //System.err.println(this + ": Reducing " + candidate + " at step " + ucID);
             if (getPanel() != null)
             {
-                getPanel().displayIdentificationInfo("Agent using " + heuristics.getName() + " from US of size " + startSize);
-                getPanel().displayCurrentStatusInfo(" attempting to reduce clause " + candidate + " after performing ");
-                getPanel().displaySummaryInfo((numUNSATReductions + numSATReductions) 
-                        + " reductions (" + numUNSATReductions + " UNSAT, " 
-                        + numSATReductions + " SAT)" + " so far. ");
+                getPanel().displayIdentificationInfo(heuristics.getName() + " from US of size " + startSize);
+                getPanel().displayCurrentStatusInfo("attempting to reduce clause " + candidate + " after performing ");
+                getPanel().displaySummaryInfo(numSATReductions + " (" + numRealSATReductions + ") SAT reductions "
+                        + " and " + numUNSATReductions + " (" + numRealUNSATReductions + ") UNSAT reductions.");
                 getPanel().repaint();
             }
             Integer removalLink = uc.getRemovalLink(candidate);
