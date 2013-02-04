@@ -22,8 +22,9 @@ import org.kahina.logic.sat.muc.task.ReductionAgent;
 
 public class UCReducerPanel extends JPanel implements ActionListener
 {
-    private JLabel status1Label;
-    private JLabel status2Label;
+    private JLabel identificationLabel;
+    private JLabel currentStatusLabel;
+    private JLabel summaryLabel;
     private JButton signalColor;
     private JButton commandButton;
     
@@ -46,10 +47,12 @@ public class UCReducerPanel extends JPanel implements ActionListener
         
         JPanel statusPanel = new JPanel();
         statusPanel.setLayout(new BoxLayout(statusPanel, BoxLayout.PAGE_AXIS));   
-        status1Label = new JLabel("Reduction agent has not started yet.");
-        statusPanel.add(status1Label);
-        status2Label = new JLabel("No reduction operation has occurred yet.");
-        statusPanel.add(status2Label);
+        identificationLabel = new JLabel("General information about this agent will appear here.");
+        statusPanel.add(identificationLabel);
+        currentStatusLabel = new JLabel("Waiting for initialization to complete.");
+        statusPanel.add(currentStatusLabel);
+        summaryLabel = new JLabel("No reduction operation has occurred yet.");
+        statusPanel.add(summaryLabel);
         this.add(statusPanel,BorderLayout.CENTER);
         
         commandButton = new JButton("Stop");
@@ -67,24 +70,34 @@ public class UCReducerPanel extends JPanel implements ActionListener
         displayColor(reducer.getSignalColor());     
     }
     
-    public String getStatus1()
+    public String getIdentificationInfo()
     {
-        return status1Label.getText();
+        return identificationLabel.getText();
     }
     
-    public String getStatus2()
+    public String getCurrentStatusInfo()
     {
-        return status2Label.getText();
+        return currentStatusLabel.getText();
     }
     
-    public void displayStatus1(String status1)
+    public String getSummaryInfo()
     {
-        status1Label.setText(status1);
+        return summaryLabel.getText();
     }
     
-    public void displayStatus2(String status2)
+    public void displayIdentificationInfo(String identificationInfo)
     {
-        status2Label.setText(status2);
+        identificationLabel.setText(identificationInfo);
+    }
+    
+    public void displayCurrentStatusInfo(String currentStatusInfo)
+    {
+        currentStatusLabel.setText(currentStatusInfo);
+    }
+    
+    public void displaySummaryInfo(String summaryInfo)
+    {
+        summaryLabel.setText(summaryInfo);
     }
     
     public void displayColor(Color color)

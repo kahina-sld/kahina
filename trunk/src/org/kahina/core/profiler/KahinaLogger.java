@@ -77,13 +77,16 @@ public class KahinaLogger
             try
             {
                 FileWriter out = getFileStream(threadID);
-                for (int i = 0; i < stackDepth; i++)
+                if (out != null)
                 {
-                    out.append(' ');
-                    out.append(' ');
+                    for (int i = 0; i < stackDepth; i++)
+                    {
+                        out.append(' ');
+                        out.append(' ');
+                    }
+                    out.append((time-startTime) + " ms " + message + "\n");
+                    out.flush();
                 }
-                out.append((time-startTime) + " ms " + message + "\n");
-                out.flush();
             }
             catch (IOException e)
             {

@@ -221,10 +221,11 @@ public class ReductionAgent extends KahinaTaskManager
         {
             if (getPanel() != null)
             {
-                getPanel().displayStatus1("US reduction using " + heuristics.getName() + " stopped at size " + uc.getUc().size());
-                getPanel().displayStatus2("after " + (numUNSATReductions + numSATReductions) 
+                getPanel().displayIdentificationInfo("Agent using " + heuristics.getName() + " from US of size " + startSize);
+                getPanel().displayCurrentStatusInfo(" stopped at size " + uc.getUc().size());
+                getPanel().displaySummaryInfo("after " + (numUNSATReductions + numSATReductions) 
                                    + " reductions (" + numSATReductions + " SAT, " 
-                                   + numUNSATReductions + " UNSAT)" + " from size " + startSize + ". ");
+                                   + numUNSATReductions + " UNSAT)"  + ". ");
             }
             return;
         }
@@ -235,10 +236,11 @@ public class ReductionAgent extends KahinaTaskManager
             //we are done reducing, no further reductions are possible; this UCReducer has done its duty
             if (getPanel() != null)
             {
-                getPanel().displayStatus1("MUS of size " + uc.getUc().size() + " found using " + heuristics.getName());
-                getPanel().displayStatus2("after " + (numUNSATReductions + numSATReductions) 
+                getPanel().displayIdentificationInfo("Agent using " + heuristics.getName() + " from US of size " + startSize);
+                getPanel().displayCurrentStatusInfo("terminated in a MUS of size " + uc.getUc().size());
+                getPanel().displaySummaryInfo("after " + (numUNSATReductions + numSATReductions) 
                                    + " reductions (" + numSATReductions + " SAT, " 
-                                   + numUNSATReductions + " UNSAT)" + " from size " + startSize + ". ");
+                                   + numUNSATReductions + " UNSAT).");
                 getPanel().displayCompletedState();
                 stopped = true;
                 getPanel().repaint();
@@ -251,8 +253,9 @@ public class ReductionAgent extends KahinaTaskManager
             //System.err.println(this + ": Reducing " + candidate + " at step " + ucID);
             if (getPanel() != null)
             {
-                getPanel().displayStatus1("US of size " + uc.getUc().size() + ", " + heuristics.getName() + " attempting to reduce clause " + candidate + ".");
-                getPanel().displayStatus2((numUNSATReductions + numSATReductions) 
+                getPanel().displayIdentificationInfo("Agent using " + heuristics.getName() + " from US of size " + startSize);
+                getPanel().displayCurrentStatusInfo(" attempting to reduce clause " + candidate + " after performing ");
+                getPanel().displaySummaryInfo((numUNSATReductions + numSATReductions) 
                         + " reductions (" + numUNSATReductions + " UNSAT, " 
                         + numSATReductions + " SAT)" + " so far. ");
                 getPanel().repaint();
@@ -294,9 +297,9 @@ public class ReductionAgent extends KahinaTaskManager
         {
             if (this.panel != null)
             {
-                panel.displayStatus1(this.panel.getStatus1());
-                panel.displayStatus2(this.panel.getStatus2());
-    
+                panel.displayIdentificationInfo(this.panel.getIdentificationInfo());
+                panel.displayCurrentStatusInfo(this.panel.getCurrentStatusInfo());
+                panel.displaySummaryInfo(this.panel.getSummaryInfo());
             }
             if (stopped) panel.displayCompletedState();
             this.panel = panel;

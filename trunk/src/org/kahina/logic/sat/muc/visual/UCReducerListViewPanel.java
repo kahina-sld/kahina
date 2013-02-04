@@ -230,8 +230,9 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
            newReducer.getPath().getPath().clear();
            newReducer.getPath().getPath().addAll(shortestPath);
            newReducer.cancelTasks();
-           newReducer.getPanel().displayStatus1("Shortest path to node " + kahina.getState().getSelectedStepID() + " (of length " + shortestPath.size() + ")");
-           newReducer.getPanel().displayStatus2("");
+           newReducer.getPanel().displayIdentificationInfo("Shortest path to node " + kahina.getState().getSelectedStepID());
+           newReducer.getPanel().displayCurrentStatusInfo(" (of length " + shortestPath.size() + ")");
+           newReducer.getPanel().displaySummaryInfo("");
            newReducer.getPanel().requestViewUpdate();
         }
     }
