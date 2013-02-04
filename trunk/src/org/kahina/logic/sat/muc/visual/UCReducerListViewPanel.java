@@ -192,6 +192,8 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
                 newReducer.setHeuristics(view.heuristics.get(heuristicsChooser.getSelectedItem()).newInstance());
                 newReducer.getHeuristics().setSelVarOffset(kahina.getState().getSatInstance().getHighestVar());
                 newReducer.setSignalColor(signalColor.getBackground());
+                newReducer.setModelRotation(modelRotationCheck.isSelected());
+                newReducer.setAutarkyReduction(autarkyReductionCheck.isSelected());               
                 signalColor.setBackground(ColorUtil.randomColor());
                 view.getModel().add(newReducer);
                 newReducer.start();

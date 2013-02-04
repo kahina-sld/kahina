@@ -24,6 +24,8 @@ public class ReductionTask extends KahinaTask
     
     //determines if model rotation is applied after an unsuccessful reduction
     private boolean modelRotation = false;
+    //determines if autarky reduction is applied after a successful reduction
+    private boolean autarkyReduction = false;
     
     public final int reductionID;
     
@@ -96,6 +98,16 @@ public class ReductionTask extends KahinaTask
     public void setModelRotation(boolean modelRotation)
     {
         this.modelRotation = modelRotation;
+    }
+    
+    public boolean usesAutarkyReduction()
+    {
+        return autarkyReduction;
+    }
+    
+    public void setAutarkyReduction(boolean autarkyReduction)
+    {
+        this.autarkyReduction = autarkyReduction;
     }
     
     public boolean isDummyTask()
@@ -181,6 +193,7 @@ public class ReductionTask extends KahinaTask
                     uc.add(muc.get(i));
                     newStep.setIcStatus(muc.get(i), 2);
                 }*/
+                //TODO: apply autarky reduction to the new uc if so defined
                 uc.remove(new Integer(0));
                 result = newStep;
             }  
