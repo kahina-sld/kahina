@@ -31,6 +31,8 @@ public class ReductionAgent extends KahinaTaskManager
     //remember at which step ID we started
     int startID;
     int startSize;
+    
+    //store statistics about reduction attempts
     int numSATReductions;
     int numRealSATReductions;
     int numUNSATReductions;  
@@ -43,6 +45,8 @@ public class ReductionAgent extends KahinaTaskManager
     boolean stopped = false;
     
     MiniSATFiles files;
+    boolean modelRotation = false;
+    boolean autarkyReduction = false;
     
     ReductionHeuristic heuristics;
     private Color signalColor;
@@ -65,8 +69,19 @@ public class ReductionAgent extends KahinaTaskManager
         state.getDecisionGraph().addColorPath(getPath());
         
         this.files = files.copyWithoutTmpFiles();
+        
         this.setSignalColor(ColorUtil.randomColor());
         this.setPanel(null);
+    }
+    
+    public void setModelRotation(boolean modelRotation)
+    {
+        this.modelRotation = modelRotation;
+    }
+    
+    public void setAutarkyReduction(boolean autarkyReduction)
+    {
+        this.autarkyReduction = autarkyReduction;
     }
     
     public void start()
@@ -274,18 +289,25 @@ public class ReductionAgent extends KahinaTaskManager
             //if the heuristic needs a proof, the SAT solver call must be repeated!
             if (removalLink == null || removalLink == -2 || (removalLink != -1 && heuristics.usesProofs()))
             {
-                this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files, state.getSatInstance()));
+                ReductionTask task = new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files, state.getSatInstance());
+                task.setModelRotation(modelRotation);
+                task.setAutarkyReduction(autarkyReduction);
+                this.addTask(task);
             }
             //simulated reduction attempt informing heuristics about the clause's criticality
             else if (removalLink == -1)
             {
-                this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, uc, state.getSatInstance()));
+                ReductionTask task = new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, uc, state.getSatInstance());
+                //no model rotation or autarky reduction in this case
+                this.addTask(task);
             }
             //simulated reduction attempt informing heuristics about the new clause
             else
             {
                 MUCStep newUC = state.retrieve(MUCStep.class, removalLink);
-                this.addTask(new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, newUC, state.getSatInstance()));
+                ReductionTask task = new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, newUC, state.getSatInstance());
+                //no model rotation or autarky reduction in this case
+                this.addTask(task);
             }
         }    
     }
