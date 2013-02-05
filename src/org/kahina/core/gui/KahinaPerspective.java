@@ -1,6 +1,10 @@
 package org.kahina.core.gui;
 
 import java.awt.Toolkit;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -11,6 +15,7 @@ import org.kahina.core.gui.windows.KahinaWindowType;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
+import org.kahina.qtype.gui.QTypeGUI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -142,6 +147,16 @@ public class KahinaPerspective
 	
 	public static KahinaPerspective importXML(Element topEl)
 	{
+	    String path = XMLUtil.attrStrVal(topEl, "kahina:path");
+	    if (!path.isEmpty())
+	    {
+	        System.err.println("Loading perspective from path " + path);
+            InputStream stream = new BufferedInputStream(KahinaPerspective.class.getResourceAsStream(path));
+            System.err.print("  Parsing XML file ... ");
+            Document dom = XMLUtil.parseXMLStream(stream, false); 
+            System.err.println("done.");
+            topEl = dom.getDocumentElement();
+	    }
 		String appID = XMLUtil.attrStrVal(topEl, "kahina:appID");
 		String name = XMLUtil.attrStrVal(topEl, "kahina:name");
 		KahinaPerspective perspective = new KahinaPerspective(appID, name);
