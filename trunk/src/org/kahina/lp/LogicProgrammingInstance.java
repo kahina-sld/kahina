@@ -7,11 +7,18 @@ import java.io.InputStream;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaEvent;
+import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.agent.KahinaControlAgent;
 import org.kahina.core.data.agent.KahinaControlAgentProfile;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
+import org.kahina.core.data.source.KahinaSourceCodeLocation;
+import org.kahina.core.data.tree.KahinaTree;
+import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.io.util.XMLUtil;
+import org.kahina.core.visual.KahinaDefaultView;
+import org.kahina.core.visual.source.KahinaJEditSourceCodeView;
+import org.kahina.core.visual.tree.KahinaTreeView;
 import org.kahina.lp.behavior.LogicProgrammingTreeBehavior;
 import org.kahina.lp.bridge.LogicProgrammingBridge;
 import org.kahina.lp.control.NewControlAgentEvent;
@@ -130,5 +137,12 @@ public abstract class LogicProgrammingInstance<S extends LogicProgrammingState, 
         dom = XMLUtil.parseXMLStream(stream, false);
         LogicProgrammingProject.importXML(dom.getDocumentElement(), project);
         return project;
+    }
+    
+    protected void fillViewRegistry()
+    {
+        super.fillViewRegistry();
+        KahinaViewRegistry.registerMapping(KahinaTree.class, KahinaTreeView.class);
+        KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, KahinaJEditSourceCodeView.class);
     }
 }

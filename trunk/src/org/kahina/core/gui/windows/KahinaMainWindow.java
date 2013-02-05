@@ -66,8 +66,11 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		
 		addMenusInFront();
 
-        viewMenu = new KahinaViewMenu(kahina);
-		menuBar.add(viewMenu);
+		if (showsViewMenu())
+		{
+		    viewMenu = new KahinaViewMenu(kahina);
+		    menuBar.add(viewMenu);
+		}
 
 		addMenusBeforeHelpMenu();
 
@@ -81,7 +84,7 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 	
 	public void deregister()
 	{
-	    viewMenu.deregister();
+	    if (viewMenu != null) viewMenu.deregister();
 	    kahina.deregisterInstanceListener(KahinaEventTypes.SYSTEM, this);
 	}
 
@@ -216,5 +219,10 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 		{
 			disposeAllWindows();
 		}
+	}
+	
+	protected boolean showsViewMenu()
+	{
+	    return true;
 	}
 }
