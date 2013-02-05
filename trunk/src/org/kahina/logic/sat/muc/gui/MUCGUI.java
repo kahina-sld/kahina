@@ -40,6 +40,7 @@ import org.kahina.logic.sat.muc.visual.UCReducerListView;
 import org.kahina.logic.sat.visual.cnf.graph.KahinaGroupSatInstanceGraphView;
 import org.kahina.logic.sat.visual.cnf.graph.KahinaSatInstanceGraphView;
 import org.kahina.logic.sat.visual.cnf.list.KahinaSatInstanceListView;
+import org.kahina.qtype.gui.QTypeGUI;
 
 public class MUCGUI extends KahinaGUI
 {
