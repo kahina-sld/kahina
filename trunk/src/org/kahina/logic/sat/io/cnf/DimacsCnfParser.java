@@ -1,6 +1,7 @@
 package org.kahina.logic.sat.io.cnf;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,7 +17,7 @@ public class DimacsCnfParser
         CnfSatInstance sat = new CnfSatInstance();
         try
         {
-            Scanner in = new Scanner(new File(fileName));
+            Scanner in = new Scanner(new FileInputStream(fileName));
 
             //ignore comment header
             while (in.hasNext(Pattern.compile("c (.*)\n")))
