@@ -142,6 +142,10 @@ public class ReductionAgent extends KahinaTaskManager
                         state.modelRotation(ucTask.getModel(), ucID, ucTask.candidates.get(0), derivedCritical);
                         System.err.println("  model rotation yields additional critical clauses " + derivedCritical);
                     }
+                    if (!ucTask.isDummyTask())
+                    {
+                        files.deleteTempFiles();
+                    }
                     //System.err.println(this + ": Reduction #" + ucTask.reductionID + " of clause " + ucTask.candidate + " at step " + ucID + " led to satisfiable instance! No change!");
                 }
                 //attempt was successful, we might have arrived at a new UC
@@ -175,7 +179,10 @@ public class ReductionAgent extends KahinaTaskManager
                         //heuristics.deliverProof(MiniSAT.getVarRelevanceOrdering(files.tmpProofFile));
                         heuristics.deliverProof(ResolutionProofParser.createResolutionProofTree(files.tmpProofFile.toString(), state.getSatInstance()));
                     }
-                    files.deleteTempFiles();
+                    if (!ucTask.isDummyTask())
+                    {
+                        files.deleteTempFiles();
+                    }
                     if (state.usesMetaLearning())
                     {
                         state.learnMetaUnits(uc);
