@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kahina:project xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="default" kahina:name="CNF Demo ASP-CCG">
-  <kahina:mainFile kahina:path="/src/org/kahina/logic/sat/test/ed_walks_the.cnf"/>
+  <kahina:mainFile kahina:path="/org/kahina/logic/sat/test/ed_walks_the.cnf"/>
   <kahina:files/>
-  <kahina:perspective kahina:path="/src/org/kahina/logic/sat/muc/gui/perspective-musticca-default.xml">
+  <kahina:perspective kahina:path="/org/kahina/logic/sat/muc/gui/perspective-musticca-default.xml">
   </kahina:perspective>
 </kahina:project>
