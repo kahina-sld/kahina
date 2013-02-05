@@ -12,6 +12,9 @@ public class LogicProgrammingStep extends KahinaStep
 	
 	private static final boolean VERBOSE = false;
 	
+    //the source code location associated with this step
+    public KahinaSourceCodeLocation codeLocation;
+	
 	//the goal description
     public String goalDesc;    
     //the step ID used by the surveyed logic programming system
@@ -84,5 +87,15 @@ public class LogicProgrammingStep extends KahinaStep
     		result += " (redo " + redone + ")";
     	}
     	return result;
+    }
+    
+    public KahinaSourceCodeLocation getSourceCodeLocation()
+    {
+        return codeLocation;
+    }
+    
+    public void setSourceCodeLocation(KahinaSourceCodeLocation codeLocation)
+    {
+        this.codeLocation = codeLocation;
     }
 }

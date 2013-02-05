@@ -10,9 +10,9 @@ import org.kahina.lp.LogicProgrammingState;
 public class KahinaCodeLinePropertySensor extends KahinaStepPropertySensor
 {
     private KahinaCodeLineProperty line;
-    private KahinaState state;
+    private LogicProgrammingState state;
     
-    public KahinaCodeLinePropertySensor(KahinaControlAgent controlPoint, KahinaState state, KahinaCodeLineProperty line)
+    public KahinaCodeLinePropertySensor(KahinaControlAgent controlPoint, LogicProgrammingState state, KahinaCodeLineProperty line)
     {
         this.controlPoint = controlPoint;
         this.state = state;

@@ -18,8 +18,8 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
-import org.kahina.core.data.graph.AdjacListsGraph;
-import org.kahina.core.data.graph.KahinaGraph;
+//import org.kahina.core.data.graph.AdjacListsGraph;
+//import org.kahina.core.data.graph.KahinaGraph;
 import org.kahina.logic.sat.data.KahinaSatInstance;
 import org.kahina.logic.sat.data.model.PartialAssignment;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
@@ -440,7 +440,8 @@ public class CnfSatInstance extends KahinaSatInstance
         }
         return occurrences;
     }
-    
+  
+    /**
     public KahinaGraph generateClaByVarGraph()
     {
         KahinaGraph graph = new AdjacListsGraph();
@@ -661,7 +662,7 @@ public class CnfSatInstance extends KahinaSatInstance
         }
         System.err.println("  Ready! Total number of edges: " + numEdges);
         return graph;
-    }
+    }**/
 
     public int getHighestVar()
     {

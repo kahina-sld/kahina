@@ -283,8 +283,6 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 	protected void fillViewRegistry()
 	{
 		KahinaViewRegistry.registerMapping(KahinaObject.class, KahinaDefaultView.class);
-		KahinaViewRegistry.registerMapping(KahinaTree.class, KahinaTreeView.class);
-		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, KahinaJEditSourceCodeView.class);
 	}
 	
     public void dispatchEvent(KahinaEvent e)
