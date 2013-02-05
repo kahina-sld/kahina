@@ -5,6 +5,8 @@ import java.io.IOException;
 
 public class MiniSATFiles
 {
+    public static final String tempDirectory = "/stud/dellert/musticcatmp/";
+    
     public File sourceFile;
     public File targetFile;
     public File tmpFile;
@@ -44,9 +46,9 @@ public class MiniSATFiles
     
     public void createTempFiles(String targetFileName)
     {
-        tmpResultFile = new File(targetFileName.concat("erg"));
-        tmpProofFile = new File(targetFileName.concat("bw"));
-        tmpFreezeFile = new File(targetFileName.concat("fr"));
+        tmpResultFile = new File(tempDirectory + targetFileName.concat("erg"));
+        tmpProofFile = new File(tempDirectory + targetFileName.concat("bw"));
+        tmpFreezeFile = new File(tempDirectory + targetFileName.concat("fr"));
         try
         {
             tmpResultFile.createNewFile();
