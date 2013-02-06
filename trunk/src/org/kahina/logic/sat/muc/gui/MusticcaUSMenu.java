@@ -5,9 +5,9 @@ import javax.swing.JMenuItem;
 
 import org.kahina.logic.sat.muc.MUCInstance;
 
-public class MUCInstanceMenu extends JMenu
+public class MusticcaUSMenu extends JMenu
 {
-    public MUCInstanceMenu(MUCInstance kahina)
+    public MusticcaUSMenu(MUCInstance kahina)
     {
         super("US");
         add(new JMenuItem(kahina.US_DIMACS_EXPORT_ACTION));

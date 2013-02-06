@@ -57,8 +57,11 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 
 		menuBar = new JMenuBar();
         
-        projectMenu = new KahinaProjectMenu(kahina);
-        menuBar.add(projectMenu);
+		if (showsProjectMenu())
+		{
+		    projectMenu = new KahinaProjectMenu(kahina);
+		    menuBar.add(projectMenu);
+		}
         
         //TODO: reactivate this menu and the functionality it once provided
         //sessionMenu = new KahinaSessionMenu(kahina);
@@ -220,6 +223,11 @@ public class KahinaMainWindow extends KahinaWindow implements KahinaListener
 			disposeAllWindows();
 		}
 	}
+	
+    protected boolean showsProjectMenu()
+    {
+        return true;
+    }
 	
 	protected boolean showsViewMenu()
 	{
