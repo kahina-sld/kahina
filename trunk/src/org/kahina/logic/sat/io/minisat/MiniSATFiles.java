@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class MiniSATFiles
 {
-    public static final String tempDirectory = "/stud/dellert/musticcatmp/";
+    public static final String tempDirectory = "/tmp/musticcatmp/";
     
     public File sourceFile;
     public File targetFile;

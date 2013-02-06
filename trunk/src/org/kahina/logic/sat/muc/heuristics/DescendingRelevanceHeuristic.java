@@ -58,6 +58,11 @@ public class DescendingRelevanceHeuristic extends ReductionHeuristic
         needsProof = false;
     }
     
+    public void deliverCriticalClauses(Set<Integer> criticalClauses)
+    {
+        alreadyProcessed.addAll(criticalClauses);
+    }
+    
     @Override
     public int getNextCandidate()
     {

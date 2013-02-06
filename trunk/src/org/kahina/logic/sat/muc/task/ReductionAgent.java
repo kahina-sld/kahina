@@ -140,6 +140,7 @@ public class ReductionAgent extends KahinaTaskManager
                     {
                         TreeSet<Integer> derivedCritical = new TreeSet<Integer>();
                         state.modelRotation(ucTask.getModel(), ucID, ucTask.candidates.get(0), derivedCritical);
+                        heuristics.deliverCriticalClauses(derivedCritical);
                         System.err.println("  model rotation yields additional critical clauses " + derivedCritical);
                     }
                     if (!ucTask.isDummyTask())

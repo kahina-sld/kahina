@@ -54,6 +54,11 @@ public class CenteredIndexHeuristic extends ReductionHeuristic
         return -1;
     }
     
+    public void deliverCriticalClauses(Set<Integer> criticalClauses)
+    {
+        alreadyProcessed.addAll(criticalClauses);
+    }
+    
     public String getName()
     {
         return "centered index heuristic";
