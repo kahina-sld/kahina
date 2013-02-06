@@ -1,5 +1,8 @@
 package org.kahina.logic.sat.muc.heuristics;
 
+import java.util.List;
+import java.util.Set;
+
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.proof.ResolutionProofTree;
 import org.kahina.logic.sat.muc.MUCStep;
@@ -30,6 +33,11 @@ public abstract class ReductionHeuristic
     }
     
     public void deliverProof(ResolutionProofTree proof)
+    {
+        
+    }
+    
+    public void deliverCriticalClauses(Set<Integer> criticalClauses)
     {
         
     }
