@@ -20,12 +20,12 @@ public class DimacsCnfParser
             Scanner in = new Scanner(new FileInputStream(fileName));
 
             //ignore comment header
-            while (in.hasNext(Pattern.compile("c (.*)\n")))
-            {
-                in.nextLine();
-            }
-            //process the problem line
             String problemLine = in.nextLine();
+            while (problemLine.startsWith("c"))
+            {
+                problemLine = in.nextLine();
+            }
+            //process the problem line   
             String[] params = problemLine.split(" ");
             if (!params[0].equals("p"))
             {
