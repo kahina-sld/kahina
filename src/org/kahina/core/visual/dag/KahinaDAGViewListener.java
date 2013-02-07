@@ -31,17 +31,17 @@ public class KahinaDAGViewListener extends MouseAdapter implements ActionListene
 	public void mouseClicked(MouseEvent e)
     {
         int clickedNode = view.view.getLayouter().getNodeAtCoordinates(e.getX(), e.getY());
-        if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
+        /*if (lastMouseEvent != null && e.getWhen() - lastMouseEvent.getWhen() < 500)
         {
             view.view.getModel().toggleCollapse(clickedNode);
             view.view.getLayouter().refreshCoordinates();
             view.updateDisplayAndRepaintFromEventDispatchThread();
             view.repaint();
         }
-        else
+        else*/
         {
             kahina.dispatchEvent(new KahinaSelectionEvent(clickedNode));
-            lastMouseEvent = e;
+            //lastMouseEvent = e;
         }
     }
     
