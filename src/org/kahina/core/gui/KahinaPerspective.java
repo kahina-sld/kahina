@@ -150,11 +150,11 @@ public class KahinaPerspective
 	    String path = XMLUtil.attrStrVal(topEl, "kahina:path");
 	    if (!path.isEmpty())
 	    {
-	        System.err.println("Loading perspective from path " + path);
+	        //System.err.println("Loading perspective from path " + path);
             InputStream stream = new BufferedInputStream(KahinaPerspective.class.getResourceAsStream(path));
-            System.err.print("  Parsing XML file ... ");
+            //System.err.print("  Parsing XML file ... ");
             Document dom = XMLUtil.parseXMLStream(stream, false); 
-            System.err.println("done.");
+            //System.err.println("done.");
             topEl = dom.getDocumentElement();
 	    }
 		String appID = XMLUtil.attrStrVal(topEl, "kahina:appID");
