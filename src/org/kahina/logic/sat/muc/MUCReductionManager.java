@@ -12,6 +12,7 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.task.KahinaTask;
 import org.kahina.core.task.KahinaTaskManager;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
+import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.data.Overlap;
 import org.kahina.logic.sat.muc.task.ReductionTask;
 
@@ -19,10 +20,14 @@ public class MUCReductionManager extends KahinaTaskManager
 {
     MUCInstance kahina;
     
-    public MUCReductionManager(MUCInstance kahina)
+    MiniSATFiles files;
+    
+    public MUCReductionManager(MUCInstance kahina, MiniSATFiles files)
     {
         super();
         this.kahina = kahina;
+        
+        this.files = files;
     }
     
     public void taskFinished(KahinaTask task)
@@ -64,6 +69,10 @@ public class MUCReductionManager extends KahinaTaskManager
                         //state.learnMetaBlock(metaClause);
                         state.learnMetaClause(metaClause);
                     }
+                    if (!ucTask.isDummyTask())
+                    {
+                        files.deleteTempFiles();
+                    }
                     //model rotation if only one candidate was reduced, and the task was configured to apply MR
                     if (ucTask.usesModelRotation() && ucTask.candidates.size() == 1)
                     {
@@ -93,6 +102,10 @@ public class MUCReductionManager extends KahinaTaskManager
                     if (ucTask.candidates.size() == 1)
                     {
                         ucTask.uc.setRemovalLink(ucTask.candidates.get(0), stepID);
+                    }
+                    if (!ucTask.isDummyTask())
+                    {
+                        files.deleteTempFiles();
                     }
                     MUCStep uc = state.retrieve(MUCStep.class, stepID);
                     if (kahina.getState().usesMetaLearning())

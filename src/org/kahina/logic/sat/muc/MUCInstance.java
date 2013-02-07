@@ -135,7 +135,6 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         this.satInstance = null;
         this.stat = null;
         this.files = null;
-        this.reductionManager = new MUCReductionManager(this);
         this.metaLearningMode = metaLearningMode;
         logger.enableLogging();
     }
@@ -145,7 +144,6 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         this.satInstance = satInstance;
         this.stat = stat;
         this.files = files;
-        this.reductionManager = new MUCReductionManager(this);
         this.metaLearningMode = metaLearningMode;
         state.setSatInstance(satInstance);
         state.setStatistics(stat);
@@ -278,6 +276,8 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         files.createTargetFile("test-target");
         files.createExtendedFile("test-target");
         files.createTempFiles("test-target-seed");
+        
+        this.reductionManager = new MUCReductionManager(this, files);
         
         MUCExtension.extendCNFBySelVars(files.sourceFile, files.tmpFile, stat);
         

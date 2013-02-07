@@ -59,7 +59,7 @@ public class ReductionAgent extends KahinaTaskManager
     {
         this.state = state;
         
-        System.err.println("Retrieving start MUCStep with ID " + startID);
+        //System.err.println("Retrieving start MUCStep with ID " + startID);
         this.uc = state.retrieve(MUCStep.class, startID);
         this.ucID = startID;
         this.startID = startID;
