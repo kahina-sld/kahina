@@ -11,7 +11,7 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
 public class PartitionBlockHandler extends LiteralBlockHandler
 {
-    static final boolean VERBOSE = true;
+    static final boolean VERBOSE = false;
     
     //main parameter, defines minimum block size
     static final int MIN_BLOCK_SIZE = 2;

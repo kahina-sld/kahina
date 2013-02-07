@@ -41,7 +41,8 @@ public class MUCStepView extends KahinaSatInstanceListView
         {
             if (lineID >= currentStep.getUc().size())
             {
-                System.err.println("WARNING: had to prevent getLineStatus(" + lineID + ")");
+                //TODO: this happens twice until long term solution: implement FastListModel
+                //System.err.println("WARNING: had to prevent getLineStatus(" + lineID + ")");
                 return 0;
             }
             return currentStep.getIcStatus(currentStep.getUc().get(lineID));
