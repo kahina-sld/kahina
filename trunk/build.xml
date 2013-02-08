@@ -22,6 +22,40 @@
 	<target name="clean">
 		<delete dir="${bin}"/>
 	</target>
+	
+	<target name="musticca-jar" depends="compile">
+	        <mkdir dir="${dist}"/>
+		<jar destfile="${dist}/musticca.jar">
+	            <fileset dir="${bin}">
+	            	  <exclude name="org/kahina/core/behavior/**"/>
+	            	  <exclude name="org/kahina/core/data/chart/**"/>
+	            	  <exclude name="org/kahina/core/data/graph/**"/>
+	            	  <exclude name="org/kahina/core/data/source/**"/>
+		              <exclude name="org/kahina/core/edit/**"/>
+		              <exclude name="org/kahina/core/gui/breakpoint/**"/>
+			          <exclude name="org/kahina/core/gui/profiler/**"/>
+			          <exclude name="org/kahina/core/test/**"/>
+	            	  <exclude name="org/kahina/core/visual/chart/**"/>
+	            	  <exclude name="org/kahina/core/visual/graph/**"/>
+	            	  <exclude name="org/kahina/core/visual/source/**"/>
+		              <exclude name="org/kahina/core/visual/tree/**"/>
+	            	  <exclude name="org/kahina/logic/sat/freemuc/**"/>
+	            	  <exclude name="org/kahina/logic/sat/visual/cnf/graph/**"/>
+	            	  <exclude name="org/kahina/logic/sat/visual/free/**"/>
+                      <exclude name="org/kahina/lp/**"/>            	
+                      <exclude name="org/kahina/parse/**"/>
+                      <exclude name="org/kahina/prolog/**"/>
+                      <exclude name="org/kahina/qtype/**"/>
+                      <exclude name="org/kahina/sicstus/**"/>
+	            	  <exclude name="org/kahina/swi/**"/>
+                      <exclude name="org/kahina/tralesld/**"/>
+                      <exclude name="org/kahina/tulipa/**"/>
+                </fileset>
+		  <manifest>
+		    <attribute name="Main-Class" value="org.kahina.logic.sat.muc.MUCInstance" />
+		  </manifest>
+		</jar>
+	 </target>
 
 	<target name="qtype-jar" depends="compile">
 	        <mkdir dir="${dist}"/>
