@@ -108,7 +108,7 @@ public class FreeMUCInstance extends KahinaInstance<FreeMUCState, FreeMUCGUI, Ka
         {
             return new FreeMUCState(this);
         }
-        System.err.println("FreeMUCState.createState(" + this + "," + formula + ")");
+        //System.err.println("FreeMUCState.createState(" + this + "," + formula + ")");
         return new FreeMUCState(this, formula);
     }
 

@@ -129,7 +129,7 @@ public class FreeMUCGUI extends KahinaGUI
     
     public void displayStepContent(int stepID)
     {
-        System.err.println("displayStepContent(" + stepID + ")");
+        //System.err.println("displayStepContent(" + stepID + ")");
         super.displayStepContent(stepID);
         FreeMUCStep step = (FreeMUCStep) kahina.getState().getSteps().retrieve(stepID);
         //formulaView.flushRedrawAgenda();
