@@ -189,50 +189,8 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         else if (s.equals("leanKernel"))
         {
             MUCState state = kahina.getState();
-            
-            //extract the lean kernel from the currently selected US
-            MUCStep uc = state.getSelectedStep();
-            int ucID = state.getSelectedStepID();
-            CnfSatInstance leanKernelUC = kahina.getSatInstance().selectClauses(uc.getUc()).copy();
-            leanKernelUC.reduceToLeanKernel();
-            
-            //generate a new US representing the lean kernel, also detecting duplicates 
-            MUCStep leanUc = new MUCStep();
-            List<Integer> leanUS = leanUc.getUc();
-            Set<Integer> leanUSSet = new HashSet<Integer>();
-            Map<String,Integer> idMap = kahina.getSatInstance().generateClauseToIndexMap();
-            StringBuilder clauseRepresentation;
-            for (int i = 0; i < leanKernelUC.getSize(); i++)
-            {
-                clauseRepresentation = new StringBuilder();
-                for (Integer lit : leanKernelUC.getClause(i))
-                {
-                    clauseRepresentation.append(lit + ".");
-                }
-                int a = idMap.get(clauseRepresentation.toString());
-                if (!leanUSSet.contains(a+1) && !kahina.getSatInstance().isDontCareClause(a))
-                {
-                    leanUS.add(a+1);
-                    leanUSSet.add(a+1);
-                }
-            }
-            
-            //add a node with the lean kernel US to the reduction graph
-            int resultID = state.registerMUC(leanUc, ucID, new LinkedList<Integer>());
-            if (resultID != ucID)
-            {
-                Overlap overlap = new Overlap(uc.getUc(),leanUc.getUc());
-                //System.err.println(overlap);
-                for (int candidate : overlap.aMinusB)
-                {
-                    if (uc.getRemovalLink(candidate) == null)
-                    {
-                        state.addAndDistributeReducibilityInfo(ucID, candidate, -2);
-                    }
-                }
-                state.updateDecisionNode(ucID);
-                kahina.dispatchInstanceEvent(new KahinaSelectionEvent(resultID));
-            }
+            int newStepID = state.autarkyReduction(state.getSelectedStepID());
+            kahina.dispatchInstanceEvent(new KahinaSelectionEvent(newStepID));        
         }
     }
     

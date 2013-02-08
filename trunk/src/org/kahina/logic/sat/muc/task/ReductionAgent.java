@@ -174,6 +174,14 @@ public class ReductionAgent extends KahinaTaskManager
                     }
                     uc = state.retrieve(MUCStep.class, stepID);
                     ucID = stepID;
+                    //apply autarky reduction if thus configured
+                    if (ucTask.usesAutarkyReduction())
+                    {
+                        int sizeBefore = uc.getUc().size();
+                        ucID = state.autarkyReduction(ucID);
+                        uc = state.retrieve(MUCStep.class, ucID);
+                        int sizeAfter = uc.getUc().size();
+                    }
                     heuristics.setNewUC(uc);
                     if (heuristics.needsProof())
                     {
