@@ -44,7 +44,7 @@ import org.kahina.qtype.gui.QTypeGUI;
 
 public class MUCGUI extends KahinaGUI
 {
-    private static final boolean VERBOSE = true;
+    private static final boolean VERBOSE = false;
     
     protected KahinaSatInstanceListView satInstanceView;
     protected KahinaSatInstanceListView metaInstanceView;
@@ -262,7 +262,6 @@ public class MUCGUI extends KahinaGUI
     @Override
     protected KahinaWindowManager createWindowManager()
     {
-        System.err.println("MUCGUI.createWindowManager()");
         return new MUCWindowManager(kahina);
     }
     
@@ -275,7 +274,7 @@ public class MUCGUI extends KahinaGUI
     
     public void displayStepContent(int stepID)
     {
-        System.err.println("displayStepContent(" + stepID + ")");
+        //System.err.println("displayStepContent(" + stepID + ")");
         super.displayStepContent(stepID);
         MUCStep step = (MUCStep) kahina.getState().getSteps().retrieve(stepID);
         //TODO: mark the current MUS in the sat instance display

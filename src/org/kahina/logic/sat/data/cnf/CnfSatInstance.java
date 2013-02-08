@@ -426,8 +426,7 @@ public class CnfSatInstance extends KahinaSatInstance
             if (VERBOSE) System.err.println("    #toPropagate: " + toPropagate.size());
             if (VERBOSE) System.err.println("    #fulfilled:   " + fulfilledClauseIDs.size());
         }
-        if (VERBOSE) System.err.println("  Output: " + derivedUnits);
-        System.err.println("Criticality Propagation Output: " + derivedUnits);
+        if (VERBOSE) System.err.println("Criticality Propagation Output: " + derivedUnits);
         return derivedUnits;
     }
     

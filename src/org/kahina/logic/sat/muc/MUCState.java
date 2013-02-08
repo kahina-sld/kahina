@@ -429,7 +429,7 @@ public class MUCState extends KahinaState
     public synchronized void modelRotation(CompleteAssignment model, int ucID, int transClID, TreeSet<Integer> derivedCritical)
     {
         if (VERBOSE) System.err.println("modelRotation(model," + ucID + "," + transClID + ")");
-        for (int literal : satInstance.getClause(transClID))
+        for (int literal : satInstance.getClause(transClID - 1))
         {
             int var = Math.abs(literal);
             model.flipVar(var);
