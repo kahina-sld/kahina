@@ -1,14 +1,17 @@
 package org.kahina.logic.sat.muc;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import org.kahina.core.KahinaState;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.dag.ColoredPathDAG;
+import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.model.CompleteAssignment;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
@@ -17,6 +20,7 @@ import org.kahina.logic.sat.muc.bridge.MUCInstruction;
 import org.kahina.logic.sat.muc.data.BlocklessBlockHandler;
 import org.kahina.logic.sat.muc.data.MUCMetaInstance;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
+import org.kahina.logic.sat.muc.data.Overlap;
 import org.kahina.logic.sat.muc.data.PartitionBlockHandler;
 import org.kahina.logic.sat.muc.data.RecursiveBlockHandler;
 import org.kahina.logic.sat.muc.data.UCReducerList;
@@ -366,6 +370,59 @@ public class MUCState extends KahinaState
             {
                 System.err.println("  " + block);
             }*/
+        }
+    }
+    
+    public int autarkyReduction(int ucID)
+    {
+        //extract the lean kernel from the currently selected US
+        MUCStep uc = retrieve(MUCStep.class, ucID);
+
+        CnfSatInstance leanKernelUC = kahina.getSatInstance().selectClauses(uc.getUc()).copy();
+        leanKernelUC.reduceToLeanKernel();
+        
+        //generate a new US representing the lean kernel, also detecting duplicates 
+        MUCStep leanUc = new MUCStep();
+        List<Integer> leanUS = leanUc.getUc();
+        Set<Integer> leanUSSet = new HashSet<Integer>();
+        Map<String,Integer> idMap = kahina.getSatInstance().generateClauseToIndexMap();
+        StringBuilder clauseRepresentation;
+        for (int i = 0; i < leanKernelUC.getSize(); i++)
+        {
+            clauseRepresentation = new StringBuilder();
+            for (Integer lit : leanKernelUC.getClause(i))
+            {
+                clauseRepresentation.append(lit + ".");
+            }
+            int a = idMap.get(clauseRepresentation.toString());
+            if (!leanUSSet.contains(a+1) && !kahina.getSatInstance().isDontCareClause(a))
+            {
+                leanUS.add(a+1);
+                leanUSSet.add(a+1);
+            }
+        }
+        
+        if (leanUS.size() != uc.getUc().size())
+        {
+            //add a node with the lean kernel US to the reduction graph
+            int resultID = registerMUC(leanUc, ucID, new LinkedList<Integer>());
+            Overlap overlap = new Overlap(uc.getUc(),leanUc.getUc());
+            //System.err.println(overlap);
+            for (int candidate : overlap.aMinusB)
+            {
+                if (uc.getRemovalLink(candidate) == null)
+                {
+                    addAndDistributeReducibilityInfo(ucID, candidate, -2);
+                }
+            }
+            updateDecisionNode(ucID);
+            System.err.println("  autarky reduction in US " + ucID + " caused " + overlap.aMinusB.size() + " clauses to fall away.");
+            return resultID;
+        }
+        else
+        {
+            System.err.println("  autarky reduction in US " + ucID + " caused no clauses to fall away.");
+            return ucID;
         }
     }
     

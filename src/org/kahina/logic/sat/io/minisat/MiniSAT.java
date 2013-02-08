@@ -518,14 +518,17 @@ public class MiniSAT
                 {
                     for (String litString : line.split(" "))
                     {
-                        int lit = Integer.parseInt(litString);
-                        if (lit < 0)
+                        if (litString.length() > 0)
                         {
-                            model.assign(-lit, false);
-                        }
-                        else if (lit > 0)
-                        {
-                            model.assign(lit, true);
+                            int lit = Integer.parseInt(litString);
+                            if (lit < 0)
+                            {
+                                model.assign(-lit, false);
+                            }
+                            else if (lit > 0)
+                            {
+                                model.assign(lit, true);
+                            }
                         }
                     }
                 }
