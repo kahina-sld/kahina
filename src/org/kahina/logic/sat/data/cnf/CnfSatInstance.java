@@ -325,12 +325,12 @@ public class CnfSatInstance extends KahinaSatInstance
     public CnfSatInstance selectClauses(Collection<Integer> clauseIndices)
     {
         CnfSatInstance subInstance = new CnfSatInstance();
-        for (int clauseIdx: clauseIndices)
+        for (int clauseIdx : clauseIndices)
         {
             //TODO: think about risks of structure reuse!
             subInstance.addClause(clauseStore.get(idxToId(clauseIdx - 1)));
-            subInstance.symbolTable = symbolTable;
         }
+        subInstance.symbolTable = symbolTable;
         return subInstance;
     }
     
