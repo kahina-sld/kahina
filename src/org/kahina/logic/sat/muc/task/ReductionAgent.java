@@ -177,10 +177,8 @@ public class ReductionAgent extends KahinaTaskManager
                     //apply autarky reduction if thus configured
                     if (ucTask.usesAutarkyReduction())
                     {
-                        int sizeBefore = uc.getUc().size();
                         ucID = state.autarkyReduction(ucID);
                         uc = state.retrieve(MUCStep.class, ucID);
-                        int sizeAfter = uc.getUc().size();
                     }
                     heuristics.setNewUC(uc);
                     if (heuristics.needsProof())
@@ -241,17 +239,17 @@ public class ReductionAgent extends KahinaTaskManager
         catch (NullPointerException e)
         {
             System.err.println("WARNING: caught NullPointerException in UCReducer.taskFinished():");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         catch (InvocationTargetException e)
         {
             System.err.println("WARNING: InvocationTargetException in UCReducer.taskFinished():");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         catch (InterruptedException e)
         {
             System.err.println("WARNING: InterruptedException in UCReducer.taskFinished():");
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         state.getKahina().getLogger().endMeasuring("for finishing task " + task);
         super.taskFinished(task);
