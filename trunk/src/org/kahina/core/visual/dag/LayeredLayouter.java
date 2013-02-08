@@ -460,7 +460,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
         }
         // System.err.println("Node Level: " + upperIndex);
 
-        // binary search over nodes in
+        // binary search over nodes in row
         List<Integer> selectedLevel = nodeLevels.get(upperIndex);
         int candidateNode = -1;
         if (selectedLevel.size() == 1)
@@ -499,7 +499,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
         // System.err.println("Potentially clicked node: " + candidateNode);
 
         // test coordinates against exact boundaries of candidate node
-        int xLeft = xCoord.get(candidateNode);
+        int xLeft = xCoord.get(candidateNode) - view.getNodeWidth(candidateNode) / 2;
         int xRight = xLeft + view.getNodeWidth(candidateNode);
         int yTop = yCoord.get(candidateNode);
         int yBottom = yTop + view.getConfig().getNodeSize();
