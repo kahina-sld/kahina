@@ -21,6 +21,8 @@ import org.kahina.core.KahinaInstance;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
+import org.kahina.core.control.KahinaProjectEvent;
+import org.kahina.core.control.KahinaProjectEventType;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
@@ -488,7 +490,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     public static void main(String[] args)
     {
         MetaLearningMode metaLearningMode = MetaLearningMode.BLOCK_PARTITION;
-        if (args.length > 0)
+        /*if (args.length > 0)
         {
             if (args[0].equals("nometa"))
             {
@@ -519,8 +521,21 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         else
         {
             System.err.println("MUCReducer: No mode specified, using default mode blprt.");
+        }*/
+        //startup self-test: is minisat on the path?
+        if (!MiniSAT.minisatFoundOnPath())
+        {
+            System.err.println("ERROR: No version of minisat found on path!");
+            System.err.println("       Your path must include the minisat-extended directory.");
+            System.exit(0);
         }
-        (new MUCInstance(metaLearningMode)).start(args);
+        MUCInstance kahina = new MUCInstance(metaLearningMode);
+        kahina.start(args);
+        if (args.length > 0)
+        {
+            File dataFile = new File(args[0]);
+            kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, "default project"));
+        }
     }
 
     @Override

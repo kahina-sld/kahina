@@ -37,6 +37,23 @@ public class MiniSAT
     
     private static boolean VERBOSE = false;
     
+    public static boolean minisatFoundOnPath()
+    {
+        try
+        {
+            Process p = Runtime.getRuntime().exec("minisat");
+            p.getInputStream().close();
+            p.getErrorStream().close();
+            p.getOutputStream().close();
+            p.destroy();
+            return true;
+        }
+        catch (IOException e)
+        {
+            return false;
+        }
+    }
+    
     public static boolean isSatisfiable(File cnfFile, File tmpResultFile) throws TimeoutException, InterruptedException, IOException
     {
         Process p = Runtime.getRuntime().exec("minisat " + cnfFile.getAbsolutePath() + " -c -r " + tmpResultFile.getAbsolutePath());

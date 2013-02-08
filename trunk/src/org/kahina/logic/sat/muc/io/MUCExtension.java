@@ -3,6 +3,7 @@ package org.kahina.logic.sat.muc.io;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -79,6 +80,11 @@ public class MUCExtension
 
             stat.numVarsExtended = stat.highestID;
             stat.numClausesOrGroups = stat.numVarsExtended - numVarsOrig;
+        }
+        catch (FileNotFoundException e)
+        {
+            System.err.println("ERROR: Dimacs CNF file not found: " + orig.getPath());
+            System.exit(0);
         }
         catch (IOException e)
         {
