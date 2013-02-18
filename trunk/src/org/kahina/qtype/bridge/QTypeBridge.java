@@ -130,6 +130,7 @@ public class QTypeBridge extends SICStusPrologBridge
                 if (VERBOSE) System.err.println("  last span edge: " + getLastSpanEdge());
                 int leftBound = state.getChart().getLeftBoundForEdge(getLastSpanEdge());
                 int rightBound = state.getChart().getRightBoundForEdge(getLastSpanEdge());
+                if (rightBound == leftBound) rightBound++;
                 int edgeID = state.getChart().addEdge(leftBound, rightBound, "unify", 2);
                 state.linkEdgeToNode(edgeID, currentID);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
@@ -511,7 +512,9 @@ public class QTypeBridge extends SICStusPrologBridge
                         if (edgeExists())
                         {
                             int motherEdge = getTopEdge();
-                            int edgeID = state.getChart().addEdge(getPos(motherEdge), state.getChart().getRightBound(), "parse " + category, 2);
+                            int rightBound = state.getChart().getRightBound();
+                            if (getPos(motherEdge) == rightBound) rightBound++;
+                            int edgeID = state.getChart().addEdge(getPos(motherEdge), rightBound, "parse " + category, 2);
                             setPos(edgeID, getPos(motherEdge));
                             state.linkEdgeToNode(edgeID, stepID);
                             state.getChart().addEdgeDependency(getTopEdge(), edgeID);
