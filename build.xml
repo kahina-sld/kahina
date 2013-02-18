@@ -4,12 +4,16 @@
 	<property name="bin" location="bin"/>
 	<property name="lib" location="lib"/>
 	<property name="dist" location="dist"/>
+	<property file="build.properties"/>
+
+	<fail unless="lib.jasper" message="You need to specify the location of your SICStus Prolog installation's jasper.jar in the property lib.jasper. Create a file called build.properties to do so. You can use build.properties.sample as a model."/>
 	
 	<target name="compile" depends="init">
 		<javac srcdir="${src}" destdir="${bin}" source="1.6" target="1.6" compiler="javac1.6" includeantruntime="false">
 			<classpath>
 				<pathelement location="${lib}/gralej/gralej.jar"/>
 				<pathelement location="${lib}/jedit-textArea.jar"/>
+				<pathelement location="${lib.jasper}"/>
 			</classpath>
 		</javac>
 		<copy todir="${bin}">
