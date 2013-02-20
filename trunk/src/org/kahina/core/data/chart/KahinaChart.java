@@ -85,7 +85,8 @@ public abstract class KahinaChart extends KahinaObject
 
 	public boolean segmentIsCovered(int id)
 	{
-		return (getLeftmostCovered() <= id && id <= getRightmostCovered());
+		return (getLeftBound() <= id && id <= getRightBound());
+		//return (getLeftmostCovered() <= id && id <= getRightmostCovered());
 	}
 
 	public abstract boolean segmentHasCaption(int id);
