@@ -40,7 +40,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	int topLexEntryExistenceStep = -1;
 	int currentEdge = -1;
 	Map<Integer,Integer> edgeToCurrentPosition;
-	int lastRuleNode = -1;
+	//int lastRuleNode = -1;
 	private int lastSpanEdge = -1;
 
 	public QTypeBridge(final QTypeDebuggerInstance kahina)
@@ -71,8 +71,6 @@ public class QTypeBridge extends SICStusPrologBridge
 			    List<String> wordList = PrologUtil.parsePrologStringList(matcher.group(0));
 				kahina.dispatchEvent(new KahinaControlEvent(QTypeControlEventCommands.REGISTER_SENTENCE, new Object[] { wordList }));
 			}
-			//each lc node opens a new context for rule nodes
-	        lastRuleNode = -1;
 		}
 		else if (description.startsWith("lc_complete(") && description.endsWith(")"))
         {   
@@ -82,8 +80,6 @@ public class QTypeBridge extends SICStusPrologBridge
 		    //the topmost rule edge is complete, we can cut its length to the current position
             state.getChart().setEdgeStatus(ruleEdge, 0);
 		    state.getChart().setRightBoundForEdge(ruleEdge, edgeToCurrentPosition.get(ruleEdge));
-            //each lc_complete node opens a new context for rule nodes
-            lastRuleNode = -1;
         }
 		else if (description.startsWith("db_word("))
 	    {
@@ -130,7 +126,11 @@ public class QTypeBridge extends SICStusPrologBridge
                 if (VERBOSE) System.err.println("  last span edge: " + getLastSpanEdge());
                 int leftBound = state.getChart().getLeftBoundForEdge(getLastSpanEdge());
                 int rightBound = state.getChart().getRightBoundForEdge(getLastSpanEdge());
-                if (rightBound == leftBound) rightBound++;
+                if (rightBound == leftBound)
+            	{
+            		rightBound++;
+            		state.getChart().setRightBoundForEdge(motherEdge, rightBound);
+            	}
                 int edgeID = state.getChart().addEdge(leftBound, rightBound, "unify", 2);
                 state.linkEdgeToNode(edgeID, currentID);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
@@ -164,7 +164,6 @@ public class QTypeBridge extends SICStusPrologBridge
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
                 state.linkEdgeToNode(edgeID, currentID);
                 pushEdge(edgeID);
-                lastRuleNode = currentID;
             }
             else
             {
@@ -221,7 +220,6 @@ public class QTypeBridge extends SICStusPrologBridge
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
                 state.linkEdgeToNode(edgeID, currentID);
                 pushEdge(edgeID);
-                lastRuleNode = currentID;
                 
                 setLastSpanEdge(oldEdgeID);
             }
@@ -243,8 +241,6 @@ public class QTypeBridge extends SICStusPrologBridge
             //reset the current position of the mother edge to the start of the rule edge
             int motherEdge = getTopEdge();
             setPos(motherEdge, state.getChart().getLeftBoundForEdge(childEdge));
-            //each lc_complete node opens a new context for rule nodes
-            lastRuleNode = -1;
             
             setLastSpanEdge(oldEdgeID);
             
@@ -260,6 +256,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	    }
 	    else if (description.equals("parser:lc/5"))
         {
+            if (VERBOSE) System.err.println("lc/5 is being redone!");
 	        String caption = state.getChart().getEdgeCaption(oldEdgeID);
 	        if (edgeExists())
             {
@@ -281,9 +278,6 @@ public class QTypeBridge extends SICStusPrologBridge
                 pushEdge(edgeID);
                 kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
             }
-	        
-	        //each lc node opens a new context for rule nodes
-            lastRuleNode = -1;
         }
         else if (description.equals("parser:check_link/2"))
         {
@@ -393,7 +387,7 @@ public class QTypeBridge extends SICStusPrologBridge
         //failed unification in a rule context determines the failure of the rule
         else if (state.get(stepID).getGoalDesc().equals("parser:unify/2"))
         {
-            int ruleEdge = state.getEdgeForNode(lastRuleNode);
+            int ruleEdge = state.getEdgeForNode(findRuleParent(stepID));
             trimEdgeToChildrenLength(ruleEdge);
             if (VERBOSE) System.err.println("Rule edge #" + ruleEdge + " failed.");
             state.getChart().setEdgeStatus(ruleEdge, 1);
@@ -513,7 +507,11 @@ public class QTypeBridge extends SICStusPrologBridge
                         {
                             int motherEdge = getTopEdge();
                             int rightBound = state.getChart().getRightBound();
-                            if (getPos(motherEdge) == rightBound) rightBound++;
+                            if (getPos(motherEdge) == rightBound)
+                        	{
+                        		rightBound++;
+                        		state.getChart().setRightBoundForEdge(motherEdge, rightBound);
+                        	}
                             int edgeID = state.getChart().addEdge(getPos(motherEdge), rightBound, "parse " + category, 2);
                             setPos(edgeID, getPos(motherEdge));
                             state.linkEdgeToNode(edgeID, stepID);
@@ -725,6 +723,7 @@ public class QTypeBridge extends SICStusPrologBridge
     
     private int findRuleParent(int stepID)
     {
+    	//TODO: integrate context information here (must not jump over lc and lc_complete)
         int ruleParentID = state.getStepTree().getParent(stepID);
         while (!state.getStepTree().getNodeCaption(ruleParentID).contains("db_rule"))
         {

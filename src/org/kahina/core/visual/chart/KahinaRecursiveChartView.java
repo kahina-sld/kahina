@@ -509,7 +509,7 @@ public class KahinaRecursiveChartView  extends KahinaChartView
     {
         if (leftBound == rightBound)
         {
-            System.err.println("WARNING: caught distribution of width over 0 segments!");
+            System.err.println("WARNING: caught distributeWidthOverSegments(" + leftBound + "," + rightBound + "," + addedWidth + ")");
             return;
         }
         int addedWidthPerSegment = addedWidth/(rightBound - leftBound);
