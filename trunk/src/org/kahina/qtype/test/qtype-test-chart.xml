@@ -23,6 +23,9 @@
 	<edge id="15" left="1" right="2" status="0" caption="vp:vp"/>
 	<edge id="16" left="2" right="5" status="2" caption="np"/>
 	<edge id="17" left="2" right="3" status="0" caption="np3pl:men"/>
+    <edge id="18" left="4" right="6" status="1" caption="overlapping demo edge"/>
+    <edge id="19" left="4" right="5" status="0" caption="inside overlap"/>
+    <edge id="20" left="5" right="6" status="1" caption="outside overlap"/>
     <dependency motherID="1" daughterID="2"/>
     <dependency motherID="2" daughterID="0"/>
     <dependency motherID="1" daughterID="4"/>
@@ -40,4 +43,7 @@
     <dependency motherID="14" daughterID="15"/>
     <dependency motherID="14" daughterID="16"/>
     <dependency motherID="16" daughterID="17"/>
+    <dependency motherID="1" daughterID="18"/>
+    <dependency motherID="18" daughterID="19"/>
+    <dependency motherID="18" daughterID="20"/>
 </kahinaChart>
