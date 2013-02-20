@@ -393,15 +393,15 @@ public class QTypeBridge extends SICStusPrologBridge
 	            trimEdgeToChildrenLength(ruleEdge);
 	            if (VERBOSE) System.err.println("Rule edge #" + ruleEdge + " failed.");
 	            state.getChart().setEdgeStatus(ruleEdge, 1);
-	            if (edgeExists())
-	            {
-	                int unifyEdge = popEdge();
-	                setPos(unifyEdge, state.getChart().getRightBoundForEdge(unifyEdge));
-	            }
-	            else
-	            {
-	                System.err.println("WARNING: unify failed on an empty edge stack!");
-	            }
+            }
+            if (edgeExists())
+            {
+                int unifyEdge = popEdge();
+                setPos(unifyEdge, state.getChart().getRightBoundForEdge(unifyEdge));
+            }
+            else
+            {
+                System.err.println("WARNING: unify failed on an empty edge stack!");
             }
         }
         //failed lc_list in a rule context determines the failure of the rule
