@@ -388,35 +388,32 @@ public class QTypeBridge extends SICStusPrologBridge
         else if (state.get(stepID).getGoalDesc().equals("parser:unify/2"))
         {
             int ruleEdge = state.getEdgeForNode(findRuleParent(stepID));
-            trimEdgeToChildrenLength(ruleEdge);
-            if (VERBOSE) System.err.println("Rule edge #" + ruleEdge + " failed.");
-            state.getChart().setEdgeStatus(ruleEdge, 1);
-            if (edgeExists())
+            if (ruleEdge != -1)
             {
-                int unifyEdge = popEdge();
-                setPos(unifyEdge, state.getChart().getRightBoundForEdge(unifyEdge));
-            }
-            else
-            {
-                System.err.println("WARNING: unify failed on an empty edge stack!");
+	            trimEdgeToChildrenLength(ruleEdge);
+	            if (VERBOSE) System.err.println("Rule edge #" + ruleEdge + " failed.");
+	            state.getChart().setEdgeStatus(ruleEdge, 1);
+	            if (edgeExists())
+	            {
+	                int unifyEdge = popEdge();
+	                setPos(unifyEdge, state.getChart().getRightBoundForEdge(unifyEdge));
+	            }
+	            else
+	            {
+	                System.err.println("WARNING: unify failed on an empty edge stack!");
+	            }
             }
         }
         //failed lc_list in a rule context determines the failure of the rule
         else if (state.get(stepID).getGoalDesc().equals("parser:lc_list/5"))
         {
             int ruleEdge = state.getEdgeForNode(findRuleParent(currentID));
-            trimEdgeToChildrenLength(ruleEdge);
-            if (VERBOSE) System.err.println("Rule edge #" + ruleEdge + " failed.");
-            state.getChart().setEdgeStatus(ruleEdge, 1);
-            /*if (edgeExists())
+            if (ruleEdge != -1)
             {
-                int unifyEdge = popEdge();
-                setPos(unifyEdge, state.getChart().getRightBoundForEdge(unifyEdge));
+	            trimEdgeToChildrenLength(ruleEdge);
+	            if (VERBOSE) System.err.println("Rule edge #" + ruleEdge + " failed.");
+	            state.getChart().setEdgeStatus(ruleEdge, 1);
             }
-            else
-            {
-                System.err.println("WARNING: unify failed on an empty edge stack!");
-            }*/
         }
         else
         {
@@ -721,9 +718,10 @@ public class QTypeBridge extends SICStusPrologBridge
         return lastSpanEdge;
     }
     
+    //returns -1 if the rule parent is above an lc or lc_complete step
     private int findRuleParent(int stepID)
     {
-    	//TODO: integrate context information here (must not jump over lc and lc_complete)
+    	//TODO: determine contextual information here (must not jump over lc and lc_complete)
         int ruleParentID = state.getStepTree().getParent(stepID);
         while (!state.getStepTree().getNodeCaption(ruleParentID).contains("db_rule"))
         {
@@ -731,7 +729,11 @@ public class QTypeBridge extends SICStusPrologBridge
             if (ruleParentID == -1)
             {
                 System.err.println("WARNING: no rule parent found for step #" + stepID);
-                return stepID;
+                return -1;
+            }
+            if (state.getStepTree().getNodeCaption(ruleParentID).contains("lc("))
+            {
+            	return -1;
             }
         }
         return ruleParentID;
