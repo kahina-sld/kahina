@@ -248,6 +248,10 @@ public class KahinaChartViewContextMenu extends JPopupMenu
         JMenuItem exportPNGItem = new JMenuItem("Save as PNG");
         exportPNGItem.addActionListener(l);
         add(exportPNGItem);
+        
+        JMenuItem exportXMLItem = new JMenuItem("Export to XML");
+        exportXMLItem.addActionListener(l);
+        add(exportXMLItem);
     }
     
     public static JPopupMenu getMenu(ActionListener l, KahinaChartView v)
