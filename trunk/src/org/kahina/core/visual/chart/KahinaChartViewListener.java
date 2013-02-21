@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -163,6 +164,27 @@ public class KahinaChartViewListener extends MouseAdapter implements ActionListe
             {
                 JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
+        }
+        else if (command.equals("Export to XML"))
+        {
+            JFileChooser chooser = new JFileChooser(new File("."));
+            //FileNameExtensionFilter filter = new FileNameExtensionFilter("XML Files", "xml");
+            //chooser.setFileFilter(filter);
+            chooser.showSaveDialog(view);
+            File outputFile = chooser.getSelectedFile();
+            
+            String xmlString = view.view.getModel().exportXML(true);
+            
+            try 
+            {
+				FileWriter out = new FileWriter(outputFile);
+				out.append(xmlString);
+				out.close();
+			} 
+            catch (IOException ioe) 
+			{
+                JOptionPane.showMessageDialog(view, ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
         }
         else if (command.startsWith("edgeLabel:"))
         {
