@@ -79,7 +79,7 @@ public class QTypeBridge extends SICStusPrologBridge
             setLastSpanEdge(ruleEdge);
 		    //the topmost rule edge is complete, we can cut its length to the current position
             state.getChart().setEdgeStatus(ruleEdge, 0);
-		    state.getChart().setRightBoundForEdge(ruleEdge, edgeToCurrentPosition.get(ruleEdge));
+            trimEdgeToChildrenLength(ruleEdge);
         }
 		else if (description.startsWith("db_word("))
 	    {
@@ -747,7 +747,7 @@ public class QTypeBridge extends SICStusPrologBridge
     
     private void trimEdgeToChildrenLength(int edgeID)
     {
-        //shorten the edge length to the maximum length of any grandchild
+        //shorten the edge length to the maximum length of any child
         int maxChildRightBound = state.getChart().getLeftBoundForEdge(edgeID);
         for (int childEdge : state.getChart().getDaughterEdgesForEdge(edgeID))
         {
