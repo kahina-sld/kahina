@@ -257,7 +257,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	    else if (description.equals("parser:lc/5"))
         {
             if (VERBOSE) System.err.println("lc/5 is being redone!");
-	        String caption = state.getChart().getEdgeCaption(oldEdgeID);
+	        /*String caption = state.getChart().getEdgeCaption(oldEdgeID);
 	        if (edgeExists())
             {
                 int motherEdge = getTopEdge();
@@ -277,7 +277,7 @@ public class QTypeBridge extends SICStusPrologBridge
                 state.linkEdgeToNode(edgeID, newStepID);
                 pushEdge(edgeID);
                 kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
-            }
+            }*/
         }
         else if (description.equals("parser:check_link/2"))
         {
@@ -392,7 +392,10 @@ public class QTypeBridge extends SICStusPrologBridge
             {
 	            trimEdgeToChildrenLength(ruleEdge);
 	            if (VERBOSE) System.err.println("Rule edge #" + ruleEdge + " failed.");
-	            state.getChart().setEdgeStatus(ruleEdge, 1);
+	            if (state.getChart().getEdgeStatus(ruleEdge) != 0)
+	            {
+	            	state.getChart().setEdgeStatus(ruleEdge, 1);
+	            }
             }
             if (edgeExists())
             {
@@ -412,7 +415,10 @@ public class QTypeBridge extends SICStusPrologBridge
             {
 	            trimEdgeToChildrenLength(ruleEdge);
 	            if (VERBOSE) System.err.println("Rule edge #" + ruleEdge + " failed.");
-	            state.getChart().setEdgeStatus(ruleEdge, 1);
+	            if (state.getChart().getEdgeStatus(ruleEdge) != 0)
+	            {
+	            	state.getChart().setEdgeStatus(ruleEdge, 1);
+	            }
             }
         }
         else
@@ -742,7 +748,7 @@ public class QTypeBridge extends SICStusPrologBridge
     private void trimEdgeToChildrenLength(int edgeID)
     {
         //shorten the edge length to the maximum length of any grandchild
-        int maxChildRightBound = 0;
+        int maxChildRightBound = state.getChart().getLeftBoundForEdge(edgeID);
         for (int childEdge : state.getChart().getDaughterEdgesForEdge(edgeID))
         {
             int childRightBound = state.getChart().getRightBoundForEdge(childEdge);
@@ -751,7 +757,7 @@ public class QTypeBridge extends SICStusPrologBridge
                 maxChildRightBound = childRightBound;
             }
         }
-        if (maxChildRightBound == 0) maxChildRightBound = 1;
+        if (maxChildRightBound == state.getChart().getLeftBoundForEdge(edgeID)) maxChildRightBound++;
         state.getChart().setRightBoundForEdge(edgeID, maxChildRightBound);
     }
 }
