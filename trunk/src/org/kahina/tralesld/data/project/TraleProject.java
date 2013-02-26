@@ -57,7 +57,7 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
         this.testSet = testSet;
     }
     
-    public static TraleProject importXML(Element topEl, TraleProject project)
+    public static void importXML(Element topEl, TraleProject project)
     {
         LogicProgrammingProject.importXML(topEl, project);
         NodeList mainFileList = topEl.getElementsByTagName("trale:signatureFile");
@@ -78,6 +78,5 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
             project.addOpenedFile(theoryFile);
             project.getTheoryFiles().add(theoryFile);
         }
-        return project;
     }
 }
