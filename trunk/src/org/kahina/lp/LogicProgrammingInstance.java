@@ -122,7 +122,9 @@ public abstract class LogicProgrammingInstance<S extends LogicProgrammingState, 
     
     public void newProject(File grammarFile)
     {
+        System.err.println("LogicProgrammingInstance.newProject(" + grammarFile + ")");
         project = createNewProject();
+        System.err.println("  created project " + project);
         project.setMainFile(grammarFile);
         project.setPerspective(gui.getPerspective());
         setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);

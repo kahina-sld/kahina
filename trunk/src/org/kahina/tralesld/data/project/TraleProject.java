@@ -26,6 +26,24 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
         theoryFiles = new LinkedList<File>();
         testSet = new TestSet();
     }
+    
+    public TraleProject copy()
+    {
+        TraleProject copy = new TraleProject(new String(name), stepTree, (TraleSLDInstance) kahina);
+        copyDataInto(copy);
+        return copy;
+    }
+   
+    public void copyDataInto(TraleProject copy)
+    {
+        super.copyDataInto(copy);
+        copy.signatureFile = new File(signatureFile.getAbsolutePath());
+        copy.theoryFiles.clear();
+        for (File theoryFile : theoryFiles)
+        {
+            copy.theoryFiles.add(new File(theoryFile.getAbsolutePath()));
+        }
+    }
 	
 	public void setSignatureFile(File signatureFile) 
 	{
@@ -71,7 +89,7 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
             project.setMainFile(signatureFile);
             project.setSignatureFile(signatureFile);
         }
-        NodeList fileList = topEl.getElementsByTagName("trale:theory");
+        NodeList fileList = topEl.getElementsByTagName("trale:theoryFile");
         for (int i = 0; i < fileList.getLength(); i++)
         {
             File theoryFile = new File(((Element) mainFileList.item(0)).getAttribute("kahina:path"));
