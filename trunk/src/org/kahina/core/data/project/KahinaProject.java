@@ -186,7 +186,7 @@ public class KahinaProject extends KahinaObject
             project.addOpenedFile(new File(((Element) fileList.item(i)).getAttribute("kahina:path")));
         }
         NodeList perspectiveList = topEl.getElementsByTagName("kahina:perspective");
-        if (mainFileList.getLength() == 0)
+        if (perspectiveList.getLength() == 0)
         {
             System.err.println("ERROR: project file does not contain a perspective declaration! Loading an empty perspective.");
             project.setPerspective(new KahinaPerspective("default","default"));

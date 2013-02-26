@@ -268,15 +268,19 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
+				//dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
 			} 
 			else
 			{
 				// Lazy hack: set bridge to abort - if we go through the controller,
 				// the instance will deinitialize and thwart subsequent eventing
 				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
-				compile((String) event.getArguments()[0]);
 			}
+			if (VERBOSE)
+			{
+			    System.err.println("Compiling theory file: " + getProject().getTheoryFiles().get(0).getAbsolutePath());
+			}
+            compile(getProject().getTheoryFiles().get(0).getAbsolutePath());
 		} 
 		else if (TraleSLDControlEventCommands.PARSE.equals(command))
 		{
