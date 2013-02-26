@@ -59,7 +59,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	// the command stuff in TraleSLDInstance to a TraleSLDCommander. QTypeCommander
 	// already avoids the ugly hack used below to set the bridge to abort.
 
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 
 	Queue<String> traleCommands = new ArrayDeque<String>();
 
@@ -278,7 +278,9 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			}
 			if (VERBOSE)
 			{
-			    System.err.println("Compiling theory file: " + getProject().getTheoryFiles().get(0).getAbsolutePath());
+			    System.err.println("Executing compile command:");
+			    System.err.println("  Current project: " + getProject());
+			    System.err.println("  Compiling theory file: " + getProject().getTheoryFiles().get(0).getAbsolutePath());
 			}
             compile(getProject().getTheoryFiles().get(0).getAbsolutePath());
 		} 
@@ -369,7 +371,9 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
     @Override
     protected TraleProject createNewProject()
     {
-        return new TraleProject("no name", state.getStepTree(), this);
+        TraleProject project = new TraleProject("no name", state.getStepTree(), this);;
+        if (VERBOSE) System.err.println("  Created new project " + project);
+        return project;
     }
 
     public TraleProject loadProject(InputStream stream)
@@ -396,9 +400,10 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
         try
         {
             InputStream projectInputStream = projectLocation.openStream();
-            //System.err.println("Loading default project: " + resourcePath);
-            defaultProjects.add(loadProject(projectInputStream));
-            //System.err.println("Loaded default project: " + defaultProjects.get(defaultProjects.size() - 1));
+            if (VERBOSE) System.err.println("Loading default project: " + resourcePath);
+            TraleProject project = loadProject(projectInputStream);
+            if (VERBOSE) System.err.println("  loaded project " + project.getName() + " as " + project);
+            defaultProjects.add(project);
         }
         catch (IOException e)
         {
