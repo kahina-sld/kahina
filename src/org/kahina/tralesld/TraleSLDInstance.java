@@ -377,7 +377,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
         Document dom;
         TraleProject project = createNewProject();
         dom = XMLUtil.parseXMLStream(stream, false);
-        project = TraleProject.importXML(dom.getDocumentElement(), project);
+        TraleProject.importXML(dom.getDocumentElement(), project);
         return project;
     }
     
