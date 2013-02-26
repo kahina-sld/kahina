@@ -186,7 +186,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
     public KahinaPerspective generateInitialPerspective()
     {
         //TODO: load last perspective instead of only default perspective from XML
-        InputStream xmlStream = new BufferedInputStream(TraleSLDGUI.class.getResourceAsStream("tralesld-manywindows.xml"));
+        InputStream xmlStream = new BufferedInputStream(TraleSLDGUI.class.getResourceAsStream("tralesld-integrated.xml"));
         return KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement());
     }
 
