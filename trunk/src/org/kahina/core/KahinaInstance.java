@@ -376,7 +376,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
             try
             {
                 perspective = loadPerspective(new FileInputStream(e.getFile()));
-                project.setPerspective(perspective);
+                if (project != null) project.setPerspective(perspective);
                 gui.setPerspective(perspective);
             }
             catch (FileNotFoundException e1)
@@ -388,13 +388,13 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
         else if (type == KahinaPerspectiveEvent.LOAD_RECENT_PERSPECTIVE)
         {
             KahinaPerspective perspective =  recentPerspectives.get(e.getID()).copy();
-            project.setPerspective(perspective);
+            if (project != null) project.setPerspective(perspective);
             gui.setPerspective(perspective);
         }
         else if (type == KahinaPerspectiveEvent.LOAD_DEFAULT_PERSPECTIVE)
         {
             KahinaPerspective perspective =  defaultPerspectives.get(e.getID()).copy();
-            project.setPerspective(perspective);
+            if (project != null) project.setPerspective(perspective);            
             gui.setPerspective(perspective);
         }
     }

@@ -1,0 +1,86 @@
+type_hierarchy
+bot
+   list
+     ne_list hd:bot tl:list
+     e_list
+   sign phon:list synsem:synsem 
+      word arg_st:list
+      phrase daughters:const_struc
+   synsem loc:loc nonloc:nonloc
+   loc cat:cat cont:cont
+   nonloc inherited:list to_bind:list
+   cat head:head val:val
+   head pred:boolean mod:synsem_none
+      func_or_verb vform:vform marking:marking
+         verb aux:boolean inv:boolean marking:unmarked mod:none
+         functional marking:marked
+      noun case:case mod:none
+      prep pform:pform
+      adv mod:synsem
+   val subj:list comps:list
+   cont
+      psoa
+         move_rel
+            walk_rel walker:index
+         like_rel liker:ref liked:ref
+         say_rel sayer:ref said:psoa
+         give_rel giver:ref gift:ref given:ref
+         rain_rel
+         tense_rel soa_arg:psoa
+            future_rel
+            perfect_rel
+            present_rel
+            past_rel
+            cont_rel
+         direction_rel movement:move_rel goal:ref
+         here_rel located:psoa
+      nom_obj index:index
+   index pers:pers num:num gen:gen
+         ref
+         nonref
+            it
+            there
+   const_struc hdtr:sign ndtr:sign
+      hs_struc
+      hc_struc
+      ha_struc
+      hf_struc
+      sai_struc
+   vform
+      fin
+      inf
+      pas
+      psp
+      prp
+      base
+   case
+      nom
+      acc
+   pform
+      lexical
+      non_lexical
+         by
+         to
+   marking
+      unmarked
+      marked
+         that
+         for
+   boolean
+      plus
+      minus
+   pers
+      first
+      second
+      third
+   num
+      sg
+      pl
+   gen
+      masc
+      fem
+      neut
+   synsem_none
+      none
+      &synsem
+.

@@ -25,8 +25,10 @@ import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.profiler.ProfileEntry;
 import org.kahina.core.util.Mapper;
 import org.kahina.core.visual.chart.KahinaChartView;
+import org.kahina.core.visual.tree.KahinaAbstractTreeView;
 import org.kahina.core.visual.tree.KahinaLayeredTreeView;
 import org.kahina.core.visual.tree.KahinaLayeredTreeViewPanel;
+import org.kahina.core.visual.tree.KahinaListTreeView;
 import org.kahina.lp.gui.LogicProgrammingGUI;
 import org.kahina.swi.gui.SWIPrologGUI;
 import org.kahina.tralesld.TraleSLDInstance;
@@ -118,9 +120,10 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	 */
 
 	@Override
-	protected KahinaLayeredTreeView generateTreeView()
+	protected KahinaAbstractTreeView generateTreeView()
 	{
-		return new KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation.VERTICAL, kahina, 0, 1, 2);
+	    return new KahinaListTreeView(kahina, 0);
+		//return new KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation.VERTICAL, kahina, 0, 1, 2);
 	}
 
 	@Override

@@ -1,0 +1,96 @@
+type_hierarchy
+bot
+   list
+     ne_list hd:bot tl:list
+     e_list
+   sign phon:list synsem:synsem qstore:list retr:list
+      word arg_st:list
+      phrase daughters:const_struc dtrs:list
+   synsem loc:loc nonloc:nonloc
+   loc cat:cat cont:cont
+   nonloc
+   cat head:head subcat:list marking:marking
+   head
+      functional spec:synsem
+         det
+         mark
+      subst pred:boolean mod:synsem_none
+         verb aux:boolean inv:boolean mod:none vform:vform
+         non_verb_subst
+            noun case:case mod:none
+            prep pform:pform
+            adj mod:synsem
+               adv
+   cont
+      psoa quants:list nucleus:qfpsoa
+      non_psoa
+         nom_obj index:index restr:list
+            npro
+            pron
+         quant det:semdet restind:npro
+   qfpsoa
+      move_rel
+         walk_rel walker:index
+      like_rel liker:ref liked:ref
+      say_rel sayer:ref said:psoa
+      give_rel giver:ref gift:ref given:ref
+      rain_rel
+      future_rel soa_arg:psoa
+      direction_rel movement:move_rel goal:ref
+      here_rel located:psoa
+      nominal_rel inst:index
+         poem_rel
+         student_rel
+         boy_rel
+   index pers:pers num:num gen:gen
+         ref
+         nonref
+            it
+            there
+   semdet
+      forall
+      exists
+      one
+   const_struc
+      headed_struc hdtr:sign c_dtrs:list
+         head_adj_struc hdtr:phrase c_dtrs:e_list adj_dtr:sign
+         non_head_adj_struc
+            head_comp_struc
+            head_mark_struc hdtr:phrase c_dtrs:e_list marker_dtr:word
+   vform
+      fin
+      inf
+      pas
+      psp
+      prp
+      base
+   case
+      nom
+      acc
+   pform
+      lexical
+      non_lexical
+         to
+   marking
+      unmarked
+      marked
+         that
+         for
+   boolean
+      plus
+      minus
+   pers
+      first
+      second
+      third
+   num
+      sg
+      pl
+   gen
+      masc
+      fem
+      neut
+   synsem_none
+      none
+      &synsem
+.

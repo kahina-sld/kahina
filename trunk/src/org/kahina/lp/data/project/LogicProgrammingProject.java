@@ -169,10 +169,15 @@ public class LogicProgrammingProject extends KahinaProject
         return el;
     }
     
-    public static LogicProgrammingProject importXML(Element topEl, LogicProgrammingProject project, LogicProgrammingInstance<?,?,?,?> kahina, KahinaTree stepTree)
+    public static void importXML(Element topEl, LogicProgrammingProject project, LogicProgrammingInstance<?,?,?,?> kahina, KahinaTree stepTree)
     {
         KahinaProject.importXML(topEl, project);
-        //read in control agent profiles
+        importControlAgentProfile(topEl, project, kahina, stepTree);
+    }
+    
+    protected static void importControlAgentProfile(Element topEl, LogicProgrammingProject project, LogicProgrammingInstance<?,?,?,?> kahina, KahinaTree stepTree)
+    {
+      //read in control agent profiles
         NodeList profileList = topEl.getElementsByTagName("kahina:controlAgentProfile");
         for (int i = 0; i < profileList.getLength(); i++)
         {
@@ -204,6 +209,5 @@ public class LogicProgrammingProject extends KahinaProject
                 project.failPoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, stepTree);
             }
         }
-        return project;
     }
 }
