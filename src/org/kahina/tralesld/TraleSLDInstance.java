@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -36,6 +38,7 @@ import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.prolog.util.PrologUtil;
+import org.kahina.qtype.data.project.QTypeProject;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 import org.kahina.tralesld.control.TraleSLDControlEventCommands;
@@ -379,12 +382,48 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
     {
         recentProjects = new LinkedList<TraleProject>();
         defaultProjects = new LinkedList<TraleProject>();
-    } 
+        addDefaultProject("test/webcourse/webcourse-project.xml");
+        addDefaultProject("test/ps94/ps94-project.xml");
+    }  
+    
+    private void addDefaultProject(String resourcePath)
+    {
+        URL projectLocation = this.getClass().getResource(resourcePath);
+        try
+        {
+            InputStream projectInputStream = projectLocation.openStream();
+            //System.err.println("Loading default project: " + resourcePath);
+            defaultProjects.add(loadProject(projectInputStream));
+            //System.err.println("Loaded default project: " + defaultProjects.get(defaultProjects.size() - 1));
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
     
     @Override
     protected void preparePerspectiveLists()
     {
         recentPerspectives = new LinkedList<KahinaPerspective>();
-        defaultPerspectives = new LinkedList<KahinaPerspective>();    
+        defaultPerspectives = new LinkedList<KahinaPerspective>(); 
+        addDefaultPerspective("gui/tralesld-manywindows.xml");
+        addDefaultPerspective("gui/tralesld-integrated.xml");
     } 
+    
+    private void addDefaultPerspective(String resourcePath)
+    {
+        URL perspectiveLocation = this.getClass().getResource(resourcePath);
+        try
+        {
+            InputStream perspectiveInputStream = perspectiveLocation.openStream();
+            defaultPerspectives.add(loadPerspective(perspectiveInputStream));
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }

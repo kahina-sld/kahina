@@ -173,10 +173,13 @@ public class KahinaProject extends KahinaObject
         NodeList mainFileList = topEl.getElementsByTagName("kahina:mainFile");
         if (mainFileList.getLength() != 1)
         {
-            System.err.println("ERROR: project file does not contain exactly one main file! Loading an empty project.");
-            return project;
+            //System.err.println("ERROR: project file does not contain exactly one main file! Loading an empty project.");
+            //return project;
         }
-        project.setMainFile(new File(((Element) mainFileList.item(0)).getAttribute("kahina:path")));
+        else
+        {
+            project.setMainFile(new File(((Element) mainFileList.item(0)).getAttribute("kahina:path")));
+        }
         NodeList fileList = topEl.getElementsByTagName("kahina:file");
         for (int i = 0; i < fileList.getLength(); i++)
         {

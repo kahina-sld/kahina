@@ -12,6 +12,7 @@ import org.kahina.parse.data.project.TestSet;
 import org.kahina.parse.data.project.TestSetExtension;
 import org.kahina.tralesld.TraleSLDInstance;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class TraleProject extends LogicProgrammingProject implements TestSetExtension
 {
@@ -56,10 +57,27 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
         this.testSet = testSet;
     }
     
-    //TODO: import all the structures produced by exportXML
     public static TraleProject importXML(Element topEl, TraleProject project)
     {
         LogicProgrammingProject.importXML(topEl, project);
+        NodeList mainFileList = topEl.getElementsByTagName("trale:signatureFile");
+        if (mainFileList.getLength() != 1)
+        {
+            System.err.println("WARNING: project does not define exactly one signature file!");
+        }
+        else
+        {
+            File signatureFile = new File(((Element) mainFileList.item(0)).getAttribute("kahina:path"));
+            project.setMainFile(signatureFile);
+            project.setSignatureFile(signatureFile);
+        }
+        NodeList fileList = topEl.getElementsByTagName("trale:theory");
+        for (int i = 0; i < fileList.getLength(); i++)
+        {
+            File theoryFile = new File(((Element) mainFileList.item(0)).getAttribute("kahina:path"));
+            project.addOpenedFile(theoryFile);
+            project.getTheoryFiles().add(theoryFile);
+        }
         return project;
     }
 }

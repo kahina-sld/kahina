@@ -28,7 +28,6 @@
 	  </kahina:hori-split-window>
 	  <kahina:default-window kahina:binding="signature-usage" kahina:height="312" kahina:id="22" kahina:primary="true" kahina:border="true" kahina:title="Type Usage" kahina:width="840" kahina:xpos="0" kahina:ypos="412"/>
 	</kahina:vert-split-window>
-
   </kahina:arrangement>
   <kahina:configurations>
     <kahina:configuration kahina:type="org.kahina.core.visual.KahinaViewConfiguration" kahina:viewid="1"/>

@@ -20,8 +20,6 @@ public class TraleSLDMainWindow extends LogicProgrammingMainWindow
 	
 	protected void addMenusInFront()
 	{
-		menuBar.add(new KahinaProjectMenu(kahina));
-		//TODO: define and add a good ProjectMenuListener
 		menuBar.add(new TraleSLDParseMenu(kahina));
 		//menuBar.add(new TraleSLDWorkbenchMenu(((TraleSLDGUI) wm.gui)));
 	}

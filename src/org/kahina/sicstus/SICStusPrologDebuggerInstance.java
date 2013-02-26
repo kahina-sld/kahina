@@ -94,7 +94,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
         Document dom;
         LogicProgrammingProject project = createNewProject();
         dom = XMLUtil.parseXMLStream(stream, false);
-        project = LogicProgrammingProject.importXML(dom.getDocumentElement(), project, this, state.getStepTree());
+        LogicProgrammingProject.importXML(dom.getDocumentElement(), project, this, state.getStepTree());
         return project;
     }
     
