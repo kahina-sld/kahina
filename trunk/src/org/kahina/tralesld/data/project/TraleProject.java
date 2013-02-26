@@ -92,7 +92,7 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
         NodeList fileList = topEl.getElementsByTagName("trale:theoryFile");
         for (int i = 0; i < fileList.getLength(); i++)
         {
-            File theoryFile = new File(((Element) mainFileList.item(0)).getAttribute("kahina:path"));
+            File theoryFile = new File(((Element) fileList.item(i)).getAttribute("kahina:path"));
             project.addOpenedFile(theoryFile);
             project.getTheoryFiles().add(theoryFile);
         }
