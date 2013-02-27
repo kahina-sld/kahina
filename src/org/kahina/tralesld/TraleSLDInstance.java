@@ -20,6 +20,7 @@ import javax.swing.Action;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
+import org.kahina.core.control.KahinaProjectEvent;
 import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
@@ -356,6 +357,28 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			dispatchEvent(new KahinaChartUpdateEvent(edgeID));
 		}
 	}
+	
+	/*protected void processProjectEvent(KahinaProjectEvent e)
+    {
+        switch (e.getProjectEventType())
+        {
+            case NEW_PROJECT:
+            {
+                if (project != null)
+                {
+                    dispatchEvent(new KahinaControlEvent("abort"));
+                    project.deregister();
+                }
+                newProject(e.getFile(), e.getName());
+                processNewProject();
+                break;
+            }
+            default:
+            {
+                super.processProjectEvent(e);
+            }
+        }
+    }*/
 
 	@Override
 	public LogicProgrammingProfiler getProfiler()
@@ -434,5 +457,14 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+    
+    public void newProject(File theoryFile, String name)
+    {
+        project = createNewProject();
+        project.setName(name);
+        project.getTheoryFiles().add(theoryFile);
+        project.setPerspective(gui.getPerspective());
+        setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
     }
 }

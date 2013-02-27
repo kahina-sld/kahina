@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -16,6 +18,7 @@ import javax.swing.JOptionPane;
 import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaStep;
 import org.kahina.core.control.KahinaControlEvent;
+import org.kahina.core.control.KahinaProjectEvent;
 import org.kahina.core.gui.KahinaDialogEvent;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
@@ -113,6 +116,8 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	{
 		return new TraleSLDWindowManager(kahina);
 	}
+	
+	
 
 	/*
 	 * @Override protected KahinaListTreeView generateTreeView(KahinaController
@@ -267,7 +272,8 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 					kahina.dispatchEvent(new KahinaControlEvent(TraleSLDControlEventCommands.COMPILE, new Object[] { grammar.getAbsolutePath() }));
 				}
 			}
-		} else if (type == KahinaDialogEvent.PARSE)
+		} 
+		else if (type == KahinaDialogEvent.PARSE)
 		{
 			// TODO offer recent parses in a ComboBox
 			String sentence = (String) JOptionPane.showInputDialog(windowManager.mainWindow, "Enter a sentence to parse, with the words separated by spaces.", "Parse sentence",
@@ -279,4 +285,9 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 			}
 		}
 	}
+	
+    public String getNewGrammarString()
+    {
+        return "New Project - Select Theory File";
+    }
 }
