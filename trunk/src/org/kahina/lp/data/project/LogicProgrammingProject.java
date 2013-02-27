@@ -177,8 +177,9 @@ public class LogicProgrammingProject extends KahinaProject
     
     protected static void importControlAgentProfile(Element topEl, LogicProgrammingProject project, LogicProgrammingInstance<?,?,?,?> kahina, KahinaTree stepTree)
     {
-      //read in control agent profiles
+        //read in control agent profiles
         NodeList profileList = topEl.getElementsByTagName("kahina:controlAgentProfile");
+        //System.err.println("  " + profileList.getLength() + " breakpoint profiles found");
         for (int i = 0; i < profileList.getLength(); i++)
         {
             Element profileElement = (Element) profileList.item(i);
