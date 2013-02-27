@@ -4,4 +4,8 @@
   <trale:theoryFile kahina:path="/home/kahina/workspace/Kahina/src/org/kahina/tralesld/test/webcourse/theory.pl"/>
   <kahina:perspective kahina:path="/org/kahina/tralesld/gui/tralesld-integrated.xml">
   </kahina:perspective>
+  <kahina:testSet>
+  	<kahina:testItem kahina:sentence="she walks"/>
+  	<kahina:testItem kahina:sentence="he likes mary"/>
+  </kahina:testSet>
 </kahina:project>

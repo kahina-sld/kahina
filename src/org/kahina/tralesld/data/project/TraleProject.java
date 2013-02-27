@@ -46,6 +46,7 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
         {
             copy.theoryFiles.add(new File(theoryFile.getAbsolutePath()));
         }
+        copy.setTestSet(testSet.copy());
     }
 	
 	public void setSignatureFile(File signatureFile) 
@@ -102,7 +103,7 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
         NodeList testSet = topEl.getElementsByTagName("kahina:testItem");
         for (int i = 0; i < testSet.getLength(); i++)
         {
-            String testSentence = ((Element) fileList.item(i)).getAttribute("kahina:sentence");
+            String testSentence = ((Element) testSet.item(i)).getAttribute("kahina:sentence");
             project.getTestSet().addSentence(testSentence);
         }
     }

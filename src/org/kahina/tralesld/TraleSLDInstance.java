@@ -30,6 +30,7 @@ import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
+import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.util.XMLUtil;
@@ -39,6 +40,7 @@ import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.prolog.util.PrologUtil;
+import org.kahina.qtype.control.QTypeControlEventCommands;
 import org.kahina.qtype.data.project.QTypeProject;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
@@ -174,6 +176,25 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		COMPILE_ACTION.setEnabled(commanding);
 		PARSE_ACTION.setEnabled(commanding && grammar != null);
 		RESTART_ACTION.setEnabled(commanding && grammar != null && !sentence.isEmpty());
+        if (getProjectStatus() != KahinaProjectStatus.NO_OPEN_PROJECT)
+        {
+            if (getProject() == null)
+            {
+                setProjectStatus(KahinaProjectStatus.NO_OPEN_PROJECT);
+            }
+            else if (grammar == null)
+            {
+                setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+            }
+            else if (sentence.isEmpty())
+            {
+                setProjectStatus(KahinaProjectStatus.PROGRAM_COMPILED);
+            }
+            else
+            {
+                setProjectStatus(KahinaProjectStatus.DEBUGGING_RUN);
+            }
+        }
 	}
 
 	@Override
@@ -466,5 +487,21 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
         project.getTheoryFiles().add(theoryFile);
         project.setPerspective(gui.getPerspective());
         setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+    }
+    
+    protected void processNewProject()
+    {
+        super.processNewProject();
+        List<List<String>> examples = new LinkedList<List<String>>();
+        for (String sentence : project.getTestSet().getSentences())
+        {
+            List<String> tokens = new LinkedList<String>();
+            for (String token : sentence.split(" "))
+            {
+                tokens.add(token);
+            }
+            examples.add(tokens);
+        }
+        dispatchEvent(new KahinaControlEvent(TraleSLDControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
     }
 }
