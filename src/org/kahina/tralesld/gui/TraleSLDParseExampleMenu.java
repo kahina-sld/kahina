@@ -44,7 +44,6 @@ public class TraleSLDParseExampleMenu extends JMenu implements KahinaListener
             removeAll();
             List<?> examples = (List<?>) event.getArguments()[0];
             int size = examples.size();
-            System.err.println("added " + size + " example sentences to the menu");
             for (int i = 0; i < size; i++)
             {
                 final List<String> example = ListUtil.castToStringList(examples.get(i));
