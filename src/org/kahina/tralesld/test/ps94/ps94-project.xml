@@ -4,4 +4,41 @@
   <trale:theoryFile kahina:path="/home/kahina/workspace/Kahina/src/org/kahina/tralesld/test/ps94/theory.pl"/>
   <kahina:perspective kahina:path="/org/kahina/tralesld/gui/tralesld-integrated.xml">
   </kahina:perspective>
+  <kahina:controlAgentProfiles>
+    <kahina:controlAgentProfile kahina:type="break"/>
+    <kahina:controlAgentProfile kahina:type="creep"/>
+    <kahina:controlAgentProfile kahina:type="complete">
+      <kahina:controlAgent active="true" color="#D5EB3E" name="complete cat">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true"> cat</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+    </kahina:controlAgentProfile>
+    <kahina:controlAgentProfile kahina:type="skip">
+      <kahina:controlAgent active="true" color="#00DD00" name="skip goal">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true"> goal</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+      <kahina:controlAgent active="true" color="#0000CC" name="skip mother">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true"> mother</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+      <kahina:controlAgent active="true" color="#56D1D7" name="skip featval">
+        <kahina:pattern rel="contains" type="caption">
+          <kahina:intVal>0</kahina:intVal>
+          <kahina:strVal regex="true"> featval</kahina:strVal>
+        </kahina:pattern>
+      </kahina:controlAgent>
+    </kahina:controlAgentProfile>
+    <kahina:controlAgentProfile kahina:type="fail"/>
+  </kahina:controlAgentProfiles>
+  <kahina:testSet>
+  	<kahina:testItem kahina:sentence="he walks"/>
+  	<kahina:testItem kahina:sentence="she likes him"/>
+  </kahina:testSet>
 </kahina:project>

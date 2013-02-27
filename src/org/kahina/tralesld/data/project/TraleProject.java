@@ -79,9 +79,9 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
         this.testSet = testSet;
     }
     
-    public static void importXML(Element topEl, TraleProject project)
+    public static void importXML(Element topEl, TraleProject project, TraleSLDInstance kahina, KahinaTree stepTree)
     {
-        LogicProgrammingProject.importXML(topEl, project);
+        LogicProgrammingProject.importXML(topEl, project, kahina, stepTree);
         NodeList mainFileList = topEl.getElementsByTagName("trale:signatureFile");
         if (mainFileList.getLength() != 1)
         {

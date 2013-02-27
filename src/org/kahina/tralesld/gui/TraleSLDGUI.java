@@ -127,7 +127,7 @@ public class TraleSLDGUI extends LogicProgrammingGUI
 	@Override
 	protected KahinaAbstractTreeView generateTreeView()
 	{
-	    return new KahinaListTreeView(kahina, 0, 1);
+	    return new KahinaListTreeView(kahina, 0, 1, 2);
 		//return new KahinaLayeredTreeView(KahinaLayeredTreeViewPanel.Orientation.VERTICAL, kahina, 0, 1, 2);
 	}
 
