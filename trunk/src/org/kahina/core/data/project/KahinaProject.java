@@ -119,22 +119,25 @@ public class KahinaProject extends KahinaObject
         Element el = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:project");
         el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:appid", appID);
         el.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:name", name);
-        Element mainFileEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:mainFile");
-        try
+        if (mainFile != null)
         {
-            mainFileEl.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:path", mainFile.getCanonicalPath());
+            Element mainFileEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:mainFile");
+            try
+            {
+                mainFileEl.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:path", mainFile.getCanonicalPath());
+            }
+            catch (DOMException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            el.appendChild(mainFileEl);
         }
-        catch (DOMException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        el.appendChild(mainFileEl);
         Element filesEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:files");
         for (File file : openedFiles)
         {

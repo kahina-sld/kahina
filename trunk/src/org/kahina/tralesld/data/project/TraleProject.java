@@ -1,6 +1,7 @@
 package org.kahina.tralesld.data.project;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,6 +12,8 @@ import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.parse.data.project.TestSet;
 import org.kahina.parse.data.project.TestSetExtension;
 import org.kahina.tralesld.TraleSLDInstance;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -96,5 +99,63 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
             project.addOpenedFile(theoryFile);
             project.getTheoryFiles().add(theoryFile);
         }
+        NodeList testSet = topEl.getElementsByTagName("kahina:testItem");
+        for (int i = 0; i < testSet.getLength(); i++)
+        {
+            String testSentence = ((Element) fileList.item(i)).getAttribute("kahina:sentence");
+            project.getTestSet().addSentence(testSentence);
+        }
+    }
+    
+    public Element exportXML(Document dom)
+    {
+        Element el = super.exportXML(dom);
+        if (signatureFile != null)
+        {
+            Element signatureFileEl = dom.createElementNS("http://www.kahina.org/xml/trale","trale:signatureFile");
+            try
+            {
+                signatureFileEl.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:path", signatureFile.getCanonicalPath());
+            }
+            catch (DOMException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            el.appendChild(signatureFileEl);
+        }
+        for (File file : theoryFiles)
+        {
+            Element fileEl = dom.createElementNS("http://www.kahina.org/xml/trale","trale:theoryFile");
+            try
+            {
+                fileEl.setAttributeNS("http://www.kahina.org/xml/kahina", "kahina:path", file.getCanonicalPath());
+            }
+            catch (DOMException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            el.appendChild(fileEl);
+        }
+        Element testSetEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:testSet");
+        for (String testSentence : testSet.getSentences())
+        {
+            Element testItemEl = dom.createElementNS("http://www.kahina.org/xml/kahina","kahina:testItem");
+            testItemEl.setAttribute("kahina:sentence", testSentence);
+            testSetEl.appendChild(testItemEl);
+        }
+        el.appendChild(testSetEl);
+        return el;
     }
 }
