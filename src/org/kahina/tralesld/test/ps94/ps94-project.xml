@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kahina:project xmlns:kahina="http://www.kahina.org/xml/kahina" xmlns:trale="http://www.kahina.org/xml/trale" kahina:appid="tralesld" kahina:name="Pollard &amp; Sag (1994), Chapter 8">
-  <trale:signatureFile kahina:path="/home/ke/dev/kahina/src/org/kahina/tralesld/test/ps94/signature"/>
-  <trale:theoryFile kahina:path="/home/ke/dev/kahina/src/org/kahina/tralesld/test/ps94/theory.pl"/>
+  <trale:signatureFile kahina:path="/home/kahina/workspace/Kahina/src/org/kahina/tralesld/test/ps94/signature"/>
+  <trale:theoryFile kahina:path="/home/kahina/workspace/Kahina/src/org/kahina/tralesld/test/ps94/theory.pl"/>
   <kahina:perspective kahina:path="/org/kahina/tralesld/gui/tralesld-integrated.xml">
   </kahina:perspective>
   <kahina:controlAgentProfiles>
