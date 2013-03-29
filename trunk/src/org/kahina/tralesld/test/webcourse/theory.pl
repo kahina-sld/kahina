@@ -1,7 +1,7 @@
 % Multifile declarations.
 :- multifile if/2.
 :- multifile forall/2.
-
+:- load_cd.
 
 :- [trale_home(feature_ordering)].
 
