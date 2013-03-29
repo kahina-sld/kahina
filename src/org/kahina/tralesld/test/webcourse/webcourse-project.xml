@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kahina:project xmlns:kahina="http://www.kahina.org/xml/kahina" xmlns:trale="http://www.kahina.org/xml/trale" kahina:appid="tralesld" kahina:name="Web-based Course Section 3.2.3">
-  <trale:signatureFile kahina:path="/home/kahina/workspace/Kahina/src/org/kahina/tralesld/test/webcourse/signature"/>
-  <trale:theoryFile kahina:path="/home/kahina/workspace/Kahina/src/org/kahina/tralesld/test/webcourse/theory.pl"/>
+  <trale:signatureFile kahina:path="/home/ke/workspace/kahina/src/org/kahina/tralesld/test/webcourse/signature"/>
+  <trale:theoryFile kahina:path="/home/ke/workspace/kahina/src/org/kahina/tralesld/test/webcourse/theory.pl"/>
   <kahina:perspective kahina:path="/org/kahina/tralesld/gui/tralesld-integrated.xml">
   </kahina:perspective>
   <kahina:controlAgentProfiles>
