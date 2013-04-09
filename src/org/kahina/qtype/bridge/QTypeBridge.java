@@ -14,6 +14,9 @@ import java.util.regex.Pattern;
 
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
+import org.kahina.lp.LogicProgrammingStep;
+import org.kahina.lp.bridge.LogicProgrammingBridgeEvent;
+import org.kahina.lp.bridge.LogicProgrammingBridgeEventType;
 import org.kahina.prolog.util.PrologUtil;
 import org.kahina.qtype.QTypeDebuggerInstance;
 import org.kahina.qtype.QTypeState;
@@ -76,6 +79,7 @@ public class QTypeBridge extends SICStusPrologBridge
         {   
 	        //move up in the edge stack
             int ruleEdge = popEdge();
+            
             setLastSpanEdge(ruleEdge);
 		    //the topmost rule edge is complete, we can cut its length to the current position
             state.getChart().setEdgeStatus(ruleEdge, 0);
@@ -231,7 +235,6 @@ public class QTypeBridge extends SICStusPrologBridge
 	    }
 	    else if (description.equals("parser:lc_complete/8"))
 	    {
-	        //TODO: make navigation in the tree much more robust (less assumptions, more search!)
 	        
 	        //retrieve the first child edge of the last call
 	        //this edge is associated with a unify or db_rule step directly under the lc_complete step
@@ -257,6 +260,12 @@ public class QTypeBridge extends SICStusPrologBridge
 	    else if (description.equals("parser:lc/5"))
         {
             if (VERBOSE) System.err.println("lc/5 is being redone!");
+            //copy over the edge reference, so that the correct position in the chart is found
+            if (oldEdgeID != -1)
+            {
+                state.linkEdgeToNode(oldEdgeID, newStepID);
+            }
+            
 	        /*String caption = state.getChart().getEdgeCaption(oldEdgeID);
 	        if (edgeExists())
             {
@@ -284,6 +293,18 @@ public class QTypeBridge extends SICStusPrologBridge
             System.err.println("check_link/2 is being redone!");
         }
 	}
+	
+    public int virtualRedo(int stepID)
+    {
+        System.err.println("QTypeBridge.virtualRedo(" + stepID + ")");
+        int newStepID = super.virtualRedo(stepID);
+        Integer edgeID = state.getEdgeForNode(stepID);
+        if (edgeID != -1)
+        {
+            state.linkEdgeToNode(edgeID, newStepID);
+        }
+        return newStepID;
+    }
 	
 	@Override
 	public void exit(int extID, boolean deterministic, String newDescription)

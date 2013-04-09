@@ -301,6 +301,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 */
 	public void redo(int extID)
 	{
+        boolean VERBOSE = true;
 		try
 		{
 			if (VERBOSE)
@@ -310,7 +311,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 			int lastStepID = convertStepID(extID);
 			int id = lastStepID;
-			Stack<Integer> redoStack = new Stack<Integer>();
+			Stack<Integer> searchTrace = new Stack<Integer>();
+			Stack<Integer> callTrace = new Stack<Integer>();
+			KahinaTree searchTree = state.getStepTree();
 			KahinaTree callTree = state.getSecondaryStepTree();
 
 			if (VERBOSE)
@@ -327,7 +330,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 					System.err.println("Pushing " + id + " onto redo stack.");
 				}
 
-				redoStack.push(id);
+				callTrace.push(id);
 
 				if (id == parentCandidateID)
 				{
@@ -340,37 +343,51 @@ public class LogicProgrammingBridge extends KahinaBridge
 				{
 					System.err.println("Looking up parent of " + id + " in call tree");
 				}
+				int oldID = id;
 				id = stepIDConv.get(state.get(callTree.getParent(id)).getExternalID());
-
-				if (id == -1)
+                if (id == -1)
+                {
+                    throw new KahinaException("Unexpected redo of " + lastStepID + " under " + parentCandidateID + ".");
+                }
+                
+				while (oldID != id)
 				{
-					throw new KahinaException("Unexpected redo of " + lastStepID + " under " + parentCandidateID + ".");
+                    searchTrace.push(oldID);
+				    oldID = stepIDConv.get(state.get(searchTree.getParent(oldID)).getExternalID());
 				}
 			} 
-			while (id != parentCandidateID);
+			while (id != parentCandidateID && id != -1);
 
 			int newStepID = -1;
+			
+			System.err.println("call trace for redo: " + callTrace);
+			System.err.println("search trace for redo: " + searchTrace);
 
-			// Create alternative copies of those steps to reflect backtracking,
-			// working top-down:
-			while (!redoStack.isEmpty())
+			while (callTrace.size() > 0)
 			{
-				id = redoStack.pop();
-				LogicProgrammingStep lastStep = state.get(id);
-				LogicProgrammingStep newStep = lastStep.copy();
-				newStep.incrementRedone();
-				newStepID = state.nextStepID();
-				state.store(newStepID, newStep);
-				stepIDConv.put(lastStep.getExternalID(), newStepID);
-				kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, id));
-
-				LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(id);
-				if (reference != null)
-				{
-					// TODO Do we want to select by external rather than
-					// internal ID in the console?
-					state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.REDO).generateIDVariant(newStepID));
-				}
+    			//outer loop: process the real backtracking in the call tree
+    			id = callTrace.pop();
+                //create virtual copies of intermediate steps for a full search tree branch, working top-down:
+                while (searchTrace.size() > 0 && searchTrace.peek() != id)
+                {
+                    System.err.println("  virtual redo: " + searchTrace.peek());
+                    virtualRedo(searchTrace.pop());
+                }
+                LogicProgrammingStep lastStep = state.get(id);
+                LogicProgrammingStep newStep = lastStep.copy();
+                newStep.incrementRedone();
+                newStepID = state.nextStepID();
+                state.store(newStepID, newStep);
+                stepIDConv.put(lastStep.getExternalID(), newStepID);
+                kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, id));
+    
+                LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(id);
+                if (reference != null)
+                {
+                    // TODO Do we want to select by external rather than
+                    // internal ID in the console?
+                    state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.REDO).generateIDVariant(newStepID));
+                }
 			}
 
 			currentID = newStepID;
@@ -387,6 +404,18 @@ public class LogicProgrammingBridge extends KahinaBridge
 			e.printStackTrace();
 			System.exit(1);
 		}
+	}
+	
+	public int virtualRedo(int stepID)
+	{
+	    LogicProgrammingStep lastStep = state.get(stepID);
+        LogicProgrammingStep newStep = lastStep.copy();
+        //newStep.incrementRedone();
+        int newStepID = state.nextStepID();
+        state.store(newStepID, newStep);
+        stepIDConv.put(lastStep.getExternalID(), newStepID);
+        kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.VIRTUAL_REDO, stepID));  
+        return newStepID;
 	}
 
 	public void exit(int extID, boolean deterministic)
@@ -526,6 +555,10 @@ public class LogicProgrammingBridge extends KahinaBridge
 			if (reference != null)
 			{
 				state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.FAIL));
+			}
+			else
+			{
+			    System.err.println("WARNING: step failure with undefined console reference!");
 			}
 
 			// Stop autocomplete/leap when we're done. Also, set to creep so
@@ -957,7 +990,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	@Override
 	protected synchronized void processControlEvent(KahinaControlEvent e)
 	{
-        if (VERBOSE) System.err.println(this + "e.processControlEvent(" + e + ")");
+        //if (VERBOSE) System.err.println(this + "e.processControlEvent(" + e + ")");
 		// TODO update chart when exiting leap/skip. Gah.
 		String command = e.getCommand();
 		if (command.equals("creep"))
