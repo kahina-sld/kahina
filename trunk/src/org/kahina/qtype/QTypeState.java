@@ -41,6 +41,7 @@ public class QTypeState extends LogicProgrammingState
     
     public void linkEdgeToNode(int edgeID, int nodeID)
     {
+        System.err.println("QTypeState.linkEdgeToNode(" + edgeID + "," + nodeID + ")");
         edgeToNode.put(edgeID, nodeID);
         nodeToEdge.put(nodeID, edgeID);
     }

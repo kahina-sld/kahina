@@ -380,14 +380,14 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		if (VERBOSE)
 			System.err.println("LogicProgrammingTreeBehavior.processStepInformation(" + stepID + ",\"" + stepInfo + "\")");
 		int extID = ((LogicProgrammingState) kahina.getState()).get(stepID).getExternalID();
-		String caption = makeNodeLabel(extID, stepInfo);
+		String caption = makeNodeLabel(stepID, extID, stepInfo);
 		object.addNode(stepID, caption, "", LogicProgrammingStepType.CALL);
 		// TODO: make this unnecessary => new structure for secondary tree,
 		// perhaps not a full tree model?
 		secondaryTree.addNode(stepID, caption, "", LogicProgrammingStepType.CALL);
 	}
 
-	private String makeNodeLabel(int extID, String stepInfo)
+	private String makeNodeLabel(int stepID, int extID, String stepInfo)
 	{
 		if (maxNodeLabelLength > 0 && stepInfo.length() > maxNodeLabelLength)
 		{
@@ -395,8 +395,9 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		}
 		if (extID >= 0)
 		{
-			return extID + " " + stepInfo;
-		} else
+			return stepID + ": " + extID + " " + stepInfo;
+		} 
+		else
 		{
 			return stepInfo;
 		}
@@ -406,8 +407,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 * register and react to an incoming redo operation
 	 * 
 	 * @param lastStepID
-	 *            - the ID of the step being redone in the monitored logic
-	 *            programming system
+	 *            - the ID of the step being redone in the monitored logic programming system
 	 */
 	public void processStepRedo(int lastStepID)
 	{
@@ -461,7 +461,8 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 				System.err.println("non-cascading redo");
 			}
 			primaryParentID = object.getParent(lastStepID);
-		} else
+		} 
+		else
 		{
 			if (VERBOSE)
 			{
@@ -479,6 +480,77 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		stepBeingRedone = newStepID;
 		//breakpointCheck(newStepID);
 	}
+	
+	/**
+     * register and react to an incoming virtual redo operation;
+     * 
+     * @param lastStepID
+     *            - the ID of the step being redone in the monitored logic programming system
+     */
+    public void processVirtualRedo(int lastStepID)
+    {
+        if (VERBOSE)
+            System.err.println("LogicProgrammingTreeBehavior.processStepRedo(" + lastStepID + ")");
+
+        // generate a new node corresponding to the new internal step
+        int newStepID = object.addNode(object.getNodeCaption(lastStepID), "", object.getNodeStatus(lastStepID));
+        //newStepIDByLastStepID.put(lastStepID, newStepID);
+
+        secondaryTree.addNode(object.getNodeCaption(lastStepID), "", object.getNodeStatus(lastStepID));
+        
+        // copy layer information
+        int layer = secondaryTree.getLayer(lastStepID);
+        if (layer != -1)
+        {
+            secondaryTree.setLayer(newStepID, layer);
+        }
+
+        // adapt call dimension
+        int secondaryParentID = secondaryTree.getParent(lastStepID);
+        if (VERBOSE)
+        {
+            System.err.println("Secondary parent for " + newStepID + " (copy of " + lastStepID + "): " + secondaryParentID);
+        }
+        while (newStepIDByLastStepID.containsKey(secondaryParentID))
+        {
+            secondaryParentID = newStepIDByLastStepID.get(secondaryParentID);
+            if (VERBOSE)
+            {
+                System.err.println("Correction, secondary parent for " + newStepID + " (copy of " + lastStepID + "): " + secondaryParentID);
+            }
+        }
+        secondaryTree.addChild(secondaryParentID, newStepID);
+
+        // adapt control flow dimension
+        int primaryParentID;
+        if (stepBeingRedone == -1)
+        {
+            if (VERBOSE)
+            {
+                System.err.println("non-cascading redo");
+            }
+            primaryParentID = object.getParent(lastStepID);
+        } 
+        else
+        {
+            if (VERBOSE)
+            {
+                System.err.println("cascading redo");
+            }
+            primaryParentID = stepBeingRedone;
+        }
+        if (VERBOSE)
+        {
+            System.err.println("Primary parent for " + newStepID + " (copy of " + lastStepID + "): " + primaryParentID);
+        }
+        object.addChild(primaryParentID, newStepID);
+
+        lastActiveID = newStepID;
+        stepBeingRedone = newStepID;
+        //breakpointCheck(newStepID);
+    }
+    
+    
 
 	/**
 	 * register and react to an incoming exit operation
@@ -595,6 +667,11 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 			processStepRedo(e.getID());
 			break;
 		}
+       case LogicProgrammingBridgeEventType.VIRTUAL_REDO:
+        {
+            processVirtualRedo(e.getID());
+            break;
+        }
 		case LogicProgrammingBridgeEventType.STEP_DET_EXIT:
 		{
 			processStepExit(e.getID(), true);
@@ -667,6 +744,6 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	{
 		int stepID = e.getStepID();
 		int extID = ((LogicProgrammingState) kahina.getState()).get(stepID).getExternalID();
-		object.setNodeCaption(stepID, makeNodeLabel(extID, e.getDescription()));
+		object.setNodeCaption(stepID, makeNodeLabel(stepID, extID, e.getDescription()));
 	}
 }

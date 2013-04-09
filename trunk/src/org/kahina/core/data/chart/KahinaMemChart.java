@@ -270,6 +270,11 @@ public class KahinaMemChart extends KahinaChart
     @Override
 	public void addEdgeDependency(int motherID, int daughterID)
     {
+        if (motherID < 0 || daughterID < 0)
+        {
+            System.err.println("ERROR: illegal argument in addEdgeDependency(" + motherID + "," + daughterID + ")");
+            return;
+        }
     	if (VERBOSE)
     	{
     		System.err.println("  chart.addEdgeDependency(" + motherID + ", " + daughterID + ")");

@@ -9,4 +9,5 @@ public class LogicProgrammingBridgeEventType
     public static final int STEP_NONDET_EXIT = 4;
     public static final int STEP_FAIL = 5;
     public static final int STEP_EXCEPTION = 7;
+    public static final int VIRTUAL_REDO = 8;
 }
