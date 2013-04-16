@@ -57,7 +57,7 @@ import org.kahina.lp.data.text.LogicProgrammingLineReference;
  */
 public class LogicProgrammingBridge extends KahinaBridge
 {
-	private static final boolean VERBOSE = false;
+	private static final boolean VERBOSE = true;
 
 	// a dynamic map from external step IDs to most recent corresponding tree
 	// nodes
@@ -69,7 +69,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 	// always contains the internal ID of the step which, if a call occurs, will be the parent of the new step
 	// TODO we can move this to the tree behavior so bridge doesn't have to access the tree
-	protected int parentCandidateID = -1;
+	private int parentCandidateID = -1;
 
 	// always contains the internal ID of the selected step
 	protected int selectedID = -1;
@@ -258,12 +258,12 @@ public class LogicProgrammingBridge extends KahinaBridge
 			int stepID = convertStepID(extID);
 			if (VERBOSE)
 			{
-				System.err.println("Parent ID: " + parentCandidateID);
+				System.err.println("Parent ID: " + getParentCandidateID());
 			}
 			// used by tree behavior:
-			kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, parentCandidateID));
+			kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_CALL, stepID, getParentCandidateID()));
 			currentID = stepID;
-			parentCandidateID = stepID;
+			setParentCandidateID(stepID);
 			if (VERBOSE)
 			{
 				System.err.println("Bridge state: " + getBridgeState());
@@ -318,7 +318,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 			if (VERBOSE)
 			{
-				System.err.println("Current parent candidate: " + parentCandidateID);
+				System.err.println("  current parent candidate: " + getParentCandidateID());
 			}
 
 			// Collect the steps we need to backtrack into, from the one being
@@ -327,13 +327,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				if (VERBOSE)
 				{
-					System.err.println("Pushing " + id + " onto redo stack.");
+					System.err.println("  pushing " + id + " onto redo stack.");
 				}
 
 				callTrace.push(id);
 
-				if (id == parentCandidateID)
+				if (id == getParentCandidateID())
 				{
+					System.err.println("  break condition: id == " + id + " == parentCandidateID");
 					break;
 				}
 
@@ -341,13 +342,14 @@ public class LogicProgrammingBridge extends KahinaBridge
 				// already has one:
 				if (VERBOSE)
 				{
-					System.err.println("Looking up parent of " + id + " in call tree");
+					System.err.println("  moving up to " + callTree.getParent(id) + " (parent of " + id + ") in call tree");
 				}
 				int oldID = id;
+				
 				id = stepIDConv.get(state.get(callTree.getParent(id)).getExternalID());
                 if (id == -1)
                 {
-                    throw new KahinaException("Unexpected redo of " + lastStepID + " under " + parentCandidateID + ".");
+                    throw new KahinaException("  unexpected redo of " + lastStepID + " under " + getParentCandidateID() + ".");
                 }
                 
 				while (oldID != id)
@@ -356,7 +358,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				    oldID = stepIDConv.get(state.get(searchTree.getParent(oldID)).getExternalID());
 				}
 			} 
-			while (id != parentCandidateID && id != -1);
+			while (id != getParentCandidateID() && id != -1);
 
 			int newStepID = -1;
 			
@@ -391,7 +393,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 
 			currentID = newStepID;
-			parentCandidateID = newStepID;
+			setParentCandidateID(newStepID);
 			
 	        updateControlElementActivations();
 
@@ -460,7 +462,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 				kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_NONDET_EXIT, stepID));
 			}
 			currentID = stepID;
-			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
+			setParentCandidateID(state.getSecondaryStepTree().getParent(stepID));
 
 			// relabel node
 			if (newDescription != null)
@@ -549,7 +551,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_FAIL, stepID));
 			currentID = stepID;
-			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
+			setParentCandidateID(state.getSecondaryStepTree().getParent(stepID));
 
 			LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(stepID);
 			if (reference != null)
@@ -602,7 +604,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_EXCEPTION, stepID));
 			currentID = stepID;
-			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
+			setParentCandidateID(state.getSecondaryStepTree().getParent(stepID));
 
 			state.exceptionConsoleMessage(stepID, extID, message);
 
@@ -710,7 +712,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
 				if (VERBOSE)
 				{
-					System.err.println(this + ".getAction() == 's', skipFlag := false, waitingForReturnFromSkip := " + currentID);
+					//System.err.println(this + ".getAction() == 's', skipFlag := false, waitingForReturnFromSkip := " + currentID);
 				}
 			    skipFlag = false;
 			    waitingForReturnFromSkip = currentID;
@@ -723,7 +725,7 @@ public class LogicProgrammingBridge extends KahinaBridge
     			{
                     if (VERBOSE)
                     {
-                        System.err.println(this + ".getAction() == 'n', in idle mode");
+                        //System.err.println(this + ".getAction() == 'n', in idle mode");
                     }
     				return 'n';
     			}
@@ -853,8 +855,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ")");*/
 		if (extID == -1)
 		{
-            if (VERBOSE)
-                System.err.println("LogicProgrammingBridge.convertStepID(-1) = -1");
+            //if (VERBOSE)
+            //    System.err.println("LogicProgrammingBridge.convertStepID(-1) = -1");
 			return -1;
 		}
 		Integer intID = stepIDConv.get(extID);
@@ -870,8 +872,8 @@ public class LogicProgrammingBridge extends KahinaBridge
 			state.store(intID, newStep);
 			stepIDConv.put(extID, intID);
 		}
-		if (VERBOSE)
-			System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ") = " + intID);
+		//if (VERBOSE)
+		//	System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ") = " + intID);
 		return intID;
 	}
 
@@ -1329,7 +1331,18 @@ public class LogicProgrammingBridge extends KahinaBridge
 
     public char getBridgeState()
     {
-        if (VERBOSE) System.err.println(this + ".getBridgeState() == " + bridgeState);
+        //if (VERBOSE) System.err.println(this + ".getBridgeState() == " + bridgeState);
         return bridgeState;
     }
+
+	protected int getParentCandidateID() 
+	{
+		return parentCandidateID;
+	}
+
+	protected void setParentCandidateID(int parentCandidateID) 
+	{
+		if (VERBOSE) System.err.println("  setting parentCandidateID: " + parentCandidateID);
+		this.parentCandidateID = parentCandidateID;
+	}
 }

@@ -296,7 +296,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	
     public int virtualRedo(int stepID)
     {
-        System.err.println("QTypeBridge.virtualRedo(" + stepID + ")");
+        //System.err.println("QTypeBridge.virtualRedo(" + stepID + ")");
         int newStepID = super.virtualRedo(stepID);
         Integer edgeID = state.getEdgeForNode(stepID);
         if (edgeID != -1)
