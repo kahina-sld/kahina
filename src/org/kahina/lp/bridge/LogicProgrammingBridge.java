@@ -304,13 +304,15 @@ public class LogicProgrammingBridge extends KahinaBridge
         boolean VERBOSE = true;
 		try
 		{
-			if (VERBOSE)
-			{
-				System.err.println("LogicProgrammingBridge.registerStepRedo(" + extID + ")");
-			}
 
 			int lastStepID = convertStepID(extID);
 			int id = lastStepID;
+			
+	         if (VERBOSE)
+	         {
+	                System.err.println("LogicProgrammingBridge.registerStepRedo(" + id + "(" + extID + "))");
+	         }
+	         
 			Stack<Integer> searchTrace = new Stack<Integer>();
 			Stack<Integer> callTrace = new Stack<Integer>();
 			KahinaTree searchTree = state.getStepTree();
@@ -323,30 +325,29 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 			// Collect the steps we need to backtrack into, from the one being
 			// redone up until (and excluding) the current parent candidate:
-			do
+			while (true)
 			{
-				if (VERBOSE)
-				{
-					System.err.println("  pushing " + id + " onto redo stack.");
-				}
+                if (id == getParentCandidateID())
+                {
+                    System.err.println("  break condition: id == " + id + " == parentCandidateID");
+                    break;
+                }
+                
+                if (VERBOSE)
+                {
+                    System.err.println("  pushing " + id + " onto redo stack.");
+                }
 
 				callTrace.push(id);
 
-				if (id == getParentCandidateID())
-				{
-					System.err.println("  break condition: id == " + id + " == parentCandidateID");
-					break;
-				}
+				// Get the internal ID of the parent, or that of its copy if it already has one:
 
-				// Get the internal ID of the parent, or that of its copy if it
-				// already has one:
-				if (VERBOSE)
-				{
-					System.err.println("  moving up to " + callTree.getParent(id) + " (parent of " + id + ") in call tree");
-				}
 				int oldID = id;
-				
 				id = stepIDConv.get(state.get(callTree.getParent(id)).getExternalID());
+                if (VERBOSE)
+                {
+                    System.err.println("  moved up to " + id + " (parent of " + oldID + ") in call tree");
+                }
                 if (id == -1)
                 {
                     throw new KahinaException("  unexpected redo of " + lastStepID + " under " + getParentCandidateID() + ".");
@@ -358,7 +359,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 				    oldID = stepIDConv.get(state.get(searchTree.getParent(oldID)).getExternalID());
 				}
 			} 
-			while (id != getParentCandidateID() && id != -1);
 
 			int newStepID = -1;
 			
@@ -380,15 +380,18 @@ public class LogicProgrammingBridge extends KahinaBridge
                 newStep.incrementRedone();
                 newStepID = state.nextStepID();
                 state.store(newStepID, newStep);
-                stepIDConv.put(lastStep.getExternalID(), newStepID);
+                stepIDConv.put(extID, newStepID);
                 kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.STEP_REDO, id));
     
                 LogicProgrammingLineReference reference = state.getConsoleLineRefForStep(id);
                 if (reference != null)
                 {
-                    // TODO Do we want to select by external rather than
-                    // internal ID in the console?
+                    // TODO Do we want to select by external rather than internal ID in the console?
                     state.consoleMessage(reference.generatePortVariant(LogicProgrammingStepType.REDO).generateIDVariant(newStepID));
+                }
+                else
+                {
+                    System.err.println("WARNING: step " + id + "(" + extID + ") redone with undefined console reference!");
                 }
 			}
 
@@ -560,7 +563,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			}
 			else
 			{
-			    System.err.println("WARNING: step failure with undefined console reference!");
+			    System.err.println("WARNING: step " + stepID + "(" + extID + ") failed with undefined console reference!");
 			}
 
 			// Stop autocomplete/leap when we're done. Also, set to creep so
