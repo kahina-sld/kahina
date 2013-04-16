@@ -465,7 +465,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 			}
 			kahina.dispatchEvent(new TraleSLDBridgeEvent(TraleSLDBridgeEventType.STEP_FINISHED, stepID));
 			currentID = stepID;
-			parentCandidateID = state.getSecondaryStepTree().getParent(stepID);
+			setParentCandidateID(state.getSecondaryStepTree().getParent(stepID));
 
 			// TODO update a TraleSLDLineReference (that class doesn't exist
 			// yet) or rewrite the whole thing – why are console messages line
