@@ -76,14 +76,24 @@ public class QTypeBridge extends SICStusPrologBridge
 			}
 		}
 		else if (description.startsWith("lc_complete(") && description.endsWith(")"))
-        {   
+        {      
 	        //move up in the edge stack
             int ruleEdge = popEdge();
             
-            setLastSpanEdge(ruleEdge);
-		    //the topmost rule edge is complete, we can cut its length to the current position
-            state.getChart().setEdgeStatus(ruleEdge, 0);
-            trimEdgeToChildrenLength(ruleEdge);
+            //check whether we are in the recursive case
+            if (currentEdge == -1)
+            {
+                //revert pop if we were at the topmost rule edge (called by lc)
+                pushEdge(ruleEdge);
+            }
+            else
+            {
+                //not the topmost rule edge, we were called recursively by lc_complete
+                setLastSpanEdge(ruleEdge);
+    		    //the topmost rule edge is complete, we can cut its length to the current position
+                state.getChart().setEdgeStatus(ruleEdge, 0);
+                trimEdgeToChildrenLength(ruleEdge);
+            }
         }
 		else if (description.startsWith("db_word("))
 	    {
@@ -126,16 +136,7 @@ public class QTypeBridge extends SICStusPrologBridge
             {
                 int motherEdge = getTopEdge();
                 int motherPos = getPos(motherEdge);
-                //the category we unify with is the one associated with the last span edge
-                if (VERBOSE) System.err.println("  last span edge: " + getLastSpanEdge());
-                int leftBound = state.getChart().getLeftBoundForEdge(getLastSpanEdge());
-                int rightBound = state.getChart().getRightBoundForEdge(getLastSpanEdge());
-                if (rightBound == leftBound)
-            	{
-            		rightBound++;
-            		state.getChart().setRightBoundForEdge(motherEdge, rightBound);
-            	}
-                int edgeID = state.getChart().addEdge(leftBound, rightBound, "unify", 2);
+                int edgeID = state.getChart().addEdge(motherPos, motherPos + 1, "unify", 2);
                 state.linkEdgeToNode(edgeID, currentID);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
                 setPos(edgeID, motherPos);
@@ -174,6 +175,23 @@ public class QTypeBridge extends SICStusPrologBridge
                 //a freely dangling rule edge, this should not happen
                 System.err.println("WARNING: found a rule edge outside of any expected context");
             }
+        }
+        else if (description.startsWith("unify"))
+        {
+            int motherEdge = getTopEdge();
+            int edgeID = state.getEdgeForNode(stepID);
+            int lastSpanEdge = findLastSpanEdge(currentID);
+            //the category we unify with is the one associated with the last span edge
+            if (VERBOSE) System.err.println("  last span edge: " + lastSpanEdge);
+            int leftBound = state.getChart().getLeftBoundForEdge(lastSpanEdge);
+            int rightBound = state.getChart().getRightBoundForEdge(lastSpanEdge);
+            if (rightBound == leftBound)
+            {
+                rightBound++;
+                state.getChart().setRightBoundForEdge(motherEdge, rightBound);
+            }
+            state.getChart().setLeftBoundForEdge(edgeID, leftBound);
+            state.getChart().setRightBoundForEdge(edgeID, rightBound);
         }
 	}
 	
@@ -298,10 +316,17 @@ public class QTypeBridge extends SICStusPrologBridge
     {
         //System.err.println("QTypeBridge.virtualRedo(" + stepID + ")");
         int newStepID = super.virtualRedo(stepID);
+        
+        String description = state.get(newStepID).getGoalDesc();
+        
         Integer edgeID = state.getEdgeForNode(stepID);
         if (edgeID != -1)
         {
             state.linkEdgeToNode(edgeID, newStepID);
+            if (description.startsWith("db_word("))
+            {
+                setLastSpanEdge(edgeID);
+            }
         }
         return newStepID;
     }
@@ -451,7 +476,10 @@ public class QTypeBridge extends SICStusPrologBridge
         int associatedEdge = state.getEdgeForNode(stepID);
         if (associatedEdge != -1)
         {
-            state.getChart().setEdgeStatus(associatedEdge, 1);
+            if (state.getChart().getEdgeStatus(associatedEdge) != 0)
+            {
+                state.getChart().setEdgeStatus(associatedEdge, 1);
+            }
             kahina.dispatchEvent(new KahinaChartUpdateEvent(associatedEdge));
         }
     }
@@ -554,8 +582,6 @@ public class QTypeBridge extends SICStusPrologBridge
                     }
                 }
                 if (GraleJUtility.getType(graleFS).equals("unify"))
-                //lc: (update current position using the length of the unconsumed token list)
-                //    add an edge representing the current subparse attempt
                 {
                     int associatedEdge = state.getEdgeForNode(stepID);
                     String newUnifyLabel = "~";
@@ -742,6 +768,25 @@ public class QTypeBridge extends SICStusPrologBridge
 
     private int getLastSpanEdge()
     {
+        return lastSpanEdge;
+    }
+    
+    //assumes that there is unify at stepID, whose span we need to determine
+    private int findLastSpanEdge(int stepID)
+    {
+        //twice up in the call structure, first call child will be db_word or db_rule, get associated edge
+        int parentComplete = state.getSecondaryStepTree().getParent(stepID);
+        System.err.println("parentComplete = " + parentComplete);
+        int grandparentLcOrComplete = state.getSecondaryStepTree().getParent(parentComplete);
+        System.err.println("grandparentLcOrComplete = " + parentComplete);
+        int lastSpanStep = state.getSecondaryStepTree().getChildren(grandparentLcOrComplete).get(0);
+        System.err.println("lastSpanStep = " + parentComplete);
+        Integer lastSpanEdge = state.getEdgeForNode(lastSpanStep);
+        if (lastSpanEdge == null)
+        {
+            System.err.println("ERROR: failed to determine last span edge via "
+                               + stepID + "/" + parentComplete + "/" + grandparentLcOrComplete + "\\" + lastSpanStep);
+        }
         return lastSpanEdge;
     }
     
