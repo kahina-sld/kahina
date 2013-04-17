@@ -494,7 +494,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 
         // generate a new node corresponding to the new internal step
         int newStepID = object.addNode(object.getNodeCaption(lastStepID), "", object.getNodeStatus(lastStepID));
-        //newStepIDByLastStepID.put(lastStepID, newStepID);
+        newStepIDByLastStepID.put(lastStepID, newStepID);
 
         secondaryTree.addNode(object.getNodeCaption(lastStepID), "", object.getNodeStatus(lastStepID));
         
