@@ -545,9 +545,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 	{
 		try
 		{
-			if (VERBOSE)
-				System.err.println("LogicProgrammingBridge.registerStepFailure(" + extID + ")");
 			int stepID = convertStepID(extID);
+	         if (VERBOSE)
+	                System.err.println("LogicProgrammingBridge.registerStepFailure(" + stepID + "(" + extID + "))");
 			if (stepID == waitingForReturnFromSkip)
 			{
 				waitingForReturnFromSkip = -1;
