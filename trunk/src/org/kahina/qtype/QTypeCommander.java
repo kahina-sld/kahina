@@ -227,7 +227,7 @@ public class QTypeCommander implements KahinaListener
         else if (QTypeControlEventCommands.RESTART.equals(command))
         {
             kahina.dispatchEvent(new KahinaControlEvent("abort"));
-            compile(grammar);
+            //compile(grammar);
             parse(sentence);
         }
     }
