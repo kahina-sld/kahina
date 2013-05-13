@@ -29,7 +29,7 @@ import org.kahina.tralesld.visual.fs.GraleJUtility;
 
 public class QTypeBridge extends SICStusPrologBridge
 {
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 
 	private static final Pattern SENTENCE_PATTERN = Pattern.compile("\\[([^\\]]+)\\]");
 	
@@ -774,13 +774,14 @@ public class QTypeBridge extends SICStusPrologBridge
     //assumes that there is unify at stepID, whose span we need to determine
     private int findLastSpanEdge(int stepID)
     {
-        //twice up in the call structure, first call child will be db_word or db_rule, get associated edge
+        //twice up in the call structure, latest search tree child will be db_word or db_rule, get associated edge
         int parentComplete = state.getSecondaryStepTree().getParent(stepID);
         System.err.println("parentComplete = " + parentComplete);
         int grandparentLcOrComplete = state.getSecondaryStepTree().getParent(parentComplete);
-        System.err.println("grandparentLcOrComplete = " + parentComplete);
-        int lastSpanStep = state.getSecondaryStepTree().getChildren(grandparentLcOrComplete).get(0);
-        System.err.println("lastSpanStep = " + parentComplete);
+        System.err.println("grandparentLcOrComplete = " + grandparentLcOrComplete);
+        List<Integer> children = state.getStepTree().getChildren(grandparentLcOrComplete);
+        int lastSpanStep = children.get(children.size() - 1);
+        System.err.println("lastSpanStep = " + lastSpanStep);
         Integer lastSpanEdge = state.getEdgeForNode(lastSpanStep);
         if (lastSpanEdge == null)
         {
