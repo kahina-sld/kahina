@@ -176,7 +176,7 @@ public class QTypeBridge extends SICStusPrologBridge
                 System.err.println("WARNING: found a rule edge outside of any expected context");
             }
         }
-        else if (description.startsWith("unify"))
+        else if (description.startsWith("parser:unify"))
         {
             int motherEdge = getTopEdge();
             int edgeID = state.getEdgeForNode(stepID);
