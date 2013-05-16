@@ -14,9 +14,6 @@ import java.util.regex.Pattern;
 
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
-import org.kahina.lp.LogicProgrammingStep;
-import org.kahina.lp.bridge.LogicProgrammingBridgeEvent;
-import org.kahina.lp.bridge.LogicProgrammingBridgeEventType;
 import org.kahina.prolog.util.PrologUtil;
 import org.kahina.qtype.QTypeDebuggerInstance;
 import org.kahina.qtype.QTypeState;
@@ -44,7 +41,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	int currentEdge = -1;
 	Map<Integer,Integer> edgeToCurrentPosition;
 	//int lastRuleNode = -1;
-	private int lastSpanEdge = -1;
+	//private int lastSpanEdge = -1;
 
 	public QTypeBridge(final QTypeDebuggerInstance kahina)
 	{
@@ -251,6 +248,30 @@ public class QTypeBridge extends SICStusPrologBridge
                 System.err.println("WARNING: found a rule edge outside of any expected context");
             }
 	    }
+	    /*else if (description.equals("grammar:db_word/4"))
+	    {
+	        if (edgeExists())
+            {
+	            //throw away the last word edge, it is not relevant any longer
+	            popEdge();
+                int motherEdge = getTopEdge();
+                int startPos = getPos(motherEdge);
+    	        //create chart edge with label "lex:word" from the current position to the next
+    	        String word = description.substring(8,description.indexOf(','));
+    	        int edgeID = state.getChart().addEdge(currentPosition, currentPosition + 1, "lex:" + word, 2);
+    	        setPos(edgeID, startPos);
+                state.getChart().addEdgeDependency(motherEdge, edgeID);
+    	        state.linkEdgeToNode(edgeID, currentID);
+                pushEdge(edgeID);
+                
+                setLastSpanEdge(oldEdgeID);
+            }
+            else
+            {
+	            //a freely dangling lexical edge, this should not happen
+	            System.err.println("WARNING: found a lexical edge outside of any expected context");
+            }
+	    }*/
 	    else if (description.equals("parser:lc_complete/8"))
 	    {
 	        
@@ -762,13 +783,8 @@ public class QTypeBridge extends SICStusPrologBridge
 
     private void setLastSpanEdge(int lastSpanEdge)
     {
-        if (VERBOSE) System.err.println("  setting lastSpanEdge to " + lastSpanEdge);
-        this.lastSpanEdge = lastSpanEdge;
-    }
-
-    private int getLastSpanEdge()
-    {
-        return lastSpanEdge;
+        //if (VERBOSE) 
+        	System.err.println("  setLastSpanEdge(" + lastSpanEdge + "), nothing was stored");
     }
     
     //assumes that there is unify at stepID, whose span we need to determine
