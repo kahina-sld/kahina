@@ -425,8 +425,6 @@ public class LogicProgrammingBridge extends KahinaBridge
         
         state.addConsoleLineRefForStep(newStepID,state.getConsoleLineRefForStep(stepID));
         
-        //TODO: update chart references as well
-        
         return newStepID;
 	}
 
