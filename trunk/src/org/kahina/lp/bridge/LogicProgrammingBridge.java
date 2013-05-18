@@ -391,6 +391,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                 }
                 else
                 {
+        			state.consoleMessage(newStepID, extID, LogicProgrammingStepType.REDO, "WARNING: redo of " + id + " with undefined console reference!");
                     System.err.println("WARNING: step " + id + "(" + extID + ") redone with undefined console reference!");
                 }
 			}
@@ -419,7 +420,13 @@ public class LogicProgrammingBridge extends KahinaBridge
         int newStepID = state.nextStepID();
         state.store(newStepID, newStep);
         stepIDConv.put(lastStep.getExternalID(), newStepID);
+        
         kahina.dispatchEvent(new LogicProgrammingBridgeEvent(LogicProgrammingBridgeEventType.VIRTUAL_REDO, stepID));  
+        
+        state.addConsoleLineRefForStep(newStepID,state.getConsoleLineRefForStep(stepID));
+        
+        //TODO: update chart references as well
+        
         return newStepID;
 	}
 
