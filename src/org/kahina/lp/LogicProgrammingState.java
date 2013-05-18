@@ -109,14 +109,7 @@ public class LogicProgrammingState extends KahinaState
     
     public void consoleMessage(LogicProgrammingLineReference ref)
     {
-        Set<KahinaLineReference> refs = consoleLines.get(ref.step);
-        if (refs == null)
-        {
-            refs = new HashSet<KahinaLineReference>();
-            consoleLines.put(ref.step, refs);
-        }
-        refs.add(ref);
-        //ref.store();
+    	addConsoleLineRefForStep(ref.step,ref);
         kahina.dispatchInstanceEvent(new KahinaMessageEvent(ref));
     }
     
@@ -126,6 +119,18 @@ public class LogicProgrammingState extends KahinaState
         if (refs == null) return null;
         return (LogicProgrammingLineReference) refs.iterator().next();
     }
+    
+    public void addConsoleLineRefForStep(int stepID, KahinaLineReference ref)
+    {
+        Set<KahinaLineReference> refs = consoleLines.get(stepID);
+        if (refs == null)
+        {
+            refs = new HashSet<KahinaLineReference>();
+            consoleLines.put(stepID, refs);
+        }
+        refs.add(ref);
+    }
+    
     
     public KahinaTree getStepTree()
     {
