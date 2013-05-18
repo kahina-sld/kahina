@@ -248,7 +248,7 @@ public class QTypeBridge extends SICStusPrologBridge
                 System.err.println("WARNING: found a rule edge outside of any expected context");
             }
 	    }
-	    /*else if (description.equals("grammar:db_word/4"))
+	    else if (description.equals("grammar:db_word/4"))
 	    {
 	        if (edgeExists())
             {
@@ -256,9 +256,11 @@ public class QTypeBridge extends SICStusPrologBridge
 	            popEdge();
                 int motherEdge = getTopEdge();
                 int startPos = getPos(motherEdge);
-    	        //create chart edge with label "lex:word" from the current position to the next
-    	        String word = description.substring(8,description.indexOf(','));
-    	        int edgeID = state.getChart().addEdge(currentPosition, currentPosition + 1, "lex:" + word, 2);
+    	        //TODO: do not just copy the old edge label, but find out which category the new lex entry has
+                String caption = state.getChart().getEdgeCaption(oldEdgeID);
+                int leftBound = state.getChart().getLeftBoundForEdge(oldEdgeID);
+                int rightBound = state.getChart().getRightBoundForEdge(oldEdgeID);
+    	        int edgeID = state.getChart().addEdge(leftBound, rightBound, caption, 2);
     	        setPos(edgeID, startPos);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
     	        state.linkEdgeToNode(edgeID, currentID);
@@ -269,9 +271,9 @@ public class QTypeBridge extends SICStusPrologBridge
             else
             {
 	            //a freely dangling lexical edge, this should not happen
-	            System.err.println("WARNING: found a lexical edge outside of any expected context");
+	            System.err.println("WARNING: lexical edge was redone outside of any expected context");
             }
-	    }*/
+	    }
 	    else if (description.equals("parser:lc_complete/8"))
 	    {
 	        
