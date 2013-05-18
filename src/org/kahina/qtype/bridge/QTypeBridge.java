@@ -161,7 +161,7 @@ public class QTypeBridge extends SICStusPrologBridge
             {
                 int motherEdge = getTopEdge();
                 int startPos = getPos(motherEdge);
-                int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), "rule", 2);
+                int edgeID = state.getChart().addEdge(startPos, state.getChart().getSegmentsWithCaption().size(), "rule", 2);
                 setPos(edgeID, startPos);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
                 state.linkEdgeToNode(edgeID, currentID);
@@ -234,7 +234,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	            popEdge();
                 int motherEdge = getTopEdge();
                 int startPos = getPos(motherEdge);
-                int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), "rule", 2);
+                int edgeID = state.getChart().addEdge(startPos, state.getChart().getSegmentsWithCaption().size(), "rule", 2);
                 setPos(edgeID, startPos);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
                 state.linkEdgeToNode(edgeID, currentID);
@@ -313,7 +313,7 @@ public class QTypeBridge extends SICStusPrologBridge
                 int motherEdge = getTopEdge();
                 //int startPos = state.getChart().getLeftBoundForEdge(motherEdge); 
                 int startPos = getPos(motherEdge);
-                int edgeID = state.getChart().addEdge(startPos, state.getChart().getRightBound(), caption, 2);
+                int edgeID = state.getChart().addEdge(startPos, state.getChart().getSegmentsWithCaption().size(), caption, 2);
                 setPos(edgeID, startPos);
                 state.linkEdgeToNode(edgeID, newStepID);
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
@@ -322,7 +322,7 @@ public class QTypeBridge extends SICStusPrologBridge
             else
             {
                 //a freely dangling parse edge, this only happens at the top
-                int edgeID = state.getChart().addEdge(0, state.getChart().getRightBound(), caption, 2);
+                int edgeID = state.getChart().addEdge(0, state.getChart().getSegmentsWithCaption().size(), caption, 2);
                 setPos(edgeID, 0);
                 state.linkEdgeToNode(edgeID, newStepID);
                 pushEdge(edgeID);
@@ -566,7 +566,7 @@ public class QTypeBridge extends SICStusPrologBridge
                     else
                     {
                         int listLength = GraleJUtility.listLength((IList) argFS);
-                        currentPosition = state.getChart().getRightBound() - listLength;
+                        currentPosition = state.getChart().getSegmentsWithCaption().size() - listLength;
                     }
                     path.clear();*/
                     path.add("arg2");
@@ -581,7 +581,7 @@ public class QTypeBridge extends SICStusPrologBridge
                         if (edgeExists())
                         {
                             int motherEdge = getTopEdge();
-                            int rightBound = state.getChart().getRightBound();
+                            int rightBound = state.getChart().getSegmentsWithCaption().size();
                             if (getPos(motherEdge) == rightBound)
                         	{
                         		rightBound++;
@@ -596,7 +596,7 @@ public class QTypeBridge extends SICStusPrologBridge
                         else
                         {
                             //a freely dangling parse edge, this only happens at the top
-                            int edgeID = state.getChart().addEdge(0, state.getChart().getRightBound(), "parse " + category, 2);
+                            int edgeID = state.getChart().addEdge(0, state.getChart().getSegmentsWithCaption().size(), "parse " + category, 2);
                             setPos(edgeID, 0);
                             state.linkEdgeToNode(edgeID, stepID);
                             pushEdge(edgeID);
@@ -618,7 +618,7 @@ public class QTypeBridge extends SICStusPrologBridge
                     else
                     {
                         int listLength = GraleJUtility.listLength((IList) argFS);
-                        currentPosition = state.getChart().getRightBound() - listLength;
+                        currentPosition = state.getChart().getSegmentsWithCaption().size() - listLength;
                     }
                     path.clear();*/
                     path.add("arg0");
