@@ -254,8 +254,8 @@ public class QTypeBridge extends SICStusPrologBridge
 	            popEdge();
                 int motherEdge = getTopEdge();
                 int startPos = getPos(motherEdge);
-    	        //TODO: do not just copy the old edge label, but find out which category the new lex entry has
                 String caption = state.getChart().getEdgeCaption(oldEdgeID);
+                caption = "lex" + caption.substring(caption.indexOf(":"));
                 int leftBound = state.getChart().getLeftBoundForEdge(oldEdgeID);
                 int rightBound = state.getChart().getRightBoundForEdge(oldEdgeID);
     	        int edgeID = state.getChart().addEdge(leftBound, rightBound, caption, 2);
