@@ -23,16 +23,16 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
 	private List<File> theoryFiles;
     private TestSet testSet;
     
-    public TraleProject(String name, KahinaTree stepTree, TraleSLDInstance kahina)
+    public TraleProject(String name, TraleSLDInstance kahina)
     {
-        super("trale", name, stepTree, kahina);
+        super("trale", name,kahina);
         theoryFiles = new LinkedList<File>();
         testSet = new TestSet();
     }
     
     public TraleProject copy()
     {
-        TraleProject copy = new TraleProject(new String(name), stepTree, (TraleSLDInstance) kahina);
+        TraleProject copy = new TraleProject(new String(name), (TraleSLDInstance) kahina);
         copyDataInto(copy);
         return copy;
     }

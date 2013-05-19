@@ -17,6 +17,7 @@ import org.kahina.core.data.agent.KahinaControlAgent;
 import org.kahina.core.data.agent.KahinaControlAgentProfile;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.io.util.XMLUtil;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
 import org.kahina.lp.data.agent.LogicProgrammingControlAgent;
 import org.kahina.lp.data.agent.LogicProgrammingControlAgentProfile;
@@ -26,12 +27,12 @@ import org.w3c.dom.Element;
 public class KahinaControlAgentProfileListener implements ActionListener, ListSelectionListener
 {
     KahinaControlAgentProfileViewPanel profilePanel;
-    KahinaTree stepTree;
+    LogicProgrammingInstance<?,?,?,?> kahina;
     
-    public KahinaControlAgentProfileListener(KahinaControlAgentProfileViewPanel profilePanel, KahinaTree stepTree)
+    public KahinaControlAgentProfileListener(KahinaControlAgentProfileViewPanel profilePanel, LogicProgrammingInstance<?,?,?,?> kahina)
     {
         this.profilePanel = profilePanel;
-        this.stepTree = stepTree;
+        this.kahina = kahina;
     }
 
     public void actionPerformed(ActionEvent e)
@@ -39,7 +40,7 @@ public class KahinaControlAgentProfileListener implements ActionListener, ListSe
         String s = e.getActionCommand();
         if (s.equals("newControlPoint"))
         {
-            LogicProgrammingControlAgent newControlAgent = new LogicProgrammingControlAgent(profilePanel.getKahina(), stepTree);
+            LogicProgrammingControlAgent newControlAgent = new LogicProgrammingControlAgent(profilePanel.getKahina());
             newControlAgent.register();
             profilePanel.view.getModel().addControlAgent(newControlAgent);
             profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
@@ -53,7 +54,7 @@ public class KahinaControlAgentProfileListener implements ActionListener, ListSe
             try
             {
                 Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
-                LogicProgrammingControlAgent newControlAgent = LogicProgrammingControlAgent.importXML(dom.getDocumentElement(), profilePanel.getKahina(), stepTree);
+                LogicProgrammingControlAgent newControlAgent = LogicProgrammingControlAgent.importXML(dom.getDocumentElement(), profilePanel.getKahina());
                 newControlAgent.register();
                 profilePanel.view.getModel().addControlAgent(newControlAgent);
                 profilePanel.pointList.setListData(profilePanel.view.getModel().getControlPoints());
@@ -93,7 +94,7 @@ public class KahinaControlAgentProfileListener implements ActionListener, ListSe
             {
                 Document dom = XMLUtil.parseXMLStream(new FileInputStream(inputFile), false);
                 KahinaControlActuator actuator = profilePanel.view.getModel().getActuator();
-                profilePanel.view.display(LogicProgrammingControlAgentProfile.importXML(dom.getDocumentElement(), actuator, stepTree));
+                profilePanel.view.display(LogicProgrammingControlAgentProfile.importXML(dom.getDocumentElement(), actuator, kahina));
                 profilePanel.updateDisplay();
             }
             catch (FileNotFoundException ex)

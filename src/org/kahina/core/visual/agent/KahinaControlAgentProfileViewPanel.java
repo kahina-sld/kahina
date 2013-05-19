@@ -30,7 +30,7 @@ public class KahinaControlAgentProfileViewPanel extends KahinaViewPanel<KahinaCo
     KahinaControlAgentViewPanel pointPanel;
     KahinaControlAgentProfileListener profileListener;
     
-    KahinaInstance<?,?,?,?> kahina;
+    LogicProgrammingInstance<?,?,?,?> kahina;
     
     public KahinaControlAgentProfileViewPanel(LogicProgrammingInstance<?,?,?,?> kahina)
     {
@@ -40,7 +40,7 @@ public class KahinaControlAgentProfileViewPanel extends KahinaViewPanel<KahinaCo
         
         kahina.registerInstanceListener("breakpoint_editor", this);
         
-        profileListener = new KahinaControlAgentProfileListener(this, kahina.getState().getStepTree());
+        profileListener = new KahinaControlAgentProfileListener(this, kahina);
         KahinaControlAgentListener pointListener = new KahinaControlAgentListener();
         
         this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -199,7 +199,7 @@ public class KahinaControlAgentProfileViewPanel extends KahinaViewPanel<KahinaCo
         }
     }
 
-    public KahinaInstance<?, ?, ?, ?> getKahina()
+    public LogicProgrammingInstance<?, ?, ?, ?> getKahina()
     {
         return kahina;
     }

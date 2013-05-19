@@ -415,7 +415,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
     @Override
     protected TraleProject createNewProject()
     {
-        TraleProject project = new TraleProject("no name", state.getStepTree(), this);;
+        TraleProject project = new TraleProject("no name", this);
         if (VERBOSE) System.err.println("  Created new project " + project);
         return project;
     }

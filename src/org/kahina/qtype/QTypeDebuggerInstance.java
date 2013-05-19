@@ -110,7 +110,7 @@ public class QTypeDebuggerInstance extends LogicProgrammingInstance<QTypeState, 
      @Override
     protected QTypeProject createNewProject()
     {
-        return new QTypeProject("no name", state.getStepTree(), this);
+        return new QTypeProject("no name", this);
     }
         
     public QTypeProject loadProject(InputStream stream)

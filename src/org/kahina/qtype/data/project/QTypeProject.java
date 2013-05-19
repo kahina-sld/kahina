@@ -20,9 +20,9 @@ public class QTypeProject extends LogicProgrammingProject
      */
     private static final long serialVersionUID = -2093492979848559602L;
 
-    public QTypeProject(String name, KahinaTree stepTree, QTypeDebuggerInstance kahina)
+    public QTypeProject(String name, QTypeDebuggerInstance kahina)
     {
-        super("qtype", name, stepTree, kahina);
+        super("qtype", name, kahina);
     }
     
     public static QTypeProject importXML(Element topEl, QTypeProject project, QTypeDebuggerInstance kahina, KahinaTree stepTree)
@@ -33,7 +33,7 @@ public class QTypeProject extends LogicProgrammingProject
     
     public QTypeProject copy()
     {
-        QTypeProject copy = new QTypeProject(new String(name), stepTree, (QTypeDebuggerInstance) kahina);
+        QTypeProject copy = new QTypeProject(new String(name), (QTypeDebuggerInstance) kahina);
         copyDataInto(copy);
         return copy;
     }
