@@ -10,7 +10,7 @@ public class PrologMultifileJEditPanel extends KahinaMultifileJEditPanel
 {
 	private static final long serialVersionUID = 2236124422015782405L;
 	
-	public PrologMultifileJEditPanel(KahinaInstance<?,?,?,?> instance)
+	public PrologMultifileJEditPanel(LogicProgrammingInstance<?,?,?,?> instance)
     {
        super(instance);
     }

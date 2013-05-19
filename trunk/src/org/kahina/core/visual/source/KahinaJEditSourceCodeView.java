@@ -9,9 +9,12 @@ import org.kahina.lp.LogicProgrammingInstance;
 
 public class KahinaJEditSourceCodeView extends KahinaView<KahinaSourceCodeLocation>
 {
-	public KahinaJEditSourceCodeView(KahinaInstance<?,?,?,?> kahina)
+	LogicProgrammingInstance<?,?,?,?> kahina;
+	
+	public KahinaJEditSourceCodeView(LogicProgrammingInstance<?,?,?,?> kahina)
 	{
 		super(kahina);
+		this.kahina = kahina;
 	}
 
 	@Override
