@@ -71,7 +71,7 @@ public class KahinaJEditPanel extends JPanel
 	 * @param file
 	 *            The text file to edit in this editor panel.
 	 */
-	public KahinaJEditPanel(File file, KahinaInstance<?,?,?,?> instance)
+	public KahinaJEditPanel(File file, LogicProgrammingInstance<?,?,?,?> instance)
 	{
 		this.file = file;
         actionListener = new KahinaJEditActionListener(instance, this);

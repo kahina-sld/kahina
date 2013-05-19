@@ -16,7 +16,7 @@ public class PrologJEditSourceCodeViewPanel extends KahinaJEditSourceCodeViewPan
     private static final long serialVersionUID = -5265391588326013752L;
 
     @Override
-	public PrologMultifileJEditPanel createEditPanel(KahinaInstance<?,?,?,?> instance)
+	public PrologMultifileJEditPanel createEditPanel(LogicProgrammingInstance<?,?,?,?> instance)
 	{
 		return new PrologMultifileJEditPanel(instance);
 	}

@@ -16,10 +16,10 @@ import org.kahina.lp.control.ControlAgentType;
 
 public class KahinaJEditActionListener implements ActionListener
 {
-    KahinaInstance<?,?,?,?> instance;
+    LogicProgrammingInstance<?,?,?,?> instance;
     KahinaJEditPanel panel;
     
-    public KahinaJEditActionListener(KahinaInstance<?,?,?,?> instance, KahinaJEditPanel panel)
+    public KahinaJEditActionListener(LogicProgrammingInstance<?,?,?,?> instance, KahinaJEditPanel panel)
     {
         this.instance = instance;
         this.panel = panel;

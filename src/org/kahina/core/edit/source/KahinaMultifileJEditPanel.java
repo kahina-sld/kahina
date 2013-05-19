@@ -16,7 +16,7 @@ import org.kahina.lp.LogicProgrammingInstance;
 
 public class KahinaMultifileJEditPanel extends JPanel
 {
-	protected KahinaInstance<?,?,?,?> instance;
+	protected LogicProgrammingInstance<?,?,?,?> instance;
     
 	// TODO allow for closing files
 	
@@ -26,7 +26,7 @@ public class KahinaMultifileJEditPanel extends JPanel
 	
 	private final Map<File, KahinaJEditPanel> panelByFile = new HashMap<File, KahinaJEditPanel>();
 	
-	public KahinaMultifileJEditPanel(KahinaInstance<?,?,?,?> instance)
+	public KahinaMultifileJEditPanel(LogicProgrammingInstance<?,?,?,?> instance)
 	{
         this.instance = instance;
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));

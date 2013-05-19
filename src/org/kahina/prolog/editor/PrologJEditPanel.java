@@ -15,7 +15,7 @@ public class PrologJEditPanel extends KahinaJEditPanel
 	
 	private static final long serialVersionUID = -783118503897150009L;
 
-	public PrologJEditPanel(File file, KahinaInstance<?,?,?,?> instance)
+	public PrologJEditPanel(File file, LogicProgrammingInstance<?,?,?,?> instance)
 	{
 		super(file, instance);
 	}
