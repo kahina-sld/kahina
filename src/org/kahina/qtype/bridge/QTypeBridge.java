@@ -27,6 +27,7 @@ import org.kahina.tralesld.visual.fs.GraleJUtility;
 public class QTypeBridge extends SICStusPrologBridge
 {
 	private static final boolean VERBOSE = false;
+	private static final boolean WARNINGS= false;
 
 	private static final Pattern SENTENCE_PATTERN = Pattern.compile("\\[([^\\]]+)\\]");
 	
@@ -83,8 +84,6 @@ public class QTypeBridge extends SICStusPrologBridge
             }
             else
             {
-                //not the topmost rule edge, we were called recursively by lc_complete
-                setLastSpanEdge(ruleEdge);
     		    //the topmost rule edge is complete, we can cut its length to the current position
                 state.getChart().setEdgeStatus(ruleEdge, 0);
                 trimEdgeToChildrenLength(ruleEdge);
@@ -113,7 +112,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	        else
 	        {
 	            //a freely dangling lexical edge, this should not happen
-	            System.err.println("WARNING: found a lexical edge outside of any expected context");
+	            if (WARNINGS) System.err.println("WARNING: found a lexical edge outside of any expected context");
 	        }
 	        kahina.dispatchEvent(new KahinaChartUpdateEvent(edgeID));
 	    }
@@ -141,9 +140,8 @@ public class QTypeBridge extends SICStusPrologBridge
             else
             {
                 //a freely dangling unify edge, this should not happen
-                System.err.println("WARNING: found a unify edge outside of any expected context!");
+            	if (WARNINGS) System.err.println("WARNING: found a unify edge outside of any expected context!");
             }
-
         }  
 	}
 	
@@ -168,7 +166,7 @@ public class QTypeBridge extends SICStusPrologBridge
             else
             {
                 //a freely dangling rule edge, this should not happen
-                System.err.println("WARNING: found a rule edge outside of any expected context");
+            	if (WARNINGS) System.err.println("WARNING: found a rule edge outside of any expected context");
             }
         }
         else if (description.startsWith("parser:unify"))
@@ -205,7 +203,7 @@ public class QTypeBridge extends SICStusPrologBridge
             oldEdgeID = state.getEdgeForNode(motherEdgeStep);
             if (motherEdgeStep == -1)
             {
-                System.err.println("WARNING: reached call tree root without finding an edge!");
+            	if (WARNINGS) System.err.println("WARNING: reached call tree root without finding an edge!");
                 break;
             }
             else
@@ -223,7 +221,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	    //some step types (unify etc.) are never redone during the parse process
 	    int newStepID = convertStepID(extID);
 	    String description = state.get(newStepID).getGoalDesc();
-	    System.err.println("  goal description: " + description);
+	    if (VERBOSE) System.err.println("  goal description: " + description);
 	    if (description.equals("grammar:db_rule/4"))
 	    {
 	        if (edgeExists())
@@ -237,13 +235,11 @@ public class QTypeBridge extends SICStusPrologBridge
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
                 state.linkEdgeToNode(edgeID, currentID);
                 pushEdge(edgeID);
-                
-                setLastSpanEdge(oldEdgeID);
             }
             else
             {
                 //a freely dangling rule edge, this should not happen
-                System.err.println("WARNING: found a rule edge outside of any expected context");
+            	if (WARNINGS) System.err.println("WARNING: found a rule edge outside of any expected context");
             }
 	    }
 	    else if (description.equals("grammar:db_word/4"))
@@ -263,18 +259,15 @@ public class QTypeBridge extends SICStusPrologBridge
                 state.getChart().addEdgeDependency(motherEdge, edgeID);
     	        state.linkEdgeToNode(edgeID, currentID);
                 pushEdge(edgeID);
-                
-                setLastSpanEdge(oldEdgeID);
             }
             else
             {
 	            //a freely dangling lexical edge, this should not happen
-	            System.err.println("WARNING: lexical edge was redone outside of any expected context");
+            	if (WARNINGS) System.err.println("WARNING: lexical edge was redone outside of any expected context");
             }
 	    }
 	    else if (description.equals("parser:lc_complete/8"))
-	    {
-	        
+	    {        
 	        //retrieve the first child edge of the last call
 	        //this edge is associated with a unify or db_rule step directly under the lc_complete step
 	        int childEdgeStepID = state.getStepTree().getChildren(oldStepID).get(0);
@@ -283,18 +276,6 @@ public class QTypeBridge extends SICStusPrologBridge
             //reset the current position of the mother edge to the start of the rule edge
             int motherEdge = getTopEdge();
             setPos(motherEdge, state.getChart().getLeftBoundForEdge(childEdge));
-            
-            setLastSpanEdge(oldEdgeID);
-            
-            //two steps above the last call in the search tree, we find the step with the lastSpanEdge to restore
-            /*int lastSpanEdgeStepID = state.getStepTree().getParent(oldStepID);
-            int lastSpanEdge = state.getEdgeForNode(lastSpanEdgeStepID);
-            while (lastSpanEdge == -1)
-            {
-                lastSpanEdgeStepID = state.getStepTree().getParent(lastSpanEdgeStepID);
-                lastSpanEdge = state.getEdgeForNode(lastSpanEdgeStepID);
-            }
-            setLastSpanEdge(lastSpanEdge);*/
 	    }
 	    else if (description.equals("parser:lc/5"))
         {
@@ -329,7 +310,7 @@ public class QTypeBridge extends SICStusPrologBridge
         }
         else if (description.equals("parser:check_link/2"))
         {
-            System.err.println("check_link/2 is being redone!");
+            if (VERBOSE) System.err.println("check_link/2 is being redone!");
         }
 	}
 	
@@ -338,16 +319,10 @@ public class QTypeBridge extends SICStusPrologBridge
         //System.err.println("QTypeBridge.virtualRedo(" + stepID + ")");
         int newStepID = super.virtualRedo(stepID);
         
-        String description = state.get(newStepID).getGoalDesc();
-        
         Integer edgeID = state.getEdgeForNode(stepID);
         if (edgeID != -1)
         {
             state.linkEdgeToNode(edgeID, newStepID);
-            if (description.startsWith("db_word("))
-            {
-                setLastSpanEdge(edgeID);
-            }
         }
         return newStepID;
     }
@@ -390,7 +365,7 @@ public class QTypeBridge extends SICStusPrologBridge
 		    }
 		    else
 		    {
-		        System.err.println("WARNING: lc exited on an empty edge stack!");
+		    	if (WARNINGS) System.err.println("WARNING: lc exited on an empty edge stack!");
 		    }
 		}
 		//the right border position of a successful rule edge is transferred to the calling edge
@@ -405,7 +380,7 @@ public class QTypeBridge extends SICStusPrologBridge
             }
             else
             {
-                System.err.println("WARNING: db_word exited on an empty edge stack!");
+            	if (WARNINGS) System.err.println("WARNING: db_word exited on an empty edge stack!");
             }
         }
 		//unify was successful, we move up in the edge stack again
@@ -420,7 +395,7 @@ public class QTypeBridge extends SICStusPrologBridge
             }
             else
             {
-                System.err.println("WARNING: unify exited on an empty edge stack!");
+            	if (WARNINGS) System.err.println("WARNING: unify exited on an empty edge stack!");
             }
         }
 		
@@ -448,7 +423,7 @@ public class QTypeBridge extends SICStusPrologBridge
             }
             else
             {
-                System.err.println("WARNING: lc failed on an empty edge stack!");
+            	if (WARNINGS) System.err.println("WARNING: lc failed on an empty edge stack!");
             }
         }
         //failed unification in a rule context determines the failure of the rule
@@ -471,7 +446,7 @@ public class QTypeBridge extends SICStusPrologBridge
             }
             else
             {
-                System.err.println("WARNING: unify failed on an empty edge stack!");
+            	if (WARNINGS) System.err.println("WARNING: unify failed on an empty edge stack!");
             }
         }
         //failed lc_list in a rule context determines the failure of the rule
@@ -571,7 +546,7 @@ public class QTypeBridge extends SICStusPrologBridge
                     IEntity argFS = GraleJUtility.delta(graleFS, path);
                     if (argFS == null)
                     {
-                        System.err.println("WARNING: could not read category from lc argument!");
+                    	if (WARNINGS) System.err.println("WARNING: could not read category from lc argument!");
                     }
                     else
                     {
@@ -623,7 +598,7 @@ public class QTypeBridge extends SICStusPrologBridge
                     IEntity arg0FS = GraleJUtility.delta(graleFS, path);
                     if (arg0FS == null)
                     {
-                        System.err.println("WARNING: could not read category from first unify argument!");
+                    	if (WARNINGS) System.err.println("WARNING: could not read category from first unify argument!");
                     }
                     else
                     {
@@ -639,7 +614,7 @@ public class QTypeBridge extends SICStusPrologBridge
                     IEntity arg1FS = GraleJUtility.delta(graleFS, path);
                     if (arg1FS == null)
                     {
-                        System.err.println("WARNING: could not read category from second unify argument!");
+                    	if (WARNINGS) System.err.println("WARNING: could not read category from second unify argument!");
                     }
                     else
                     {
@@ -673,7 +648,7 @@ public class QTypeBridge extends SICStusPrologBridge
 		                IEntity argFS = GraleJUtility.delta(graleFS, path);
 		                if (argFS == null)
 		                {
-		                    System.err.println("WARNING: could not read determine category for lexical edge " + associatedEdge);
+		                	if (WARNINGS) System.err.println("WARNING: could not read determine category for lexical edge " + associatedEdge);
 		                    state.getChart().setEdgeCaption(associatedEdge, "?" + oldCaption.substring(3));
 		                }
 		                else
@@ -691,7 +666,7 @@ public class QTypeBridge extends SICStusPrologBridge
                         String newLabel = "";
                         if (argFS == null)
                         {
-                            System.err.println("WARNING: could not read head category for rule edge " + associatedEdge);
+                        	if (WARNINGS) System.err.println("WARNING: could not read head category for rule edge " + associatedEdge);
                             newLabel = "? -> ";
                         }
                         else
@@ -704,7 +679,7 @@ public class QTypeBridge extends SICStusPrologBridge
                         argFS = GraleJUtility.delta(graleFS, path);
                         if (argFS == null || !(argFS instanceof IList))
                         {
-                            System.err.println("WARNING: could not read body categories for rule edge " + associatedEdge);
+                        	if (WARNINGS) System.err.println("WARNING: could not read body categories for rule edge " + associatedEdge);
                             newLabel += "?";
                         }
                         else
@@ -780,24 +755,18 @@ public class QTypeBridge extends SICStusPrologBridge
         if (VERBOSE) System.err.println("  setting pos of edge #" + edgeID + " to " + pos);
         edgeToCurrentPosition.put(edgeID, pos);
     }
-
-    private void setLastSpanEdge(int lastSpanEdge)
-    {
-        //if (VERBOSE) 
-        	System.err.println("  setLastSpanEdge(" + lastSpanEdge + "), nothing was stored");
-    }
     
     //assumes that there is unify at stepID, whose span we need to determine
     private int findLastSpanEdge(int stepID)
     {
         //twice up in the call structure, latest search tree child will be db_word or db_rule, get associated edge
         int parentComplete = state.getSecondaryStepTree().getParent(stepID);
-        System.err.println("parentComplete = " + parentComplete);
+        //System.err.println("parentComplete = " + parentComplete);
         int grandparentLcOrComplete = state.getSecondaryStepTree().getParent(parentComplete);
-        System.err.println("grandparentLcOrComplete = " + grandparentLcOrComplete);
+        //System.err.println("grandparentLcOrComplete = " + grandparentLcOrComplete);
         List<Integer> children = state.getStepTree().getChildren(grandparentLcOrComplete);
         int lastSpanStep = children.get(children.size() - 1);
-        System.err.println("lastSpanStep = " + lastSpanStep);
+        //System.err.println("lastSpanStep = " + lastSpanStep);
         Integer lastSpanEdge = state.getEdgeForNode(lastSpanStep);
         if (lastSpanEdge == null)
         {
@@ -817,7 +786,7 @@ public class QTypeBridge extends SICStusPrologBridge
             ruleParentID = state.getStepTree().getParent(ruleParentID);
             if (ruleParentID == -1)
             {
-                System.err.println("WARNING: no rule parent found for step #" + stepID);
+            	if (WARNINGS) System.err.println("WARNING: no rule parent found for step #" + stepID);
                 return -1;
             }
             if (state.getStepTree().getNodeCaption(ruleParentID).contains("lc("))

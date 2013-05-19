@@ -57,7 +57,7 @@ import org.kahina.lp.data.text.LogicProgrammingLineReference;
  */
 public class LogicProgrammingBridge extends KahinaBridge
 {
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 
 	// a dynamic map from external step IDs to most recent corresponding tree nodes
 	protected HashMap<Integer, Integer> stepIDConv;
@@ -300,17 +300,15 @@ public class LogicProgrammingBridge extends KahinaBridge
 	 */
 	public void redo(int extID)
 	{
-        boolean VERBOSE = true;
 		try
 		{
-
 			int lastStepID = convertStepID(extID);
 			int id = lastStepID;
 			
-	         if (VERBOSE)
-	         {
-	                System.err.println("LogicProgrammingBridge.registerStepRedo(" + id + "(" + extID + "))");
-	         }
+	        if (VERBOSE)
+	        {
+	        	System.err.println("LogicProgrammingBridge.registerStepRedo(" + id + "(" + extID + "))");
+	        }
 	         
 			Stack<Integer> searchTrace = new Stack<Integer>();
 			Stack<Integer> callTrace = new Stack<Integer>();
@@ -328,7 +326,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 			{
                 if (id == getParentCandidateID())
                 {
-                    System.err.println("  break condition: id == " + id + " == parentCandidateID");
+                    if (VERBOSE) System.err.println("  break condition: id == " + id + " == parentCandidateID");
                     break;
                 }
                 
@@ -361,8 +359,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 
 			int newStepID = -1;
 			
-			System.err.println("call trace for redo: " + callTrace);
-			System.err.println("search trace for redo: " + searchTrace);
+			if (VERBOSE)
+			{
+			    System.err.println("call trace for redo: " + callTrace);
+				System.err.println("search trace for redo: " + searchTrace);
+			}
 
 			while (callTrace.size() > 0)
 			{
@@ -371,7 +372,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                 //create virtual copies of intermediate steps for a full search tree branch, working top-down:
                 while (searchTrace.size() > 0 && searchTrace.peek() != id)
                 {
-                    System.err.println("  virtual redo: " + searchTrace.peek());
+                    if (VERBOSE) System.err.println("  virtual redo: " + searchTrace.peek());
                     virtualRedo(searchTrace.pop());
                 }
                 LogicProgrammingStep lastStep = state.get(id);
@@ -391,7 +392,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                 else
                 {
         			state.consoleMessage(newStepID, extID, LogicProgrammingStepType.REDO, "WARNING: redo of " + id + " with undefined console reference!");
-                    System.err.println("WARNING: step " + id + "(" + extID + ") redone with undefined console reference!");
+                    //System.err.println("WARNING: step " + id + "(" + extID + ") redone with undefined console reference!");
                 }
 			}
 
@@ -401,7 +402,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 	        updateControlElementActivations();
 
 			maybeUpdateStepCount(true);
-			System.err.println("KahinaStepUpdateEvent(" + newStepID + ")");
             kahina.dispatchEvent(new KahinaStepUpdateEvent(newStepID));
 			selectIfPaused(newStepID);
 		} 

@@ -406,7 +406,7 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 */
 	public void processStepRedo(int lastStepID)
 	{
-		//if (VERBOSE)
+		if (VERBOSE)
 		{
 			System.err.println("LogicProgrammingTreeBehavior.processStepRedo(" + lastStepID + ")");
 			System.err.println("  Step tree node is being copied with caption " + object.getNodeCaption(lastStepID));

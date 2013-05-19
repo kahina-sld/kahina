@@ -14,7 +14,7 @@ public class KahinaMemChart extends KahinaChart
 	 */
 	private static final long serialVersionUID = 8981755950162448512L;
 
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 	
     //the chart is divided up into cells (vertical segments) that the edges can range over
     //leftmost: leftBound, rightmost: rightBound
