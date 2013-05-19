@@ -86,7 +86,7 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
     @Override
     protected LogicProgrammingProject createNewProject()
     {
-        return new LogicProgrammingProject("sicstus", "no name", state.getStepTree(), this);
+        return new LogicProgrammingProject("sicstus", "no name", this);
     }
 
     public LogicProgrammingProject loadProject(InputStream stream)

@@ -40,9 +40,7 @@ public class QTypeBridge extends SICStusPrologBridge
 	int topLexEntryExistenceStep = -1;
 	int currentEdge = -1;
 	Map<Integer,Integer> edgeToCurrentPosition;
-	//int lastRuleNode = -1;
-	//private int lastSpanEdge = -1;
-
+	
 	public QTypeBridge(final QTypeDebuggerInstance kahina)
 	{
 		super(kahina);

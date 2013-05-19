@@ -8,18 +8,16 @@ import org.kahina.core.data.tree.KahinaTree;
 public class KahinaSimplePropertySensor extends KahinaStepPropertySensor
 {
     private KahinaSimpleProperty pattern;
-    private KahinaTree stepTree;
     
-    public KahinaSimplePropertySensor(KahinaControlAgent controlPoint, KahinaTree stepTree)
+    public KahinaSimplePropertySensor(KahinaControlAgent controlPoint)
     {
         this.controlPoint = controlPoint;
-        this.stepTree = stepTree;
         this.pattern = new KahinaSimpleProperty();
     }
     
     public KahinaSimplePropertySensor copy(KahinaControlAgent controlPoint)
     {
-        KahinaSimplePropertySensor copy = new KahinaSimplePropertySensor(controlPoint, stepTree);
+        KahinaSimplePropertySensor copy = new KahinaSimplePropertySensor(controlPoint);
         copyDataInto(copy);
         return copy;
     }
@@ -51,20 +49,10 @@ public class KahinaSimplePropertySensor extends KahinaStepPropertySensor
     {
         this.pattern = pattern;
     }
-    
-    public KahinaTree getStepTree()
-    {
-        return stepTree;
-    }
-
-    public void setStepTree(KahinaTree stepTree)
-    {
-        this.stepTree = stepTree;
-    }
 
     @Override
     public boolean detectPattern(int stepID)
     {
-        return pattern.matches(stepTree, stepID);
+        return pattern.matches(controlPoint.getStepTree(), stepID);
     }
 }

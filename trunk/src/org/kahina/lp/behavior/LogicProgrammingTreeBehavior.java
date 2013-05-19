@@ -1,8 +1,6 @@
 package org.kahina.lp.behavior;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.kahina.core.KahinaInstance;
@@ -11,9 +9,6 @@ import org.kahina.core.bridge.KahinaStepDescriptionEvent;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaSystemEvent;
-import org.kahina.core.data.agent.KahinaBreakpoint;
-import org.kahina.core.data.agent.KahinaBreakpointType;
-import org.kahina.core.data.agent.patterns.TreeAutomaton;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.data.tree.KahinaTreeEvent;
 import org.kahina.core.data.tree.KahinaTreeEventType;
@@ -411,8 +406,11 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 	 */
 	public void processStepRedo(int lastStepID)
 	{
-		if (VERBOSE)
+		//if (VERBOSE)
+		{
 			System.err.println("LogicProgrammingTreeBehavior.processStepRedo(" + lastStepID + ")");
+			System.err.println("  Step tree node is being copied with caption " + object.getNodeCaption(lastStepID));
+		}
 
 		// generate a new node corresponding to the new internal step
 		int newStepID = object.addNode(object.getNodeCaption(lastStepID), "", LogicProgrammingStepType.REDO);

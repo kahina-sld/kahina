@@ -59,8 +59,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 {
 	private static final boolean VERBOSE = true;
 
-	// a dynamic map from external step IDs to most recent corresponding tree
-	// nodes
+	// a dynamic map from external step IDs to most recent corresponding tree nodes
 	protected HashMap<Integer, Integer> stepIDConv;
 
 	// always contains the internal ID of the step one of whose ports we
@@ -341,7 +340,6 @@ public class LogicProgrammingBridge extends KahinaBridge
 				callTrace.push(id);
 
 				// Get the internal ID of the parent, or that of its copy if it already has one:
-
 				int oldID = id;
 				id = stepIDConv.get(state.get(callTree.getParent(id)).getExternalID());
                 if (VERBOSE)
@@ -353,6 +351,7 @@ public class LogicProgrammingBridge extends KahinaBridge
                     throw new KahinaException("  unexpected redo of " + lastStepID + " under " + getParentCandidateID() + ".");
                 }
                 
+                //fill the search trace with the steps in between, they will be redone virtually
 				while (oldID != id)
 				{
                     searchTrace.push(oldID);
@@ -402,6 +401,7 @@ public class LogicProgrammingBridge extends KahinaBridge
 	        updateControlElementActivations();
 
 			maybeUpdateStepCount(true);
+			System.err.println("KahinaStepUpdateEvent(" + newStepID + ")");
             kahina.dispatchEvent(new KahinaStepUpdateEvent(newStepID));
 			selectIfPaused(newStepID);
 		} 
@@ -879,6 +879,11 @@ public class LogicProgrammingBridge extends KahinaBridge
 			newStep.setExternalID(extID);
 			state.store(intID, newStep);
 			stepIDConv.put(extID, intID);
+			///System.err.println("STEP CONVERSION LEADS TO NEW STEP: stepIDConv.get(" + extID + ") = " + intID);
+		}
+		else
+		{
+			//System.err.println("SUCCESSFUL STEP CONVERSION stepIDConv.get(" + extID + ") = " + intID);
 		}
 		//if (VERBOSE)
 		//	System.err.println("LogicProgrammingBridge.convertStepID(" + extID + ") = " + intID);
@@ -1065,6 +1070,9 @@ public class LogicProgrammingBridge extends KahinaBridge
 		} 
 		else if (command.equals("abort"))
 		{
+			stepIDConv.clear();
+			//state.getStepTree().clear();
+			//state.getSecondaryStepTree().clear();
 			setBridgeState('a');
 			if (currentID != -1)
 			{

@@ -1,25 +1,19 @@
 package org.kahina.lp.data.project;
 
-import java.io.File;
-
 import org.kahina.core.control.KahinaControlActuator;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.agent.KahinaControlAgent;
 import org.kahina.core.data.agent.KahinaControlAgentProfile;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.tree.KahinaTree;
-import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.control.LogicProgrammingBreakActuator;
 import org.kahina.lp.control.LogicProgrammingCompleteActuator;
 import org.kahina.lp.control.LogicProgrammingCreepActuator;
 import org.kahina.lp.control.LogicProgrammingFailActuator;
 import org.kahina.lp.control.LogicProgrammingSkipActuator;
-import org.kahina.lp.control.NewControlAgentEvent;
 import org.kahina.lp.data.agent.LogicProgrammingControlAgentProfile;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class LogicProgrammingProject extends KahinaProject
@@ -32,19 +26,18 @@ public class LogicProgrammingProject extends KahinaProject
     protected KahinaControlAgentProfile failPoints;
     protected KahinaControlAgentProfile warnPoints;
     
-    protected KahinaTree stepTree;
+    //link to the Kahina instance
     protected LogicProgrammingInstance<?,?,?,?> kahina;
     
-    public LogicProgrammingProject(String appID, String name, KahinaTree stepTree, LogicProgrammingInstance<?,?,?,?> kahina)
+    public LogicProgrammingProject(String appID, String name, LogicProgrammingInstance<?,?,?,?> kahina)
     {
         super(appID, name);
-        this.stepTree = stepTree;
         this.kahina = kahina;
-        breakPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingBreakActuator(kahina), stepTree);
-        creepPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingCreepActuator(kahina), stepTree);
-        completePoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingCompleteActuator(kahina), stepTree);
-        skipPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingSkipActuator(kahina), stepTree);
-        failPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingFailActuator(kahina), stepTree);
+        breakPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingBreakActuator(kahina));
+        creepPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingCreepActuator(kahina));
+        completePoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingCompleteActuator(kahina));
+        skipPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingSkipActuator(kahina));
+        failPoints = new LogicProgrammingControlAgentProfile(new LogicProgrammingFailActuator(kahina));
         //warnPoints = new KahinaControlPointProfile();
     }
     
@@ -68,7 +61,7 @@ public class LogicProgrammingProject extends KahinaProject
     
     public LogicProgrammingProject copy()
     {
-        LogicProgrammingProject copy = new LogicProgrammingProject(appID, new String(name), stepTree, kahina);
+        LogicProgrammingProject copy = new LogicProgrammingProject(appID, new String(name), kahina);
         copyDataInto(copy);
         return copy;
     }
@@ -187,27 +180,27 @@ public class LogicProgrammingProject extends KahinaProject
             if (type.equals("break"))
             {
                 KahinaControlActuator actuator = new LogicProgrammingBreakActuator(kahina);  
-                project.breakPoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, stepTree);
+                project.breakPoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, kahina);
             }
             else if (type.equals("creep"))
             {
                 KahinaControlActuator actuator = new LogicProgrammingCreepActuator(kahina);  
-                project.creepPoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, stepTree);
+                project.creepPoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, kahina);
             }
             else if (type.equals("complete"))
             {
                 KahinaControlActuator actuator = new LogicProgrammingCompleteActuator(kahina);  
-                project.completePoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, stepTree);
+                project.completePoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, kahina);
             }
             else if (type.equals("skip"))
             {
                 KahinaControlActuator actuator = new LogicProgrammingSkipActuator(kahina);  
-                project.skipPoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, stepTree);
+                project.skipPoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, kahina);
             }
             else if (type.equals("fail"))
             {
                 KahinaControlActuator actuator = new LogicProgrammingFailActuator(kahina);  
-                project.failPoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, stepTree);
+                project.failPoints = LogicProgrammingControlAgentProfile.importXML(profileElement, actuator, kahina);
             }
         }
     }

@@ -9,29 +9,18 @@ import org.kahina.core.data.agent.KahinaControlAgent;
 import org.kahina.core.data.agent.patterns.TreePatternNode;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.io.color.ColorUtil;
+import org.kahina.lp.LogicProgrammingInstance;
 import org.kahina.lp.LogicProgrammingState;
 import org.w3c.dom.Element;
 
 public class LogicProgrammingControlAgent extends KahinaControlAgent
 {
     protected KahinaSimplePropertySensor sensor;
-    protected KahinaTree stepTree;
     
-    public LogicProgrammingControlAgent(KahinaInstance<?,?,?,?> kahina, KahinaTree stepTree)
+    public LogicProgrammingControlAgent(LogicProgrammingInstance<?,?,?,?> kahina)
     {
         super(kahina);
-        this.stepTree = stepTree;
-        setSensor(new KahinaSimplePropertySensor(this, stepTree));
-    }
-    
-    public KahinaTree getStepTree()
-    {
-        return stepTree;
-    }
-    
-    public void setStepTree(KahinaTree stepTree)
-    {
-        this.stepTree = stepTree;
+        setSensor(new KahinaSimplePropertySensor(this));
     }
     
     public KahinaSimplePropertySensor getSensor()
@@ -50,14 +39,14 @@ public class LogicProgrammingControlAgent extends KahinaControlAgent
      * @param controlPointNode an XML DOM element with name "controlPoint" as produced when parsing the result of <code>exportXML</code>
      * @return a new logic programming control point object corresponding to the XML representation contained in the DOM element
      */
-    public static LogicProgrammingControlAgent importXML(Element controlPointNode, KahinaInstance<?,?,?,?> kahina, KahinaTree stepTree)
+    public static LogicProgrammingControlAgent importXML(Element controlPointNode, LogicProgrammingInstance<?,?,?,?> kahina)
     {
-        LogicProgrammingControlAgent newControlPoint = new LogicProgrammingControlAgent(kahina, stepTree);
+        LogicProgrammingControlAgent newControlPoint = new LogicProgrammingControlAgent(kahina);
         newControlPoint.setName(controlPointNode.getAttribute("name"));
         newControlPoint.setSignalColor(ColorUtil.decodeHTML(controlPointNode.getAttribute("color")));
         newControlPoint.active = Boolean.parseBoolean(controlPointNode.getAttribute("active"));
         //expect only one tree pattern
-        KahinaSimplePropertySensor treePatternSensor = new KahinaSimplePropertySensor(newControlPoint, stepTree);
+        KahinaSimplePropertySensor treePatternSensor = new KahinaSimplePropertySensor(newControlPoint);
         treePatternSensor.setPattern(KahinaSimpleProperty.importXML((Element) controlPointNode.getElementsByTagName("kahina:pattern").item(0)));
         newControlPoint.setSensor(treePatternSensor);
         return newControlPoint;

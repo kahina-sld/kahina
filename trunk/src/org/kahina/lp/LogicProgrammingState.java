@@ -69,7 +69,6 @@ public class LogicProgrammingState extends KahinaState
         targetByAnchor = new HashMap<Integer, Integer>();
         hiddenSteps = new HashSet<Integer>();
         profile = new LogicProgrammingProfile();	
-        //TODO: keep all breakpoints across parses
 	}
     
     public void breakpointConsoleMessage(int stepID, String message)
