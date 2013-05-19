@@ -390,7 +390,9 @@ public class LogicProgrammingTreeBehavior extends KahinaTreeBehavior
 		}
 		if (extID >= 0)
 		{
-			return stepID + ": " + extID + " " + stepInfo;
+			return extID + " " + stepInfo;
+			//debugging version
+			//return stepID + ": " + extID + " " + stepInfo;
 		} 
 		else
 		{
