@@ -125,9 +125,9 @@ public class KahinaChartViewPanel extends KahinaViewPanel<KahinaChartView>
         cnv.drawRect(x + 5, y + 5, width, height);
         cnv.setColor(Color.BLACK);
         //normal version without any debugging information
-        //cnv.drawString(view.getEdgeCaption(id), x + 7, y + view.config.getZoomLevel() + 6);
+        cnv.drawString(view.getEdgeCaption(id), x + 7, y + view.config.getZoomLevel() + 6);
         //debugging version with display of edge IDs
-        cnv.drawString(view.getEdgeCaption(id) + " " + id, x + 7, y + view.config.getZoomLevel() + 6);
+        //cnv.drawString(view.getEdgeCaption(id) + " " + id, x + 7, y + view.config.getZoomLevel() + 6);
         //full debugging version
         //cnv.drawString(view.getEdgeCaption(id) + "(" + view.getModel().getLeftBoundForEdge(id) + "," + view.getModel().getRightBoundForEdge(id) + ")", x + 7, y + view.fontSize + 6);
     }
