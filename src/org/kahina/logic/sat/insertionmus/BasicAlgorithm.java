@@ -57,12 +57,12 @@ public class BasicAlgorithm {
 	 */
 	public boolean selectNext(int clauseIndex) throws TimeoutException, InterruptedException, IOException{
 
-		System.out.println(instance.printAllClauses());
+//		System.out.println(instance.printAllClauses());
 		List<Integer> clause = instance.getClause(clauseIndex);
 		instance.removeClauseIndex(clauseIndex);
-		System.out.println(clauseIndex + " Clause: " + clause);
+//		System.out.println(clauseIndex + " Clause: " + clause);
 		int clauseID = S.addClause(clause);
-
+		unifiedMS.addClause(clause);
 		File fCnf = new File("tmp.cnf");
 		File fRes = new File("tmp.res");
 		//		minisat.isSatisfiable(cnfFile, tmpResultFile)
