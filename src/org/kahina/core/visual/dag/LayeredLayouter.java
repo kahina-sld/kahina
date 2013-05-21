@@ -438,6 +438,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
         int lowerIndex = 0;
         int upperIndex = nodeLevels.size() - 1;
         int middleIndex = (lowerIndex + upperIndex) / 2;
+        //FIXME: Exception if double-clicked into the reduction graph without an instance loaded before.
         int middleBound = yCoord.get(nodeLevels.get(middleIndex).get(0)) + view.getConfig().getZoomLevel();
         if (upperIndex != 0) // simply take the only existing level if there is only one
         {
