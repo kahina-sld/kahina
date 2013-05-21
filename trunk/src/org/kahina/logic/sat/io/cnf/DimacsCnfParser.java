@@ -46,10 +46,11 @@ public class DimacsCnfParser
             int lineID = 0;
             while (in.hasNext())
             {
+            	//Dimacs splites information with a 0, however nearly everybody implements it with a new line            	
                 currentLine = in.nextLine();
                 lineID++;
                 //System.err.println("line #" + lineID);
-                tokens = currentLine.split(" ");
+                tokens = currentLine.split("\\s");
                 if (tokens[0].equals("c"))
                 {
                     //check whether the comment is a symbol definition
