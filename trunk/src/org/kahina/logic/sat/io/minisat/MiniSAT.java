@@ -302,7 +302,7 @@ public class MiniSAT
     {
         try
         {
-            Process p = Runtime.getRuntime().exec("/home/kahina/pro/dpl/sfw/minisat-muc/minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
+            Process p = Runtime.getRuntime().exec("minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             // Set a timer to interrupt the process if it does not return within
             // the timeout period
@@ -349,7 +349,7 @@ public class MiniSAT
         }
         catch (IOException e)
         {
-            System.err.println("IO-Fehler bei sATSolving");
+            System.err.println("IO-Fehler while SATSolving");
             e.printStackTrace();
             System.exit(0);
         }
