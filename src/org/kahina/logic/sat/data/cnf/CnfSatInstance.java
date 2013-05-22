@@ -620,7 +620,10 @@ public class CnfSatInstance extends KahinaSatInstance
     {
         KahinaGraph graph = new AdjacListsGraph();
         makeSureOccurrenceMapExists();
-        System.err.println("Generating litByCla graph of " + maxVarID * 2 + " literals:");
+        System.err.println("Generating litByCla graph of " + maxVar
+	public int getAClauseIndex() {
+		return this.idToIdx(this.clauseIDs.get(0));
+	}ID * 2 + " literals:");
         //generate literal vertices
         for (int i = 1; i <= maxVarID; i++)
         {
@@ -911,14 +914,16 @@ public class CnfSatInstance extends KahinaSatInstance
 		}
 	}
 
-	public int getAClauseIndex() {
-		return this.idToIdx(this.clauseIDs.get(0));
-	}
+
 	public String printAllClauses(){
 		String ret = "";
 		for (List<Integer> c: this.clauseStore.values()){
 			ret += c;
 		}
 		return ret;
+	}
+
+	public List<Integer> getClauseByID(int clauseID) {
+		return clauseStore.get(clauseID);
 	}
 }

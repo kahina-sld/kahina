@@ -802,9 +802,9 @@ public class MiniSAT
         return null;
     }
     
-    /* marks freezed variables with -1
-     * -1 means the variable can be used
-     *  1 means the variable is not used 
+    /* marks freezed variables with 1
+     *  1 means the variable can be used
+     * -1 means the variable is not used 
      */
     public static void createFreezeFile(int[] freezeVariables, File freezeFile, int offsetID)
     {
