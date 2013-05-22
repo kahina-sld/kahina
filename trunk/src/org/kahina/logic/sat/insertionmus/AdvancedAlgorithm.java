@@ -15,16 +15,19 @@ import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.io.MUCExtension;
+
+
+
 /**
- * Implementation of the insertion algorithm of J.K. de Siqueira N. and J.-F. Puget 
- * "Explanation-based generalisation of failures"
+ * Implementation of H.van Maaren and S. Wieringa "Finding guaranteed MUSes fast"
+ * 
  * @author Seitz
  *
  */
-public class BasicAlgorithm {
+public class AdvancedAlgorithm {
 
 	protected CnfSatInstance instance; // The instance
-	
+
 	protected TreeSet<Integer> instanceIDs = new TreeSet<Integer>();
 	protected TreeSet<Integer> M = new TreeSet<Integer>();// will become the MUS
 	protected TreeSet<Integer> S = new TreeSet<Integer>(); // A subset of the instance, it is the subset currently looked at.
@@ -33,103 +36,81 @@ public class BasicAlgorithm {
 
 
 	protected boolean finished = false;
-	
+
 	File instanceFile;
 
-	public BasicAlgorithm(CnfSatInstance instance){
+
+	public AdvancedAlgorithm(CnfSatInstance instance){
 		this.instance = instance;
 		for (int i = 0; i < instance.getHighestVar(); i++){
 			instanceIDs.add(i);
 		}
-		
+
 		MUCStatistics stat = new MUCStatistics();
 		stat.instanceName = "../cnf/aim-100-1_6-no-1.cnf";
 
 		MUCExtension.extendCNFBySelVars(new File("../cnf/aim-100-1_6-no-1.cnf"), new File("output.cnf"), stat); 
-				
+
 		this.instanceFile  = new File("output.cnf");
 
 		freeze = new int[this.instance.getHighestVar()];
 		Arrays.fill(freeze, FreezeFile.FREEZE);
 	}
-	/**
-	 * 	is the MUS calculated?
-	 * @return true if there is a MUS calculated
-	 */
-	public boolean isFinished(){
-		return finished;
-	}
 
-
-	/**
-	 * runs the next step of this algorithm
-	 * precondition: this.instance.getSize() > 0
-	 * @param clauseIndex the index of the clause that should be handled next.
-	 * @return true if an MUS is found.
-	 * @throws IOException 
-	 * @throws InterruptedException 
-	 * @throws TimeoutException 
-	 */
-	public boolean selectNext(int clauseID) throws TimeoutException, InterruptedException, IOException{
-
-		S.add(clauseID);
-		instanceIDs.remove(clauseID);
-		
-		freeze[clauseID] = FreezeFile.UNFREEZE;
-
-		
+	public void run() throws TimeoutException, InterruptedException{
 		File freezeFile = new File("freeze"+ Thread.currentThread().getId() + ".fr");
-		
-		FreezeFile.createFreezeFile(freeze, freezeFile, instance.getHighestVar()+1);
 		File resultFile = new File("result");
-		MiniSAT.solve(this.instanceFile, new File("proof") , resultFile, freezeFile);
-		
+		File proofeFile = new File("proof");
 
-		if (MiniSAT.wasUnsatisfiable(resultFile)){
-			//if M united S is not SAT then the clause is part of the MUS
-			System.out.println("UNSAT");
-			M.add(clauseID);
-			S.remove(clauseID);
-			
-			for (int f: S){
-				freeze[f] = FreezeFile.FREEZE;
+
+
+		while (!instanceIDs.isEmpty()){
+			S = new TreeSet<Integer>();
+			int clauseIDCandidat = -1;
+			//			int[] oldFreeze = this.freeze.clone();
+			Arrays.fill(freeze, FreezeFile.FREEZE);
+			for (int id: M){
+				freeze[id] = FreezeFile.UNFREEZE;
 			}
 
+			for(int clauseID: instanceIDs){
+				List<Integer> clause = this.instance.getClauseByID(clauseID);
+
+				FreezeFile.createFreezeFile(freeze, freezeFile, instance.getHighestVar()+1, clause);
+
+				MiniSAT.solve(this.instanceFile, proofeFile , resultFile, freezeFile);
+				if (!MiniSAT.wasUnsatisfiable(resultFile)){
+					System.out.println("SAT");
+					S.add(clauseID);
+					clauseIDCandidat = clauseID;
+					this.freeze[clauseID] = FreezeFile.UNFREEZE;
+					S.add(clauseID);
+				}
+			}
+			M.add(clauseIDCandidat);
+			S.remove(clauseIDCandidat);
 			this.instanceIDs = S;
-			this.S = new TreeSet<Integer>();
 		}
-
-		if (instanceIDs.size() == 0){
-			//if the instance is empty then we are done.
-			return true;
-		}
-		return false;
 	}
-
-	/**
-	 * Simple testfunction for this algorithm.
-	 * @throws IOException 
-	 * @throws InterruptedException 
-	 * @throws TimeoutException 
-	 */
+	
+	
 	public static void main(String[] arg0) throws TimeoutException, InterruptedException, IOException{
 		String path = "../cnf/aim-100-1_6-no-1.cnf";
 		CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(path);
 
-		BasicAlgorithm alg = new BasicAlgorithm(instance);
+		AdvancedAlgorithm alg = new AdvancedAlgorithm(instance);
 
-		while (!alg.selectNext(alg.instanceIDs.pollFirst())){
-//			System.out.println(alg.instanceIDs.size());
-		};
+		alg.run();
 		System.out.println("Found a MUS");
-//		DimacsCnfOutput.writeDimacsCnfFile("MUS.tmp.cnf", alg.getMUS());
-		
+		//		DimacsCnfOutput.writeDimacsCnfFile("MUS.tmp.cnf", alg.getMUS());
+
 		ArrayList<Integer> clauseIDs = new ArrayList<Integer>();
-		for (int i = 0; i < alg.freeze.length; i++){
-			if (alg.freeze[i] == FreezeFile.UNFREEZE){
-				clauseIDs.add(i+1);
-			}
+		for (int i :alg.M){
+			System.out.println(i);
+			clauseIDs.add(i + 1);
 		}
 		DimacsCnfOutput.writeDimacsCnfFile("MUS.cnf", instance.selectClauses(clauseIDs));
 	}
+
+
 }
