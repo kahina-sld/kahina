@@ -31,6 +31,9 @@ import org.kahina.logic.sat.muc.data.MUCStatistics;
 
 public class MiniSAT
 {
+	public static final int UNFREEZE = 1;
+	public static final int FREEZE = -1;
+	
     private static long timeout = 600000;
     private static File lastResultFile;
     private static File lastProofFile;
@@ -799,12 +802,16 @@ public class MiniSAT
         return null;
     }
     
+    /* marks freezed variables with -1
+     * -1 means the variable can be used
+     *  1 means the variable is not used 
+     */
     public static void createFreezeFile(int[] freezeVariables, File freezeFile, int offsetID)
     {
         StringBuffer freezeBuffer = new StringBuffer("");
         for (int i = 0; i < freezeVariables.length; i++)
         {
-            if (freezeVariables[i] == -1)
+            if (freezeVariables[i] == FREEZE)
             {
                 if (i < (freezeVariables.length - 1))
                 {
@@ -815,7 +822,7 @@ public class MiniSAT
                     freezeBuffer.append("-" + (offsetID + i));
                 }
             }
-            else if (freezeVariables[i] == 1)
+            else if (freezeVariables[i] == UNFREEZE)
             {
                 if (i < (freezeVariables.length - 1))
                 {
