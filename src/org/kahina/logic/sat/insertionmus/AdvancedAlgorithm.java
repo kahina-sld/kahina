@@ -35,6 +35,14 @@ public class AdvancedAlgorithm {
 	protected int[] freeze; //variables that should be freezed are marked with 1;
 
 
+//	static String path = "../cnf/aim-100-1_6-no-4.cnf";
+//static String path = "../cnf/examples/barrel2.cnf";
+//	static String path = "../cnf/examples/C168_FW_SZ_66.cnf";
+//	static String path = "../cnf/aim-50-2_0-no-2.cnf";
+	static String path = "../cnf/examples/queueinvar4.cnf";
+
+
+
 	protected boolean finished = false;
 
 	File instanceFile;
@@ -42,18 +50,18 @@ public class AdvancedAlgorithm {
 
 	public AdvancedAlgorithm(CnfSatInstance instance){
 		this.instance = instance;
-		for (int i = 0; i < instance.getHighestVar(); i++){
+		for (int i = 0; i < instance.getSize(); i++){
 			instanceIDs.add(i);
 		}
 
 		MUCStatistics stat = new MUCStatistics();
-		stat.instanceName = "../cnf/aim-100-1_6-no-1.cnf";
+		stat.instanceName = path;
 
-		MUCExtension.extendCNFBySelVars(new File("../cnf/aim-100-1_6-no-1.cnf"), new File("output.cnf"), stat); 
+		MUCExtension.extendCNFBySelVars(new File(path), new File("output.cnf"), stat); 
 
 		this.instanceFile  = new File("output.cnf");
 
-		freeze = new int[this.instance.getHighestVar()];
+		freeze = new int[this.instance.getSize()];
 		Arrays.fill(freeze, FreezeFile.FREEZE);
 	}
 
@@ -61,8 +69,6 @@ public class AdvancedAlgorithm {
 		File freezeFile = new File("freeze"+ Thread.currentThread().getId() + ".fr");
 		File resultFile = new File("result");
 		File proofeFile = new File("proof");
-
-
 
 		while (!instanceIDs.isEmpty()){
 			S = new TreeSet<Integer>();
@@ -80,22 +86,65 @@ public class AdvancedAlgorithm {
 
 				MiniSAT.solve(this.instanceFile, proofeFile , resultFile, freezeFile);
 				if (!MiniSAT.wasUnsatisfiable(resultFile)){
-					System.out.println("SAT");
+					//This Variable may be added
 					S.add(clauseID);
+//					if (clauseIDCandidat == -1)
 					clauseIDCandidat = clauseID;
 					this.freeze[clauseID] = FreezeFile.UNFREEZE;
 					S.add(clauseID);
+				}else{
+					//Never use this variable
 				}
+				//TODO don't take the last one but let the user choose one.
+				//TODO else case, save what is needed from the trace, when searching for more MUSes use it to
+				// reduce the Solver-calls
 			}
 			M.add(clauseIDCandidat);
 			S.remove(clauseIDCandidat);
 			this.instanceIDs = S;
 		}
 	}
-	
-	
+
+	//	public void runFaster() throws TimeoutException, InterruptedException{
+	//		File freezeFile = new File("freeze"+ Thread.currentThread().getId() + ".fr");
+	//		File resultFile = new File("result");
+	//		File proofeFile = new File("proof");
+	//
+	//		while (!instanceIDs.isEmpty()){
+	//			S.clear();
+	////			int clauseIDCandidat = -1;
+	//			//			int[] oldFreeze = this.freeze.clone();
+	//			Arrays.fill(freeze, FreezeFile.FREEZE);
+	//			for (int id: M){
+	//				freeze[id] = FreezeFile.UNFREEZE;
+	//			}
+	//
+	//			for(int clauseID: instanceIDs){
+	//				List<Integer> clause = this.instance.getClauseByID(clauseID);
+	//
+	//				FreezeFile.createFreezeFile(freeze, freezeFile, instance.getHighestVar()+1, clause);
+	//
+	//				MiniSAT.solve(this.instanceFile, proofeFile , resultFile, freezeFile);
+	//				if (!MiniSAT.wasUnsatisfiable(resultFile)){
+	//					System.out.println("SAT");
+	//					this.freeze[clauseID] = FreezeFile.UNFREEZE;
+	//					M.add(clauseID);
+	//					S.add(clauseID);
+	//					break;
+	////					clauseIDCandidat = clauseID;
+	//				}else{
+	//					S.add(clauseID);
+	//				}
+	//			}
+	//			this.instanceIDs.removeAll(S);
+	////			M.add(clauseIDCandidat);
+	////			S.remove(clauseIDCandidat);
+	////			this.instanceIDs = S;
+	//		}
+	//	}
+
 	public static void main(String[] arg0) throws TimeoutException, InterruptedException, IOException{
-		String path = "../cnf/aim-100-1_6-no-1.cnf";
+
 		CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(path);
 
 		AdvancedAlgorithm alg = new AdvancedAlgorithm(instance);
