@@ -22,3 +22,7 @@ java.lang.ArrayIndexOutOfBoundsException: 39 >= 0
 	at org.kahina.core.task.KahinaTask.setFinished(KahinaTask.java:56)
 	at org.kahina.logic.sat.muc.task.ReductionTask.run(ReductionTask.java:208)
 	at java.lang.Thread.run(Thread.java:679)
+	
+	
+	
+If a non existing Instance file is selected the program crashes.
