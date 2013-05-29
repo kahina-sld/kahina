@@ -45,6 +45,7 @@ public class ReductionAgent extends KahinaTaskManager
     boolean stopped = false;
     
     MiniSATFiles files;
+    boolean clauseSetRefinement = true;
     boolean modelRotation = false;
     boolean autarkyReduction = false;
     
@@ -72,6 +73,11 @@ public class ReductionAgent extends KahinaTaskManager
         
         this.setSignalColor(ColorUtil.randomColor());
         this.setPanel(null);
+    }
+    
+    public void setClauseSetRefinement(boolean clauseSetRefinement)
+    {
+        this.clauseSetRefinement = clauseSetRefinement;    
     }
     
     public void setModelRotation(boolean modelRotation)
