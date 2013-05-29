@@ -64,14 +64,14 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 }
                 else
                 {
-                    reduce(ic, false);
+                    reduce(ic, false, false);
                     lastClick = 0;
                 }
             }
         }
     }
     
-    private void reduce(int ic, boolean modelRotation)
+    private void reduce(int ic, boolean clauseSetRefinement, boolean modelRotation)
     {
         MUCState state = kahina.getState();
         MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
@@ -81,6 +81,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                                                         ucStep, state.getSelectedStepID(), 
                                                         cands, state.getFiles(), state.getSatInstance()
                                                       );
+        redTask.setClauseSetRefinement(clauseSetRefinement);
         redTask.setModelRotation(modelRotation);
         kahina.getReductionManager().addTask(redTask);
     }
@@ -138,7 +139,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             if (uc != null)
             {
                 int ic = uc.getUc().get(listIndex);
-                reduce(ic, true);
+                reduce(ic, false, true);
             }
         }
         else if (s.startsWith("reduce"))
@@ -148,7 +149,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             if (uc != null)
             {
                 int ic = uc.getUc().get(listIndex);
-                reduce(ic, false);
+                reduce(ic, false, false);
             }
         }
         else if (s.equals("redSelOnce"))
@@ -182,7 +183,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 {
                     int ic = uc.getUc().get(listIndex);
                     System.err.println("   semi-automatic reduction of selection ID " + listIndex + " i.e. clause " + ic);
-                    reduce(ic, false);
+                    reduce(ic, false, false);
                 }
             }
         }

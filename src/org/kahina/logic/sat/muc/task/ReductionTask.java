@@ -22,6 +22,8 @@ public class ReductionTask extends KahinaTask
     //every UCReductionTask receives a unique numerical ID upon creation; used for file names
     public static int idCounter = 0;
     
+    //determines if clause set refinement is applied after a successful reduction
+    private boolean clauseSetRefinement = true;
     //determines if model rotation is applied after an unsuccessful reduction
     private boolean modelRotation = false;
     //determines if autarky reduction is applied after a successful reduction
@@ -89,6 +91,16 @@ public class ReductionTask extends KahinaTask
     {
         return idCounter++;
     }
+    
+    public boolean usesClauseSetRefinement()
+    {
+        return clauseSetRefinement;
+    }
+    
+    public void setClauseSetRefinement(boolean clauseSetRefinement)
+    {
+        this.clauseSetRefinement = clauseSetRefinement;
+    }
 
     public boolean usesModelRotation()
     {
@@ -148,8 +160,25 @@ public class ReductionTask extends KahinaTask
             List<Integer> reducedCore = null;
             try
             {
-                reducedCore = MiniSAT.findUnsatisfiableCore(stat, files);
-                //System.err.println("reducedCore: " + reducedCore);
+                if (clauseSetRefinement)
+                {
+                    reducedCore = MiniSAT.findUnsatisfiableCore(stat, files);
+                }
+                else
+                {
+                    //without clause set refinement, the tested US candidate is the result of a successful reduction attempt
+                    MiniSAT.solve(files.tmpFile, files.tmpProofFile, files.tmpResultFile, files.tmpFreezeFile);
+                    if (MiniSAT.wasUnsatisfiable(files.tmpResultFile))
+                    {
+                        reducedCore = new ArrayList<Integer>(muc_cands);
+                    }
+                    else
+                    {
+                        //empty core signals satisfiability, i.e. an unsuccessful reduction attempt
+                        reducedCore = new ArrayList<Integer>();
+                    }
+                }
+                System.err.println("reducedCore: " + reducedCore);
                 if (modelRotation)
                 {
                     model = MiniSAT.getCompleteModel(files.tmpResultFile);
@@ -171,6 +200,7 @@ public class ReductionTask extends KahinaTask
             if (reducedCore.size() == 0)
             {
                 result = uc;
+                //we only receive criticality information if there was a single reduction candidate
                 if (candidates.size() == 1)
                 {
                     uc.setRemovalLink(candidates.get(0), -1);
@@ -185,7 +215,7 @@ public class ReductionTask extends KahinaTask
                 {
                     if (!instance.isDontCareClause(a))
                     {
-                        uc.add(a+1);
+                        uc.add(a);
                     }
                 }
                 /*for (int i = 0; i < muc.size(); i++)
@@ -197,8 +227,6 @@ public class ReductionTask extends KahinaTask
                 uc.remove(new Integer(0));
                 result = newStep;
             }  
-            //delete temporary files
-            //files.deleteTempFiles();
         }
         //for simulated reduction tasks where the result was known before
         else

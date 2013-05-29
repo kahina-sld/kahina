@@ -310,6 +310,7 @@ public class ReductionAgent extends KahinaTaskManager
             if (removalLink == null || removalLink == -2 || (removalLink != -1 && heuristics.usesProofs()))
             {
                 ReductionTask task = new ReductionTask(null, this, state.getStatistics(), uc, ucID, candidates, files, state.getSatInstance());
+                task.setClauseSetRefinement(clauseSetRefinement);
                 task.setModelRotation(modelRotation);
                 task.setAutarkyReduction(autarkyReduction);
                 this.addTask(task);
