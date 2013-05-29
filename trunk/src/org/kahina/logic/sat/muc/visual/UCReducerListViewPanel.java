@@ -94,6 +94,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
         newReducerPanel.add(Box.createRigidArea(new Dimension(5,0)));
         
         clauseSetRefinementCheck = new JCheckBox();
+        clauseSetRefinementCheck.setSelected(true);
         newReducerPanel.add(clauseSetRefinementCheck);
         
         JLabel clauseSetRefinementLabel = new JLabel("Clause set refinement: ");
