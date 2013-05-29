@@ -36,6 +36,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
     private JComboBox heuristicsChooser;
     private JLabel colorLabel;
     private JButton signalColor;
+    private JCheckBox clauseSetRefinementCheck;
     private JCheckBox modelRotationCheck;
     private JCheckBox autarkyReductionCheck;
     
@@ -92,6 +93,13 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
         newReducerPanel.add(autarkyReductionLabel);
         newReducerPanel.add(Box.createRigidArea(new Dimension(5,0)));
         
+        clauseSetRefinementCheck = new JCheckBox();
+        newReducerPanel.add(clauseSetRefinementCheck);
+        
+        JLabel clauseSetRefinementLabel = new JLabel("Clause set refinement: ");
+        newReducerPanel.add(clauseSetRefinementLabel);
+        newReducerPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        
         JButton startReducerButton = new JButton("Start");
         startReducerButton.setActionCommand("startReducer");
         startReducerButton.addActionListener(this);
@@ -106,11 +114,13 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
                     .addComponent(heuristicsLabel)
                     .addComponent(colorLabel)
                     .addComponent(startReducerButton)
+                    .addComponent(clauseSetRefinementLabel)
                     .addComponent(modelRotationLabel)
                     .addComponent(autarkyReductionLabel))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(heuristicsChooser)
                     .addComponent(signalColor)
+                    .addComponent(clauseSetRefinementCheck)
                     .addComponent(modelRotationCheck)
                     .addComponent(autarkyReductionCheck)));
         
@@ -122,6 +132,9 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                    .addComponent(colorLabel)
                    .addComponent(signalColor))
+               .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                   .addComponent(clauseSetRefinementLabel)
+                   .addComponent(clauseSetRefinementCheck))
                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                    .addComponent(modelRotationLabel)
                    .addComponent(modelRotationCheck))
@@ -192,6 +205,7 @@ public class UCReducerListViewPanel extends KahinaViewPanel<UCReducerListView> i
                 newReducer.setHeuristics(view.heuristics.get(heuristicsChooser.getSelectedItem()).newInstance());
                 newReducer.getHeuristics().setSelVarOffset(kahina.getState().getSatInstance().getHighestVar());
                 newReducer.setSignalColor(signalColor.getBackground());
+                newReducer.setClauseSetRefinement(clauseSetRefinementCheck.isSelected());
                 newReducer.setModelRotation(modelRotationCheck.isSelected());
                 newReducer.setAutarkyReduction(autarkyReductionCheck.isSelected());               
                 signalColor.setBackground(ColorUtil.randomColor());
