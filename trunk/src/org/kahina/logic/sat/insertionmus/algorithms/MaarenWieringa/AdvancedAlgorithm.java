@@ -1,4 +1,4 @@
-package org.kahina.logic.sat.insertionmus.algorithms;
+package org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa;
 
 import java.io.File;
 import java.io.IOException;
@@ -53,6 +53,7 @@ public class AdvancedAlgorithm {
 		for (int i = 0; i < instance.getSize(); i++){
 			instanceIDs.add(i);
 		}
+//		M.
 
 		MUCStatistics stat = new MUCStatistics();
 		stat.instanceName = path;
