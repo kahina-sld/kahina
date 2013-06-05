@@ -1,4 +1,4 @@
-package org.kahina.logic.sat.insertionmus;
+package org.kahina.logic.sat.insertionmus.algorithms;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,13 +25,13 @@ public class BasicAlgorithm {
 
 	protected CnfSatInstance instance; // The instance
 
-	protected TreeSet<Integer> instanceIDs = new TreeSet<Integer>();
+	public TreeSet<Integer> instanceIDs = new TreeSet<Integer>();
 	protected TreeSet<Integer> M = new TreeSet<Integer>();// will become the MUS
 	protected TreeSet<Integer> S = new TreeSet<Integer>(); // A subset of the instance, it is the subset currently looked at.
 
 	protected int[] freeze; //variables that should be freezed are marked with 1;
-		static String path = "../cnf/aim-100-1_6-no-4.cnf";
-//	static String path = "../cnf/examples/barrel2.cnf";
+//		static String path = "../cnf/aim-100-1_6-no-4.cnf";
+	static String path = "../cnf/examples/barrel2.cnf";
 //		static String path = "../cnf/examples/C168_FW_SZ_66.cnf";
 //		static String path = "../cnf/aim-50-2_0-no-2.cnf";
 	//	static String path = "../cnf/examples/queueinvar4.cnf";
@@ -145,11 +145,11 @@ public class BasicAlgorithm {
 			//			System.out.println(alg.instanceIDs.size());
 		};
 		System.out.println("Found a MUS");
-		for (int i: alg.freeze){
-			if (i != FreezeFile.UNFREEZE){
-				System.out.println("Why?");
-			}
-		}
+//		for (int i: alg.freeze){
+//			if (i != FreezeFile.UNFREEZE){
+//				System.out.println("Why?");
+//			}
+//		}
 
 		//		DimacsCnfOutput.writeDimacsCnfFile("MUS.tmp.cnf", alg.getMUS());
 

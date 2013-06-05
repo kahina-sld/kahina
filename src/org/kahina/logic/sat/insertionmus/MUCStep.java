@@ -1,9 +1,8 @@
-package org.kahina.logic.sat.muc;
+package org.kahina.logic.sat.insertionmus;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentSkipListMap;
 
@@ -44,7 +43,7 @@ public class MUCStep extends KahinaStep
         for (int clauseID : uc)
         {
             Integer status = reductionTable.get(clauseID);
-            if (status == null) return MUCStepType.UNKNOWN;
+//            if (status == null) return MUCStepType.UNKNOWN;
             if (status == -1) numberRed++;
             if (status == -2) hasLightGreen = true;
         }

@@ -251,11 +251,15 @@ public class CnfSatInstance extends KahinaSatInstance
 		return subsumedClauses;
 	}
 
+	/**
+	 * 
+	 * @return number of Clauses
+	 */
 	public int getSize()
 	{
 		return clauseIDs.size();
 	}
-
+	
 	//generate lit -> clause map for lookup
 	//caching this makes the computation of different views a lot faster
 	public void computeOccurrenceMap()
