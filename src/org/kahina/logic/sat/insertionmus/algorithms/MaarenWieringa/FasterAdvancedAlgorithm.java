@@ -1,17 +1,24 @@
-package org.kahina.logic.sat.insertionmus.algorithms;
+package org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
+import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.AscendingIndexHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.ISortingHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.LargeClausesFirstHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.InvertAHeuristic;
 import org.kahina.logic.sat.insertionmus.io.ResultReader;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
@@ -30,20 +37,23 @@ import org.kahina.logic.sat.muc.io.MUCExtension;
  */
 public class FasterAdvancedAlgorithm {
 
+	ISortingHeuristic heuristic ;
+	
 	protected CnfSatInstance instance; // The instance
 
-	protected TreeSet<Integer> instanceIDs = new TreeSet<Integer>();
+	protected List<Integer> instanceIDs;
 	protected TreeSet<Integer> M = new TreeSet<Integer>();// will become the MUS
-	protected TreeSet<Integer> S = new TreeSet<Integer>(); // A subset of the instance, it is the subset currently looked at.
-
+//	protected TreeSet<Integer> S = new TreeSet<Integer>(); // A subset of the instance, it is the subset currently looked at.
+	protected TreeSet<Integer> S = new TreeSet<Integer>();
+	
 	protected int[] freeze; //variables that should be freezed are marked with 1;
 
 
 //	static String path = "../cnf/aim-100-1_6-no-4.cnf";
-//	static String path = "../cnf/examples/barrel2.cnf";
+	static String path = "../cnf/examples/barrel2.cnf";
 //	static String path = "../cnf/examples/C168_FW_SZ_66.cnf";
 //	static String path = "../cnf/aim-50-2_0-no-2.cnf";
-	static String path = "../cnf/examples/queueinvar4.cnf";
+//	static String path = "../cnf/examples/queueinvar4.cnf";
 
 
 
@@ -53,10 +63,20 @@ public class FasterAdvancedAlgorithm {
 
 
 	public FasterAdvancedAlgorithm(CnfSatInstance instance){
+
+//		this.heuristic = new LargeClausesFirstHeuristic(instance);
+		this.heuristic =  new InvertAHeuristic(new LargeClausesFirstHeuristic(instance));
+//		this.heuristic = new AscendingIndexHeuristic();
+//		this.heuristic = new InvertAHeuristic(new AscendingIndexHeuristic());
+		this.instanceIDs = new LinkedList<Integer>();		
+//		this.instanceIDs = new 
 		this.instance = instance;
 		for (int i = 0; i < instance.getSize(); i++){
 			instanceIDs.add(i);
+//			instanceIDs.add(e
 		}
+		java.util.Collections.sort(instanceIDs, this.heuristic.getComparator());
+		
 
 		MUCStatistics stat = new MUCStatistics();
 		stat.instanceName = path;
@@ -67,6 +87,7 @@ public class FasterAdvancedAlgorithm {
 
 		freeze = new int[this.instance.getSize()];
 		Arrays.fill(freeze, FreezeFile.FREEZE);
+		
 	}
 
 	public void run() throws TimeoutException, InterruptedException, IOException{
@@ -79,7 +100,6 @@ public class FasterAdvancedAlgorithm {
 		while (!instanceIDs.isEmpty()){
 			System.out.println("next run");
 			allocations.clear();
-			S = new TreeSet<Integer>();
 			int clauseIDCandidat = -1;
 			//			int[] oldFreeze = this.freeze.clone();
 			Arrays.fill(freeze, FreezeFile.FREEZE);
@@ -87,6 +107,7 @@ public class FasterAdvancedAlgorithm {
 				freeze[id] = FreezeFile.UNFREEZE;
 			}
 
+			System.out.println(this.instanceIDs);
 			int[] lastSatisfingAllocation = new int[this.instance.getHighestVar()+1];
 //			System.out.println(this.instance.getHighestVar());
 			
@@ -111,7 +132,6 @@ public class FasterAdvancedAlgorithm {
 					}
 					
 					//This Variable may be added
-					S.add(clauseID);
 //					if (clauseIDCandidat == -1)
 					clauseIDCandidat = clauseID;
 					this.freeze[clauseID] = FreezeFile.UNFREEZE;
@@ -131,13 +151,27 @@ public class FasterAdvancedAlgorithm {
 				// reduce the Solver-calls
 			}
 			for (int clauseID: allocations.keySet()){
+				if (clauseID == -1){
+					System.out.println("-1");
+				}
 				M.add(clauseID);
 				S.remove(clauseID);
 				System.out.println("Found a clause");
 			}
-			M.add(clauseIDCandidat); 
-			S.remove(clauseIDCandidat);
-			this.instanceIDs = S;
+			if (clauseIDCandidat == -1){
+				System.out.println("-2");
+				System.out.println(this.instanceIDs);
+			}else{
+			
+				M.add(clauseIDCandidat); 
+				S.remove(clauseIDCandidat);
+			}
+//			System.out.println(this.instanceIDs);
+			this.instanceIDs.clear();
+			this.instanceIDs.addAll(S);
+			java.util.Collections.sort(this.instanceIDs, this.heuristic.getComparator());
+//			S = new LinkedList<Integer>();
+			S = new TreeSet<Integer>();
 		}
 	}
 
