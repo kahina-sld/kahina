@@ -178,6 +178,15 @@ public class CnfSatInstance extends KahinaSatInstance
 	}
 
 	/**
+	 * Counts the occurrence of a variable within the instance
+	 * @param variable the variableID
+	 * @return in how many clauses this variable appears.
+	 */
+	public int getCountOccourrence(int variable){
+		return occurrenceMap.get(variable).size();
+	}
+	
+	/**
 	 * Removes the clause at the given index (not an internal ID!).
 	 * @param clauseIndex the index of the clause to be removed.
 	 */

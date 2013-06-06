@@ -87,5 +87,18 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 //		CnfSatInstance map = DimacsCnfParser.parseDimacsCnfFile(result.getName());
 		ResultReader.readAssignment(this.freeze, resultFile);
 	}
+
+	@Override
+	public CnfSatInstance findAMuse() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void newInstance(String path) {
+		// TODO Auto-generated method stub
+		
+	}
 		
 }
