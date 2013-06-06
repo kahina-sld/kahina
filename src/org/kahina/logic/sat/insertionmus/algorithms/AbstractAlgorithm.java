@@ -6,7 +6,7 @@ import java.util.concurrent.TimeoutException;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 
-public class AbstractAlgorithm {
+public abstract class AbstractAlgorithm {
 
 	File resultFile = new File("result");
 	File proofFile = new File("proof");
@@ -15,4 +15,8 @@ public class AbstractAlgorithm {
 		MiniSAT.solve(instanceFile, proofFile , resultFile, freezeFile);
 		return !MiniSAT.wasUnsatisfiable(resultFile);
 	}
+	
+	public abstract CnfSatInstance findAMuse();
+
+	public abstract void newInstance(String path);
 }
