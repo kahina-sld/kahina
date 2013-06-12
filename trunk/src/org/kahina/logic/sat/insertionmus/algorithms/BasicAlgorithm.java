@@ -21,7 +21,7 @@ import org.kahina.logic.sat.muc.io.MUCExtension;
  * @author Seitz
  *
  */
-public class BasicAlgorithm {
+public class BasicAlgorithm extends AbstractAlgorithm{
 
 	protected CnfSatInstance instance; // The instance
 
@@ -31,7 +31,8 @@ public class BasicAlgorithm {
 
 	protected int[] freeze; //variables that should be freezed are marked with 1;
 //		static String path = "../cnf/aim-100-1_6-no-4.cnf";
-	static String path = "../cnf/examples/barrel2.cnf";
+//	static String path = "../cnf/examples/barrel2.cnf";
+	static String path = "smallCNF/aim-50-1_6-no-1.cnf";
 //		static String path = "../cnf/examples/C168_FW_SZ_66.cnf";
 //		static String path = "../cnf/aim-50-2_0-no-2.cnf";
 	//	static String path = "../cnf/examples/queueinvar4.cnf";
@@ -58,6 +59,11 @@ public class BasicAlgorithm {
 		freeze = new int[this.instance.getSize()];
 		Arrays.fill(freeze, FreezeFile.FREEZE);
 	}
+	
+	public BasicAlgorithm() {
+		// TODO Auto-generated constructor stub
+	}
+
 	/**
 	 * 	is the MUS calculated?
 	 * @return true if there is a MUS calculated
@@ -76,7 +82,7 @@ public class BasicAlgorithm {
 	 * @throws InterruptedException 
 	 * @throws TimeoutException 
 	 */
-	public boolean selectNext(int clauseID) throws TimeoutException, InterruptedException, IOException{
+	public boolean selectNext(int clauseID) throws TimeoutException, IOException{
 		//M U S are always freezed
 
 		this.instanceIDs.remove(clauseID);
@@ -89,7 +95,7 @@ public class BasicAlgorithm {
 
 		FreezeFile.createFreezeFile(freeze, freezeFile, instance.getHighestVar()+1);
 		File resultFile = new File("result");
-		MiniSAT.solve(this.instanceFile, new File("proof") , resultFile, freezeFile);
+		MiniSAT.solve(this.instanceFile, resultFile, freezeFile);
 		freezeFile.delete();
 
 		if (MiniSAT.wasUnsatisfiable(resultFile)){
@@ -161,5 +167,50 @@ public class BasicAlgorithm {
 			}
 		}
 		DimacsCnfOutput.writeDimacsCnfFile("MUS.cnf", instance.selectClauses(clauseIDs));
+	}
+	@Override
+	public CnfSatInstance findAMuse(){
+		try {
+			while (!selectNext(instanceIDs.pollFirst())){
+				
+			}
+
+			ArrayList<Integer> clauseIDs = new ArrayList<Integer>();
+			for (int i = 0; i < freeze.length; i++){
+				if (freeze[i] == FreezeFile.UNFREEZE){
+					clauseIDs.add(i+1);
+					//				System.out.println(i+1);
+				}
+			}
+//			DimacsCnfOutput.writeDimacsCnfFile("MUS.cnf", instance.selectClauses(clauseIDs));
+
+			return instance.selectClauses(clauseIDs);
+			
+			
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	@Override
+	public void newInstance(String path) {
+		this.instance = DimacsCnfParser.parseDimacsCnfFile(path);
+		for (int i = 0; i < instance.getSize(); i++){
+			instanceIDs.add(i);
+		}
+
+		MUCStatistics stat = new MUCStatistics();
+		stat.instanceName = path;
+
+		MUCExtension.extendCNFBySelVars(new File(path), new File("output.cnf"), stat); 
+
+		this.instanceFile  = new File("output.cnf");
+
+		freeze = new int[this.instance.getSize()];
+		Arrays.fill(freeze, FreezeFile.FREEZE);
 	}
 }

@@ -7,6 +7,7 @@ import java.util.concurrent.TimeoutException;
 import junit.framework.TestCase;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
+import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.AdvancedAlgorithm;
 import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.FasterAdvancedAlgorithm;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
@@ -17,12 +18,21 @@ import org.kahina.logic.sat.muc.io.MUCExtension;
 
 public class TestAnAlgorithm extends TestCase{
 	//	String[] paths = {""};
+	
+	public void testAdvanced() throws TimeoutException{
 
-	public void testAdvancedFast() throws TimeoutException, InterruptedException {
+		testAnAlgorithm(new AdvancedAlgorithm());
+	}
+
+	public void testBasicAlgorithm() throws TimeoutException{
+		testAnAlgorithm(new BasicAlgorithm());
+	}
+	
+	public void testAdvancedFast() throws TimeoutException{
 		testAnAlgorithm(new FasterAdvancedAlgorithm());
 	}
 
-	public void testAnAlgorithm(AbstractAlgorithm alg) throws TimeoutException, InterruptedException{
+	public void testAnAlgorithm(AbstractAlgorithm alg) throws TimeoutException{
 		File testFolder = new File("smallCNF");
 
 		for (File f: testFolder.listFiles()){
@@ -32,7 +42,7 @@ public class TestAnAlgorithm extends TestCase{
 		}
 	}
 
-	public boolean testIfMuse(CnfSatInstance instance) throws TimeoutException, InterruptedException{
+	public boolean testIfMuse(CnfSatInstance instance) throws TimeoutException{
 		File freezeFile = new File("freeze.tmp");
 		File instanceFile = new File("output.tmp.cnf");
 		if(freezeFile.exists()){
@@ -78,7 +88,7 @@ public class TestAnAlgorithm extends TestCase{
 	}
 
 
-	protected boolean solve(File freezeFile, File instanceFile) throws TimeoutException, InterruptedException{
+	protected boolean solve(File freezeFile, File instanceFile) throws TimeoutException{
 		File resultFile = new File("result.tmp");
 		MiniSAT.solve(instanceFile, new File("proof.tmp") , resultFile , freezeFile);
 		return !MiniSAT.wasUnsatisfiable(resultFile);

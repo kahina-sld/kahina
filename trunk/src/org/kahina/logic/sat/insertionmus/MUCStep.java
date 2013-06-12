@@ -58,15 +58,15 @@ public class MUCStep extends KahinaStep
         }
         return 1;
     }
-
-    public Integer getIcStatus(int index)
-    {
-        Integer status = reductionTable.get(index);
-        if (status == null) return 0;
-        else if (status == -1) return 2;
-        else if (status == -2) return 3;
-        return 1;
-    }
+//
+//    public Integer getIcStatus(int index)
+//    {
+//        Integer status = reductionTable.get(index);
+//        if (status == null) return 0;
+//        else if (status == -1) return 2;
+//        else if (status == -2) return 3;
+//        return 1;
+//    }
     
     //returns null if we have no information yet!
     public Integer getRemovalLink(int index)
@@ -101,22 +101,22 @@ public class MUCStep extends KahinaStep
         }
         return false;
     }
+//    
+//    public int numUnknownClauses()
+//    {
+//        return uc.size() - reductionTable.size();
+//    }
+//    
+//    public boolean isSatisfiable()
+//    {
+//        return satisfiable;
+//    }
     
-    public int numUnknownClauses()
-    {
-        return uc.size() - reductionTable.size();
-    }
-    
-    public boolean isSatisfiable()
-    {
-        return satisfiable;
-    }
-    
-    public void setSatisfiable(boolean satisfiable)
-    {
-        this.satisfiable = satisfiable;
-    }
-    
+//    public void setSatisfiable(boolean satisfiable)
+//    {
+//        this.satisfiable = satisfiable;
+//    }
+//    
     /**
      * Computes the relation of a given block of meta variables to the current UC.
      * @param block a list of meta variables (typically negative literals)
@@ -129,48 +129,48 @@ public class MUCStep extends KahinaStep
      */
     public int relationToBlock(TreeSet<Integer> block)
     {
-        int numRed = 0;
-        int numGreen = 0;
-        int numOut = 0;
-        for (int lit : block)
-        {
-            if (!uc.contains(lit))
-            {
-                numOut++;
-            }
-            else
-            {
-                int icStatus = getIcStatus(lit);
-                if (icStatus == 2)
-                {
-                    numRed++;
-                }
-                else if (icStatus == 1)
-                {
-                    numGreen++;
-                }
-            }
-        }
-        if (numGreen == block.size())
-        {
-            return 2;
-        }
-        if (numOut == block.size())
-        {
-            return 3;
-        }
-        if (numRed == block.size())
-        {
-            return 1;
-        }
-        if (numRed > 0)
-        {
-            return 4;
-        }
-        if (numGreen > 0)
-        {
-            return 5;
-        }
+//        int numRed = 0;
+//        int numGreen = 0;
+//        int numOut = 0;
+//        for (int lit : block)
+//        {
+//            if (!uc.contains(lit))
+//            {
+//                numOut++;
+//            }
+//            else
+//            {
+//                int icStatus = getIcStatus(lit);
+//                if (icStatus == 2)
+//                {
+//                    numRed++;
+//                }
+//                else if (icStatus == 1)
+//                {
+//                    numGreen++;
+//                }
+//            }
+//        }
+//        if (numGreen == block.size())
+//        {
+//            return 2;
+//        }
+//        if (numOut == block.size())
+//        {
+//            return 3;
+//        }
+//        if (numRed == block.size())
+//        {
+//            return 1;
+//        }
+//        if (numRed > 0)
+//        {
+//            return 4;
+//        }
+//        if (numGreen > 0)
+//        {
+//            return 5;
+//        }
         return 0;
     }
 }

@@ -434,7 +434,10 @@ public class LayeredLayouter extends KahinaDAGLayouter
     //TODO: make this work also with bottom-up display orientation
     public int getNodeAtCoordinates(int x, int y)
     {
-        // binary search over node levels to determine row
+    	
+    	if (nodeLevels == null) return -1;// Not yet initialized => no nodes can be found.
+        
+    	// binary search over node levels to determine row
         int lowerIndex = 0;
         int upperIndex = nodeLevels.size() - 1;
         int middleIndex = (lowerIndex + upperIndex) / 2;

@@ -189,8 +189,8 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         else if (s.equals("leanKernel"))
         {
             MUCState state = kahina.getState();
-            int newStepID = state.autarkyReduction(state.getSelectedStepID());
-            kahina.dispatchInstanceEvent(new KahinaSelectionEvent(newStepID));        
+//            int newStepID = state.autarkyReduction(state.getSelectedStepID());
+//            kahina.dispatchInstanceEvent(new KahinaSelectionEvent(newStepID));        
         }
     }
     
@@ -204,7 +204,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         }
         else if (subselectionCommand.startsWith("Size"))
         {
-            newSelection = processSizeSubselection(subselectionCommand.substring(4), selection);
+//            newSelection = processSizeSubselection(subselectionCommand.substring(4), selection);
         }
         else if (subselectionCommand.startsWith("First"))
         {
@@ -227,7 +227,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             System.err.println("WARNING: unkown subselection command \"" + subselectionCommand + "\"!");
             return;
         }
-        view.getList().setSelectedIndices(newSelection);
+//        view.getList().setSelectedIndices(newSelection);
     }
     
     private int[] processStatusSubselection(String status, int[] selection)
@@ -261,48 +261,48 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         {
             for (int index : selection)
             {
-                if (uc.getIcStatus(uc.getUc().get(index)) == desiredStatus)
-                {
-                    selectionList.add(index);
-                }
+//                if (uc.getIcStatus(uc.getUc().get(index)) == desiredStatus)
+//                {
+//                    selectionList.add(index);
+//                }
             }
         }
         return toIntArray(selectionList);
     }
     
-    private int[] processSizeSubselection(String size, int[] selection)
-    {
-        List<Integer> selectionList = new LinkedList<Integer>();
-        MUCStep uc = kahina.getState().getSelectedStep();
-        CnfSatInstance instance =  kahina.getState().getSatInstance();
-        if (uc != null)
-        {
-            if (size.equals("Large"))
-            {
-                for (int index : selection)
-                {
-                    int clauseID = uc.getUc().get(index);
-                    if (instance.getClause(clauseID-1).size() > 5)
-                    {
-                        selectionList.add(index);
-                    }
-                }
-            }
-            else
-            {         
-                int desiredSize = Integer.parseInt(size);
-                for (int index : selection)
-                {
-                    int clauseID = uc.getUc().get(index);
-                    if (instance.getClause(clauseID-1).size() == desiredSize)
-                    {
-                        selectionList.add(index);
-                    }
-                }
-            }
-        }
-        return toIntArray(selectionList);
-    }
+//    private int[] processSizeSubselection(String size, int[] selection)
+//    {
+//        List<Integer> selectionList = new LinkedList<Integer>();
+//        MUCStep uc = kahina.getState().getSelectedStep();
+//        CnfSatInstance instance =  kahina.getState().getSatInstance();
+//        if (uc != null)
+//        {
+//            if (size.equals("Large"))
+//            {
+//                for (int index : selection)
+//                {
+//                    int clauseID = uc.getUc().get(index);
+//                    if (instance.getClause(clauseID-1).size() > 5)
+//                    {
+//                        selectionList.add(index);
+//                    }
+//                }
+//            }
+//            else
+//            {         
+//                int desiredSize = Integer.parseInt(size);
+//                for (int index : selection)
+//                {
+//                    int clauseID = uc.getUc().get(index);
+//                    if (instance.getClause(clauseID-1).size() == desiredSize)
+//                    {
+//                        selectionList.add(index);
+//                    }
+//                }
+//            }
+//        }
+//        return toIntArray(selectionList);
+//    }
     
     private int[] processFirstSubselection(String number, int[] selection)
     {
@@ -350,18 +350,18 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         {
             Integer lit = Integer.parseInt(litString);
             MUCStep uc = kahina.getState().getSelectedStep();
-            CnfSatInstance instance =  kahina.getState().getSatInstance();
-            if (uc != null)
-            {
-                for (int index : selection)
-                {
-                    int clauseID = uc.getUc().get(index);
-                    if (instance.getClause(clauseID-1).contains(lit))
-                    {
-                        selectionList.add(index);
-                    }
-                }
-            }
+//            CnfSatInstance instance =  kahina.getState().getSatInstance();
+//            if (uc != null)
+//            {
+//                for (int index : selection)
+//                {
+//                    int clauseID = uc.getUc().get(index);
+//                    if (instance.getClause(clauseID-1).contains(lit))
+//                    {
+//                        selectionList.add(index);
+//                    }
+//                }
+//            }
         }
         catch (NumberFormatException e)
         {

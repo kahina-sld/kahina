@@ -44,79 +44,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 {
     public static final boolean CFG_FILTER = false;
 
-    public final Action LOAD_FILE_ACTION = new AbstractAction("Load SAT File")
-    {
-
-        private static final long serialVersionUID = -3829326193202814557L;
-
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
-//            dispatchEvent(new KahinaControlEvent(MUCControlEventCommands.LOAD_FILE));
-        }
-
-    };
-    
-    public final Action LOAD_PATH_ACTION = new AbstractAction("Add Path from File")
-    {
-        private static final long serialVersionUID = -3829326193202814557L;
-
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
-//            dispatchEvent(new KahinaControlEvent(MUCControlEventCommands.LOAD_PATH));
-        }
-
-    };
-    
-    public final Action US_DIMACS_EXPORT_ACTION = new AbstractAction("Export current US to DIMACS file")
-    {
-        private static final long serialVersionUID = -1461082967969729918L;
-
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
-//            dispatchEvent(new KahinaControlEvent(MUCControlEventCommands.EXPORT_DIMACS));
-        }
-    };
-    
-    
-    
-    public final Action US_SYMBOLIC_DIMACS_EXPORT_ACTION = new AbstractAction("Export current US to symbolic DIMACS file")
-    {
-        private static final long serialVersionUID = 1150689380235228957L;
-
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
-//            dispatchEvent(new KahinaControlEvent(MUCControlEventCommands.EXPORT_SYMBOLIC_DIMACS));
-        }
-
-    };
-    
-    public final Action US_EXPORT_VAR_OCCURRENCES = new AbstractAction("Export var occurrence list for current US ")
-    {
-        private static final long serialVersionUID = 7555952855709180730L;
-
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
-//            dispatchEvent(new KahinaControlEvent(MUCControlEventCommands.EXPORT_VAR_OCCURRENCES));
-        }
-    };
-    
-    public final Action QUIT_ACTION = new AbstractAction("Quit")
-    {
-
-        private static final long serialVersionUID = -3829326193202814557L;
-
-        @Override
-        public void actionPerformed(ActionEvent e)
-        {
-            dispatchEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
-        }
-
-    };
+   
     
     CnfSatInstance satInstance;
 //    MUCStatistics stat;
@@ -159,6 +87,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 
     protected MUCState createState()
     {
+    	System.out.println("create State");
         if (satInstance == null)
         {
             //System.err.println("MUCState.createState(" + this + ",null)");
@@ -172,12 +101,14 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
     @Override
     protected KahinaBridge createBridge()
     {
+    	System.out.println("create Bridge");
         return new KahinaBridge(this);
     }
 
     @Override
     protected MUCGUI createGUI()
     {
+    	System.out.println("create GUI");
         return new MUCGUI(MUCStep.class, this);
     }
     
@@ -189,6 +120,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
     
     protected void processNewProject()
     {
+    	System.out.println("new Project");
         project.register();
         registerRecentProject(project);
         gui.setPerspective(project.getPerspective());
@@ -203,6 +135,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
         
     public KahinaProject loadProject(InputStream stream)
     {
+    	System.out.println("load project");
         Document dom;
         KahinaProject project = createNewProject();
         dom = XMLUtil.parseXMLStream(stream, false);
@@ -213,11 +146,13 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
     @Override
     protected void createTreeBehavior()
     {
+    	System.out.println("create Tree Behavior");
         // TODO Auto-generated method stub
     }
     
     public CnfSatInstance getSatInstance()
     {
+    	System.out.println("getSatInstance");
         return satInstance;
     }
     
@@ -297,6 +232,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
     
     public void processEvent(KahinaEvent e)
     {
+    	System.out.println("process Event " + e);
         super.processEvent(e);
         if (e instanceof KahinaControlEvent)
         {
@@ -369,13 +305,10 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
     }
     
     private void nextStep() {
-    	System.out.println("Hurray");
+    	System.out.println("nextStep");
     	try {
 			ba.selectNext(ba.instanceIDs.pollFirst());
 		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -393,6 +326,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
      */
     public void start(String[] args)
     {
+    	System.out.println("start");
         startNewSession();
     }
 
