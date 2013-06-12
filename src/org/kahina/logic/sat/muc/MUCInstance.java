@@ -489,7 +489,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
 
     public static void main(String[] args)
     {
-        MetaLearningMode metaLearningMode = MetaLearningMode.BLOCK_PARTITION;
+        MetaLearningMode metaLearningMode = MetaLearningMode.RECURSIVE_BLOCKS;
         /*if (args.length > 0)
         {
             if (args[0].equals("nometa"))
@@ -529,12 +529,47 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             System.err.println("       Your path must include the minisat-extended directory.");
             System.exit(0);
         }
-        MUCInstance kahina = new MUCInstance(metaLearningMode);
-        kahina.start(args);
+
         if (args.length > 0)
         {
-            File dataFile = new File(args[0]);
-            kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, "default project"));
+            if (args[0].startsWith("-"))
+            {
+                if (args[0].equals("-bp"))
+                {
+                    metaLearningMode = MetaLearningMode.BLOCK_PARTITION;
+                }
+                else if (args[0].equals("-bt"))
+                {
+                    metaLearningMode = MetaLearningMode.RECURSIVE_BLOCKS;
+                }
+                else if (args[0].equals("-nometa"))
+                {
+                    metaLearningMode = MetaLearningMode.NO_META_LEARNING;
+                }
+                else
+                {
+                    System.err.println("WARNING: ignoring unknown option \"" + args[0] + "\"");
+                }
+                MUCInstance kahina = new MUCInstance(metaLearningMode);
+                kahina.start(args);
+                if (args.length > 1)
+                {
+                    File dataFile = new File(args[1]);
+                    kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, "default project"));
+                }
+            }
+            else
+            {
+                MUCInstance kahina = new MUCInstance(metaLearningMode);
+                kahina.start(args);
+                File dataFile = new File(args[0]);
+                kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, "default project"));
+            }
+        }
+        else
+        {
+            MUCInstance kahina = new MUCInstance(metaLearningMode);
+            kahina.start(args);
         }
     }
 
