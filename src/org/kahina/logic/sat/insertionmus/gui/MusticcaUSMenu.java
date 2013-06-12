@@ -10,8 +10,8 @@ public class MusticcaUSMenu extends JMenu
     public MusticcaUSMenu(MUCInstance kahina)
     {
         super("US");
-        add(new JMenuItem(kahina.US_DIMACS_EXPORT_ACTION));
-        add(new JMenuItem(kahina.US_SYMBOLIC_DIMACS_EXPORT_ACTION));
-        add(new JMenuItem(kahina.US_EXPORT_VAR_OCCURRENCES));
+//        add(new JMenuItem(kahina.US_DIMACS_EXPORT_ACTION));
+//        add(new JMenuItem(kahina.US_SYMBOLIC_DIMACS_EXPORT_ACTION));
+//        add(new JMenuItem(kahina.US_EXPORT_VAR_OCCURRENCES));
     }
 }

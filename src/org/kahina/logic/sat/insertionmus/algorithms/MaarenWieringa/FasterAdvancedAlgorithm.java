@@ -50,6 +50,9 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 	////	static String path = "../cnf/aim-100-1_6-no-4.cnf";
 //		static String path = "../cnf/examples/barrel2.cnf";
 		static String path = "smallCNF/aim-50-1_6-no-1.cnf";
+//							smallCNF/aim-50-1_6-no-1.cnf
+//		static String path = "smallCNF/aim-200-2_0-no-1.cnf";
+
 //		static String path = "smallCNF/barrel2.cnf";
 	//	static String path = "../cnf/examples/C168_FW_SZ_66.cnf";
 	//	static String path = "../cnf/aim-50-2_0-no-2.cnf";
@@ -108,7 +111,6 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 	public void run() throws TimeoutException, InterruptedException, IOException{
 		File freezeFile = new File("freeze"+ Thread.currentThread().getId() + ".fr");
 		File resultFile = new File("result");
-		File proofeFile = new File("proof");
 //		if (freezeFile.exists()){
 //			freezeFile.delete();
 //		}
@@ -141,7 +143,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 
 				FreezeFile.createFreezeFile(freeze, freezeFile, instance.getHighestVar()+1, clause);
 
-				MiniSAT.solve(this.instanceFile, proofeFile , resultFile, freezeFile);
+				MiniSAT.solve(this.instanceFile , resultFile, freezeFile);
 				if (!MiniSAT.wasUnsatisfiable(resultFile)){
 					//test if this clause removes some MUS candidats
 					ArrayList<Integer> removeLater = new ArrayList<Integer>();
@@ -284,8 +286,4 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 		}
 		return instance.selectClauses(clauseIDs);
 	}
-
-
-
-
 }

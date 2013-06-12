@@ -111,9 +111,9 @@ public class MiniSAT
      * @param unitsFile the file where to store the units
      * @return whether the SAT instance was satisfiable or not; units are written to unitsFile
      */
-    public static synchronized boolean solveAndDeriveUnits(File cnfFile, File tmpResultFile, File unitsFile) throws TimeoutException, InterruptedException, IOException
+    public static boolean solveAndDeriveUnits(File cnfFile, File tmpResultFile, File unitsFile) throws TimeoutException, InterruptedException, IOException
     {
-        Process p = Runtime.getRuntime().exec("minisat " + cnfFile.getAbsolutePath() + " -c -r " + tmpResultFile.getAbsolutePath() + " -u " + unitsFile.getAbsolutePath());
+        Process p = Runtime.getRuntime().exec("minisat " + cnfFile.getAbsolutePath() + " -r " + tmpResultFile.getAbsolutePath() + " -u " + unitsFile.getAbsolutePath());
         BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
         // Set a timer to interrupt the process if it does not return within
         // the timeout period
@@ -300,13 +300,73 @@ public class MiniSAT
         }
         return null;
     }
+    
+    public static void solve(File inputFile, File resultFile, File freezeFile) throws TimeoutException{
+      try
+      {
+//      	System.err.println("minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
+    	  Process p = Runtime.getRuntime().exec("minisat " + inputFile.getAbsolutePath() + " -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
+//    	  File proofFile = new File("proof");
+//    	  Process p = Runtime.getRuntime().exec("minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
+          
+    	  BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+          // Set a timer to interrupt the process if it does not return within
+          // the timeout period
+          Timer timer = new Timer();
+          timer.schedule((new MiniSAT()).new InterruptScheduler(Thread.currentThread()), timeout);
 
-    public static void solve(File inputFile, File proofFile, File resultFile, File freezeFile) throws TimeoutException, InterruptedException
+          try
+          {
+              p.waitFor();
+          }
+          catch (InterruptedException e)
+          {
+              // Stop the process from running
+              p.getInputStream().close();
+              p.getErrorStream().close();
+              p.getOutputStream().close();
+              p.destroy();
+              throw new TimeoutException("did not return after " + timeout + " milliseconds");
+          }
+          finally
+          {
+              // Stop the timer
+              timer.cancel();
+          }
+          String line;
+          while ((line = input.readLine()) != null)
+          {
+              if (VERBOSE) System.out.println(line);
+          }
+          input.close();
+          BufferedReader input2 = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+          String line2;
+          while ((line2 = input2.readLine()) != null)
+          {
+              if (VERBOSE) System.err.println(line2);
+          }
+          input2.close();
+          p.getInputStream().close();
+          p.getErrorStream().close();
+          p.getOutputStream().close();
+          p.destroy();
+          lastResultFile = resultFile;
+      }
+      catch (IOException e)
+      {
+          System.err.println("IO-Fehler while SATSolving");
+          e.printStackTrace();
+          System.exit(0);
+      }
+    }
+
+    public static void solve(File inputFile, File proofFile, final File resultFile, File freezeFile) throws TimeoutException
     {
         try
         {
+//        	System.err.println("minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
             Process p = Runtime.getRuntime().exec("minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             // Set a timer to interrupt the process if it does not return within
             // the timeout period
             Timer timer = new Timer();

@@ -79,14 +79,14 @@ public class MUCGUI extends KahinaGUI
         kahina.registerInstanceListener("clauseSelection", this);
         
         satInstanceView = new KahinaSatInstanceListView(kahina);
-        if (isInGroupMode())
-        {
-            satInstanceView.setTitle("Group SAT Instance");
-        }
-        else
-        {
+//        if (isInGroupMode())
+//        {
+//            satInstanceView.setTitle("Group SAT Instance");
+//        }
+//        else
+//        {
             satInstanceView.setTitle("SAT Instance");
-        }
+//        }
         kahina.registerInstanceListener(KahinaEventTypes.UPDATE, satInstanceView);
         views.add(satInstanceView);
         livingViews.add(satInstanceView);
@@ -171,50 +171,50 @@ public class MUCGUI extends KahinaGUI
     {
         if (VERBOSE) System.err.println("MUCGUI.displayMainViews()");
         MUCState state = (MUCState) kahina.getState();
-        decisionGraphView.display(state.getDecisionGraph());
+//        decisionGraphView.display(state.getDecisionGraph());
 //        reducerListView.display(state.getReducers());
-        CnfSatInstance sat = state.getSatInstance();
-        if (VERBOSE) System.err.println("  state.getSatInstance() = " + sat);
-        if (sat != null)
-        {
-            if (isInGroupMode())
-            {
-                //TODO: treat group SAT instances in list view as well!
-                //((KahinaGroupSatInstanceGraphView) satInstanceView).display((GroupCnfSatInstance) sat);
-            }
-            else
-            {
-                if (VERBOSE) System.err.println("    satInstanceView.display(" + sat + ")");
-                satInstanceView.display(sat);
-            }
-                  
-            if (metaInstanceView != null) 
-            {
-                if (VERBOSE) System.err.println("    metaInstanceView.display(" + state.getMetaInstance() + ")");
-                metaInstanceView.display(state.getMetaInstance());
-            }
-            if (blockListView != null)
-            {
-                if (VERBOSE) System.err.println("    blockView.display(" + state.getPartitionBlocks() + ")");
-                blockListView.display(state.getPartitionBlocks());
-            }
-            if (blockTreeView != null)
-            {
-                if (VERBOSE) System.err.println("    blockView.display(" + state.getPartitionBlocks() + ")");
-                blockTreeView.display(state.getRecursiveBlocks());
-            }
-            if (VERBOSE) System.err.println("    mucView.display(" + sat + ")");
-            mucView.display(sat);
-        }
-        else
-        {
-            if (VERBOSE) System.err.println("    displaying \"No instance loaded\" messages");
-            satInstanceView.displayText("No SAT Instance loaded yet.");
-            if (metaInstanceView != null) metaInstanceView.displayText("No SAT Instance loaded yet.");
-//            mucView.displayText("No SAT Instance loaded yet.");
-            if (blockListView != null) blockListView.displayText("No SAT Instance loaded yet.");
-            //if (blockTreeView != null) blockTreeView.displayText("No SAT Instance loaded yet.");
-        }
+//        CnfSatInstance sat = state.getSatInstance();
+//        if (VERBOSE) System.err.println("  state.getSatInstance() = " + sat);
+//        if (sat != null)
+//        {
+//            if (isInGroupMode())
+//            {
+//                //TODO: treat group SAT instances in list view as well!
+//                //((KahinaGroupSatInstanceGraphView) satInstanceView).display((GroupCnfSatInstance) sat);
+//            }
+//            else
+//            {
+//                if (VERBOSE) System.err.println("    satInstanceView.display(" + sat + ")");
+//                satInstanceView.display(sat);
+//            }
+//                  
+//            if (metaInstanceView != null) 
+//            {
+//                if (VERBOSE) System.err.println("    metaInstanceView.display(" + state.getMetaInstance() + ")");
+//                metaInstanceView.display(state.getMetaInstance());
+//            }
+//            if (blockListView != null)
+//            {
+//                if (VERBOSE) System.err.println("    blockView.display(" + state.getPartitionBlocks() + ")");
+//                blockListView.display(state.getPartitionBlocks());
+//            }
+//            if (blockTreeView != null)
+//            {
+//                if (VERBOSE) System.err.println("    blockView.display(" + state.getPartitionBlocks() + ")");
+//                blockTreeView.display(state.getRecursiveBlocks());
+//            }
+//            if (VERBOSE) System.err.println("    mucView.display(" + sat + ")");
+//            mucView.display(sat);
+//        }
+//        else
+//        {
+//            if (VERBOSE) System.err.println("    displaying \"No instance loaded\" messages");
+//            satInstanceView.displayText("No SAT Instance loaded yet.");
+//            if (metaInstanceView != null) metaInstanceView.displayText("No SAT Instance loaded yet.");
+////            mucView.displayText("No SAT Instance loaded yet.");
+//            if (blockListView != null) blockListView.displayText("No SAT Instance loaded yet.");
+//            //if (blockTreeView != null) blockTreeView.displayText("No SAT Instance loaded yet.");
+//        }
     }
     
     @Override
@@ -254,11 +254,11 @@ public class MUCGUI extends KahinaGUI
     }
     
     //in this somewhat roundabout way, handing on the mode information is avoided
-    private boolean isInGroupMode()
-    {
-        return ((MUCState) kahina.getState()).getSatInstance() instanceof GroupCnfSatInstance;
-    }
-    
+//    private boolean isInGroupMode()
+//    {
+////        return ((MUCState) kahina.getState()).getSatInstance() instanceof GroupCnfSatInstance;
+//    }
+//    
     public void processEvent(KahinaEvent e)
     {
         if (e.getType().equals("clauseSelection"))

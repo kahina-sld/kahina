@@ -45,7 +45,7 @@ public class MUCStepView extends KahinaSatInstanceListView
                 //System.err.println("WARNING: had to prevent getLineStatus(" + lineID + ")");
                 return 0;
             }
-            return currentStep.getIcStatus(currentStep.getUc().get(lineID));
+//            return currentStep.getIcStatus(currentStep.getUc().get(lineID));
         }
         return 0;
     }
