@@ -14,9 +14,12 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.visual.graph.KahinaGraphViewContextMenu;
@@ -29,13 +32,17 @@ import org.kahina.logic.sat.muc.data.Overlap;
 import org.kahina.logic.sat.muc.gui.ClauseSelectionEvent;
 import org.kahina.logic.sat.muc.task.ReductionTask;
 
-public class MUCStepViewListener extends MouseAdapter implements ActionListener
+public class MUCStepViewListener extends MouseAdapter implements ActionListener, ChangeListener
 {
     private final MUCInstance kahina;
     private final MUCStepViewPanel view;
     
     long lastClick = 0;
     public final static long DBL_CLICK_INTERVAL = 200;
+    
+    private boolean clauseSetRefinementOption = true;
+    private boolean modelRotationOption = false;
+    private boolean autarkyReductionOption = false;
     
     public MUCStepViewListener(MUCInstance kahina, MUCStepViewPanel view)
     {
@@ -64,14 +71,14 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 }
                 else
                 {
-                    reduce(ic, false, false);
+                    reduce(ic, clauseSetRefinementOption, modelRotationOption, autarkyReductionOption);
                     lastClick = 0;
                 }
             }
         }
     }
     
-    private void reduce(int ic, boolean clauseSetRefinement, boolean modelRotation)
+    private void reduce(int ic, boolean clauseSetRefinement, boolean modelRotation, boolean autarkyReduction)
     {
         MUCState state = kahina.getState();
         MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
@@ -83,10 +90,11 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                                                       );
         redTask.setClauseSetRefinement(clauseSetRefinement);
         redTask.setModelRotation(modelRotation);
+        redTask.setAutarkyReduction(autarkyReduction);
         kahina.getReductionManager().addTask(redTask);
     }
     
-    private void reduce(List<Integer> ics)
+    private void reduce(List<Integer> ics, boolean clauseSetRefinement, boolean modelRotation, boolean autarkyReduction)
     {
         MUCState state = kahina.getState();
         MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
@@ -94,6 +102,9 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                                                         ucStep, state.getSelectedStepID(), 
                                                         ics, state.getFiles(), state.getSatInstance()
                                                       );
+        redTask.setClauseSetRefinement(clauseSetRefinement);
+        redTask.setModelRotation(modelRotation);
+        redTask.setAutarkyReduction(autarkyReduction);
         kahina.getReductionManager().addTask(redTask);
     }
     
@@ -132,16 +143,6 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
         {
             //TODO
         }
-        else if (s.startsWith("reduceMR"))
-        {
-            int listIndex = Integer.parseInt(s.substring(8));
-            MUCStep uc = kahina.getState().getSelectedStep();
-            if (uc != null)
-            {
-                int ic = uc.getUc().get(listIndex);
-                reduce(ic, false, true);
-            }
-        }
         else if (s.startsWith("reduce"))
         {
             int listIndex = Integer.parseInt(s.substring(6));
@@ -149,7 +150,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             if (uc != null)
             {
                 int ic = uc.getUc().get(listIndex);
-                reduce(ic, false, false);
+                reduce(ic, clauseSetRefinementOption, modelRotationOption, autarkyReductionOption);
             }
         }
         else if (s.equals("redSelOnce"))
@@ -167,7 +168,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 System.err.println("Received user command to simultaneously reduce by the following clause IDs US #" 
                         + kahina.getState().getSelectedStepID() + ":");
                 System.err.println(ics.toString());
-                reduce(ics);
+                reduce(ics, clauseSetRefinementOption, modelRotationOption, autarkyReductionOption);
             }
         }
         else if (s.equals("redSelIndiv"))
@@ -183,7 +184,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
                 {
                     int ic = uc.getUc().get(listIndex);
                     System.err.println("   semi-automatic reduction of selection ID " + listIndex + " i.e. clause " + ic);
-                    reduce(ic, false, false);
+                    reduce(ic, clauseSetRefinementOption, modelRotationOption, autarkyReductionOption);
                 }
             }
         }
@@ -381,5 +382,42 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
             i++;
         }
         return array;
+    }
+    
+    public boolean getClauseSetRefinementOptionState()
+    {
+        return clauseSetRefinementOption;
+    }
+    
+    public boolean getModelRotationOptionState()
+    {
+        return modelRotationOption;
+    }
+    
+    public boolean getAutarkyReductionOptionState()
+    {
+        return autarkyReductionOption;
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent arg0)
+    {
+       if (arg0.getSource() instanceof JCheckBoxMenuItem)
+       {
+           JCheckBoxMenuItem box = (JCheckBoxMenuItem) arg0.getSource();
+           String option = box.getText();
+           if (option.equals("Clause Set Refinement"))
+           {
+               clauseSetRefinementOption = box.isSelected();
+           }
+           else if (option.equals("Model Rotation"))
+           {
+               modelRotationOption = box.isSelected();
+           }
+           else if (option.equals("Autarky Reduction"))
+           {
+               autarkyReductionOption = box.isSelected();
+           }
+       }
     }
 }

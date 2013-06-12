@@ -2,6 +2,7 @@ package org.kahina.logic.sat.muc.visual;
 
 import java.awt.event.ActionListener;
 
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -13,7 +14,7 @@ public class MUCStepViewContextMenu extends JPopupMenu
     MUCStepViewPanel view;
     MUCInstance kahina;
     
-    public MUCStepViewContextMenu(ActionListener l, MUCStepViewPanel view, MUCInstance kahina, int listIndex)
+    public MUCStepViewContextMenu(MUCStepViewListener l, MUCStepViewPanel view, MUCInstance kahina, int listIndex)
     {
         this.view = view;
         this.kahina = kahina;
@@ -268,11 +269,6 @@ public class MUCStepViewContextMenu extends JPopupMenu
         reduceItem.addActionListener(l);
         add(reduceItem);
         
-        JMenuItem reduceMRItem = new JMenuItem("Reduce by this clause + model rotation");
-        reduceMRItem.setActionCommand("reduceMR" + listIndex);
-        reduceMRItem.addActionListener(l);
-        add(reduceMRItem);
-        
         JMenuItem reduceSelectedOnceItem = new JMenuItem("Reduce by selected clauses at once");
         if (view.getList().getSelectedIndices().length == 0)
         {
@@ -291,6 +287,26 @@ public class MUCStepViewContextMenu extends JPopupMenu
         reduceSelectedIndividuallyItem.addActionListener(l);
         add(reduceSelectedIndividuallyItem);
         
+        JMenu reductionOptions = new JMenu("Reduction Options");
+        
+        JCheckBoxMenuItem clauseSetRefinementOption = new JCheckBoxMenuItem("Clause Set Refinement");
+        clauseSetRefinementOption.setSelected(l.getClauseSetRefinementOptionState());
+        clauseSetRefinementOption.addChangeListener(l);
+        reductionOptions.add(clauseSetRefinementOption);
+        
+        JCheckBoxMenuItem modelRotationOption = new JCheckBoxMenuItem("Model Rotation");
+        modelRotationOption.setSelected(l.getModelRotationOptionState());
+        modelRotationOption.addChangeListener(l);
+        reductionOptions.add(modelRotationOption);
+        
+        JCheckBoxMenuItem autarkyReductionOption = new JCheckBoxMenuItem("Autarky Reduction");
+        autarkyReductionOption.setSelected(l.getAutarkyReductionOptionState());
+        autarkyReductionOption.addChangeListener(l);
+        reductionOptions.add(autarkyReductionOption);
+        
+        add(reductionOptions);
+        
+        
         addSeparator();
         
         JMenuItem findAutarkiesItem = new JMenuItem("Reduce to Lean Kernel");
@@ -303,7 +319,7 @@ public class MUCStepViewContextMenu extends JPopupMenu
         add(findAutarkiesItem);
     }
     
-    public static JPopupMenu getMenu(ActionListener l, MUCStepViewPanel view, MUCInstance kahina, int listIndex)
+    public static JPopupMenu getMenu(MUCStepViewListener l, MUCStepViewPanel view, MUCInstance kahina, int listIndex)
     {
         return new MUCStepViewContextMenu(l, view, kahina, listIndex);
     }
