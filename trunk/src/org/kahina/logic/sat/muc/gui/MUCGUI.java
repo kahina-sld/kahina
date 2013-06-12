@@ -267,9 +267,17 @@ public class MUCGUI extends KahinaGUI
     
     public KahinaPerspective generateInitialPerspective()
     {
-        //TODO: load last perspective instead of only default perspective from XML
-        InputStream xmlStream = new BufferedInputStream(MUCGUI.class.getResourceAsStream("perspective-musticca-default.xml"));
-        return KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement());
+        MetaLearningMode learningMode = kahina.getMetaLearningMode();
+        if (learningMode == MetaLearningMode.BLOCK_PARTITION || learningMode == MetaLearningMode.RECURSIVE_BLOCKS)
+        {
+            InputStream xmlStream = new BufferedInputStream(MUCGUI.class.getResourceAsStream("perspective-musticca-extended.xml"));
+            return KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement());
+        }
+        else
+        {
+            InputStream xmlStream = new BufferedInputStream(MUCGUI.class.getResourceAsStream("perspective-musticca-default.xml"));
+            return KahinaPerspective.importXML(XMLUtil.parseXMLStream(xmlStream, false).getDocumentElement());
+        }
     }
     
     public void displayStepContent(int stepID)

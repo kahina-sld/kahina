@@ -49,12 +49,12 @@ public class DescendingRelevanceHeuristic extends ReductionHeuristic
     public void deliverProof(ResolutionProofTree proof)
     {
         relevanceList = proof.getVarRelevanceOrdering();
-        /*System.err.println("New relevance list for DescendingRelevanceHeuristics: ");
+        System.err.println("New relevance list for DescendingRelevanceHeuristics: ");
         for (int var : relevanceList)
         {
             System.err.print(var + ",");
         }
-        System.err.println();*/
+        System.err.println();
         needsProof = false;
     }
     
