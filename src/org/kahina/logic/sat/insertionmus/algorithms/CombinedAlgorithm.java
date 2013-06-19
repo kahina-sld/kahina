@@ -61,9 +61,9 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 			FreezeFile.createFreezeFile(freeze, freezeFile, this.instance.getHighestVar()+1);
 			
 			//TODO create instance File within the constructor
-			MiniSAT.solve(this.instanceFile, this.proofFile, this.resultFile, freezeFile);
+			MiniSAT.solve(this.instanceFile, this.data.proofFile, this.data.resultFile, freezeFile);
 			
-			if (MiniSAT.wasUnsatisfiable(resultFile)){
+			if (MiniSAT.wasUnsatisfiable(data.resultFile)){
 				shrink();
 				//TODO MUS speichern
 				//TODO Map erweitern
@@ -77,7 +77,7 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	private boolean solve(CnfSatInstance instance) throws TimeoutException, InterruptedException, IOException {
 		File cnfFile = new File("tmp.cnf");
 		DimacsCnfOutput.writeDimacsCnfFile(cnfFile.getName(), mapInstance);
-		return MiniSAT.isSatisfiable(cnfFile, resultFile);
+		return MiniSAT.isSatisfiable(cnfFile, data.resultFile);
 	}
 
 	/*
@@ -85,7 +85,7 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	 */
 	private void getMap() throws IOException {
 //		CnfSatInstance map = DimacsCnfParser.parseDimacsCnfFile(result.getName());
-		ResultReader.readAssignment(this.freeze, resultFile);
+		ResultReader.readAssignment(this.freeze, data.resultFile);
 	}
 
 	@Override
@@ -99,6 +99,12 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	public void newInstance(String path) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean nextStep() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 		
 }

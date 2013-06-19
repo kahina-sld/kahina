@@ -3,59 +3,81 @@ package org.kahina.logic.sat.insertionmus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.kahina.core.KahinaStep;
+import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
+import org.kahina.logic.sat.insertionmus.algorithms.AlgorithmData;
 
 public class MUCStep extends KahinaStep
 {
     //IC = interesting constraint
     
     //state data (should be kept as a sorted structure to allow quick identity check!)
-    private final List<Integer> uc; //current unsatisfiable core (not necessarily minimal)
+//    private final List<Integer> uc; //current unsatisfiable core (not necessarily minimal)
     
     //for each IC, store the state that we arrive in after removing it
     //null = unchecked (the links has not yet been established
     //-1 = we already know that removing the IC leads to a satisfiable clause set
     //otherwise: result is the ID of the step we end up in after removing the IC
-    private Map<Integer,Integer> reductionTable; 
+//    private Map<Integer,Integer> reductionTable; 
     
     //makes it possible to annotate UCs with satisfiability information
     boolean satisfiable;
-    
-    public MUCStep()
-    {
-        uc =  new ArrayList<Integer>();
-        reductionTable = new ConcurrentSkipListMap<Integer,Integer>();
-        satisfiable = false;
-    }
 
-    public List<Integer> getUc()
+//	private AlgorithmData data;
+
+	private AbstractAlgorithm alg;
+    
+//    public MUCStep(AlgorithmData data)
+//    {
+//    	this.data = data;
+//    	
+//
+//        uc =  new ArrayList<Integer>();
+////        reductionTable = new ConcurrentSkipListMap<Integer,Integer>();
+//        satisfiable = false;
+//    }
+
+    public MUCStep(AbstractAlgorithm alg) {
+//    	this.data = alg.data;
+    	this.alg = alg;
+//        uc =  new ArrayList<Integer>();
+//      reductionTable = new ConcurrentSkipListMap<Integer,Integer>();
+      satisfiable = false;
+	}
+
+	public int getSize()
     {
-        return uc;
+        return alg.data.M.size();
     }
     
     public int getStepType()
     {
-        int numberRed = 0;
-        boolean hasLightGreen = false;
-        for (int clauseID : uc)
-        {
-            Integer status = reductionTable.get(clauseID);
-//            if (status == null) return MUCStepType.UNKNOWN;
-            if (status == -1) numberRed++;
-            if (status == -2) hasLightGreen = true;
-        }
-        if (numberRed == uc.size())
-        {
-            //the status for a MUC
-            return 2;
-        }
-        if (hasLightGreen)
-        {
-            return 3;
-        }
+//        int numberRed = 0;
+//        boolean hasLightGreen = false;
+//        for (int clauseID : uc)
+//        {
+//            Integer status = reductionTable.get(clauseID);
+////            if (status == null) return MUCStepType.UNKNOWN;
+//            if (status == -1) numberRed++;
+//            if (status == -2) hasLightGreen = true;
+//        }
+//        if (numberRed == uc.size())
+//        {
+//            //the status for a MUC
+//            return 2;
+//        }
+//        if (hasLightGreen)
+//        {
+//            return 3;
+//        }
+    	if (alg.data.isMUS()){
+    		return 2;
+    	}
         return 1;
     }
 //
@@ -69,35 +91,43 @@ public class MUCStep extends KahinaStep
 //    }
     
     //returns null if we have no information yet!
-    public Integer getRemovalLink(int index)
-    {
-        return this.reductionTable.get(index);
-    }
-    
-    public void setRemovalLink(int index, int link)
-    {
-        this.reductionTable.put(index,link);
-    }
+//    public Integer getRemovalLink(int index)
+//    {
+//        return this.reductionTable.get(index);
+//    }
+//    
+//    public void setRemovalLink(int index, int link)
+//    {
+//        this.reductionTable.put(index,link);
+//    }
     
     //bit of a suboptimal hash function, but very easy to "compute"
+    @Override
     public int hashCode()
     {
-        return uc.size() * uc.get(0);
+    	if (alg.data.M.size() > 0){
+    		return this.alg.data.M.size()*this.alg.data.instanceIDs.size()*this.alg.data.M.first();
+    	}else{
+    		return this.alg.data.instanceIDs.size();
+    	}
     }
-    
+//    
+    @Override
     public boolean equals(Object o)
     {
         if (o instanceof MUCStep)
         {
-            List<Integer> otherUC = ((MUCStep) o).getUc();
-            if (otherUC.size() == uc.size())
-            {
-                for (int ic : otherUC)
-                {
-                    if (!uc.contains(ic)) return false;
-                }
-                return true;
-            }
+//            List<Integer> otherUC = ((MUCStep) o).getUc();
+//            if (otherUC.size() == uc.size())
+//            {
+//                for (int ic : otherUC)
+//                {
+//                    if (!uc.contains(ic)) return false;
+//                }
+//                return true;
+//            }
+        	MUCStep step = (MUCStep)o;
+        	return this.alg.data.equals(step.alg.data);
         }
         return false;
     }
@@ -111,6 +141,10 @@ public class MUCStep extends KahinaStep
 //    {
 //        return satisfiable;
 //    }
+
+	public ConcurrentSkipListSet<Integer> getUc() {
+		return alg.data.instanceIDs;
+	}
     
 //    public void setSatisfiable(boolean satisfiable)
 //    {
@@ -127,8 +161,8 @@ public class MUCStep extends KahinaStep
      *         5 if a part of the block is guaranteed fall away (some green -> light green, selectable),
      *         0 otherwise (-> block, selectable)
      */
-    public int relationToBlock(TreeSet<Integer> block)
-    {
+//    public int relationToBlock(TreeSet<Integer> block)
+//    {
 //        int numRed = 0;
 //        int numGreen = 0;
 //        int numOut = 0;
@@ -171,6 +205,6 @@ public class MUCStep extends KahinaStep
 //        {
 //            return 5;
 //        }
-        return 0;
-    }
+//        return 0;
+//    }
 }

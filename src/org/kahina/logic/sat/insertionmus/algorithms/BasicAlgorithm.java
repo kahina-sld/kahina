@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
@@ -23,13 +24,8 @@ import org.kahina.logic.sat.muc.io.MUCExtension;
  */
 public class BasicAlgorithm extends AbstractAlgorithm{
 
-	protected CnfSatInstance instance; // The instance
 
-	public TreeSet<Integer> instanceIDs = new TreeSet<Integer>();
-	protected TreeSet<Integer> M = new TreeSet<Integer>();// will become the MUS
-	protected TreeSet<Integer> S = new TreeSet<Integer>(); // A subset of the instance, it is the subset currently looked at.
 
-	protected int[] freeze; //variables that should be freezed are marked with 1;
 //		static String path = "../cnf/aim-100-1_6-no-4.cnf";
 //	static String path = "../cnf/examples/barrel2.cnf";
 	static String path = "smallCNF/aim-50-1_6-no-1.cnf";
@@ -41,23 +37,9 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 
 	protected boolean finished = false;
 
-	File instanceFile;
 
 	public BasicAlgorithm(CnfSatInstance instance){
-		this.instance = instance;
-		for (int i = 0; i < instance.getSize(); i++){
-			instanceIDs.add(i);
-		}
-
-		MUCStatistics stat = new MUCStatistics();
-		stat.instanceName = path;
-
-		MUCExtension.extendCNFBySelVars(new File(path), new File("output.cnf"), stat); 
-
-		this.instanceFile  = new File("output.cnf");
-
-		freeze = new int[this.instance.getSize()];
-		Arrays.fill(freeze, FreezeFile.FREEZE);
+		this.newInstance(instance);
 	}
 	
 	public BasicAlgorithm() {
@@ -85,38 +67,39 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 	public boolean selectNext(int clauseID) throws TimeoutException, IOException{
 		//M U S are always freezed
 
-		this.instanceIDs.remove(clauseID);
-		S.add(clauseID);
+		this.data.instanceIDs.remove(clauseID);
+		data.S.add(clauseID);
 
-		freeze[clauseID] = FreezeFile.UNFREEZE;
+		data.freeze[clauseID] = FreezeFile.UNFREEZE;
 
 
 		File freezeFile = new File("freeze"+ Thread.currentThread().getId() + ".fr");
 
-		FreezeFile.createFreezeFile(freeze, freezeFile, instance.getHighestVar()+1);
+		FreezeFile.createFreezeFile(data.freeze, freezeFile, data.instance.getHighestVar()+1);
 		File resultFile = new File("result");
-		MiniSAT.solve(this.instanceFile, resultFile, freezeFile);
+		MiniSAT.solve(this.data.instanceFile, resultFile, freezeFile);
 		freezeFile.delete();
 
 		if (MiniSAT.wasUnsatisfiable(resultFile)){
 			//if M united S is not SAT then the clause is part of the MUS
 			System.out.println("UNSAT");
-			M.add(clauseID);
-			S.remove(clauseID);
+			data.M.add(clauseID);
+			data.S.remove(clauseID);
 
-			for (int f: S){
-				freeze[f] = FreezeFile.FREEZE;
+			for (int f: data.S){
+				data.freeze[f] = FreezeFile.FREEZE;
 			}
 
-			this.instanceIDs = S;
-			this.S = new TreeSet<Integer>();
+			this.data.instanceIDs = data.S;
+			this.data.S = new ConcurrentSkipListSet<Integer>();
 			
 
 			
-			FreezeFile.createFreezeFile(freeze, freezeFile, instance.getHighestVar()+1);
-			MiniSAT.solve(this.instanceFile, new File("proof") , resultFile, freezeFile);
+			FreezeFile.createFreezeFile(data.freeze, freezeFile, data.instance.getHighestVar()+1);
+			MiniSAT.solve(this.data.instanceFile, new File("proof") , resultFile, freezeFile);
 			freezeFile.delete();
 			if (MiniSAT.wasUnsatisfiable(resultFile)){
+				this.data.isMus = true;
 				return true;
 			}
 		}
@@ -126,9 +109,10 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 //				return true;
 //			}
 //		}
-		if (instanceIDs.size() == 0){
+		if (data.instanceIDs.size() == 0){
 			//if the instance is empty then we are done.
 //			freeze[clauseID] = FreezeFile.FREEZE;
+			this.data.isMus = true;
 			return true;
 		}
 		return false;
@@ -147,7 +131,7 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 		BasicAlgorithm alg = new BasicAlgorithm(instance);
 
 		//		TreeSet<Integer> copy = (TreeSet<Integer>) alg.instanceIDs.clone();
-		while (!alg.selectNext(alg.instanceIDs.pollFirst())){
+		while (!alg.selectNext(alg.data.instanceIDs.pollFirst())){
 			//			System.out.println(alg.instanceIDs.size());
 		};
 		System.out.println("Found a MUS");
@@ -160,8 +144,8 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 		//		DimacsCnfOutput.writeDimacsCnfFile("MUS.tmp.cnf", alg.getMUS());
 
 		ArrayList<Integer> clauseIDs = new ArrayList<Integer>();
-		for (int i = 0; i < alg.freeze.length; i++){
-			if (alg.freeze[i] == FreezeFile.UNFREEZE){
+		for (int i = 0; i < alg.data.freeze.length; i++){
+			if (alg.data.freeze[i] == FreezeFile.UNFREEZE){
 				clauseIDs.add(i+1);
 				//				System.out.println(i+1);
 			}
@@ -171,20 +155,20 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 	@Override
 	public CnfSatInstance findAMuse(){
 		try {
-			while (!selectNext(instanceIDs.pollFirst())){
+			while (!selectNext(data.instanceIDs.pollFirst())){
 				
 			}
 
 			ArrayList<Integer> clauseIDs = new ArrayList<Integer>();
-			for (int i = 0; i < freeze.length; i++){
-				if (freeze[i] == FreezeFile.UNFREEZE){
+			for (int i = 0; i < data.freeze.length; i++){
+				if (data.freeze[i] == FreezeFile.UNFREEZE){
 					clauseIDs.add(i+1);
 					//				System.out.println(i+1);
 				}
 			}
 //			DimacsCnfOutput.writeDimacsCnfFile("MUS.cnf", instance.selectClauses(clauseIDs));
 
-			return instance.selectClauses(clauseIDs);
+			return data.instance.selectClauses(clauseIDs);
 			
 			
 		} catch (TimeoutException e) {
@@ -198,9 +182,9 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 	}
 	@Override
 	public void newInstance(String path) {
-		this.instance = DimacsCnfParser.parseDimacsCnfFile(path);
-		for (int i = 0; i < instance.getSize(); i++){
-			instanceIDs.add(i);
+		this.data.instance = DimacsCnfParser.parseDimacsCnfFile(path);
+		for (int i = 0; i < data.instance.getSize(); i++){
+			data.instanceIDs.add(i);
 		}
 
 		MUCStatistics stat = new MUCStatistics();
@@ -208,9 +192,23 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 
 		MUCExtension.extendCNFBySelVars(new File(path), new File("output.cnf"), stat); 
 
-		this.instanceFile  = new File("output.cnf");
+		this.data.instanceFile = new File("output.cnf");
 
-		freeze = new int[this.instance.getSize()];
-		Arrays.fill(freeze, FreezeFile.FREEZE);
+		data.freeze = new int[this.data.instance.getSize()];
+		Arrays.fill(data.freeze, FreezeFile.FREEZE);
+	}
+
+	@Override
+	public boolean nextStep() {
+		try {
+			return this.selectNext(data.instanceIDs.pollFirst());
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
 	}
 }

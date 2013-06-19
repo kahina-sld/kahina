@@ -15,7 +15,9 @@ import java.util.concurrent.TimeoutException;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
 import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.AscendingIndexHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.AverageVariableOccourrenceHeuristic;
 import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.ISortingHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.InvertAHeuristic;
 import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.LargeClausesFirstHeuristic;
 import org.kahina.logic.sat.insertionmus.io.ResultReader;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
@@ -81,12 +83,6 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 		this.M = new TreeSet<Integer>();// will become the MUS
 		this.S = new TreeSet<Integer>();
 
-//		this.heuristic = new LargeClausesFirstHeuristic(instance);
-		//		this.heuristic =  new InvertAHeuristic(new LargeClausesFirstHeuristic(instance));
-				this.heuristic = new AscendingIndexHeuristic();
-		//		this.heuristic = new InvertAHeuristic(new AscendingIndexHeuristic());
-		//		this.heuristic = new AverageVariableOccourrenceHeuristic(instance);
-		//		this.heuristic = new InvertAHeuristic(new AverageVariableOccourrenceHeuristic(instance));
 		this.instanceIDs = new LinkedList<Integer>();		
 		//		this.instanceIDs = new 
 		this.instance = DimacsCnfParser.parseDimacsCnfFile(path);
@@ -94,6 +90,13 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 			instanceIDs.add(i);
 			//			instanceIDs.add(e
 		}
+
+//		this.heuristic =  new InvertAHeuristic(new LargeClausesFirstHeuristic(instance));
+//		this.heuristic = new AscendingIndexHeuristic();
+//		this.heuristic = new InvertAHeuristic(new AscendingIndexHeuristic());
+//		this.heuristic = new AverageVariableOccourrenceHeuristic(instance);
+//		this.heuristic = new InvertAHeuristic(new AverageVariableOccourrenceHeuristic(instance));
+		this.heuristic = new LargeClausesFirstHeuristic(instance);
 		java.util.Collections.sort(instanceIDs, this.heuristic.getComparator());
 
 
@@ -144,6 +147,9 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 				FreezeFile.createFreezeFile(freeze, freezeFile, instance.getHighestVar()+1, clause);
 
 				MiniSAT.solve(this.instanceFile , resultFile, freezeFile);
+				
+			
+				
 				if (!MiniSAT.wasUnsatisfiable(resultFile)){
 					//test if this clause removes some MUS candidats
 					ArrayList<Integer> removeLater = new ArrayList<Integer>();
@@ -185,8 +191,8 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 
 			}else{
 
-				M.add(clauseIDCandidat); 
-				S.remove(clauseIDCandidat);
+//				M.add(clauseIDCandidat); 
+//				S.remove(clauseIDCandidat);
 			}
 			//			System.out.println(this.instanceIDs);
 			this.instanceIDs.clear();
@@ -284,6 +290,13 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 			//			System.out.println(i);
 			clauseIDs.add(i + 1);
 		}
+		System.out.println(this.M);
 		return instance.selectClauses(clauseIDs);
+	}
+
+	@Override
+	public boolean nextStep() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

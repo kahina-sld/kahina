@@ -1,6 +1,7 @@
 package org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics;
 
 import java.util.Comparator;
+import java.util.List;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 

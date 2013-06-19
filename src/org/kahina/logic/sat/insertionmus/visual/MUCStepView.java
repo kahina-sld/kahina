@@ -39,7 +39,7 @@ public class MUCStepView extends KahinaSatInstanceListView
     {
         if (currentStep != null)
         {
-            if (lineID >= currentStep.getUc().size())
+            if (lineID >= currentStep.getSize())
             {
                 //TODO: this happens twice until long term solution: implement FastListModel
                 //System.err.println("WARNING: had to prevent getLineStatus(" + lineID + ")");
@@ -104,12 +104,13 @@ public class MUCStepView extends KahinaSatInstanceListView
         else
         {
             currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
+            System.out.println(currentStep);
             for (int ic : currentStep.getUc())
             {
                 StringBuilder s = new StringBuilder();
                 s.append(ic);
                 s.append(": {");
-                for (Integer literal : model.getClause(ic - 1))
+                for (Integer literal : model.getClause(ic))
                 {
                     s.append(kahina.getSatInstance().getSymbolForLiteral(literal));
                     s.append(',');
