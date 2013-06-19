@@ -12,8 +12,11 @@ import org.kahina.core.KahinaState;
 import org.kahina.core.control.KahinaController;
 import org.kahina.core.data.dag.ColoredPathDAG;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
+import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.model.CompleteAssignment;
+import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
+import org.kahina.logic.sat.insertionmus.algorithms.BasicAlgorithm;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.MUCStepType;
@@ -34,10 +37,12 @@ public class MUCState extends KahinaState
 //    MUCStatistics stat;
     MiniSATFiles files;
     
-    MUCMetaInstance metaInstance;
-    BlocklessBlockHandler blocklessBlocks;
-    PartitionBlockHandler partitionBlocks;
-    RecursiveBlockHandler recursiveBlocks;
+//    MUCMetaInstance metaInstance;
+//    BlocklessBlockHandler blocklessBlocks;
+//    PartitionBlockHandler partitionBlocks;
+//    RecursiveBlockHandler recursiveBlocks;
+    
+    AbstractAlgorithm algorithm = new BasicAlgorithm();
     
     ColoredPathDAG decisionGraph;
     UCReducerList reducers;
@@ -51,23 +56,23 @@ public class MUCState extends KahinaState
         super(kahina);
         this.kahina = kahina;
         this.satInstance = null;
-        this.metaInstance = null;
-        this.blocklessBlocks = null;
-        this.partitionBlocks = null;
-        this.recursiveBlocks = null;
+//        this.metaInstance = null;
+//        this.blocklessBlocks = null;
+//        this.partitionBlocks = null;
+//        this.recursiveBlocks = null;
 //        this.stat = null;
         this.files = null;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
     }
     
-    public MUCState(MUCInstance kahina, CnfSatInstance satInstance, MiniSATFiles files)
+    public MUCState(MUCInstance kahina, CnfSatInstance satInstance)
     {
         super(kahina);
         this.kahina = kahina;
         this.satInstance = satInstance;
 
 
-        this.files = files;
+//        this.files = files;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
     }
     
@@ -82,11 +87,15 @@ public class MUCState extends KahinaState
     public void reset()
     {
         this.satInstance = null;
-        this.metaInstance = null;
-        this.blocklessBlocks = null;  
-        this.partitionBlocks = null;
-        this.recursiveBlocks = null;
+        algorithm = new BasicAlgorithm();
+//        this.metaInstance = null;
+//        this.blocklessBlocks = null;  
+//        this.partitionBlocks = null;
+//        this.recursiveBlocks = null;
 //        this.stat = null;
+        if (this.files != null){
+        	this.files.deleteTempFiles();
+        }
         this.files = null;
         this.nodeForStep = new HashMap<MUCStep,Integer>();
         initialize();
@@ -105,14 +114,32 @@ public class MUCState extends KahinaState
         return retrieve(MUCStep.class, stepID);
     }
 
-	public void setSatInstance(CnfSatInstance satInstance2) {
-		// TODO Auto-generated method stub
-		
+	public void setSatInstance(CnfSatInstance satInstance) {
+		this.satInstance = satInstance;
+		this.algorithm.newInstance(satInstance);
 	}
 
 	public void setFiles(MiniSATFiles files2) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("setFiles, TODO");
 	}
 
+	
+	static int counter = 0;
+	public void newStep(MUCStep step, int parrentID){		
+        decisionGraph.addNode(counter, "Init: " + step.getSize() + "", MUCStepType.UNKNOWN);
+        kahina.dispatchEvent(new KahinaSelectionEvent(counter));
+        kahina.dispatchEvent(new KahinaUpdateEvent(counter));
+        store(counter, step);
+        counter++;
+	}
+
+	public CnfSatInstance getSatInstance() {
+		return this.satInstance;
+	}
+
+	public ColoredPathDAG getDecisionGraph() {
+		// TODO Auto-generated method stub
+		return this.decisionGraph;
+	}
 }

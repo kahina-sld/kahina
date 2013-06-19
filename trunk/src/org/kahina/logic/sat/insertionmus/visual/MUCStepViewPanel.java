@@ -39,13 +39,13 @@ public class MUCStepViewPanel extends KahinaSatInstanceListViewPanel
         {
             List<Integer> selectedClauses = e.getClauseIDs();
             getList().getSelectionModel().clearSelection();
-            for (int i = 0; i < view.currentStep.getUc().size(); i++)
-            {
-                if (selectedClauses.contains(view.currentStep.getUc().get(i)))
-                {
-                    getList().getSelectionModel().addSelectionInterval(i, i);
-                }
-            }
+//            for (int i = 0; i < view.currentStep.getSice().size(); i++)
+//            {
+//                if (selectedClauses.contains(view.currentStep.getSice().get(i)))
+//                {
+//                    getList().getSelectionModel().addSelectionInterval(i, i);
+//                }
+//            }
             getList().repaint();
         }
     }
@@ -60,8 +60,8 @@ public class MUCStepViewPanel extends KahinaSatInstanceListViewPanel
     {
         if (view.currentStep != null)
         {
-            getList().setSelectionInterval(0, view.currentStep.getUc().size() - 1);
-            getList().repaint();
+//            getList().setSelectionInterval(0, view.currentStep.getSice().size() - 1);
+//            getList().repaint();
         }
     }
 }

@@ -47,14 +47,14 @@ public class MUCGUI extends KahinaGUI
 {
     private static final boolean VERBOSE = false;
     
-    protected KahinaSatInstanceListView satInstanceView;
-    protected KahinaSatInstanceListView metaInstanceView;
+//    protected KahinaSatInstanceListView satInstanceView;
+//    protected KahinaSatInstanceListView metaInstanceView;
     protected ColoredPathDAGView decisionGraphView;
     //protected MUCStepController stepController;
-    protected PartitionBlockView blockListView;
-    protected RecursiveBlockView blockTreeView;
+//    protected PartitionBlockView blockListView;
+//    protected RecursiveBlockView blockTreeView;
     protected MUCStepView mucView;
-    protected UCReducerListView reducerListView;
+//    protected UCReducerListView reducerListView;
     
     private MUCInstance kahina;
     
@@ -78,19 +78,19 @@ public class MUCGUI extends KahinaGUI
         
         kahina.registerInstanceListener("clauseSelection", this);
         
-        satInstanceView = new KahinaSatInstanceListView(kahina);
+//        satInstanceView = new KahinaSatInstanceListView(kahina);
 //        if (isInGroupMode())
 //        {
 //            satInstanceView.setTitle("Group SAT Instance");
 //        }
 //        else
-//        {
-            satInstanceView.setTitle("SAT Instance");
-//        }
-        kahina.registerInstanceListener(KahinaEventTypes.UPDATE, satInstanceView);
-        views.add(satInstanceView);
-        livingViews.add(satInstanceView);
-        varNameToView.put("satInstance", satInstanceView);
+////        {
+//            satInstanceView.setTitle("SAT Instance");
+////        }
+//        kahina.registerInstanceListener(KahinaEventTypes.UPDATE, satInstanceView);
+//        views.add(satInstanceView);
+//        livingViews.add(satInstanceView);
+//        varNameToView.put("satInstance", satInstanceView);
         
         
         
@@ -155,9 +155,9 @@ public class MUCGUI extends KahinaGUI
 //        reducerListView.addHeuristic(AscendingRelevanceHeuristic.class);
 //        reducerListView.addHeuristic(CenteredRelevanceHeuristic.class);
 //        reducerListView.addHeuristic(DescendingRelevanceHeuristic.class);
-        views.add(reducerListView);
-        livingViews.add(reducerListView);
-        varNameToView.put("reducers", reducerListView);
+//        views.add(reducerListView);
+//        livingViews.add(reducerListView);
+//        varNameToView.put("reducers", reducerListView);
         
         //decisionGraphView.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
         //decisionGraphView.getConfig().setAutoscrollPolicy(KahinaTreeViewOptions.NO_AUTOSCROLL);
@@ -171,12 +171,13 @@ public class MUCGUI extends KahinaGUI
     {
         if (VERBOSE) System.err.println("MUCGUI.displayMainViews()");
         MUCState state = (MUCState) kahina.getState();
-//        decisionGraphView.display(state.getDecisionGraph());
+        decisionGraphView.display(state.getDecisionGraph());
 //        reducerListView.display(state.getReducers());
-//        CnfSatInstance sat = state.getSatInstance();
+        CnfSatInstance sat = state.getSatInstance();
+        System.out.println(sat);
 //        if (VERBOSE) System.err.println("  state.getSatInstance() = " + sat);
-//        if (sat != null)
-//        {
+        if (sat != null)
+        {
 //            if (isInGroupMode())
 //            {
 //                //TODO: treat group SAT instances in list view as well!
@@ -204,8 +205,8 @@ public class MUCGUI extends KahinaGUI
 //                blockTreeView.display(state.getRecursiveBlocks());
 //            }
 //            if (VERBOSE) System.err.println("    mucView.display(" + sat + ")");
-//            mucView.display(sat);
-//        }
+            mucView.display(sat);
+        }
 //        else
 //        {
 //            if (VERBOSE) System.err.println("    displaying \"No instance loaded\" messages");
@@ -269,6 +270,7 @@ public class MUCGUI extends KahinaGUI
         {
             super.processEvent(e);
         }
+        System.out.println("Gui " +e);
     }
     
     public void processEvent(ClauseSelectionEvent e)

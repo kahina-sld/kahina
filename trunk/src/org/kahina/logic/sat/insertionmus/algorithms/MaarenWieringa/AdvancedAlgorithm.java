@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
@@ -30,9 +31,9 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 
 	protected CnfSatInstance instance; // The instance
 
-	protected TreeSet<Integer> instanceIDs = new TreeSet<Integer>();
+	protected ConcurrentSkipListSet<Integer> instanceIDs = new ConcurrentSkipListSet<Integer>();
 	protected TreeSet<Integer> M = new TreeSet<Integer>();// will become the MUS
-	protected TreeSet<Integer> S = new TreeSet<Integer>(); // A subset of the
+	protected ConcurrentSkipListSet<Integer> S = new ConcurrentSkipListSet<Integer>(); // A subset of the
 	// instance, it is
 	// the subset
 	// currently looked
@@ -82,7 +83,7 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 		File resultFile = new File("result");
 
 		while (!instanceIDs.isEmpty()) {
-			S = new TreeSet<Integer>();
+			S = new ConcurrentSkipListSet<Integer>();
 			int clauseIDCandidat = -1;
 			// int[] oldFreeze = this.freeze.clone();
 			Arrays.fill(freeze, FreezeFile.FREEZE);
@@ -209,9 +210,9 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 	@Override
 	public void newInstance(String path) {
 		this.M = new TreeSet<Integer>();// will become the MUS
-		this.S = new TreeSet<Integer>();
+		this.S = new ConcurrentSkipListSet<Integer>();
 
-		this.instanceIDs = new TreeSet<Integer>();
+		this.instanceIDs = new ConcurrentSkipListSet<Integer>();
 
 		this.instance = DimacsCnfParser.parseDimacsCnfFile(path);
 		for (int i = 0; i < instance.getSize(); i++) {
@@ -229,6 +230,12 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 
 		freeze = new int[this.instance.getSize()];
 		Arrays.fill(freeze, FreezeFile.FREEZE);
+	}
+
+	@Override
+	public boolean nextStep() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
