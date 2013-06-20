@@ -142,8 +142,9 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 	private void addFirstStep() {
 		System.out.println("addFirstStep");
 //		AlgorithmData data = new AlgorithmData();
-		AbstractAlgorithm alg = new BasicAlgorithm(this.satInstance);
-		MUCStep step = new MUCStep(alg);
+		AlgorithmData data = new AlgorithmData(this.satInstance);
+		AbstractAlgorithm alg = new BasicAlgorithm(data);
+		MUCStep step = new MUCStep(data, alg);
 		this.state.newStep(step, -1);
 	}
 
@@ -186,7 +187,8 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 		System.err.println("Loading SAT instance at " + satFile.getAbsolutePath());
 		System.err.println("  Instance Size: (" + satInstance.getSize() + "," + satInstance.getHighestVar() + ")");
 
-		ba = new BasicAlgorithm(satInstance);
+		AlgorithmData data = new AlgorithmData(satInstance);
+		ba = new BasicAlgorithm(data);
 		this.state = createState();
 		state.setSatInstance(satInstance);
 //		this.addFirstStep();

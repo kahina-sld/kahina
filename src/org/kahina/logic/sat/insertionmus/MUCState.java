@@ -16,6 +16,7 @@ import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.model.CompleteAssignment;
 import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
+import org.kahina.logic.sat.insertionmus.algorithms.AlgorithmData;
 import org.kahina.logic.sat.insertionmus.algorithms.BasicAlgorithm;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
@@ -116,7 +117,8 @@ public class MUCState extends KahinaState
 
 	public void setSatInstance(CnfSatInstance satInstance) {
 		this.satInstance = satInstance;
-		this.algorithm.newInstance(satInstance);
+		AlgorithmData data = new AlgorithmData(satInstance);
+		this.algorithm.setData(data);
 	}
 
 	public void setFiles(MiniSATFiles files2) {
@@ -128,6 +130,7 @@ public class MUCState extends KahinaState
 	static int counter = 0;
 	public void newStep(MUCStep step, int parrentID){		
         decisionGraph.addNode(counter, "Init: " + step.getSize() + "", MUCStepType.UNKNOWN);
+        step.setID(counter);
         kahina.dispatchEvent(new KahinaSelectionEvent(counter));
         kahina.dispatchEvent(new KahinaUpdateEvent(counter));
         store(counter, step);

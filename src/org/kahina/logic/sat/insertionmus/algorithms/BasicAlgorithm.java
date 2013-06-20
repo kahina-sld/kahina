@@ -38,8 +38,8 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 	protected boolean finished = false;
 
 
-	public BasicAlgorithm(CnfSatInstance instance){
-		this.newInstance(instance);
+	public BasicAlgorithm(AlgorithmData data){
+		this.data = data;
 	}
 	
 	public BasicAlgorithm() {
@@ -128,7 +128,9 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 
 		CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(path);
 
-		BasicAlgorithm alg = new BasicAlgorithm(instance);
+		BasicAlgorithm alg = new BasicAlgorithm();
+		AlgorithmData data = new AlgorithmData(instance);
+		alg.setData(data);
 
 		//		TreeSet<Integer> copy = (TreeSet<Integer>) alg.instanceIDs.clone();
 		while (!alg.selectNext(alg.data.instanceIDs.pollFirst())){
@@ -180,23 +182,23 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 		}
 		return null;
 	}
-	@Override
-	public void newInstance(String path) {
-		this.data.instance = DimacsCnfParser.parseDimacsCnfFile(path);
-		for (int i = 0; i < data.instance.getSize(); i++){
-			data.instanceIDs.add(i);
-		}
-
-		MUCStatistics stat = new MUCStatistics();
-		stat.instanceName = path;
-
-		MUCExtension.extendCNFBySelVars(new File(path), new File("output.cnf"), stat); 
-
-		this.data.instanceFile = new File("output.cnf");
-
-		data.freeze = new int[this.data.instance.getSize()];
-		Arrays.fill(data.freeze, FreezeFile.FREEZE);
-	}
+//	@Override
+//	public void newInstance(String path) {
+//		this.data.instance = DimacsCnfParser.parseDimacsCnfFile(path);
+//		for (int i = 0; i < data.instance.getSize(); i++){
+//			data.instanceIDs.add(i);
+//		}
+//
+//		MUCStatistics stat = new MUCStatistics();
+//		stat.instanceName = path;
+//
+//		MUCExtension.extendCNFBySelVars(new File(path), new File("output.cnf"), stat); 
+//
+//		this.data.instanceFile = new File("output.cnf");
+//
+//		data.freeze = new int[this.data.instance.getSize()];
+//		Arrays.fill(data.freeze, FreezeFile.FREEZE);
+//	}
 
 	@Override
 	public boolean nextStep() {
@@ -211,4 +213,19 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 		}
 		return true;
 	}
+
+	@Override
+	public void nextStep(int clauseIndex){
+		data.instanceIDs.remove(clauseIndex);
+		try {
+			this.selectNext(clauseIndex);
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+	}
+
 }
