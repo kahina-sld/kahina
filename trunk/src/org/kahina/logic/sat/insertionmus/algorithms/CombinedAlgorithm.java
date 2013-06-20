@@ -61,7 +61,7 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 			FreezeFile.createFreezeFile(freeze, freezeFile, this.instance.getHighestVar()+1);
 			
 			//TODO create instance File within the constructor
-			MiniSAT.solve(this.instanceFile, this.data.proofFile, this.data.resultFile, freezeFile);
+			MiniSAT.solve(this.instanceFile, this.data.resultFile, freezeFile);
 			
 			if (MiniSAT.wasUnsatisfiable(data.resultFile)){
 				shrink();
@@ -95,16 +95,17 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	}
 
 
-	@Override
-	public void newInstance(String path) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public boolean nextStep() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void nextStep(int clauseIndex) {
+		// TODO Auto-generated method stub
+		
 	}
 		
 }

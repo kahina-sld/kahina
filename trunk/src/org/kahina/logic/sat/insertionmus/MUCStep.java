@@ -28,9 +28,12 @@ public class MUCStep extends KahinaStep
     //makes it possible to annotate UCs with satisfiability information
     boolean satisfiable;
 
-//	private AlgorithmData data;
+	private AlgorithmData data;
 
 	private AbstractAlgorithm alg;
+
+	private int ID;
+    
     
 //    public MUCStep(AlgorithmData data)
 //    {
@@ -42,8 +45,8 @@ public class MUCStep extends KahinaStep
 //        satisfiable = false;
 //    }
 
-    public MUCStep(AbstractAlgorithm alg) {
-//    	this.data = alg.data;
+    public MUCStep(AlgorithmData data, AbstractAlgorithm alg) {
+    	this.data = data;
     	this.alg = alg;
 //        uc =  new ArrayList<Integer>();
 //      reductionTable = new ConcurrentSkipListMap<Integer,Integer>();
@@ -52,7 +55,7 @@ public class MUCStep extends KahinaStep
 
 	public int getSize()
     {
-        return alg.data.M.size();
+        return data.M.size();
     }
     
     public int getStepType()
@@ -75,7 +78,7 @@ public class MUCStep extends KahinaStep
 //        {
 //            return 3;
 //        }
-    	if (alg.data.isMUS()){
+    	if (data.isMUS()){
     		return 2;
     	}
         return 1;
@@ -105,10 +108,10 @@ public class MUCStep extends KahinaStep
     @Override
     public int hashCode()
     {
-    	if (alg.data.M.size() > 0){
-    		return this.alg.data.M.size()*this.alg.data.instanceIDs.size()*this.alg.data.M.first();
+    	if (data.M.size() > 0){
+    		return this.data.M.size()*this.data.instanceIDs.size()*this.data.M.first();
     	}else{
-    		return this.alg.data.instanceIDs.size();
+    		return this.data.instanceIDs.size();
     	}
     }
 //    
@@ -127,7 +130,7 @@ public class MUCStep extends KahinaStep
 //                return true;
 //            }
         	MUCStep step = (MUCStep)o;
-        	return this.alg.data.equals(step.alg.data);
+        	return this.data.equals(step.data);
         }
         return false;
     }
@@ -142,8 +145,20 @@ public class MUCStep extends KahinaStep
 //        return satisfiable;
 //    }
 
-	public ConcurrentSkipListSet<Integer> getUc() {
-		return alg.data.instanceIDs;
+	public Integer[] getUc() {
+		return data.instanceIDs.toArray(new Integer[data.instanceIDs.size()]);
+	}
+
+	public AbstractAlgorithm getAlgorithm() {
+		return this.alg;
+	}
+
+	public void setID(int id) {
+		this.ID = id;
+	}
+
+	public int getID() {
+		return ID;
 	}
     
 //    public void setSatisfiable(boolean satisfiable)

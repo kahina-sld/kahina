@@ -121,45 +121,6 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 		}
 	}
 
-	// public void runFaster() throws TimeoutException, InterruptedException{
-	// File freezeFile = new File("freeze"+ Thread.currentThread().getId() +
-	// ".fr");
-	// File resultFile = new File("result");
-	// File proofeFile = new File("proof");
-	//
-	// while (!instanceIDs.isEmpty()){
-	// S.clear();
-	// // int clauseIDCandidat = -1;
-	// // int[] oldFreeze = this.freeze.clone();
-	// Arrays.fill(freeze, FreezeFile.FREEZE);
-	// for (int id: M){
-	// freeze[id] = FreezeFile.UNFREEZE;
-	// }
-	//
-	// for(int clauseID: instanceIDs){
-	// List<Integer> clause = this.instance.getClauseByID(clauseID);
-	//
-	// FreezeFile.createFreezeFile(freeze, freezeFile,
-	// instance.getHighestVar()+1, clause);
-	//
-	// MiniSAT.solve(this.instanceFile, proofeFile , resultFile, freezeFile);
-	// if (!MiniSAT.wasUnsatisfiable(resultFile)){
-	// System.out.println("SAT");
-	// this.freeze[clauseID] = FreezeFile.UNFREEZE;
-	// M.add(clauseID);
-	// S.add(clauseID);
-	// break;
-	// // clauseIDCandidat = clauseID;
-	// }else{
-	// S.add(clauseID);
-	// }
-	// }
-	// this.instanceIDs.removeAll(S);
-	// // M.add(clauseIDCandidat);
-	// // S.remove(clauseIDCandidat);
-	// // this.instanceIDs = S;
-	// }
-	// }
 
 	public static void main(String[] arg0) throws TimeoutException,
 	InterruptedException, IOException {
@@ -207,35 +168,17 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 		return instance.selectClauses(clauseIDs);
 	}
 
-	@Override
-	public void newInstance(String path) {
-		this.M = new TreeSet<Integer>();// will become the MUS
-		this.S = new ConcurrentSkipListSet<Integer>();
-
-		this.instanceIDs = new ConcurrentSkipListSet<Integer>();
-
-		this.instance = DimacsCnfParser.parseDimacsCnfFile(path);
-		for (int i = 0; i < instance.getSize(); i++) {
-			instanceIDs.add(i);
-		}
-		// M.
-
-		MUCStatistics stat = new MUCStatistics();
-		stat.instanceName = path;
-
-		MUCExtension.extendCNFBySelVars(new File(path), new File("output.cnf"),
-				stat);
-
-		this.instanceFile = new File("output.cnf");
-
-		freeze = new int[this.instance.getSize()];
-		Arrays.fill(freeze, FreezeFile.FREEZE);
-	}
 
 	@Override
 	public boolean nextStep() {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public void nextStep(int clauseIndex) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
