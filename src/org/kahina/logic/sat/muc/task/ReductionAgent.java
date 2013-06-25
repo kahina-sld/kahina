@@ -277,6 +277,7 @@ public class ReductionAgent extends KahinaTaskManager
         }
 
         int candidate = heuristics.getNextCandidate();
+        System.err.println("candidate: " + candidate);
         if (candidate == -1)
         {
             //we are done reducing, no further reductions are possible; this UCReducer has done its duty

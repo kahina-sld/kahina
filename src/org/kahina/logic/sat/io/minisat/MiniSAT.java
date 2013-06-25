@@ -285,7 +285,7 @@ public class MiniSAT
             if (wasUnsatisfiable(files.tmpResultFile))
             {
                 //offsetID := stat.highestID
-                return getRelevantAssumptions(stat.highestID + 1, files.tmpProofFile);
+                return getRelevantAssumptions(stat.highestID, files.tmpProofFile);
             }
             else
             {
