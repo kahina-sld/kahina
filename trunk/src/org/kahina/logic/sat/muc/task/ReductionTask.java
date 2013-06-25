@@ -155,7 +155,7 @@ public class ReductionTask extends KahinaTask
                     freezeVariables[i-1] = 1;
                 }
             }
-            //System.err.println("freezeVars: " + Arrays.toString(freezeVariables));
+            System.err.println("freezeVars: " + Arrays.toString(freezeVariables));
             MiniSAT.createFreezeFile(freezeVariables, files.tmpFreezeFile, stat.highestID + 1);
             List<Integer> reducedCore = null;
             try
