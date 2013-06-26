@@ -15,11 +15,11 @@ import java.util.concurrent.TimeoutException;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
 import org.kahina.logic.sat.insertionmus.algorithms.AlgorithmData;
-import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.AscendingIndexHeuristic;
-import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.AverageVariableOccourrenceHeuristic;
-import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.ISortingHeuristic;
-import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.InvertAHeuristic;
-import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics.LargeClausesFirstHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.AscendingIndexHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.AverageVariableOccourrenceHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.ISortingHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.InvertAHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.LargeClausesFirstHeuristic;
 import org.kahina.logic.sat.insertionmus.io.ResultReader;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
@@ -111,8 +111,12 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 //		freeze = new int[this.instance.getSize()];
 //		Arrays.fill(freeze, FreezeFile.FREEZE);
 //	}
+	
+	public void next(){
+		
+	}
 
-	public void run() throws TimeoutException, InterruptedException, IOException{
+	public void run(AlgorithmData data) throws TimeoutException, InterruptedException, IOException{
 		File freezeFile = new File("freeze"+ Thread.currentThread().getId() + ".fr");
 		File resultFile = new File("result");
 
@@ -130,19 +134,17 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 			}
 
 			//			System.out.println(this.instanceIDs);
-			int[] lastSatisfingAllocation = new int[this.data.instance.getHighestVar()+1];
+			int[] lastSatisfingAllocation = new int[data.instance.getHighestVar()+1];
 			//			System.out.println(this.instance.getHighestVar());
 
 			for(int clauseID: data.instanceIDs){
 
-				List<Integer> clause = this.data.instance.getClauseByID(clauseID);
+				List<Integer> clause = data.instance.getClauseByID(clauseID);
 
 				FreezeFile.createFreezeFile(data.freeze, freezeFile, data.instance.getHighestVar()+1, clause);
 
-				MiniSAT.solve(this.data.instanceFile , resultFile, freezeFile);
-				
-			
-				
+				MiniSAT.solve(data.instanceFile , resultFile, freezeFile);
+						
 				if (!MiniSAT.wasUnsatisfiable(resultFile)){
 					//test if this clause removes some MUS candidats
 					ArrayList<Integer> removeLater = new ArrayList<Integer>();
@@ -159,14 +161,10 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 					//This Variable may be added
 					//					if (clauseIDCandidat == -1)
 					clauseIDCandidat = clauseID;
-					this.data.freeze[clauseID] = FreezeFile.UNFREEZE;
-					data.S.add(clauseID);
+					data.freeze[clauseID] = FreezeFile.UNFREEZE;
+					data.getS().add(clauseID);
 
 					ResultReader.readAssignment(lastSatisfingAllocation, resultFile);
-					//					for (int i = 0; i < lastSatisfingAllocation.length; i++){
-					//						System.out.print(lastSatisfingAllocation[i]*i + " ");
-					//					}
-					//					System.out.println(clause);
 					allocations.put(clauseID, lastSatisfingAllocation.clone());
 				}else{
 
@@ -177,7 +175,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 			}
 			for (int clauseID: allocations.keySet()){
 				data.M.add(clauseID);
-				data.S.remove(clauseID);
+				data.getS().remove(clauseID);
 				//				System.out.println("Found a clause");
 			}
 			if (clauseIDCandidat == -1){
@@ -185,14 +183,14 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 			}else{
 
 				data.M.add(clauseIDCandidat); 
-				data.S.remove(clauseIDCandidat);
+				data.getS().remove(clauseIDCandidat);
 			}
 			//			System.out.println(this.instanceIDs);
-			this.data.instanceIDs.clear();
-			this.data.instanceIDs.addAll(data.S);
+			data.instanceIDs.clear();
+			data.instanceIDs.addAll(data.getS());
 //			java.util.Collections.sort(this.data.instanceIDs, this.heuristic.getComparator());
 			//			S = new LinkedList<Integer>();
-			data.S.clear();
+			data.getS().clear();
 		}
 	}
 
@@ -256,10 +254,10 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 		FasterAdvancedAlgorithm alg = new FasterAdvancedAlgorithm();
 		
 		AlgorithmData data = new AlgorithmData(instance);
-		alg.setData(data);
+//		alg.setData(data);
 
 		
-		DimacsCnfOutput.writeDimacsCnfFile("MUS.cnf", alg.findAMuse());
+		DimacsCnfOutput.writeDimacsCnfFile("MUS.cnf", alg.findAMuse(data));
 		
 //		MiniSAT.
 //		instance = DimacsCnfParser.parseDimacsCnfFile("smallCNF/aim-100-1_6-no-1.cnf");
@@ -268,9 +266,9 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 	}
 
 	@Override
-	public CnfSatInstance findAMuse() {
+	public CnfSatInstance findAMuse(AlgorithmData data) {
 		try {
-			this.run();
+			this.run(data);
 		} catch (TimeoutException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -285,22 +283,22 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 		//		DimacsCnfOutput.writeDimacsCnfFile("MUS.tmp.cnf", alg.getMUS());
 
 		ArrayList<Integer> clauseIDs = new ArrayList<Integer>();
-		for (int i :this.data.M){
+		for (int i :data.M){
 			//			System.out.println(i);
 			clauseIDs.add(i + 1);
 		}
-		System.out.println(this.data.M);
+		System.out.println(data.M);
 		return data.instance.selectClauses(clauseIDs);
 	}
 
 	@Override
-	public boolean nextStep() {
+	public boolean nextStep(AlgorithmData data) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public boolean nextStep(int clauseIndex) {
+	public boolean nextStep(int clauseIndex,AlgorithmData data) {
 		// TODO Auto-generated method stub
 		return false;
 	}

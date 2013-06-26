@@ -3,10 +3,6 @@ package org.kahina.logic.sat.insertionmus.algorithms;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
@@ -14,8 +10,6 @@ import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
-import org.kahina.logic.sat.muc.data.MUCStatistics;
-import org.kahina.logic.sat.muc.io.MUCExtension;
 /**
  * Implementation of the insertion algorithm of J.K. de Siqueira N. and J.-F. Puget 
  * "Explanation-based generalisation of failures"
@@ -37,9 +31,9 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 	protected boolean finished = false;
 
 
-	public BasicAlgorithm(AlgorithmData data){
-		this.data = data;
-	}
+//	public BasicAlgorithm(AlgorithmData data){
+//		this.data = data;
+//	}
 	
 	public BasicAlgorithm() {
 		// TODO Auto-generated constructor stub
@@ -63,11 +57,11 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 	 * @throws InterruptedException 
 	 * @throws TimeoutException 
 	 */
-	public boolean selectNext(int clauseID) throws TimeoutException, IOException{
+	public boolean selectNext(int clauseID, AlgorithmData data) throws TimeoutException, IOException{
 		//M U S are always freezed
 
-		this.data.instanceIDs.remove(clauseID);
-		data.S.add(clauseID);
+		data.instanceIDs.remove(clauseID);
+		data.getS().add(clauseID);
 
 		data.freeze[clauseID] = FreezeFile.UNFREEZE;
 
@@ -76,29 +70,29 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 
 		FreezeFile.createFreezeFile(data.freeze, freezeFile, data.instance.getHighestVar()+1);
 		File resultFile = new File("result");
-		MiniSAT.solve(this.data.instanceFile, resultFile, freezeFile);
+		MiniSAT.solve(data.instanceFile, resultFile, freezeFile);
 		freezeFile.delete();
 
 		if (MiniSAT.wasUnsatisfiable(resultFile)){
 			//if M united S is not SAT then the clause is part of the MUS
 			System.out.println("UNSAT");
 			data.M.add(clauseID);
-			data.S.remove(clauseID);
+			data.getS().remove(clauseID);
 
-			for (int f: data.S){
+			for (int f: data.getS()){
 				data.freeze[f] = FreezeFile.FREEZE;
 			}
 
-			this.data.instanceIDs = data.S;
-			this.data.S = new ConcurrentSkipListSet<Integer>();
+			data.instanceIDs = data.getS();
+			data.resetS();
 			
 
 			
 			FreezeFile.createFreezeFile(data.freeze, freezeFile, data.instance.getHighestVar()+1);
-			MiniSAT.solve(this.data.instanceFile, new File("proof") , resultFile, freezeFile);
+			MiniSAT.solve(data.instanceFile, new File("proof") , resultFile, freezeFile);
 			freezeFile.delete();
 			if (MiniSAT.wasUnsatisfiable(resultFile)){
-				this.data.isMus = true;
+				data.isMus = true;
 				return true;
 			}
 		}
@@ -111,7 +105,7 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 		if (data.instanceIDs.size() == 0){
 			//if the instance is empty then we are done.
 //			freeze[clauseID] = FreezeFile.FREEZE;
-			this.data.isMus = true;
+			data.isMus = true;
 			return true;
 		}
 		return false;
@@ -129,10 +123,10 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 
 		BasicAlgorithm alg = new BasicAlgorithm();
 		AlgorithmData data = new AlgorithmData(instance);
-		alg.setData(data);
+//		alg.setData(data);
 
 		//		TreeSet<Integer> copy = (TreeSet<Integer>) alg.instanceIDs.clone();
-		while (!alg.selectNext(alg.data.instanceIDs.pollFirst())){
+		while (!alg.selectNext(data.instanceIDs.pollFirst(), data)){
 			//			System.out.println(alg.instanceIDs.size());
 		};
 		System.out.println("Found a MUS");
@@ -145,18 +139,19 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 		//		DimacsCnfOutput.writeDimacsCnfFile("MUS.tmp.cnf", alg.getMUS());
 
 		ArrayList<Integer> clauseIDs = new ArrayList<Integer>();
-		for (int i = 0; i < alg.data.freeze.length; i++){
-			if (alg.data.freeze[i] == FreezeFile.UNFREEZE){
+		for (int i = 0; i < data.freeze.length; i++){
+			if (data.freeze[i] == FreezeFile.UNFREEZE){
 				clauseIDs.add(i+1);
 				//				System.out.println(i+1);
 			}
 		}
 		DimacsCnfOutput.writeDimacsCnfFile("MUS.cnf", instance.selectClauses(clauseIDs));
 	}
+	
 	@Override
-	public CnfSatInstance findAMuse(){
+	public CnfSatInstance findAMuse(AlgorithmData data){
 		try {
-			while (!selectNext(data.instanceIDs.pollFirst())){
+			while (!selectNext(data.instanceIDs.pollFirst(), data)){
 				
 			}
 
@@ -199,26 +194,14 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 //		Arrays.fill(data.freeze, FreezeFile.FREEZE);
 //	}
 
-	@Override
-	public boolean nextStep() {
-		try {
-			return this.selectNext(data.instanceIDs.pollFirst());
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return true;
-	}
+
 
 	@Override
-	public boolean nextStep(int clauseIndex){
+	public boolean nextStep(int clauseIndex, AlgorithmData data){
 		data.instanceIDs.remove(clauseIndex);
 		boolean ret = data.instanceIDs.size() == 0;
 		try {
-			this.selectNext(clauseIndex);
+			this.selectNext(clauseIndex, data);
 		} catch (TimeoutException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -228,5 +211,14 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 		}		
 		return ret;
 	}
+//
+//	@Override
+//	public boolean nextStep(ISortingHeuristic heuristic, AlgorithmData data) {
+//		
+//		while (data.S.size() > 1){
+//			
+//		}
+//		return false;
+//	}
 
 }

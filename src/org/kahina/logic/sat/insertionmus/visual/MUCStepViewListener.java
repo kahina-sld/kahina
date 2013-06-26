@@ -61,7 +61,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 					int clauseIndex = uc.getUc()[listIndex];
 
 					kahina.dispatchEvent(new ClauseSelectionEvent(clauseIndex));
-					if (uc.getAlgorithm().nextStep(clauseIndex)){
+					if (uc.getAlgorithm().nextStep(clauseIndex, uc.getData())){
 						MUCStep nextStep = new MUCStep(uc.getData(), uc.getAlgorithm());
 						uc.reset();
 
@@ -89,22 +89,23 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 		}
 	}
 
-	private void reduce(int ic, boolean modelRotation)
-	{
-		MUCState state = kahina.getState();
-		MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
-		List<Integer> cands = new LinkedList<Integer>();
-		cands.add(ic);
-		//        ReductionTask redTask = new ReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
-		//                                                        ucStep, state.getSelectedStepID(), 
-		//                                                        cands, state.getFiles(), state.getSatInstance()
-		//                                                      );
-		//        redTask.setModelRotation(modelRotation);
-		//        kahina.getReductionManager().addTask(redTask);
-	}
+//	private void reduce(int ic, boolean modelRotation)
+//	{
+//		MUCState state = kahina.getState();
+//		MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
+//		List<Integer> cands = new LinkedList<Integer>();
+//		cands.add(ic);
+//		//        ReductionTask redTask = new ReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
+//		//                                                        ucStep, state.getSelectedStepID(), 
+//		//                                                        cands, state.getFiles(), state.getSatInstance()
+//		//                                                      );
+//		//        redTask.setModelRotation(modelRotation);
+//		//        kahina.getReductionManager().addTask(redTask);
+//	}
 
 	private void reduce(List<Integer> ics)
 	{
+		//TODO reduction
 		MUCState state = kahina.getState();
 		MUCStep ucStep = state.retrieve(MUCStep.class, state.getSelectedStepID());
 		//        ReductionTask redTask = new ReductionTask(  null, kahina.getReductionManager(), state.getStatistics(), 
@@ -139,7 +140,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 		String s = e.getActionCommand();
 		if (s.startsWith("subselect"))
 		{
-			processSubselection(s.substring(9));
+//			processSubselection(s.substring(9));
 		}
 		else if (s.equals("selectAll"))
 		{
@@ -212,41 +213,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 		}
 	}
 
-	private void processSubselection(String subselectionCommand)
-	{
-		int[] selection = view.getList().getSelectedIndices();
-		int[] newSelection;
-		if (subselectionCommand.startsWith("Status"))
-		{
-			newSelection = processStatusSubselection(subselectionCommand.substring(6), selection);
-		}
-		else if (subselectionCommand.startsWith("Size"))
-		{
-			//            newSelection = processSizeSubselection(subselectionCommand.substring(4), selection);
-		}
-		else if (subselectionCommand.startsWith("First"))
-		{
-			newSelection = processFirstSubselection(subselectionCommand.substring(5), selection);
-		}
-		else if (subselectionCommand.startsWith("Last"))
-		{
-			newSelection = processLastSubselection(subselectionCommand.substring(4), selection);
-		}
-		else if (subselectionCommand.startsWith("Random"))
-		{
-			newSelection = processRandomSubselection(subselectionCommand.substring(6), selection);
-		}
-		else if (subselectionCommand.equals("Literal"))
-		{
-			newSelection = getLiteralSubselection(selection);
-		}
-		else
-		{
-			System.err.println("WARNING: unkown subselection command \"" + subselectionCommand + "\"!");
-			return;
-		}
-		//        view.getList().setSelectedIndices(newSelection);
-	}
+//	
 
 	private int[] processStatusSubselection(String status, int[] selection)
 	{
@@ -333,33 +300,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 		return toIntArray(selectionList);
 	}
 
-	private int[] processLastSubselection(String number, int[] selection)
-	{
-		List<Integer> selectionList = new LinkedList<Integer>();
-		int desiredNumber = Integer.parseInt(number);
-		for (int i = selection.length - 1; i >= selection.length - desiredNumber; i--)
-		{
-			selectionList.add(selection[i]);
-		}
-		return toIntArray(selectionList);
-	}
-
-	private int[] processRandomSubselection(String number, int[] selection)
-	{
-		int desiredNumber = Integer.parseInt(number);
-		if (desiredNumber > selection.length) desiredNumber = selection.length;
-		//generate a permutation
-		ArrayList<Integer> permutation = new ArrayList<Integer>(selection.length);
-		permutation.add(selection[0]);
-		Random rnd = new Random();
-		for (int i = 1; i < selection.length; i++)
-		{
-			permutation.add(rnd.nextInt(permutation.size()), selection[i]);
-		}
-		//then take the the desired number from the beginning
-		return toIntArray(permutation.subList(0, desiredNumber));
-	}
-
+	
 	public int[] getLiteralSubselection(int[] selection)
 	{
 		List<Integer> selectionList = new LinkedList<Integer>();
