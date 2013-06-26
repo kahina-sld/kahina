@@ -127,14 +127,19 @@ public class MUCState extends KahinaState
 	}
 
 	
-	static int counter = 0;
-	public void newStep(MUCStep step, int parrentID){		
-        decisionGraph.addNode(counter, "Init: " + step.getSize() + "", MUCStepType.UNKNOWN);
-        step.setID(counter);
-        kahina.dispatchEvent(new KahinaSelectionEvent(counter));
-        kahina.dispatchEvent(new KahinaUpdateEvent(counter));
-        store(counter, step);
-        counter++;
+//	static int counter = 0;
+	public void newStep(MUCStep step, int parrentID){	
+		int nextID = nextStepID();
+        decisionGraph.addNode(nextID, "Init: " + step.getSize() + "", MUCStepType.UNKNOWN);
+        step.setID(nextID);
+        store(nextID, step);
+		if (parrentID >= 0){
+			decisionGraph.addEdge(parrentID, nextID, "");
+		}
+		nodeForStep.put(step, nextID);
+		
+        kahina.dispatchEvent(new KahinaSelectionEvent(nextID));
+        kahina.dispatchEvent(new KahinaUpdateEvent(nextID));
 	}
 
 	public CnfSatInstance getSatInstance() {
@@ -144,5 +149,9 @@ public class MUCState extends KahinaState
 	public ColoredPathDAG getDecisionGraph() {
 		// TODO Auto-generated method stub
 		return this.decisionGraph;
+	}
+
+	public boolean stepExists(MUCStep step) {
+		return nodeForStep.get(step) != null;
 	}
 }

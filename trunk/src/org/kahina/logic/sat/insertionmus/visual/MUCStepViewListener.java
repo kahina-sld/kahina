@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
+import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.insertionmus.MUCInstance;
 import org.kahina.logic.sat.insertionmus.MUCState;
 import org.kahina.logic.sat.insertionmus.MUCStep;
@@ -30,14 +31,14 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 	private final MUCStepViewPanel view;
 
 	long lastClick = 0;
-//	private MUCState state;
+	//	private MUCState state;
 	public final static long DBL_CLICK_INTERVAL = 200;
 
 	public MUCStepViewListener(MUCInstance kahina, MUCStepViewPanel view)
 	{
 		this.kahina = kahina;
 		this.view = view;
-//		this.state = ;
+		//		this.state = ;
 	}
 
 	@Override
@@ -45,10 +46,11 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 	{
 		if (e.getSource() instanceof JList)
 		{
-//			System.out.println("Click1");
+			//			System.out.println("Click1");
 			int listIndex = ((JList) e.getSource()).locationToIndex(new Point(e.getX(), e.getY()));
 			//        	System.out.println(listIndex + " " + e);
 			MUCStep uc = kahina.getState().getSelectedStep();
+			System.out.println("SelectedID: " + uc.getID());
 			if (uc != null && listIndex >= 0)
 			{
 				long time = System.currentTimeMillis();
@@ -57,19 +59,21 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 				{
 					lastClick = 0;
 					int clauseIndex = uc.getUc()[listIndex];
-					
+
 					kahina.dispatchEvent(new ClauseSelectionEvent(clauseIndex));
 					if (uc.getAlgorithm().nextStep(clauseIndex)){
 						MUCStep nextStep = new MUCStep(uc.getData(), uc.getAlgorithm());
 						uc.reset();
 
-						kahina.getState().newStep(nextStep, uc.getID());
-//						kahina.dispatchEvent()
+						if (!kahina.getState().stepExists(nextStep)){
+							kahina.getState().newStep(nextStep, uc.getID());
+						}
+						//						kahina.dispatchEvent()
 					}
-//					kahina.dispatchEvent(new )
+					//					kahina.dispatchEvent(new )
 
-			        kahina.dispatchEvent(new KahinaUpdateEvent(uc.getID()));
-			        kahina.dispatchEvent(new KahinaSelectionEvent(uc.getID()));
+					kahina.dispatchEvent(new KahinaUpdateEvent(uc.getID()));
+					kahina.dispatchEvent(new KahinaSelectionEvent(uc.getID()));
 					//				if (e.getClickCount()> 2){
 					System.out.println(clauseIndex);
 					//					List<Integer> clauseIDs = new LinkedList<Integer>();
@@ -78,7 +82,7 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 				}
 				else
 				{
-//					reduce(ic, false);
+					//					reduce(ic, false);
 					lastClick = time;
 				}
 			}
@@ -364,18 +368,18 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 		{
 			Integer lit = Integer.parseInt(litString);
 			MUCStep uc = kahina.getState().getSelectedStep();
-			//            CnfSatInstance instance =  kahina.getState().getSatInstance();
-			//            if (uc != null)
-			//            {
-			//                for (int index : selection)
-			//                {
-			//                    int clauseID = uc.getUc().get(index);
-			//                    if (instance.getClause(clauseID-1).contains(lit))
-			//                    {
-			//                        selectionList.add(index);
-			//                    }
-			//                }
-			//            }
+			CnfSatInstance instance =  kahina.getState().getSatInstance();
+			if (uc != null)
+			{
+				for (int index : selection)
+				{
+					int clauseID = uc.getUc()[index];
+					if (instance.getClause(clauseID-1).contains(lit))
+					{
+						selectionList.add(index);
+					}
+				}
+			}
 		}
 		catch (NumberFormatException e)
 		{

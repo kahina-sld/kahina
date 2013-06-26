@@ -40,8 +40,8 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 	
 
 	JPanel newReducerPanel;
-    private JComboBox<String> algorithmChooser;
-    private JComboBox<String> heuristicsChooser;
+    private JComboBox algorithmChooser;
+    private JComboBox heuristicsChooser;
     protected JButton start;
     
     public UCReducerListViewPanel(KahinaInstance<?, ?, ?, ?> kahina) {
@@ -49,8 +49,8 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 		// TODO Auto-generated constructor stub
 		this.newReducerPanel = new JPanel();
 		newReducerPanel.setLayout(new FlowLayout());
-		algorithmChooser = new JComboBox<String>();
-		heuristicsChooser = new JComboBox<String>();
+		algorithmChooser = new JComboBox();
+		heuristicsChooser = new JComboBox();
 		start = new JButton("Start");
 		
 		algorithmChooser.addItem("Default");
