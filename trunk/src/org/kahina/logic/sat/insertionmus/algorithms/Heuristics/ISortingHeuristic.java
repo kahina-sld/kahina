@@ -1,4 +1,4 @@
-package org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.Heuristics;
+package org.kahina.logic.sat.insertionmus.algorithms.Heuristics;
 
 import java.util.Comparator;
 

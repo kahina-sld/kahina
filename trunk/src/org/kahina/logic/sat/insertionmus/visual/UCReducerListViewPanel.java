@@ -1,39 +1,21 @@
 package org.kahina.logic.sat.insertionmus.visual;
 
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.Map;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneLayout;
 
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.data.dag.ColoredPathDAG;
-import org.kahina.core.gui.event.KahinaRedrawEvent;
-import org.kahina.core.io.color.ColorUtil;
 import org.kahina.core.visual.KahinaView;
-import org.kahina.core.visual.KahinaViewPanel;
-import org.kahina.logic.sat.muc.MUCInstance;
+import org.kahina.logic.sat.insertionmus.MUCState;
+import org.kahina.logic.sat.insertionmus.MUCStep;
+import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
+import org.kahina.logic.sat.insertionmus.algorithms.AlgorithmData;
 import org.kahina.logic.sat.muc.data.UCReducerList;
-import org.kahina.logic.sat.muc.gui.WrapLayout;
-import org.kahina.logic.sat.muc.heuristics.ReductionHeuristic;
-import org.kahina.logic.sat.muc.task.ReductionAgent;
 
 public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 {
@@ -44,7 +26,35 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
     private JComboBox heuristicsChooser;
     protected JButton start;
     
-    public UCReducerListViewPanel(KahinaInstance<?, ?, ?, ?> kahina) {
+    protected ActionListener btStartListener = new ActionListener(){
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			if (kahina != null){
+				MUCState state = (MUCState) kahina.getState();
+				MUCStep step = state.getSelectedStep();
+				
+				AbstractAlgorithm alg = step.getAlgorithm();
+				AlgorithmData data = step.getData();
+				
+				while (!data.isMus){
+					while(data.instanceIDs.size() > 1){
+						alg.nextStep(data);
+					}
+					alg.nextStep(data);
+
+					
+					MUCStep newStep = new MUCStep(data, alg);
+					state.newStep(newStep, step.getID());
+//					data = newStep.getData();
+					step.reset();
+					step = newStep;
+
+				}
+				System.out.println("Found a MUS");
+			}
+		}};
+    
+    public UCReducerListViewPanel(KahinaInstance<MUCState, ?, ?, ?> kahina) {
 		super(kahina);
 		// TODO Auto-generated constructor stub
 		this.newReducerPanel = new JPanel();
@@ -52,6 +62,7 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 		algorithmChooser = new JComboBox();
 		heuristicsChooser = new JComboBox();
 		start = new JButton("Start");
+		start.addActionListener(btStartListener);
 		
 		algorithmChooser.addItem("Default");
 		algorithmChooser.addItem("Advanced only learn last");

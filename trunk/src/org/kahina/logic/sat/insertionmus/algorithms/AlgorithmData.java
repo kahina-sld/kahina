@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
+import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.ISortingHeuristic;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
@@ -14,13 +15,20 @@ public class AlgorithmData {
 	public CnfSatInstance instance;
 	public ConcurrentSkipListSet<Integer> instanceIDs;
 	public ConcurrentSkipListSet<Integer> M;
-	public ConcurrentSkipListSet<Integer> S;
+	private ConcurrentSkipListSet<Integer> S;
+	
+	
+	public ConcurrentSkipListSet<Integer> getS() {
+		return S;
+	}
+
 	public int[] freeze;
 	public File instanceFile;
 	public File resultFile;
 //	public File proofFile;
 	public String path;
 	public boolean isMus = false;
+	private ISortingHeuristic heuristic;
 
 
 
@@ -34,6 +42,13 @@ public class AlgorithmData {
 //		proofFile = new File("proof");
 	}
 
+	public void setHeuristic(ISortingHeuristic heuristic){
+		this.heuristic = heuristic;
+		ConcurrentSkipListSet<Integer> newInstanceIDs = new ConcurrentSkipListSet<Integer>(heuristic.getComparator());
+		newInstanceIDs.addAll(this.instanceIDs);
+		this.instanceIDs = newInstanceIDs;
+	}
+	
 	public AlgorithmData(CnfSatInstance satInstance) {
 		instanceIDs = new ConcurrentSkipListSet<Integer>();
 		M = new ConcurrentSkipListSet<Integer>();
@@ -89,5 +104,12 @@ public class AlgorithmData {
 		ret.S = this.S.clone();
 		
 		return ret;
+	}
+
+	public void resetS() {
+		if (heuristic != null)
+			this.S = new ConcurrentSkipListSet<Integer>(heuristic.getComparator());
+		else
+			this.S = new ConcurrentSkipListSet<Integer>();
 	}
 }

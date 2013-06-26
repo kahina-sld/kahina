@@ -53,7 +53,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 	//    MUCStatistics stat;
 	MiniSATFiles files;
 
-	private BasicAlgorithm ba;
+	private AlgorithmData data;
 
 
 	public void startNewSessionWithoutBridge()
@@ -143,7 +143,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 		System.out.println("addFirstStep");
 //		AlgorithmData data = new AlgorithmData();
 		AlgorithmData data = new AlgorithmData(this.satInstance);
-		AbstractAlgorithm alg = new BasicAlgorithm(data);
+		AbstractAlgorithm alg = new BasicAlgorithm();
 		MUCStep step = new MUCStep(data, alg);
 		this.state.newStep(step, -1);
 	}
@@ -188,7 +188,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 		System.err.println("  Instance Size: (" + satInstance.getSize() + "," + satInstance.getHighestVar() + ")");
 
 		AlgorithmData data = new AlgorithmData(satInstance);
-		ba = new BasicAlgorithm(data);
+//		ba = new BasicAlgorithm();
 		this.state = createState();
 		state.setSatInstance(satInstance);
 //		this.addFirstStep();
@@ -285,7 +285,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 
 			loadSATFile(dataFile);
 			gui.displayMainViews();
-			nextStep();
+//			nextStep();
 			////            addFirstUC();
 			//            //generateFirstUC();
 		}
@@ -325,18 +325,18 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 		//        }
 	}
 
-	private void nextStep() {
-		System.out.println("nextStep");
-		try {
-			ba.selectNext(ba.data.instanceIDs.pollFirst());
-		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	private void nextStep() {
+//		System.out.println("nextStep");
+//		try {
+////			ba.selectNext(data.instanceIDs.pollFirst(), data);
+//		} catch (TimeoutException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 
 	/**
 	 * Writing a main method for a Kahina-based debugging environment is simple:

@@ -11,6 +11,8 @@ import java.util.concurrent.ConcurrentSkipListSet;
 import org.kahina.core.KahinaStep;
 import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
 import org.kahina.logic.sat.insertionmus.algorithms.AlgorithmData;
+import org.kahina.logic.sat.insertionmus.algorithms.BasicAlgorithm;
+import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.ISortingHeuristic;
 
 public class MUCStep extends KahinaStep
 {
@@ -31,7 +33,7 @@ public class MUCStep extends KahinaStep
 	private AlgorithmData data;
 	private AlgorithmData oldData;
 
-	private AbstractAlgorithm alg;
+	static public AbstractAlgorithm alg = new BasicAlgorithm();;
 
 	private int ID;
     
@@ -169,7 +171,7 @@ public class MUCStep extends KahinaStep
 
 	public void reset() {
 		this.data = oldData.clone();
-		this.alg.setData(data);
+//		this.alg.setData(data);
 	}
     
 //    public void setSatisfiable(boolean satisfiable)
@@ -233,4 +235,8 @@ public class MUCStep extends KahinaStep
 //        }
 //        return 0;
 //    }
+	
+	public void changeHeuristic(ISortingHeuristic heuristic){
+		this.data.setHeuristic(heuristic);
+	}
 }

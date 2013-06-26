@@ -52,16 +52,16 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	 * @throws TimeoutException 
 	 * @throws IOException 
 	 */
-	public void findAllMUS() throws TimeoutException, InterruptedException, IOException{
+	public void findAllMUS(AlgorithmData data) throws TimeoutException, InterruptedException, IOException{
 
 		File freezeFile = new File("tmp.fr");
 		
-		while (this.solve(mapInstance)){
-			getMap();
+		while (this.solve(mapInstance, data)){
+			getMap(data);
 			FreezeFile.createFreezeFile(freeze, freezeFile, this.instance.getHighestVar()+1);
 			
 			//TODO create instance File within the constructor
-			MiniSAT.solve(this.instanceFile, this.data.resultFile, freezeFile);
+			MiniSAT.solve(this.instanceFile, data.resultFile, freezeFile);
 			
 			if (MiniSAT.wasUnsatisfiable(data.resultFile)){
 				shrink();
@@ -74,7 +74,7 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 		}
 	}
 
-	private boolean solve(CnfSatInstance instance) throws TimeoutException, InterruptedException, IOException {
+	private boolean solve(CnfSatInstance instance, AlgorithmData data) throws TimeoutException, InterruptedException, IOException {
 		File cnfFile = new File("tmp.cnf");
 		DimacsCnfOutput.writeDimacsCnfFile(cnfFile.getName(), mapInstance);
 		return MiniSAT.isSatisfiable(cnfFile, data.resultFile);
@@ -83,29 +83,22 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	/*
 	 * adjusts the freezed variables to the new map
 	 */
-	private void getMap() throws IOException {
+	private void getMap(AlgorithmData data) throws IOException {
 //		CnfSatInstance map = DimacsCnfParser.parseDimacsCnfFile(result.getName());
 		ResultReader.readAssignment(this.freeze, data.resultFile);
 	}
 
 	@Override
-	public CnfSatInstance findAMuse() {
+	public CnfSatInstance findAMuse(AlgorithmData data) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-
-
 	@Override
-	public boolean nextStep() {
+	public boolean nextStep(int clauseIndex, AlgorithmData data) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	@Override
-	public boolean nextStep(int clauseIndex) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 		
 }
