@@ -103,9 +103,9 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	}
 
 	@Override
-	public void nextStep(int clauseIndex) {
+	public boolean nextStep(int clauseIndex) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 		
 }

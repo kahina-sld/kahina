@@ -37,7 +37,7 @@ public class MUCStepViewPanel extends KahinaSatInstanceListViewPanel
     {
         if (view.currentStep != null) 
         {
-            List<Integer> selectedClauses = e.getClauseIDs();
+            int selectedClauses = e.getClauseID();
             getList().getSelectionModel().clearSelection();
 //            for (int i = 0; i < view.currentStep.getSice().size(); i++)
 //            {

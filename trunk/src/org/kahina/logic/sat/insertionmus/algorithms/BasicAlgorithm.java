@@ -215,8 +215,9 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 	}
 
 	@Override
-	public void nextStep(int clauseIndex){
+	public boolean nextStep(int clauseIndex){
 		data.instanceIDs.remove(clauseIndex);
+		boolean ret = data.instanceIDs.size() == 0;
 		try {
 			this.selectNext(clauseIndex);
 		} catch (TimeoutException e) {
@@ -226,6 +227,7 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
+		return ret;
 	}
 
 }

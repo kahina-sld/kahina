@@ -76,4 +76,18 @@ public class AlgorithmData {
 		}
 		return false;
 	}
+
+	public AlgorithmData clone() {
+		AlgorithmData ret = new AlgorithmData();
+		
+		ret.freeze = this.freeze.clone();
+		ret.instance = this.instance;
+		ret.instanceFile = this.instanceFile;
+		ret.instanceIDs = this.instanceIDs.clone();
+		ret.isMus = this.isMus;
+		ret.M = this.M.clone();
+		ret.S = this.S.clone();
+		
+		return ret;
+	}
 }

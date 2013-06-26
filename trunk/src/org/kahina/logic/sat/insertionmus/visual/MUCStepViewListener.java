@@ -6,29 +6,23 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.HashSet;
+
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
 
-import javax.swing.JLabel;
+import java.util.Random;
+
+
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
-import org.kahina.core.visual.graph.KahinaGraphViewContextMenu;
-import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.insertionmus.MUCInstance;
 import org.kahina.logic.sat.insertionmus.MUCState;
 import org.kahina.logic.sat.insertionmus.MUCStep;
 //import org.kahina.logic.sat.insertionmus.MUCStepType;
-import org.kahina.logic.sat.muc.data.Overlap;
-import org.kahina.logic.sat.muc.gui.ClauseSelectionEvent;
-import org.kahina.logic.sat.muc.task.ReductionTask;
+import org.kahina.logic.sat.insertionmus.gui.ClauseSelectionEvent;
 
 public class MUCStepViewListener extends MouseAdapter implements ActionListener
 {
@@ -36,12 +30,14 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 	private final MUCStepViewPanel view;
 
 	long lastClick = 0;
+//	private MUCState state;
 	public final static long DBL_CLICK_INTERVAL = 200;
 
 	public MUCStepViewListener(MUCInstance kahina, MUCStepViewPanel view)
 	{
 		this.kahina = kahina;
 		this.view = view;
+//		this.state = ;
 	}
 
 	@Override
@@ -61,7 +57,15 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 				{
 					lastClick = 0;
 					int clauseIndex = uc.getUc()[listIndex];
-					uc.getAlgorithm().nextStep(clauseIndex);
+					
+					kahina.dispatchEvent(new ClauseSelectionEvent(clauseIndex));
+					if (uc.getAlgorithm().nextStep(clauseIndex)){
+						MUCStep nextStep = new MUCStep(uc.getData(), uc.getAlgorithm());
+						uc.reset();
+
+						kahina.getState().newStep(nextStep, uc.getID());
+//						kahina.dispatchEvent()
+					}
 //					kahina.dispatchEvent(new )
 
 			        kahina.dispatchEvent(new KahinaUpdateEvent(uc.getID()));

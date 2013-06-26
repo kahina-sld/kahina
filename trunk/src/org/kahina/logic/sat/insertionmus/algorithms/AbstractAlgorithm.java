@@ -31,6 +31,12 @@ public abstract class AbstractAlgorithm {
 	}
 
 	public abstract boolean nextStep();
-	public abstract void nextStep(int clauseIndex);
+	
+	/**
+	 * 
+	 * @param clauseIndex
+	 * @return true if a new Step is reached.
+	 */
+	public abstract boolean nextStep(int clauseIndex);
 
 }

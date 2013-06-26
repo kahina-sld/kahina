@@ -390,7 +390,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 		{
 			System.err.println("ERROR: No version of minisat found on path!");
 			System.err.println("       Your path must include the minisat-extended directory.");
-			System.exit(0);
+//			System.exit(0);
 		}
 		MUCInstance kahina = new MUCInstance();
 		kahina.start(args);

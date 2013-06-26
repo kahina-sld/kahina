@@ -29,6 +29,7 @@ public class MUCStep extends KahinaStep
     boolean satisfiable;
 
 	private AlgorithmData data;
+	private AlgorithmData oldData;
 
 	private AbstractAlgorithm alg;
 
@@ -46,6 +47,7 @@ public class MUCStep extends KahinaStep
 //    }
 
     public MUCStep(AlgorithmData data, AbstractAlgorithm alg) {
+    	this.oldData = data.clone();
     	this.data = data;
     	this.alg = alg;
 //        uc =  new ArrayList<Integer>();
@@ -159,6 +161,14 @@ public class MUCStep extends KahinaStep
 
 	public int getID() {
 		return ID;
+	}
+
+	public AlgorithmData getData() {
+		return this.data;
+	}
+
+	public void reset() {
+		this.data = oldData.clone();
 	}
     
 //    public void setSatisfiable(boolean satisfiable)

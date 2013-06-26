@@ -1,21 +1,20 @@
 package org.kahina.logic.sat.insertionmus.gui;
 
-import java.util.List;
 
 import org.kahina.core.control.KahinaEvent;
 
 public class ClauseSelectionEvent extends KahinaEvent
 {
-    private List<Integer> clauseIDs;
+    private int clauseID;
     
-    public ClauseSelectionEvent(List<Integer> clauseIDs)
+    public ClauseSelectionEvent(int clauseIDs)
     {
         super("clauseSelection");
-        this.clauseIDs = clauseIDs;
+        this.clauseID = clauseIDs;
     }
 
-    public List<Integer> getClauseIDs()
+    public int getClauseID()
     {
-        return clauseIDs;
+        return clauseID;
     }
 }
