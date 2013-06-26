@@ -184,8 +184,8 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 
 			}else{
 
-//				M.add(clauseIDCandidat); 
-//				S.remove(clauseIDCandidat);
+				data.M.add(clauseIDCandidat); 
+				data.S.remove(clauseIDCandidat);
 			}
 			//			System.out.println(this.instanceIDs);
 			this.data.instanceIDs.clear();
@@ -300,8 +300,8 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 	}
 
 	@Override
-	public void nextStep(int clauseIndex) {
+	public boolean nextStep(int clauseIndex) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 }
