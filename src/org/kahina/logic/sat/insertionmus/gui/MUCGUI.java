@@ -34,6 +34,7 @@ import org.kahina.logic.sat.muc.heuristics.CenteredIndexHeuristic;
 import org.kahina.logic.sat.muc.heuristics.DescendingRelevanceHeuristic;
 import org.kahina.logic.sat.muc.visual.MUCStepController;
 import org.kahina.logic.sat.insertionmus.visual.MUCStepView;
+import org.kahina.logic.sat.insertionmus.visual.UCReducerListViewPanel;
 import org.kahina.logic.sat.muc.visual.MetaInstanceView;
 import org.kahina.logic.sat.muc.visual.PartitionBlockView;
 import org.kahina.logic.sat.muc.visual.RecursiveBlockView;
@@ -54,7 +55,7 @@ public class MUCGUI extends KahinaGUI
 //    protected PartitionBlockView blockListView;
 //    protected RecursiveBlockView blockTreeView;
     protected MUCStepView mucView;
-//    protected UCReducerListView reducerListView;
+    protected UCReducerListViewPanel reducerListView;
     
     private MUCInstance kahina;
     
@@ -148,16 +149,16 @@ public class MUCGUI extends KahinaGUI
 //        mucView.setStatusColorEncoding(3, LIGHT_GREEN);
         
         //TODO: hand over a useful files object
-//        reducerListView = new UCReducerListView(kahina, new MiniSATFiles());
+        reducerListView = new UCReducerListViewPanel(kahina);
 //        reducerListView.addHeuristic(AscendingIndexHeuristic.class);
 //        reducerListView.addHeuristic(CenteredIndexHeuristic.class);
 //        reducerListView.addHeuristic(DescendingIndexHeuristic.class);
 //        reducerListView.addHeuristic(AscendingRelevanceHeuristic.class);
 //        reducerListView.addHeuristic(CenteredRelevanceHeuristic.class);
 //        reducerListView.addHeuristic(DescendingRelevanceHeuristic.class);
-//        views.add(reducerListView);
-//        livingViews.add(reducerListView);
-//        varNameToView.put("reducers", reducerListView);
+        views.add(reducerListView);
+        livingViews.add(reducerListView);
+        varNameToView.put("reducers", reducerListView);
         
         //decisionGraphView.getConfig().setLineShapePolicy(KahinaTreeViewOptions.STRAIGHT_LINES);
         //decisionGraphView.getConfig().setAutoscrollPolicy(KahinaTreeViewOptions.NO_AUTOSCROLL);

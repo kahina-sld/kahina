@@ -169,6 +169,7 @@ public class MUCStep extends KahinaStep
 
 	public void reset() {
 		this.data = oldData.clone();
+		this.alg.setData(data);
 	}
     
 //    public void setSatisfiable(boolean satisfiable)

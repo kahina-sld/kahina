@@ -5,9 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 
-import org.kahina.core.KahinaInstance;
-import org.kahina.core.data.project.KahinaProject;
-import org.kahina.core.gui.menus.KahinaProjectMenuListener;
+
 import org.kahina.logic.sat.insertionmus.MUCInstance;
 
 public class MusticcaInstanceMenu extends JMenu

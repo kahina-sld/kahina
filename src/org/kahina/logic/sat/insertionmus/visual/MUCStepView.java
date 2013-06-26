@@ -35,20 +35,20 @@ public class MUCStepView extends KahinaSatInstanceListView
         return panel;
     }
     
-    public int getLineStatus(int lineID)
-    {
-        if (currentStep != null)
-        {
-            if (lineID >= currentStep.getSize())
-            {
-                //TODO: this happens twice until long term solution: implement FastListModel
-                //System.err.println("WARNING: had to prevent getLineStatus(" + lineID + ")");
-                return 0;
-            }
-//            return currentStep.getIcStatus(currentStep.getUc().get(lineID));
-        }
-        return 0;
-    }
+//    public int getLineStatus(int lineID)
+//    {
+//        if (currentStep != null)
+//        {
+//            if (lineID >= currentStep.getSize())
+//            {
+//                //TODO: this happens twice until long term solution: implement FastListModel
+//                //System.err.println("WARNING: had to prevent getLineStatus(" + lineID + ")");
+//                return 0;
+//            }
+//            return currentStep.getIcStatus(currentStep.getUc()[lineID]);
+//        }
+//        return 0;
+//    }
     
     public void processEvent(KahinaEvent e)
     {
@@ -71,7 +71,7 @@ public class MUCStepView extends KahinaSatInstanceListView
         }
     }
 
-    
+    @Override
     public void recalculate()
     {
         kahina.getLogger().startMeasuring();
@@ -105,6 +105,7 @@ public class MUCStepView extends KahinaSatInstanceListView
         {
             currentStep = kahina.getState().retrieve(MUCStep.class, stepID);
             System.out.println(currentStep);
+            System.out.println(stepID);
             for (int ic : currentStep.getUc())
             {
                 StringBuilder s = new StringBuilder();

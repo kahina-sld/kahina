@@ -33,7 +33,6 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 //		static String path = "../cnf/aim-50-2_0-no-2.cnf";
 	//	static String path = "../cnf/examples/queueinvar4.cnf";
 
-	protected Integer addToMouseID = -1;
 
 	protected boolean finished = false;
 
