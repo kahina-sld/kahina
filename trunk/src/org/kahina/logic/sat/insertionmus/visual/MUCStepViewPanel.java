@@ -1,9 +1,7 @@
 package org.kahina.logic.sat.insertionmus.visual;
 
-import java.util.List;
 
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.logic.sat.insertionmus.MUCInstance;
 import org.kahina.logic.sat.insertionmus.gui.ClauseSelectionEvent;
 import org.kahina.logic.sat.visual.cnf.list.KahinaSatInstanceListViewPanel;
@@ -11,7 +9,7 @@ import org.kahina.logic.sat.visual.cnf.list.KahinaSatInstanceListViewPanel;
 public class MUCStepViewPanel extends KahinaSatInstanceListViewPanel
 {
     MUCInstance kahina;
-    MUCStepView view;
+    MUCStepViewRemaining view;
     
     public MUCStepViewPanel(MUCInstance kahina)
     {
@@ -35,7 +33,7 @@ public class MUCStepViewPanel extends KahinaSatInstanceListViewPanel
     
     public void processEvent(ClauseSelectionEvent e)
     {
-        if (view.currentStep != null) 
+        if (view != null && view.currentStep != null) 
         {
             int selectedClauses = e.getClauseID();
             getList().getSelectionModel().clearSelection();
@@ -50,7 +48,7 @@ public class MUCStepViewPanel extends KahinaSatInstanceListViewPanel
         }
     }
     
-    public void setView(MUCStepView view)
+    public void setView(MUCStepViewRemaining view)
     {
         super.setView(view);
         this.view = view;

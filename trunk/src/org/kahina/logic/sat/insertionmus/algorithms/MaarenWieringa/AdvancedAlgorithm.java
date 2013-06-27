@@ -169,16 +169,5 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 	}
 
 
-	@Override
-	public boolean nextStep() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean nextStep(int clauseIndex) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
 }

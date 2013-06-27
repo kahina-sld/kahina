@@ -1,25 +1,20 @@
 package org.kahina.logic.sat.insertionmus.visual;
-
-import java.util.List;
-
 import javax.swing.JComponent;
 import javax.swing.event.ListDataListener;
 
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
-import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.insertionmus.MUCInstance;
 import org.kahina.logic.sat.insertionmus.MUCStep;
-import org.kahina.logic.sat.insertionmus.gui.ClauseSelectionEvent;
 import org.kahina.logic.sat.visual.cnf.list.KahinaSatInstanceListView;
 
-public class MUCStepView extends KahinaSatInstanceListView
+public class MUCStepViewRemaining extends KahinaSatInstanceListView
 {
     MUCInstance kahina;
     MUCStep currentStep;
     
-    public MUCStepView(MUCInstance kahina)
+    public MUCStepViewRemaining(MUCInstance kahina)
     {
         super(kahina);
         this.kahina = kahina;

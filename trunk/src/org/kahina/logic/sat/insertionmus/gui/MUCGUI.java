@@ -33,7 +33,8 @@ import org.kahina.logic.sat.muc.heuristics.DescendingIndexHeuristic;
 import org.kahina.logic.sat.muc.heuristics.CenteredIndexHeuristic;
 import org.kahina.logic.sat.muc.heuristics.DescendingRelevanceHeuristic;
 import org.kahina.logic.sat.muc.visual.MUCStepController;
-import org.kahina.logic.sat.insertionmus.visual.MUCStepView;
+import org.kahina.logic.sat.insertionmus.visual.MUCStepViewContaining;
+import org.kahina.logic.sat.insertionmus.visual.MUCStepViewRemaining;
 import org.kahina.logic.sat.insertionmus.visual.UCReducerListViewPanel;
 import org.kahina.logic.sat.muc.visual.MetaInstanceView;
 import org.kahina.logic.sat.muc.visual.PartitionBlockView;
@@ -54,7 +55,8 @@ public class MUCGUI extends KahinaGUI
     //protected MUCStepController stepController;
 //    protected PartitionBlockView blockListView;
 //    protected RecursiveBlockView blockTreeView;
-    protected MUCStepView mucView;
+    protected MUCStepViewRemaining mucViewRemaining;
+    protected MUCStepViewContaining mucViewContaining;
     protected UCReducerListViewPanel reducerListView;
     
     private MUCInstance kahina;
@@ -137,11 +139,18 @@ public class MUCGUI extends KahinaGUI
         
        
         
-        mucView = new MUCStepView(kahina);
-        kahina.registerInstanceListener(KahinaEventTypes.SELECTION, mucView);
-        views.add(mucView);
-        livingViews.add(mucView);
-        varNameToView.put("currentUC", mucView);
+        mucViewRemaining = new MUCStepViewRemaining(kahina);
+        kahina.registerInstanceListener(KahinaEventTypes.SELECTION, mucViewRemaining);
+        views.add(mucViewRemaining);
+        livingViews.add(mucViewRemaining);
+        varNameToView.put("remainingUC", mucViewRemaining);
+        
+
+        mucViewContaining = new MUCStepViewContaining(kahina);
+        kahina.registerInstanceListener(KahinaEventTypes.SELECTION, mucViewContaining);
+        views.add(mucViewContaining);
+        livingViews.add(mucViewContaining);
+        varNameToView.put("currentUC", mucViewContaining);
         
 //        mucView.setStatusColorEncoding(0, Color.BLACK);
 //        mucView.setStatusColorEncoding(1, NICE_GREEN);
@@ -206,7 +215,8 @@ public class MUCGUI extends KahinaGUI
 //                blockTreeView.display(state.getRecursiveBlocks());
 //            }
 //            if (VERBOSE) System.err.println("    mucView.display(" + sat + ")");
-            mucView.display(sat);
+            mucViewRemaining.display(sat);
+            mucViewContaining.display(sat);
         }
 //        else
 //        {
