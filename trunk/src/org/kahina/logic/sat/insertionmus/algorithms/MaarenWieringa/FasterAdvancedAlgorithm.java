@@ -40,80 +40,153 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 
 	ISortingHeuristic heuristic ;
 
-//	protected CnfSatInstance instance; // The instance
-//
-//	protected List<Integer> instanceIDs;
-//	protected TreeSet<Integer> M = new TreeSet<Integer>();// will become the MUS
-//	//	protected TreeSet<Integer> S = new TreeSet<Integer>(); // A subset of the instance, it is the subset currently looked at.
-//	protected TreeSet<Integer> S = new TreeSet<Integer>();
-//
-//	protected int[] freeze; //variables that should be freezed are marked with 1;
+	//	protected CnfSatInstance instance; // The instance
+	//
+	//	protected List<Integer> instanceIDs;
+	//	protected TreeSet<Integer> M = new TreeSet<Integer>();// will become the MUS
+	//	//	protected TreeSet<Integer> S = new TreeSet<Integer>(); // A subset of the instance, it is the subset currently looked at.
+	//	protected TreeSet<Integer> S = new TreeSet<Integer>();
+	//
+	//	protected int[] freeze; //variables that should be freezed are marked with 1;
 
 
 	////	static String path = "../cnf/aim-100-1_6-no-4.cnf";
-//		static String path = "../cnf/examples/barrel2.cnf";
-		static String path = "smallCNF/aim-50-1_6-no-1.cnf";
-//							smallCNF/aim-50-1_6-no-1.cnf
-//		static String path = "smallCNF/aim-200-2_0-no-1.cnf";
+	//		static String path = "../cnf/examples/barrel2.cnf";
+	static String path = "smallCNF/aim-50-1_6-no-1.cnf";
+	//							smallCNF/aim-50-1_6-no-1.cnf
+	//		static String path = "smallCNF/aim-200-2_0-no-1.cnf";
 
-//		static String path = "smallCNF/barrel2.cnf";
+	//		static String path = "smallCNF/barrel2.cnf";
 	//	static String path = "../cnf/examples/C168_FW_SZ_66.cnf";
 	//	static String path = "../cnf/aim-50-2_0-no-2.cnf";
 	//	static String path = "../cnf/examples/queueinvar4.cnf";
-//	static String path = "smallCNF/aim-100-1_6-no-1.cnf";
+	//	static String path = "smallCNF/aim-100-1_6-no-1.cnf";
 
 
 
-//	protected boolean finished = false;
+	//	protected boolean finished = false;
 
-//	File instanceFile;
+	//	File instanceFile;
 
 
-//	public FasterAdvancedAlgorithm(String path){
-//		this.newInstance( path);
-//
-//	}
+	//	public FasterAdvancedAlgorithm(String path){
+	//		this.newInstance( path);
+	//
+	//	}
 
 	public FasterAdvancedAlgorithm() {
 		// TODO Auto-generated constructor stub
 	}
 
-//	@Override
-//	public void newInstance( String path) {
-////		this.path = path;
-//		this.M = new TreeSet<Integer>();// will become the MUS
-//		this.S = new TreeSet<Integer>();
-//
-//		this.instanceIDs = new LinkedList<Integer>();		
-//		//		this.instanceIDs = new 
-//		this.instance = DimacsCnfParser.parseDimacsCnfFile(path);
-//		for (int i = 0; i < instance.getSize(); i++){
-//			instanceIDs.add(i);
-//			//			instanceIDs.add(e
-//		}
-//
-////		this.heuristic =  new InvertAHeuristic(new LargeClausesFirstHeuristic(instance));
-////		this.heuristic = new AscendingIndexHeuristic();
-////		this.heuristic = new InvertAHeuristic(new AscendingIndexHeuristic());
-////		this.heuristic = new AverageVariableOccourrenceHeuristic(instance);
-////		this.heuristic = new InvertAHeuristic(new AverageVariableOccourrenceHeuristic(instance));
-//		this.heuristic = new LargeClausesFirstHeuristic(instance);
-//		java.util.Collections.sort(instanceIDs, this.heuristic.getComparator());
-//
-//
-//		MUCStatistics stat = new MUCStatistics();
-//		stat.instanceName = path;
-//
-//		this.instanceFile  = new File("output.cnf");
-//		MUCExtension.extendCNFBySelVars(new File(path), instanceFile, stat); 
-//
-//
-//		freeze = new int[this.instance.getSize()];
-//		Arrays.fill(freeze, FreezeFile.FREEZE);
-//	}
-	
-	public void next(){
-		
+	//	@Override
+	//	public void newInstance( String path) {
+	////		this.path = path;
+	//		this.M = new TreeSet<Integer>();// will become the MUS
+	//		this.S = new TreeSet<Integer>();
+	//
+	//		this.instanceIDs = new LinkedList<Integer>();		
+	//		//		this.instanceIDs = new 
+	//		this.instance = DimacsCnfParser.parseDimacsCnfFile(path);
+	//		for (int i = 0; i < instance.getSize(); i++){
+	//			instanceIDs.add(i);
+	//			//			instanceIDs.add(e
+	//		}
+	//
+	////		this.heuristic =  new InvertAHeuristic(new LargeClausesFirstHeuristic(instance));
+	////		this.heuristic = new AscendingIndexHeuristic();
+	////		this.heuristic = new InvertAHeuristic(new AscendingIndexHeuristic());
+	////		this.heuristic = new AverageVariableOccourrenceHeuristic(instance);
+	////		this.heuristic = new InvertAHeuristic(new AverageVariableOccourrenceHeuristic(instance));
+	//		this.heuristic = new LargeClausesFirstHeuristic(instance);
+	//		java.util.Collections.sort(instanceIDs, this.heuristic.getComparator());
+	//
+	//
+	//		MUCStatistics stat = new MUCStatistics();
+	//		stat.instanceName = path;
+	//
+	//		this.instanceFile  = new File("output.cnf");
+	//		MUCExtension.extendCNFBySelVars(new File(path), instanceFile, stat); 
+	//
+	//
+	//		freeze = new int[this.instance.getSize()];
+	//		Arrays.fill(freeze, FreezeFile.FREEZE);
+	//	}
+
+	@Override
+	public boolean nextStep(int clauseID, AlgorithmData data) {
+System.out.println("FAST");
+		if (data.instanceIDs.size() <= 0){
+			if (data.getS().isEmpty()){
+				data.isMus = true;
+				return true;
+			}
+
+			for (int cID: data.allocations.keySet()){
+				data.M.add(cID);
+				data.getS().remove(cID);
+				//				System.out.println("Found a clause");
+			}
+
+			//			System.out.println(this.instanceIDs);
+			data.instanceIDs.clear();
+			data.instanceIDs.addAll(data.getS());
+			//			java.util.Collections.sort(this.data.instanceIDs, this.heuristic.getComparator());
+			//			S = new LinkedList<Integer>();
+			data.getS().clear();
+
+			data.allocations.clear();
+
+			Arrays.fill(data.freeze, FreezeFile.FREEZE);
+			for (int id: data.M){
+				data.freeze[id] = FreezeFile.UNFREEZE;
+			}
+
+		}
+
+//		int clauseID = data.instanceIDs.pollFirst();
+		data.instanceIDs.remove(clauseID);
+
+		List<Integer> clause = data.instance.getClauseByID(clauseID);
+
+		FreezeFile.createFreezeFile(data.freeze, data.freezeFile, data.instance.getHighestVar()+1, clause);
+
+		try {
+			MiniSAT.solve(data.instanceFile , data.resultFile, data.freezeFile);
+		} catch (TimeoutException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		if (!MiniSAT.wasUnsatisfiable(data.resultFile)){
+			//test if this clause removes some MUS candidats
+			ArrayList<Integer> removeLater = new ArrayList<Integer>();
+			for (Entry<Integer, int[]> entry: data.allocations.entrySet()){
+				if (!satisfies(clause, entry.getValue())){
+					removeLater.add(entry.getKey());
+					//							System.out.println("Removed candidat.");
+				}
+			}
+			for (Integer Key: removeLater){
+				data.allocations.remove(Key);
+			}
+
+			//This Variable may be added
+			//					if (clauseIDCandidat == -1)
+			//				clauseIDCandidat = clauseID;
+			data.freeze[clauseID] = FreezeFile.UNFREEZE;
+			data.getS().add(clauseID);
+
+			int[] lastSatisfingAllocation = new int[data.instance.getHighestVar()+1];
+			try {
+				ResultReader.readAssignment(lastSatisfingAllocation, data.resultFile);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			data.allocations.put(clauseID, lastSatisfingAllocation.clone());
+		}
+
+		return false;
 	}
 
 	public void run(AlgorithmData data) throws TimeoutException, InterruptedException, IOException{
@@ -134,7 +207,6 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 			}
 
 			//			System.out.println(this.instanceIDs);
-			int[] lastSatisfingAllocation = new int[data.instance.getHighestVar()+1];
 			//			System.out.println(this.instance.getHighestVar());
 
 			for(int clauseID: data.instanceIDs){
@@ -144,7 +216,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 				FreezeFile.createFreezeFile(data.freeze, freezeFile, data.instance.getHighestVar()+1, clause);
 
 				MiniSAT.solve(data.instanceFile , resultFile, freezeFile);
-						
+
 				if (!MiniSAT.wasUnsatisfiable(resultFile)){
 					//test if this clause removes some MUS candidats
 					ArrayList<Integer> removeLater = new ArrayList<Integer>();
@@ -164,6 +236,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 					data.freeze[clauseID] = FreezeFile.UNFREEZE;
 					data.getS().add(clauseID);
 
+					int[] lastSatisfingAllocation = new int[data.instance.getHighestVar()+1];
 					ResultReader.readAssignment(lastSatisfingAllocation, resultFile);
 					allocations.put(clauseID, lastSatisfingAllocation.clone());
 				}else{
@@ -188,7 +261,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 			//			System.out.println(this.instanceIDs);
 			data.instanceIDs.clear();
 			data.instanceIDs.addAll(data.getS());
-//			java.util.Collections.sort(this.data.instanceIDs, this.heuristic.getComparator());
+			//			java.util.Collections.sort(this.data.instanceIDs, this.heuristic.getComparator());
 			//			S = new LinkedList<Integer>();
 			data.getS().clear();
 		}
@@ -247,22 +320,22 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 	public static void main(String[] arg0) throws TimeoutException, InterruptedException, IOException{
 
 
-//		CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(path);
+		//		CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(path);
 		//		FasterAdvancedAlgorithm alg = new FasterAdvancedAlgorithm(instance);
 
 		CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(path);
 		FasterAdvancedAlgorithm alg = new FasterAdvancedAlgorithm();
-		
-		AlgorithmData data = new AlgorithmData(instance);
-//		alg.setData(data);
 
-		
+		AlgorithmData data = new AlgorithmData(instance);
+		//		alg.setData(data);
+
+
 		DimacsCnfOutput.writeDimacsCnfFile("MUS.cnf", alg.findAMuse(data));
-		
-//		MiniSAT.
-//		instance = DimacsCnfParser.parseDimacsCnfFile("smallCNF/aim-100-1_6-no-1.cnf");
-//		alg.newInstance("smallCNF/aim-100-1_6-no-1.cnf");
-//		DimacsCnfOutput.writeDimacsCnfFile("MUS.cnf", alg.findAMuse());
+
+		//		MiniSAT.
+		//		instance = DimacsCnfParser.parseDimacsCnfFile("smallCNF/aim-100-1_6-no-1.cnf");
+		//		alg.newInstance("smallCNF/aim-100-1_6-no-1.cnf");
+		//		DimacsCnfOutput.writeDimacsCnfFile("MUS.cnf", alg.findAMuse());
 	}
 
 	@Override
@@ -291,15 +364,6 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 		return data.instance.selectClauses(clauseIDs);
 	}
 
-	@Override
-	public boolean nextStep(AlgorithmData data) {
-		// TODO Auto-generated method stub
-		return false;
-	}
 
-	@Override
-	public boolean nextStep(int clauseIndex,AlgorithmData data) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+
 }

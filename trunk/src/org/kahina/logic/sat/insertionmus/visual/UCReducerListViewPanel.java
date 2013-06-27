@@ -15,12 +15,19 @@ import org.kahina.logic.sat.insertionmus.MUCState;
 import org.kahina.logic.sat.insertionmus.MUCStep;
 import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
 import org.kahina.logic.sat.insertionmus.algorithms.AlgorithmData;
+import org.kahina.logic.sat.insertionmus.algorithms.BasicAlgorithm;
+import org.kahina.logic.sat.insertionmus.algorithms.MaarenWieringa.FasterAdvancedAlgorithm;
 import org.kahina.logic.sat.muc.data.UCReducerList;
 
 public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 {
 	
 
+	final String[] algorithmTypes = {"Default",
+			"Advanced learn all",
+			"Advanced only learn last",
+			"Binary search related algorithm"};
+	
 	JPanel newReducerPanel;
     private JComboBox algorithmChooser;
     private JComboBox heuristicsChooser;
@@ -53,6 +60,25 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 				System.out.println("Found a MUS");
 			}
 		}};
+		
+	protected ActionListener cbAlgorithmListener = new ActionListener(){
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			AbstractAlgorithm alg;
+
+			if (algorithmTypes[0].equals(algorithmChooser.getSelectedItem())){
+				alg = new BasicAlgorithm();
+			}else if (algorithmTypes[1].equals(algorithmChooser.getSelectedItem())){
+				alg = new FasterAdvancedAlgorithm();
+			}else{
+				alg = new BasicAlgorithm();
+			}
+//			kahina.getState()
+			MUCState state = (MUCState) kahina.getState();
+			MUCStep ucStep = state.getSelectedStep();
+			ucStep.setAlgorithm(alg);
+		}
+	};
     
     public UCReducerListViewPanel(KahinaInstance<MUCState, ?, ?, ?> kahina) {
 		super(kahina);
@@ -64,11 +90,16 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 		start = new JButton("Start");
 		start.addActionListener(btStartListener);
 		
-		algorithmChooser.addItem("Default");
-		algorithmChooser.addItem("Advanced only learn last");
-		algorithmChooser.addItem("Advanced learn all");
-		algorithmChooser.addItem("Binary search related algorithm");
 		
+		for (String str: algorithmTypes){
+			algorithmChooser.addItem(str);
+		}
+		algorithmChooser.addActionListener(this.cbAlgorithmListener);
+//		algorithmChooser.addItem("Default");
+//		algorithmChooser.addItem("Advanced only learn last");
+//		algorithmChooser.addItem("Advanced learn all");
+//		algorithmChooser.addItem("Binary search related algorithm");
+//		
 
 		heuristicsChooser.addItem("Ascending");
 		

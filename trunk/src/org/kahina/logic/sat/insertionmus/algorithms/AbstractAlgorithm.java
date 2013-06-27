@@ -40,6 +40,10 @@ public abstract class AbstractAlgorithm {
 	
 
 	public boolean nextStep(AlgorithmData data) {
+		if (data.instanceIDs.size() == 0) {
+			data.isMus = true;
+			return true;
+		}
 		return this.nextStep(data.instanceIDs.pollFirst(), data);
 	}
 	

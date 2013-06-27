@@ -239,4 +239,8 @@ public class MUCStep extends KahinaStep
 	public void changeHeuristic(ISortingHeuristic heuristic){
 		this.data.setHeuristic(heuristic);
 	}
+
+	public void setAlgorithm(AbstractAlgorithm alg2) {
+		alg = alg2;
+	}
 }
