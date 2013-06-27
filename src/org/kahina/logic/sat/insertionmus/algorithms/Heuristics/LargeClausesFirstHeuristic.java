@@ -7,19 +7,33 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 
 public class LargeClausesFirstHeuristic implements ISortingHeuristic {
 
-	private CnfSatInstance instance;
 
-	public LargeClausesFirstHeuristic(CnfSatInstance instance){
-		this.instance = instance;
+	private ISortingHeuristic fallback;
+
+
+	public LargeClausesFirstHeuristic(ISortingHeuristic fallback){
+		this.fallback = fallback;
 	}
 	
 	@Override
-	public Comparator<Integer> getComparator() {
+	public Comparator<Integer> getComparator(final CnfSatInstance instance) {
 		return new Comparator<Integer>(){
 			@Override
 			public int compare(Integer o1, Integer o2) {
-				return instance.getClauseByID(o1).size() - instance.getClauseByID(o2).size();
+				
+				int ret = instance.getClauseByID(o2).size() - instance.getClauseByID(o1).size();
+				if (ret == 0){
+					ret = fallback.getComparator(instance).compare(o1, o2);
+				}
+				return ret;
 			}};
 	}
+	
+
+	@Override
+	public String toString(){
+		return "Large clauses first" ;
+	}
+
 
 }

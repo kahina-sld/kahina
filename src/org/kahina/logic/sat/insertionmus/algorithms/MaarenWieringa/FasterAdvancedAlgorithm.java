@@ -114,7 +114,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 
 	@Override
 	public boolean nextStep(int clauseID, AlgorithmData data) {
-System.out.println("FAST");
+
 		if (data.instanceIDs.size() <= 0){
 			if (data.getS().isEmpty()){
 				data.isMus = true;

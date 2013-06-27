@@ -18,8 +18,8 @@ public class AlgorithmData {
 	public ConcurrentSkipListSet<Integer> instanceIDs;
 	public ConcurrentSkipListSet<Integer> M;
 	private ConcurrentSkipListSet<Integer> S;
-	
-	
+
+
 	public ConcurrentSkipListSet<Integer> getS() {
 		return S;
 	}
@@ -28,11 +28,11 @@ public class AlgorithmData {
 	public File instanceFile;
 	public File resultFile;
 	public File freezeFile;
-//	public File proofFile;
+	//	public File proofFile;
 	public String path;
 	public boolean isMus = false;
 	private ISortingHeuristic heuristic;
-	
+
 
 	public Map<Integer, int[]> allocations = new HashMap<Integer, int[]>();
 
@@ -43,39 +43,41 @@ public class AlgorithmData {
 		instanceIDs = new ConcurrentSkipListSet<Integer>();
 		M = new ConcurrentSkipListSet<Integer>();
 		S = new ConcurrentSkipListSet<Integer>();
-//		S.
+		//		S.
 		resultFile = new File("result");
 		freezeFile = new File("freeze");
-//		proofFile = new File("proof");
+		//		proofFile = new File("proof");
 	}
 
 	public void setHeuristic(ISortingHeuristic heuristic){
-		this.heuristic = heuristic;
-		ConcurrentSkipListSet<Integer> newInstanceIDs = new ConcurrentSkipListSet<Integer>(heuristic.getComparator());
-		newInstanceIDs.addAll(this.instanceIDs);
-		this.instanceIDs = newInstanceIDs;
+		if (this.heuristic == null || !this.heuristic.getClass().equals(heuristic.getClass())){
+			this.heuristic = heuristic;
+			ConcurrentSkipListSet<Integer> newInstanceIDs = new ConcurrentSkipListSet<Integer>(heuristic.getComparator(instance));
+			newInstanceIDs.addAll(this.instanceIDs);
+			this.instanceIDs = newInstanceIDs;
+		}
 	}
-	
+
 	public AlgorithmData(CnfSatInstance satInstance) {
 		instanceIDs = new ConcurrentSkipListSet<Integer>();
 		M = new ConcurrentSkipListSet<Integer>();
 		S = new ConcurrentSkipListSet<Integer>();
-//		S.
+		//		S.
 		resultFile = new File("result");
 		freezeFile = new File("freeze");
-//		proofFile = new File("proof");
-		
+		//		proofFile = new File("proof");
+
 		this.instance = satInstance;
 		path = "currentinst"+Thread.currentThread().getId() + ".cnf";
-		
-//		this.instance = instance;
+
+		//		this.instance = instance;
 		for (int i = 0; i < instance.getSize(); i++){
 			instanceIDs.add(i);
 		}
 
 		MUCStatistics stat = new MUCStatistics();
 		stat.instanceName = "output.cnf";
-		
+
 
 		DimacsCnfOutput.writeDimacsCnfFile(this.path, instance);
 
@@ -90,7 +92,7 @@ public class AlgorithmData {
 	public boolean isMUS() {
 		return isMus ;
 	}
-	
+
 	@Override
 	public boolean equals(Object o){
 		if (o instanceof AlgorithmData){
@@ -102,7 +104,7 @@ public class AlgorithmData {
 
 	public AlgorithmData clone() {
 		AlgorithmData ret = new AlgorithmData();
-		
+
 		ret.freeze = this.freeze.clone();
 		ret.instance = this.instance;
 		ret.instanceFile = this.instanceFile;
@@ -110,13 +112,13 @@ public class AlgorithmData {
 		ret.isMus = this.isMus;
 		ret.M = this.M.clone();
 		ret.S = this.S.clone();
-		
+
 		return ret;
 	}
 
 	public void resetS() {
 		if (heuristic != null)
-			this.S = new ConcurrentSkipListSet<Integer>(heuristic.getComparator());
+			this.S = new ConcurrentSkipListSet<Integer>(heuristic.getComparator(instance));
 		else
 			this.S = new ConcurrentSkipListSet<Integer>();
 	}

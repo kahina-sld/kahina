@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kahina.core.KahinaState;
+import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.dag.ColoredPathDAG;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
@@ -11,6 +12,7 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
 import org.kahina.logic.sat.insertionmus.algorithms.AlgorithmData;
 import org.kahina.logic.sat.insertionmus.algorithms.BasicAlgorithm;
+import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.ISortingHeuristic;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
 import org.kahina.logic.sat.muc.MUCStepType;
 import org.kahina.logic.sat.muc.data.UCReducerList;
@@ -37,6 +39,8 @@ public class MUCState extends KahinaState
 	MUCInstance kahina;
 
 	private AlgorithmData data;
+
+	private ISortingHeuristic heuristic;
 
 	public MUCState(MUCInstance kahina)
 	{
@@ -99,10 +103,25 @@ public class MUCState extends KahinaState
 		if (stepID == -1) return null;
 		return retrieve(MUCStep.class, stepID);
 	}
+	@Override
+	public synchronized <T extends KahinaObject> T retrieve(Class<T> type, int stepID){
+		T ret = super.retrieve(type, stepID);
+		
+		if (ret instanceof MUCStep){
+			MUCStep step = (MUCStep)ret;
+			if (this.heuristic != null)
+				step.setHeuristic(heuristic);
+		}
+		return ret;		
+	}
+	
+	
 
 	public void setSatInstance(CnfSatInstance satInstance) {
 		this.satInstance = satInstance;
 		this.data = new AlgorithmData(satInstance);
+		if (this.heuristic != null)
+			data.setHeuristic(this.heuristic);
 		//		this.data = data;
 		//		this.algorithm.setData(data);
 	}
@@ -124,6 +143,8 @@ public class MUCState extends KahinaState
 			store(nextID, step);
 			nodeForStep.put(step, nextID);
 			update = true;
+			if (this.heuristic != null)
+				step.setHeuristic(this.heuristic);
 		}else{
 			System.out.println("NODE ALREADY EXISTED");
 		}
@@ -146,11 +167,14 @@ public class MUCState extends KahinaState
 	}
 
 	public ColoredPathDAG getDecisionGraph() {
-		// TODO Auto-generated method stub
 		return this.decisionGraph;
 	}
 
 	public boolean stepExists(MUCStep step) {
 		return nodeForStep.get(step) != null;
+	}
+
+	public void setHeuristic(ISortingHeuristic heuristic) {
+		this.heuristic = heuristic;
 	}
 }

@@ -5,12 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import java.util.Random;
 
 
 import javax.swing.JList;
@@ -50,7 +47,6 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 			int listIndex = ((JList) e.getSource()).locationToIndex(new Point(e.getX(), e.getY()));
 			//        	System.out.println(listIndex + " " + e);
 			MUCStep uc = kahina.getState().getSelectedStep();
-			System.out.println("SelectedID: " + uc.getID());
 			if (uc != null && listIndex >= 0)
 			{
 				long time = System.currentTimeMillis();
