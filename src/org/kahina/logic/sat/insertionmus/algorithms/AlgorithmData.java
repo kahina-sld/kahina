@@ -2,6 +2,8 @@ package org.kahina.logic.sat.insertionmus.algorithms;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
@@ -25,10 +27,14 @@ public class AlgorithmData {
 	public int[] freeze;
 	public File instanceFile;
 	public File resultFile;
+	public File freezeFile;
 //	public File proofFile;
 	public String path;
 	public boolean isMus = false;
 	private ISortingHeuristic heuristic;
+	
+
+	public Map<Integer, int[]> allocations = new HashMap<Integer, int[]>();
 
 
 
@@ -39,6 +45,7 @@ public class AlgorithmData {
 		S = new ConcurrentSkipListSet<Integer>();
 //		S.
 		resultFile = new File("result");
+		freezeFile = new File("freeze");
 //		proofFile = new File("proof");
 	}
 
@@ -55,6 +62,7 @@ public class AlgorithmData {
 		S = new ConcurrentSkipListSet<Integer>();
 //		S.
 		resultFile = new File("result");
+		freezeFile = new File("freeze");
 //		proofFile = new File("proof");
 		
 		this.instance = satInstance;
