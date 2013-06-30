@@ -431,13 +431,15 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         {
             JFileChooser chooser = new JFileChooser(new File("."));
             chooser.setDialogTitle("Load SAT File");
-            chooser.showOpenDialog(gui.getMainWindow());
-            File dataFile = chooser.getSelectedFile();
-            
-            loadSATFile(dataFile);
-            gui.displayMainViews();
-            addFirstUC();
-            //generateFirstUC();
+            if (chooser.showOpenDialog(gui.getMainWindow()) == JFileChooser.APPROVE_OPTION)
+            {
+	            File dataFile = chooser.getSelectedFile();
+	            
+	            loadSATFile(dataFile);
+	            gui.displayMainViews();
+	            addFirstUC();
+	            //generateFirstUC();
+            }
         }
         else if (MUCControlEventCommands.LOAD_PATH.equals(command))
         {
@@ -449,9 +451,15 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             CnfSatInstance usInstance = satInstance.selectClauses(step.getUc());
             JFileChooser chooser = new JFileChooser(new File("."));
             chooser.setDialogTitle("Export US to DIMACS file");
-            chooser.showSaveDialog(gui.getMainWindow());
-            File dataFile = chooser.getSelectedFile();
-            DimacsCnfOutput.writeDimacsCnfFile(dataFile.getAbsolutePath(), usInstance);
+            if (chooser.showSaveDialog(gui.getMainWindow()) == JFileChooser.APPROVE_OPTION)
+            {
+            	File dataFile = chooser.getSelectedFile();
+            	DimacsCnfOutput.writeDimacsCnfFile(dataFile.getAbsolutePath(), usInstance);
+            }
+            else
+            {
+            	System.err.println("US export canceled by the user.");
+            }
         }
         else if (MUCControlEventCommands.EXPORT_SYMBOLIC_DIMACS.equals(command))
         {
@@ -459,9 +467,15 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             CnfSatInstance usInstance = satInstance.selectClauses(step.getUc());
             JFileChooser chooser = new JFileChooser(new File("."));
             chooser.setDialogTitle("Export US to symbolic DIMACS file");
-            chooser.showSaveDialog(gui.getMainWindow());
-            File dataFile = chooser.getSelectedFile();
-            DimacsCnfOutput.writeSymbolDimacsCnfFile(dataFile.getAbsolutePath(), usInstance);
+            if (chooser.showSaveDialog(gui.getMainWindow()) == JFileChooser.APPROVE_OPTION)
+            {
+            	File dataFile = chooser.getSelectedFile();
+            	DimacsCnfOutput.writeSymbolDimacsCnfFile(dataFile.getAbsolutePath(), usInstance);
+            }
+            else
+            {
+            	System.err.println("US export canceled by the user.");
+            }
         }
         else if (MUCControlEventCommands.EXPORT_VAR_OCCURRENCES.equals(command))
         {
@@ -469,9 +483,15 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             CnfSatInstance usInstance = satInstance.selectClauses(step.getUc());
             JFileChooser chooser = new JFileChooser(new File("."));
             chooser.setDialogTitle("Export variable occurrence statistics");
-            chooser.showSaveDialog(gui.getMainWindow());
-            File dataFile = chooser.getSelectedFile();
-            DimacsCnfOutput.writeVariableOccurrences(dataFile.getAbsolutePath(), usInstance);
+            if (chooser.showSaveDialog(gui.getMainWindow()) == JFileChooser.APPROVE_OPTION)
+            {
+            	File dataFile = chooser.getSelectedFile();
+            	DimacsCnfOutput.writeVariableOccurrences(dataFile.getAbsolutePath(), usInstance);
+            }
+            else
+            {
+            	System.err.println("Export of var occurrence statistics canceled by the user.");
+            }
         }
     }
     

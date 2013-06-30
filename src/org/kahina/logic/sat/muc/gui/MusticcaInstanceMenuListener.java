@@ -43,8 +43,14 @@ public class MusticcaInstanceMenuListener implements ActionListener
     {
         JFileChooser chooser = new JFileChooser(new File("."));
         chooser.setDialogTitle(kahina.getGUI().getNewGrammarString());
-        chooser.showOpenDialog(menu);
-        File dataFile = chooser.getSelectedFile();
-        if (dataFile != null) kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, "default project"));
+        if (chooser.showOpenDialog(menu) == JFileChooser.APPROVE_OPTION)
+        {        
+        	File dataFile = chooser.getSelectedFile();
+        	if (dataFile != null) kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, "default project"));
+        }
+        else
+        {
+        	System.err.println("Instance loading canceled by the user.");
+        }
     }
 }

@@ -1,4 +1,4 @@
-package org.kahina.core.test;
+ package org.kahina.core.test;
 
 import java.awt.Color;
 import java.util.HashMap;
