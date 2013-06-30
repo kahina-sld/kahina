@@ -26,7 +26,8 @@ public class UCReducerPanel extends JPanel implements ActionListener
     private JLabel currentStatusLabel;
     private JLabel summaryLabel;
     private JButton signalColor;
-    private JButton commandButton;
+    private JButton commandButton1;
+    private JButton commandButton2;
     
     ReductionAgent reducer;
     
@@ -55,10 +56,20 @@ public class UCReducerPanel extends JPanel implements ActionListener
         statusPanel.add(summaryLabel);
         this.add(statusPanel,BorderLayout.CENTER);
         
-        commandButton = new JButton("Stop");
-        commandButton.setActionCommand("stop");
-        commandButton.addActionListener(this);
-        this.add(commandButton, BorderLayout.LINE_END);
+        JPanel commandButtonPanel = new JPanel();
+        commandButtonPanel.setLayout(new BorderLayout());
+        
+        commandButton1 = new JButton("Pause");
+        commandButton1.setActionCommand("pause");
+        commandButton1.addActionListener(this);
+        commandButtonPanel.add(commandButton1, BorderLayout.PAGE_START);
+        
+        commandButton2 = new JButton("Stop");
+        commandButton2.setActionCommand("stop");
+        commandButton2.addActionListener(this);
+        commandButtonPanel.add(commandButton2, BorderLayout.PAGE_END);
+        
+        this.add(commandButtonPanel, BorderLayout.LINE_END);
         
         reducer = null;
         this.kahina = kahina;
@@ -105,10 +116,36 @@ public class UCReducerPanel extends JPanel implements ActionListener
         signalColor.setBackground(color);
     }
     
+    public void displayRunningState()
+    {
+        commandButton1.setText("Pause");
+        commandButton1.setActionCommand("pause");
+        commandButton2.setText("Stop");
+        commandButton2.setActionCommand("stop");
+    }
+    
+    public void displayPausedState()
+    {
+        commandButton1.setText("Continue");
+        commandButton1.setActionCommand("continue");
+        commandButton2.setText("Stop");
+        commandButton2.setActionCommand("stop");
+    }
+    
     public void displayCompletedState()
     {
-        commandButton.setText("Hide");
-        commandButton.setActionCommand("hide");
+        commandButton1.setText("Hide");
+        commandButton1.setActionCommand("hide");
+        commandButton2.setText("Remove");
+        commandButton2.setActionCommand("remove");
+    }
+    
+    public void displayHiddenState()
+    {
+        commandButton1.setText("Show");
+        commandButton1.setActionCommand("show");
+        commandButton2.setText("Remove");
+        commandButton2.setActionCommand("remove");
     }
     
     //is used by the UCReducer to trigger a refresh of the decision DAG display
@@ -127,18 +164,37 @@ public class UCReducerPanel extends JPanel implements ActionListener
             Color newColor = JColorChooser.showDialog(this,"Choose Background Color",signalColor.getBackground());
             signalColor.setBackground(newColor);
             reducer.setSignalColor(newColor);
-        }  
+        }
+        else if (s.equals("pause"))
+        {
+            reducer.pauseTasks();
+            displayPausedState();
+        }
+        else if (s.equals("continue"))
+        {
+            reducer.continueTasks();
+        }
+        else if (s.equals("stop"))
+        {
+            reducer.cancelTasks();
+        }
+        else if (s.equals("show"))
+        {
+        	reducer.show();
+            kahina.getState().getDecisionGraph().addColorPath(reducer.getPath());
+        }
         else if (s.equals("hide"))
+        {
+        	reducer.hide();
+            kahina.getState().getDecisionGraph().removeColorPath(reducer.getPath());
+        }
+        else if (s.equals("remove"))
         {
             kahina.getState().getDecisionGraph().removeColorPath(reducer.getPath());
             kahina.getState().getReducers().remove(reducer);
             this.getParent().remove(this);
         }
-        else if (s.equals("stop"))
-        {
-            reducer.cancelTasks();
-            displayCompletedState();
-        }
+        this.validate();
         this.repaint();
         this.requestViewUpdate();
     }
