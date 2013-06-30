@@ -43,6 +43,8 @@ public class ReductionAgent extends KahinaTaskManager
     int ucID = -1;
     
     boolean stopped = false;
+    boolean paused = false;
+    boolean hidden = false;
     
     MiniSATFiles files;
     boolean clauseSetRefinement = true;
@@ -263,6 +265,28 @@ public class ReductionAgent extends KahinaTaskManager
     
     private void startNextReduction()
     {
+        if (paused)
+        {
+            if (getPanel() != null)
+            {
+                getPanel().displayIdentificationInfo(heuristics.getName() + " from US of size " + startSize);
+                getPanel().displayCurrentStatusInfo(" paused at size " + uc.getUc().size());
+                getPanel().displaySummaryInfo("after " + numSATReductions + " (" + numRealSATReductions + ") SAT reductions "
+                        + " and " + numUNSATReductions + " (" + numRealUNSATReductions + ") UNSAT reductions.");
+            }
+            while (paused)
+            {
+            	try 
+            	{
+					Thread.sleep(100);
+				} 
+            	catch (InterruptedException e) 
+            	{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        }
         state.getKahina().getLogger().startMeasuring();
         if (stopped)
         {
@@ -354,7 +378,16 @@ public class ReductionAgent extends KahinaTaskManager
                 panel.displayCurrentStatusInfo(this.panel.getCurrentStatusInfo());
                 panel.displaySummaryInfo(this.panel.getSummaryInfo());
             }
-            if (stopped) panel.displayCompletedState();
+            if (stopped)
+            {
+            	if (hidden) panel.displayHiddenState();
+            	else panel.displayCompletedState();
+            }
+            else
+            {
+            	if (paused) panel.displayPausedState();
+            	else panel.displayRunningState();
+            }
             this.panel = panel;
             panel.setReducer(this);
         }
@@ -393,6 +426,26 @@ public class ReductionAgent extends KahinaTaskManager
     public void cancelTasks()
     {
         stopped = true;
+    }
+    
+    public void pauseTasks()
+    {
+        paused = true;
+    }
+    
+    public void continueTasks()
+    {
+        paused = false;
+    }
+    
+    public void hide()
+    {
+    	hidden = true;
+    }
+    
+    public void show()
+    {
+    	hidden = false;
     }
 
     public UCReducerPanel getPanel()
