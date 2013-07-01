@@ -18,7 +18,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     //  + possibly very interesting structure for interactive MUS extraction
     //  - expensive maintenance!
     
-    static final boolean VERBOSE = true;
+    static final boolean VERBOSE = false;
     
     //main parameter, defines minimum block size
     static final int MIN_BLOCK_SIZE = 1;
@@ -67,9 +67,10 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     //TODO: decide whether this should be cashed (explicit tree structure?)
     public List<Integer> getSubblocks(int blockID)
     {
-        //System.err.println("getSubblocks(" + blockID + ")");
+        if (VERBOSE) System.err.println("getSubblocks(" + blockID + ")");
         List<Integer> subblocks = new LinkedList<Integer>();
-        //System.err.println("  block = " + blockList.get(blockID));
+        if (VERBOSE) System.err.println("  block = " + blockList.get(blockID));
+        if (VERBOSE) System.err.println("  blockDefClause = " + blockDefClauses.get(blockID));
         for (int literal : blockDefClauses.get(blockID))
         {
             Integer litBlockID = blockVarBlockID.get(literal);
@@ -78,7 +79,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
                 subblocks.add(litBlockID);
             }
         }
-        //System.err.println("  subblocks = " + subblocks);
+        if (VERBOSE) System.err.println("  subblocks = " + subblocks);
         return subblocks;
     }
     
@@ -94,10 +95,11 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     {
         List<Integer> representation = new LinkedList<Integer>();
         Overlap overlap = new Overlap(block, blockList.get(blockID));
-        /*System.err.println("Overlap(block.size() = " + block.size() + ", blockID = " + blockID + "):" );
-        System.err.println("  aIntersectB.size() = " + overlap.aIntersectB.size());
-        System.err.println("  aMinusB.size()     = " + overlap.aMinusB.size());
-        System.err.println("  bMinusA.size()     = " + overlap.bMinusA.size());*/
+        if (VERBOSE) System.err.println("buildRepresentation(" + block + "," + blockList.get(blockID) + ")");
+        if (VERBOSE) System.err.println("Overlap(block.size() = " + block.size() + ", blockID = " + blockID + "):" );
+        if (VERBOSE) System.err.println("  aIntersectB.size() = " + overlap.aIntersectB.size());
+        if (VERBOSE) System.err.println("  aMinusB.size()     = " + overlap.aMinusB.size());
+        if (VERBOSE) System.err.println("  bMinusA.size()     = " + overlap.bMinusA.size());
         //IDEA: only express those elements which are inside the reference block
         //just ignore overlap.aMinusB.size() here, this is handled by other calls
         if (overlap.bMinusA.size() > 0)
@@ -110,7 +112,7 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
             else
             {
                 //recursive case: the representation makes use of subblocks  
-                //System.err.println("  Subblocks: " + subblocks);
+            	if (VERBOSE) System.err.println("  getSubblocks(" + blockID + ") = " + subblocks);
                 for (int subblockID : subblocks)
                 {
                     representation.addAll(buildRepresentation(block,subblockID));
@@ -162,10 +164,11 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
     private void ensureRepresentability(TreeSet<Integer> block, int blockID)
     {
         Overlap overlap = new Overlap(block, blockList.get(blockID));
-        System.err.println("Overlap(block.size() = " + block.size() + ", blockID = " + blockID + "):" );
-        System.err.println("  aIntersectB.size() = " + overlap.aIntersectB.size());
-        System.err.println("  aMinusB.size()     = " + overlap.aMinusB.size());
-        System.err.println("  bMinusA.size()     = " + overlap.bMinusA.size());
+        if (VERBOSE) System.err.println("ensureRepresentability(" + block + "," + blockList.get(blockID) + ")");
+        if (VERBOSE) System.err.println("Overlap(block.size() = " + block.size() + ", blockID = " + blockID + "):" );
+        if (VERBOSE) System.err.println("  aIntersectB.size() = " + overlap.aIntersectB.size());
+        if (VERBOSE) System.err.println("  aMinusB.size()     = " + overlap.aMinusB.size());
+        if (VERBOSE) System.err.println("  bMinusA.size()     = " + overlap.bMinusA.size());
         //IDEA: only express those elements which are inside the reference block
         //just ignore overlap.aMinusB.size() here, this is handled by other calls
         if (overlap.bMinusA.size() > 0)
@@ -175,13 +178,14 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
             {
                 if (overlap.aIntersectB.size() >= MIN_BLOCK_SIZE)
                 {
+                	if (VERBOSE) System.err.println("  splitBlock(" + blockID + "," + overlap.aIntersectB + "," + overlap.bMinusA + ")");
                     splitBlock(blockID, overlap.aIntersectB, overlap.bMinusA);
                 }
             }
             else
             {
                 //recursive case: the representation makes use of subblocks  
-                //System.err.println("  Subblocks: " + subblocks);
+            	if (VERBOSE) System.err.println("  getSubblocks(" + blockID + ") = " + subblocks);
                 for (int subblockID : subblocks)
                 {
                     ensureRepresentability(block,subblockID);
@@ -260,9 +264,9 @@ public class RecursiveBlockHandler extends LiteralBlockHandler
             //blockIndex.put(literal, blockID);
         }
         int clauseID = satInstance.addClause(blockDefClause);
-        List<Integer> clauseIDs = new LinkedList<Integer>();
-        clauseIDs.add(clauseID);
-        blockDefClauses.put(blockID, clauseIDs);
+        //List<Integer> clauseIDs = new LinkedList<Integer>();
+        //clauseIDs.add(clauseID);
+        blockDefClauses.put(blockID, blockDefClause);
         satInstance.announceAddedClauses();
         needsUpdate = true;
         if (VERBOSE) System.err.println("  new block clause " + clauseID + ": " + blockDefClause);

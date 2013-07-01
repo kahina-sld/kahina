@@ -456,6 +456,7 @@ public class MiniSAT
                     return false;
                 }
             }
+            input.close();
         }
         catch (IOException e)
         {
@@ -504,6 +505,7 @@ public class MiniSAT
                     }
                 }
             }
+            input.close();
         }
         catch (IOException e)
         {
@@ -548,6 +550,7 @@ public class MiniSAT
                         }
                     }
                 }
+                input.close();
             }
         }
         catch (IOException e)

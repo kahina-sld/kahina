@@ -87,8 +87,6 @@ public class MUCReductionManager extends KahinaTaskManager
                     System.err.println("successful reduction: clause(s) " + ucTask.candidates + " in US " + ucTask.ucID);
                     int stepID = state.registerMUC(result, ucTask.ucID, ucTask.candidates);
                     resultID = stepID;
-                    System.err.println("uc: " + ucTask.uc.getUc());
-                    System.err.println("result: " + result.getUc());
                     Overlap overlap = new Overlap(ucTask.uc.getUc(),result.getUc());
                     for (int candidate : overlap.aMinusB)
                     {
