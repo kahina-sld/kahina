@@ -123,9 +123,10 @@ public class MUCStepView extends KahinaSatInstanceListView
         {
             listModel.addListDataListener(listener);
         }
-        //TODO: hack forces JList to update, long term solution: implement FastListModel
-        listModel.add(0, "dummy for update");
-        listModel.remove(0);
+        //TODO: hack forces JList to update, long term solution: implement FastListModel that does fireContentsChanged()
+        //listModel.add(0, "dummy for update");
+        //listModel.remove(0);
+        listModel.setElementAt(listModel.getElementAt(0), 0);
         needsRedraw = true;
         kahina.getLogger().endMeasuring("for recalculating the MUCStepView");
     }

@@ -177,7 +177,7 @@ public class ReductionTask extends KahinaTask
                         reducedCore = new ArrayList<Integer>();
                     }
                 }
-                System.err.println("reducedCore: " + reducedCore);
+                //System.err.println("reducedCore: " + reducedCore);
                 if (modelRotation)
                 {
                     model = MiniSAT.getCompleteModel(files.tmpResultFile);
