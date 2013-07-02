@@ -448,11 +448,13 @@ public class MiniSAT
                 if (line.equals("UNSAT"))
                 {
                     // System.out.println("UNSAT");
+                    input.close();
                     return true;
                 }
                 else if (line.equals("SAT"))
                 {
                     // System.out.println("SAT");
+                    input.close();
                     return false;
                 }
             }
@@ -550,8 +552,8 @@ public class MiniSAT
                         }
                     }
                 }
-                input.close();
             }
+            input.close();
         }
         catch (IOException e)
         {
@@ -599,6 +601,7 @@ public class MiniSAT
                     }
                 }
             }
+            input.close();
         }
         catch (IOException e)
         {
@@ -621,14 +624,17 @@ public class MiniSAT
                 if (line.equals("UNSAT"))
                 {
                     //System.err.println("MiniSat says: " + resultFile.getName() + " is UNSAT");
-                    return true;
+                	input.close();
+                	return true;
                 }
                 else if (line.equals("SAT"))
                 {
                     //System.err.println("MiniSat says: " + resultFile.getName() + " is SAT");
-                    return false;
+                	input.close();
+                	return false;
                 }
             }
+            input.close();
         }
         catch (IOException e)
         {
