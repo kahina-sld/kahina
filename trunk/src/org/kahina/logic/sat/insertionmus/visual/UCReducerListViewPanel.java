@@ -48,7 +48,7 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 				AbstractAlgorithm alg = step.getAlgorithm();
 				AlgorithmData data = step.getData();
 
-				while (!data.isMus){
+				while (!data.isMUS()){
 					while(data.instanceIDs.size() > 1){
 						alg.nextStep(data);
 					}
@@ -60,7 +60,6 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 					//					data = newStep.getData();
 					step.reset();
 					step = newStep;
-
 				}
 				System.out.println("Found a MUS");
 			}

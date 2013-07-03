@@ -87,7 +87,7 @@ public class MUCState extends KahinaState
 			this.files.deleteTempFiles();
 		}
 		this.files = null;
-		this.nodeForStep = new HashMap<MUCStep,Integer>();
+		this.nodeForStep.clear();
 		initialize();
 	}
 
@@ -106,7 +106,7 @@ public class MUCState extends KahinaState
 	@Override
 	public synchronized <T extends KahinaObject> T retrieve(Class<T> type, int stepID){
 		T ret = super.retrieve(type, stepID);
-		
+
 		if (ret instanceof MUCStep){
 			MUCStep step = (MUCStep)ret;
 			if (this.heuristic != null)
@@ -114,8 +114,8 @@ public class MUCState extends KahinaState
 		}
 		return ret;		
 	}
-	
-	
+
+
 
 	public void setSatInstance(CnfSatInstance satInstance) {
 		this.satInstance = satInstance;
@@ -135,31 +135,42 @@ public class MUCState extends KahinaState
 	//	static int counter = 0;
 	public void newStep(MUCStep step, int parrentID){	
 		boolean update = false;
-		Integer nextID;
-		if ((nextID = nodeForStep.get(step))== null){ // if it is a new step then do
-			nextID = nextStepID();
-			decisionGraph.addNode(nextID, "Init: " + step.getSize() + "", MUCStepType.UNKNOWN);
-			step.setID(nextID);
-			store(nextID, step);
-			nodeForStep.put(step, nextID);
+		Integer nodeID;
+		if ((nodeID = nodeForStep.get(step))== null){ // if it is a new step then do
+			nodeID = nextStepID();
+			int nodeStatus = step.getData().isMUS()?MUCStepType.MINIMAL:MUCStepType.UNKNOWN;
+
+			decisionGraph.addNode(nodeID, "Init: " + step.getSize() + "", nodeStatus);
+			step.setID(nodeID);
+			store(nodeID, step);
+			nodeForStep.put(step, nodeID);
+			//			nodeForStep.
 			update = true;
+			System.out.println("added " + nodeID + " status: " + nodeStatus);
 			if (this.heuristic != null)
 				step.setHeuristic(this.heuristic);
 		}else{
-			System.out.println("NODE ALREADY EXISTED");
+			System.out.println("NODE ALREADY EXISTED " + nodeID);
+			int nodeStatus = step.getData().isMUS()?MUCStepType.MINIMAL:MUCStepType.UNKNOWN;
+
+			if (decisionGraph.getNodeStatus(nodeID) != nodeStatus){
+				decisionGraph.setNodeStatus(nodeID, nodeStatus);
+				update = true;
+			}
 		}
 
-		if (parrentID >= 0 && parrentID != nextID){// if a new edge is needed
-			decisionGraph.addEdge(parrentID, nextID, "");
+		if (parrentID >= 0 && parrentID != nodeID){// if a new edge is needed
+			decisionGraph.addEdge(parrentID, nodeID, "");
 			update = true;
+			System.out.println("added Edge " + parrentID);
 		}
 		//update view
 		if (update){
-			kahina.dispatchEvent(new KahinaUpdateEvent(nextID));
+			kahina.dispatchEvent(new KahinaUpdateEvent(nodeID));
 			System.out.println("selectionEvent");
-			kahina.dispatchEvent(new KahinaSelectionEvent(nextID));
+			kahina.dispatchEvent(new KahinaSelectionEvent(nodeID));
 		}
-		System.out.println("finished");
+		//		System.out.println("finished");
 	}
 
 	public CnfSatInstance getSatInstance() {

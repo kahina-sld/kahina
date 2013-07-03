@@ -24,7 +24,7 @@ public class MUCStepViewRemaining extends KahinaSatInstanceListView
     @Override
     public JComponent makePanel()
     {
-        MUCStepViewPanel panel = new MUCStepViewPanel(kahina);
+        MUCStepViewPanel panel = new MUCStepViewPanel(kahina, true);
         kahina.registerInstanceListener("redraw", panel);
         panel.setView(this);
         return panel;

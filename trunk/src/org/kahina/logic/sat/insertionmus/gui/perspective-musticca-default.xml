@@ -2,15 +2,15 @@
 <kahina:perspective xmlns:kahina="http://www.kahina.org/xml/kahina" kahina:appid="" kahina:name="MUStICCa default perspective">
   <kahina:arrangement>
     <kahina:main-window kahina:border="false" kahina:height="727" kahina:id="0" kahina:primary="false" kahina:scroll="false" kahina:title="MUStICCa" kahina:width="939" kahina:xpos="0" kahina:ypos="25">
-       <kahina:vert-split-window kahina:height="1223" kahina:id="9" kahina:title="MinUnsatCore Visualization" kahina:width="1271" kahina:xpos="297" kahina:ypos="25">
-         <kahina:hori-split-window kahina:height="367" kahina:id="17" kahina:title="Reduction Graph and Current US" kahina:width="971" kahina:xpos="300" kahina:ypos="0">
-            <kahina:hori-split-window kahina:height="367" kahina:id="18" kahina:title="Reduction Graph and Current US" kahina:width="971" kahina:xpos="300" kahina:ypos="0">
-               <kahina:default-window kahina:binding="remainingUC" kahina:border="true" kahina:height="488" kahina:id="19" kahina:primary="true" kahina:scroll="false" kahina:title="Remaining clauses" kahina:width="500" kahina:xpos="825" kahina:ypos="0"/> 
-               <kahina:default-window kahina:binding="currentUC" kahina:border="true" kahina:height="488" kahina:id="20" kahina:primary="true" kahina:scroll="false" kahina:title="Current US" kahina:width="500" kahina:xpos="1000" kahina:ypos="0"/>
+       <kahina:vert-split-window kahina:height="800" kahina:id="9" kahina:title="MinUnsatCore Visualization" kahina:width="1271" kahina:xpos="297" kahina:ypos="25">
+         <kahina:hori-split-window kahina:height="600" kahina:id="17" kahina:title="Reduction Graph and Current US" kahina:width="900" kahina:xpos="300" kahina:ypos="0">
+            <kahina:hori-split-window kahina:height="367" kahina:id="18" kahina:title="Reduction Graph and Current US" kahina:width="450" kahina:xpos="320" kahina:ypos="0">
+               <kahina:default-window kahina:binding="remainingUC" kahina:border="true" kahina:height="488" kahina:id="19" kahina:primary="true" kahina:scroll="false" kahina:title="Remaining clauses" kahina:width="250" kahina:xpos="825" kahina:ypos="0"/> 
+               <kahina:default-window kahina:binding="currentUC" kahina:border="true" kahina:height="488" kahina:id="20" kahina:primary="true" kahina:scroll="false" kahina:title="Partial MUS" kahina:width="200" kahina:xpos="1000" kahina:ypos="0"/>
              </kahina:hori-split-window>  
-             <kahina:default-window kahina:binding="decisionGraph" kahina:border="true" kahina:height="488" kahina:id="1" kahina:primary="true" kahina:scroll="false" kahina:title="Reduction graph" kahina:width="578" kahina:xpos="320" kahina:ypos="25"/>
+             <kahina:default-window kahina:binding="decisionGraph" kahina:border="true" kahina:height="488" kahina:id="1" kahina:primary="true" kahina:scroll="false" kahina:title="Reduction graph" kahina:width="450" kahina:xpos="300" kahina:ypos="25"/>
           </kahina:hori-split-window>
-         <kahina:default-window kahina:binding="reducers" kahina:border="true" kahina:height="556" kahina:id="13" kahina:primary="true" kahina:scroll="false" kahina:title="Automated Reduction" kahina:width="971" kahina:xpos="800" kahina:ypos="500"/>
+         <kahina:default-window kahina:binding="reducers" kahina:border="true" kahina:height="200" kahina:id="13" kahina:primary="true" kahina:scroll="false" kahina:title="Automated Reduction" kahina:width="971" kahina:xpos="800" kahina:ypos="500"/>
        </kahina:vert-split-window>
     </kahina:main-window>
   </kahina:arrangement>

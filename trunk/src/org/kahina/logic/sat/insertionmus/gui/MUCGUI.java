@@ -24,6 +24,7 @@ import org.kahina.logic.sat.insertionmus.MUCInstance;
 import org.kahina.logic.sat.insertionmus.MUCState;
 import org.kahina.logic.sat.insertionmus.MUCStep;
 //import org.kahina.logic.sat.muc.MUCStepType;
+import org.kahina.logic.sat.muc.MUCStepType;
 import org.kahina.logic.sat.muc.MetaLearningMode;
 import org.kahina.logic.sat.insertionmus.gui.MUCWindowManager;
 import org.kahina.logic.sat.muc.heuristics.AscendingIndexHeuristic;
@@ -125,10 +126,10 @@ public class MUCGUI extends KahinaGUI
         livingViews.add(decisionGraphView);
         varNameToView.put("decisionGraph", decisionGraphView);
         
-//        decisionGraphView.setStatusColorEncoding(MUCStepType.UNKNOWN, Color.WHITE);
-//        decisionGraphView.setStatusColorEncoding(MUCStepType.COMPLETE, NICE_GREEN);
-//        decisionGraphView.setStatusColorEncoding(MUCStepType.MINIMAL, NICE_RED);
-//        decisionGraphView.setStatusColorEncoding(MUCStepType.REDUCIBLE, LIGHT_GREEN);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.UNKNOWN, Color.WHITE);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.COMPLETE, NICE_GREEN);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.MINIMAL, NICE_RED);
+        decisionGraphView.setStatusColorEncoding(MUCStepType.REDUCIBLE, LIGHT_GREEN);
         
         //this one is not needed any longer, it became obsolete with the mucView
         /*stepController = new MUCStepController(kahina);

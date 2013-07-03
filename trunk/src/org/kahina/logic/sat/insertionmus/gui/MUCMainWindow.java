@@ -25,7 +25,7 @@ public class MUCMainWindow extends KahinaMainWindow
     
     protected boolean showsViewMenu()
     {
-        return false;
+        return true;
     }
     
     protected boolean showsProjectMenu()
