@@ -5,8 +5,8 @@
 	<property name="lib" location="lib"/>
 	<property name="dist" location="dist"/>
 	<property file="build.properties"/>
-
-	<fail unless="lib.jasper" message="You need to specify the location of your SICStus Prolog installation's jasper.jar in the property lib.jasper. Create a file called build.properties to do so. You can use build.properties.sample as a model."/>
+	
+	<!--<fail unless="lib.jasper" message="You need to specify the location of your SICStus Prolog installation's jasper.jar in the property lib.jasper. Create a file called build.properties to do so. You can use build.properties.sample as a model."/>-->
 	
 	<target name="compile" depends="init">
 		<javac srcdir="${src}" destdir="${bin}" source="1.6" target="1.6" compiler="javac1.6" includeantruntime="false" excludes="org/kahina/logic/**/*.java org/kahina/core/control/KahinaCodeLinePropertySensor.java org/kahina/core/edit/source/KahinaJEditActionListener.java">
@@ -42,8 +42,8 @@
 	            	  <exclude name="org/kahina/core/visual/chart/**"/>
 	            	  <exclude name="org/kahina/core/visual/graph/**"/>
 	            	  <exclude name="org/kahina/core/visual/source/**"/>
-		              <exclude name="org/kahina/core/visual/tree/**"/>
 	            	  <exclude name="org/kahina/logic/sat/freemuc/**"/>
+	            	  <exclude name="org/kahina/logic/sat/insertionmus/**"/>
 	            	  <exclude name="org/kahina/logic/sat/visual/cnf/graph/**"/>
 	            	  <exclude name="org/kahina/logic/sat/visual/free/**"/>
                       <exclude name="org/kahina/lp/**"/>            	
