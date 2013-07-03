@@ -10,12 +10,9 @@ import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaWindowManager;
-import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.dag.ColoredPathDAGView;
 import org.kahina.core.visual.dag.LayeredLayouter;
-import org.kahina.core.visual.graph.KahinaGraphViewOptions;
-import org.kahina.core.visual.graph.SpringLayouter;
 import org.kahina.core.visual.tree.KahinaTreeViewOptions;
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.cnf.GroupCnfSatInstance;
@@ -25,23 +22,13 @@ import org.kahina.logic.sat.muc.MUCState;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.MUCStepType;
 import org.kahina.logic.sat.muc.MetaLearningMode;
-import org.kahina.logic.sat.muc.heuristics.AscendingIndexHeuristic;
-import org.kahina.logic.sat.muc.heuristics.AscendingRelevanceHeuristic;
-import org.kahina.logic.sat.muc.heuristics.CenteredRelevanceHeuristic;
-import org.kahina.logic.sat.muc.heuristics.DescendingIndexHeuristic;
-import org.kahina.logic.sat.muc.heuristics.CenteredIndexHeuristic;
-import org.kahina.logic.sat.muc.heuristics.DescendingRelevanceHeuristic;
 import org.kahina.logic.sat.muc.heuristics.ReductionHeuristic;
-import org.kahina.logic.sat.muc.visual.MUCStepController;
 import org.kahina.logic.sat.muc.visual.MUCStepView;
 import org.kahina.logic.sat.muc.visual.MetaInstanceView;
 import org.kahina.logic.sat.muc.visual.PartitionBlockView;
 import org.kahina.logic.sat.muc.visual.RecursiveBlockView;
 import org.kahina.logic.sat.muc.visual.UCReducerListView;
-import org.kahina.logic.sat.visual.cnf.graph.KahinaGroupSatInstanceGraphView;
-import org.kahina.logic.sat.visual.cnf.graph.KahinaSatInstanceGraphView;
 import org.kahina.logic.sat.visual.cnf.list.KahinaSatInstanceListView;
-import org.kahina.qtype.gui.QTypeGUI;
 
 public class MUCGUI extends KahinaGUI
 {

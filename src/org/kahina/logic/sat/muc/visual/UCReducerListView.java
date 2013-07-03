@@ -55,8 +55,7 @@ public class UCReducerListView extends KahinaView<UCReducerList>
         }
         catch (InstantiationException e)
         {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            System.err.println("  WARNING: " + heuristic + " is not a class derived from ReductionHeuristic! Ignoring.");
         }
     }
 

@@ -1,8 +1,12 @@
 package org.kahina.logic.sat.muc;
 
 import java.awt.event.ActionEvent;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -603,6 +607,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         else
         {
             MUCInstance kahina = new MUCInstance(metaLearningMode);
+            kahina.loadDefaultHeuristics();
             kahina.start(args);
         }
     }
@@ -643,6 +648,42 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     {
         recentPerspectives = new LinkedList<KahinaPerspective>();
         defaultPerspectives = new LinkedList<KahinaPerspective>();       
+    }
+    
+    protected void loadHeuristicsFile(String fileName)
+    {
+        System.err.println("Loading heuristics specification file " + fileName + "...");
+        try
+        {
+            BufferedReader heuristicsFileInput = new BufferedReader(new FileReader(new File(fileName)));
+            String className;
+            while ((className = heuristicsFileInput.readLine()) != null)
+            {
+                try
+                {
+                    Class<? extends ReductionHeuristic> heuristic = (Class<? extends ReductionHeuristic>) Class.forName(className);
+                    heuristics.add(heuristic);
+                }
+                catch (ClassNotFoundException e)
+                {
+                    System.err.println("  WARNING: could not find heuristic class " + className + "! Ignoring.");
+                }
+                catch (ClassCastException e)
+                {
+                    System.err.println("  WARNING: " + className + " is not a class derived from ReductionHeuristic! Ignoring.");
+                }
+            }
+        }
+        catch (FileNotFoundException e)
+        {
+            System.err.println("  ERROR: file " + fileName + " not found! Aborting.");
+            System.exit(1);
+        }
+        catch (IOException e)
+        {
+            System.err.println("  ERROR: could not read from file " + fileName + "! Aborting.");
+            System.exit(1);
+        }
     }
     
     protected void loadDefaultHeuristics()

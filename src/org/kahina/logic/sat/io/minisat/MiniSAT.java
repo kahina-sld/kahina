@@ -364,9 +364,9 @@ public class MiniSAT
     {
         try
         {
-//        	System.err.println("minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
+            //System.err.println("minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
             Process p = Runtime.getRuntime().exec("minisat " + inputFile.getAbsolutePath() + " -p " + proofFile.getAbsolutePath() + " -c -r " + resultFile.getAbsolutePath() + " -f " + freezeFile);
-             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             // Set a timer to interrupt the process if it does not return within
             // the timeout period
             Timer timer = new Timer();
