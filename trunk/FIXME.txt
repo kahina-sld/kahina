@@ -26,3 +26,6 @@ java.lang.ArrayIndexOutOfBoundsException: 39 >= 0
 	
 	
 If a non existing Instance file is selected the program crashes.
+
+
+Kordinatenberechnung bei der Knotenselektion ist leicht verschoben.
