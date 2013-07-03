@@ -46,7 +46,8 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 			//			System.out.println("Click1");
 			int listIndex = ((JList) e.getSource()).locationToIndex(new Point(e.getX(), e.getY()));
 			//        	System.out.println(listIndex + " " + e);
-			MUCStep uc = kahina.getState().getSelectedStep();
+			MUCState state = kahina.getState();
+			MUCStep uc = state.getSelectedStep();
 			if (uc != null && listIndex >= 0)
 			{
 				long time = System.currentTimeMillis();
@@ -57,8 +58,9 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 					int clauseIndex = uc.getUc()[listIndex];
 
 					kahina.dispatchEvent(new ClauseSelectionEvent(clauseIndex));
-					if (uc.getAlgorithm().nextStep(clauseIndex, uc.getData())){
-						MUCStep nextStep = new MUCStep(uc.getData(), uc.getAlgorithm());
+					
+					if (state.getAlgorithm().nextStep(clauseIndex, uc.getData())){
+						MUCStep nextStep = new MUCStep(uc.getData());
 						uc.reset();
 
 						if (!kahina.getState().stepExists(nextStep)){
