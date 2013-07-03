@@ -39,6 +39,13 @@ import org.kahina.logic.sat.muc.bridge.MUCBridge;
 import org.kahina.logic.sat.muc.control.MUCControlEventCommands;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.gui.MUCGUI;
+import org.kahina.logic.sat.muc.heuristics.AscendingIndexHeuristic;
+import org.kahina.logic.sat.muc.heuristics.AscendingRelevanceHeuristic;
+import org.kahina.logic.sat.muc.heuristics.CenteredIndexHeuristic;
+import org.kahina.logic.sat.muc.heuristics.CenteredRelevanceHeuristic;
+import org.kahina.logic.sat.muc.heuristics.DescendingIndexHeuristic;
+import org.kahina.logic.sat.muc.heuristics.DescendingRelevanceHeuristic;
+import org.kahina.logic.sat.muc.heuristics.ReductionHeuristic;
 import org.kahina.logic.sat.muc.io.MUCExtension;
 import org.kahina.logic.sat.muc.test.AspCcgDontCareFilter;
 import org.kahina.logic.sat.muc.test.CfgDontCareFilter;
@@ -132,12 +139,16 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     
     private MetaLearningMode metaLearningMode;
     
+    private List<Class<? extends ReductionHeuristic>> heuristics;
+    
+    
     public MUCInstance(MetaLearningMode metaLearningMode)
     {
         this.satInstance = null;
         this.stat = null;
         this.files = null;
         this.metaLearningMode = metaLearningMode;
+        this.heuristics = new ArrayList<Class<? extends ReductionHeuristic>>();
         logger.disableLogging();
     }
     
@@ -147,6 +158,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         this.stat = stat;
         this.files = files;
         this.metaLearningMode = metaLearningMode;
+        this.heuristics = new ArrayList<Class<? extends ReductionHeuristic>>();
         state.setSatInstance(satInstance);
         state.setStatistics(stat);
         state.setFiles(files);
@@ -571,6 +583,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
                     System.err.println("WARNING: ignoring unknown option \"" + args[0] + "\"");
                 }
                 MUCInstance kahina = new MUCInstance(metaLearningMode);
+                kahina.loadDefaultHeuristics();
                 kahina.start(args);
                 if (args.length > 1)
                 {
@@ -581,6 +594,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             else
             {
                 MUCInstance kahina = new MUCInstance(metaLearningMode);
+                kahina.loadDefaultHeuristics();
                 kahina.start(args);
                 File dataFile = new File(args[0]);
                 kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, "default project"));
@@ -631,6 +645,17 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         defaultPerspectives = new LinkedList<KahinaPerspective>();       
     }
     
+    protected void loadDefaultHeuristics()
+    {
+        System.err.println("Loading default reduction heuristics...");
+        heuristics.add(AscendingIndexHeuristic.class);
+        heuristics.add(CenteredIndexHeuristic.class);
+        heuristics.add(DescendingIndexHeuristic.class);
+        heuristics.add(AscendingRelevanceHeuristic.class);
+        heuristics.add(CenteredRelevanceHeuristic.class);
+        heuristics.add(DescendingRelevanceHeuristic.class);
+    }
+    
     public MetaLearningMode getMetaLearningMode()
     {
         return metaLearningMode;
@@ -639,5 +664,10 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
     public MUCReductionManager getReductionManager()
     {
         return reductionManager;
+    }
+
+    public List<Class<? extends ReductionHeuristic>> getReductionHeuristics()
+    {
+        return heuristics;
     }
 }
