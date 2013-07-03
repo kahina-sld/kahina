@@ -45,7 +45,8 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 				MUCState state = (MUCState) kahina.getState();
 				MUCStep step = state.getSelectedStep();
 
-				AbstractAlgorithm alg = step.getAlgorithm();
+				AbstractAlgorithm alg = state.getAlgorithm();
+//					step.getAlgorithm();
 				AlgorithmData data = step.getData();
 
 				while (!data.isMUS()){
@@ -55,7 +56,7 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 					alg.nextStep(data);
 
 
-					MUCStep newStep = new MUCStep(data, alg);
+					MUCStep newStep = new MUCStep(data);
 					state.newStep(newStep, step.getID());
 					//					data = newStep.getData();
 					step.reset();
@@ -79,9 +80,9 @@ public class UCReducerListViewPanel extends KahinaView<UCReducerList>
 				}
 				//			kahina.getState()
 				MUCState state = (MUCState) kahina.getState();
-				MUCStep ucStep = state.getSelectedStep();
-				if (ucStep != null)
-					ucStep.setAlgorithm(alg);
+				if (state != null)
+					state.setAlgorithm(alg);
+				//FIXME: Heuristik merken
 			}
 		};
 

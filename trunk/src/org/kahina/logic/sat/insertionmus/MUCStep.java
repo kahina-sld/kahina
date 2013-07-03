@@ -33,7 +33,7 @@ public class MUCStep extends KahinaStep
 	private AlgorithmData data;
 	private AlgorithmData oldData;
 
-	static public AbstractAlgorithm alg = new BasicAlgorithm();;
+//	static public AbstractAlgorithm alg = new BasicAlgorithm();;
 
 	private int ID;
     
@@ -48,10 +48,10 @@ public class MUCStep extends KahinaStep
 //        satisfiable = false;
 //    }
 
-    public MUCStep(AlgorithmData data, AbstractAlgorithm _alg) {
+    public MUCStep(AlgorithmData data) {
     	this.oldData = data.clone();
     	this.data = data;
-    	alg = _alg;
+//    	alg = _alg;
 //        uc =  new ArrayList<Integer>();
 //      reductionTable = new ConcurrentSkipListMap<Integer,Integer>();
       satisfiable = false;
@@ -153,9 +153,9 @@ public class MUCStep extends KahinaStep
 		return data.instanceIDs.toArray(new Integer[data.instanceIDs.size()]);
 	}
 
-	public AbstractAlgorithm getAlgorithm() {
-		return alg;
-	}
+//	public AbstractAlgorithm getAlgorithm() {
+//		return alg;
+//	}
 
 	public void setID(int id) {
 		this.ID = id;
@@ -240,8 +240,8 @@ public class MUCStep extends KahinaStep
 		this.data.setHeuristic(heuristic);
 	}
 
-	public void setAlgorithm(AbstractAlgorithm alg2) {
-		alg = alg2;
-	}
+//	public void setAlgorithm(AbstractAlgorithm alg2) {
+//		alg = alg2;
+//	}
 
 }

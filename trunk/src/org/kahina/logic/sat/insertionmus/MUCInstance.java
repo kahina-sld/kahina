@@ -143,8 +143,8 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 		System.out.println("addFirstStep");
 //		AlgorithmData data = new AlgorithmData();
 		AlgorithmData data = new AlgorithmData(this.satInstance);
-		AbstractAlgorithm alg = new BasicAlgorithm();
-		MUCStep step = new MUCStep(data, alg);
+
+		MUCStep step = new MUCStep(data);
 		this.state.newStep(step, -1);
 	}
 

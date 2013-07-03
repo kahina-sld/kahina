@@ -42,6 +42,8 @@ public class MUCState extends KahinaState
 
 	private ISortingHeuristic heuristic;
 
+	private AbstractAlgorithm algorithm = new BasicAlgorithm();
+
 	public MUCState(MUCInstance kahina)
 	{
 		super(kahina);
@@ -187,5 +189,13 @@ public class MUCState extends KahinaState
 
 	public void setHeuristic(ISortingHeuristic heuristic) {
 		this.heuristic = heuristic;
+	}
+
+	public AbstractAlgorithm getAlgorithm() {
+		return this.algorithm ;
+	}
+
+	public void setAlgorithm(AbstractAlgorithm alg) {
+		this.algorithm = alg;
 	}
 }
