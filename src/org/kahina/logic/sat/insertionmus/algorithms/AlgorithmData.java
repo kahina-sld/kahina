@@ -97,7 +97,7 @@ public class AlgorithmData {
 	public boolean equals(Object o){
 		if (o instanceof AlgorithmData){
 			AlgorithmData algData = (AlgorithmData) o;
-			return instanceIDs.equals(algData.instanceIDs) && M.equals(algData.M) && S.equals(algData.S);
+			return instanceIDs.containsAll(algData.instanceIDs) && M.containsAll(algData.M) && S.containsAll(algData.S);
 		}
 		return false;
 	}

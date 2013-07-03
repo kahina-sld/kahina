@@ -170,18 +170,18 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 		return satInstance;
 	}
 
-	public void discardCurrentState()
-	{
-		this.satInstance = null;
-		//        this.stat = null;
-		this.files = null;
-		state = null;
-//		state.reset();
-	}
+//	public void discardCurrentState()
+//	{
+//		this.satInstance = null;
+//		//        this.stat = null;
+//		this.files = null;
+//		state = null;
+////		state.reset();
+//	}
 
 	public void loadSATFile(File satFile)
 	{
-		discardCurrentState();
+//		discardCurrentState();
 
 		satInstance = DimacsCnfParser.parseDimacsCnfFile(satFile.getAbsolutePath());
 		System.err.println("Loading SAT instance at " + satFile.getAbsolutePath());
@@ -189,7 +189,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, KahinaBridge, 
 
 		AlgorithmData data = new AlgorithmData(satInstance);
 //		ba = new BasicAlgorithm();
-		this.state = createState();
+		this.state.reset();
 		state.setSatInstance(satInstance);
 //		this.addFirstStep();
 

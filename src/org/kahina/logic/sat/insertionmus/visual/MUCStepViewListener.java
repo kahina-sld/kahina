@@ -64,12 +64,15 @@ public class MUCStepViewListener extends MouseAdapter implements ActionListener
 						if (!kahina.getState().stepExists(nextStep)){
 							kahina.getState().newStep(nextStep, uc.getID());
 						}
+//						uc = nextStep;
 						//						kahina.dispatchEvent()
 					}
 					//					kahina.dispatchEvent(new )
-
+//
 					kahina.dispatchEvent(new KahinaUpdateEvent(uc.getID()));
 					kahina.dispatchEvent(new KahinaSelectionEvent(uc.getID()));
+//					kahina.dispatchEvent(new KahinaUpdateEvent(nextStep.getID()));
+//					kahina.dispatchEvent(new KahinaSelectionEvent(nextStep.getID()));
 					//				if (e.getClickCount()> 2){
 					System.out.println(clauseIndex);
 					//					List<Integer> clauseIDs = new LinkedList<Integer>();
