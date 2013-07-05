@@ -5,28 +5,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeSet;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
 import org.kahina.logic.sat.insertionmus.algorithms.AlgorithmData;
-import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.AscendingIndexHeuristic;
-import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.AverageVariableOccourrenceHeuristic;
 import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.ISortingHeuristic;
-import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.InvertAHeuristic;
-import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.LargeClausesFirstHeuristic;
 import org.kahina.logic.sat.insertionmus.io.ResultReader;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
-import org.kahina.logic.sat.muc.data.MUCStatistics;
-import org.kahina.logic.sat.muc.io.MUCExtension;
 
 
 
@@ -50,17 +42,17 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 	//	protected int[] freeze; //variables that should be freezed are marked with 1;
 
 
-	////	static String path = "../cnf/aim-100-1_6-no-4.cnf";
+//		static String path = "../cnf/aim-100-1_6-no-4.cnf";
 	//		static String path = "../cnf/examples/barrel2.cnf";
-	static String path = "smallCNF/aim-50-1_6-no-1.cnf";
+//	static String path = "smallCNF/aim-50-1_6-no-1.cnf";
 	//							smallCNF/aim-50-1_6-no-1.cnf
-	//		static String path = "smallCNF/aim-200-2_0-no-1.cnf";
+			static String path = "smallCNF/aim-200-2_0-no-1.cnf";
 
 	//		static String path = "smallCNF/barrel2.cnf";
 	//	static String path = "../cnf/examples/C168_FW_SZ_66.cnf";
 	//	static String path = "../cnf/aim-50-2_0-no-2.cnf";
 	//	static String path = "../cnf/examples/queueinvar4.cnf";
-	//	static String path = "smallCNF/aim-100-1_6-no-1.cnf";
+//		static String path = "smallCNF/aim-100-1_6-no-1.cnf";
 
 
 

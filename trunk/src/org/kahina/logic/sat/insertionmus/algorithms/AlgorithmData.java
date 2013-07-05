@@ -17,7 +17,7 @@ public class AlgorithmData {
 	public CnfSatInstance instance;
 	public ConcurrentSkipListSet<Integer> instanceIDs;
 	public ConcurrentSkipListSet<Integer> M;
-	private ConcurrentSkipListSet<Integer> S;
+	public ConcurrentSkipListSet<Integer> S;
 
 
 	public ConcurrentSkipListSet<Integer> getS() {

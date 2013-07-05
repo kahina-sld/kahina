@@ -2,13 +2,14 @@ package org.kahina.logic.sat.insertionmus.algorithms;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.insertionmus.io.ResultReader;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
-import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 
@@ -17,35 +18,41 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	protected CnfSatInstance mapInstance; // The instance
 	protected CnfSatInstance instance; // The instance
 	protected TreeSet<Integer> instanceIDs = new TreeSet<Integer>();
-//	protected TreeSet<Integer> Selection = new TreeSet<Integer>();// the currently selected Clausses
+	protected TreeSet<Integer> Selection = new TreeSet<Integer>();// the currently selected Clausses
 
-	protected int[] freeze;
 
 	File instanceFile;
+	private AlgorithmData data;
+	private AlgorithmData metaData;
 	
 	protected void growSelection() throws TimeoutException, InterruptedException{
 		for (int clause: instanceIDs){
-			if (freeze[clause] == FreezeFile.FREEZE){
-				freeze[clause] = FreezeFile.UNFREEZE;
+			if (data.freeze[clause] == FreezeFile.FREEZE){
+				data.freeze[clause] = FreezeFile.UNFREEZE;
 				
-
-				File freezeFile = new File("freeze"+ Thread.currentThread().getId() + ".fr");
-
-				FreezeFile.createFreezeFile(freeze, freezeFile, instance.getHighestVar()+1);
-				File resultFile = new File("result");
-				MiniSAT.solve(this.instanceFile, new File("proof") , resultFile, freezeFile);
-				freezeFile.delete();
+				FreezeFile.createFreezeFile(data.freeze, data.freezeFile, instance.getHighestVar()+1);
 				
-				if (MiniSAT.wasUnsatisfiable(resultFile)){
-					freeze[clause] = FreezeFile.FREEZE;
+				if (!solve(data)){
+					data.freeze[clause] = FreezeFile.FREEZE;
 				}
 			}
 		}
 	}
+
 	
-	protected void shrink(){
-		//TODO
+	protected void shrink() throws TimeoutException, InterruptedException{
+		List<Integer> removeLater = new ArrayList<Integer>();
+		for (int clause: Selection){
+
+			data.freeze[clause] = FreezeFile.FREEZE;
+			if(!solve(data)){
+				removeLater.add(clause);
+			}else{
+				data.freeze[clause] = FreezeFile.UNFREEZE;
+			}
+		}
 	}
+	
 	/**
 	 * Implementation of the MARCO algorithm
 	 * @throws InterruptedException 
@@ -54,16 +61,15 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	 */
 	public void findAllMUS(AlgorithmData data) throws TimeoutException, InterruptedException, IOException{
 
-		File freezeFile = new File("tmp.fr");
 		
 		while (this.solve(mapInstance, data)){
 			getMap(data);
-			FreezeFile.createFreezeFile(freeze, freezeFile, this.instance.getHighestVar()+1);
+//			FreezeFile.createFreezeFile(data.freeze, freezeFile, this.instance.getHighestVar()+1);
 			
 			//TODO create instance File within the constructor
-			MiniSAT.solve(this.instanceFile, data.resultFile, freezeFile);
+//			MiniSAT.solve(this.instanceFile, data.resultFile, freezeFile);
 			
-			if (MiniSAT.wasUnsatisfiable(data.resultFile)){
+			if (!solve(metaData)){
 				shrink();
 				//TODO MUS speichern
 				//TODO Map erweitern
@@ -85,7 +91,7 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	 */
 	private void getMap(AlgorithmData data) throws IOException {
 //		CnfSatInstance map = DimacsCnfParser.parseDimacsCnfFile(result.getName());
-		ResultReader.readAssignment(this.freeze, data.resultFile);
+		ResultReader.readAssignment(data.freeze, data.resultFile);
 	}
 
 	@Override

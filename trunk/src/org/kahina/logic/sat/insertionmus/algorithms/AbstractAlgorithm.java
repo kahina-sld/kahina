@@ -20,8 +20,8 @@ public abstract class AbstractAlgorithm {
 
 //	private ISortingHeuristic heuristic;
 
-	protected boolean solve(CnfSatInstance instance, File freezeFile, File instanceFile, AlgorithmData data) throws TimeoutException, InterruptedException{
-		MiniSAT.solve(instanceFile , data.resultFile, freezeFile);
+	protected boolean solve(AlgorithmData data) throws TimeoutException, InterruptedException{
+		MiniSAT.solve(data.instanceFile , data.resultFile, data.freezeFile);
 		return !MiniSAT.wasUnsatisfiable(data.resultFile);
 	}
 	

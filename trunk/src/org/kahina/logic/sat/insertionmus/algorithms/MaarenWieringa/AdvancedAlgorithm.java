@@ -4,21 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.insertionmus.algorithms.AbstractAlgorithm;
-import org.kahina.logic.sat.insertionmus.algorithms.Heuristics.AscendingIndexHeuristic;
+import org.kahina.logic.sat.insertionmus.algorithms.AlgorithmData;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
-import org.kahina.logic.sat.muc.data.MUCStatistics;
-import org.kahina.logic.sat.muc.io.MUCExtension;
 
 /**
  * Implementation of H.van Maaren and S. Wieringa
@@ -29,17 +25,17 @@ import org.kahina.logic.sat.muc.io.MUCExtension;
  */
 public class AdvancedAlgorithm extends AbstractAlgorithm{
 
-	protected CnfSatInstance instance; // The instance
-
-	protected ConcurrentSkipListSet<Integer> instanceIDs = new ConcurrentSkipListSet<Integer>();
-	protected TreeSet<Integer> M = new TreeSet<Integer>();// will become the MUS
-	protected ConcurrentSkipListSet<Integer> S = new ConcurrentSkipListSet<Integer>(); // A subset of the
-	// instance, it is
-	// the subset
-	// currently looked
-	// at.
-
-	protected int[] freeze; // variables that should be freezed are marked with
+//	protected CnfSatInstance instance; // The instance
+//
+//	protected ConcurrentSkipListSet<Integer> instanceIDs = new ConcurrentSkipListSet<Integer>();
+//	protected TreeSet<Integer> M = new TreeSet<Integer>();// will become the MUS
+//	protected ConcurrentSkipListSet<Integer> S = new ConcurrentSkipListSet<Integer>(); // A subset of the
+//	// instance, it is
+//	// the subset
+//	// currently looked
+//	// at.
+//
+//	protected int[] freeze; // variables that should be freezed are marked with
 	// 1;
 
 	//	static String path = "../cnf/aim-100-1_6-no-4.cnf";
@@ -54,57 +50,57 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 
 	File instanceFile;
 
-	public AdvancedAlgorithm(CnfSatInstance instance) {
-		this.instance = instance;
-		for (int i = 0; i < instance.getSize(); i++) {
-			instanceIDs.add(i);
-		}
-		// M.
-
-		MUCStatistics stat = new MUCStatistics();
-		stat.instanceName = path;
-
-		MUCExtension.extendCNFBySelVars(new File(path), new File("output.cnf"),
-				stat);
-
-		this.instanceFile = new File("output.cnf");
-
-		freeze = new int[this.instance.getSize()];
-		Arrays.fill(freeze, FreezeFile.FREEZE);
-	}
+//	public AdvancedAlgorithm(CnfSatInstance instance) {
+//		this.instance = instance;
+//		for (int i = 0; i < instance.getSize(); i++) {
+//			instanceIDs.add(i);
+//		}
+//		// M.
+//
+//		MUCStatistics stat = new MUCStatistics();
+//		stat.instanceName = path;
+//
+//		MUCExtension.extendCNFBySelVars(new File(path), new File("output.cnf"),
+//				stat);
+//
+//		this.instanceFile = new File("output.cnf");
+//
+//		freeze = new int[this.instance.getSize()];
+//		Arrays.fill(freeze, FreezeFile.FREEZE);
+//	}
 
 	public AdvancedAlgorithm() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void run() throws TimeoutException, InterruptedException {
+	public void run(AlgorithmData data) throws TimeoutException, InterruptedException {
 		File freezeFile = new File("freeze" + Thread.currentThread().getId()
 				+ ".fr");
 		File resultFile = new File("result");
 
-		while (!instanceIDs.isEmpty()) {
-			S = new ConcurrentSkipListSet<Integer>();
+		while (!data.instanceIDs.isEmpty()) {
+			data.S = new ConcurrentSkipListSet<Integer>();
 			int clauseIDCandidat = -1;
 			// int[] oldFreeze = this.freeze.clone();
-			Arrays.fill(freeze, FreezeFile.FREEZE);
-			for (int id : M) {
-				freeze[id] = FreezeFile.UNFREEZE;
+			Arrays.fill(data.freeze, FreezeFile.FREEZE);
+			for (int id : data.M) {
+				data.freeze[id] = FreezeFile.UNFREEZE;
 			}
 
-			for (int clauseID : instanceIDs) {
-				List<Integer> clause = this.instance.getClauseByID(clauseID);
+			for (int clauseID : data.instanceIDs) {
+				List<Integer> clause = data.instance.getClauseByID(clauseID);
 
-				FreezeFile.createFreezeFile(freeze, freezeFile,
-						instance.getHighestVar() + 1, clause);
+				FreezeFile.createFreezeFile(data.freeze, freezeFile,
+						data.instance.getHighestVar() + 1, clause);
 
 				MiniSAT.solve(this.instanceFile, resultFile, freezeFile);
 				if (!MiniSAT.wasUnsatisfiable(resultFile)) {
 					// This Variable may be added
-					S.add(clauseID);
+					data.S.add(clauseID);
 					// if (clauseIDCandidat == -1)
 					clauseIDCandidat = clauseID;
-					this.freeze[clauseID] = FreezeFile.UNFREEZE;
-					S.add(clauseID);
+					data.freeze[clauseID] = FreezeFile.UNFREEZE;
+					data.S.add(clauseID);
 				} else {
 					// Never use this variable
 				}
@@ -114,10 +110,10 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 				// reduce the Solver-calls
 			}
 			if (clauseIDCandidat != -1){
-				M.add(clauseIDCandidat);
-				S.remove(clauseIDCandidat);
+				data.M.add(clauseIDCandidat);
+				data.S.remove(clauseIDCandidat);
 			}
-			this.instanceIDs = S;
+			data.instanceIDs = data.S;
 		}
 	}
 
@@ -127,14 +123,15 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 
 		CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(path);
 
-		AdvancedAlgorithm alg = new AdvancedAlgorithm(instance);
+		AlgorithmData data = new AlgorithmData(instance);
+		AdvancedAlgorithm alg = new AdvancedAlgorithm();
 
-		alg.run();
+		alg.run(data);
 		System.out.println("Found a MUS");
 		// DimacsCnfOutput.writeDimacsCnfFile("MUS.tmp.cnf", alg.getMUS());
 
 		ArrayList<Integer> clauseIDs = new ArrayList<Integer>();
-		for (int i : alg.M) {
+		for (int i : data.M) {
 			System.out.println(i);
 			clauseIDs.add(i + 1);
 		}
@@ -143,10 +140,10 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 	}
 
 	@Override
-	public CnfSatInstance findAMuse() {
+	public CnfSatInstance findAMuse(AlgorithmData data) {
 
 		try {
-			this.run();
+			this.run(data);
 		} catch (TimeoutException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -158,14 +155,20 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 		//		DimacsCnfOutput.writeDimacsCnfFile("MUS.tmp.cnf", alg.getMUS());
 
 		ArrayList<Integer> clauseIDs = new ArrayList<Integer>();
-		for (int i :this.M){
+		for (int i :data.M){
 			//			System.out.println(i);
 			clauseIDs.add(i + 1);
 			if (i <0){
-				System.err.println(M);
+				System.err.println(data.M);
 			}
 		}
-		return instance.selectClauses(clauseIDs);
+		return data.instance.selectClauses(clauseIDs);
+	}
+
+	@Override
+	public boolean nextStep(int clauseIndex, AlgorithmData data) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 
