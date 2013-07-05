@@ -10,7 +10,7 @@ import org.kahina.logic.sat.muc.MUCStep;
 public abstract class ReductionHeuristic
 {
     CnfSatInstance satInstance;
-    MUCStep uc;
+    protected MUCStep uc;
     
     public void setSelVarOffset(int selVarOffset)
     {
