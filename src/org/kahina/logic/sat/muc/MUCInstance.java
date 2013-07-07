@@ -565,50 +565,71 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
             System.err.println("       Your path must include the minisat-extended directory.");
             System.exit(0);
         }
-
-        if (args.length > 0)
+    	boolean expectsHeuristicsFile = false;
+    	String heuristicsFile = null;
+    	File dataFile = null;
+    	for (int idx = 0; idx < args.length; idx++)
+    	{
+    		if (args[idx].startsWith("-"))
+            {
+    			if (!expectsHeuristicsFile)
+    			{
+                    if (args[idx].equals("-bp"))
+                    {
+                        metaLearningMode = MetaLearningMode.BLOCK_PARTITION;
+                    }
+                    else if (args[idx].equals("-bt"))
+                    {
+                        metaLearningMode = MetaLearningMode.RECURSIVE_BLOCKS;
+                    }
+                    else if (args[idx].equals("-nometa"))
+                    {
+                        metaLearningMode = MetaLearningMode.NO_META_LEARNING;
+                    }
+                    else if (args[idx].equals("-hf"))
+                    {
+                        expectsHeuristicsFile = true;
+                    }
+                    else
+                    {
+                        System.err.println("ERROR: unknown option \"" + args[idx] + "\"");
+                        System.exit(1);
+                    }
+    			}
+    			else
+    			{
+    				System.err.println("ERROR: -hf option must be accompanied by a filename");
+    				System.exit(1);
+    			}
+            }
+    		else
+    		{
+    			//interpret as name of heuristics file
+    			if (expectsHeuristicsFile)
+    			{
+    				heuristicsFile = args[idx];
+    				expectsHeuristicsFile = false;
+    			}
+    			//interpret as name of file to be opened
+    			else
+    			{
+    				 dataFile = new File(args[idx]);
+    			}
+    		}
+    	}     
+        MUCInstance kahina = new MUCInstance(metaLearningMode);
+        if (heuristicsFile != null)
         {
-            if (args[0].startsWith("-"))
-            {
-                if (args[0].equals("-bp"))
-                {
-                    metaLearningMode = MetaLearningMode.BLOCK_PARTITION;
-                }
-                else if (args[0].equals("-bt"))
-                {
-                    metaLearningMode = MetaLearningMode.RECURSIVE_BLOCKS;
-                }
-                else if (args[0].equals("-nometa"))
-                {
-                    metaLearningMode = MetaLearningMode.NO_META_LEARNING;
-                }
-                else
-                {
-                    System.err.println("WARNING: ignoring unknown option \"" + args[0] + "\"");
-                }
-                MUCInstance kahina = new MUCInstance(metaLearningMode);
-                kahina.loadDefaultHeuristics();
-                kahina.start(args);
-                if (args.length > 1)
-                {
-                    File dataFile = new File(args[1]);
-                    kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, "default project"));
-                }
-            }
-            else
-            {
-                MUCInstance kahina = new MUCInstance(metaLearningMode);
-                kahina.loadDefaultHeuristics();
-                kahina.start(args);
-                File dataFile = new File(args[0]);
-                kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, "default project"));
-            }
+        	kahina.loadHeuristicsFile(heuristicsFile);
         }
         else
         {
-            MUCInstance kahina = new MUCInstance(metaLearningMode);
-            kahina.loadDefaultHeuristics();
-            kahina.start(args);
+        	kahina.loadDefaultHeuristics();
+        }
+        kahina.start(args);
+        if (dataFile != null)
+        {
+        	kahina.dispatchEvent(new KahinaProjectEvent(KahinaProjectEventType.NEW_PROJECT, dataFile, "default project"));
         }
     }
 
@@ -673,6 +694,7 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
                     System.err.println("  WARNING: " + className + " is not a class derived from ReductionHeuristic! Ignoring.");
                 }
             }
+            heuristicsFileInput.close();
         }
         catch (FileNotFoundException e)
         {
