@@ -14,6 +14,7 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.data.model.CompleteAssignment;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 
@@ -167,15 +168,15 @@ public class ReductionTask extends KahinaTask
                 {
                     //without clause set refinement, the tested US candidate is the result of a successful reduction attempt
                     MiniSAT.solve(files.tmpFile, files.tmpProofFile, files.tmpResultFile, files.tmpFreezeFile);
-                    if (MiniSAT.wasUnsatisfiable(files.tmpResultFile))
-                    {
-                        reducedCore = new ArrayList<Integer>(muc_cands);
-                    }
-                    else
-                    {
-                        //empty core signals satisfiability, i.e. an unsuccessful reduction attempt
-                        reducedCore = new ArrayList<Integer>();
-                    }
+					if (MiniSAT.wasUnsatisfiable(files.tmpResultFile))
+					{
+					    reducedCore = new ArrayList<Integer>(muc_cands);
+					}
+					else
+					{
+					    //empty core signals satisfiability, i.e. an unsuccessful reduction attempt
+					    reducedCore = new ArrayList<Integer>();
+					}
                 }
                 //System.err.println("reducedCore: " + reducedCore);
                 if (modelRotation)
@@ -187,14 +188,23 @@ public class ReductionTask extends KahinaTask
             {
                 System.err.println("ERROR: InterruptedException while executing UC reduction task!");
                 result = null;
+				this.setFinished();
                 return;
             }
             catch (TimeoutException e)
             {
                 System.err.println("ERROR: TimeoutException while executing UC reduction task!");
                 result = null;
+				this.setFinished();
                 return;
             }
+            catch (ResultNotRetrievableException e) 
+            {
+				System.err.println(e);
+				result = null;
+				this.setFinished();
+				return;
+			}
             //reduction attempt failed, the result was satisfiable
             if (reducedCore.size() == 0)
             {

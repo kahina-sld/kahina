@@ -40,6 +40,11 @@ public class MUCReductionManager extends KahinaTaskManager
                 MUCState state = kahina.getState();
                 ReductionTask ucTask = (ReductionTask) task;
                 MUCStep result = ucTask.getResult();
+                if (result == null)
+                {
+                	System.err.println("aborted reduction attempt: clause(s) " + ucTask.candidates + " in US " + ucTask.ucID);
+                	return;
+                }
                 int resultID = -1;
                 //attempt was unsuccessful
                 if (ucTask.uc == result)

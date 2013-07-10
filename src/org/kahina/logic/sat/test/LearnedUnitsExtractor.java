@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
 import org.kahina.logic.sat.io.minisat.MiniSAT;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 
 public class LearnedUnitsExtractor
 {
@@ -40,6 +41,11 @@ public class LearnedUnitsExtractor
             System.err.println("ERROR: some file could not be created or read!");
             e.printStackTrace();
             System.exit(1);
-        }
+        } 
+        catch (ResultNotRetrievableException e) 
+        {
+			System.err.println(e);
+            System.exit(1);
+		}
     }
 }

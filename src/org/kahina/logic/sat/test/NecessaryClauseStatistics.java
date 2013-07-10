@@ -14,6 +14,7 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 import org.kahina.logic.sat.muc.MUCStep;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.io.MUCExtension;
@@ -123,41 +124,34 @@ public class NecessaryClauseStatistics
         try
         {
             MiniSAT.solve(files.tmpFile, files.tmpProofFile, files.tmpResultFile, freezeFile);
-            Boolean wasUnsatisfiable = MiniSAT.wasUnsatisfiable();
-            if (wasUnsatisfiable != null)
+            boolean wasUnsatisfiable = MiniSAT.wasUnsatisfiable();
+            List<Integer> assumptions = MiniSAT.getRelevantAssumptions(instance.getHighestVar() + 1, files.tmpProofFile);
+            //delete temporary files
+            files.deleteTempFiles();
+            freezeFile.delete();
+            if (wasUnsatisfiable)
             {
-                List<Integer> assumptions = MiniSAT.getRelevantAssumptions(instance.getHighestVar() + 1, files.tmpProofFile);
-                //delete temporary files
-                files.deleteTempFiles();
-                freezeFile.delete();
-                if (wasUnsatisfiable)
-                {
-                    return assumptions;
-                }
-                else
-                {
-                    return null;
-                }
-                //System.err.println("reducedCore: " + reducedCore);
-                /*if (modelRotation)
-                {
-                    model = MiniSAT.getCompleteModel(files.tmpResultFile);
-                }*/
+                return assumptions;
             }
             else
             {
                 return null;
             }
-        }
-        catch (InterruptedException e)
-        {
-            System.err.println("ERROR: InterruptedException while executing UC reduction task!");
-            return null;
+            //System.err.println("reducedCore: " + reducedCore);
+            /*if (modelRotation)
+            {
+                model = MiniSAT.getCompleteModel(files.tmpResultFile);
+            }*/
         }
         catch (TimeoutException e)
         {
             System.err.println("ERROR: TimeoutException while executing UC reduction task!");
             return null;
-        }
+        } 
+        catch (ResultNotRetrievableException e) 
+        {
+			System.err.println(e);
+			return null;
+		}
     }
 }

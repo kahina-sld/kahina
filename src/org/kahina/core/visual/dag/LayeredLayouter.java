@@ -50,7 +50,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
     }
 
     @Override
-    public void computeLayout()
+    public synchronized void computeLayout()
     {
         nodeLevels = new ArrayList<List<Integer>>();
         allNodes = new HashSet<Integer>();
@@ -176,7 +176,7 @@ public class LayeredLayouter extends KahinaDAGLayouter
     }
 
     @Override
-    public void refreshCoordinates()
+    public synchronized void refreshCoordinates()
     {
         if (VERBOSE) System.err.println("BEGIN: Calculate coordinates");
 
