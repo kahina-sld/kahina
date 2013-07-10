@@ -39,6 +39,7 @@ import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
 import org.kahina.logic.sat.io.minisat.MiniSATFiles;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 import org.kahina.logic.sat.muc.bridge.MUCBridge;
 import org.kahina.logic.sat.muc.control.MUCControlEventCommands;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
@@ -366,55 +367,62 @@ public class MUCInstance extends KahinaInstance<MUCState, MUCGUI, MUCBridge, Kah
         }
         System.out.println("Solver finished");
         // if unsatisfiable
-        if (MiniSAT.wasUnsatisfiable())
+        try
         {
-            List<Integer> relevantAssumptions = MiniSAT.getRelevantAssumptions(freezeVariables, stat.highestID + 1);
-            stat.initNumRelAsm = relevantAssumptions.size();
-            for (Integer a : relevantAssumptions)
-            {
-                muc_cands.add(a);
-            }
-            relevantAssumptions.clear();
-            int ucID = bridge.registerMUC(muc_cands.toArray(new Integer[0]), muc.toArray(new Integer[0]));
-            MUCStep firstUC = state.retrieve(MUCStep.class, ucID);
-            
-            if (state.usesBlocks())
-            {
-                //we ensure that the meta instance can compactly represent the first UC
-                TreeSet<Integer> metaBlock = new TreeSet<Integer>();
-                int numClauses = state.getStatistics().numClausesOrGroups;
-                for (int i = 1; i <= numClauses; i++)
-                {
-                    if (firstUC.getUc().contains(i))
-                    {
-                        metaBlock.add(i);
-                    }
-                }
-                state.learnMetaBlock(metaBlock);
-                state.learnMetaClause(metaBlock);
-            }
-        
-            /*UCReducer reducer1 = new UCReducer(kahinaInstance.getState(), 1, files);
-            reducer1.setHeuristics(new AlwaysFirstHeuristics());
-            kahinaInstance.getState().getReducers().add(reducer1);
-            reducer1.start();
-            
-            UCReducer reducer2 = new UCReducer(kahinaInstance.getState(), 1, files);
-            reducer2.setHeuristics(new AlwaysLastHeuristics());
-            kahinaInstance.getState().getReducers().add(reducer2);
-            reducer2.start();
-            
-            UCReducer reducer3 = new UCReducer(kahinaInstance.getState(), 1, files);
-            reducer3.setHeuristics(new CenterHeuristics());
-            kahinaInstance.getState().getReducers().add(reducer3);
-            reducer3.start();*/
-            
-            dispatchInstanceEvent(new KahinaUpdateEvent(1));
-            dispatchInstanceEvent(new KahinaRedrawEvent());
+	        if (MiniSAT.wasUnsatisfiable())
+	        {
+	            List<Integer> relevantAssumptions = MiniSAT.getRelevantAssumptions(freezeVariables, stat.highestID + 1);
+	            stat.initNumRelAsm = relevantAssumptions.size();
+	            for (Integer a : relevantAssumptions)
+	            {
+	                muc_cands.add(a);
+	            }
+	            relevantAssumptions.clear();
+	            int ucID = bridge.registerMUC(muc_cands.toArray(new Integer[0]), muc.toArray(new Integer[0]));
+	            MUCStep firstUC = state.retrieve(MUCStep.class, ucID);
+	            
+	            if (state.usesBlocks())
+	            {
+	                //we ensure that the meta instance can compactly represent the first UC
+	                TreeSet<Integer> metaBlock = new TreeSet<Integer>();
+	                int numClauses = state.getStatistics().numClausesOrGroups;
+	                for (int i = 1; i <= numClauses; i++)
+	                {
+	                    if (firstUC.getUc().contains(i))
+	                    {
+	                        metaBlock.add(i);
+	                    }
+	                }
+	                state.learnMetaBlock(metaBlock);
+	                state.learnMetaClause(metaBlock);
+	            }
+	        
+	            /*UCReducer reducer1 = new UCReducer(kahinaInstance.getState(), 1, files);
+	            reducer1.setHeuristics(new AlwaysFirstHeuristics());
+	            kahinaInstance.getState().getReducers().add(reducer1);
+	            reducer1.start();
+	            
+	            UCReducer reducer2 = new UCReducer(kahinaInstance.getState(), 1, files);
+	            reducer2.setHeuristics(new AlwaysLastHeuristics());
+	            kahinaInstance.getState().getReducers().add(reducer2);
+	            reducer2.start();
+	            
+	            UCReducer reducer3 = new UCReducer(kahinaInstance.getState(), 1, files);
+	            reducer3.setHeuristics(new CenterHeuristics());
+	            kahinaInstance.getState().getReducers().add(reducer3);
+	            reducer3.start();*/
+	            
+	            dispatchInstanceEvent(new KahinaUpdateEvent(1));
+	            dispatchInstanceEvent(new KahinaRedrawEvent());
+	        }
+	        else
+	        {
+	            System.err.println("ERROR: Original problem is satisfiable!");
+	        }
         }
-        else
+        catch (ResultNotRetrievableException e)
         {
-            System.err.println("ERROR: Original problem is satisfiable!");
+        	System.err.println(e);
         }
     }
     

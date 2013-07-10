@@ -11,6 +11,7 @@ import org.kahina.logic.sat.data.cnf.CnfSatInstance;
 import org.kahina.logic.sat.io.cnf.CfgToSatConverter;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 import org.kahina.parse.data.cfg.ContextFreeGrammar;
 import org.kahina.parse.io.cfg.ContextFreeGrammarParser;
 
@@ -89,7 +90,11 @@ public class CfgParseViaSat
             {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }      
+            } 
+            catch (ResultNotRetrievableException e) 
+            {
+				System.err.println(e);
+			}      
         }     
     }
 }

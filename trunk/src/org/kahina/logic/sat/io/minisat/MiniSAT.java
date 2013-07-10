@@ -3,6 +3,7 @@ package org.kahina.logic.sat.io.minisat;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class MiniSAT
         }
     }
     
-    public static boolean isSatisfiable(File cnfFile, File tmpResultFile) throws TimeoutException, InterruptedException, IOException
+    public static boolean isSatisfiable(File cnfFile, File tmpResultFile) throws TimeoutException, InterruptedException, IOException, ResultNotRetrievableException
     {
         Process p = Runtime.getRuntime().exec("minisat " + cnfFile.getAbsolutePath() + " -c -r " + tmpResultFile.getAbsolutePath());
         BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -111,7 +112,7 @@ public class MiniSAT
      * @param unitsFile the file where to store the units
      * @return whether the SAT instance was satisfiable or not; units are written to unitsFile
      */
-    public static boolean solveAndDeriveUnits(File cnfFile, File tmpResultFile, File unitsFile) throws TimeoutException, InterruptedException, IOException
+    public static boolean solveAndDeriveUnits(File cnfFile, File tmpResultFile, File unitsFile) throws TimeoutException, InterruptedException, IOException, ResultNotRetrievableException
     {
         Process p = Runtime.getRuntime().exec("minisat " + cnfFile.getAbsolutePath() + " -r " + tmpResultFile.getAbsolutePath() + " -u " + unitsFile.getAbsolutePath());
         BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -157,7 +158,7 @@ public class MiniSAT
         return !wasUnsatisfiable(tmpResultFile);
     }
     
-    public static synchronized List<Integer> getImpliedUnits(CnfSatInstance instance, List<Integer> setVars)
+    public static synchronized List<Integer> getImpliedUnits(CnfSatInstance instance, List<Integer> setVars) throws ResultNotRetrievableException
     {
         File tempResultsFile = new File("unit-temp-res.cnf");
         File unitsFile = new File("units-temp.txt");
@@ -190,7 +191,7 @@ public class MiniSAT
         return units;
     }
     
-    public static synchronized boolean solveWithRefutationVariables(CnfSatInstance instance, File proofFile, File resultFile) throws TimeoutException, InterruptedException, IOException
+    public static synchronized boolean solveWithRefutationVariables(CnfSatInstance instance, File proofFile, File resultFile) throws TimeoutException, InterruptedException, IOException, ResultNotRetrievableException
     {
         File instanceFile = new File("instance-temp.cnf");
         DimacsCnfOutput.writeDimacsCnfFile("instance-temp.cnf", instance);
@@ -237,7 +238,7 @@ public class MiniSAT
     }
 
     
-    public static List<Integer> findUnsatisfiableCore(MUCStatistics stat, MiniSATFiles files) throws TimeoutException, InterruptedException
+    public static List<Integer> findUnsatisfiableCore(MUCStatistics stat, MiniSATFiles files) throws TimeoutException, InterruptedException, ResultNotRetrievableException
     {
         try
         {
@@ -436,7 +437,7 @@ public class MiniSAT
     }
 
     //checks result file to see whether the last SAT problem was unsatisfiable
-    public static Boolean wasUnsatisfiable()
+    public static Boolean wasUnsatisfiable() throws ResultNotRetrievableException
     {
         BufferedReader input;
         try
@@ -467,8 +468,7 @@ public class MiniSAT
             System.err.println("IOfailed testunsatisfiable");
             System.exit(0);
         }
-        System.err.println("ERROR: Result file says neither SAT nor UNSAT! Returning null!");
-        return null;
+        throw new ResultNotRetrievableException("Last result file " + lastResultFile.getName() + " says neither SAT nor UNSAT!");
     }
     
     //gets the model from a result file in case of SAT, null if UNSAT
@@ -612,7 +612,7 @@ public class MiniSAT
     }
     
     // checks result file to see whether a SAT problem was unsatisfiable
-    public static boolean wasUnsatisfiable(File resultFile)
+    public static boolean wasUnsatisfiable(File resultFile) throws ResultNotRetrievableException
     {
         BufferedReader input;
         try
@@ -636,15 +636,18 @@ public class MiniSAT
             }
             input.close();
         }
+        catch (FileNotFoundException e)
+        {
+            throw new ResultNotRetrievableException("Could not find result file " + resultFile.getName() + "!");
+        }
         catch (IOException e)
         {
             // TODO Auto-generated catch block
             e.printStackTrace();
-            System.err.println("ERROR: Could not read result file " + resultFile.getName() + "! Assuming SAT!");
+            throw new ResultNotRetrievableException("Could not read result file " + resultFile.getName() + "!");
         }
         //System.out.println("SAT");
-        System.err.println("ERROR: MiniSat result file " + resultFile.getName() + " says neither SAT nor UNSAT! Assuming SAT!");
-        return false;
+        throw new ResultNotRetrievableException("Result file " + resultFile.getName() + " says neither SAT nor UNSAT!");
     }
     
     public static Set<Integer> getResolutionVariables(File proofFile)
