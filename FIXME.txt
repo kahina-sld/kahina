@@ -23,9 +23,10 @@ java.lang.ArrayIndexOutOfBoundsException: 39 >= 0
 	at org.kahina.logic.sat.muc.task.ReductionTask.run(ReductionTask.java:208)
 	at java.lang.Thread.run(Thread.java:679)
 	
-	
-	
-If a non existing Instance file is selected the program crashes.
+the selected US on the right panel does not automatically update itself in terms of color after a reduction.
 
+incorrect GUI behavior under MacOS
+  colors of reduction agents do not appear: all labels have the same grey color background
+  when many clauses are selected (and have a yellow background), right-clicking unselects all clauses but the one on which the right click was made
 
-Kordinatenberechnung bei der Knotenselektion ist leicht verschoben.
+Koordinatenberechnung bei der Knotenselektion ist leicht verschoben.
