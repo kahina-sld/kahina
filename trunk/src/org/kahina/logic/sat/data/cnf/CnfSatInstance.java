@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import org.kahina.logic.sat.data.KahinaSatInstance;
 import org.kahina.logic.sat.data.model.PartialAssignment;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 
 public class CnfSatInstance extends KahinaSatInstance
 {   
@@ -841,6 +842,11 @@ public class CnfSatInstance extends KahinaSatInstance
 			System.err.println("ERROR: some file could not be created or read! Returning null autarky!");
 			e.printStackTrace();
 		}
+        catch (ResultNotRetrievableException e)
+        {
+            System.err.println("ERROR: result was not retrievable! Returning null autarky!");
+            e.printStackTrace();
+        }
 		return null;
 	}
 

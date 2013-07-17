@@ -62,6 +62,7 @@ public class CfgParseViaSat
             {
                 tempResultFile.createNewFile();
                 DimacsCnfOutput.writeDimacsCnfFile(tempDir + "/" + filename + ".cnf", instance);
+                System.err.println("Generated CNF file representing the parse problem.");
 
                 //TODO: display results symbolically (positive atoms for success, MUS for failure)
                 boolean parseSuccess = MiniSAT.isSatisfiable(tempCnfFile, tempResultFile);
