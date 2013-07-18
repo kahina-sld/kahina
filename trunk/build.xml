@@ -7,6 +7,7 @@
 	<property file="build.properties"/>
 	
 	<target name="compile" depends="init">
+		<!-- This target is obsolete, should be replaced by product-specific targets such as trale-sld (see below). -->
 		<!--<fail unless="lib.jasper" message="You need to specify the location of your SICStus Prolog installation's jasper.jar in the property lib.jasper. Create a file called build.properties to do so. You can use build.properties.sample as a model."/>-->
 		<javac srcdir="${src}" destdir="${bin}" source="1.6" target="1.6" compiler="javac1.6" includeantruntime="false" excludes="org/kahina/logic/**/*.java org/kahina/core/control/KahinaCodeLinePropertySensor.java org/kahina/core/edit/source/KahinaJEditActionListener.java org/kahina/core/test/**/*.java">
 			<classpath>
@@ -19,11 +20,35 @@
 			<fileset dir="${src}" excludes="**/*.java"/>
 		</copy>
 	</target>
+
 	<target name="init">
 		<mkdir dir="${bin}"/>
 	</target>
+
 	<target name="clean">
 		<delete dir="${bin}"/>
+	</target>
+
+	<target name="core" depends="init">
+		<javac srcdir="${src}" destdir="${bin}" includeantruntime="false" includes="org/kahina/core/**" excludes="org/kahina/core/test/**">
+			<classpath>
+				<pathelement location="${lib}/jedit-textArea.jar"/>
+			</classpath>
+		</javac>
+		<copy todir="${bin}">
+			<fileset dir="${src}" includes="org/kahina/core/**" excludes="**/*.java org/kahina/core/test/**">
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="trale-sld" depends="core">
+		<fail unless="lib.jasper" message="You need to specify the location of your SICStus Prolog installation's jasper.jar in the property lib.jasper. Create a file called build.properties to do so. You can use build.properties.sample as a model."/>
+		<javac srcdir="${src}" destdir="${bin}" includeantruntime="false" includes="org/kahina/lp/** org/kahina/tralesld">
+			<classpath>
+				<pathelement location="${lib}/gralej/gralej.jar"/>
+				<pathelement location="${lib.jasper}"/>
+			</classpath>
+		</javac>
 	</target>
 	
 	<target name="musticca-jar" depends="compile">
