@@ -43,12 +43,15 @@
 
 	<target name="trale-sld" depends="core">
 		<fail unless="lib.jasper" message="You need to specify the location of your SICStus Prolog installation's jasper.jar in the property lib.jasper. Create a file called build.properties to do so. You can use build.properties.sample as a model."/>
-		<javac srcdir="${src}" destdir="${bin}" includeantruntime="false" includes="org/kahina/lp/** org/kahina/tralesld">
+		<javac srcdir="${src}" destdir="${bin}" includeantruntime="false" includes="org/kahina/lp/** org/kahina/tralesld/**">
 			<classpath>
 				<pathelement location="${lib}/gralej/gralej.jar"/>
 				<pathelement location="${lib.jasper}"/>
 			</classpath>
 		</javac>
+		<copy todir="${bin}">
+			<fileset dir="${src}" includes="org/kahina/tralesld/**" excludes="**/*.java"/>
+		</copy>
 	</target>
 	
 	<target name="musticca-jar" depends="compile">
