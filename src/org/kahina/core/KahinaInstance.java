@@ -1,9 +1,7 @@
 package org.kahina.core;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -11,11 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -33,9 +28,7 @@ import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.data.KahinaObject;
 import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
-import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.data.text.KahinaLineReference;
-import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
@@ -46,16 +39,12 @@ import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.magazine.ObjectMagazine;
 import org.kahina.core.io.util.FileUtil;
-import org.kahina.core.io.util.ResourceList;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.profiler.KahinaLogger;
 import org.kahina.core.profiler.KahinaWarner;
 import org.kahina.core.util.ProgressMonitorWrapper;
 import org.kahina.core.util.SwingUtil;
 import org.kahina.core.visual.KahinaDefaultView;
-import org.kahina.core.visual.source.KahinaJEditSourceCodeView;
-import org.kahina.core.visual.tree.KahinaTreeView;
-import org.kahina.tralesld.TraleSLDState;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -534,10 +523,10 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
 			}
 			ObjectInputStream in = new ObjectInputStream(zipFile.getInputStream(entry));
 			state = castToStateType(in.readObject());
-			if (VERBOSE)
+			/*if (VERBOSE)
 			{
 				System.err.println(((TraleSLDState) state).getStepTree().getLayerDecider());
-			}
+			}*/
 			in.close();
 			File directory = FileUtil.createTemporaryDirectory();
 			monitor = gui.createProgressMonitorWrapper("Loading session", null, 0, zipFile.size());

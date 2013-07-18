@@ -2,8 +2,6 @@ package org.kahina.core.gui;
 
 import java.awt.Toolkit;
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,7 +13,6 @@ import org.kahina.core.gui.windows.KahinaWindowType;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.KahinaView;
 import org.kahina.core.visual.KahinaViewConfiguration;
-import org.kahina.qtype.gui.QTypeGUI;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
