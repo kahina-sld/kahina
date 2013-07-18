@@ -172,7 +172,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			//if (VERBOSE)
+			if (VERBOSE)
 			{
 				System.err.println(this + ".registerProspectiveEdge(" + ruleApplicationExtID + "," + ruleName + "," + leftmostDaughter);
 			}
@@ -289,7 +289,7 @@ public class TraleSLDBridge extends LogicProgrammingBridge
 	{
 		try
 		{
-			//if (VERBOSE)
+			if (VERBOSE)
 			{
 				System.err.println("TraleSLDBridge.registerChartEdge(" + externalEdgeID + "," + left + "," + right + ",\"" + ruleName + "\")");
 			}
