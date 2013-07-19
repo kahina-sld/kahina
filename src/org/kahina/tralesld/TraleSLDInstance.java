@@ -2,9 +2,6 @@ package org.kahina.tralesld;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -20,9 +17,7 @@ import javax.swing.Action;
 import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
-import org.kahina.core.control.KahinaProjectEvent;
 import org.kahina.core.control.KahinaSystemEvent;
-import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaDialogEvent;
@@ -30,18 +25,14 @@ import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
 import org.kahina.core.gui.event.KahinaEdgeSelectionEvent;
-import org.kahina.core.gui.event.KahinaRedrawEvent;
 import org.kahina.core.gui.event.KahinaSelectionEvent;
 import org.kahina.core.gui.event.KahinaUpdateEvent;
 import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.util.ListUtil;
 import org.kahina.lp.LogicProgrammingInstance;
-import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.lp.profiler.LogicProgrammingProfiler;
 import org.kahina.lp.visual.source.PrologJEditSourceCodeView;
 import org.kahina.prolog.util.PrologUtil;
-import org.kahina.qtype.control.QTypeControlEventCommands;
-import org.kahina.qtype.data.project.QTypeProject;
 import org.kahina.tralesld.behavior.TraleSLDTreeBehavior;
 import org.kahina.tralesld.bridge.TraleSLDBridge;
 import org.kahina.tralesld.control.TraleSLDControlEventCommands;
@@ -62,7 +53,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	// the command stuff in TraleSLDInstance to a TraleSLDCommander. QTypeCommander
 	// already avoids the ugly hack used below to set the bridge to abort.
 
-	private static final boolean VERBOSE = true;
+	private static final boolean VERBOSE = false;
 
 	Queue<String> traleCommands = new ArrayDeque<String>();
 
@@ -346,6 +337,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		}
 		synchronized (traleCommands)
 		{
+			traleCommands.add("query use_module(library(file_systems),[current_directory/2]),current_directory(_," + PrologUtil.stringToAtomLiteral((new File(absolutePath)).getParent()) + ").");
 			traleCommands.add("query dcompile_gram(" + PrologUtil.stringToAtomLiteral(absolutePath) + ").");
 			traleCommands.add("query send_signature.");
 		}
