@@ -15,6 +15,8 @@ public class KahinaTabbedWindow  extends KahinaWindow
 {
 
 	private static final long serialVersionUID = -3402208749341396369L;
+	
+	private static final boolean VERBOSE = false;
 
 	JTabbedPane tabbedPane;
     
@@ -44,6 +46,10 @@ public class KahinaTabbedWindow  extends KahinaWindow
     
     public boolean addSubwindow(KahinaWindow w)
     {
+    	if (VERBOSE)
+    	{
+    		System.err.println(this + ".addSubwindow(" + w + ")");
+    	}
     	wm.getArrangement().setEmbeddingWindowID(w.getID(),windowID);
     	windows.add(w);
         tabbedPane.add(w.getTitle(), w.getContentPane());

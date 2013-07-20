@@ -356,6 +356,7 @@ public class KahinaArrangement
 	{
 		KahinaArrangement arr = new KahinaArrangement();
 		Element el;
+		// TODO keep the elements in document order
 		List<Element> contentEls = XMLUtil.getElements(topEl, "kahina:default-window");
 		contentEls.addAll(XMLUtil.getElements(topEl, "kahina:control-window"));
 		contentEls.addAll(XMLUtil.getElements(topEl, "kahina:main-window"));
