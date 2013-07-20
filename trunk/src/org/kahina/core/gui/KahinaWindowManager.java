@@ -1,25 +1,17 @@
 package org.kahina.core.gui;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-import org.kahina.core.KahinaException;
 import org.kahina.core.KahinaInstance;
-import org.kahina.core.control.KahinaController;
 import org.kahina.core.control.KahinaEvent;
 import org.kahina.core.control.KahinaEventTypes;
 import org.kahina.core.control.KahinaListener;
-import org.kahina.core.gui.event.KahinaPerspectiveEvent;
 import org.kahina.core.gui.event.KahinaWindowEvent;
 import org.kahina.core.gui.event.KahinaWindowEventType;
 import org.kahina.core.gui.windows.KahinaDefaultWindow;
@@ -31,10 +23,8 @@ import org.kahina.core.gui.windows.KahinaTabbedWindow;
 import org.kahina.core.gui.windows.KahinaVerticallySplitWindow;
 import org.kahina.core.gui.windows.KahinaWindow;
 import org.kahina.core.gui.windows.KahinaWindowType;
-import org.kahina.core.io.util.XMLUtil;
 import org.kahina.core.visual.KahinaEmptyView;
 import org.kahina.core.visual.KahinaView;
-import org.w3c.dom.Node;
 
 public class KahinaWindowManager implements KahinaListener
 {
@@ -177,8 +167,15 @@ public class KahinaWindowManager implements KahinaListener
         if (VERBOSE) System.err.println("KahinaWindowManager finished creating the window stubs.");
 
         // ... adapt the coordinates and process the embedding structure ...
-        if (VERBOSE) System.err.println("KahinaWindowManager is adapting coordnates and processing the embedding structure.");
-        for (int winID : getArrangement().getAllWindows())
+        if (VERBOSE) System.err.println("KahinaWindowManager is adapting coordinates and processing the embedding structure.");
+        List<Integer> allWindows = new ArrayList<Integer>(getArrangement().getAllWindows());
+        // Sort content windows by ID. KahinaArrangement's importXML method
+        // should actually keep them in document order but doesn't currently,
+        // so we instead allow perspective authors to specify the order using
+        // window IDs. TODO remove this sorting step after KahinaArrangement
+        // has been adapted.
+        Collections.sort(allWindows);
+        for (int winID : allWindows)
         {
             KahinaWindow w = windowByID.get(winID);
             w.setSize(getArrangement().getWidth(w.getID()), getArrangement().getHeight(w.getID()));
