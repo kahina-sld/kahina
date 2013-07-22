@@ -428,6 +428,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
         defaultProjects = new LinkedList<TraleProject>();
         addDefaultProject("test/webcourse/webcourse-project.xml");
         addDefaultProject("test/ps94/ps94-project.xml");
+        addDefaultProject("test/demo/demo-project.xml");
     }  
     
     private void addDefaultProject(String resourcePath)
