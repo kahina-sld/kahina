@@ -29,7 +29,7 @@ import org.w3c.dom.Element;
  */
 public class KahinaArrangement
 {
-	public static boolean verbose = false;
+	public static boolean VERBOSE = false;
 
 	// window parameters are indexed by integer IDs
 	private List<Integer> windowIDs; // stores the order of windows
@@ -86,6 +86,7 @@ public class KahinaArrangement
 		copy.yPos.putAll(yPos);
 		copy.height.putAll(height);
 		copy.width.putAll(width);
+		copy.resizeWeight.putAll(resizeWeight);
 		copy.title.putAll(title);
 		copy.border.putAll(border);
         copy.scrollable.putAll(scrollable);
@@ -126,7 +127,7 @@ public class KahinaArrangement
 
 	public void setSize(int windowID, int w, int h)
 	{
-		if (verbose)
+		if (VERBOSE)
 			System.err.println("arr.setSize(" + windowID + "," + w + "," + h + ")");
 		width.put(windowID, w);
 		height.put(windowID, h);
@@ -134,6 +135,11 @@ public class KahinaArrangement
 
 	public void setResizeWeight(int windowID, double resizeWeight)
 	{
+		if (VERBOSE)
+		{
+			System.err.format("%s.setResizeWeight(%d, %s)\n", this, windowID, resizeWeight);
+		}
+		
 		this.resizeWeight.put(windowID, resizeWeight);
 	}
 
@@ -245,7 +251,12 @@ public class KahinaArrangement
 
 		if (result == null)
 		{
-			return .5;
+			result = .5;
+		}
+		
+		if (VERBOSE)
+		{
+			System.err.format("%s.getResizeWeight(%d) == %s\n", this, winID, result);
 		}
 
 		return result;
