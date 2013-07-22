@@ -70,14 +70,34 @@
             kahina:width="640" kahina:height="814" kahina:id="4"
             kahina:title="Control flow tree and chart" kahina:xpos="0"
             kahina:ypos="144">
-            <kahina:default-window kahina:binding="controlFlowTree"
-              kahina:height="407" kahina:id="5" kahina:primary="true"
-              kahina:title="Control flow tree" kahina:width="640"
-              kahina:xpos="0" kahina:ypos="0" />
-            <kahina:default-window kahina:binding="chart"
-              kahina:height="407" kahina:id="6" kahina:primary="true"
-              kahina:title="Chart" kahina:width="640" kahina:xpos="0"
-              kahina:ypos="407" />
+            <kahina:tabbed-window kahina:width="640"
+              kahina:height="407" kahina:id="15"
+              kahina:title="Tabbed window for control flow tree"
+              kahina:border="false" kahina:xpos="0" kahina:ypos="0">
+              <kahina:default-window
+                kahina:binding="controlFlowTree" kahina:height="407"
+                kahina:id="5" kahina:primary="true" kahina:title="Control flow tree"
+                kahina:width="640" kahina:xpos="0" kahina:ypos="0"
+                kahina:border="false" />
+            </kahina:tabbed-window>
+            <kahina:tabbed-window kahina:width="640"
+              kahina:height="407" kahina:id="14" kahina:title="Chart and bindings"
+              kahina:border="false" kahina:xpos="0" kahina:ypos="407">
+              <kahina:default-window
+                kahina:binding="chart" kahina:height="407" kahina:id="19"
+                kahina:primary="true" kahina:title="Chart" kahina:width="640"
+                kahina:xpos="0" kahina:ypos="407" />
+              <kahina:default-window
+                kahina:binding="startBindings" kahina:height="407"
+                kahina:id="20" kahina:border="false" kahina:primary="true"
+                kahina:title="Start bindings" kahina:width="640"
+                kahina:xpos="181" kahina:ypos="58" />
+              <kahina:default-window
+                kahina:binding="endBindings" kahina:height="407"
+                kahina:id="21" kahina:border="false" kahina:primary="true"
+                kahina:title="End bindings" kahina:width="640"
+                kahina:xpos="0" kahina:ypos="428" />
+            </kahina:tabbed-window>
           </kahina:vert-split-window>
         </kahina:vert-split-window>
         <kahina:vert-split-window kahina:width="640"
@@ -101,21 +121,15 @@
             kahina:border="false" kahina:xpos="0" kahina:ypos="324">
             <kahina:default-window kahina:binding="startFeatStruct"
               kahina:height="634" kahina:id="12" kahina:primary="true"
-              kahina:border="false" kahina:title="start FS"
+              kahina:border="false" kahina:title="Start FS"
               kahina:width="640" kahina:xpos="0" kahina:ypos="0" />
             <kahina:default-window kahina:binding="endFeatStruct"
               kahina:height="634" kahina:id="13" kahina:primary="true"
-              kahina:border="false" kahina:title="end FS" kahina:width="640"
+              kahina:border="false" kahina:title="End FS" kahina:width="640"
               kahina:xpos="0" kahina:ypos="0" />
           </kahina:tabbed-window>
         </kahina:vert-split-window>
       </kahina:hori-split-window>
-      <!-- <kahina:default-window kahina:binding="startBindings" kahina:height="337" 
-        kahina:id="1" kahina:border="true" kahina:primary="true" kahina:title="startBindings" 
-        kahina:width="480" kahina:xpos="181" kahina:ypos="58"/> <kahina:default-window 
-        kahina:binding="endBindings" kahina:height="264" kahina:id="5" kahina:border="true" 
-        kahina:primary="true" kahina:title="endBindings" kahina:width="480" kahina:xpos="0" 
-        kahina:ypos="428"/> -->
     </kahina:main-window>
   </kahina:arrangement>
   <kahina:configurations>
