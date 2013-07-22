@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.kahina.core.control.KahinaController;
-import org.kahina.core.data.project.KahinaProject;
 import org.kahina.core.data.tree.KahinaTree;
 import org.kahina.lp.data.project.LogicProgrammingProject;
 import org.kahina.parse.data.project.TestSet;
@@ -19,6 +17,9 @@ import org.w3c.dom.NodeList;
 
 public class TraleProject extends LogicProgrammingProject implements TestSetExtension
 {
+
+	private static final long serialVersionUID = 194694387410246329L;
+	
 	private File signatureFile;
 	private List<File> theoryFiles;
     private TestSet testSet;
