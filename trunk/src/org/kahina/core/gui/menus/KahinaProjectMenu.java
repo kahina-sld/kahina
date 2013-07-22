@@ -7,10 +7,12 @@ import javax.swing.JMenuItem;
 
 import org.kahina.core.KahinaInstance;
 import org.kahina.core.data.project.KahinaProject;
-import org.kahina.core.gui.KahinaPerspective;
 
 public class KahinaProjectMenu extends JMenu
 {
+
+	private static final long serialVersionUID = -5797303674332544798L;
+	
 	public JMenuItem newProjectItem;
 	public JMenu openProjectMenu;
 	public JMenu recentProjectsMenu;
@@ -56,14 +58,14 @@ public class KahinaProjectMenu extends JMenu
         }
 	    openProjectMenu.add(predefinedProjectsMenu);
 		
-		loadProjectItem = new JMenuItem("Load Project ...");
+		loadProjectItem = new JMenuItem("Load Project...");
 		loadProjectItem.setActionCommand("loadProject");
 		loadProjectItem.addActionListener(defaultListener);
 		openProjectMenu.add(loadProjectItem);
 		
 		this.add(openProjectMenu);
 		
-		saveProjectItem = new JMenuItem("Save Project As ...");
+		saveProjectItem = new JMenuItem("Save Project As...");
 		saveProjectItem.setActionCommand("saveProject");
 		saveProjectItem.addActionListener(defaultListener);
 		this.add(saveProjectItem);

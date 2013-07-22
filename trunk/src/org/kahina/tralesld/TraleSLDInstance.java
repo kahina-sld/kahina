@@ -72,7 +72,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	};
 
-	public final Action PARSE_ACTION = new AbstractAction("Parse")
+	public final Action PARSE_ACTION = new AbstractAction("Parse...")
 	{
 
 		private static final long serialVersionUID = -3829326193202814557L;
