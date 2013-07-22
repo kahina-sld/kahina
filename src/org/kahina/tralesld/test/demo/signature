@@ -1,0 +1,161 @@
+type_hierarchy
+bot
+   list
+     ne_list hd:bot tl:list
+     e_list
+   sign phon:list synsem:synsem qstore:list retr:list
+      word arg_st:list
+      phrase daughters:const_struc
+   synsem loc:loc nonloc:nonloc
+   loc cat:cat cont:cont context:conx
+   nonloc
+   cat head:head subcat:list marking:marking
+   conx background:list
+   head
+      functional spec:synsem
+         det
+         mark
+      subst pred:boolean mod:synsem_none
+         verb aux:boolean inv:boolean mod:none vform:vform
+         non_verb_subst
+            noun case:case mod:none
+            prep pform:pform
+            adjunct
+               adj
+               adv
+   cont
+      psoa quants:list nucleus:qfpsoa
+      non_psoa
+         nom_obj index:index restr:list
+            npro
+            pron
+              ppro
+              ana
+                refl
+                recp
+         quant det:semdet restind:npro
+   qfpsoa
+      move_rel
+         approach_rel approacher:ref
+         go_rel goer:ref
+         leave_rel leaver:ref
+         run_rel runner:ref
+         walk_rel walker:ref
+      be_smart_rel smart:ref
+      rain_rel
+      know_rel knower:ref known:ref
+      like_rel liker:ref liked:ref
+      love_rel lover:ref loved:ref
+      own_rel  owner:ref owned:ref
+      see_rel  seer:ref seen:ref
+      demand_rel demander:ref demanded:psoa
+      require_rel reqer:ref reqed:psoa
+      say_rel sayer:ref said:psoa
+      think_rel thinker:ref thought:psoa
+      give_rel giver:ref gift:ref givee:ref
+      poss_rel possessor:ref possessed:ref
+      soa_arg_pred soa_arg:psoa
+         raising_pred
+            subj_rais_pred
+               seem_rel
+               tend_rel
+            obj_rais_pred
+               believe_rel believer:ref
+               expect_rel expecter:ref
+         control_preds
+            subj_control_pred
+               try_rel tryer:ref
+            obj_control_pred
+               persuade_rel persuader:ref persuadee:ref
+         temporal_modal_op_rel
+            modal_rel
+            future_rel
+            alleged_rel
+      direction_rel movement:move_rel goal:ref
+      here_rel located:psoa
+      nominal_adj_conx_rel inst:index
+         adj_rel
+            red_rel
+            smart_rel
+         nominal_rel
+            book_rel
+            boy_rel
+            faculty_rel
+            man_rel
+            poem_rel
+            student_rel
+            unicorn_rel
+            woman_rel
+         semantic_sorts_rel
+            individuation_mode_rel
+               aggregate_rel
+               non_aggregate_rel
+            type_of_entity_rel
+               human_rel
+                  female_rel
+                  male_rel
+               non_human_rel
+               animate_rel
+               inanimate_rel
+      naming_rel name:name bearer:index
+   name
+      fido
+      john
+      peter
+      mary
+      kim
+      sandy
+   index pers:pers num:num gen:gen
+         ref
+         nonref
+            it
+            there
+   semdet
+      all
+      forall
+      exists
+      one
+      the
+   const_struc
+      headed_struc hdtr:sign c_dtrs:list
+         head_adj_struc hdtr:phrase c_dtrs:e_list adj_dtr:sign
+         non_head_adj_struc
+            head_comp_struc
+            head_mark_struc hdtr:phrase c_dtrs:e_list marker_dtr:word
+   vform
+      fin
+      inf
+      pas
+      psp
+      prp
+      base
+   case
+      nom
+      acc
+   pform
+      lexical
+      non_lexical
+         to
+   marking
+      unmarked
+      marked
+         that
+         for
+   boolean
+      plus
+      minus
+   pers
+      first
+      second
+      third
+   num
+      sg
+      pl
+   gen
+      masc
+      fem
+      neut
+   synsem_none
+      none
+      &synsem
+.
