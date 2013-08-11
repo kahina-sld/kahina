@@ -2,6 +2,8 @@ package org.kahina.tralesld;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -48,9 +50,10 @@ import org.w3c.dom.Document;
 public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, TraleSLDGUI, TraleSLDBridge, TraleProject>
 {
 	boolean withAuxiliaryInstance = false;
-	
+
 	// TODO extract a generic commander superclass from QTypeCommander and move
-	// the command stuff in TraleSLDInstance to a TraleSLDCommander. QTypeCommander
+	// the command stuff in TraleSLDInstance to a TraleSLDCommander.
+	// QTypeCommander
 	// already avoids the ugly hack used below to set the bridge to abort.
 
 	private static final boolean VERBOSE = false;
@@ -104,16 +107,15 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 
 	private List<String> sentence = Collections.emptyList();
 
-	
-   public TraleSLDInstance()
-    {
-        this(false);
-    }
-	   
+	public TraleSLDInstance()
+	{
+		this(false);
+	}
+
 	public TraleSLDInstance(boolean withWorkbench)
 	{
-	    this.withAuxiliaryInstance = withWorkbench;
-	    
+		this.withAuxiliaryInstance = withWorkbench;
+
 		COMPILE_ACTION.setEnabled(false);
 		PARSE_ACTION.setEnabled(false); // need grammar first
 		RESTART_ACTION.setEnabled(false); // need grammar and sentence first
@@ -130,8 +132,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			sessionControl.registerListener("update", this);
 			sessionControl.registerListener(KahinaEventTypes.CONTROL, this);
 			return bridge;
-		}
-		catch (NullPointerException e)
+		} catch (NullPointerException e)
 		{
 			System.err.println("NULL POINTER EXCEPTION at the following stack position:");
 			e.printStackTrace();
@@ -167,25 +168,22 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		COMPILE_ACTION.setEnabled(commanding);
 		PARSE_ACTION.setEnabled(commanding && grammar != null);
 		RESTART_ACTION.setEnabled(commanding && grammar != null && !sentence.isEmpty());
-        if (getProjectStatus() != KahinaProjectStatus.NO_OPEN_PROJECT)
-        {
-            if (getProject() == null)
-            {
-                setProjectStatus(KahinaProjectStatus.NO_OPEN_PROJECT);
-            }
-            else if (grammar == null)
-            {
-                setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-            }
-            else if (sentence.isEmpty())
-            {
-                setProjectStatus(KahinaProjectStatus.PROGRAM_COMPILED);
-            }
-            else
-            {
-                setProjectStatus(KahinaProjectStatus.DEBUGGING_RUN);
-            }
-        }
+		if (getProjectStatus() != KahinaProjectStatus.NO_OPEN_PROJECT)
+		{
+			if (getProject() == null)
+			{
+				setProjectStatus(KahinaProjectStatus.NO_OPEN_PROJECT);
+			} else if (grammar == null)
+			{
+				setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+			} else if (sentence.isEmpty())
+			{
+				setProjectStatus(KahinaProjectStatus.PROGRAM_COMPILED);
+			} else
+			{
+				setProjectStatus(KahinaProjectStatus.DEBUGGING_RUN);
+			}
+		}
 	}
 
 	@Override
@@ -221,7 +219,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		KahinaViewRegistry.registerMapping(KahinaSourceCodeLocation.class, PrologJEditSourceCodeView.class);
 	}
 
-	//@Override
+	// @Override
 	public void processEvent(KahinaEvent e)
 	{
 		super.processEvent(e);
@@ -266,8 +264,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			{
 				System.err.println("Sentence registered.");
 			}
-		} 
-		else if (TraleSLDControlEventCommands.REGISTER_GRAMMAR.equals(command))
+		} else if (TraleSLDControlEventCommands.REGISTER_GRAMMAR.equals(command))
 		{
 			grammar = (String) event.getArguments()[0];
 			PARSE_ACTION.setEnabled(commanding);
@@ -276,48 +273,45 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			{
 				System.err.println("Grammar registered.");
 			}
-		} 
-		else if (TraleSLDControlEventCommands.COMPILE.equals(command))
+		} else if (TraleSLDControlEventCommands.COMPILE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
-				//dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] { grammar }));
-			} 
-			else
+				// dispatchEvent(new
+				// KahinaDialogEvent(KahinaDialogEvent.COMPILE, new Object[] {
+				// grammar }));
+			} else
 			{
-				// Lazy hack: set bridge to abort - if we go through the controller,
+				// Lazy hack: set bridge to abort - if we go through the
+				// controller,
 				// the instance will deinitialize and thwart subsequent eventing
 				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 			}
 			if (VERBOSE)
 			{
-			    System.err.println("Executing compile command:");
-			    System.err.println("  Current project: " + getProject());
-			    System.err.println("  Compiling theory file: " + getProject().getTheoryFiles().get(0).getAbsolutePath());
+				System.err.println("Executing compile command:");
+				System.err.println("  Current project: " + getProject());
+				System.err.println("  Compiling theory file: " + getProject().getTheoryFiles().get(0).getAbsolutePath());
 			}
-            compile(getProject().getTheoryFiles().get(0).getAbsolutePath());
-		} 
-		else if (TraleSLDControlEventCommands.PARSE.equals(command))
+			compile(getProject().getTheoryFiles().get(0).getAbsolutePath());
+		} else if (TraleSLDControlEventCommands.PARSE.equals(command))
 		{
 			if (event.getArguments() == null || event.getArguments().length == 0)
 			{
 				dispatchEvent(new KahinaDialogEvent(KahinaDialogEvent.PARSE, new Object[] { ListUtil.join(" ", sentence) }));
-			} 
-			else
+			} else
 			{
 				// Lazy hack: see above
 				bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 				parse(castToStringList(event.getArguments()[0]));
 			}
-		} 
-		else if (TraleSLDControlEventCommands.RESTART.equals(command))
+		} else if (TraleSLDControlEventCommands.RESTART.equals(command))
 		{
 			// Lazy hack: see above
 			bridge.processEvent(new KahinaSystemEvent(KahinaSystemEvent.QUIT));
 			compile(grammar);
 			parse(sentence);
-		}
-		else if (TraleSLDControlEventCommands.REBUILD_SIGNATURE_INFO.equals(command))
+		} else if (TraleSLDControlEventCommands.REBUILD_SIGNATURE_INFO.equals(command))
 		{
 			gui.signatureUpdate();
 		}
@@ -347,7 +341,8 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 	{
 		synchronized (traleCommands)
 		{
-			//TODO: make sure the signature is retained across parses; requires major restructuring
+			// TODO: make sure the signature is retained across parses; requires
+			// major restructuring
 			traleCommands.add("query send_signature.");
 			traleCommands.add("query drec[" + ListUtil.join(",", words) + "].");
 		}
@@ -370,28 +365,14 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 			dispatchEvent(new KahinaChartUpdateEvent(edgeID));
 		}
 	}
-	
-	/*protected void processProjectEvent(KahinaProjectEvent e)
-    {
-        switch (e.getProjectEventType())
-        {
-            case NEW_PROJECT:
-            {
-                if (project != null)
-                {
-                    dispatchEvent(new KahinaControlEvent("abort"));
-                    project.deregister();
-                }
-                newProject(e.getFile(), e.getName());
-                processNewProject();
-                break;
-            }
-            default:
-            {
-                super.processProjectEvent(e);
-            }
-        }
-    }*/
+
+	/*
+	 * protected void processProjectEvent(KahinaProjectEvent e) { switch
+	 * (e.getProjectEventType()) { case NEW_PROJECT: { if (project != null) {
+	 * dispatchEvent(new KahinaControlEvent("abort")); project.deregister(); }
+	 * newProject(e.getFile(), e.getName()); processNewProject(); break; }
+	 * default: { super.processProjectEvent(e); } } }
+	 */
 
 	@Override
 	public LogicProgrammingProfiler getProfiler()
@@ -404,97 +385,104 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		(new TraleSLDInstance(false)).start(args);
 	}
 
-    @Override
-    protected TraleProject createNewProject()
-    {
-        TraleProject project = new TraleProject("no name", this);
-        if (VERBOSE) System.err.println("  Created new project " + project);
-        return project;
-    }
+	@Override
+	protected TraleProject createNewProject()
+	{
+		TraleProject project = new TraleProject("no name", this);
+		if (VERBOSE)
+			System.err.println("  Created new project " + project);
+		return project;
+	}
 
-    public TraleProject loadProject(InputStream stream)
-    {
-        Document dom;
-        TraleProject project = createNewProject();
-        dom = XMLUtil.parseXMLStream(stream, false);
-        TraleProject.importXML(dom.getDocumentElement(), project, this, state.getStepTree());
-        return project;
-    }
-    
-    @Override
-    protected void prepareProjectLists()
-    {
-        recentProjects = new LinkedList<TraleProject>();
-        defaultProjects = new LinkedList<TraleProject>();
-        addDefaultProject("test/webcourse/webcourse-project.xml");
-        addDefaultProject("test/ps94/ps94-project.xml");
-        addDefaultProject("test/demo/demo-project.xml");
-    }  
-    
-    private void addDefaultProject(String resourcePath)
-    {
-        URL projectLocation = this.getClass().getResource(resourcePath);
-        try
-        {
-            InputStream projectInputStream = projectLocation.openStream();
-            if (VERBOSE) System.err.println("Loading default project: " + resourcePath);
-            TraleProject project = loadProject(projectInputStream);
-            if (VERBOSE) System.err.println("  loaded project " + project.getName() + " as " + project);
-            defaultProjects.add(project);
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-    
-    @Override
-    protected void preparePerspectiveLists()
-    {
-        recentPerspectives = new LinkedList<KahinaPerspective>();
-        defaultPerspectives = new LinkedList<KahinaPerspective>(); 
-        addDefaultPerspective("gui/tralesld-manywindows.xml");
-        addDefaultPerspective("gui/tralesld-integrated.xml");
-    } 
-    
-    private void addDefaultPerspective(String resourcePath)
-    {
-        URL perspectiveLocation = this.getClass().getResource(resourcePath);
-        try
-        {
-            InputStream perspectiveInputStream = perspectiveLocation.openStream();
-            defaultPerspectives.add(loadPerspective(perspectiveInputStream));
-        }
-        catch (IOException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-    
-    public void newProject(File theoryFile, String name)
-    {
-        project = createNewProject();
-        project.setName(name);
-        project.getTheoryFiles().add(theoryFile);
-        project.setPerspective(gui.getPerspective());
-        setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
-    }
-    
-    protected void processNewProject()
-    {
-        super.processNewProject();
-        List<List<String>> examples = new LinkedList<List<String>>();
-        for (String sentence : project.getTestSet().getSentences())
-        {
-            List<String> tokens = new LinkedList<String>();
-            for (String token : sentence.split(" "))
-            {
-                tokens.add(token);
-            }
-            examples.add(tokens);
-        }
-        dispatchEvent(new KahinaControlEvent(TraleSLDControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
-    }
+	public TraleProject loadProject(File file)
+	{
+		InputStream stream;
+		try
+		{
+			stream = new FileInputStream(file);
+		} catch (FileNotFoundException e)
+		{
+			System.err.println("ERROR: Project file not found!");
+			e.printStackTrace();
+			return null;
+		}
+		Document dom;
+		TraleProject project = createNewProject();
+		dom = XMLUtil.parseXMLStream(stream, false);
+		TraleProject.importXML(dom.getDocumentElement(), project, this, state.getStepTree(), file);
+		return project;
+	}
+
+	@Override
+	protected void prepareProjectLists()
+	{
+		recentProjects = new LinkedList<TraleProject>();
+		defaultProjects = new LinkedList<TraleProject>();
+		addDefaultProject("test/webcourse/webcourse-project.xml");
+		addDefaultProject("test/ps94/ps94-project.xml");
+		addDefaultProject("test/demo/demo-project.xml");
+	}
+
+	private void addDefaultProject(String resourcePath)
+	{
+		URL projectLocation = this.getClass().getResource(resourcePath);
+		if (VERBOSE)
+		{
+			System.err.println("Loading default project: " + resourcePath);
+		}
+		TraleProject project = loadProject(new File(projectLocation.getFile()));
+		if (VERBOSE)
+		{
+			System.err.println("  loaded project " + project.getName() + " as " + project);
+		}
+		defaultProjects.add(project);
+	}
+
+	@Override
+	protected void preparePerspectiveLists()
+	{
+		recentPerspectives = new LinkedList<KahinaPerspective>();
+		defaultPerspectives = new LinkedList<KahinaPerspective>();
+		addDefaultPerspective("gui/tralesld-manywindows.xml");
+		addDefaultPerspective("gui/tralesld-integrated.xml");
+	}
+
+	private void addDefaultPerspective(String resourcePath)
+	{
+		URL perspectiveLocation = this.getClass().getResource(resourcePath);
+		try
+		{
+			InputStream perspectiveInputStream = perspectiveLocation.openStream();
+			defaultPerspectives.add(loadPerspective(perspectiveInputStream));
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void newProject(File theoryFile, String name)
+	{
+		project = createNewProject();
+		project.setName(name);
+		project.getTheoryFiles().add(theoryFile);
+		project.setPerspective(gui.getPerspective());
+		setProjectStatus(KahinaProjectStatus.PROGRAM_UNCOMPILED);
+	}
+
+	protected void processNewProject()
+	{
+		super.processNewProject();
+		List<List<String>> examples = new LinkedList<List<String>>();
+		for (String sentence : project.getTestSet().getSentences())
+		{
+			List<String> tokens = new LinkedList<String>();
+			for (String token : sentence.split(" "))
+			{
+				tokens.add(token);
+			}
+			examples.add(tokens);
+		}
+		dispatchEvent(new KahinaControlEvent(TraleSLDControlEventCommands.UPDATE_EXAMPLES, new Object[] { examples }));
+	}
 }

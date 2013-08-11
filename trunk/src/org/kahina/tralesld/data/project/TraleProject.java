@@ -80,8 +80,9 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
         this.testSet = testSet;
     }
     
-    public static void importXML(Element topEl, TraleProject project, TraleSLDInstance kahina, KahinaTree stepTree)
+    public static void importXML(Element topEl, TraleProject project, TraleSLDInstance kahina, KahinaTree stepTree, File file)
     {
+    	File projectLocation = file.getParentFile();
         LogicProgrammingProject.importXML(topEl, project, kahina, stepTree);
         NodeList mainFileList = topEl.getElementsByTagName("trale:signatureFile");
         if (mainFileList.getLength() != 1)
@@ -90,14 +91,14 @@ public class TraleProject extends LogicProgrammingProject implements TestSetExte
         }
         else
         {
-            File signatureFile = new File(((Element) mainFileList.item(0)).getAttribute("kahina:path"));
+            File signatureFile = new File(projectLocation, ((Element) mainFileList.item(0)).getAttribute("kahina:path"));
             project.setMainFile(signatureFile);
             project.setSignatureFile(signatureFile);
         }
         NodeList fileList = topEl.getElementsByTagName("trale:theoryFile");
         for (int i = 0; i < fileList.getLength(); i++)
         {
-            File theoryFile = new File(((Element) fileList.item(i)).getAttribute("kahina:path"));
+            File theoryFile = new File(projectLocation, ((Element) fileList.item(i)).getAttribute("kahina:path"));
             project.addOpenedFile(theoryFile);
             project.getTheoryFiles().add(theoryFile);
         }

@@ -67,8 +67,19 @@ public class TulipaInstance extends KahinaInstance<TulipaState, TulipaGUI, Tulip
         return new KahinaProject("tulipa", "no name");
     }
     
-    public KahinaProject loadProject(InputStream stream)
+    @Override
+    public KahinaProject loadProject(File file)
     {
+    	InputStream stream;
+		try
+		{
+			stream = new FileInputStream(file);
+		} catch (FileNotFoundException e)
+		{
+			System.err.println("ERROR: Project file not found!");
+			e.printStackTrace();
+			return null;
+		}
         Document dom;
         KahinaProject project = createNewProject();
         dom = XMLUtil.parseXMLStream(stream, false);

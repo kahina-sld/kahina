@@ -416,16 +416,8 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
                     dispatchEvent(new KahinaControlEvent("abort"));
                     project.deregister();
                 }
-                try
-                {
-                    project = loadProject(new FileInputStream(e.getFile()));
-                    processNewProject();
-                }
-                catch (FileNotFoundException e1)
-                {
-                    System.err.println("ERROR: Project file not found!");
-                    e1.printStackTrace();
-                }
+                project = loadProject(e.getFile());
+				processNewProject();
                 break;
             }
             case LOAD_RECENT_PROJECT:
@@ -693,7 +685,7 @@ public abstract class KahinaInstance<S extends KahinaState, G extends KahinaGUI,
         XMLUtil.writeXML(el, projectFile.getAbsolutePath());
     }
     
-    public abstract P loadProject(InputStream stream);
+    public abstract P loadProject(File file);
     
     public G getGUI()
     {

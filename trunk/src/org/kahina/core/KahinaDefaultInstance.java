@@ -1,8 +1,6 @@
 package org.kahina.core;
 
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -10,7 +8,6 @@ import java.util.LinkedList;
 
 import org.kahina.core.bridge.KahinaBridge;
 import org.kahina.core.data.project.KahinaProject;
-import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.gui.KahinaGUI;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.io.util.XMLUtil;
@@ -48,8 +45,18 @@ public class KahinaDefaultInstance extends KahinaInstance<KahinaState, KahinaGUI
 		// TODO Auto-generated method stub	
 	}
     
-    public KahinaProject loadProject(InputStream stream)
+    public KahinaProject loadProject(File file)
     {
+    	InputStream stream;
+		try
+		{
+			stream = new FileInputStream(file);
+		} catch (FileNotFoundException e)
+		{
+			System.err.println("ERROR: Project file not found!");
+			e.printStackTrace();
+			return null;
+		}
         Document dom;
         KahinaProject project = new KahinaProject("default", "no name");
         dom = XMLUtil.parseXMLStream(stream, false);      
