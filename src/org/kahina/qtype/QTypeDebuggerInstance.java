@@ -1,13 +1,14 @@
 package org.kahina.qtype;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.LinkedList;
 
-import org.kahina.core.control.KahinaControlEvent;
 import org.kahina.core.control.KahinaEvent;
-import org.kahina.core.control.KahinaSystemEvent;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
 import org.kahina.core.gui.event.KahinaChartUpdateEvent;
@@ -112,9 +113,20 @@ public class QTypeDebuggerInstance extends LogicProgrammingInstance<QTypeState, 
     {
         return new QTypeProject("no name", this);
     }
-        
-    public QTypeProject loadProject(InputStream stream)
+     
+    @Override
+    public QTypeProject loadProject(File file)
     {
+    	InputStream stream;
+		try
+		{
+			stream = new FileInputStream(file);
+		} catch (FileNotFoundException e)
+		{
+			System.err.println("ERROR: Project file not found!");
+			e.printStackTrace();
+			return null;
+		}
         //System.err.println("QTypeProject.loadProject");
         Document dom;
         QTypeProject project = createNewProject();

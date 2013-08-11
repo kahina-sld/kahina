@@ -1,14 +1,11 @@
 package org.kahina.sicstus;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.LinkedList;
 
-import org.kahina.core.data.project.KahinaProject;
-import org.kahina.core.data.project.KahinaProjectStatus;
 import org.kahina.core.data.source.KahinaSourceCodeLocation;
 import org.kahina.core.gui.KahinaPerspective;
 import org.kahina.core.gui.KahinaViewRegistry;
@@ -89,8 +86,19 @@ public class SICStusPrologDebuggerInstance extends LogicProgrammingInstance<Logi
         return new LogicProgrammingProject("sicstus", "no name", this);
     }
 
-    public LogicProgrammingProject loadProject(InputStream stream)
+    @Override
+    public LogicProgrammingProject loadProject(File file)
     {
+    	InputStream stream;
+		try
+		{
+			stream = new FileInputStream(file);
+		} catch (FileNotFoundException e)
+		{
+			System.err.println("ERROR: Project file not found!");
+			e.printStackTrace();
+			return null;
+		}
         Document dom;
         LogicProgrammingProject project = createNewProject();
         dom = XMLUtil.parseXMLStream(stream, false);

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kahina:project xmlns:kahina="http://www.kahina.org/xml/kahina" xmlns:trale="http://www.kahina.org/xml/trale" kahina:appid="tralesld" kahina:name="TraleSLD Demo (P&amp;S 94, ch. 8)">
-  <trale:signatureFile kahina:path="/home/ke/workspace/kahina/src/org/kahina/tralesld/test/demo/signature"/>
-  <trale:theoryFile kahina:path="/home/ke/workspace/kahina/src/org/kahina/tralesld/test/demo/theory.pl"/>
+  <trale:signatureFile kahina:path="signature"/>
+  <trale:theoryFile kahina:path="theory.pl"/>
   <kahina:perspective kahina:path="/org/kahina/tralesld/gui/tralesld-demo.xml">
   </kahina:perspective>
   <kahina:controlAgentProfiles>
     <kahina:controlAgentProfile kahina:type="break"/>
     <kahina:controlAgentProfile kahina:type="creep"/>
     <kahina:controlAgentProfile kahina:type="complete">
-      <kahina:controlAgent active="false" color="#D5EB3E" name="complete cat">
+      <!--<kahina:controlAgent active="false" color="#D5EB3E" name="complete cat">
         <kahina:pattern rel="contains" type="caption">
           <kahina:intVal>0</kahina:intVal>
           <kahina:strVal regex="true"> cat</kahina:strVal>
         </kahina:pattern>
-      </kahina:controlAgent>
+      </kahina:controlAgent>-->
     </kahina:controlAgentProfile>
     <kahina:controlAgentProfile kahina:type="skip">
       <!--<kahina:controlAgent active="true" color="#00DD00" name="skip goal">
