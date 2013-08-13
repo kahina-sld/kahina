@@ -331,7 +331,7 @@ public class TraleSLDInstance extends LogicProgrammingInstance<TraleSLDState, Tr
 		}
 		synchronized (traleCommands)
 		{
-			traleCommands.add("query use_module(library(file_systems),[current_directory/2]),current_directory(_," + PrologUtil.stringToAtomLiteral((new File(absolutePath)).getParent()) + ").");
+			traleCommands.add("query my_cd(" + PrologUtil.stringToAtomLiteral((new File(absolutePath)).getParent()) + ").");
 			traleCommands.add("query dcompile_gram(" + PrologUtil.stringToAtomLiteral(absolutePath) + ").");
 			traleCommands.add("query send_signature.");
 		}
