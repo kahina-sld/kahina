@@ -13,36 +13,43 @@ import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.io.MUCExtension;
 
 public class TestAnAlgorithm extends TestCase{
 	//	String[] paths = {""};
-	
-	public void testAdvanced() throws TimeoutException{
+
+	public void testBinary() throws TimeoutException, ResultNotRetrievableException{
+
+		testAnAlgorithm(new BinaryAlgorithm());
+	}
+	public void testAdvanced() throws TimeoutException, ResultNotRetrievableException{
 
 		testAnAlgorithm(new AdvancedAlgorithm());
 	}
 
-	public void testBasicAlgorithm() throws TimeoutException{
+	public void testBasicAlgorithm() throws TimeoutException, ResultNotRetrievableException{
 		testAnAlgorithm(new BasicAlgorithm());
 	}
 	
-	public void testAdvancedFast() throws TimeoutException{
+	public void testAdvancedFast() throws TimeoutException, ResultNotRetrievableException{
 		testAnAlgorithm(new FasterAdvancedAlgorithm());
 	}
 
-	public void testAnAlgorithm(AbstractAlgorithm alg) throws TimeoutException{
+	public void testAnAlgorithm(AbstractAlgorithm alg) throws TimeoutException, ResultNotRetrievableException{
 		File testFolder = new File("smallCNF");
 
 		for (File f: testFolder.listFiles()){
 			System.out.println(f.getPath());
-			alg.newInstance( f.getPath());
-			assertEquals(true, testIfMuse(alg.findAMuse()));
+			CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(f.getPath());
+			AlgorithmData data = new AlgorithmData(instance);
+			
+			assertEquals(true, testIfMuse(alg.findAMuse(data)));
 		}
 	}
 
-	public boolean testIfMuse(CnfSatInstance instance) throws TimeoutException{
+	public boolean testIfMuse(CnfSatInstance instance) throws TimeoutException, ResultNotRetrievableException{
 		File freezeFile = new File("freeze.tmp");
 		File instanceFile = new File("output.tmp.cnf");
 		if(freezeFile.exists()){
@@ -66,12 +73,13 @@ public class TestAnAlgorithm extends TestCase{
 		
 		//test if MUS is unsat
 		if (solve(freezeFile, instanceFile)){
+			System.out.println("is not unsat");
 			return false;
 		}
 		//for each Clause test if it can be removed.
 		//TODO
 		for (int i = 0; i < freeze.length; i++){
-			System.out.println("Clause " + (i+1) + " removed");
+			System.out.println("Clause " + (i+1) + " tested");
 			if (i == 0){
 				freeze[0] = FreezeFile.FREEZE;
 			}else{
@@ -88,7 +96,7 @@ public class TestAnAlgorithm extends TestCase{
 	}
 
 
-	protected boolean solve(File freezeFile, File instanceFile) throws TimeoutException{
+	protected boolean solve(File freezeFile, File instanceFile) throws TimeoutException, ResultNotRetrievableException{
 		File resultFile = new File("result.tmp");
 		MiniSAT.solve(instanceFile, new File("proof.tmp") , resultFile , freezeFile);
 		return !MiniSAT.wasUnsatisfiable(resultFile);
