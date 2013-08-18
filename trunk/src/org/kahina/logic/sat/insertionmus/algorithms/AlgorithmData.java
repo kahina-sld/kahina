@@ -24,7 +24,8 @@ public class AlgorithmData {
 		return S;
 	}
 
-	public int[] freeze;
+	public int[] freezeAll;
+	public int[] freezeM;
 	public File instanceFile;
 	public File resultFile;
 	public File freezeFile;
@@ -85,8 +86,10 @@ public class AlgorithmData {
 
 		this.instanceFile  = new File("output.cnf");
 
-		freeze = new int[this.instance.getSize()];
-		Arrays.fill(freeze, FreezeFile.FREEZE);
+		freezeAll = new int[this.instance.getSize()];
+		freezeM = new int[this.instance.getSize()];
+		Arrays.fill(freezeAll, FreezeFile.FREEZE);
+		Arrays.fill(freezeM, FreezeFile.FREEZE);
 	}
 
 	public boolean isMUS() {
@@ -105,7 +108,7 @@ public class AlgorithmData {
 	public AlgorithmData clone() {
 		AlgorithmData ret = new AlgorithmData();
 
-		ret.freeze = this.freeze.clone();
+		ret.freezeAll = this.freezeAll.clone();
 		ret.instance = this.instance;
 		ret.instanceFile = this.instanceFile;
 		ret.instanceIDs = this.instanceIDs.clone();

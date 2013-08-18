@@ -12,6 +12,7 @@ import org.kahina.logic.sat.insertionmus.io.ResultReader;
 import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 
 public class CombinedAlgorithm extends AbstractAlgorithm {
 
@@ -25,30 +26,30 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	private AlgorithmData data;
 	private AlgorithmData metaData;
 	
-	protected void growSelection() throws TimeoutException, InterruptedException{
+	protected void growSelection() throws TimeoutException, InterruptedException, ResultNotRetrievableException{
 		for (int clause: instanceIDs){
-			if (data.freeze[clause] == FreezeFile.FREEZE){
-				data.freeze[clause] = FreezeFile.UNFREEZE;
+			if (data.freezeAll[clause] == FreezeFile.FREEZE){
+				data.freezeAll[clause] = FreezeFile.UNFREEZE;
 				
-				FreezeFile.createFreezeFile(data.freeze, data.freezeFile, instance.getHighestVar()+1);
+				FreezeFile.createFreezeFile(data.freezeAll, data.freezeFile, instance.getHighestVar()+1);
 				
 				if (!solve(data)){
-					data.freeze[clause] = FreezeFile.FREEZE;
+					data.freezeAll[clause] = FreezeFile.FREEZE;
 				}
 			}
 		}
 	}
 
 	
-	protected void shrink() throws TimeoutException, InterruptedException{
+	protected void shrink() throws TimeoutException, InterruptedException, ResultNotRetrievableException{
 		List<Integer> removeLater = new ArrayList<Integer>();
 		for (int clause: Selection){
 
-			data.freeze[clause] = FreezeFile.FREEZE;
+			data.freezeAll[clause] = FreezeFile.FREEZE;
 			if(!solve(data)){
 				removeLater.add(clause);
 			}else{
-				data.freeze[clause] = FreezeFile.UNFREEZE;
+				data.freezeAll[clause] = FreezeFile.UNFREEZE;
 			}
 		}
 	}
@@ -58,8 +59,9 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	 * @throws InterruptedException 
 	 * @throws TimeoutException 
 	 * @throws IOException 
+	 * @throws ResultNotRetrievableException 
 	 */
-	public void findAllMUS(AlgorithmData data) throws TimeoutException, InterruptedException, IOException{
+	public void findAllMUS(AlgorithmData data) throws TimeoutException, InterruptedException, IOException, ResultNotRetrievableException{
 
 		
 		while (this.solve(mapInstance, data)){
@@ -80,7 +82,7 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 		}
 	}
 
-	private boolean solve(CnfSatInstance instance, AlgorithmData data) throws TimeoutException, InterruptedException, IOException {
+	private boolean solve(CnfSatInstance instance, AlgorithmData data) throws TimeoutException, InterruptedException, IOException, ResultNotRetrievableException {
 		File cnfFile = new File("tmp.cnf");
 		DimacsCnfOutput.writeDimacsCnfFile(cnfFile.getName(), mapInstance);
 		return MiniSAT.isSatisfiable(cnfFile, data.resultFile);
@@ -91,7 +93,7 @@ public class CombinedAlgorithm extends AbstractAlgorithm {
 	 */
 	private void getMap(AlgorithmData data) throws IOException {
 //		CnfSatInstance map = DimacsCnfParser.parseDimacsCnfFile(result.getName());
-		ResultReader.readAssignment(data.freeze, data.resultFile);
+		ResultReader.readAssignment(data.freezeAll, data.resultFile);
 	}
 
 	@Override
