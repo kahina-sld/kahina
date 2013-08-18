@@ -10,6 +10,7 @@ import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 /**
  * Implementation of the insertion algorithm of J.K. de Siqueira N. and J.-F. Puget 
  * "Explanation-based generalisation of failures"
@@ -63,38 +64,43 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 		data.instanceIDs.remove(clauseID);
 		data.getS().add(clauseID);
 
-		data.freeze[clauseID] = FreezeFile.UNFREEZE;
+		data.freezeAll[clauseID] = FreezeFile.UNFREEZE;
 
 
-		File freezeFile = new File("freeze"+ Thread.currentThread().getId() + ".fr");
+//		File freezeFile = new File("freeze"+ Thread.currentThread().getId() + ".fr");
 
-		FreezeFile.createFreezeFile(data.freeze, freezeFile, data.instance.getHighestVar()+1);
-		File resultFile = new File("result");
-		MiniSAT.solve(data.instanceFile, resultFile, freezeFile);
-		freezeFile.delete();
+//		FreezeFile.createFreezeFile(data.freezeAll, data.freezeFile, data.instance.getHighestVar()+1);
+//		File resultFile = new File("result");
+//		MiniSAT.solve(data.instanceFile, data.resultFile, freezeFile);
+//		freezeFile.delete();
 
-		if (MiniSAT.wasUnsatisfiable(resultFile)){
-			//if M united S is not SAT then the clause is part of the MUS
-			System.out.println("UNSAT");
-			data.M.add(clauseID);
-			data.getS().remove(clauseID);
+		try {
+			if (!solve(data)){
+				//if M united S is not SAT then the clause is part of the MUS
+				System.out.println("UNSAT");
+				data.M.add(clauseID);
+				data.getS().remove(clauseID);
 
-			for (int f: data.getS()){
-				data.freeze[f] = FreezeFile.FREEZE;
+				for (int f: data.getS()){
+					data.freezeAll[f] = FreezeFile.FREEZE;
+				}
+
+				data.instanceIDs = data.getS();
+				data.resetS();
+				
+
+				
+//			FreezeFile.createFreezeFile(data.freezeAll, data.freezeFile, data.instance.getHighestVar()+1);
+//			MiniSAT.solve(data.instanceFile, new File("proof") , data.resultFile, data.freezeFile);
+//			data.freezeFile.delete();
+				if (!solve(data)){
+					data.isMus = true;
+					return true;
+				}
 			}
-
-			data.instanceIDs = data.getS();
-			data.resetS();
-			
-
-			
-			FreezeFile.createFreezeFile(data.freeze, freezeFile, data.instance.getHighestVar()+1);
-			MiniSAT.solve(data.instanceFile, new File("proof") , resultFile, freezeFile);
-			freezeFile.delete();
-			if (MiniSAT.wasUnsatisfiable(resultFile)){
-				data.isMus = true;
-				return true;
-			}
+		} catch (ResultNotRetrievableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 //		else{
 //			if (instanceIDs.size() == 0){
@@ -139,8 +145,8 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 		//		DimacsCnfOutput.writeDimacsCnfFile("MUS.tmp.cnf", alg.getMUS());
 
 		ArrayList<Integer> clauseIDs = new ArrayList<Integer>();
-		for (int i = 0; i < data.freeze.length; i++){
-			if (data.freeze[i] == FreezeFile.UNFREEZE){
+		for (int i = 0; i < data.freezeAll.length; i++){
+			if (data.freezeAll[i] == FreezeFile.UNFREEZE){
 				clauseIDs.add(i+1);
 				//				System.out.println(i+1);
 			}
@@ -156,8 +162,8 @@ public class BasicAlgorithm extends AbstractAlgorithm{
 			}
 
 			ArrayList<Integer> clauseIDs = new ArrayList<Integer>();
-			for (int i = 0; i < data.freeze.length; i++){
-				if (data.freeze[i] == FreezeFile.UNFREEZE){
+			for (int i = 0; i < data.freezeAll.length; i++){
+				if (data.freezeAll[i] == FreezeFile.UNFREEZE){
 					clauseIDs.add(i+1);
 					//				System.out.println(i+1);
 				}

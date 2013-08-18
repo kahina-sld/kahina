@@ -15,6 +15,7 @@ import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 
 /**
  * Implementation of H.van Maaren and S. Wieringa
@@ -48,7 +49,7 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 
 	protected boolean finished = false;
 
-	File instanceFile;
+//	File instanceFile;
 
 //	public AdvancedAlgorithm(CnfSatInstance instance) {
 //		this.instance = instance;
@@ -73,7 +74,7 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 		// TODO Auto-generated constructor stub
 	}
 
-	public void run(AlgorithmData data) throws TimeoutException, InterruptedException {
+	public void run(AlgorithmData data) throws TimeoutException, InterruptedException, ResultNotRetrievableException {
 		File freezeFile = new File("freeze" + Thread.currentThread().getId()
 				+ ".fr");
 		File resultFile = new File("result");
@@ -82,24 +83,21 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 			data.S = new ConcurrentSkipListSet<Integer>();
 			int clauseIDCandidat = -1;
 			// int[] oldFreeze = this.freeze.clone();
-			Arrays.fill(data.freeze, FreezeFile.FREEZE);
+			Arrays.fill(data.freezeAll, FreezeFile.FREEZE);
 			for (int id : data.M) {
-				data.freeze[id] = FreezeFile.UNFREEZE;
+				data.freezeAll[id] = FreezeFile.UNFREEZE;
 			}
 
 			for (int clauseID : data.instanceIDs) {
 				List<Integer> clause = data.instance.getClauseByID(clauseID);
 
-				FreezeFile.createFreezeFile(data.freeze, freezeFile,
-						data.instance.getHighestVar() + 1, clause);
-
-				MiniSAT.solve(this.instanceFile, resultFile, freezeFile);
-				if (!MiniSAT.wasUnsatisfiable(resultFile)) {
+				
+				if (solve(data, clause)) {
 					// This Variable may be added
 					data.S.add(clauseID);
 					// if (clauseIDCandidat == -1)
 					clauseIDCandidat = clauseID;
-					data.freeze[clauseID] = FreezeFile.UNFREEZE;
+					data.freezeAll[clauseID] = FreezeFile.UNFREEZE;
 					data.S.add(clauseID);
 				} else {
 					// Never use this variable
@@ -118,8 +116,9 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 	}
 
 
+
 	public static void main(String[] arg0) throws TimeoutException,
-	InterruptedException, IOException {
+	InterruptedException, IOException, ResultNotRetrievableException {
 
 		CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(path);
 
@@ -148,6 +147,9 @@ public class AdvancedAlgorithm extends AbstractAlgorithm{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ResultNotRetrievableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
