@@ -104,6 +104,28 @@ public class PartitionBlockHandler extends LiteralBlockHandler
         return blockClause;
     }
     
+    public boolean checkRepresentability(TreeSet<Integer> block)
+    {
+        int overlapIndex = findHighestOverlapBlock(block);
+        if (VERBOSE) System.err.println("  maxOverlapIndex: " + overlapIndex);
+        if (VERBOSE) System.err.println("  maxOverlapBlock: " + blockList.get(overlapIndex));
+        if (overlapIndex == -1)
+        {
+            return false;
+        }
+        else
+        {
+            Overlap overlap = new Overlap(block, blockList.get(overlapIndex));
+            if (VERBOSE) System.err.println("  Overlap: (" + overlap.aMinusB.size() + "," + overlap.aIntersectB.size() + "," + overlap.bMinusA.size() + ")");
+            if (overlap.bMinusA.size() > 0) return false;
+            if (overlap.aMinusB.size() > 0)
+            {
+                return checkRepresentability(overlap.aMinusB);
+            }
+            return true;
+        }
+    }
+    
     public void ensureRepresentability(TreeSet<Integer> block)
     {
         if (VERBOSE) System.err.println("ensureRepresentability(" + block + ")");
