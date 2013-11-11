@@ -46,7 +46,7 @@ public abstract class AbstractAlgorithm {
 		return !MiniSAT.wasUnsatisfiable(data.resultFile);
 	}
 	
-	public CnfSatInstance findAMuse(AlgorithmData data){
+	public CnfSatInstance findAMuse(AlgorithmData data) throws ResultNotRetrievableException{
 
 		while (!data.isMus){
 //			do{
@@ -79,7 +79,7 @@ public abstract class AbstractAlgorithm {
 	
 	
 
-	public boolean nextStep(AlgorithmData data) {
+	public boolean nextStep(AlgorithmData data) throws ResultNotRetrievableException {
 //		if (data.instanceIDs.size() == 0) {
 //			data.isMus = true;
 //			return true;
@@ -91,7 +91,8 @@ public abstract class AbstractAlgorithm {
 	 * 
 	 * @param clauseIndex
 	 * @return true if a new Step is reached.
+	 * @throws ResultNotRetrievableException 
 	 */
-	public abstract boolean nextStep(int clauseIndex, AlgorithmData data);
+	public abstract boolean nextStep(int clauseIndex, AlgorithmData data) throws ResultNotRetrievableException;
 
 }

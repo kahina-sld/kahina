@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Stack;
 
@@ -20,42 +21,6 @@ import org.kahina.logic.sat.insertionmus.iterativ.simpleSAT.unitPropagation.Unit
 
 
 /**
- * @LICENSE FREE BEER LICENSE VERSION 1.02
- * 
- *          The free beer license is a license to give free software to you and
- *          free beer (in)to the author(s).
- * 
- *          Your rights are :
- * 
- *          0. You can use this piece of software in anyway you like.
- * 
- *          1. You can redistribute this piece of software in source form or in
- *          compiled form.
- * 
- *          2. You can alter the source to your needs and redistribute the
- *          altered source in source form or in compiled form.
- * 
- *          However :
- * 
- *          0. This program is provided without warranty of any kind. So, if it
- *          breaks anything, for example itself, it is up to you.
- * 
- *          1. If you redistribute this piece of software, you are not allowed
- *          to charge money for this piece of software itself.
- * 
- *          2. If you redistribute this pieces of software in binary form, you
- *          must supply the source code as well.
- * 
- *          3. If you redistribute this software, modified or not, you must
- *          redistribute it under this license and you must include the name of
- *          the original author(s) and you must point out where the original
- *          source can be obtained.
- * 
- *          4. If you use this piece of software frequently, and you think it is
- *          worth a couple of euros, you are not allowed to send the author
- *          anything else than beer or means that provide facilities to get beer
- *          into the author(s) (i.e. openers, glasses).
- * 
  * @author Paul Seitz
  * 
  */
@@ -66,14 +31,14 @@ public class CDCL {
 	// die zu bearbeitende instanz
 	public ClauseSet instance;
 	// der Stack der belegten variablen
-	public Stack<Variable> stack;
+	public Stack<Variable> stack = new Stack<Variable>();	
 
 	public int lvl = 0;
 
 
 	// Gelernte Klausel, wird nach dem backtrack hinzugefuegt
-	public ArrayList<Clause> addLater;
-	public ArrayList<Clause> addUnit;
+	public ArrayList<Clause> addLater = new ArrayList<Clause>();
+	public ArrayList<Clause> addUnit = new ArrayList<Clause>();
 	protected Clause addLaterUnitClause;
 
 	public final AbstractActivity activity;
@@ -85,7 +50,7 @@ public class CDCL {
 	int restardIT = 0;
 	int restardCount = 0;
 	double restardMultiplikator = 2;
-	
+
 	public CDCL(final ClauseSet set) {
 		restards = new ArrayList<Integer>();
 		restards.add(20);
@@ -93,11 +58,12 @@ public class CDCL {
 
 		this.instance = set;
 		activity = new NonRandomHeapActivity();
+		activity.init(set);
 		propagation = new UnitPropagation(this.instance);
-//		propagation = new RekursivUnitPropagation(this.instance);
+		//		propagation = new RekursivUnitPropagation(this.instance);
 		analyseConflict = new DefaultAnalyseConflict();
 		analyseConflict.init(this);
-//		analyseConflict = new LearnMoreAnalyseConflict(this);
+		//		analyseConflict = new LearnMoreAnalyseConflict(this);
 	}
 
 	public CDCL(final ClauseSet set, final AbstractActivity activity, final IUnitPropagation unitPropagation,
@@ -107,13 +73,13 @@ public class CDCL {
 		restards.add(40);
 
 		this.instance = set;
-		
+
 		this.activity = activity;
 		this.propagation = unitPropagation;
 		this.analyseConflict = analyseConflict;
 		this.analyseConflict.init(this);
 	}
-	
+
 	/**
 	 * Resolviert zwei Klauseln
 	 * 
@@ -144,7 +110,7 @@ public class CDCL {
 					literalsC2.remove(j);
 					break;
 				} else if (litc1 == -1 * litc2) {// litc1 kommt negiert in c2
-													// vor
+					// vor
 					add = false;
 					literalsC2.remove(j);
 					break;
@@ -183,10 +149,10 @@ public class CDCL {
 			v.watched.remove(c);
 			if (l > 0) {
 				v.setHeuristic--;
-//				v.positiv.remove(c);
+				//				v.positiv.remove(c);
 			} else {
 				v.setHeuristic++;
-//				v.negativ.remove(c);
+				//				v.negativ.remove(c);
 			}
 		}
 	}
@@ -214,7 +180,7 @@ public class CDCL {
 		}
 
 		final int res = -1 * c1.literals.get(0); // kommt nicht in der
-													// entstehenden Klausel vor
+		// entstehenden Klausel vor
 		// alle Literale auser res die noch nicht in lit vorhanden sind kommen
 		// in der entstehenden Klausel vor
 		for (i = 0; i < c2.literals.size(); i++) {
@@ -268,7 +234,7 @@ public class CDCL {
 		for (int i = 0; i < size; i++) {
 			final int litNewClause = newClause.literals.get(i);
 			final Clause reason = this.instance.variables[Math
-					.abs(litNewClause)].reason;
+			                                              .abs(litNewClause)].reason;
 
 			final int reasonSize;
 			if (reason != null && (reasonSize = reason.literals.size()) <= size) {
@@ -326,15 +292,15 @@ public class CDCL {
 	}
 
 	private void addUnitClause(final Clause newClause) {
-	
-		
+
+
 		// if (newClause.toString().equals("{ -29 95 6 }")){
 		// System.out.println("blabla");
 		// System.out.println(stack);
 		// }
 
 		newClause.setWatched(this.instance.variables);
-		
+
 		this.instance.initUnits.add(newClause);
 
 		newClause.setBoolHeur(this.instance.variables);
@@ -346,18 +312,14 @@ public class CDCL {
 
 
 	int delcount = 0;
+	private Collection<Clause> learnedClauses = new ArrayList<Clause>();
 
 	public Solution solve(final long timeout) {
 
-		final long timestart = System.currentTimeMillis();
-		
+
 		// Initialisierungen
-		final int variableSize = this.instance.variables.length - 1;
 		this.lvl = 0;
-		stack = new Stack<Variable>();
-		this.addLater = new ArrayList<Clause>();
-		this.addUnit = new ArrayList<Clause>();
-		
+		//		stack 	
 		this.activity.init(this.instance);
 
 		// loesche alle variablen die eine unit Clause haben
@@ -365,9 +327,36 @@ public class CDCL {
 		// return false;
 		// }
 
+		return addNextAndContinue(timeout, null);
+	}
+
+	public Solution addNextAndContinue(final long timeout, Clause c) {
+		System.out.println(c);
+		final long timestart = System.currentTimeMillis();
+
+
+		this.addUnit = new ArrayList<Clause>();
+		final int variableSize = this.instance.variables.length - 1;
+		if (c != null){
+			int clauseState = c.initUnknownWatched(this.instance.variables);
+			if (clauseState == -1){
+				this.addUnit.add(c);
+			}else if (clauseState == Integer.MAX_VALUE || clauseState == -2){
+				//nothing to do
+			}else{
+				if (clauseState <= this.lvl){
+					this.lvl = clauseState;
+					backtrackToLvl();
+				}else{
+					System.out.println("how? " + clauseState);
+				}
+			}
+		}
+
+
 		while (true) {
 
-
+			System.out.println(lvl);
 			final Clause cl;
 			if (null != (cl = this.propagation.unitPropagation(this.stack, this.lvl))) {
 
@@ -378,7 +367,7 @@ public class CDCL {
 				// bestimme naechstes lvl und fuehre alle noetigen resolutionen
 				// durch
 				this.lvl = this.analyseConflict.analyseConflict(cl);
-//				this.lvl = this.analyseConflict(cl);
+				//				this.lvl = this.analyseConflict(cl);
 
 				// UNSAT
 				if (lvl == -1)
@@ -398,27 +387,26 @@ public class CDCL {
 
 				doRestardIfNeeded();
 			} else {
+
 				if (this.stack.size() == variableSize) {
 					// alle Variablen sind belegt und es gab keinen konflikt --> SAT
-					
-//					for (Variable v: this.instance.variables){
-//						if (v.state == State.OPEN) System.err.println("OPEN: " + v);
-//					}
+
+					//					for (Variable v: this.instance.variables){
+					//						if (v.state == State.OPEN) System.err.println("OPEN: " + v);
+					//					}
 					return Solution.SAT;
 				}
-				
+
 				if (System.currentTimeMillis() - timestart > timeout){
 					return Solution.TIMEOUT;
 				}
 
 
 				this.lvl++;
-				final Variable v = this.activity.getNextVar(); // waehle
-																// naechste
-																// variable
-				v.assign(v.getBoolHeur(), this.instance.variables, // belege
-																	// naechste
-																	// variable
+				// waehle naechste variable
+				final Variable v = this.activity.getNextVar(); 
+				// belege naechste variable
+				v.assign(v.getBoolHeur(), this.instance.variables, 
 						this.instance.initUnits, stack, lvl);
 			}
 
@@ -434,20 +422,20 @@ public class CDCL {
 
 			// ///////////// Tests die ich zum debugen benutzt habe /////////
 			//
-//			for (Variable v : instance.variables) {
-//				for (Clause c: v.watched)
-//					c.testWatchedLiterals(instance.variables);
-//			}
-//			for (Variable v : instance.variables) {
-//				if (v.state == Variable.State.OPEN && stack.contains(v)) {
-//					System.err.println("should not be open: " + v);
-//					System.err.println("Variablestate is OPEN but variable isn't");
-//				} else if ((v.state == Variable.State.FALSE || v.state ==
-//						Variable.State.TRUE)
-//						&& !stack.contains(v)) {
-//					System.err.println("should be open: " + v);
-//				}
-//			}
+			//			for (Variable v : instance.variables) {
+			//				for (Clause c: v.watched)
+			//					c.testWatchedLiterals(instance.variables);
+			//			}
+			//			for (Variable v : instance.variables) {
+			//				if (v.state == Variable.State.OPEN && stack.contains(v)) {
+			//					System.err.println("should not be open: " + v);
+			//					System.err.println("Variablestate is OPEN but variable isn't");
+			//				} else if ((v.state == Variable.State.FALSE || v.state ==
+			//						Variable.State.TRUE)
+			//						&& !stack.contains(v)) {
+			//					System.err.println("should be open: " + v);
+			//				}
+			//			}
 			// ////////////////////// ende ///////////////////////////////
 		}
 	}
@@ -455,8 +443,8 @@ public class CDCL {
 	private void doRestardIfNeeded() {
 		this.restardCount++;
 		if (this.restardCount > this.restards.get(this.restardIT)) {
-//			System.out.println("Restard from lvl: " + this.lvl + " after "
-//					+ restardCount);
+			//			System.out.println("Restard from lvl: " + this.lvl + " after "
+			//					+ restardCount);
 			this.restardCount = 0;
 
 			this.restardIT++;
@@ -468,35 +456,35 @@ public class CDCL {
 			this.lvl = 0;
 			this.backtrackToLvl();
 
-//			this.lvl++;
-//			final Variable v = this.activity.getNextVar(); // waehle naechste
-//															// variable
-//			v.assign(v.getBoolHeur(), this.instance.variables, // belege naechste variable
-//					this.instance.initUnits, stack, lvl);
+			//			this.lvl++;
+			//			final Variable v = this.activity.getNextVar(); // waehle naechste
+			//															// variable
+			//			v.assign(v.getBoolHeur(), this.instance.variables, // belege naechste variable
+			//					this.instance.initUnits, stack, lvl);
 		}
 	}
 
-//	private boolean deletNoLongerNeededClauses() {
-//		if (lvl == 0) {
-//			// loesche alle variablen die eine unit Clause haben
-//			while (this.instance.initUnits.size() > 0) {
-//				final ArrayList<Clause> newUnits = new ArrayList<Clause>();
-//				for (final Clause c : this.instance.initUnits) {
-//					// if (c.literals.size() != 1){
-//					// System.err.println("Clause is not unit: " + c);
-//					// }
-//					// delcount++;
-//					final int l = c.literals.get(0);
-//					if (!this.instance.variables[Math.abs(l)].delet(l > 0,
-//							this.instance.variables, newUnits)) {
-//						return false;
-//					}
-//				}
-//				this.instance.initUnits = newUnits;
-//			}
-//		}
-//		return true;
-//	}
+	//	private boolean deletNoLongerNeededClauses() {
+	//		if (lvl == 0) {
+	//			// loesche alle variablen die eine unit Clause haben
+	//			while (this.instance.initUnits.size() > 0) {
+	//				final ArrayList<Clause> newUnits = new ArrayList<Clause>();
+	//				for (final Clause c : this.instance.initUnits) {
+	//					// if (c.literals.size() != 1){
+	//					// System.err.println("Clause is not unit: " + c);
+	//					// }
+	//					// delcount++;
+	//					final int l = c.literals.get(0);
+	//					if (!this.instance.variables[Math.abs(l)].delet(l > 0,
+	//							this.instance.variables, newUnits)) {
+	//						return false;
+	//					}
+	//				}
+	//				this.instance.initUnits = newUnits;
+	//			}
+	//		}
+	//		return true;
+	//	}
 
 	/**
 	 * Fuegt alle neu gelernten Klauseln der Klauselmenge hinzu.
@@ -504,15 +492,17 @@ public class CDCL {
 	 */
 	private void addNewClauses() {
 
-//		for(Clause c: this.addLater){
-//			for(int literal: c.literals){
-//				Variable v = this.instance.variables[Math.abs(literal)];
-//				if (v.watched.contains(c)){
-//					System.err.println(c + " has a watched lit!");
-//				}
-//			}
-//		}
-		
+		//		for(Clause c: this.addLater){
+		//			for(int literal: c.literals){
+		//				Variable v = this.instance.variables[Math.abs(literal)];
+		//				if (v.watched.contains(c)){
+		//					System.err.println(c + " has a watched lit!");
+		//				}
+		//			}
+		//		}
+		this.learnedClauses.addAll(this.addLater);
+		this.learnedClauses.addAll(this.addUnit);
+
 		final int till = this.addLater.size();
 		int i = 0;
 		for (; i < till; i++) {
@@ -521,7 +511,7 @@ public class CDCL {
 			final Clause c = this.addLater.get(i);
 			c.setWatchedToUnsigned(this.instance.variables);
 			c.setBoolHeur(this.instance.variables);
-			
+
 			this.activity.NewUnitClause(c);
 		}
 		// dies ist die gelernte unit klausel
@@ -530,12 +520,12 @@ public class CDCL {
 		for (; i < till2; i++) {
 			this.addUnitClause(this.addUnit.get(i));
 		}
-//		this.addUnitClause(this.addLater.get(till));
+		//		this.addUnitClause(this.addLater.get(till));
 
-		
-//		for (Clause c: this.addLater){
-//			c.testWatchedLiterals(this.instance.variables);
-//		}
+
+		//		for (Clause c: this.addLater){
+		//			c.testWatchedLiterals(this.instance.variables);
+		//		}
 		this.addLater.clear();
 		this.addUnit.clear();
 	}
@@ -559,14 +549,14 @@ public class CDCL {
 
 	public Clause resolve2(Clause c1, Clause newClause, int v) {
 		ArrayList<Integer> literals = new ArrayList<Integer>();
-//		int lit = 0;
+		//		int lit = 0;
 		for (final int l: c1.literals){
 			if (l != v && l != -v){
 				literals.add(l);
 			}
-//			else{
-//				lit = l;
-//			}
+			//			else{
+			//				lit = l;
+			//			}
 		}
 		for (final int l: newClause.literals){
 			if (l != v && l != -v){
@@ -574,23 +564,23 @@ public class CDCL {
 					literals.add(l);
 				}
 			}
-//			else if(lit == l || lit ==0){
-//				System.err.println(v);
-//				System.err.println(c1);
-//				System.err.println(newClause);
-//				System.err.println();
-//			}else{
-//				System.err.println("hurray");
-//			}
+			//			else if(lit == l || lit ==0){
+			//				System.err.println(v);
+			//				System.err.println(c1);
+			//				System.err.println(newClause);
+			//				System.err.println();
+			//			}else{
+			//				System.err.println("hurray");
+			//			}
 		}
-		
+
 		return new Clause(literals);
 	}
-	
+
 
 	public void setValues(int countTill, int clauseLimit, double actReduction, double actGain,
 			double initActGain, double clActGain, int restardValue1, int restardValue2, int restardValue3, double pRestardMultiplikator){
-		
+
 
 		restards = new ArrayList<Integer>();
 		restards.add(restardValue1);
@@ -598,7 +588,7 @@ public class CDCL {
 		restards.add(restardValue3);
 
 		restardMultiplikator = pRestardMultiplikator;
-		
+
 
 
 		this.activity.countTillActivityReduction = countTill;
@@ -607,8 +597,8 @@ public class CDCL {
 		this.activity.clauseActivityGain = clActGain;
 
 		this.instance.initVarAddition = initActGain;
-		
-		
+
+
 
 
 
@@ -617,4 +607,34 @@ public class CDCL {
 			lm.LearnClauseLimit = clauseLimit;
 		}
 	}
+
+	/**
+	 * Removes all learned Clauses, sets lvl to 0 but keeps activity values for variables
+	 */
+	public void reset() {
+
+		System.out.println("reset");
+		for (Clause c: learnedClauses){
+			c.remove(this.instance.variables);
+		}
+
+		this.lvl = 0;
+		this.addLater.clear();
+		this.addLaterUnitClause = null;
+		this.addUnit.clear();
+
+		while (!this.stack.empty()) {
+			final Variable v = this.stack.pop();
+			v.unassign(this.activity);
+		}
+		this.stack.clear();
+
+		for (Variable v: this.instance.variables){
+			if (v.level != -1){
+				System.err.println("WTF");
+			}
+		}
+	}
+
+
 }

@@ -12,8 +12,8 @@ import org.kahina.logic.sat.insertionmus.iterativ.simpleSAT.main.ClauseSet;
 public class benchmarkAll {
 
 	static float time = 0f;
-//	static final String path = "../cnf/";
-	static final String path = "../cnf/test";
+	static final String path = "smallCNF/";
+//	static final String path = "../cnf/test";
 	public static void main(String[] arg0) throws IOException{
 		System.in.read();
 		start(path, new FileFilter(){

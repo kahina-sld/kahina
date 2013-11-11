@@ -1,48 +1,13 @@
 package org.kahina.logic.sat.insertionmus.iterativ.simpleSAT.main;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.kahina.logic.sat.insertionmus.iterativ.simpleSAT.main.Clause.ClauseState;
 import org.kahina.logic.sat.insertionmus.iterativ.simpleSAT.main.Variable.State;
 
 /**
- * @LICENSE
- * 			FREE BEER LICENSE VERSION 1.02
-
-The free beer license is a license to give free software to you and free
-beer (in)to the author(s).
-
-Your rights are :
-
-0. You can use this piece of software in anyway you like.
-
-1. You can redistribute this piece of software in source form or in 
-   compiled form. 
-
-2. You can alter the source to your needs and redistribute the altered 
-   source in source form or in compiled form.
-
-However :
-
-0. This program is provided without warranty of any kind. So, if it 
-   breaks anything, for example itself, it is up to you. 
-
-1. If you redistribute this piece of software, you are not allowed to 
-   charge money for this piece of software itself.
-
-2. If you redistribute this pieces of software in binary form, you must 
-   supply the source code as well.
-
-3. If you redistribute this software, modified or not, you must 
-   redistribute it under this license and you must include the name of 
-   the original author(s) and you must point out where the original 
-   source can be obtained.
-
-4. If you use this piece of software frequently, and you think it is 
-   worth a couple of euros, you are not allowed to send the author 
-   anything else than beer or means that provide facilities to get beer 
-   into the author(s) (i.e. openers, glasses).
-
+ 
  * @author Paul Seitz
  *
  */
@@ -73,8 +38,8 @@ public class Clause {
 	}
 
 	//Der Konstruktor fuer gelernte Klauseln
-	public Clause (final ArrayList<Integer> literals){
-		this.literals = literals;	  
+	public Clause (final List<Integer> literals){
+		this.literals = new ArrayList<Integer>(literals);
 	}
 	public void setBoolHeur(final Variable[] variables){
 		for (final int lit: literals){
@@ -261,6 +226,58 @@ public class Clause {
 		//		literals.set(lIndex, this.literals.get(literalsSize -1));
 		//		literals.set(literalsSize-1, index);		
 	}
+	/**
+	 * Initiates the watched variables when it is unknown if there are free variables
+	 * @param variables
+	 * @return -1 if the new clause is a unit clause,-2 if the new clause is sat, Integer.MaxValue if no bagjump is needed, else the 
+	 * needed backjumplvl
+	 */
+	public int initUnknownWatched(final Variable[] variables){
+		int countSet = 0;
+		int maxLvl1 = 0;
+		int maxLvl2 = 0;
+		int index1 = 0;
+		int index2 = 0;
+		
+		boolean sat = false;
+		
+		for (int l: this.literals){
+			final int index = Math.abs(l);
+			if (variables[index].state == State.OPEN){
+				variables[index].watched.add(this);
+				countSet ++;
+				if (countSet == 2){
+					if (sat) return -2;
+					return Integer.MAX_VALUE;
+				}
+			}else if (variables[index].litIsSat(l)){
+				variables[index].watched.add(this);
+				sat = true;
+				countSet++;
+			}else if (variables[index].level >= maxLvl1){
+				maxLvl2 = maxLvl1;
+				index2 = index1;
+					
+				index1 = index;
+				maxLvl1 = variables[index].level;
+			}else if (variables[index].level > maxLvl2){
+				index2 = index;
+				maxLvl2 = variables[index].level;
+			}
+		}
+		
+		if (countSet < 2){
+			variables[index1].watched.add(this);
+			countSet ++;			
+		}
+		if (countSet < 2){
+			variables[index2].watched.add(this);
+			if (sat) return -2;
+			return variables[index1].level;
+		}	
+		if (sat) return -2;
+		return -1;
+	}
 
 	/*
 	 * vb.: Es wurde bereits ein watched literal gesetzt.
@@ -424,6 +441,13 @@ public class Clause {
 				if (secoundOpenVar || watchedSet) return ClauseState.UNIT;	  
 
 				return ClauseState.EMPTY;
+	}
+
+	public void remove(Variable[] variables) {
+		for (int l: this.literals){
+			int variableIndex = Math.abs(l);
+			variables[variableIndex].watched.remove(this);
+		}
 	}
 
 //	public void delet(Variable[] vars) {
