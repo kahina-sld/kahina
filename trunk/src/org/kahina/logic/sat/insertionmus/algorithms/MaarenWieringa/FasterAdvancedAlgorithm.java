@@ -25,6 +25,7 @@ import org.kahina.logic.sat.io.cnf.DimacsCnfOutput;
 import org.kahina.logic.sat.io.cnf.DimacsCnfParser;
 import org.kahina.logic.sat.io.minisat.FreezeFile;
 import org.kahina.logic.sat.io.minisat.MiniSAT;
+import org.kahina.logic.sat.io.minisat.ResultNotRetrievableException;
 import org.kahina.logic.sat.muc.data.MUCStatistics;
 import org.kahina.logic.sat.muc.io.MUCExtension;
 
@@ -114,7 +115,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 	//	}
 
 	@Override
-	public boolean nextStep(int clauseID, AlgorithmData data) {
+	public boolean nextStep(int clauseID, AlgorithmData data) throws ResultNotRetrievableException {
 		if (clauseID == 21){
 			System.out.println("21");
 		}
@@ -125,7 +126,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 
 		List<Integer> clause = data.instance.getClauseByID(clauseID);
 
-		FreezeFile.createFreezeFile(data.freeze, data.freezeFile, data.instance.getHighestVar()+1, clause);
+		FreezeFile.createFreezeFile(data.freezeAll, data.freezeFile, data.instance.getHighestVar()+1, clause);
 
 		try {
 			MiniSAT.solve(data.instanceFile , data.resultFile, data.freezeFile);
@@ -150,7 +151,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 			//This Variable may be added
 			//					if (clauseIDCandidat == -1)
 			//				clauseIDCandidat = clauseID;
-			data.freeze[clauseID] = FreezeFile.UNFREEZE;
+			data.freezeAll[clauseID] = FreezeFile.UNFREEZE;
 			data.getS().add(clauseID);
 
 			int[] lastSatisfingAllocation = new int[data.instance.getHighestVar()+1];
@@ -185,9 +186,9 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 			data.getS().clear();
 
 
-			Arrays.fill(data.freeze, FreezeFile.FREEZE);
+			Arrays.fill(data.freezeAll, FreezeFile.FREEZE);
 			for (int id: data.M){
-				data.freeze[id] = FreezeFile.UNFREEZE;
+				data.freezeAll[id] = FreezeFile.UNFREEZE;
 			}
 		}
 		
@@ -195,7 +196,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 		return false;
 	}
 
-	public void run(AlgorithmData data) throws TimeoutException, InterruptedException, IOException{
+	public void run(AlgorithmData data) throws TimeoutException, InterruptedException, IOException, ResultNotRetrievableException{
 		File freezeFile = new File("freeze"+ Thread.currentThread().getId() + ".fr");
 		File resultFile = new File("result");
 
@@ -207,9 +208,9 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 			allocations.clear();
 			int clauseIDCandidat = -1;
 			//			int[] oldFreeze = this.freeze.clone();
-			Arrays.fill(data.freeze, FreezeFile.FREEZE);
+			Arrays.fill(data.freezeAll, FreezeFile.FREEZE);
 			for (int id: data.M){
-				data.freeze[id] = FreezeFile.UNFREEZE;
+				data.freezeAll[id] = FreezeFile.UNFREEZE;
 			}
 
 			//			System.out.println(this.instanceIDs);
@@ -219,7 +220,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 
 				List<Integer> clause = data.instance.getClauseByID(clauseID);
 
-				FreezeFile.createFreezeFile(data.freeze, freezeFile, data.instance.getHighestVar()+1, clause);
+				FreezeFile.createFreezeFile(data.freezeAll, freezeFile, data.instance.getHighestVar()+1, clause);
 
 				MiniSAT.solve(data.instanceFile , resultFile, freezeFile);
 
@@ -239,7 +240,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 					//This Variable may be added
 					//					if (clauseIDCandidat == -1)
 					clauseIDCandidat = clauseID;
-					data.freeze[clauseID] = FreezeFile.UNFREEZE;
+					data.freezeAll[clauseID] = FreezeFile.UNFREEZE;
 					data.getS().add(clauseID);
 
 					int[] lastSatisfingAllocation = new int[data.instance.getHighestVar()+1];
@@ -323,7 +324,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 		return false;
 	}
 
-	public static void main(String[] arg0) throws TimeoutException, InterruptedException, IOException{
+	public static void main(String[] arg0) throws TimeoutException, InterruptedException, IOException, ResultNotRetrievableException{
 
 
 		//		CnfSatInstance instance = DimacsCnfParser.parseDimacsCnfFile(path);
@@ -345,7 +346,7 @@ public class FasterAdvancedAlgorithm extends AbstractAlgorithm{
 	}
 
 //	@Override
-	public CnfSatInstance findAMuse2(AlgorithmData data) {
+	public CnfSatInstance findAMuse2(AlgorithmData data) throws ResultNotRetrievableException {
 		try {
 			this.run(data);
 		} catch (TimeoutException e) {

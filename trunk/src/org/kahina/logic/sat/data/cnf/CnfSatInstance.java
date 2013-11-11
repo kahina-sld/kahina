@@ -945,4 +945,7 @@ public class CnfSatInstance extends KahinaSatInstance
 	public List<Integer> getClauseByID(int clauseID) {
 		return clauseStore.get(clauseID);
 	}
+	public int getNumVariables(){
+		return this.maxVarID;
+	}
 }
