@@ -105,4 +105,8 @@
 		  </manifest>
 		</jar>
 	 </target>
+
+	<target name="javadoc">
+		<javadoc sourcepath="src" destdir="javadoc"/>
+	</target>
 </project>
